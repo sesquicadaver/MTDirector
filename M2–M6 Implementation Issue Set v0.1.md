@@ -1,1 +1,3295 @@
+MikroTik Firewall Controller
 
+M2–M6 Implementation Issue Set v0.1
+
+Дата: 3 серпня 2026 року
+Статус: нормативний набір задач реалізації MVP
+
+
+---
+
+1. Призначення
+
+Документ розкладає залишок MVP на атомарні GitHub Issues без розширення функціонального scope:
+
+M2 — Policy Core
+M3 — Policy Compiler
+M5 — Managed Device Onboarding
+M4 — Safe Deployment
+M6 — End-to-End Integration
+
+Нормативний порядок реалізації:
+
+M1
+ ↓
+M2
+ ↓
+M3
+ ↓
+M5
+ ↓
+M4
+ ↓
+M6
+
+M5 виконується раніше M4, оскільки Safe Deployment потребує постійних anchors і bootstrap artifact.
+
+
+---
+
+2. Scope lock
+
+Issues цього документа не повинні додавати:
+
+NAT, RAW або Mangle writes;
+routing writes;
+VRRP writes;
+interface-list writes;
+bridge/VLAN writes;
+switch ACL;
+SwOS configuration;
+multi-Node campaigns;
+automatic deployment;
+automatic drift repair;
+RouterOS terminal;
+arbitrary command execution;
+web або mobile client;
+microservices;
+message broker;
+Redis;
+Kubernetes;
+multi-vendor support.
+
+Будь-яка така функція потребує окремої post-MVP специфікації.
+
+
+---
+
+3. Загальний Definition of Done
+
+Кожний issue вважається виконаним лише коли:
+
+1. Результат реалізовано повністю, без заглушок.
+
+
+2. Issue завершується одним pull request.
+
+
+3. Код компілюється в Release без warnings.
+
+
+4. Усі релевантні unit, architecture та integration tests проходять.
+
+
+5. Нові I/O APIs приймають CancellationToken.
+
+
+6. Усі queues, retries, buffers і concurrency bounded.
+
+
+7. Нові domain invariants покриті тестами.
+
+
+8. Новий persistence state має PostgreSQL migration та integration tests.
+
+
+9. Effectful RouterOS операція має read-back verification.
+
+
+10. У production-коді відсутній generic RouterOS command executor.
+
+
+11. Secrets не потрапляють у Desktop, logs, fixtures або audit.
+
+
+12. Public contracts versioned.
+
+
+13. Architecture boundaries не порушені.
+
+
+14. Документація оновлена разом із реалізацією.
+
+
+15. Git working tree після build і tests чистий.
+
+
+16. High-risk зміни проходять окреме security review.
+
+
+
+
+---
+
+4. Milestone M2 — Policy Core
+
+[M2-01] Implement policy document lifecycle and persistence
+
+Labels: type:feature, area:domain, area:persistence
+Залежності: M1 CLOSED
+PR title: feat(policy): add immutable policy revision lifecycle
+
+Результат
+
+Створені Policy, PolicyRevision та document-centric persistence.
+
+Scope
+
+Policy
+PolicyRevision
+revision lifecycle
+MFC-CJ1 policy document
+policy revision hash
+parent context hash
+PostgreSQL schema
+
+Acceptance criteria
+
+1. Підтримані policy kinds:
+
+COMPANY_BASELINE;
+
+SITE_OVERLAY;
+
+NODE_OVERLAY;
+
+EXCEPTION.
+
+
+
+2. Реалізовані всі нормативні revision states.
+
+
+3. Редагується лише DRAFT.
+
+
+4. APPROVED payload immutable.
+
+
+5. Revision hash обчислюється над exact canonical bytes.
+
+
+6. Зміна draft змінює hash і анулює validation.
+
+
+7. Approved revision не оновлюється або видаляється application role.
+
+
+8. Clone створює новий draft.
+
+
+9. Revision payload зберігається стиснено, але hash рахується до compression.
+
+
+10. Lifecycle transitions покриті unit та PostgreSQL integration tests.
+
+
+
+
+---
+
+[M2-02] Implement fixed Policy Pipeline v1 and chain contracts
+
+Labels: type:feature, area:domain
+Залежності: M2-01
+PR title: feat(policy): add fixed policy pipeline and chain contracts
+
+Результат
+
+Політики використовують єдиний незмінний pipeline.
+
+Acceptance criteria
+
+1. Реалізовані всі нормативні stages Pipeline v1.
+
+
+2. Stage order не зберігається як user-editable data.
+
+
+3. Scope та effect permissions перевіряються.
+
+
+4. Підтримані chain contracts:
+
+DROP;
+
+REJECT;
+
+RETURN_TO_UNMANAGED.
+
+
+
+5. Default ACCEPT неможливий.
+
+
+6. Chain contract задається лише company baseline.
+
+
+7. Site і Node overlays не можуть змінити contract.
+
+
+8. Pipeline порядок детермінований для IPv4/IPv6 та INPUT/FORWARD/OUTPUT.
+
+
+9. Усі заборонені owner/effect combinations мають unit tests.
+
+
+
+
+---
+
+[M2-03] Implement address objects and selectors
+
+Labels: type:feature, area:domain, area:application
+Залежності: M2-01
+PR title: feat(policy): add static address objects
+
+Результат
+
+Реалізовані типізовані статичні IPv4/IPv6 address objects.
+
+Acceptance criteria
+
+1. Підтримані:
+
+host;
+
+prefix;
+
+IPv4 range.
+
+
+
+2. FQDN, timeout і dynamic entries заборонені.
+
+
+3. Address family перевіряється.
+
+
+4. Prefix host bits маскуються.
+
+
+5. Entries нормалізуються у disjoint intervals.
+
+
+6. Overlaps і duplicates усуваються детерміновано.
+
+
+7. AddressSelector підтримує include/exclude.
+
+
+8. Universe-minus-exclusions має точну semantics.
+
+
+9. Порожній resolved selector є blocker.
+
+
+10. Inline IP у managed rule заборонений.
+
+
+11. Scope visibility перевіряється за UUID.
+
+
+12. Нормалізація і subset/intersection покриті property-based tests.
+
+
+
+
+---
+
+[M2-04] Implement service objects and selectors
+
+Labels: type:feature, area:domain, area:application
+Залежності: M2-01
+PR title: feat(policy): add typed service objects
+
+Результат
+
+Реалізовані типізовані protocol, port та ICMP service definitions.
+
+Acceptance criteria
+
+1. Protocol semantics визначається numeric IP protocol.
+
+
+2. TCP/UDP source та destination ports підтримані.
+
+
+3. ICMP та ICMPv6 розділені.
+
+
+4. Port matcher без port-capable protocol заборонений.
+
+
+5. ICMP selector з неправильною family заборонений.
+
+
+6. Port intervals нормалізуються та об’єднуються.
+
+
+7. Duplicate terms канонізуються.
+
+
+8. protocol=any із ports заборонений.
+
+
+9. Service negation відсутня.
+
+
+10. Порожній service object заборонений.
+
+
+11. Scope visibility перевіряється.
+
+
+12. Canonical ordering не залежить від input order.
+
+
+
+
+---
+
+[M2-05] Implement logical zones and Node bindings
+
+Labels: type:feature, area:domain, area:application, area:persistence
+Залежності: M2-01, M1-18
+PR title: feat(topology): add desired zone bindings
+
+Результат
+
+Policy zones прив’язуються до фактичних RouterOS interfaces.
+
+Acceptance criteria
+
+1. Реалізовані binding types:
+
+INTERFACE_LIST;
+
+SINGLE_INTERFACE;
+
+EXPLICIT_INTERFACE_SET.
+
+
+
+2. Binding зберігає expected dependency hash.
+
+
+3. Zone resolve виконується окремо для кожного Device.
+
+
+4. VRRP members можуть мати різні physical interface names.
+
+
+5. Dynamic interfaces блокуються для security zones.
+
+
+6. Порожній resolved set є blocker.
+
+
+7. Неіснуючий interface є blocker.
+
+
+8. Interface-list include/exclude враховується.
+
+
+9. Зміна membership анулює analysis.
+
+
+10. INPUT не приймає egress selector.
+
+
+11. OUTPUT не приймає ingress selector.
+
+
+12. Persistence використовує optimistic concurrency.
+
+
+
+
+---
+
+[M2-06] Implement policy rules, predicates and effects
+
+Labels: type:feature, area:domain
+Залежності: M2-02—M2-05
+PR title: feat(policy): add typed firewall rule model
+
+Результат
+
+Створена повністю типізована модель managed filter rule.
+
+Acceptance criteria
+
+1. Реалізовані всі нормативні managed matchers.
+
+
+2. Непідтримувані RouterOS matchers відхиляються.
+
+
+3. Реалізовані effects:
+
+ACCEPT;
+
+DROP;
+
+REJECT;
+
+FASTTRACK_ACCEPT;
+
+EXEMPT_DENY_STAGE.
+
+
+
+4. REJECT має типізований reject mode.
+
+
+5. TCP_RESET дозволений лише TCP predicates.
+
+
+6. ordinal contiguous у межах family/chain/stage.
+
+
+7. Rule UUID не залежить від ordinal.
+
+
+8. Disabled rules не входять в active evaluation.
+
+
+9. exception_eligible дозволений лише deny effects.
+
+
+10. Log prefix валідований і bounded.
+
+
+11. Raw RouterOS matcher string відсутній.
+
+
+12. Rule canonicalization детермінована.
+
+
+
+
+---
+
+[M2-07] Implement deterministic policy composition
+
+Labels: type:feature, area:application
+Залежності: M2-02—M2-06
+PR title: feat(policy): compose company site and node policies
+
+Результат
+
+Controller формує effective policy для конкретного Node.
+
+Acceptance criteria
+
+1. Company baseline є обов’язковою.
+
+
+2. Site і Node overlay optional.
+
+
+3. Resolution виконується лише за UUID.
+
+
+4. Name-based override відсутній.
+
+
+5. Parent context hashes перевіряються.
+
+
+6. Scope visibility дотримується.
+
+
+7. Stage ownership перевіряється.
+
+
+8. Disabled rules не входять в active pipeline.
+
+
+9. Rules не дедуплікуються автоматично.
+
+
+10. Fixed Pipeline v1 зберігається.
+
+
+11. Current VRRP role не впливає на composition.
+
+
+12. Current active WAN не впливає на composition.
+
+
+13. Logical effective hash детермінований.
+
+
+14. Різний порядок input collections не змінює hash.
+
+
+
+
+---
+
+[M2-08] Implement temporary deny-stage exceptions
+
+Labels: type:feature, area:domain, area:application, risk:high
+Залежності: M2-07
+PR title: feat(policy): add scoped deny-stage exceptions
+
+Результат
+
+Реалізовані обмежені в часі exceptions без terminal allow.
+
+Acceptance criteria
+
+1. Exception target-ить рівно одну deny rule.
+
+
+2. Target rule має бути enabled і exception-eligible.
+
+
+3. Target stage точно збігається.
+
+
+4. Exception family і chain збігаються з target.
+
+
+5. Exception predicate є proven subset target predicate.
+
+
+6. Exception не перетинає інші deny rules target stage.
+
+
+7. Mandatory deny не може мати exception.
+
+
+8. Exception effect — лише EXEMPT_DENY_STAGE.
+
+
+9. Company-wide exception заборонений.
+
+
+10. valid_until обов’язковий і кінцевий.
+
+
+11. Reason і ticket reference обов’язкові.
+
+
+12. Зміна target rule анулює exception analysis.
+
+
+13. Expired exception не входить до нового desired policy.
+
+
+14. Expiration не виконує RouterOS write.
+
+
+
+
+---
+
+[M2-09] Implement normalized predicate algebra
+
+Labels: type:feature, area:application
+Залежності: M2-03—M2-06
+PR title: feat(policy): add bounded packet predicate algebra
+
+Результат
+
+Створений bounded symbolic evaluator managed packet space.
+
+Acceptance criteria
+
+1. Реалізовані точні representations для всіх нормативних dimensions.
+
+
+2. Підтримані relations:
+
+empty;
+
+equal;
+
+disjoint;
+
+subset;
+
+superset;
+
+partial overlap.
+
+
+
+3. Managed predicate не повертає indeterminate в межах limits.
+
+
+4. Union, intersection і subtraction детерміновані.
+
+
+5. TCP flags перевіряються на суперечність.
+
+
+6. Protocol-specific port spaces враховуються.
+
+
+7. IPv4 та IPv6 не змішуються.
+
+
+8. Expansion і fragment limits жорстко застосовуються.
+
+
+9. При перевищенні повертається PREDICATE_COMPLEXITY_LIMIT.
+
+
+10. Відсутній unbounded fallback.
+
+
+11. Algebraic invariants покриті property-based tests.
+
+
+
+
+---
+
+[M2-10] Implement structural and satisfiability analysis
+
+Labels: type:feature, area:application
+Залежності: M2-06, M2-09
+PR title: feat(policy): validate rule structure and satisfiability
+
+Результат
+
+Некоректні або нездійсненні managed rules блокуються до sequence analysis.
+
+Acceptance criteria
+
+1. Перевіряються всі schema, family, chain, stage та object constraints.
+
+
+2. Неправильна zone direction виявляється.
+
+
+3. Empty selector виявляється.
+
+
+4. TCP flags із non-TCP service блокуються.
+
+
+5. ICMP family mismatch блокується.
+
+
+6. IPsec direction перевіряється.
+
+
+7. Connection-state contradictions виявляються.
+
+
+8. Unsupported matcher блокує rule.
+
+
+9. Disabled rule проходить structural validation.
+
+
+10. Кожний blocker має structured finding.
+
+
+11. Findings мають стабільні codes.
+
+
+12. Невалідний rule не передається sequence analyzer.
+
+
+
+
+---
+
+[M2-11] Implement duplicate, shadow and overlap analysis
+
+Labels: type:feature, area:application
+Залежності: M2-09, M2-10
+PR title: feat(policy): analyze rule ordering and shadowing
+
+Результат
+
+Controller доказово аналізує послідовну semantics managed rules.
+
+Acceptance criteria
+
+1. Exact duplicates визначаються.
+
+
+2. Same predicate із різними effects є blocker.
+
+
+3. Fully shadowed enabled rule є blocker.
+
+
+4. Partial shadowing створює warning.
+
+
+5. Allow-before-deny overlap виявляється.
+
+
+6. Deny-before-allow overlap виявляється.
+
+
+7. FASTTRACK overlap виділяється окремо.
+
+
+8. Residual subtraction використовує bounded fragments.
+
+
+9. Indeterminate safety result є blocker.
+
+
+10. Для доведених findings генерується witness packet.
+
+
+11. Duplicate rule не видаляється автоматично.
+
+
+12. Analysis result не залежить від thread scheduling.
+
+
+
+
+---
+
+[M2-12] Implement actual RouterOS filter-context analysis
+
+Labels: type:feature, area:application, area:routeros, risk:high
+Залежності: M2-11, M1-24
+PR title: feat(policy): analyze actual anchor and unmanaged context
+
+Результат
+
+Candidate policy аналізується разом із фактичними guard, anchor та unmanaged rules.
+
+Acceptance criteria
+
+1. Будується bounded filter control-flow graph.
+
+
+2. Підтримані jump і return.
+
+
+3. Jump cycles виявляються.
+
+
+4. Depth і node limits застосовуються.
+
+
+5. Pre-anchor accept bypass виявляється.
+
+
+6. Pre-anchor drop shadow виявляється.
+
+
+7. Pre-anchor FastTrack bypass виявляється.
+
+
+8. Dynamic pre-anchor rule позначається.
+
+
+9. Unsupported matcher/action дає indeterminate.
+
+
+10. Post-anchor context аналізується для RETURN_TO_UNMANAGED.
+
+
+11. RouterOS implicit accept не використовується як managed default.
+
+
+12. Actual context hash входить до analysis context.
+
+
+
+
+---
+
+[M2-13] Implement management-path safety validation
+
+Labels: type:feature, area:application, area:security, risk:high
+Залежності: M2-12
+PR title: feat(policy): validate management access paths
+
+Результат
+
+Candidate policy не може заблокувати Controller management path.
+
+Acceptance criteria
+
+1. Перевіряється API-SSL service.
+
+
+2. Перевіряються source restrictions.
+
+
+3. Management guard існує та передує anchor.
+
+
+4. Guard ownership marker валідний.
+
+
+5. Новий TCP management connection дозволений.
+
+
+6. Output reply path дозволений.
+
+
+7. Кожний VRRP member перевіряється за physical address.
+
+
+8. Virtual IP не є єдиним management endpoint.
+
+
+9. Unknown matcher на management path є blocker.
+
+
+10. Policy не може змінити guard.
+
+
+11. Management system tests генеруються автоматично.
+
+
+12. Safety finding має concrete witness, коли це можливо.
+
+
+
+
+---
+
+[M2-14] Implement topology and dependency safety validation
+
+Labels: type:feature, area:application, risk:high
+Залежності: M2-12, M1-18
+PR title: feat(policy): validate VRRP and multi-WAN dependencies
+
+Результат
+
+Policy analysis враховує VRRP, multi-WAN, RAW, NAT і Mangle dependencies.
+
+Acceptance criteria
+
+1. VRRP protocol 112 flows перевіряються.
+
+
+2. IPv4/IPv6 multicast destinations перевіряються.
+
+
+3. VRRP connection-tracking synchronization перевіряється.
+
+
+4. Missing VRRP member є blocker.
+
+
+5. Split-master role vector зберігається.
+
+
+6. Усі uplinks мають zone coverage.
+
+
+7. Routing tables і routing rules входять у context.
+
+
+8. PCC і routing marks виявляються.
+
+
+9. Strict rp-filter із VRRP/asymmetry блокується.
+
+
+10. RAW notrack intersection аналізується.
+
+
+11. DSTNAT dependencies аналізуються.
+
+
+12. Mangle dependency hash входить у analysis context.
+
+
+13. Switch FORWARD policy блокується.
+
+
+14. Operational route або VRRP role не змінює policy hash.
+
+
+
+
+---
+
+[M2-15] Implement FastTrack policy validation
+
+Labels: type:feature, area:application, risk:high
+Залежності: M2-14
+PR title: feat(policy): validate safe FastTrack policy usage
+
+Результат
+
+FASTTRACK_ACCEPT дозволяється лише у доведених безпечних topology.
+
+Acceptance criteria
+
+1. Дозволений лише IPv4 FORWARD.
+
+
+2. Дозволений лише company STATE_PRELUDE.
+
+
+3. Connection states обмежені established/related.
+
+
+4. Protocol обмежений TCP/UDP.
+
+
+5. IPv6 FastTrack блокується.
+
+
+6. PCC і balanced/mixed multi-WAN блокують FastTrack.
+
+
+7. Routing marks і non-main tables блокують FastTrack.
+
+
+8. IPsec, VRF і unknown Mangle dependencies блокують FastTrack.
+
+
+9. Pre-anchor unmanaged FastTrack враховується.
+
+
+10. Fallback accept є обов’язковим compiler contract.
+
+
+11. FastTrack risk не нижче HIGH.
+
+
+12. Tests охоплюють дозволені та заборонені topology.
+
+
+
+
+---
+
+[M2-16] Implement policy tests, semantic diff and risk classification
+
+Labels: type:feature, area:application
+Залежності: M2-11—M2-15
+PR title: feat(policy): add policy tests diff and risk analysis
+
+Результат
+
+Policy revisions мають доказові tests, semantic diff та risk level.
+
+Acceptance criteria
+
+1. Підтримані MANAGED_ONLY і NODE_EFFECTIVE tests.
+
+
+2. System tests не можна disable.
+
+
+3. Failed safety test є blocker.
+
+
+4. Matched rule і path повертаються.
+
+
+5. Managed rule UUID використовується для diff.
+
+
+6. Added/removed/modified/moved/enabled/disabled визначаються.
+
+
+7. Object changes мають impact set.
+
+
+8. Newly accepted і newly denied packet spaces класифікуються.
+
+
+9. Risk визначається за нормативною mapping.
+
+
+10. Management, FastTrack, exception і default changes мають minimum risk.
+
+
+11. Diff і risk детерміновані.
+
+
+12. Tests, diff і risk входять до analysis result hash.
+
+
+
+
+---
+
+[M2-17] Implement approval and desired-binding workflow
+
+Labels: type:feature, area:controller, area:persistence, area:security, risk:high
+Залежності: M2-16
+PR title: feat(policy): add approval and desired binding workflow
+
+Результат
+
+Затвердження revision і призначення desired policy є окремими контрольованими операціями.
+
+Acceptance criteria
+
+1. Analysis run immutable.
+
+
+2. Approval прив’язаний до exact analysis bundle hash.
+
+
+3. Blocker забороняє approval.
+
+
+4. Warning потребує acknowledgment exact hash.
+
+
+5. High/Critical separation of duties застосовується.
+
+
+6. Approval не активує binding.
+
+
+7. Binding дозволений лише approved revision.
+
+
+8. Binding activation не запускає deployment.
+
+
+9. Company, Site і Node cardinality constraints працюють.
+
+
+10. Exception expiry не виконує deployment.
+
+
+11. Dependency change позначає approval context stale.
+
+
+12. Mutation RPC мають idempotency і optimistic concurrency.
+
+
+13. Усі transitions audit-яться.
+
+
+
+
+---
+
+[M2-18] Add policy authoring and review desktop workflow
+
+Labels: type:feature, area:desktop
+Залежності: M2-17
+PR title: feat(desktop): add policy authoring and review workflow
+
+Результат
+
+Desktop підтримує повний policy workflow без RouterOS syntax editor.
+
+Acceptance criteria
+
+1. Реалізовані editors:
+
+address objects;
+
+service objects;
+
+rules;
+
+chain contracts;
+
+tests.
+
+
+
+2. Fixed stages не можна reorder.
+
+
+3. Rule ordinal редагується детерміновано.
+
+
+4. Unsupported matchers відсутні у GUI.
+
+
+5. Inline validation не замінює server validation.
+
+
+6. Findings, witnesses і test paths відображаються.
+
+
+7. Semantic diff показується до approval.
+
+
+8. Risk level показується.
+
+
+9. Save, Approve, Bind і Deploy є окремими діями.
+
+
+10. Save and Deploy відсутня.
+
+
+11. Approved revision відкривається read-only.
+
+
+12. M2 acceptance matrix проходить.
+
+
+
+Milestone gate
+
+M2 закривається після проходження всіх policy, safety, exception, FastTrack і approval tests.
+
+
+---
+
+5. Milestone M3 — Policy Compiler
+
+[M3-01] Implement RouterOS filter artifact model
+
+Labels: type:feature, area:application
+Залежності: M2 CLOSED
+PR title: feat(compiler): add canonical filter artifact model
+
+Результат
+
+Створена immutable canonical модель physical RouterOS artifact.
+
+Acceptance criteria
+
+1. Artifact містить address lists, chains і desired anchor targets.
+
+
+2. Artifact не містить API commands.
+
+
+3. RouterOS .id відсутній.
+
+
+4. Physical semantics hash детермінований.
+
+
+5. Artifact ID формується за нормативним contract.
+
+
+6. Resource hash обчислюється через MFC-CJ1.
+
+
+7. Timestamps не входять у hash.
+
+
+8. Description-only зміна не змінює artifact.
+
+
+9. Artifact payload immutable.
+
+
+10. Canonical test vectors зафіксовані.
+
+
+
+
+---
+
+[M3-02] Implement managed chain namespace and layout
+
+Labels: type:feature, area:application
+Залежності: M3-01
+PR title: feat(compiler): add managed chain layout
+
+Результат
+
+Compiler будує root і deny-stage chains за фіксованою схемою.
+
+Acceptance criteria
+
+1. Використовуються mfc4 і mfc6 namespaces.
+
+
+2. На family/chain створюється одна root chain.
+
+
+3. Створюється максимум три deny chains.
+
+
+4. Порожній deny stage не створює chain.
+
+
+5. Root stage order відповідає Pipeline v1.
+
+
+6. Кожна deny chain має final unconditional return.
+
+
+7. Кожна root chain має explicit terminal rule.
+
+
+8. Default accept неможливий.
+
+
+9. Management guard не входить в artifact.
+
+
+10. Anchor не створюється compiler.
+
+
+
+
+---
+
+[M3-03] Compile content-addressed address lists
+
+Labels: type:feature, area:application
+Залежності: M3-01, M2-03
+PR title: feat(compiler): compile content-addressed address lists
+
+Результат
+
+Address selectors компілюються у мінімальний набір immutable RouterOS lists.
+
+Acceptance criteria
+
+1. Include/exclude resolve виконується точно.
+
+
+2. Positive selector використовує один list matcher.
+
+
+3. Universe-minus-exclusions використовує negated list matcher.
+
+
+4. Порожній selector блокує compilation.
+
+
+5. Однаковий content використовує той самий list.
+
+
+6. Entries deterministic і sorted.
+
+
+7. Timeout не використовується.
+
+
+8. Generated names bounded.
+
+
+9. Source і destination використовують не більше одного matcher кожного типу.
+
+
+10. Limits entries/lists застосовуються.
+
+
+
+
+---
+
+[M3-04] Compile zones and service variants
+
+Labels: type:feature, area:application
+Залежності: M3-03, M2-04, M2-05
+PR title: feat(compiler): expand zones and services deterministically
+
+Результат
+
+Logical zone та service unions перетворюються на bounded physical variants.
+
+Acceptance criteria
+
+1. Exact interface-list binding використовується напряму.
+
+
+2. Інші zone selectors розгортаються у finite interfaces.
+
+
+3. Ingress/egress Cartesian product bounded.
+
+
+4. Service terms канонізуються.
+
+
+5. ICMP selectors створюють окремі variants.
+
+
+6. Port matcher має bounded encoded size.
+
+
+7. Variant order детермінований.
+
+
+8. Current interface running state не впливає на compilation.
+
+
+9. Current active WAN не впливає на variants.
+
+
+10. Empty або stale zone блокує compilation.
+
+
+
+
+---
+
+[M3-05] Compile supported matchers and regular effects
+
+Labels: type:feature, area:application
+Залежності: M3-02, M3-04
+PR title: feat(compiler): compile filter matchers and regular effects
+
+Результат
+
+Managed predicates компілюються у типізовані RouterOS filter rules.
+
+Acceptance criteria
+
+1. Усі нормативні matchers мають exact mapping.
+
+
+2. Unsupported token викликає compile error.
+
+
+3. ACCEPT, DROP і REJECT компілюються точно.
+
+
+4. REJECT не підміняється DROP.
+
+
+5. Exception компілюється як return.
+
+
+6. Structural jumps мають deterministic comments.
+
+
+7. Logical rule variants розташовані суміжно.
+
+
+8. Compiler не reorder-ить logical rules.
+
+
+9. Compiler не видаляє duplicates.
+
+
+10. Generated comments не містять user metadata.
+
+
+
+
+---
+
+[M3-06] Compile FastTrack and terminal rules
+
+Labels: type:feature, area:application, risk:high
+Залежності: M3-05, M2-15
+PR title: feat(compiler): compile FastTrack pairs and terminal rules
+
+Результат
+
+FASTTRACK_ACCEPT та chain defaults мають точне physical представлення.
+
+Acceptance criteria
+
+1. Один logical variant створює рівно дві rules.
+
+
+2. fasttrack-connection і accept суміжні.
+
+
+3. Matchers пари ідентичні.
+
+
+4. hw-offload=no.
+
+
+5. FastTrack logging заборонений.
+
+
+6. Pair comments мають suffix ft і ac.
+
+
+7. Chain terminal відповідає contract.
+
+
+8. RETURN_TO_UNMANAGED компілюється як explicit return.
+
+
+9. У root chain рівно один terminal rule.
+
+
+10. Непідтриманий FastTrack context блокує compilation.
+
+
+
+
+---
+
+[M3-07] Implement per-Device compiler orchestration and artifact storage
+
+Labels: type:feature, area:application, area:persistence, area:controller
+Залежності: M3-01—M3-06
+PR title: feat(compiler): compile and persist per-device artifacts
+
+Результат
+
+Controller компілює та зберігає artifacts для всіх Devices Node.
+
+Acceptance criteria
+
+1. Compiler запускається лише для актуального approved analysis.
+
+
+2. Logical effective hash спільний для VRRP members.
+
+
+3. Device-resolved hash враховує physical zone resolution.
+
+
+4. Current VRRP role не впливає на artifact.
+
+
+5. Current active WAN не впливає на artifact.
+
+
+6. Artifact storage content-addressed.
+
+
+7. Однаковий artifact не дублюється.
+
+
+8. Partial Node compilation не повертається як success.
+
+
+9. API повертає semantic summary, не RouterOS commands.
+
+
+10. Stale analysis або capability блокує compilation.
+
+
+
+
+---
+
+[M3-08] Complete compiler integration and acceptance
+
+Labels: type:test, area:application, area:testlab
+Залежності: M3-07
+PR title: test(compiler): verify deterministic RouterOS artifacts
+
+Результат
+
+Доведена детермінованість compiler для всіх topology MVP.
+
+Acceptance criteria
+
+1. Standalone IPv4 compilation пройдена.
+
+
+2. Dual-stack compilation пройдена.
+
+
+3. Multi-WAN artifacts не залежать від active route.
+
+
+4. VRRP artifacts мають спільний logical hash.
+
+
+5. Split-master role не змінює output.
+
+
+6. Switch FORWARD compilation відхиляється.
+
+
+7. Same address content дедуплікується.
+
+
+8. Exception chain layout правильний.
+
+
+9. FastTrack pair правильна.
+
+
+10. Root і deny terminals присутні.
+
+
+11. Description-only зміни не змінюють resource hash.
+
+
+12. Build і tests deterministic.
+
+
+
+Milestone gate
+
+M3 закривається після проходження всіх compiler invariants і canonical artifact vectors.
+
+
+---
+
+6. Milestone M5 — Managed Device Onboarding
+
+[M5-01] Implement onboarding domain model and persistence
+
+Labels: type:feature, area:domain, area:persistence, risk:high
+Залежності: M3 CLOSED
+PR title: feat(onboarding): add operation and plan model
+
+Результат
+
+Створені immutable onboarding plans, operation state machine і durable journal.
+
+Acceptance criteria
+
+1. Реалізовані всі onboarding states.
+
+
+2. Node має management states UNMANAGED, MANAGED, RECOVERY_REQUIRED.
+
+
+3. VRRP onboarding target-ить весь Node.
+
+
+4. Plan immutable і має bounded lifetime.
+
+
+5. Plan hash містить усі нормативні dependencies.
+
+
+6. Один nonterminal onboarding на Node.
+
+
+7. Write-ahead step journal реалізований.
+
+
+8. Completed operation immutable.
+
+
+9. State transitions транзакційні.
+
+
+10. Invalid transition відхиляється.
+
+
+
+
+---
+
+[M5-02] Implement onboarding prerequisite validation
+
+Labels: type:feature, area:application, area:routeros, area:security, risk:high
+Залежності: M5-01, M1 CLOSED
+PR title: feat(onboarding): validate RouterOS prerequisites
+
+Результат
+
+Controller перевіряє API-SSL, accounts, device-mode і Node readiness.
+
+Acceptance criteria
+
+1. Exact supported RouterOS build обов’язковий.
+
+
+2. Plain API 8728 має бути disabled.
+
+
+3. API-SSL certificate обов’язковий.
+
+
+4. Read і deployment accounts розділені.
+
+
+5. Default RouterOS groups відхиляються.
+
+
+6. Required та forbidden policies перевіряються.
+
+
+7. Source address restrictions перевіряються.
+
+
+8. scheduler=yes обов’язковий.
+
+
+9. flagged=no обов’язковий.
+
+
+10. Controller не змінює users, services або device-mode.
+
+
+11. Усі VRRP members проходять prerequisites.
+
+
+12. Findings мають stable codes.
+
+
+
+
+---
+
+[M5-03] Implement management guard verification
+
+Labels: type:feature, area:application, area:security, risk:high
+Залежності: M5-02, M2-13
+PR title: feat(onboarding): verify external management guard
+
+Результат
+
+Onboarding дозволений лише за точного незалежного management guard.
+
+Acceptance criteria
+
+1. GuardProfile типізований.
+
+
+2. Input і output guard markers перевіряються.
+
+
+3. Guard rules static, valid і enabled.
+
+
+4. Predicate не ширший за profile.
+
+
+5. 0.0.0.0/0 і ::/0 відхиляються.
+
+
+6. Guard розташований до planned anchors.
+
+
+7. Dynamic list і unsupported matcher відхиляються.
+
+
+8. New API-SSL connection через guard проходить.
+
+
+9. Guard hash входить до plan.
+
+
+10. Controller не створює і не змінює guard.
+
+
+
+
+---
+
+[M5-04] Implement explicit anchor placement planning
+
+Labels: type:feature, area:application, area:desktop
+Залежності: M5-03
+PR title: feat(onboarding): add explicit permanent anchor placement
+
+Результат
+
+Оператор задає точну позицію permanent anchors за актуальним snapshot.
+
+Acceptance criteria
+
+1. Підтримані лише BEFORE_STATIC_RULE і APPEND.
+
+
+2. Dynamic rule не може бути reference.
+
+
+3. Fingerprint і occurrence rank фіксуються.
+
+
+4. Predecessor/successor context перевіряється.
+
+
+5. Placement перед guard заборонений.
+
+
+6. Placement після unconditional terminal rule блокується.
+
+
+7. Automatic best-position selection відсутній.
+
+
+8. RouterOS .id не зберігається.
+
+
+9. Зміна filter order анулює plan.
+
+
+10. Desktop показує точну before/after позицію.
+
+
+
+
+---
+
+[M5-05] Implement onboarding write adapter and bootstrap artifact
+
+Labels: type:feature, area:routeros, risk:high
+Залежності: M5-04
+PR title: feat(onboarding): add restricted bootstrap writer
+
+Результат
+
+Створений закритий writer лише для bootstrap roots і disabled anchors.
+
+Acceptance criteria
+
+1. Write paths compile-time allowlisted.
+
+
+2. Bootstrap root містить рівно один unconditional return.
+
+
+3. Bootstrap artifact ID відповідає нормативному значенню.
+
+
+4. Permanent anchor створюється disabled.
+
+
+5. Anchor target — bootstrap root.
+
+
+6. place-before або append використовується.
+
+
+7. move не використовується.
+
+
+8. set дозволяє лише anchor disabled.
+
+
+9. remove дозволений лише exact onboarding resources.
+
+
+10. Кожний write має actual-state read-back.
+
+
+11. Generic command method відсутній.
+
+
+12. Namespace collision блокує operation.
+
+
+
+
+---
+
+[M5-06] Implement scheduler proof and onboarding watchdog
+
+Labels: type:feature, area:routeros, area:security, risk:high
+Залежності: M5-05
+PR title: feat(onboarding): add scheduler proof and rollback watchdog
+
+Результат
+
+Controller доводить Scheduler execution і створює локальний onboarding rollback.
+
+Acceptance criteria
+
+1. One-shot scheduler proof використовує fixed no-op script.
+
+
+2. run-count==1 перевіряється.
+
+
+3. Test resources видаляються.
+
+
+4. Watchdog має deadline і startup schedulers.
+
+
+5. Script source генерується fixed template.
+
+
+6. dont-require-permissions=no.
+
+
+7. Script може лише disable exact bootstrap anchors.
+
+
+8. User input не потрапляє у script.
+
+
+9. Stale watchdog не впливає на non-bootstrap target.
+
+
+10. Source hash перевіряється після add.
+
+
+11. TTL і commit margin bounded.
+
+
+12. Collision блокує operation.
+
+
+
+
+---
+
+[M5-07] Implement onboarding execution and verification
+
+Labels: type:feature, area:application, area:routeros, risk:high
+Залежності: M5-01—M5-06
+PR title: feat(onboarding): stage and enable permanent anchors
+
+Результат
+
+Controller виконує повний bootstrap із pass-through semantics.
+
+Acceptance criteria
+
+1. Roots staged до anchors.
+
+
+2. Усі anchors staged disabled.
+
+
+3. Усі VRRP watchdogs armed до першого enable.
+
+
+4. Anchor enable order нормативний.
+
+
+5. Кожний enable має read-back.
+
+
+6. New API connection відкривається після management anchors.
+
+
+7. Stable post-bootstrap capture виконується.
+
+
+8. Unmanaged rules і їх relative order не змінюються.
+
+
+9. NAT/RAW/Mangle/routing/VRRP не змінюються.
+
+
+10. Semantic equivalence pass-through path доведена.
+
+
+11. Indeterminate equivalence запускає rollback.
+
+
+12. Watchdogs disabled до durable commit.
+
+
+13. Node стає MANAGED лише повністю.
+
+
+
+
+---
+
+[M5-08] Implement onboarding rollback and crash recovery
+
+Labels: type:feature, area:application, risk:high
+Залежності: M5-07
+PR title: feat(onboarding): add deterministic rollback and recovery
+
+Результат
+
+Failed або interrupted onboarding повертає Node до UNMANAGED.
+
+Acceptance criteria
+
+1. Enabled bootstrap anchors спочатку disable-яться.
+
+
+2. Management access перевіряється після disabling.
+
+
+3. Видаляються лише exact resources operation.
+
+
+4. Bootstrap roots видаляються після removal references.
+
+
+5. Watchdog residue очищується idempotently.
+
+
+6. Nonterminal operation після restart rollback-иться.
+
+
+7. Unexpected anchor target створює RECOVERY_REQUIRED.
+
+
+8. Automatic adoption відсутній.
+
+
+9. Partial VRRP onboarding rollback-ить усі members.
+
+
+10. Failed onboarding не залишає enabled anchors.
+
+
+11. Recovery decision table повністю протестована.
+
+
+
+
+---
+
+[M5-09] Expose onboarding API and desktop workflow
+
+Labels: type:feature, area:controller, area:desktop
+Залежності: M5-08
+PR title: feat(onboarding): expose onboarding workflow
+
+Результат
+
+Оператор може перевірити prerequisites, створити plan і виконати onboarding через Desktop.
+
+Acceptance criteria
+
+1. API має окремі RPC для:
+
+prerequisite validation;
+
+plan creation;
+
+start;
+
+watch;
+
+rollback;
+
+recovery status.
+
+
+
+2. Plan hash обов’язковий при start.
+
+
+3. Progress передається server-streaming.
+
+
+4. GUI показує prerequisite checklist.
+
+
+5. GUI показує anchor placement.
+
+
+6. GUI не показує script source.
+
+
+7. GUI не надає довільних write controls.
+
+
+8. Recovery facts показуються точно.
+
+
+9. Mutation RPC мають idempotency.
+
+
+10. Усі operations audit-яться.
+
+
+
+
+---
+
+[M5-10] Complete onboarding integration acceptance
+
+Labels: type:test, area:testlab, area:security
+Залежності: M5-09
+PR title: test(onboarding): complete managed-device bootstrap acceptance
+
+Результат
+
+Onboarding доведений на всіх topology MVP.
+
+Acceptance criteria
+
+1. Standalone IPv4 onboarding пройдений.
+
+
+2. Dual-stack onboarding пройдений.
+
+
+3. Multi-WAN operational states пройдені.
+
+
+4. VRRP active/passive пройдений.
+
+
+5. VRRP split-master пройдений.
+
+
+6. CRS INPUT/OUTPUT onboarding пройдений.
+
+
+7. Switch FORWARD anchor відсутній.
+
+
+8. Scheduler-disabled і flagged devices блокуються.
+
+
+9. Deadline та startup rollback пройдені.
+
+
+10. Crash після кожної effectful phase оброблений.
+
+
+11. Guard і namespace collision cases пройдені.
+
+
+12. Node не залишається частково managed.
+
+
+
+Milestone gate
+
+M5 закривається лише після доведеного exact bootstrap і rollback на всіх підтримуваних topology.
+
+
+---
+
+7. Milestone M4 — Safe Deployment
+
+[M4-01] Implement deployment plan, states and persistence
+
+Labels: type:feature, area:domain, area:persistence, risk:high
+Залежності: M5 CLOSED
+PR title: feat(deployment): add immutable plan and state machine
+
+Результат
+
+Створені deployment plan, state machines, locks і durable journal.
+
+Acceptance criteria
+
+1. Deployment target — один Node.
+
+
+2. Campaign state відсутній.
+
+
+3. Plan містить old/new artifacts та anchor targets.
+
+
+4. Plan immutable і bounded by expiry.
+
+
+5. Device plans охоплюють усі members.
+
+
+6. Activation і rollback order зафіксовані.
+
+
+7. Durable Node lock реалізований.
+
+
+8. Write-ahead step journal реалізований.
+
+
+9. Invalid state transition відхиляється.
+
+
+10. Completed deployment immutable.
+
+
+11. NO_CHANGES є terminal state.
+
+
+12. Plan hash містить усі нормативні preconditions.
+
+
+
+
+---
+
+[M4-02] Implement restricted deployment writer and managed-state reader
+
+Labels: type:feature, area:routeros, risk:high
+Залежності: M4-01
+PR title: feat(deployment): add restricted managed-resource writer
+
+Результат
+
+RouterOS write adapter може виконати лише необхідні deployment operations.
+
+Acceptance criteria
+
+1. Write paths compile-time allowlisted.
+
+
+2. Filter set дозволяє лише anchor jump-target.
+
+
+3. Звичайні active rules не змінюються.
+
+
+4. move не використовується.
+
+
+5. Filter remove не використовується deployment path.
+
+
+6. Address-list set/remove відсутні.
+
+
+7. Script і scheduler APIs типізовані.
+
+
+8. Ping parameters типізовані й bounded.
+
+
+9. Resource lookup виконується через print/read.
+
+
+10. .id використовується лише в короткому session context.
+
+
+11. Кожний write має read-back.
+
+
+12. Generic writer відсутній.
+
+
+
+
+---
+
+[M4-03] Implement address-list create-or-verify staging
+
+Labels: type:feature, area:application, area:routeros
+Залежності: M4-02, M3 CLOSED
+PR title: feat(deployment): stage immutable address lists
+
+Результат
+
+Content-addressed address lists безпечно створюються або перевіряються.
+
+Acceptance criteria
+
+1. Existing exact list reuse-иться.
+
+
+2. Exact subset доповнюється missing entries.
+
+
+3. Extra або divergent entry створює collision.
+
+
+4. Unmanaged entry у generated list блокує staging.
+
+
+5. Blind add retry після connection loss відсутній.
+
+
+6. Actual state читається перед retry.
+
+
+7. Final unordered content hash перевіряється.
+
+
+8. Dynamic entry у generated list блокує staging.
+
+
+9. Active lists не редагуються in-place.
+
+
+10. Record і payload limits застосовуються.
+
+
+
+
+---
+
+[M4-04] Implement detached chain staging and verification
+
+Labels: type:feature, area:application, area:routeros, risk:high
+Залежності: M4-03
+PR title: feat(deployment): stage detached filter chains
+
+Результат
+
+Compiler artifacts створюються detached без впливу на active traffic.
+
+Acceptance criteria
+
+1. Deny chains staged до root chains.
+
+
+2. Existing exact chain reuse-иться.
+
+
+3. Exact desired prefix доповнюється suffix.
+
+
+4. Будь-яка інша divergence створює collision.
+
+
+5. Unmanaged rule у generated chain блокує staging.
+
+
+6. Rule order перевіряється.
+
+
+7. Disabled або invalid rule блокує staging.
+
+
+8. Active root chain не використовується як target staging.
+
+
+9. Final canonical resource hash збігається.
+
+
+10. Partial artifact не отримує STAGED.
+
+
+11. Staging reconnect відновлюється create-or-verify semantics.
+
+
+
+
+---
+
+[M4-05] Implement production rollback watchdog
+
+Labels: type:feature, area:routeros, area:security, risk:high
+Залежності: M4-04
+PR title: feat(deployment): add production rollback watchdog
+
+Результат
+
+Кожний Device отримує локальний deadline/reboot rollback перед activation.
+
+Acceptance criteria
+
+1. Watchdog має script, deadline scheduler і startup scheduler.
+
+
+2. Script використовує fixed template.
+
+
+3. Script перевіряє old/new target set.
+
+
+4. Unknown third target не змінюється.
+
+
+5. Stale watchdog не відкочує пізніший artifact.
+
+
+6. User text не потрапляє у script.
+
+
+7. dont-require-permissions=no.
+
+
+8. Script source hash перевіряється.
+
+
+9. TTL і commit margin bounded.
+
+
+10. Усі Device watchdogs armed до VRRP activation.
+
+
+11. Scheduler disabling має read-back.
+
+
+12. Cleanup idempotent.
+
+
+
+
+---
+
+[M4-06] Implement transition-state validation and anchor activation
+
+Labels: type:feature, area:application, area:routeros, risk:high
+Залежності: M4-05, M2 CLOSED
+PR title: feat(deployment): validate transitions and activate anchors
+
+Результат
+
+Anchor targets перемикаються тільки через заздалегідь доведені безпечні проміжні стани.
+
+Acceptance criteria
+
+1. Всі intermediate old/new combinations аналізуються.
+
+
+2. Unsafe state блокує plan.
+
+
+3. Management-critical anchors активуються останніми.
+
+
+4. Перед кожним set anchor повторно читається.
+
+
+5. Current target має дорівнювати expected old або desired new.
+
+
+6. Unknown target запускає recovery.
+
+
+7. Unknown set result перевіряється читанням.
+
+
+8. Blind set retry відсутній.
+
+
+9. Writes per Device послідовні.
+
+
+10. Watchdog margin перевіряється після кожного anchor.
+
+
+11. Step journal фіксує intent і verified result.
+
+
+
+
+---
+
+[M4-07] Implement deployment probes and post-activation verification
+
+Labels: type:feature, area:application, area:routeros
+Залежності: M4-06
+PR title: feat(deployment): verify active artifacts and management paths
+
+Результат
+
+Новий artifact перевіряється незалежним connection і bounded probes.
+
+Acceptance criteria
+
+1. Managed resource hash перевіряється.
+
+
+2. Active anchor targets перевіряються.
+
+
+3. Відкривається нове API-SSL connection.
+
+
+4. Стара established session не вважається достатньою.
+
+
+5. Підтримані лише:
+
+API_SSL;
+
+ROUTER_PING.
+
+
+
+6. Ping не приймає hostname.
+
+
+7. Count, interval і timeout bounded.
+
+
+8. Source address, table або interface типізовані.
+
+
+9. Critical FAIL або INCONCLUSIVE запускає rollback.
+
+
+10. Probe profile входить до plan hash.
+
+
+11. Watchdog readiness перевіряється до commit.
+
+
+
+
+---
+
+[M4-08] Implement standalone Node deployment coordinator
+
+Labels: type:feature, area:application, risk:high
+Залежності: M4-01—M4-07
+PR title: feat(deployment): deploy standalone RouterOS nodes
+
+Результат
+
+Standalone Node проходить повний staging, activation, verification і commit.
+
+Acceptance criteria
+
+1. Preconditions повторно перевіряються.
+
+
+2. NO_CHANGES не виконує writes.
+
+
+3. Staging не впливає на active traffic.
+
+
+4. Watchdog armed до activation.
+
+
+5. Failed verification запускає rollback.
+
+
+6. Watchdog disabled до durable commit.
+
+
+7. Old artifact залишається для rollback.
+
+
+8. New detached artifact не видаляється при failure.
+
+
+9. Commit snapshot зберігається.
+
+
+10. Повторний deployment того самого artifact повертає NO_CHANGES.
+
+
+
+
+---
+
+[M4-09] Implement multi-WAN deployment verification
+
+Labels: type:feature, area:application, risk:high
+Залежності: M4-08
+PR title: feat(deployment): verify multi-WAN nodes
+
+Результат
+
+Safe deployment працює незалежно від поточного active WAN.
+
+Acceptance criteria
+
+1. Routing, NAT, RAW і Mangle hashes повторно перевіряються.
+
+
+2. Zone/interface-list dependencies повторно перевіряються.
+
+
+3. Active route state не змінює artifact.
+
+
+4. Per-table ping виконується для balanced topology.
+
+
+5. Current active path перевіряється для failover.
+
+
+6. Controller не вимикає primary WAN.
+
+
+7. Controller не створює temporary route.
+
+
+8. Backup path не тестується forced failover.
+
+
+9. Dependency change запускає rollback або блокує activation.
+
+
+10. Controller не змінює routing/NAT/Mangle.
+
+
+
+
+---
+
+[M4-10] Implement VRRP deployment coordinator
+
+Labels: type:feature, area:application, risk:high
+Залежності: M4-08
+PR title: feat(deployment): coordinate VRRP node deployment
+
+Результат
+
+Усі members VRRP Node застосовують одну logical policy як recoverable pseudo-transaction.
+
+Acceptance criteria
+
+1. Усі members prechecked.
+
+
+2. Усі artifacts staged до activation.
+
+
+3. Усі watchdogs armed до activation.
+
+
+4. Standby-only members активуються першими.
+
+
+5. Traffic-bearing members активуються останніми.
+
+
+6. Unknown role класифікується traffic-bearing.
+
+
+7. Role vector читається перед кожним member.
+
+
+8. Role change після першої activation запускає rollback.
+
+
+9. Недоступний member до activation блокує deployment.
+
+
+10. Partial activation rollback-ить reachable members.
+
+
+11. Недоступний member залишається під watchdog.
+
+
+12. Split-master не спрощується.
+
+
+13. Partial commit неможливий.
+
+
+
+
+---
+
+[M4-11] Implement rollback and crash recovery
+
+Labels: type:feature, area:application, risk:high
+Залежності: M4-08—M4-10
+PR title: feat(deployment): add deterministic rollback and recovery
+
+Результат
+
+Будь-який nonterminal deployment повертається до old artifact.
+
+Acceptance criteria
+
+1. Rollback виконується reverse activation order.
+
+
+2. Anchor target має бути old або new.
+
+
+3. Old artifact hash перевіряється.
+
+
+4. New API connection відкривається після rollback.
+
+
+5. Old-state probes проходять.
+
+
+6. Mixed old/new state завершується до all-old.
+
+
+7. Third target створює RECOVERY_REQUIRED.
+
+
+8. Watchdog rollback розпізнається.
+
+
+9. Nonterminal deployment після restart rollback-иться.
+
+
+10. Crash після watchdog disabling, до commit, rollback-иться.
+
+
+11. Лише durable COMMITTED зберігає new state.
+
+
+12. Recovery decision table повністю протестована.
+
+
+
+
+---
+
+[M4-12] Expose deployment API and desktop operation workflow
+
+Labels: type:feature, area:controller, area:desktop
+Залежності: M4-11
+PR title: feat(deployment): expose safe deployment workflow
+
+Результат
+
+Deployer створює plan, запускає deployment і бачить точний progress.
+
+Acceptance criteria
+
+1. RPC:
+
+create plan;
+
+start;
+
+watch;
+
+request rollback;
+
+get recovery state.
+
+
+
+2. Start потребує exact plan hash.
+
+
+3. Progress server-streaming.
+
+
+4. GUI показує semantic diff.
+
+
+5. GUI показує old/new artifacts.
+
+
+6. GUI показує activation і rollback order.
+
+
+7. GUI показує probes та watchdog TTL.
+
+
+8. Cancellation після activation перетворюється на rollback.
+
+
+9. Force apply відсутній.
+
+
+10. Raw RouterOS commands не показуються звичайному користувачу.
+
+
+11. Operations audit-яться.
+
+
+
+
+---
+
+[M4-13] Complete deployment fault and security acceptance
+
+Labels: type:test, area:testlab, area:security, risk:high
+Залежності: M4-12
+PR title: test(deployment): complete rollback and fault acceptance
+
+Результат
+
+Safe deployment доведений через CHR fault injection та VRRP scenarios.
+
+Acceptance criteria
+
+1. Successful standalone deployment пройдений.
+
+
+2. NO_CHANGES пройдений.
+
+
+3. Multi-WAN failover і PCC пройдені.
+
+
+4. VRRP active/passive пройдений.
+
+
+5. VRRP split-master пройдений.
+
+
+6. Connection розривається після кожної effectful точки.
+
+
+7. Deadline watchdog rollback пройдений.
+
+
+8. Startup watchdog rollback пройдений.
+
+
+9. Manual anchor/staged-resource changes виявляються.
+
+
+10. Crash recovery детермінований.
+
+
+11. Credentials і scripts не витікають.
+
+
+12. Arbitrary command/path injection неможлива.
+
+
+13. Допустимі лише:
+
+old state;
+
+new committed state;
+
+exact recovery required.
+
+
+
+
+Milestone gate
+
+M4 закривається після проходження повної fault-injection matrix і всіх Node topology.
+
+
+---
+
+8. Milestone M6 — End-to-End Integration
+
+[M6-01] Implement desired, committed and actual state projection
+
+Labels: type:feature, area:application, area:controller
+Залежності: M4 CLOSED
+PR title: feat(workflow): project desired committed and actual state
+
+Результат
+
+Controller однозначно визначає workflow status кожного Node.
+
+Acceptance criteria
+
+1. Зберігаються desired, committed і actual hashes.
+
+
+2. SYNCHRONIZED визначається точно.
+
+
+3. PENDING_DEPLOYMENT не класифікується як drift.
+
+
+4. Actual divergence класифікується як drift.
+
+
+5. Невідомий anchor/artifact дає RECOVERY_REQUIRED.
+
+
+6. Workflow status є похідним, не authoritative field.
+
+
+7. Пріоритет status відповідає специфікації.
+
+
+8. VRRP Node агрегується без втрати per-Device state.
+
+
+9. Projection детермінована.
+
+
+10. Desktop показує всі три hash states.
+
+
+
+
+---
+
+[M6-02] Implement managed drift detection
+
+Labels: type:feature, area:application, area:persistence
+Залежності: M6-01, M1 CLOSED
+PR title: feat(drift): detect managed RouterOS configuration drift
+
+Результат
+
+Actual RouterOS state порівнюється з останнім committed state.
+
+Acceptance criteria
+
+1. Drift baseline — last committed artifact.
+
+
+2. Desired policy не використовується як actual baseline.
+
+
+3. Managed rule changes класифікуються Critical.
+
+
+4. Anchor changes класифікуються Critical.
+
+
+5. Guard і managed list changes класифікуються Critical.
+
+
+6. Dependency configuration changes класифікуються Critical.
+
+
+7. Observation-only VRRP/WAN/interface changes не є configuration drift.
+
+
+8. Semantic diff зберігається.
+
+
+9. Drift блокує новий deployment.
+
+
+10. Automatic repair відсутній.
+
+
+11. Restoration відбувається normal deployment.
+
+
+12. Drift events immutable і audit-яться.
+
+
+
+
+---
+
+[M6-03] Implement bounded operational background jobs
+
+Labels: type:feature, area:controller
+Залежності: M6-02
+PR title: feat(controller): add bounded recovery and drift jobs
+
+Результат
+
+Controller виконує лише необхідні фонові операції.
+
+Scope
+
+operation recovery
+periodic drift capture
+expired-exception reconciliation
+lock heartbeat
+disabled watchdog residue cleanup
+
+Acceptance criteria
+
+1. Усі queues bounded.
+
+
+2. Capture concurrency дотримується.
+
+
+3. Drift polling має global bounded configuration.
+
+
+4. Per-Device складні schedules відсутні.
+
+
+5. Expired exception не виконує RouterOS write.
+
+
+6. Cleanup не видаляє firewall artifacts.
+
+
+7. Cleanup не видаляє snapshots або audit.
+
+
+8. Recovery має higher priority за drift polling.
+
+
+9. Shutdown коректно cancel-ить jobs.
+
+
+10. Message broker/job framework не використовується.
+
+
+
+
+---
+
+[M6-04] Integrate final desktop workflows
+
+Labels: type:feature, area:desktop
+Залежності: M6-01—M6-03
+PR title: feat(desktop): integrate complete MVP workflows
+
+Результат
+
+Desktop містить сім завершених модулів MVP.
+
+Модулі
+
+Inventory
+Node
+Snapshots
+Policies
+Operations
+Drift
+Audit
+
+Acceptance criteria
+
+1. Єдина навігаційна модель.
+
+
+2. Inventory показує workflow status.
+
+
+3. Node view містить topology, zones, onboarding і readiness.
+
+
+4. Snapshot view показує configuration/observations.
+
+
+5. Policy view підтримує authoring/review/binding.
+
+
+6. Operations view підтримує onboarding/deployment/recovery.
+
+
+7. Drift view не має automatic fix.
+
+
+8. Audit read-only.
+
+
+9. UI thread не виконує remote I/O.
+
+
+10. Cached state чітко позначений.
+
+
+11. Desktop не має RouterOS або SQL dependencies.
+
+
+12. Keyboard/navigation і large-list virtualization протестовані.
+
+
+
+
+---
+
+[M6-05] Complete standalone and dual-stack end-to-end acceptance
+
+Labels: type:test, area:testlab
+Залежності: M6-04
+PR title: test(e2e): verify standalone and dual-stack workflows
+
+Результат
+
+Повний lifecycle доведений для standalone IPv4 та dual-stack Node.
+
+Acceptance criteria
+
+1. Inventory → capture → onboarding → policy → deployment пройдений.
+
+
+2. Management reconnect пройдений.
+
+
+3. IPv4 і IPv6 artifacts незалежні.
+
+
+4. IPv6 failure rollback-ить Node deployment.
+
+
+5. Repeated deployment повертає NO_CHANGES.
+
+
+6. Manual managed-rule change створює drift.
+
+
+7. Restoration deployment працює.
+
+
+8. Exception expiration створює pending deployment без RouterOS write.
+
+
+9. Audit повністю відтворює lifecycle.
+
+
+10. Controller restart у кожній nonterminal phase обробляється.
+
+
+
+
+---
+
+[M6-06] Complete multi-WAN end-to-end acceptance
+
+Labels: type:test, area:testlab
+Залежності: M6-04
+PR title: test(e2e): verify multi-WAN workflows
+
+Результат
+
+Повний lifecycle доведений для failover, balanced і mixed WAN topology.
+
+Acceptance criteria
+
+1. Failover з primary active пройдений.
+
+
+2. Failover з backup active пройдений.
+
+
+3. Artifact однаковий для обох operational states.
+
+
+4. PCC topology пройдена.
+
+
+5. Per-table probes пройдені.
+
+
+6. FastTrack unsafe case блокується.
+
+
+7. Routing/NAT/Mangle не змінюються.
+
+
+8. Forced failover не виконується.
+
+
+9. Dependency change анулює plan.
+
+
+10. Active route change не створює configuration drift.
+
+
+
+
+---
+
+[M6-07] Complete VRRP and CRS end-to-end acceptance
+
+Labels: type:test, area:testlab, area:routeros
+Залежності: M6-04
+PR title: test(e2e): verify VRRP and CRS workflows
+
+Результат
+
+Повний lifecycle доведений для VRRP та management-plane CRS.
+
+Acceptance criteria
+
+1. VRRP active/passive lifecycle пройдений.
+
+
+2. VRRP split-master lifecycle пройдений.
+
+
+3. Усі members onboard-яться разом.
+
+
+4. Усі members deploy-яться разом.
+
+
+5. Role change після activation запускає rollback.
+
+
+6. Partial commit неможливий.
+
+
+7. Physical management addresses використовуються.
+
+
+8. CRS INPUT/OUTPUT lifecycle пройдений.
+
+
+9. CRS FORWARD policy відхиляється.
+
+
+10. Bridge/VLAN/hardware offload не змінюються.
+
+
+11. Physical CRS hardware fixture пройдена.
+
+
+
+
+---
+
+[M6-08] Complete security, backup and restore acceptance
+
+Labels: type:test, area:security, area:persistence, risk:high
+Залежності: M6-05—M6-07
+PR title: test(security): verify MVP security and recovery controls
+
+Результат
+
+Доведена безпека credentials, API, audit, persistence та restore.
+
+Acceptance criteria
+
+1. Invalid CA, SAN і SPKI відхиляються.
+
+
+2. Plain API блокується.
+
+
+3. Default RouterOS group відхиляється.
+
+
+4. Desktop не отримує credentials.
+
+
+5. DB не містить plaintext credentials.
+
+
+6. Logs і audit не містять secrets.
+
+
+7. RBAC bypass неможливий.
+
+
+8. Arbitrary RouterOS path injection неможлива.
+
+
+9. Script injection неможлива.
+
+
+10. Audit tampering виявляється.
+
+
+11. PostgreSQL backup/restore пройдений.
+
+
+12. Snapshots після restore проходять hash verification.
+
+
+13. Active artifact references відновлені.
+
+
+14. Nonterminal operations після restore проходять recovery.
+
+
+
+
+---
+
+[M6-09] Complete MVP release acceptance
+
+Labels: type:docs, type:test, area:application
+Залежності: M6-08
+PR title: docs(release): complete MVP production acceptance
+
+Результат
+
+MVP формально готовий до production release.
+
+Scope
+
+acceptance report
+supported RouterOS manifest
+supported hardware profiles
+installation documentation
+RouterOS prerequisite checklist
+operations manual
+recovery manual
+known limitations
+release packaging
+SBOM
+checksums
+signed artifacts
+
+Acceptance criteria
+
+1. Усі M0–M6 issues закриті.
+
+
+2. Усі release gates виконані.
+
+
+3. CHR test matrix зелена.
+
+
+4. Physical CRS test зелений.
+
+
+5. Fault-injection suite зелена.
+
+
+6. Security suite зелена.
+
+
+7. Backup/restore suite зелена.
+
+
+8. Dependency scan не має unresolved Critical findings.
+
+
+9. Controller package створений.
+
+
+10. Desktop installer створений.
+
+
+11. Migration bundle створений.
+
+
+12. SBOM і SHA-256 checksums створені.
+
+
+13. Release artifacts підписані.
+
+
+14. Known limitations відповідають фактичному scope.
+
+
+15. Git working tree чистий.
+
+
+16. Release tag створюється лише після acceptance review.
+
+
+
+Milestone gate
+
+M6 закривається тільки після повного MVP Definition of Done.
+
+
+---
+
+9. Кількість Issues
+
+Milestone	Issues
+
+M2 — Policy Core	18
+M3 — Policy Compiler	8
+M5 — Managed Device Onboarding	10
+M4 — Safe Deployment	13
+M6 — End-to-End Integration	9
+Разом	58
+
+
+
+---
+
+10. Повний порядок виконання
+
+M2-01 → M2-18
+        ↓
+M3-01 → M3-08
+        ↓
+M5-01 → M5-10
+        ↓
+M4-01 → M4-13
+        ↓
+M6-01 → M6-09
+
+Паралельна реалізація дозволена лише для issues, dependencies яких повністю закриті.
+
+
+---
+
+11. Заборонені обхідні рішення
+
+Під час реалізації Issues заборонено:
+
+тимчасово використовувати generic RouterOS writer;
+додавати raw command API «лише для тестів»;
+компілювати policy без актуального analysis;
+пропускати read-back після write;
+використовувати Safe Mode замість watchdog;
+виконувати partial VRRP onboarding/deployment;
+мовчки ігнорувати недоступний Device;
+автоматично усувати staged divergence;
+підміняти REJECT на DROP;
+підміняти unknown matcher на false/any;
+автоматично вибирати anchor position;
+виконувати automatic drift repair;
+додавати functionality поза нормативним MVP scope.
+
+
+---
+
+12. Результат
+
+Після виконання Issues система реалізує рівно необхідний цикл:
+
+RouterOS inventory
+    ↓
+verified snapshots
+    ↓
+topology-aware policy
+    ↓
+static analysis
+    ↓
+approval
+    ↓
+deterministic compilation
+    ↓
+managed-device onboarding
+    ↓
+watchdog-protected deployment
+    ↓
+verified commit або rollback
+    ↓
+managed drift detection
+
+Нормативний пакет MVP завершений. Реалізація починається з M0-01 і виконується в зафіксованому порядку без розширення scope.
