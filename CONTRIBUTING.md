@@ -51,6 +51,8 @@ CI details: [`docs/development/ci.md`](docs/development/ci.md). Pull requests mu
 
 CHR lab: [`docs/development/chr-lab.md`](docs/development/chr-lab.md) / [`testlab/chr/README.md`](testlab/chr/README.md).
 
+Architecture ADRs: [`docs/architecture/overview.md`](docs/architecture/overview.md).
+
 ## Security
 
 - Never commit secrets, certificates, CHR images, or production configs.

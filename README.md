@@ -4,9 +4,15 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 
 ## Статус
 
-M0 bootstrap in progress (solution, health host, Desktop shell, PostgreSQL, CI, CHR lab skeleton). Track remaining work in [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
+M0 bootstrap complete for governance, toolchain, solution, health host, Desktop shell, PostgreSQL, CI, CHR skeleton, and initial ADRs. Next: M1 vertical slice — [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
 
 Див. також [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md), [`CHANGELOG.md`](CHANGELOG.md).
+
+## Швидкий старт
+
+1. [`docs/development/local-environment.md`](docs/development/local-environment.md)
+2. [`docs/development/testing.md`](docs/development/testing.md)
+3. Architecture decisions: [`docs/architecture/overview.md`](docs/architecture/overview.md)
 
 ## Документи
 
@@ -14,15 +20,12 @@ M0 bootstrap in progress (solution, health host, Desktop shell, PostgreSQL, CI, 
 |----------|-------------|
 | [`ROADMAP.md`](ROADMAP.md) | **Єдиний порядок атомарних задач** (M0→M6 + N1 + M7) |
 | [`ISSUES.md`](ISSUES.md) | Мапінг логічних ID → GitHub issues |
+| [`docs/architecture/overview.md`](docs/architecture/overview.md) | Огляд + ADR index |
 | [Issues](https://github.com/sesquicadaver/MTDirector/issues) | Трекер реалізації |
 | [`TOR-1.md`](TOR-1.md) | Базове архітектурне рішення |
 | [`TOR-2.md`](TOR-2.md) | Scope MVP / поза MVP |
-| [`MVP Technical Specification v0.1.md`](MVP%20Technical%20Specification%20v0.1.md) | Повне ТЗ MVP |
-| [`MVP End-to-End Workflow and Acceptance Specification v0.1.md`](MVP%20End-to-End%20Workflow%20and%20Acceptance%20Specification%20v0.1.md) | M6 DoD, overrides |
-| [`Initial Issue Set v0.1.md`](Initial%20Issue%20Set%20v0.1.md) | Деталі M0–M1 issues |
-| [`M2–M6 Implementation Issue Set v0.1.md`](M2–M6%20Implementation%20Issue%20Set%20v0.1.md) | Деталі M2–M6 issues |
 
-Профільні специфікації (Adapter, Canonical, Policy, Compiler, Onboarding, Safe Deployment) — у корені репозиторію.
+Нормативні MVP/Issue Set специфікації — у корені репозиторію (не дублюються тут).
 
 ## Критичний шлях
 
@@ -31,7 +34,7 @@ M0 → M1 → M2 → M3 → M5 → M4 → M6 → MVP
                  (+ N1 packet-path weave)
 ```
 
-## Стек (ціль)
+## Стек
 
 Desktop Avalonia → gRPC/mTLS → ASP.NET Core Controller → PostgreSQL → RouterOS API-SSL.
 
@@ -39,6 +42,6 @@ Desktop Avalonia → gRPC/mTLS → ASP.NET Core Controller → PostgreSQL → Ro
 
 - SDK: pinned in [`global.json`](global.json) (`.NET 10`, `allowPrerelease: false`)
 - Packages: Central Package Management — [`Directory.Packages.props`](Directory.Packages.props)
-- Build defaults: [`Directory.Build.props`](Directory.Build.props) (`Nullable`, `TreatWarningsAsErrors`, `Deterministic`, lock files)
+- Build defaults: [`Directory.Build.props`](Directory.Build.props)
 - Solution: [`MikroTikFirewallController.sln`](MikroTikFirewallController.sln)
-)
+- CI: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
