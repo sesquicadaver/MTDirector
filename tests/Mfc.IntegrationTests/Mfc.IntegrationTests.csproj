@@ -15,5 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Mfc.Infrastructure\Mfc.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Mfc.Controller\Mfc.Controller.csproj" />
+    <ProjectReference Include="..\..\src\Mfc.Desktop\Mfc.Desktop.csproj" />
   </ItemGroup>
 </Project>
