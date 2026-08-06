@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Mfc.Domain\Mfc.Domain.csproj" />
+  </ItemGroup>
+  <PropertyGroup>
+    <RootNamespace>Mfc.Application</RootNamespace>
+    <AssemblyName>Mfc.Application</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+</Project>

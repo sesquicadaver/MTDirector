@@ -1,0 +1,11 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Mfc.Desktop.MainWindow"
+        Title="MikroTik Firewall Controller"
+        Width="960"
+        Height="640">
+  <TextBlock Margin="24"
+             Text="MTDirector — Desktop shell (skeleton)"
+             VerticalAlignment="Center"
+             HorizontalAlignment="Center" />
+</Window>
