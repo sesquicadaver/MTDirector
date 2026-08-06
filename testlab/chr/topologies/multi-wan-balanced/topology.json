@@ -1,0 +1,39 @@
+{
+  "id": "multi-wan-balanced",
+  "description": "Dual WAN balanced egress for capability and policy path tests.",
+  "management": {
+    "network": "10.255.30.0/24",
+    "gateway": "10.255.30.1",
+    "deviceAddress": "10.255.30.10",
+    "apiSslPort": 8729
+  },
+  "wanSimulators": [
+    { "name": "wan1", "network": "10.255.31.0/30", "role": "balanced" },
+    { "name": "wan2", "network": "10.255.32.0/30", "role": "balanced" }
+  ],
+  "credentials": {
+    "strategy": "ephemeral-per-run",
+    "reuseForbidden": true
+  },
+  "fixture": "fixtures/multi-wan-balanced-minimal.rsc.example",
+  "reset": {
+    "snapshotName": "clean-multi-wan-balanced",
+    "steps": [
+      "Power off VM",
+      "Restore clean-multi-wan-balanced snapshot",
+      "Regenerate ephemeral API credentials",
+      "Apply fixtures/multi-wan-balanced-minimal.rsc.example"
+    ]
+  },
+  "cleanup": {
+    "steps": [
+      "Export redacted diagnostics if the job failed",
+      "Delete ephemeral credentials",
+      "Restore clean-multi-wan-balanced snapshot",
+      "Remove temporary disks"
+    ]
+  },
+  "expectedSnapshotHashes": {
+    "afterReset": "REPLACE_AFTER_FIRST_GOLDEN_CAPTURE"
+  }
+}

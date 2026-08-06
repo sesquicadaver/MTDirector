@@ -4,7 +4,7 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 
 ## Статус
 
-M0 bootstrap in progress (solution, health host, Desktop shell, PostgreSQL persistence, CI). Track remaining work in [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
+M0 bootstrap in progress (solution, health host, Desktop shell, PostgreSQL, CI, CHR lab skeleton). Track remaining work in [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
 
 Див. також [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md), [`CHANGELOG.md`](CHANGELOG.md).
 

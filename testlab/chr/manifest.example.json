@@ -1,0 +1,24 @@
+{
+  "routerosVersion": "7.16.2",
+  "architecture": "x86_64",
+  "imageSha256": "REPLACE_WITH_LOCAL_IMAGE_SHA256",
+  "imagePath": "private/chr.img",
+  "requiredTopologies": [
+    "standalone",
+    "multi-wan-failover",
+    "multi-wan-balanced",
+    "vrrp-active-passive",
+    "vrrp-split-master"
+  ],
+  "isolation": {
+    "forbidProductionRoutes": true,
+    "forbidProductionDns": true,
+    "forbidProductionPki": true,
+    "requireEphemeralTestCa": true,
+    "requireCredentialRotationPerRun": true
+  },
+  "notes": [
+    "Copy this file to manifest.local.json (gitignored) and fill imageSha256/imagePath for the local CHR image.",
+    "Never commit CHR images, MikroTik licenses, or private keys."
+  ]
+}

@@ -1,0 +1,3 @@
+# Synthetic VRRP split-master fixture placeholder.
+# Members 10.255.50.10/11, VIP 10.255.50.20, partitioned WANs.
+# No secrets.

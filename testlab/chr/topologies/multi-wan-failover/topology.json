@@ -1,0 +1,39 @@
+{
+  "id": "multi-wan-failover",
+  "description": "Dual WAN with primary/secondary failover preference.",
+  "management": {
+    "network": "10.255.20.0/24",
+    "gateway": "10.255.20.1",
+    "deviceAddress": "10.255.20.10",
+    "apiSslPort": 8729
+  },
+  "wanSimulators": [
+    { "name": "wan1", "network": "10.255.21.0/30", "role": "primary" },
+    { "name": "wan2", "network": "10.255.22.0/30", "role": "secondary" }
+  ],
+  "credentials": {
+    "strategy": "ephemeral-per-run",
+    "reuseForbidden": true
+  },
+  "fixture": "fixtures/multi-wan-failover-minimal.rsc.example",
+  "reset": {
+    "snapshotName": "clean-multi-wan-failover",
+    "steps": [
+      "Power off VM",
+      "Restore clean-multi-wan-failover snapshot",
+      "Regenerate ephemeral API credentials",
+      "Apply fixtures/multi-wan-failover-minimal.rsc.example"
+    ]
+  },
+  "cleanup": {
+    "steps": [
+      "Export redacted diagnostics if the job failed",
+      "Delete ephemeral credentials",
+      "Restore clean-multi-wan-failover snapshot",
+      "Remove temporary disks"
+    ]
+  },
+  "expectedSnapshotHashes": {
+    "afterReset": "REPLACE_AFTER_FIRST_GOLDEN_CAPTURE"
+  }
+}
