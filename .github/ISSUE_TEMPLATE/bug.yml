@@ -1,0 +1,59 @@
+name: Bug
+description: Report a defect against implemented behavior
+title: "[bug] "
+labels: ["type:bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this only for defects in code that already exists on `main`.
+        For new work, use the Task template and a ROADMAP issue.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Minimal steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - domain
+        - application
+        - routeros
+        - controller
+        - desktop
+        - persistence
+        - security
+        - testlab
+        - docs / governance
+    validations:
+      required: true
+  - type: checkboxes
+    id: security
+    attributes:
+      label: Security
+      options:
+        - label: This report does not contain secrets or production credentials
+          required: true

@@ -1,0 +1,41 @@
+# Default
+* text=auto eol=lf
+
+# Explicit text
+*.cs text diff=csharp
+*.csproj text
+*.props text
+*.targets text
+*.sln text eol=crlf
+*.json text
+*.yml text
+*.yaml text
+*.md text
+*.proto text
+*.sql text
+*.editorconfig text
+*.gitignore text
+*.gitattributes text
+
+# Scripts
+*.sh text eol=lf
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.dll binary
+*.exe binary
+*.snk binary
+*.pfx binary
+*.p12 binary
+*.qcow2 binary
+*.vmdk binary
+*.img binary
+*.dump binary
