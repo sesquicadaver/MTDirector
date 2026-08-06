@@ -19,3 +19,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - PostgreSQL bootstrap persistence with forward-only migrations, `--migrate-only`, schema guard, and append-only audit table (M0-07).
 - Deterministic GitHub Actions CI (Linux validate + Windows Desktop build) with locked restore, format, coverage gates, and vulnerability scan (M0-08).
 - Isolated CHR testlab skeleton with topology contracts, synthetic fixtures, and lab isolation docs (M0-09).
+- Initial Accepted ADRs (0001–0005) and reproducible development/operations documentation (M0-10).
