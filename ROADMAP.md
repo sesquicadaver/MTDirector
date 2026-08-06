@@ -368,11 +368,12 @@ M0 → M1 → M2 → M3 → M5 → M4 → M6 → MVP CLOSED
 
 ## 15. Старт реалізації
 
-1. Створити GitHub Issues з логічними ID з цього ROADMAP (або з Issue Sets + N1/M7).  
-2. Почати з **M0-01**.  
+1. GitHub Issues створені: див. [`ISSUES.md`](ISSUES.md) (логічний ID → `#N`).  
+2. Почати з **[M0-01](https://github.com/sesquicadaver/MTDirector/issues/1)**.  
 3. Не відкривати M2 до **M1 CLOSED** (включно з N1-01—N1-03).  
 4. Не відкривати M4 до **M5 CLOSED**.  
 5. Не відкривати M7 до **MVP CLOSED**.
 
-Деталі кожного MVP issue: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.
+Деталі кожного MVP issue: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
+Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 )

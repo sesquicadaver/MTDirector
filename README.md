@@ -11,6 +11,8 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 | Документ | Призначення |
 |----------|-------------|
 | [`ROADMAP.md`](ROADMAP.md) | **Єдиний порядок атомарних задач** (M0→M6 + N1 + M7) |
+| [`ISSUES.md`](ISSUES.md) | Мапінг логічних ID → GitHub issues |
+| [Issues](https://github.com/sesquicadaver/MTDirector/issues) | Трекер реалізації |
 | [`TOR-1.md`](TOR-1.md) | Базове архітектурне рішення |
 | [`TOR-2.md`](TOR-2.md) | Scope MVP / поза MVP |
 | [`MVP Technical Specification v0.1.md`](MVP%20Technical%20Specification%20v0.1.md) | Повне ТЗ MVP |
