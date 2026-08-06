@@ -18,3 +18,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Desktop connection shell with off-UI-thread gRPC health client and connection state display (M0-06).
 - PostgreSQL bootstrap persistence with forward-only migrations, `--migrate-only`, schema guard, and append-only audit table (M0-07).
 - Deterministic GitHub Actions CI (Linux validate + Windows Desktop build) with locked restore, format, coverage gates, and vulnerability scan (M0-08).
+- Isolated CHR testlab skeleton with topology contracts, synthetic fixtures, and lab isolation docs (M0-09).

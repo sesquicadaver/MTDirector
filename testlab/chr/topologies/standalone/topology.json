@@ -1,0 +1,36 @@
+{
+  "id": "standalone",
+  "description": "Single managed RouterOS CHR instance for read-adapter smoke tests.",
+  "management": {
+    "network": "10.255.10.0/24",
+    "gateway": "10.255.10.1",
+    "deviceAddress": "10.255.10.10",
+    "apiSslPort": 8729
+  },
+  "wanSimulators": [],
+  "credentials": {
+    "strategy": "ephemeral-per-run",
+    "reuseForbidden": true
+  },
+  "fixture": "fixtures/standalone-minimal.rsc.example",
+  "reset": {
+    "snapshotName": "clean-standalone",
+    "steps": [
+      "Power off VM",
+      "Restore clean-standalone snapshot",
+      "Regenerate ephemeral API credentials",
+      "Apply fixtures/standalone-minimal.rsc.example"
+    ]
+  },
+  "cleanup": {
+    "steps": [
+      "Export redacted diagnostics if the job failed",
+      "Delete ephemeral credentials",
+      "Restore clean-standalone snapshot",
+      "Remove temporary disks"
+    ]
+  },
+  "expectedSnapshotHashes": {
+    "afterReset": "REPLACE_AFTER_FIRST_GOLDEN_CAPTURE"
+  }
+}

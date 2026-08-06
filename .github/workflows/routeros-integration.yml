@@ -1,0 +1,45 @@
+name: routeros-integration
+
+# CHR-backed RouterOS integration contracts.
+# Live CHR execution requires an isolated self-hosted runner (see docs/development/chr-lab.md).
+# Untrusted PRs must never gain production network access via a privileged runner.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "src/Mfc.RouterOs/**"
+      - "tests/Mfc.RouterOs.IntegrationTests/**"
+      - "testlab/chr/**"
+      - ".github/workflows/routeros-integration.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: routeros-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  chr-skeleton-contracts:
+    name: CHR skeleton contracts
+    # Skeleton verification runs on GitHub-hosted Linux (no CHR image required).
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+        with:
+          global-json-file: global.json
+
+      - name: Restore (locked-mode)
+        run: dotnet restore tests/Mfc.RouterOs.IntegrationTests/Mfc.RouterOs.IntegrationTests.csproj --locked-mode
+
+      - name: Build Release
+        run: dotnet build tests/Mfc.RouterOs.IntegrationTests/Mfc.RouterOs.IntegrationTests.csproj -c Release --no-restore
+
+      - name: Run CHR skeleton tests
+        run: dotnet test tests/Mfc.RouterOs.IntegrationTests/Mfc.RouterOs.IntegrationTests.csproj -c Release --no-build --filter "FullyQualifiedName~ChrLabSkeletonTests"

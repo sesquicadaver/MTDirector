@@ -1,0 +1,39 @@
+{
+  "id": "vrrp-active-passive",
+  "description": "Two CHR members in a stable VRRP active/passive pair.",
+  "management": {
+    "network": "10.255.40.0/24",
+    "gateway": "10.255.40.1",
+    "deviceAddresses": ["10.255.40.10", "10.255.40.11"],
+    "virtualAddress": "10.255.40.20",
+    "apiSslPort": 8729
+  },
+  "wanSimulators": [
+    { "name": "wan1", "network": "10.255.41.0/30", "role": "uplink" }
+  ],
+  "credentials": {
+    "strategy": "ephemeral-per-run",
+    "reuseForbidden": true
+  },
+  "fixture": "fixtures/vrrp-active-passive-minimal.rsc.example",
+  "reset": {
+    "snapshotName": "clean-vrrp-active-passive",
+    "steps": [
+      "Power off both VMs",
+      "Restore clean-vrrp-active-passive snapshots",
+      "Regenerate ephemeral API credentials for both members",
+      "Apply fixtures/vrrp-active-passive-minimal.rsc.example"
+    ]
+  },
+  "cleanup": {
+    "steps": [
+      "Export redacted diagnostics if the job failed",
+      "Delete ephemeral credentials",
+      "Restore clean-vrrp-active-passive snapshots",
+      "Remove temporary disks"
+    ]
+  },
+  "expectedSnapshotHashes": {
+    "afterReset": "REPLACE_AFTER_FIRST_GOLDEN_CAPTURE"
+  }
+}

@@ -1,0 +1,6 @@
+# Minimal standalone fixture (synthetic)
+
+# Addresses match topologies/standalone/topology.json
+# /ip address add address=10.255.10.10/24 interface=ether1
+# /ip route add dst-address=0.0.0.0/0 gateway=10.255.10.1
+# No secrets. Expand when CHR runner automation lands.

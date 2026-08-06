@@ -49,6 +49,8 @@ PostgreSQL for persistence tests is started via Testcontainers (Docker required)
 
 CI details: [`docs/development/ci.md`](docs/development/ci.md). Pull requests must keep the `ci` workflow green.
 
+CHR lab: [`docs/development/chr-lab.md`](docs/development/chr-lab.md) / [`testlab/chr/README.md`](testlab/chr/README.md).
+
 ## Security
 
 - Never commit secrets, certificates, CHR images, or production configs.

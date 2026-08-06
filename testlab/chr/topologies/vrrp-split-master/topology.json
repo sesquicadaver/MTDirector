@@ -1,0 +1,42 @@
+{
+  "id": "vrrp-split-master",
+  "description": "VRRP dual-master / split-brain scenario for detection and safety tests.",
+  "management": {
+    "network": "10.255.50.0/24",
+    "gateway": "10.255.50.1",
+    "deviceAddresses": ["10.255.50.10", "10.255.50.11"],
+    "virtualAddress": "10.255.50.20",
+    "apiSslPort": 8729
+  },
+  "wanSimulators": [
+    { "name": "wan-a", "network": "10.255.51.0/30", "role": "partition-a" },
+    { "name": "wan-b", "network": "10.255.52.0/30", "role": "partition-b" }
+  ],
+  "credentials": {
+    "strategy": "ephemeral-per-run",
+    "reuseForbidden": true
+  },
+  "fixture": "fixtures/vrrp-split-master-minimal.rsc.example",
+  "reset": {
+    "snapshotName": "clean-vrrp-split-master",
+    "steps": [
+      "Power off both VMs",
+      "Restore clean-vrrp-split-master snapshots",
+      "Regenerate ephemeral API credentials for both members",
+      "Apply fixtures/vrrp-split-master-minimal.rsc.example",
+      "Induce management-plane partition per lab script"
+    ]
+  },
+  "cleanup": {
+    "steps": [
+      "Heal lab partition",
+      "Export redacted diagnostics if the job failed",
+      "Delete ephemeral credentials",
+      "Restore clean-vrrp-split-master snapshots",
+      "Remove temporary disks"
+    ]
+  },
+  "expectedSnapshotHashes": {
+    "afterReset": "REPLACE_AFTER_FIRST_GOLDEN_CAPTURE"
+  }
+}
