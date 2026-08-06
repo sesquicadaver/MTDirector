@@ -1,6 +1,6 @@
+using Mfc.Infrastructure.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Mfc.Infrastructure.Persistence.Entities;
 
 namespace Mfc.Infrastructure.Persistence.Configurations;
 

@@ -1,12 +1,12 @@
 using System.Reflection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Mfc.Controller;
 using Mfc.Infrastructure.Persistence;
 using Mfc.Infrastructure.Persistence.Entities;
 using Mfc.Infrastructure.Persistence.Logging;
 using Mfc.IntegrationTests.Fixtures;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using Xunit;
 
