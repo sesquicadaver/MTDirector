@@ -34,4 +34,10 @@ M0 → M1 → M2 → M3 → M5 → M4 → M6 → MVP
 ## Стек (ціль)
 
 Desktop Avalonia → gRPC/mTLS → ASP.NET Core Controller → PostgreSQL → RouterOS API-SSL.
+
+## Toolchain
+
+- SDK: pinned in [`global.json`](global.json) (`.NET 10`, `allowPrerelease: false`)
+- Packages: Central Package Management — [`Directory.Packages.props`](Directory.Packages.props)
+- Build defaults: [`Directory.Build.props`](Directory.Build.props) (`Nullable`, `TreatWarningsAsErrors`, `Deterministic`, lock files)
 )
