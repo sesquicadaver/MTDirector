@@ -17,6 +17,9 @@ public sealed class ControllerOptions
 
     [Required]
     public AuthenticationHostOptions Authentication { get; init; } = new();
+
+    [Required]
+    public DatabaseHostOptions Database { get; init; } = new();
 }
 
 public sealed class GrpcHostOptions
@@ -41,6 +44,13 @@ public sealed class SecurityHostOptions
 {
     /// <summary>When true, non-HTTPS binds are rejected (always required outside Development insecure-loopback mode).</summary>
     public bool RequireTls { get; init; } = true;
+
+    /// <summary>
+    /// Named master-key provider (e.g. OS key store). Required; Development provider forbidden outside Development.
+    /// </summary>
+    [Required]
+    [MinLength(1)]
+    public string MasterKeyProvider { get; init; } = string.Empty;
 }
 
 public sealed class AuthenticationHostOptions
@@ -49,4 +59,12 @@ public sealed class AuthenticationHostOptions
     /// Development-only authentication shortcut. Requires Development + loopback bind + this flag.
     /// </summary>
     public bool AllowDevelopmentAuthentication { get; init; }
+}
+
+public sealed class DatabaseHostOptions
+{
+    /// <summary>PostgreSQL connection string. Never log this value.</summary>
+    [Required]
+    [MinLength(1)]
+    public string ConnectionString { get; init; } = string.Empty;
 }

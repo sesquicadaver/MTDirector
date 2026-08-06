@@ -1,7 +1,7 @@
 namespace Mfc.Infrastructure;
 
 /// <summary>
-/// Assembly marker. Persistence and secrets adapters land in later milestones.
+/// Assembly marker. Owns PostgreSQL persistence (EF Core) and infrastructure adapters.
 /// </summary>
 public static class AssemblyMarker
 {

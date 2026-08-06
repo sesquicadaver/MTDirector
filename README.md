@@ -4,7 +4,7 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 
 ## Статус
 
-Документальний етап + governance bootstrap. Наступна реалізація — за [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
+M0 bootstrap in progress (solution, health host, Desktop shell, PostgreSQL persistence). Track remaining work in [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
 
 Див. також [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md), [`CHANGELOG.md`](CHANGELOG.md).
 

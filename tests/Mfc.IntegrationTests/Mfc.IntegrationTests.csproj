@@ -11,6 +11,9 @@
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="Grpc.Net.Client" />
     <PackageReference Include="Grpc.HealthCheck" />
+    <PackageReference Include="Testcontainers" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    <PackageReference Include="Npgsql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Mfc.Infrastructure\Mfc.Infrastructure.csproj" />

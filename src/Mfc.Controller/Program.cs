@@ -1,14 +1,18 @@
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Mfc.Controller.Configuration;
+using Mfc.Infrastructure.Persistence;
+using Mfc.Infrastructure.Persistence.Logging;
 
 namespace Mfc.Controller;
 
 /// <summary>
-/// Composition root: health-only gRPC host for M0-05. No RouterOS client wiring.
+/// Composition root: health-only gRPC host with PostgreSQL schema guard (M0-05/M0-07).
 /// </summary>
 public static class Program
 {
+    public const string MigrateOnlyArgument = "--migrate-only";
+
     // Preserve composition-root project references for architecture analysis.
     private static readonly Type ApplicationAnchor = typeof(Application.AssemblyMarker);
     private static readonly Type InfrastructureAnchor = typeof(Infrastructure.AssemblyMarker);
@@ -24,13 +28,25 @@ public static class Program
 
         try
         {
-            await using WebApplication app = BuildHost(args);
-            await app.RunAsync();
+            bool migrateOnly = ContainsMigrateOnly(args);
+            string[] hostArgs = StripMigrateOnly(args);
+
+            await using WebApplication app = BuildHost(hostArgs);
+
+            if (migrateOnly)
+            {
+                await app.Services.MigrateAsync().ConfigureAwait(false);
+                await Console.Out.WriteLineAsync("Database migrations applied successfully.");
+                return 0;
+            }
+
+            await app.RunAsync().ConfigureAwait(false);
             return 0;
         }
         catch (Exception ex)
         {
-            await Console.Error.WriteLineAsync($"Controller startup failed: {ex.Message}");
+            string safeMessage = RedactingJsonConsoleLoggerProvider.RedactForTests(ex.Message);
+            await Console.Error.WriteLineAsync($"Controller startup failed: {safeMessage}");
             return 1;
         }
     }
@@ -51,11 +67,9 @@ public static class Program
         builder.Configuration.AddEnvironmentVariables(prefix: "MFC__");
 
         builder.Logging.ClearProviders();
-        builder.Logging.AddJsonConsole(options =>
-        {
-            options.IncludeScopes = true;
-            options.TimestampFormat = "O";
-        });
+        builder.Logging.AddProvider(new RedactingJsonConsoleLoggerProvider());
+        builder.Logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
+        builder.Logging.AddFilter("Microsoft.AspNetCore", LogLevel.Warning);
 
         builder.Services
             .AddOptions<ControllerOptions>()
@@ -75,6 +89,8 @@ public static class Program
             host.ShutdownTimeout = TimeSpan.FromSeconds(options.Grpc.ShutdownTimeoutSeconds);
         });
 
+        builder.Services.AddMfcPersistence(options.Database.ConnectionString);
+
         builder.WebHost.ConfigureKestrel(kestrel =>
         {
             kestrel.ConfigureEndpointDefaults(endpoint =>
@@ -89,7 +105,7 @@ public static class Program
         builder.Services.AddGrpcHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy("process"), tags: ["live"]);
 
-        // No RouterOS client registration in M0-05.
+        // No RouterOS client registration in M0.
 
         configure?.Invoke(builder);
 
@@ -97,6 +113,12 @@ public static class Program
         app.MapGrpcHealthChecksService();
         return app;
     }
+
+    public static bool ContainsMigrateOnly(IEnumerable<string> args)
+        => args.Any(a => string.Equals(a, MigrateOnlyArgument, StringComparison.OrdinalIgnoreCase));
+
+    public static string[] StripMigrateOnly(string[] args)
+        => args.Where(a => !string.Equals(a, MigrateOnlyArgument, StringComparison.OrdinalIgnoreCase)).ToArray();
 
     private static string ResolveEnvironmentName(string[] args)
     {

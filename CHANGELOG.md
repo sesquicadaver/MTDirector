@@ -16,3 +16,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Architecture boundary tests (M0-04) that fail the build when assembly dependency rules are violated.
 - Health-only Controller host with gRPC health checks, TLS/loopback validation, JSON logging, and graceful shutdown (M0-05).
 - Desktop connection shell with off-UI-thread gRPC health client and connection state display (M0-06).
+- PostgreSQL bootstrap persistence with forward-only migrations, `--migrate-only`, schema guard, and append-only audit table (M0-07).
