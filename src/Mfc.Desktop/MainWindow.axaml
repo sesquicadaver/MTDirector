@@ -1,11 +1,25 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Mfc.Desktop.ViewModels"
         x:Class="Mfc.Desktop.MainWindow"
+        x:DataType="vm:ShellViewModel"
         Title="MikroTik Firewall Controller"
-        Width="960"
-        Height="640">
-  <TextBlock Margin="24"
-             Text="MTDirector — Desktop shell (skeleton)"
-             VerticalAlignment="Center"
-             HorizontalAlignment="Center" />
+        Width="720"
+        Height="420">
+  <DockPanel Margin="24">
+    <StackPanel DockPanel.Dock="Top" Spacing="12">
+      <TextBlock FontSize="22" FontWeight="SemiBold" Text="MTDirector" />
+      <TextBlock Opacity="0.8" Text="Controller connection shell" />
+      <TextBlock Text="{Binding ControllerEndpoint, StringFormat=Endpoint: {0}}" />
+      <TextBlock FontSize="18" Text="{Binding StatusText, StringFormat=Status: {0}}" FontWeight="Bold" />
+      <TextBlock Text="{Binding ErrorText}"
+                 TextWrapping="Wrap"
+                 IsVisible="{Binding HasError}"
+                 Foreground="#B00020" />
+      <StackPanel Orientation="Horizontal" Spacing="12">
+        <Button Content="Connect" Command="{Binding ConnectCommand}" MinWidth="120" />
+        <Button Content="Disconnect" Command="{Binding DisconnectCommand}" MinWidth="120" />
+      </StackPanel>
+    </StackPanel>
+  </DockPanel>
 </Window>
