@@ -14,3 +14,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Pinned .NET 10 SDK (`global.json` 10.0.302), Central Package Management, deterministic build props, `.editorconfig`, and NuGet.config.
 - Solution skeleton `MikroTikFirewallController.sln` with normative `Mfc.*` assemblies and project-reference boundaries.
 - Architecture boundary tests (M0-04) that fail the build when assembly dependency rules are violated.
+- Health-only Controller host with gRPC health checks, TLS/loopback validation, JSON logging, and graceful shutdown (M0-05).

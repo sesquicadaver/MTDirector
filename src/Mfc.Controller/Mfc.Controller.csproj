@@ -1,13 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <RootNamespace>Mfc.Controller</RootNamespace>
+    <AssemblyName>Mfc.Controller</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" />
+    <PackageReference Include="Grpc.AspNetCore.HealthChecks" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mfc.Application\Mfc.Application.csproj" />
     <ProjectReference Include="..\Mfc.Infrastructure\Mfc.Infrastructure.csproj" />
     <ProjectReference Include="..\Mfc.RouterOs\Mfc.RouterOs.csproj" />
     <ProjectReference Include="..\Mfc.Contracts\Mfc.Contracts.csproj" />
   </ItemGroup>
-  <PropertyGroup>
-    <RootNamespace>Mfc.Controller</RootNamespace>
-    <AssemblyName>Mfc.Controller</AssemblyName>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
 </Project>
