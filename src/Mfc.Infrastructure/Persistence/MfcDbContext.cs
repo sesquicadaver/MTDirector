@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using Mfc.Infrastructure.Persistence.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mfc.Infrastructure.Persistence;
 

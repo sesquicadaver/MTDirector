@@ -2,10 +2,10 @@ using System.Reflection;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Microsoft.Extensions.Configuration;
 using Mfc.Desktop.Configuration;
 using Mfc.Desktop.Services;
 using Mfc.Desktop.ViewModels;
+using Microsoft.Extensions.Configuration;
 
 namespace Mfc.Desktop;
 

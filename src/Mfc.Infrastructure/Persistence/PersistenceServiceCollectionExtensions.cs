@@ -1,6 +1,6 @@
+using Mfc.Infrastructure.Persistence.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Mfc.Infrastructure.Persistence.Hosting;
 
 namespace Mfc.Infrastructure.Persistence;
 

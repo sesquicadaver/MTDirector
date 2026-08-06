@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Mfc.Controller.Configuration;
 using Mfc.Infrastructure.Persistence;
 using Mfc.Infrastructure.Persistence.Logging;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Mfc.Controller;
 

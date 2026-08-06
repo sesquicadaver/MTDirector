@@ -47,6 +47,8 @@ dotnet test -c Release
 
 PostgreSQL for persistence tests is started via Testcontainers (Docker required). Local Controllers use [`testlab/postgres/compose.yml`](testlab/postgres/compose.yml) — see [`docs/development/database-migrations.md`](docs/development/database-migrations.md).
 
+CI details: [`docs/development/ci.md`](docs/development/ci.md). Pull requests must keep the `ci` workflow green.
+
 ## Security
 
 - Never commit secrets, certificates, CHR images, or production configs.
