@@ -4,7 +4,9 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 
 ## Статус
 
-Документальний етап. Реалізація починається з **M0-01** за [`ROADMAP.md`](ROADMAP.md).
+Документальний етап + governance bootstrap. Наступна реалізація — за [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
+
+Див. також [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md), [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Документи
 

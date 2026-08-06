@@ -1,0 +1,74 @@
+# Build
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+artifacts/
+TestResults/
+BenchmarkDotNet.Artifacts/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+project.lock.json
+project.fragment.lock.json
+
+# IDE
+.vs/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# .NET
+*.nupkg
+*.snupk
+packages/
+.nuget/
+*.DotSettings.user
+
+# Coverage / reports
+coverage/
+*.coverage
+*.coveragexml
+coverlet/
+lcov.info
+coverage.json
+
+# Local env / secrets (never commit)
+.env
+.env.*
+!.env.example
+*.pfx
+*.p12
+*.pem
+*.key
+*.crt
+secrets/
+**/appsettings.*.local.json
+**/appsettings.Production.json
+*.cer
+id_rsa
+id_ed25519
+*.kdbx
+
+# CHR / testlab local assets
+testlab/chr/images/
+testlab/chr/private/
+testlab/**/*.qcow2
+testlab/**/*.vmdk
+testlab/**/*.img
+**/manifest.local.json
+
+# Database dumps
+*.dump
+*.sql.gz
+**/backups/
+
+# OS / tooling
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/

@@ -1,0 +1,24 @@
+# MTDirector CODEOWNERS
+# Required reviews for security-sensitive and deployment-critical paths.
+# Owners: repository administrator until a dedicated review team exists.
+
+* @sesquicadaver
+
+# CI / release
+.github/workflows/ @sesquicadaver
+
+# RouterOS transport and protocol
+src/Mfc.RouterOs/ @sesquicadaver
+
+# Deployment engine
+src/Mfc.Application/Deployments/ @sesquicadaver
+
+# Secrets and security infrastructure
+src/Mfc.Infrastructure/Security/ @sesquicadaver
+src/Mfc.Infrastructure/Secrets/ @sesquicadaver
+
+# Database migrations
+src/Mfc.Infrastructure/Persistence/Migrations/ @sesquicadaver
+
+# External schemas / contracts
+schemas/ @sesquicadaver

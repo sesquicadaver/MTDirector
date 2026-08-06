@@ -1,0 +1,55 @@
+name: Task
+description: Implementation or documentation task (prefer ROADMAP logical IDs)
+title: "[task] "
+labels: ["type:feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Prefer opening work from existing ROADMAP issues (`ISSUES.md`).
+        Use this template only when a new atomic task is required.
+  - type: input
+    id: logical_id
+    attributes:
+      label: Logical ID
+      description: e.g. M0-02 (or NEW if proposing an addition)
+      placeholder: M0-02
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Verifiable result
+      description: One concrete outcome for a single PR
+    validations:
+      required: true
+  - type: textarea
+    id: depends
+    attributes:
+      label: Dependencies
+      description: Logical IDs or milestone gates that must be closed first
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Checklist that proves the issue is done
+    validations:
+      required: true
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Risk
+      options:
+        - normal
+        - high
+    validations:
+      required: true
+  - type: checkboxes
+    id: anti_stub
+    attributes:
+      label: Anti-stub
+      options:
+        - label: This task will not leave pass/NotImplemented/disabled tests in production code
+          required: true
