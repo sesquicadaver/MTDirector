@@ -8,9 +8,13 @@ namespace Mfc.Desktop;
 /// </summary>
 internal static class Program
 {
+    // Preserve Contracts project reference for architecture analysis.
+    private static readonly Type ContractsAnchor = typeof(Contracts.AssemblyMarker);
+
     [STAThread]
     public static void Main(string[] args)
     {
+        _ = ContractsAnchor;
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 
