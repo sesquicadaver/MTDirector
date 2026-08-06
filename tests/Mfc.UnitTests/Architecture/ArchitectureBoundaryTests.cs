@@ -190,6 +190,23 @@ public sealed class ArchitectureBoundaryTests
         }
     }
 
+    [Fact]
+    public void InfrastructureMustNotReferenceSqlite()
+    {
+        AssertDoesNotReference(
+            Infrastructure,
+            "Microsoft.Data.Sqlite",
+            "Infrastructure must not use SQLite");
+        AssertDoesNotReference(
+            Infrastructure,
+            "Microsoft.EntityFrameworkCore.Sqlite",
+            "Infrastructure must not use EF Core SQLite provider");
+        AssertReferences(
+            Infrastructure,
+            "Npgsql.EntityFrameworkCore.PostgreSQL",
+            "Infrastructure must use PostgreSQL provider");
+    }
+
     /// <summary>
     /// Controlled negative proof: detector sees Application→Domain and rejects a fake Application→Infrastructure claim.
     /// </summary>

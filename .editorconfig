@@ -85,3 +85,9 @@ dotnet_naming_rule.non_field_members_pascal.style = pascal_case_style
 
 dotnet_naming_symbols.non_field_symbols.applicable_kinds = property,event,method
 dotnet_naming_symbols.non_field_symbols.applicable_accessibilities = *
+
+# EF Core generated migrations (block namespaces / inline arrays by design)
+[**/Persistence/Migrations/**.cs]
+csharp_style_namespace_declarations = block_scoped:silent
+dotnet_diagnostic.IDE0161.severity = none
+dotnet_diagnostic.CA1861.severity = none

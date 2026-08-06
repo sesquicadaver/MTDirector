@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 namespace Mfc.Controller.Configuration;
 
 /// <summary>
-/// Fails fast on illegal Controller host configuration (TLS, bind, development auth).
+/// Fails fast on illegal Controller host configuration (TLS, bind, development auth, database, master key).
 /// </summary>
 public static class ControllerOptionsValidator
 {
@@ -31,6 +31,21 @@ public static class ControllerOptionsValidator
         bool isLoopback = IsLoopback(listenUri);
         bool isHttps = string.Equals(listenUri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase);
 
+        if (string.IsNullOrWhiteSpace(options.Database.ConnectionString))
+        {
+            throw new InvalidOperationException("Mfc:Database:ConnectionString is required.");
+        }
+
+        if (ContainsSqlite(options.Database.ConnectionString))
+        {
+            throw new InvalidOperationException("SQLite is not a supported production database. Use PostgreSQL.");
+        }
+
+        if (string.IsNullOrWhiteSpace(options.Security.MasterKeyProvider))
+        {
+            throw new InvalidOperationException("Mfc:Security:MasterKeyProvider is required.");
+        }
+
         if (!isDevelopment)
         {
             if (options.Grpc.AllowInsecureLoopback)
@@ -41,6 +56,11 @@ public static class ControllerOptionsValidator
             if (options.Authentication.AllowDevelopmentAuthentication)
             {
                 throw new InvalidOperationException("Development authentication is forbidden outside Development.");
+            }
+
+            if (string.Equals(options.Security.MasterKeyProvider, "Development", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("Development master-key provider is forbidden outside Development.");
             }
 
             if (!isHttps || !options.Security.RequireTls)
@@ -86,4 +106,9 @@ public static class ControllerOptionsValidator
 
         return false;
     }
+
+    private static bool ContainsSqlite(string connectionString)
+        => connectionString.Contains("Data Source=", StringComparison.OrdinalIgnoreCase)
+           || connectionString.Contains("Filename=", StringComparison.OrdinalIgnoreCase)
+           || connectionString.Contains("Mode=Memory", StringComparison.OrdinalIgnoreCase);
 }

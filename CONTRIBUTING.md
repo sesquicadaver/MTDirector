@@ -37,7 +37,7 @@ Example: `chore/m0-01-repository-governance`
 
 > **Note:** Automated branch protection on private repos requires GitHub Pro (or a public repo). Until then, follow the process rules in [`docs/development/git-workflow.md`](docs/development/git-workflow.md).
 
-## Local checks (when toolchain exists)
+## Local checks
 
 ```bash
 dotnet restore --locked-mode
@@ -45,7 +45,7 @@ dotnet build -c Release
 dotnet test -c Release
 ```
 
-Until M0-02 / M0-03 land, document-only changes do not require a .NET build.
+PostgreSQL for persistence tests is started via Testcontainers (Docker required). Local Controllers use [`testlab/postgres/compose.yml`](testlab/postgres/compose.yml) — see [`docs/development/database-migrations.md`](docs/development/database-migrations.md).
 
 ## Security
 

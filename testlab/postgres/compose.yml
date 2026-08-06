@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:18-alpine@sha256:9a8afca54e7861fd90fab5fdf4c42477a6b1cb7d293595148e674e0a3181de15
+    container_name: mfc-postgres-dev
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: mfc
+      POSTGRES_PASSWORD: mfc_dev_only_change_me
+      POSTGRES_DB: mfc
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mfc -d mfc"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # No persistent volume by default (Bootstrap Plan §18).

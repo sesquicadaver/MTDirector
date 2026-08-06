@@ -1,20 +1,27 @@
 using Mfc.Controller;
 using Mfc.Desktop.Configuration;
 using Mfc.Desktop.Services;
+using Mfc.Infrastructure.Persistence;
+using Mfc.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace Mfc.IntegrationTests.Desktop;
 
+[Collection(PostgresSharedFixtureDefinition.Name)]
 public sealed class ControllerConnectionServiceTests
 {
-    public ControllerConnectionServiceTests()
+    private readonly PostgresFixture _postgres;
+
+    public ControllerConnectionServiceTests(PostgresFixture postgres)
     {
+        _postgres = postgres;
         AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
     }
 
     [Fact]
     public async Task ConnectAsyncAgainstHealthyControllerReachesConnected()
     {
+        string connectionString = await _postgres.CreateFreshDatabaseAsync();
         string url = $"http://127.0.0.1:{GetFreeTcpPort()}";
         await using var host = Program.BuildHost(
             [
@@ -23,9 +30,12 @@ public sealed class ControllerConnectionServiceTests
                 "--Mfc:Grpc:AllowInsecureLoopback=true",
                 "--Mfc:Grpc:ShutdownTimeoutSeconds=5",
                 "--Mfc:Security:RequireTls=true",
+                "--Mfc:Security:MasterKeyProvider=Development",
                 "--Mfc:Authentication:AllowDevelopmentAuthentication=true",
+                $"--Mfc:Database:ConnectionString={connectionString}",
             ]);
 
+        await host.Services.MigrateAsync();
         await host.StartAsync();
         try
         {
