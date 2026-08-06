@@ -9,8 +9,11 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Grpc.Net.Client" />
+    <PackageReference Include="Grpc.HealthCheck" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Mfc.Infrastructure\Mfc.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Mfc.Controller\Mfc.Controller.csproj" />
   </ItemGroup>
 </Project>
