@@ -35,6 +35,8 @@ Example: `chore/m0-01-repository-governance`
 - CI must be green; conversations resolved.
 - High-risk changes (RouterOS write, deployment, secrets, authz, migrations, CI/release) need at least two reviews when a second reviewer is available.
 
+> **Note:** Automated branch protection on private repos requires GitHub Pro (or a public repo). Until then, follow the process rules in [`docs/development/git-workflow.md`](docs/development/git-workflow.md).
+
 ## Local checks (when toolchain exists)
 
 ```bash
