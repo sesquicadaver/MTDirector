@@ -12,3 +12,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Repository governance baseline (`.gitignore`, `.gitattributes`, contributing and security docs, PR/issue templates, CODEOWNERS).
 - Normative specifications, ROADMAP, and GitHub issue tracker for M0–M7.
 - Pinned .NET 10 SDK (`global.json` 10.0.302), Central Package Management, deterministic build props, `.editorconfig`, and NuGet.config.
+- Solution skeleton `MikroTikFirewallController.sln` with normative `Mfc.*` assemblies and project-reference boundaries.

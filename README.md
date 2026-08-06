@@ -40,4 +40,5 @@ Desktop Avalonia → gRPC/mTLS → ASP.NET Core Controller → PostgreSQL → Ro
 - SDK: pinned in [`global.json`](global.json) (`.NET 10`, `allowPrerelease: false`)
 - Packages: Central Package Management — [`Directory.Packages.props`](Directory.Packages.props)
 - Build defaults: [`Directory.Build.props`](Directory.Build.props) (`Nullable`, `TreatWarningsAsErrors`, `Deterministic`, lock files)
+- Solution: [`MikroTikFirewallController.sln`](MikroTikFirewallController.sln)
 )
