@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -14,9 +15,28 @@ THRESHOLDS = {
     "Mfc.Application": {"line": 0.85, "branch": 0.75},
 }
 
+_CONDITION_RE = re.compile(r"\((\d+)/(\d+)\)")
+
 
 def is_generated_class(class_name: str) -> bool:
     return "RegexGenerator" in class_name or ".Generated." in class_name
+
+
+def line_branch_totals(lines: list[ET.Element]) -> tuple[int, int, int, int]:
+    """Return (lines_hit, lines_valid, branches_hit, branches_valid)."""
+    lines_hit = sum(1 for line in lines if int(line.get("hits") or "0") > 0)
+    lines_valid = len(lines)
+    branches_hit = 0
+    branches_valid = 0
+    for line in lines:
+        if (line.get("branch") or "").lower() != "true":
+            continue
+        match = _CONDITION_RE.search(line.get("condition-coverage") or "")
+        if match is None:
+            continue
+        branches_hit += int(match.group(1))
+        branches_valid += int(match.group(2))
+    return lines_hit, lines_valid, branches_hit, branches_valid
 
 
 def package_rates(cobertura: Path) -> dict[str, tuple[float, float, int]]:
@@ -48,10 +68,12 @@ def package_rates(cobertura: Path) -> dict[str, tuple[float, float, int]]:
             rates[matched_key] = (line_rate, branch_rate, lines_valid)
             continue
 
-        hits = sum(1 for line in lines if int(line.get("hits") or "0") > 0)
-        lines_valid = len(lines)
-        line_rate = hits / lines_valid
-        branch_rate = float(pkg.get("branch-rate") or "0")
+        lines_hit, lines_valid, branches_hit, branches_valid = line_branch_totals(lines)
+        line_rate = lines_hit / lines_valid if lines_valid else 0.0
+        if branches_valid > 0:
+            branch_rate = branches_hit / branches_valid
+        else:
+            branch_rate = float(pkg.get("branch-rate") or "0")
         rates[matched_key] = (line_rate, branch_rate, lines_valid)
     return rates
 
