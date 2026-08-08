@@ -28,7 +28,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Authenticated API-SSL | Done (M1-09) | `src/Mfc.RouterOs/Transport/AuthenticatedRosConnection.cs` |
 | Typed read executor | Done (M1-10) | `src/Mfc.RouterOs/Commands/RosReadCommandExecutor.cs` |
 | System/service discovery | Done (M1-11) | `src/Mfc.RouterOs/Discovery/SystemServiceDiscovery.cs` |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-12 (#22) |
+| Interface/address discovery | Done (M1-12) | `src/Mfc.RouterOs/Discovery/InterfaceAddressDiscovery.cs` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-13 (#23) |
 
 ## ADRs
 
