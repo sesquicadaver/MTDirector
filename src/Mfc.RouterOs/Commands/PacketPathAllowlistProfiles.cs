@@ -75,6 +75,23 @@ internal static class PacketPathAllowlistProfiles
             P("invalid", RosPropertyClassification.ObservationTyped),
         ]);
 
+    public static RosPropertyProfile VlanInterfaces { get; } = new(
+        "vlan_interfaces",
+        [
+            P(".id", RosPropertyClassification.RawOnly),
+            P("name"),
+            P("vlan-id"),
+            P("interface"),
+            P("mtu"),
+            P("use-service-tag"),
+            P("comment", redaction: RosRedactionPolicy.LogRedacted),
+            P("disabled"),
+            P("running", RosPropertyClassification.ObservationTyped),
+            P("actual-mtu", RosPropertyClassification.ObservationTyped),
+            P("dynamic", RosPropertyClassification.ObservationTyped),
+            P("invalid", RosPropertyClassification.ObservationTyped),
+        ]);
+
     private static RosPropertyDefinition P(
         string name,
         RosPropertyClassification classification = RosPropertyClassification.ConfigTyped,

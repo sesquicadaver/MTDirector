@@ -7,9 +7,9 @@ namespace Mfc.UnitTests.RouterOs;
 public sealed class PacketPathAllowlistTests
 {
     [Fact]
-    public void RegistersContainerAppVethAndVrfPrintCommands()
+    public void RegistersContainerAppVethVrfAndVlanPrintCommands()
     {
-        Assert.Equal(4, PacketPathAllowlist.CommandIds.Count);
+        Assert.Equal(5, PacketPathAllowlist.CommandIds.Count);
         Assert.Equal(
             PacketPathAllowlist.FixedPaths.OrderBy(p => p, StringComparer.Ordinal),
             PacketPathAllowlist.CommandIds
@@ -20,6 +20,7 @@ public sealed class PacketPathAllowlistTests
         Assert.True(RosReadCommandRegistry.IsAllowlistedPath("/app/print"));
         Assert.True(RosReadCommandRegistry.IsAllowlistedPath("/interface/veth/print"));
         Assert.True(RosReadCommandRegistry.IsAllowlistedPath("/ip/vrf/print"));
+        Assert.True(RosReadCommandRegistry.IsAllowlistedPath("/interface/vlan/print"));
     }
 
     [Fact]

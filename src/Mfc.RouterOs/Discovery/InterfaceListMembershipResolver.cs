@@ -12,6 +12,9 @@ public sealed class DiscoveryFinding
     public const string VrrpRoleInconsistent = "VRRP_ROLE_INCONSISTENT";
     public const string InvalidVrrpVrid = "INVALID_VRRP_VRID";
     public const string UnknownSwitchChip = "UNKNOWN_SWITCH_CHIP";
+    public const string MissingVethReference = "MISSING_VETH_REFERENCE";
+    public const string MissingVrfInterfaceReference = "MISSING_VRF_INTERFACE_REFERENCE";
+    public const string SharedVethMultiEndpoint = "SHARED_VETH_MULTI_ENDPOINT";
 
     public required string Code { get; init; }
 
