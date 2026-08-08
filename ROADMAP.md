@@ -3,7 +3,7 @@
 **Дата оновлення:** 8 серпня 2026  
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач  
 **Продукт:** MikroTik Firewall Controller (MTDirector)  
-**Базовий коміт аудиту:** M1-11 (system/service discovery) — черга зсунута на M1-12
+**Базовий коміт аудиту:** M1-12 (interface/address discovery) — черга зсунута на M1-13
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -41,13 +41,13 @@
 | Область | Closed | Open | % |
 |---------|-------:|-----:|--:|
 | M0 Bootstrap | 10 | 0 | 100% |
-| M1 Read-only slice | 11 | 23 | 32% |
+| M1 Read-only slice | 12 | 22 | 35% |
 | N1 Packet-path weave | 0 | 7 | 0% |
 | M2–M6 (решта MVP) | 0 | 58 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **21** | **115** | **~15% issues** |
+| **Разом** | **22** | **114** | **~16% issues** |
 
-MVP issues (109) = 21 done + **88 remaining** до MVP CLOSED.  
+MVP issues (109) = 22 done + **87 remaining** до MVP CLOSED.  
 Post-MVP M7 = **27** після MVP.
 
 ### 2.2 DONE (не в черзі)
@@ -66,19 +66,20 @@ Post-MVP M7 = **27** після MVP.
 | M1-09 | #19 | Authenticated API-SSL connection + modern /login |
 | M1-10 | #20 | Typed allowlisted RouterOS read executor |
 | M1-11 | #21 | System and service discovery (identity/API-SSL) |
+| M1-12 | #22 | Interface and address discovery |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
-| `Mfc.RouterOs` | protocol + typed executor + system/service discovery (M1-06..11); next: interfaces |
+| `Mfc.RouterOs` | protocol + typed executor + system/interface discovery (M1-06..12); next: firewall |
 | `Mfc.Contracts` | лише marker — немає proto gRPC inventory/diff |
 | `Mfc.Application` | inventory/snapshot use cases (M1-05); RouterOS port без реалізації |
 | `Mfc.Controller` | health-only gRPC + persistence/secrets DI |
 | `Mfc.Desktop` | connection shell; **немає** inventory/snapshot/diff UI |
 | Persistence | schema snapshots є; EF adapters для inventory/capture — наступні issues |
 
-**NEXT = черга #8:** [M1-12](https://github.com/sesquicadaver/MTDirector/issues/22).
+**NEXT = черга #9:** [M1-13](https://github.com/sesquicadaver/MTDirector/issues/23).
 
 ---
 
@@ -106,7 +107,7 @@ Post-MVP M7 = **27** після MVP.
 | # | ID | GitHub | Задача |
 |--:|----|-------:|--------|
 | ~~7~~ | ~~M1-11~~ | ~~#21~~ | ~~Implement system and service discovery~~ → §2.2 DONE |
-| 8 | M1-12 | #22 | Implement interface and address discovery |
+| ~~8~~ | ~~M1-12~~ | ~~#22~~ | ~~Implement interface and address discovery~~ → §2.2 DONE |
 | 9 | M1-13 | #23 | Implement firewall and address-list discovery |
 | 10 | M1-14 | #24 | Implement routing and firewall-dependency discovery |
 | 11 | M1-15 | #25 | Implement VRRP discovery |
@@ -315,7 +316,8 @@ Post-MVP M7 = **27** після MVP.
 | Authenticated API-SSL | M1-09 | local test CA; login | **DONE** |
 | Typed read executor | M1-10 | allowlist; trap/fatal; arch Write ban | **DONE** |
 | System/service discovery | M1-11 | identity/API-SSL; sanitized fixture | **DONE** |
-| Remaining discovery | M1-12…17 | interfaces→capabilities | TODO #8 |
+| Interface/address discovery | M1-12 | CIDR; list membership; cycles | **DONE** |
+| Remaining discovery | M1-13…17 | firewall→capabilities | TODO #9 |
 | Packet-path / HW-offload | N1-01…03 | fixtures path classes | TODO |
 | Canonical hash + semantic diff | M1-19…24 | Canonical vectors; diff unit | TODO |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | TODO |
@@ -348,7 +350,7 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **чергу #8** → [M1-12 / issue #22](https://github.com/sesquicadaver/MTDirector/issues/22).  
+1. Відкрити **чергу #9** → [M1-13 / issue #23](https://github.com/sesquicadaver/MTDirector/issues/23).  
 2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.  
 3. Не стартувати M2, доки не закрито **M1-34** (черга #33).  
 4. Не стартувати M4, доки не закрито **M5-10** (черга #71).  
