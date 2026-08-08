@@ -68,6 +68,8 @@ public sealed class RosSession : IAsyncDisposable
     public async Task<RosCommandResult> ExecuteAsync(
         string command,
         IEnumerable<(string Name, string Value)>? attributes = null,
+        IEnumerable<(string Name, string Value)>? apiAttributes = null,
+        IEnumerable<string>? queryWords = null,
         TimeSpan? timeout = null,
         CancellationToken cancellationToken = default)
     {
@@ -97,7 +99,8 @@ public sealed class RosSession : IAsyncDisposable
 
         try
         {
-            await WriteCommandAsync(command, tag, attributes, linked.Token).ConfigureAwait(false);
+            await WriteCommandAsync(command, tag, attributes, apiAttributes, queryWords, linked.Token)
+                .ConfigureAwait(false);
             return await pending.Completion.Task.WaitAsync(linked.Token).ConfigureAwait(false);
         }
         catch (OperationCanceledException) when (IsFaulted || _sessionCts.IsCancellationRequested)
@@ -268,6 +271,8 @@ public sealed class RosSession : IAsyncDisposable
         string command,
         ulong tag,
         IEnumerable<(string Name, string Value)>? attributes,
+        IEnumerable<(string Name, string Value)>? apiAttributes,
+        IEnumerable<string>? queryWords,
         CancellationToken cancellationToken)
     {
         await _writeLock.WaitAsync(cancellationToken).ConfigureAwait(false);
@@ -293,12 +298,48 @@ public sealed class RosSession : IAsyncDisposable
                     Encoding.ASCII.GetBytes(tag.ToString(CultureInfo.InvariantCulture)),
                     isApiAttribute: true),
             ];
+            if (apiAttributes is not null)
+            {
+                foreach ((string name, string value) in apiAttributes)
+                {
+                    ArgumentException.ThrowIfNullOrWhiteSpace(name);
+                    if (string.Equals(name, "tag", StringComparison.Ordinal))
+                    {
+                        throw new ArgumentException(
+                            "Caller must not supply .tag; the session allocates tags.",
+                            nameof(apiAttributes));
+                    }
+
+                    apis.Add(new RosAttributeEntry(
+                        Encoding.ASCII.GetBytes(name),
+                        Encoding.UTF8.GetBytes(value),
+                        isApiAttribute: true));
+                }
+            }
+
+            List<ReadOnlyMemory<byte>> queries = [];
+            if (queryWords is not null)
+            {
+                foreach (string query in queryWords)
+                {
+                    ArgumentException.ThrowIfNullOrWhiteSpace(query);
+                    if (query[0] != '?')
+                    {
+                        throw new ArgumentException(
+                            "Query words must start with '?'.",
+                            nameof(queryWords));
+                    }
+
+                    queries.Add(Encoding.UTF8.GetBytes(query));
+                }
+            }
 
             ApiSentenceEncoder.Encode(
                 buffer,
                 Encoding.ASCII.GetBytes(command),
                 CollectionsMarshal.AsSpan(attrs),
-                CollectionsMarshal.AsSpan(apis));
+                CollectionsMarshal.AsSpan(apis),
+                CollectionsMarshal.AsSpan(queries));
             await _writer.WriteAsync(buffer.WrittenMemory, cancellationToken).ConfigureAwait(false);
             await _writer.FlushAsync(cancellationToken).ConfigureAwait(false);
         }

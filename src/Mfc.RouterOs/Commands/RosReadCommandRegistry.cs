@@ -1,0 +1,192 @@
+using Mfc.RouterOs.Redaction;
+
+namespace Mfc.RouterOs.Commands;
+
+/// <summary>
+/// Compile-time allowlist of RouterOS read commands (Read Adapter Spec §17).
+/// Callers select commands by <see cref="RosReadCommandId"/> only — never by free-form path.
+/// </summary>
+public static class RosReadCommandRegistry
+{
+    private static readonly HashSet<string> ForbiddenPathSegments = new(StringComparer.Ordinal)
+    {
+        "add", "set", "remove", "enable", "disable", "move", "reset",
+        "export", "import", "execute", "run", "login", "quit",
+    };
+
+    private static readonly Dictionary<RosReadCommandId, RosReadCommandDefinition> ById;
+
+    static RosReadCommandRegistry()
+    {
+        RosReadCommandDefinition[] all =
+        [
+            Def(RosReadCommandId.SystemIdentity, "/system/identity/print", RosResultShape.Singleton, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("system_identity", P(".id"), P("name"))),
+            Def(RosReadCommandId.SystemResource, "/system/resource/print", RosResultShape.Singleton, RosRequirement.Required, RosPassPolicy.StabilityGuard,
+                Props("system_resource", P("version"), P("build-time"), P("factory-software"), P("platform"), P("board-name"), P("architecture-name"), P("cpu"), P("cpu-count"), P("total-memory"), P("total-hdd-space"))),
+            Def(RosReadCommandId.SystemRouterboard, "/system/routerboard/print", RosResultShape.Singleton, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                Props("system_routerboard", P("model"), P("serial-number"), P("firmware-type"), P("factory-firmware"), P("current-firmware"), P("upgrade-firmware"))),
+            Def(RosReadCommandId.SystemPackages, "/system/package/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("system_packages", P(".id"), P("name"), P("version"), P("build-time"), P("disabled"))),
+            Def(RosReadCommandId.IpServices, "/ip/service/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("ip_services", P(".id"), P("name"), P("port"), P("address"), P("certificate"), P("tls-version"), P("disabled"))),
+            Def(RosReadCommandId.Interfaces, "/interface/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("interfaces", P(".id"), P("name"), P("type"), P("mtu"), P("actual-mtu"), P("mac-address"), P("disabled"), P("comment"), P("running"), P("slave"))),
+            Def(RosReadCommandId.Ipv4Addresses, "/ip/address/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("ipv4_addresses", P(".id"), P("address"), P("network"), P("interface"), P("disabled"), P("comment"), P("dynamic"))),
+            Def(RosReadCommandId.Ipv6Addresses, "/ipv6/address/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("ipv6_addresses", P(".id"), P("address"), P("from-pool"), P("interface"), P("advertise"), P("eui-64"), P("disabled"), P("comment"), P("dynamic"))),
+            Def(RosReadCommandId.InterfaceLists, "/interface/list/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("interface_lists", P(".id"), P("name"), P("include"), P("exclude"), P("comment"))),
+            Def(RosReadCommandId.InterfaceListMembers, "/interface/list/member/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("interface_list_members", P(".id"), P("list"), P("interface"), P("disabled"), P("comment"))),
+            Def(RosReadCommandId.Ipv4Filter, "/ip/firewall/filter/print", RosResultShape.OrderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("ipv4_filter", P(".id"), P("chain"), P("action"), P("src-address"), P("dst-address"), P("protocol"), P("src-port"), P("dst-port"), P("in-interface"), P("out-interface"), P("in-interface-list"), P("out-interface-list"), P("connection-state"), P("disabled"), P("comment")),
+                RosQueryProfile.AllRows),
+            Def(RosReadCommandId.Ipv6Filter, "/ipv6/firewall/filter/print", RosResultShape.OrderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("ipv6_filter", P(".id"), P("chain"), P("action"), P("src-address"), P("dst-address"), P("protocol"), P("src-port"), P("dst-port"), P("in-interface"), P("out-interface"), P("in-interface-list"), P("out-interface-list"), P("connection-state"), P("disabled"), P("comment")),
+                RosQueryProfile.AllRows),
+            Def(RosReadCommandId.Ipv4AddressLists, "/ip/firewall/address-list/print", RosResultShape.DigestedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("ipv4_address_lists", P(".id"), P("list"), P("address"), P("timeout"), P("disabled"), P("comment"), P("dynamic"))),
+            Def(RosReadCommandId.Ipv6AddressLists, "/ipv6/firewall/address-list/print", RosResultShape.DigestedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("ipv6_address_lists", P(".id"), P("list"), P("address"), P("timeout"), P("disabled"), P("comment"), P("dynamic"))),
+            Def(RosReadCommandId.Ipv4Nat, "/ip/firewall/nat/print", RosResultShape.OrderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("ipv4_nat", P(".id"), P("chain"), P("action"), P("src-address"), P("dst-address"), P("to-addresses"), P("to-ports"), P("protocol"), P("src-port"), P("dst-port"), P("in-interface"), P("out-interface"), P("disabled"), P("comment")),
+                RosQueryProfile.AllRows),
+            Def(RosReadCommandId.Ipv6Nat, "/ipv6/firewall/nat/print", RosResultShape.OrderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                Props("ipv6_nat", P(".id"), P("chain"), P("action"), P("src-address"), P("dst-address"), P("to-address"), P("protocol"), P("src-port"), P("dst-port"), P("in-interface"), P("out-interface"), P("disabled"), P("comment")),
+                RosQueryProfile.AllRows),
+            Def(RosReadCommandId.Ipv4Raw, "/ip/firewall/raw/print", RosResultShape.OrderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("ipv4_raw", P(".id"), P("chain"), P("action"), P("src-address"), P("dst-address"), P("protocol"), P("in-interface"), P("out-interface"), P("disabled"), P("comment")),
+                RosQueryProfile.AllRows),
+            Def(RosReadCommandId.Ipv6Raw, "/ipv6/firewall/raw/print", RosResultShape.OrderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                Props("ipv6_raw", P(".id"), P("chain"), P("action"), P("src-address"), P("dst-address"), P("protocol"), P("in-interface"), P("out-interface"), P("disabled"), P("comment")),
+                RosQueryProfile.AllRows),
+            Def(RosReadCommandId.Ipv4Mangle, "/ip/firewall/mangle/print", RosResultShape.OrderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("ipv4_mangle", P(".id"), P("chain"), P("action"), P("src-address"), P("dst-address"), P("protocol"), P("new-routing-mark"), P("passthrough"), P("disabled"), P("comment")),
+                RosQueryProfile.AllRows),
+            Def(RosReadCommandId.Ipv6Mangle, "/ipv6/firewall/mangle/print", RosResultShape.OrderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                Props("ipv6_mangle", P(".id"), P("chain"), P("action"), P("src-address"), P("dst-address"), P("protocol"), P("new-routing-mark"), P("passthrough"), P("disabled"), P("comment")),
+                RosQueryProfile.AllRows),
+            Def(RosReadCommandId.RoutingTables, "/routing/table/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("routing_tables", P(".id"), P("name"), P("fib"), P("comment"))),
+            Def(RosReadCommandId.RoutingRules, "/routing/rule/print", RosResultShape.OrderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("routing_rules", P(".id"), P("src-address"), P("dst-address"), P("routing-mark"), P("action"), P("table"), P("disabled"), P("comment"))),
+            Def(RosReadCommandId.Ipv4StaticRoutes, "/ip/route/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("ipv4_static_routes", P(".id"), P("dst-address"), P("gateway"), P("distance"), P("scope"), P("target-scope"), P("routing-table"), P("check-gateway"), P("disabled"), P("comment"), P("static"), P("dynamic"), P("active")),
+                RosQueryProfile.StaticRoutes),
+            Def(RosReadCommandId.Ipv6StaticRoutes, "/ipv6/route/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("ipv6_static_routes", P(".id"), P("dst-address"), P("gateway"), P("distance"), P("scope"), P("target-scope"), P("routing-table"), P("check-gateway"), P("disabled"), P("comment"), P("static"), P("dynamic"), P("active")),
+                RosQueryProfile.StaticRoutes),
+            Def(RosReadCommandId.Ipv4DefaultRouteState, "/ip/route/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.Pass1Only,
+                Props("ipv4_default_route_state", P(".id"), P("dst-address"), P("gateway"), P("distance"), P("routing-table"), P("active"), P("dynamic"), P("static"), P("disabled")),
+                RosQueryProfile.Ipv4DefaultRoutes),
+            Def(RosReadCommandId.Ipv6DefaultRouteState, "/ipv6/route/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.Pass1Only,
+                Props("ipv6_default_route_state", P(".id"), P("dst-address"), P("gateway"), P("distance"), P("routing-table"), P("active"), P("dynamic"), P("static"), P("disabled")),
+                RosQueryProfile.Ipv6DefaultRoutes),
+            Def(RosReadCommandId.Ipv4Settings, "/ip/settings/print", RosResultShape.Singleton, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("ipv4_settings", P("ip-forward"), P("accept-redirects"), P("accept-source-route"), P("allow-fast-path"), P("rp-filter"), P("secure-redirects"), P("send-redirects"), P("tcp-syncookies"))),
+            Def(RosReadCommandId.Ipv6Settings, "/ipv6/settings/print", RosResultShape.Singleton, RosRequirement.Required, RosPassPolicy.BothPasses,
+                Props("ipv6_settings", P("forward"), P("accept-redirects"), P("accept-router-advertisements"), P("disable-ipv6"), P("max-neighbor-entries"))),
+            Def(RosReadCommandId.VrrpInterfaces, "/interface/vrrp/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                Props("vrrp_interfaces", P(".id"), P("name"), P("interface"), P("vrid"), P("priority"), P("version"), P("authentication"), P("disabled"), P("comment"), P("running"), P("master"))),
+            Def(RosReadCommandId.Bridges, "/interface/bridge/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                Props("bridges", P(".id"), P("name"), P("mtu"), P("arp"), P("protocol-mode"), P("vlan-filtering"), P("disabled"), P("comment"), P("running"))),
+            Def(RosReadCommandId.BridgePorts, "/interface/bridge/port/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                Props("bridge_ports", P(".id"), P("interface"), P("bridge"), P("pvid"), P("frame-types"), P("ingress-filtering"), P("horizon"), P("disabled"), P("comment"))),
+            Def(RosReadCommandId.BridgeSettings, "/interface/bridge/settings/print", RosResultShape.Singleton, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                Props("bridge_settings", P("use-ip-firewall"), P("use-ip-firewall-for-vlan"), P("use-ip-firewall-for-pppoe"), P("allow-fast-path"))),
+            Def(RosReadCommandId.BridgeVlans, "/interface/bridge/vlan/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                Props("bridge_vlans", P(".id"), P("bridge"), P("vlan-ids"), P("tagged"), P("untagged"), P("disabled"), P("comment"))),
+            Def(RosReadCommandId.EthernetSwitches, "/interface/ethernet/switch/print", RosResultShape.UnorderedCollection, RosRequirement.Optional, RosPassPolicy.BothPasses,
+                Props("ethernet_switches", P(".id"), P("name"), P("type"), P("l3-hw-offloading"))),
+            Def(RosReadCommandId.EthernetSwitchPorts, "/interface/ethernet/switch/port/print", RosResultShape.UnorderedCollection, RosRequirement.Optional, RosPassPolicy.BothPasses,
+                Props("ethernet_switch_ports", P(".id"), P("name"), P("switch"), P("vlan-mode"), P("vlan-header"), P("default-vlan-id"))),
+        ];
+
+        Dictionary<RosReadCommandId, RosReadCommandDefinition> map = new(all.Length);
+        foreach (RosReadCommandDefinition definition in all)
+        {
+            if (!map.TryAdd(definition.Id, definition))
+            {
+                throw new InvalidOperationException($"Duplicate command id '{definition.Id}'.");
+            }
+
+            ValidateNoForbiddenProperties(definition);
+            ValidateReadOnlyPath(definition);
+        }
+
+        if (map.Count != Enum.GetValues<RosReadCommandId>().Length)
+        {
+            throw new InvalidOperationException("RosReadCommandRegistry is missing one or more command ids.");
+        }
+
+        ById = map;
+        All = all;
+    }
+
+    public static IReadOnlyList<RosReadCommandDefinition> All { get; }
+
+    public static RosReadCommandDefinition Get(RosReadCommandId id)
+        => ById[id];
+
+    public static bool TryGet(RosReadCommandId id, out RosReadCommandDefinition definition)
+        => ById.TryGetValue(id, out definition!);
+
+    /// <summary>True when the path appears in the allowlist (exact match).</summary>
+    public static bool IsAllowlistedPath(string path)
+        => All.Any(d => string.Equals(d.FixedPath, path, StringComparison.Ordinal));
+
+    private static RosReadCommandDefinition Def(
+        RosReadCommandId id,
+        string path,
+        RosResultShape shape,
+        RosRequirement requirement,
+        RosPassPolicy passPolicy,
+        RosPropertyProfile profile,
+        RosQueryProfile? query = null)
+        => new(id, path, shape, requirement, passPolicy, profile, query ?? RosQueryProfile.None);
+
+    private static RosPropertyProfile Props(string id, params RosPropertyDefinition[] properties)
+        => new(id, properties);
+
+    private static RosPropertyDefinition P(
+        string name,
+        RosPropertyClassification classification = RosPropertyClassification.ConfigTyped,
+        RosRedactionPolicy redaction = RosRedactionPolicy.None)
+    {
+        if (string.Equals(name, "comment", StringComparison.Ordinal)
+            || string.Equals(name, "note", StringComparison.Ordinal))
+        {
+            redaction = RosRedactionPolicy.LogRedacted;
+        }
+
+        return new RosPropertyDefinition(name, classification, redaction);
+    }
+
+    private static void ValidateNoForbiddenProperties(RosReadCommandDefinition definition)
+    {
+        foreach (RosPropertyDefinition property in definition.PropertyProfile.Properties)
+        {
+            if (SensitiveFieldRegistry.IsForbidden(property.RouterOsName))
+            {
+                throw new InvalidOperationException(
+                    $"Command '{definition.Id}' requests forbidden property '{property.RouterOsName}'.");
+            }
+        }
+    }
+
+    private static void ValidateReadOnlyPath(RosReadCommandDefinition definition)
+    {
+        string path = definition.FixedPath;
+        // Match whole path segments only — "/ip/address/print" must not trip on substring "add".
+        string[] segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        if (segments.Length == 0
+            || !string.Equals(segments[^1], "print", StringComparison.Ordinal)
+            || segments.Any(ForbiddenPathSegments.Contains))
+        {
+            throw new InvalidOperationException(
+                $"Command '{definition.Id}' path '{path}' is not a read-only /print operation.");
+        }
+    }
+}

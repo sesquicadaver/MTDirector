@@ -26,7 +26,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | RouterOS sentence codec | Done (M1-07) | `ApiSentenceParser` / `ApiSentenceEncoder` |
 | Tagged API session | Done (M1-08) | `src/Mfc.RouterOs/Session/RosSession.cs` |
 | Authenticated API-SSL | Done (M1-09) | `src/Mfc.RouterOs/Transport/AuthenticatedRosConnection.cs` |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-10 (#20) |
+| Typed read executor | Done (M1-10) | `src/Mfc.RouterOs/Commands/RosReadCommandExecutor.cs` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-11 (#21) |
 
 ## ADRs
 

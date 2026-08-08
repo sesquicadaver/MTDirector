@@ -238,4 +238,36 @@ public sealed class ArchitectureBoundaryTests
         bool wouldFailIfInverted = References(Application, "Mfc.Domain");
         Assert.True(wouldFailIfInverted);
     }
+
+    /// <summary>
+    /// Read Adapter Spec §4: Write/Scripting/Terminal/GenericCommands namespaces are forbidden in Mfc.RouterOs.
+    /// </summary>
+    [Fact]
+    public void RouterOsMustNotExposeForbiddenWriteNamespaces()
+    {
+        string[] forbidden =
+        [
+            "Mfc.RouterOs.Write",
+            "Mfc.RouterOs.Scripting",
+            "Mfc.RouterOs.Terminal",
+            "Mfc.RouterOs.GenericCommands",
+        ];
+
+        Type[] types = RouterOs.GetTypes();
+        foreach (string ns in forbidden)
+        {
+            Type[] hits = types
+                .Where(t => string.Equals(t.Namespace, ns, StringComparison.Ordinal)
+                            || (t.Namespace is not null
+                                && t.Namespace.StartsWith(ns + ".", StringComparison.Ordinal)))
+                .ToArray();
+            Assert.True(
+                hits.Length == 0,
+                $"Forbidden namespace '{ns}' is present: {string.Join(", ", hits.Select(t => t.FullName))}");
+        }
+
+        Assert.Contains(
+            types,
+            t => t == typeof(Mfc.RouterOs.Commands.RosReadCommandExecutor));
+    }
 }
