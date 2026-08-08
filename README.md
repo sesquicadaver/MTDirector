@@ -4,7 +4,7 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 
 ## Статус
 
-M0 bootstrap complete for governance, toolchain, solution, health host, Desktop shell, PostgreSQL, CI, CHR skeleton, and initial ADRs. Next: M1 vertical slice — [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
+M1 in progress (inventory domain). Track work in [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
 
 Див. також [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md), [`CHANGELOG.md`](CHANGELOG.md).
 

@@ -20,3 +20,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Deterministic GitHub Actions CI (Linux validate + Windows Desktop build) with locked restore, format, coverage gates, and vulnerability scan (M0-08).
 - Isolated CHR testlab skeleton with topology contracts, synthetic fixtures, and lab isolation docs (M0-09).
 - Initial Accepted ADRs (0001–0005) and reproducible development/operations documentation (M0-10).
+- Inventory domain model: Site/Node/Device aggregates plus Uplink, ZoneBinding, VrrpGroup/VrrpMember value model with typed management endpoints (M1-01).
