@@ -1,7 +1,7 @@
 namespace Mfc.RouterOs;
 
 /// <summary>
-/// Assembly marker. Read adapter protocol: word-length (M1-06) + sentence codec (M1-07).
+/// Assembly marker. Read adapter: word/sentence/session/API-SSL (M1-06…M1-09).
 /// Write namespace is intentionally absent.
 /// </summary>
 public static class AssemblyMarker
@@ -19,4 +19,7 @@ public static class AssemblyMarker
 
     /// <summary>Roots the tagged session for architecture and smoke scans.</summary>
     public static Type SessionAnchor { get; } = typeof(Session.RosSession);
+
+    /// <summary>Roots the authenticated API-SSL connection for architecture scans.</summary>
+    public static Type ApiSslConnectionAnchor { get; } = typeof(Transport.AuthenticatedRosConnection);
 }
