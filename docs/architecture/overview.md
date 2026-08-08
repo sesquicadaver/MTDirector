@@ -29,7 +29,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Typed read executor | Done (M1-10) | `src/Mfc.RouterOs/Commands/RosReadCommandExecutor.cs` |
 | System/service discovery | Done (M1-11) | `src/Mfc.RouterOs/Discovery/SystemServiceDiscovery.cs` |
 | Interface/address discovery | Done (M1-12) | `src/Mfc.RouterOs/Discovery/InterfaceAddressDiscovery.cs` |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-13 (#23) |
+| Firewall filter discovery | Done (M1-13) | `src/Mfc.RouterOs/Discovery/FirewallFilterDiscovery.cs` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-14 (#24) |
 
 ## ADRs
 

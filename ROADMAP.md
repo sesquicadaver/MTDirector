@@ -3,7 +3,7 @@
 **Дата оновлення:** 8 серпня 2026  
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач  
 **Продукт:** MikroTik Firewall Controller (MTDirector)  
-**Базовий коміт аудиту:** M1-12 (interface/address discovery) — черга зсунута на M1-13
+**Базовий коміт аудиту:** M1-13 (firewall filter discovery) — черга зсунута на M1-14
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -41,13 +41,13 @@
 | Область | Closed | Open | % |
 |---------|-------:|-----:|--:|
 | M0 Bootstrap | 10 | 0 | 100% |
-| M1 Read-only slice | 12 | 22 | 35% |
+| M1 Read-only slice | 13 | 21 | 38% |
 | N1 Packet-path weave | 0 | 7 | 0% |
 | M2–M6 (решта MVP) | 0 | 58 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **22** | **114** | **~16% issues** |
+| **Разом** | **23** | **113** | **~17% issues** |
 
-MVP issues (109) = 22 done + **87 remaining** до MVP CLOSED.  
+MVP issues (109) = 23 done + **86 remaining** до MVP CLOSED.  
 Post-MVP M7 = **27** після MVP.
 
 ### 2.2 DONE (не в черзі)
@@ -67,19 +67,20 @@ Post-MVP M7 = **27** після MVP.
 | M1-10 | #20 | Typed allowlisted RouterOS read executor |
 | M1-11 | #21 | System and service discovery (identity/API-SSL) |
 | M1-12 | #22 | Interface and address discovery |
+| M1-13 | #23 | Firewall filter and address-list discovery |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
-| `Mfc.RouterOs` | protocol + typed executor + system/interface discovery (M1-06..12); next: firewall |
+| `Mfc.RouterOs` | protocol + typed executor + system/interface/firewall discovery (M1-06..13); next: routing |
 | `Mfc.Contracts` | лише marker — немає proto gRPC inventory/diff |
 | `Mfc.Application` | inventory/snapshot use cases (M1-05); RouterOS port без реалізації |
 | `Mfc.Controller` | health-only gRPC + persistence/secrets DI |
 | `Mfc.Desktop` | connection shell; **немає** inventory/snapshot/diff UI |
 | Persistence | schema snapshots є; EF adapters для inventory/capture — наступні issues |
 
-**NEXT = черга #9:** [M1-13](https://github.com/sesquicadaver/MTDirector/issues/23).
+**NEXT = черга #10:** [M1-14](https://github.com/sesquicadaver/MTDirector/issues/24).
 
 ---
 
@@ -108,7 +109,7 @@ Post-MVP M7 = **27** після MVP.
 |--:|----|-------:|--------|
 | ~~7~~ | ~~M1-11~~ | ~~#21~~ | ~~Implement system and service discovery~~ → §2.2 DONE |
 | ~~8~~ | ~~M1-12~~ | ~~#22~~ | ~~Implement interface and address discovery~~ → §2.2 DONE |
-| 9 | M1-13 | #23 | Implement firewall and address-list discovery |
+| ~~9~~ | ~~M1-13~~ | ~~#23~~ | ~~Implement firewall and address-list discovery~~ → §2.2 DONE |
 | 10 | M1-14 | #24 | Implement routing and firewall-dependency discovery |
 | 11 | M1-15 | #25 | Implement VRRP discovery |
 | 12 | M1-16 | #26 | Implement bridge, VLAN and switch metadata discovery |
@@ -317,7 +318,8 @@ Post-MVP M7 = **27** після MVP.
 | Typed read executor | M1-10 | allowlist; trap/fatal; arch Write ban | **DONE** |
 | System/service discovery | M1-11 | identity/API-SSL; sanitized fixture | **DONE** |
 | Interface/address discovery | M1-12 | CIDR; list membership; cycles | **DONE** |
-| Remaining discovery | M1-13…17 | firewall→capabilities | TODO #9 |
+| Firewall filter discovery | M1-13 | ordered filters; fwc:; dyn digests | **DONE** |
+| Remaining discovery | M1-14…17 | routing→capabilities | TODO #10 |
 | Packet-path / HW-offload | N1-01…03 | fixtures path classes | TODO |
 | Canonical hash + semantic diff | M1-19…24 | Canonical vectors; diff unit | TODO |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | TODO |
@@ -350,7 +352,7 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **чергу #9** → [M1-13 / issue #23](https://github.com/sesquicadaver/MTDirector/issues/23).  
+1. Відкрити **чергу #10** → [M1-14 / issue #24](https://github.com/sesquicadaver/MTDirector/issues/24).  
 2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.  
 3. Не стартувати M2, доки не закрито **M1-34** (черга #33).  
 4. Не стартувати M4, доки не закрито **M5-10** (черга #71).  

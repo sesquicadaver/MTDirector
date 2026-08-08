@@ -33,3 +33,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Typed allowlisted RouterOS read executor: compile-time command catalogue, explicit `.proplist`, static query profiles, trap/fatal mapping, sensitive redaction, architecture block on Write namespaces (M1-10).
 - System and service discovery: identity/resource/packages/clock/API-SSL via typed reads, uptime excluded from configuration hash material, sanitized fixture + CHR smoke (M1-11).
 - Interface and address discovery: IPv4/IPv6 separation, CIDR normalization, dynamic/static split, deterministic interface-list include/exclude resolution with cycle findings (M1-12).
+- Firewall filter and address-list discovery: ordered IPv4/IPv6 filters, fwc: marker recognition, FastTrack action fields, dynamic list digests, counters excluded from config hash (M1-13).
