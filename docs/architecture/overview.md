@@ -20,6 +20,7 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Inventory aggregates | Done (M1-01) | `src/Mfc.Domain/Inventory/` |
 | Snapshot / capability VOs | Done (M1-02) | `src/Mfc.Domain/Snapshots/`, `src/Mfc.Domain/Capabilities/` |
 | Persistence schema | Done (M1-03) | `sites`/`nodes`/`devices`, `capture_operations`, `snapshot_*` |
+| Secure connection profiles | Done (M1-04) | AES-256-GCM envelope secrets + INTERNAL_CA/SPKI trust |
 
 ## ADRs
 

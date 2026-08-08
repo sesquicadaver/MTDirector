@@ -23,3 +23,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Inventory domain model: Site/Node/Device aggregates plus Uplink, ZoneBinding, VrrpGroup/VrrpMember value model with typed management endpoints (M1-01).
 - Snapshot and capability domain types: typed SHA-256 digests, CapabilityProfile, RouterOsVersion, TopologyObservation, SnapshotMetadata (M1-02).
 - Inventory/snapshot PostgreSQL schema: sites/nodes/devices, connection profiles, capture operations, content-addressed payloads, immutable completed captures (M1-03; Vertical Slice §8).
+- Secure RouterOS connection profiles with AES-256-GCM envelope secrets, INTERNAL_CA/SPKI trust, pin-change audit, and Desktop-safe views (M1-04).

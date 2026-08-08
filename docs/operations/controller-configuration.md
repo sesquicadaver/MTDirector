@@ -16,7 +16,8 @@ Configuration sources (highest wins last):
 | `Grpc:ShutdownTimeoutSeconds` | Graceful shutdown budget (1–600) |
 | `Grpc:AllowInsecureLoopback` | Development-only HTTP on loopback |
 | `Security:RequireTls` | Reject non-TLS production binds |
-| `Security:MasterKeyProvider` | Named master-key provider (`Development` forbidden outside Development) |
+| `Security:MasterKeyProvider` | Named master-key provider (`Development` or `OsKeyStore`; `Development` forbidden outside Development) |
+| `Security:MasterKeyBase64` (env `MFC__Security__MasterKeyBase64`) | Required for `OsKeyStore`: base64 of a 32-byte master key (never stored in PostgreSQL) |
 | `Authentication:AllowDevelopmentAuthentication` | Dev-only; loopback bind required |
 | `Database:ConnectionString` | PostgreSQL only |
 

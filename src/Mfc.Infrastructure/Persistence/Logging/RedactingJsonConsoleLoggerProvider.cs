@@ -1,10 +1,11 @@
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 
 namespace Mfc.Infrastructure.Persistence.Logging;
 
 /// <summary>
-/// JSON console logger that redacts connection-string shaped secrets from messages and exceptions.
+/// JSON console logger that redacts connection-string and credential-shaped secrets from messages and exceptions.
 /// </summary>
 public sealed class RedactingJsonConsoleLoggerProvider : ILoggerProvider
 {
@@ -66,14 +67,18 @@ public sealed class RedactingJsonConsoleLoggerProvider : ILoggerProvider
             }
 
             string result = text;
-            result = System.Text.RegularExpressions.Regex.Replace(
+            result = Regex.Replace(
                 result,
                 "(?i)(Password|Pwd)\\s*=\\s*[^;\\s]+",
                 "$1=***");
-            result = System.Text.RegularExpressions.Regex.Replace(
+            result = Regex.Replace(
                 result,
                 "(?i)(Host|Username|User ID|Database)\\s*=\\s*[^;\\s]+",
                 match => match.Groups[1].Value + "=***");
+            result = Regex.Replace(
+                result,
+                "(?i)(\"|')?(password|pwd|secret|credential)(\"|')?\\s*[:=]\\s*(\"|')[^\"']+(\"|')",
+                "$1$2$3:***");
             return result;
         }
     }

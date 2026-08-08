@@ -1,6 +1,7 @@
 using Mfc.Controller.Configuration;
 using Mfc.Infrastructure.Persistence;
 using Mfc.Infrastructure.Persistence.Logging;
+using Mfc.Infrastructure.Security;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
@@ -90,6 +91,7 @@ public static class Program
         });
 
         builder.Services.AddMfcPersistence(options.Database.ConnectionString);
+        builder.Services.AddMfcSecrets(options.Security.MasterKeyProvider);
 
         builder.WebHost.ConfigureKestrel(kestrel =>
         {
