@@ -35,3 +35,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Interface and address discovery: IPv4/IPv6 separation, CIDR normalization, dynamic/static split, deterministic interface-list include/exclude resolution with cycle findings (M1-12).
 - Firewall filter and address-list discovery: ordered IPv4/IPv6 filters, fwc: marker recognition, FastTrack action fields, dynamic list digests, counters excluded from config hash (M1-13).
 - Routing and firewall-dependency discovery: tables/rules/static routes, default-route observations, ordered NAT/RAW/Mangle, rp-filter, PCC/nth/random unsupported-for-editing (M1-14).
+- VRRP discovery: family+VRID+interface grouping, typed VIP bindings, owner/priority, role vs configuration hash split, mixed master/backup, no secret/script props (M1-15).
