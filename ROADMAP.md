@@ -314,7 +314,8 @@ Post-MVP M7 = **27** після MVP.
 | Tagged session | M1-08 | concurrent tags; stress routing | **DONE** |
 | Authenticated API-SSL | M1-09 | local test CA; login | **DONE** |
 | Typed read executor | M1-10 | allowlist; trap/fatal; arch Write ban | **DONE** |
-| API-SSL discovery | M1-11…17 | CHR later | TODO #7 |
+| System/service discovery | M1-11 | identity/API-SSL; sanitized fixture | **DONE** |
+| Remaining discovery | M1-12…17 | interfaces→capabilities | TODO #8 |
 | Packet-path / HW-offload | N1-01…03 | fixtures path classes | TODO |
 | Canonical hash + semantic diff | M1-19…24 | Canonical vectors; diff unit | TODO |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | TODO |
@@ -347,7 +348,7 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **чергу #7** → [M1-11 / issue #21](https://github.com/sesquicadaver/MTDirector/issues/21).  
+1. Відкрити **чергу #8** → [M1-12 / issue #22](https://github.com/sesquicadaver/MTDirector/issues/22).  
 2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.  
 3. Не стартувати M2, доки не закрито **M1-34** (черга #33).  
 4. Не стартувати M4, доки не закрито **M5-10** (черга #71).  
