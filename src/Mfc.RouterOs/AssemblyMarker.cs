@@ -1,7 +1,7 @@
 namespace Mfc.RouterOs;
 
 /// <summary>
-/// Assembly marker. Read adapter implementation starts in M1; Write namespace is intentionally absent.
+/// Assembly marker. Read adapter protocol starts at M1-06; Write namespace is intentionally absent.
 /// </summary>
 public static class AssemblyMarker
 {
@@ -9,4 +9,7 @@ public static class AssemblyMarker
     public static Type ApplicationDependencyAnchor { get; } = typeof(Application.AssemblyMarker);
 
     public static Type DomainDependencyAnchor { get; } = typeof(Domain.AssemblyMarker);
+
+    /// <summary>Roots the word-length codec for architecture and smoke scans.</summary>
+    public static Type WordLengthCodecAnchor { get; } = typeof(Protocol.ApiWordLengthCodec);
 }
