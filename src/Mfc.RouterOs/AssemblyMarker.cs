@@ -16,4 +16,7 @@ public static class AssemblyMarker
 
     /// <summary>Roots the sentence parser for architecture and smoke scans.</summary>
     public static Type SentenceParserAnchor { get; } = typeof(Protocol.ApiSentenceParser);
+
+    /// <summary>Roots the tagged session for architecture and smoke scans.</summary>
+    public static Type SessionAnchor { get; } = typeof(Session.RosSession);
 }

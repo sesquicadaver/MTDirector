@@ -28,3 +28,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Read-only application ports and use cases: inventory/snapshot orchestration, RouterOS/persistence ports, typed errors, authorization boundary, hand-written fakes (M1-05).
 - RouterOS API word-length codec with canonical encode/decode, fragmented prefix support, and configurable max word size (M1-06).
 - RouterOS API sentence streaming parser/encoder with order-preserving attributes, duplicate policy, and pooled leases (M1-07).
+- Asynchronous tagged RouterOS API session: single read loop, serialized writes, bounded pending map, /cancel, stress-tested routing (M1-08).

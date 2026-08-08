@@ -29,6 +29,8 @@ public sealed record RouterOsProtocolError(string Code, string Message)
 
     public const string InvalidCommandWord = "API_INVALID_COMMAND_WORD";
 
+    public const string UnknownReplyTag = "API_UNKNOWN_REPLY_TAG";
+
     public static RouterOsProtocolError NonCanonical(string detail) =>
         new(LengthEncodingNonCanonical, detail);
 
