@@ -1,7 +1,7 @@
 namespace Mfc.RouterOs;
 
 /// <summary>
-/// Assembly marker. Read adapter through bridge/switch discovery (M1-06…M1-16).
+/// Assembly marker. Read adapter through bridge/switch discovery and N1 packet-path allowlist (M1-06…M1-16, N1-01).
 /// Write namespace is intentionally absent.
 /// </summary>
 public static class AssemblyMarker
@@ -43,4 +43,7 @@ public static class AssemblyMarker
 
     /// <summary>Roots bridge/VLAN/switch discovery for architecture scans.</summary>
     public static Type BridgeSwitchDiscoveryAnchor { get; } = typeof(Discovery.BridgeSwitchDiscovery);
+
+    /// <summary>Roots N1 packet-path allowlist commands for architecture scans.</summary>
+    public static Type PacketPathAllowlistAnchor { get; } = typeof(Commands.PacketPathAllowlist);
 }

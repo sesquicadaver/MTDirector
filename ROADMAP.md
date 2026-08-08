@@ -3,7 +3,7 @@
 **Дата оновлення:** 8 серпня 2026  
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач  
 **Продукт:** MikroTik Firewall Controller (MTDirector)  
-**Базовий коміт аудиту:** M1-16 (bridge/VLAN/switch discovery) — черга зсунута на N1-01
+**Базовий коміт аудиту:** N1-01 (packet-path allowlist) — черга зсунута на M1-17
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -42,12 +42,12 @@
 |---------|-------:|-----:|--:|
 | M0 Bootstrap | 10 | 0 | 100% |
 | M1 Read-only slice | 16 | 18 | 47% |
-| N1 Packet-path weave | 0 | 7 | 0% |
+| N1 Packet-path weave | 1 | 6 | 14% |
 | M2–M6 (решта MVP) | 0 | 58 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **26** | **110** | **~19% issues** |
+| **Разом** | **27** | **109** | **~20% issues** |
 
-MVP issues (109) = 26 done + **83 remaining** до MVP CLOSED.  
+MVP issues (109) = 27 done + **82 remaining** до MVP CLOSED.  
 Post-MVP M7 = **27** після MVP.
 
 ### 2.2 DONE (не в черзі)
@@ -71,19 +71,20 @@ Post-MVP M7 = **27** після MVP.
 | M1-14 | #24 | Routing and firewall-dependency discovery |
 | M1-15 | #25 | VRRP discovery |
 | M1-16 | #26 | Bridge/VLAN/switch metadata discovery |
+| N1-01 | #45 | Packet-path read allowlist (container/app/veth/vrf) |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
-| `Mfc.RouterOs` | protocol + typed executor + discovery through bridge/switch (M1-06..16); next: N1 allowlist |
+| `Mfc.RouterOs` | protocol + typed executor + discovery + N1-01 allowlist; next: capability profile |
 | `Mfc.Contracts` | лише marker — немає proto gRPC inventory/diff |
 | `Mfc.Application` | inventory/snapshot use cases (M1-05); RouterOS port без реалізації |
 | `Mfc.Controller` | health-only gRPC + persistence/secrets DI |
 | `Mfc.Desktop` | connection shell; **немає** inventory/snapshot/diff UI |
 | Persistence | schema snapshots є; EF adapters для inventory/capture — наступні issues |
 
-**NEXT = черга #13:** [N1-01](https://github.com/sesquicadaver/MTDirector/issues/45).
+**NEXT = черга #14:** [M1-17](https://github.com/sesquicadaver/MTDirector/issues/27).
 
 ---
 
@@ -121,7 +122,7 @@ Post-MVP M7 = **27** після MVP.
 
 | # | ID | GitHub | Задача |
 |--:|----|-------:|--------|
-| 13 | N1-01 | #45 | Extend read allowlist: `/container`, `/app`, `/interface/veth`, `/ip/vrf` |
+| ~~13~~ | ~~N1-01~~ | ~~#45~~ | ~~Extend read allowlist: `/container`, `/app`, `/interface/veth`, `/ip/vrf`~~ → §2.2 DONE |
 | 14 | M1-17 | #27 | Implement RouterOS capability profile |
 | 15 | N1-02 | #46 | Project Container/App→VETH→Bridge→VLAN→VRF topology graph |
 | 16 | N1-03 | #47 | Classify packet path CPU / HW-offload / MIXED / INDETERMINATE |
@@ -325,8 +326,9 @@ Post-MVP M7 = **27** після MVP.
 | Routing/dependency discovery | M1-14 | routes; NAT/RAW/Mangle; rp-filter | **DONE** |
 | VRRP discovery | M1-15 | family+VRID+if; role≠config hash | **DONE** |
 | Bridge/VLAN/switch discovery | M1-16 | VLAN table; HW-offload obs; unknown chip | **DONE** |
-| Remaining discovery | M1-17 + N1-01…03 | capabilities + packet-path | TODO #13 |
-| Packet-path / HW-offload | N1-01…03 | fixtures path classes | TODO |
+| Packet-path allowlist | N1-01 | container/app/veth/vrf prints | **DONE** |
+| Remaining discovery | M1-17 + N1-02…03 | capabilities + topology/path | TODO #14 |
+| Packet-path / HW-offload | N1-02…03 | fixtures path classes | TODO |
 | Canonical hash + semantic diff | M1-19…24 | Canonical vectors; diff unit | TODO |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | TODO |
 | M1 acceptance gate | M1-30…34 | CHR suites | TODO |
@@ -358,7 +360,7 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **чергу #13** → [N1-01 / issue #45](https://github.com/sesquicadaver/MTDirector/issues/45).  
+1. Відкрити **чергу #14** → [M1-17 / issue #27](https://github.com/sesquicadaver/MTDirector/issues/27).  
 2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.  
 3. Не стартувати M2, доки не закрито **M1-34** (черга #33).  
 4. Не стартувати M4, доки не закрито **M5-10** (черга #71).  

@@ -37,3 +37,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Routing and firewall-dependency discovery: tables/rules/static routes, default-route observations, ordered NAT/RAW/Mangle, rp-filter, PCC/nth/random unsupported-for-editing (M1-14).
 - VRRP discovery: family+VRID+interface grouping, typed VIP bindings, owner/priority, role vs configuration hash split, mixed master/backup, no secret/script props (M1-15).
 - Bridge/VLAN/switch metadata discovery: VLAN table + HW-offload observations, L2/L3 path indicators, unknown chip finding, no SwOS/transit-ACL/write path (M1-16).
+- Packet-path read allowlist: `/container`, `/app`, `/interface/veth`, `/ip/vrf` with network-significant proplists; env/mounts/shell payload forbidden (N1-01).

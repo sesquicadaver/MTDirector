@@ -41,4 +41,10 @@ public enum RosReadCommandId
 
     /// <summary>Added for M1-11 system discovery (not in original §17 table).</summary>
     SystemClock = 36,
+
+    /// <summary>Packet-path / container weave (N1-01, next-1).</summary>
+    Containers = 37,
+    Apps = 38,
+    VethInterfaces = 39,
+    IpVrfs = 40,
 }

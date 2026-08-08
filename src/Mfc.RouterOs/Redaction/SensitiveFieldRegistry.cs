@@ -17,6 +17,13 @@ public static class SensitiveFieldRegistry
         "certificate-key",
         "auth-key",
         "user-password",
+        // Container/App secrets and non-network payload (next-1 / N1-01).
+        "env",
+        "envs",
+        "envlist",
+        "mount",
+        "mounts",
+        "mountlists",
     };
 
     private static readonly HashSet<string> LogRedactedNames = new(StringComparer.OrdinalIgnoreCase)

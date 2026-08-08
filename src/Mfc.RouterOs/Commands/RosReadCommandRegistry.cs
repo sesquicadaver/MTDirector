@@ -191,6 +191,14 @@ public static class RosReadCommandRegistry
                 BridgeSwitchDiscoveryProfiles.EthernetSwitches),
             Def(RosReadCommandId.EthernetSwitchPorts, "/interface/ethernet/switch/port/print", RosResultShape.UnorderedCollection, RosRequirement.Optional, RosPassPolicy.BothPasses,
                 BridgeSwitchDiscoveryProfiles.EthernetSwitchPorts),
+            Def(RosReadCommandId.Containers, "/container/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                PacketPathAllowlistProfiles.Containers),
+            Def(RosReadCommandId.Apps, "/app/print", RosResultShape.UnorderedCollection, RosRequirement.Optional, RosPassPolicy.BothPasses,
+                PacketPathAllowlistProfiles.Apps),
+            Def(RosReadCommandId.VethInterfaces, "/interface/veth/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                PacketPathAllowlistProfiles.VethInterfaces),
+            Def(RosReadCommandId.IpVrfs, "/ip/vrf/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                PacketPathAllowlistProfiles.IpVrfs),
         ];
 
         Dictionary<RosReadCommandId, RosReadCommandDefinition> map = new(all.Length);
