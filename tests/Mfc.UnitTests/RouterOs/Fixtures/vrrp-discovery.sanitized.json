@@ -1,0 +1,41 @@
+{
+  "schema": "mfc.vrrp-discovery.sanitized/v1",
+  "scenario": "split-master-multi-vrid",
+  "instances": [
+    {
+      "name": "vrrp-wan1",
+      "parentInterface": "ether1",
+      "vrid": 10,
+      "family": "Ipv4",
+      "priority": 200,
+      "isOwner": false,
+      "observedRole": "Master",
+      "virtualAddresses": ["10.255.50.20/32"]
+    },
+    {
+      "name": "vrrp-wan2",
+      "parentInterface": "ether2",
+      "vrid": 20,
+      "family": "Ipv4",
+      "priority": 100,
+      "isOwner": false,
+      "observedRole": "Backup",
+      "virtualAddresses": ["10.255.60.20/32"]
+    },
+    {
+      "name": "vrrp-lan6",
+      "parentInterface": "bridge1",
+      "vrid": 10,
+      "family": "Ipv6",
+      "priority": 255,
+      "isOwner": true,
+      "observedRole": "Master",
+      "virtualAddresses": ["2001:db8:50::1/128"]
+    }
+  ],
+  "notes": [
+    "Same device is MASTER for VRID 10/IPv4 and BACKUP for VRID 20/IPv4 — not a global master.",
+    "VRID 10 exists for both IPv4 and IPv6 as distinct Virtual Routers.",
+    "Secrets and transition scripts are never present in sanitized output."
+  ]
+}

@@ -1,7 +1,7 @@
 namespace Mfc.RouterOs;
 
 /// <summary>
-/// Assembly marker. Read adapter through routing/firewall-dependency discovery (M1-06…M1-14).
+/// Assembly marker. Read adapter through VRRP discovery (M1-06…M1-15).
 /// Write namespace is intentionally absent.
 /// </summary>
 public static class AssemblyMarker
@@ -37,4 +37,7 @@ public static class AssemblyMarker
 
     /// <summary>Roots routing/firewall-dependency discovery for architecture scans.</summary>
     public static Type RoutingDependencyDiscoveryAnchor { get; } = typeof(Discovery.RoutingDependencyDiscovery);
+
+    /// <summary>Roots VRRP discovery for architecture scans.</summary>
+    public static Type VrrpDiscoveryAnchor { get; } = typeof(Discovery.VrrpDiscovery);
 }

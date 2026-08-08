@@ -178,7 +178,7 @@ public static class RosReadCommandRegistry
             Def(RosReadCommandId.Ipv6Settings, "/ipv6/settings/print", RosResultShape.Singleton, RosRequirement.Required, RosPassPolicy.BothPasses,
                 RoutingDependencyProfiles.Ipv6Settings),
             Def(RosReadCommandId.VrrpInterfaces, "/interface/vrrp/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
-                Props("vrrp_interfaces", P(".id"), P("name"), P("interface"), P("vrid"), P("priority"), P("version"), P("authentication"), P("disabled"), P("comment"), P("running"), P("master"))),
+                VrrpDiscoveryProfiles.VrrpInterfaces),
             Def(RosReadCommandId.Bridges, "/interface/bridge/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
                 Props("bridges", P(".id"), P("name"), P("mtu"), P("arp"), P("protocol-mode"), P("vlan-filtering"), P("disabled"), P("comment"), P("running"))),
             Def(RosReadCommandId.BridgePorts, "/interface/bridge/port/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
