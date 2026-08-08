@@ -24,3 +24,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Snapshot and capability domain types: typed SHA-256 digests, CapabilityProfile, RouterOsVersion, TopologyObservation, SnapshotMetadata (M1-02).
 - Inventory/snapshot PostgreSQL schema: sites/nodes/devices, connection profiles, capture operations, content-addressed payloads, immutable completed captures (M1-03; Vertical Slice §8).
 - Secure RouterOS connection profiles with AES-256-GCM envelope secrets, INTERNAL_CA/SPKI trust, pin-change audit, and Desktop-safe views (M1-04).
+- ROADMAP v0.2: audit of DONE vs remaining work and a single linear queue of 122 unimplemented atomic tasks (95 to MVP, 27 post-MVP).

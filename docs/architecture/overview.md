@@ -21,6 +21,7 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Snapshot / capability VOs | Done (M1-02) | `src/Mfc.Domain/Snapshots/`, `src/Mfc.Domain/Capabilities/` |
 | Persistence schema | Done (M1-03) | `sites`/`nodes`/`devices`, `capture_operations`, `snapshot_*` |
 | Secure connection profiles | Done (M1-04) | AES-256-GCM envelope secrets + INTERNAL_CA/SPKI trust |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-05 (#15) |
 
 ## ADRs
 
