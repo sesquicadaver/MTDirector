@@ -31,3 +31,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Asynchronous tagged RouterOS API session: single read loop, serialized writes, bounded pending map, /cancel, stress-tested routing (M1-08).
 - Authenticated RouterOS API-SSL connection with INTERNAL_CA/SPKI validation, modern /login, and local test-CA coverage (M1-09).
 - Typed allowlisted RouterOS read executor: compile-time command catalogue, explicit `.proplist`, static query profiles, trap/fatal mapping, sensitive redaction, architecture block on Write namespaces (M1-10).
+- System and service discovery: identity/resource/packages/clock/API-SSL via typed reads, uptime excluded from configuration hash material, sanitized fixture + CHR smoke (M1-11).

@@ -38,4 +38,7 @@ public enum RosReadCommandId
     BridgeVlans = 33,
     EthernetSwitches = 34,
     EthernetSwitchPorts = 35,
+
+    /// <summary>Added for M1-11 system discovery (not in original §17 table).</summary>
+    SystemClock = 36,
 }

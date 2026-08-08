@@ -1,7 +1,7 @@
 namespace Mfc.RouterOs;
 
 /// <summary>
-/// Assembly marker. Read adapter: word/sentence/session/API-SSL/typed executor (M1-06…M1-10).
+/// Assembly marker. Read adapter through system/service discovery (M1-06…M1-11).
 /// Write namespace is intentionally absent.
 /// </summary>
 public static class AssemblyMarker
@@ -25,4 +25,7 @@ public static class AssemblyMarker
 
     /// <summary>Roots the allowlisted read executor for architecture scans.</summary>
     public static Type ReadCommandExecutorAnchor { get; } = typeof(Commands.RosReadCommandExecutor);
+
+    /// <summary>Roots system/service discovery for architecture scans.</summary>
+    public static Type SystemServiceDiscoveryAnchor { get; } = typeof(Discovery.SystemServiceDiscovery);
 }
