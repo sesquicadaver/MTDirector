@@ -13,7 +13,14 @@ namespace Mfc.UnitTests.Architecture;
 public sealed class ArchitectureBoundaryTests
 {
     private static Assembly Domain => typeof(Mfc.Domain.AssemblyMarker).Assembly;
-    private static Assembly Application => typeof(Mfc.Application.AssemblyMarker).Assembly;
+    private static Assembly Application
+    {
+        get
+        {
+            _ = Mfc.Application.AssemblyMarker.DomainDependencyAnchor;
+            return typeof(Mfc.Application.AssemblyMarker).Assembly;
+        }
+    }
     private static Assembly Infrastructure => typeof(Mfc.Infrastructure.AssemblyMarker).Assembly;
     private static Assembly RouterOs => typeof(Mfc.RouterOs.AssemblyMarker).Assembly;
     private static Assembly Contracts => typeof(Mfc.Contracts.AssemblyMarker).Assembly;

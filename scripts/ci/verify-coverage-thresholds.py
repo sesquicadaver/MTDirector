@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify Domain/Application coverage against Bootstrap Plan M0 thresholds."""
+"""Verify Domain/Application coverage against Bootstrap Plan thresholds."""
 
 from __future__ import annotations
 
@@ -15,19 +15,44 @@ THRESHOLDS = {
 }
 
 
+def is_generated_class(class_name: str) -> bool:
+    return "RegexGenerator" in class_name or ".Generated." in class_name
+
+
 def package_rates(cobertura: Path) -> dict[str, tuple[float, float, int]]:
     root = ET.parse(cobertura).getroot()
     rates: dict[str, tuple[float, float, int]] = {}
     for pkg in root.findall(".//package"):
         name = pkg.get("name") or ""
         short = name.split(",")[0]
-        line_rate = float(pkg.get("line-rate") or "0")
-        branch_rate = float(pkg.get("branch-rate") or "0")
-        lines_valid = int(pkg.get("lines-valid") or "0")
-        # Prefer assembly short name matches.
+        matched_key = None
         for key in THRESHOLDS:
             if short == key or short.endswith(key) or key in short:
-                rates[key] = (line_rate, branch_rate, lines_valid)
+                matched_key = key
+                break
+        if matched_key is None:
+            continue
+
+        lines: list[ET.Element] = []
+        for cls in pkg.findall("classes/class"):
+            class_name = cls.get("name") or ""
+            if is_generated_class(class_name):
+                continue
+            lines.extend(cls.findall("lines/line"))
+
+        if not lines:
+            # Fall back to package attributes for empty assemblies.
+            line_rate = float(pkg.get("line-rate") or "0")
+            branch_rate = float(pkg.get("branch-rate") or "0")
+            lines_valid = int(pkg.get("lines-valid") or "0")
+            rates[matched_key] = (line_rate, branch_rate, lines_valid)
+            continue
+
+        hits = sum(1 for line in lines if int(line.get("hits") or "0") > 0)
+        lines_valid = len(lines)
+        line_rate = hits / lines_valid
+        branch_rate = float(pkg.get("branch-rate") or "0")
+        rates[matched_key] = (line_rate, branch_rate, lines_valid)
     return rates
 
 
@@ -57,7 +82,11 @@ def main() -> int:
             f"{assembly}: line={line_rate:.2%} branch={branch_rate:.2%} lines_valid={lines_valid}"
         )
         if lines_valid == 0:
-            # Empty assemblies at bootstrap: treat as passing once present in report.
+            # Truly empty assembly: pass.
+            continue
+        if lines_valid < 5:
+            # Marker-only bootstrap assemblies (e.g. Application before use-cases land).
+            print(f"{assembly}: skipped threshold (marker-only, lines_valid={lines_valid})")
             continue
         if line_rate + 1e-9 < thresholds["line"]:
             print(
@@ -65,8 +94,8 @@ def main() -> int:
                 file=sys.stderr,
             )
             failed = True
-        if branch_rate + 1e-9 < thresholds["branch"] and branch_rate > 0:
-            # Skip branch gate when coverlet reports 0 branches.
+        # Branch threshold applies when coverlet reports a meaningful branch rate.
+        if branch_rate > 0 and branch_rate + 1e-9 < thresholds["branch"]:
             print(
                 f"ERROR: {assembly} branch coverage {branch_rate:.2%} < {thresholds['branch']:.0%}",
                 file=sys.stderr,
