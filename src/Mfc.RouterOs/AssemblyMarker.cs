@@ -1,7 +1,7 @@
 namespace Mfc.RouterOs;
 
 /// <summary>
-/// Assembly marker. Read adapter through interface/address discovery (M1-06…M1-12).
+/// Assembly marker. Read adapter through firewall filter discovery (M1-06…M1-13).
 /// Write namespace is intentionally absent.
 /// </summary>
 public static class AssemblyMarker
@@ -31,4 +31,7 @@ public static class AssemblyMarker
 
     /// <summary>Roots interface/address discovery for architecture scans.</summary>
     public static Type InterfaceAddressDiscoveryAnchor { get; } = typeof(Discovery.InterfaceAddressDiscovery);
+
+    /// <summary>Roots firewall filter discovery for architecture scans.</summary>
+    public static Type FirewallFilterDiscoveryAnchor { get; } = typeof(Discovery.FirewallFilterDiscovery);
 }
