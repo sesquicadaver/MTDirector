@@ -73,13 +73,13 @@ public static class ApiWordLengthCodec
                 BinaryPrimitives.WriteUInt16BigEndian(destination, (ushort)(length | TwoByteFlag));
                 return 2;
             case 3:
-            {
-                uint encoded = length | ThreeByteFlag;
-                destination[0] = (byte)(encoded >> 16);
-                destination[1] = (byte)(encoded >> 8);
-                destination[2] = (byte)encoded;
-                return 3;
-            }
+                {
+                    uint encoded = length | ThreeByteFlag;
+                    destination[0] = (byte)(encoded >> 16);
+                    destination[1] = (byte)(encoded >> 8);
+                    destination[2] = (byte)encoded;
+                    return 3;
+                }
 
             case 4:
                 BinaryPrimitives.WriteUInt32BigEndian(destination, length | FourByteFlag);
