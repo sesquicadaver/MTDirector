@@ -60,6 +60,37 @@ public sealed class Node
             rowVersion: 1);
     }
 
+    /// <summary>Rebuilds a node from persistence. Devices are attached via <see cref="AttachDevice"/>.</summary>
+    public static Node Reconstitute(
+        NodeId id,
+        SiteId siteId,
+        NonEmptyName name,
+        NodeKind declaredKind,
+        DeclaredUplinkMode declaredUplinkMode,
+        NodeStatus status,
+        ulong rowVersion)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+        if (rowVersion == 0)
+        {
+            throw new DomainInvariantException("row_version must be greater than zero.");
+        }
+
+        return new Node(id, siteId, name, declaredKind, declaredUplinkMode, status, rowVersion);
+    }
+
+    /// <summary>Attaches a reconstituted device during load (no cardinality bump of row version).</summary>
+    public void AttachDevice(Device device)
+    {
+        ArgumentNullException.ThrowIfNull(device);
+        if (device.NodeId != Id)
+        {
+            throw new DomainInvariantException("Device node_id does not match this node.");
+        }
+
+        _devices.Add(device);
+    }
+
     public void Rename(NonEmptyName name)
     {
         ArgumentNullException.ThrowIfNull(name);

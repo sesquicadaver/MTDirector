@@ -33,6 +33,24 @@ public sealed class Site
         return new Site(SiteId.New(), code, name, SiteStatus.Draft, rowVersion: 1);
     }
 
+    /// <summary>Rebuilds a site from persistence.</summary>
+    public static Site Reconstitute(
+        SiteId id,
+        SiteCode code,
+        NonEmptyName name,
+        SiteStatus status,
+        ulong rowVersion)
+    {
+        ArgumentNullException.ThrowIfNull(code);
+        ArgumentNullException.ThrowIfNull(name);
+        if (rowVersion == 0)
+        {
+            throw new DomainInvariantException("row_version must be greater than zero.");
+        }
+
+        return new Site(id, code, name, status, rowVersion);
+    }
+
     public void Rename(NonEmptyName name)
     {
         ArgumentNullException.ThrowIfNull(name);
