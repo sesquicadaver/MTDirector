@@ -29,3 +29,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - RouterOS API word-length codec with canonical encode/decode, fragmented prefix support, and configurable max word size (M1-06).
 - RouterOS API sentence streaming parser/encoder with order-preserving attributes, duplicate policy, and pooled leases (M1-07).
 - Asynchronous tagged RouterOS API session: single read loop, serialized writes, bounded pending map, /cancel, stress-tested routing (M1-08).
+- Authenticated RouterOS API-SSL connection with INTERNAL_CA/SPKI validation, modern /login, and local test-CA coverage (M1-09).
