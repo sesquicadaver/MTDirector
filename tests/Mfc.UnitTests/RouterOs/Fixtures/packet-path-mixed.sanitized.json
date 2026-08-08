@@ -1,0 +1,7 @@
+{
+  "schema": "mfc.packet-path-class.sanitized/v1",
+  "scenario": "mixed",
+  "worstPathClass": "MIXED_PATH",
+  "blocksManagedForwardPolicy": false,
+  "notes": ["use-ip-firewall enabled together with HW-offload evidence."]
+}

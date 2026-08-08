@@ -1,0 +1,8 @@
+{
+  "schema": "mfc.packet-path-class.sanitized/v1",
+  "scenario": "indeterminate",
+  "worstPathClass": "INDETERMINATE",
+  "blocksManagedForwardPolicy": true,
+  "blockerHint": "PACKET_PATH_NOT_PROVEN",
+  "notes": ["Unknown switch chip or incomplete port evidence."]
+}

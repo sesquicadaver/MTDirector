@@ -15,6 +15,8 @@ public sealed class DiscoveryFinding
     public const string MissingVethReference = "MISSING_VETH_REFERENCE";
     public const string MissingVrfInterfaceReference = "MISSING_VRF_INTERFACE_REFERENCE";
     public const string SharedVethMultiEndpoint = "SHARED_VETH_MULTI_ENDPOINT";
+    public const string PacketPathBypassesIpFirewall = "PACKET_PATH_BYPASSES_IP_FIREWALL";
+    public const string PacketPathNotProven = "PACKET_PATH_NOT_PROVEN";
 
     public required string Code { get; init; }
 
