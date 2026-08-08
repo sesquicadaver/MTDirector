@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "profileId": "mfc-routeros-mvp-v1",
+  "supportedRouterOsBuilds": [
+    "7.12.0",
+    "7.12.1",
+    "7.13.0",
+    "7.14.0",
+    "7.15.0",
+    "7.16.0",
+    "7.16.1",
+    "7.16.2",
+    "7.17.0",
+    "7.18.0"
+  ],
+  "allowedChannels": [
+    "stable",
+    "long-term"
+  ],
+  "architectures": [
+    "arm",
+    "arm64",
+    "x86_64",
+    "tile",
+    "mmips",
+    "smips"
+  ],
+  "boardClasses": [
+    "router",
+    "crs",
+    "chr"
+  ],
+  "requiredMenus": [
+    "/system/identity",
+    "/system/resource",
+    "/ip/service",
+    "/interface",
+    "/ip/firewall/filter"
+  ],
+  "requiredProperties": [
+    "version",
+    "architecture-name",
+    "board-name",
+    "name"
+  ],
+  "commandProfiles": [
+    "system_identity",
+    "system_resource",
+    "ipv4_filter",
+    "bridges",
+    "containers"
+  ],
+  "propertyProfiles": [
+    "system_resource",
+    "bridges",
+    "vrrp_interfaces"
+  ],
+  "queryProfiles": [
+    "all_rows",
+    "ipv4_default_routes"
+  ],
+  "knownTrapSignatures": [
+    "no such command prefix",
+    "failure: not enough permissions"
+  ],
+  "knownIncompatibilities": [
+    {
+      "id": "ros6-legacy-read-only",
+      "description": "RouterOS 6 is read-only for the controller.",
+      "matchMajor": 6,
+      "effect": "read-only"
+    },
+    {
+      "id": "testing-channel-no-write",
+      "description": "Testing channel never receives write support.",
+      "matchChannel": "testing",
+      "effect": "read-only"
+    },
+    {
+      "id": "development-channel-no-write",
+      "description": "Development channel never receives write support.",
+      "matchChannel": "development",
+      "effect": "read-only"
+    }
+  ]
+}
