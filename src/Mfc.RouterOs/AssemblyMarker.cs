@@ -1,7 +1,7 @@
 namespace Mfc.RouterOs;
 
 /// <summary>
-/// Assembly marker. Read adapter through discovery, capability profile, and packet-path topology (M1-06…M1-17, N1-01…02).
+/// Assembly marker. Read adapter through discovery, capability, topology, and path class (M1-06…M1-17, N1-01…03).
 /// Write namespace is intentionally absent.
 /// </summary>
 public static class AssemblyMarker
@@ -52,4 +52,7 @@ public static class AssemblyMarker
 
     /// <summary>Roots packet-path topology projection for architecture scans.</summary>
     public static Type PacketPathTopologyDiscoveryAnchor { get; } = typeof(Discovery.PacketPathTopologyDiscovery);
+
+    /// <summary>Roots packet-path classification for architecture scans.</summary>
+    public static Type PacketPathClassifierAnchor { get; } = typeof(Discovery.PacketPathClassifier);
 }

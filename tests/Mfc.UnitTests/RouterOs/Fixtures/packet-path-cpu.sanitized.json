@@ -1,0 +1,7 @@
+{
+  "schema": "mfc.packet-path-class.sanitized/v1",
+  "scenario": "cpu-firewall",
+  "worstPathClass": "CPU_FIREWALL_PATH",
+  "blocksManagedForwardPolicy": false,
+  "notes": ["No HW-offload evidence; software/CPU path for filter analysis."]
+}

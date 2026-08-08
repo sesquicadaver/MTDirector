@@ -1,0 +1,8 @@
+{
+  "schema": "mfc.packet-path-class.sanitized/v1",
+  "scenario": "hardware-offloaded",
+  "worstPathClass": "HARDWARE_OFFLOADED_PATH",
+  "blocksManagedForwardPolicy": true,
+  "blockerHint": "PACKET_PATH_BYPASSES_IP_FIREWALL",
+  "notes": ["Both ports hw-offload or L3HW configured; never assume IP firewall traversal."]
+}
