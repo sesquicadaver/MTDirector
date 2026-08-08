@@ -22,3 +22,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Initial Accepted ADRs (0001–0005) and reproducible development/operations documentation (M0-10).
 - Inventory domain model: Site/Node/Device aggregates plus Uplink, ZoneBinding, VrrpGroup/VrrpMember value model with typed management endpoints (M1-01).
 - Snapshot and capability domain types: typed SHA-256 digests, CapabilityProfile, RouterOsVersion, TopologyObservation, SnapshotMetadata (M1-02).
+- Inventory/snapshot PostgreSQL schema: sites/nodes/devices, connection profiles, capture operations, content-addressed payloads, immutable completed captures (M1-03; Vertical Slice §8).

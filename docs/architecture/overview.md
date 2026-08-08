@@ -19,7 +19,7 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 |-------|--------|----------|
 | Inventory aggregates | Done (M1-01) | `src/Mfc.Domain/Inventory/` |
 | Snapshot / capability VOs | Done (M1-02) | `src/Mfc.Domain/Snapshots/`, `src/Mfc.Domain/Capabilities/` |
-| Persistence schema | Next (M1-03) | — |
+| Persistence schema | Done (M1-03) | `sites`/`nodes`/`devices`, `capture_operations`, `snapshot_*` |
 
 ## ADRs
 

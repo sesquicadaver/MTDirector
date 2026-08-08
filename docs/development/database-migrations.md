@@ -1,6 +1,15 @@
-# Database migrations (M0-07)
+# Database migrations
 
 PostgreSQL is the only supported production database. SQLite is forbidden.
+
+## Applied schema milestones
+
+| Key (`schema_metadata`) | Value | Migration |
+|-------------------------|-------|-----------|
+| `bootstrap.schema` | `m0-07` | `InitialBootstrap` |
+| `inventory.snapshot.schema` | `m1-03` | `InventorySnapshotSchema` |
+
+M1 inventory/snapshot tables follow Vertical Slice §8 (`sites`, `nodes`, `devices`, `device_connection_profiles`, `capture_operations`, `snapshot_captures`, `snapshot_payloads`). Topology tables from the early issue draft are **not** persisted in M1.
 
 ## Local PostgreSQL
 

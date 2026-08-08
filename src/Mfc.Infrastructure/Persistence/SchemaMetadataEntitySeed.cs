@@ -10,9 +10,18 @@ public static class SchemaMetadataEntitySeed
     public const string BootstrapSchemaKey = "bootstrap.schema";
     public const string BootstrapSchemaValue = "m0-07";
 
+    public const string InventorySnapshotSchemaKey = "inventory.snapshot.schema";
+    public const string InventorySnapshotSchemaValue = "m1-03";
+
     public static void EnsureBootstrapMetadata(MfcDbContext db)
     {
-        SchemaMetadataEntity? existing = db.SchemaMetadata.Find(BootstrapSchemaKey);
+        EnsureKey(db, BootstrapSchemaKey, BootstrapSchemaValue);
+        EnsureKey(db, InventorySnapshotSchemaKey, InventorySnapshotSchemaValue);
+    }
+
+    private static void EnsureKey(MfcDbContext db, string key, string value)
+    {
+        SchemaMetadataEntity? existing = db.SchemaMetadata.Find(key);
         if (existing is not null)
         {
             return;
@@ -20,8 +29,8 @@ public static class SchemaMetadataEntitySeed
 
         db.SchemaMetadata.Add(new SchemaMetadataEntity
         {
-            Key = BootstrapSchemaKey,
-            Value = BootstrapSchemaValue,
+            Key = key,
+            Value = value,
             UpdatedAtUtc = DateTimeOffset.UtcNow,
         });
     }
