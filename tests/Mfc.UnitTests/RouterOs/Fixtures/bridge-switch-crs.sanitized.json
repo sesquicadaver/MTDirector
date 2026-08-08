@@ -1,0 +1,35 @@
+{
+  "schema": "mfc.bridge-switch-discovery.sanitized/v1",
+  "boardClass": "crs",
+  "bridges": [
+    {
+      "name": "bridge1",
+      "vlanFiltering": "true",
+      "protocolMode": "rstp"
+    }
+  ],
+  "bridgePorts": [
+    {
+      "bridge": "bridge1",
+      "interface": "ether3",
+      "hwOffload": "true"
+    }
+  ],
+  "ethernetSwitches": [
+    {
+      "name": "switch1",
+      "type": "98DX8212",
+      "l3HwOffloading": "yes",
+      "hasKnownChipProfile": true
+    }
+  ],
+  "pathRoleIndicators": [
+    "L2ForwardingPossible",
+    "HardwareOffloadObserved",
+    "L3HardwareOffloadConfigured"
+  ],
+  "findings": [],
+  "assumesHardwareSwitchedTrafficPassesIpFirewall": false,
+  "grantsSwitchWriteCapability": false,
+  "compilesTransitAcl": false
+}

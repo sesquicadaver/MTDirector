@@ -1,7 +1,7 @@
 namespace Mfc.RouterOs;
 
 /// <summary>
-/// Assembly marker. Read adapter through VRRP discovery (M1-06…M1-15).
+/// Assembly marker. Read adapter through bridge/switch discovery (M1-06…M1-16).
 /// Write namespace is intentionally absent.
 /// </summary>
 public static class AssemblyMarker
@@ -40,4 +40,7 @@ public static class AssemblyMarker
 
     /// <summary>Roots VRRP discovery for architecture scans.</summary>
     public static Type VrrpDiscoveryAnchor { get; } = typeof(Discovery.VrrpDiscovery);
+
+    /// <summary>Roots bridge/VLAN/switch discovery for architecture scans.</summary>
+    public static Type BridgeSwitchDiscoveryAnchor { get; } = typeof(Discovery.BridgeSwitchDiscovery);
 }

@@ -1,0 +1,27 @@
+{
+  "schema": "mfc.bridge-switch-discovery.sanitized/v1",
+  "boardClass": "unknown",
+  "bridges": [
+    {
+      "name": "bridge1",
+      "vlanFiltering": "false"
+    }
+  ],
+  "ethernetSwitches": [
+    {
+      "name": "switch1",
+      "type": "unknown",
+      "hasKnownChipProfile": false
+    }
+  ],
+  "pathRoleIndicators": ["L2ForwardingPossible", "UnknownSwitchChip"],
+  "findings": [
+    {
+      "code": "UNKNOWN_SWITCH_CHIP",
+      "subject": "switch1"
+    }
+  ],
+  "assumesHardwareSwitchedTrafficPassesIpFirewall": false,
+  "grantsSwitchWriteCapability": false,
+  "compilesTransitAcl": false
+}

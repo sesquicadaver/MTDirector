@@ -11,6 +11,7 @@ public sealed class DiscoveryFinding
     public const string UnsupportedForEditing = "UNSUPPORTED_FOR_EDITING";
     public const string VrrpRoleInconsistent = "VRRP_ROLE_INCONSISTENT";
     public const string InvalidVrrpVrid = "INVALID_VRRP_VRID";
+    public const string UnknownSwitchChip = "UNKNOWN_SWITCH_CHIP";
 
     public required string Code { get; init; }
 

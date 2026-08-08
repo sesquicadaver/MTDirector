@@ -1,0 +1,25 @@
+{
+  "schema": "mfc.bridge-switch-discovery.sanitized/v1",
+  "boardClass": "router",
+  "bridges": [
+    {
+      "name": "bridge-lan",
+      "vlanFiltering": "true",
+      "protocolMode": "rstp"
+    }
+  ],
+  "bridgeVlans": [
+    {
+      "bridge": "bridge-lan",
+      "vlanIds": "10,20",
+      "tagged": "ether1",
+      "untagged": "ether2"
+    }
+  ],
+  "ethernetSwitches": [],
+  "pathRoleIndicators": ["L2ForwardingPossible"],
+  "findings": [],
+  "assumesHardwareSwitchedTrafficPassesIpFirewall": false,
+  "grantsSwitchWriteCapability": false,
+  "compilesTransitAcl": false
+}

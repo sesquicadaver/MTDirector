@@ -180,17 +180,17 @@ public static class RosReadCommandRegistry
             Def(RosReadCommandId.VrrpInterfaces, "/interface/vrrp/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
                 VrrpDiscoveryProfiles.VrrpInterfaces),
             Def(RosReadCommandId.Bridges, "/interface/bridge/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
-                Props("bridges", P(".id"), P("name"), P("mtu"), P("arp"), P("protocol-mode"), P("vlan-filtering"), P("disabled"), P("comment"), P("running"))),
+                BridgeSwitchDiscoveryProfiles.Bridges),
             Def(RosReadCommandId.BridgePorts, "/interface/bridge/port/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
-                Props("bridge_ports", P(".id"), P("interface"), P("bridge"), P("pvid"), P("frame-types"), P("ingress-filtering"), P("horizon"), P("disabled"), P("comment"))),
+                BridgeSwitchDiscoveryProfiles.BridgePorts),
             Def(RosReadCommandId.BridgeSettings, "/interface/bridge/settings/print", RosResultShape.Singleton, RosRequirement.Conditional, RosPassPolicy.BothPasses,
-                Props("bridge_settings", P("use-ip-firewall"), P("use-ip-firewall-for-vlan"), P("use-ip-firewall-for-pppoe"), P("allow-fast-path"))),
+                BridgeSwitchDiscoveryProfiles.BridgeSettings),
             Def(RosReadCommandId.BridgeVlans, "/interface/bridge/vlan/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
-                Props("bridge_vlans", P(".id"), P("bridge"), P("vlan-ids"), P("tagged"), P("untagged"), P("disabled"), P("comment"))),
+                BridgeSwitchDiscoveryProfiles.BridgeVlans),
             Def(RosReadCommandId.EthernetSwitches, "/interface/ethernet/switch/print", RosResultShape.UnorderedCollection, RosRequirement.Optional, RosPassPolicy.BothPasses,
-                Props("ethernet_switches", P(".id"), P("name"), P("type"), P("l3-hw-offloading"))),
+                BridgeSwitchDiscoveryProfiles.EthernetSwitches),
             Def(RosReadCommandId.EthernetSwitchPorts, "/interface/ethernet/switch/port/print", RosResultShape.UnorderedCollection, RosRequirement.Optional, RosPassPolicy.BothPasses,
-                Props("ethernet_switch_ports", P(".id"), P("name"), P("switch"), P("vlan-mode"), P("vlan-header"), P("default-vlan-id"))),
+                BridgeSwitchDiscoveryProfiles.EthernetSwitchPorts),
         ];
 
         Dictionary<RosReadCommandId, RosReadCommandDefinition> map = new(all.Length);

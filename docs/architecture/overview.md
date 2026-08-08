@@ -32,7 +32,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Firewall filter discovery | Done (M1-13) | `src/Mfc.RouterOs/Discovery/FirewallFilterDiscovery.cs` |
 | Routing/dependency discovery | Done (M1-14) | `src/Mfc.RouterOs/Discovery/RoutingDependencyDiscovery.cs` |
 | VRRP discovery | Done (M1-15) | `src/Mfc.RouterOs/Discovery/VrrpDiscovery.cs` |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-16 (#26) |
+| Bridge/VLAN/switch discovery | Done (M1-16) | `src/Mfc.RouterOs/Discovery/BridgeSwitchDiscovery.cs` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at N1-01 (#45) |
 
 ## ADRs
 
