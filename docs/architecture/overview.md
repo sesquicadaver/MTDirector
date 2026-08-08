@@ -35,7 +35,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Bridge/VLAN/switch discovery | Done (M1-16) | `src/Mfc.RouterOs/Discovery/BridgeSwitchDiscovery.cs` |
 | Packet-path allowlist | Done (N1-01) | `src/Mfc.RouterOs/Commands/PacketPathAllowlist.cs` |
 | Capability profile | Done (M1-17) | `src/Mfc.RouterOs/Capabilities/CapabilityProfileEvaluator.cs` |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at N1-02 (#46) |
+| Packet-path topology graph | Done (N1-02) | `src/Mfc.RouterOs/Discovery/PacketPathTopologyDiscovery.cs` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at N1-03 (#47) |
 
 ## ADRs
 

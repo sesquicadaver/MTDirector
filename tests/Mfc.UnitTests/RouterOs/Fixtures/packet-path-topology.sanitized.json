@@ -1,0 +1,27 @@
+{
+  "schema": "mfc.packet-path-topology.sanitized/v1",
+  "scenario": "container-veth-bridge-vlan-vrf",
+  "nodes": [
+    { "kind": "Container", "key": "container:pihole", "name": "pihole" },
+    { "kind": "Container", "key": "container:pg", "name": "pg" },
+    { "kind": "Veth", "key": "veth:veth1", "name": "veth1" },
+    { "kind": "Bridge", "key": "bridge:bridge1", "name": "bridge1" },
+    { "kind": "BridgeVlan", "key": "bridgevlan:bridge1:10:0", "name": "bridge1/10" },
+    { "kind": "VlanInterface", "key": "vlanif:vlan120", "name": "vlan120" },
+    { "kind": "Vrf", "key": "vrf:containers", "name": "containers" }
+  ],
+  "edges": [
+    { "kind": "UsesVeth", "from": "container:pihole", "to": "veth:veth1" },
+    { "kind": "UsesVeth", "from": "container:pg", "to": "veth:veth1" },
+    { "kind": "BridgeMember", "from": "veth:veth1", "to": "bridge:bridge1" },
+    { "kind": "BridgeVlanMembership", "from": "veth:veth1", "to": "bridgevlan:bridge1:10:0", "role": "untagged" },
+    { "kind": "VlanOnParent", "from": "vlanif:vlan120", "to": "bridge:bridge1" },
+    { "kind": "VrfMember", "from": "vlanif:vlan120", "to": "vrf:containers" }
+  ],
+  "sharedVethNames": ["veth1"],
+  "assumesBridgeTrafficPassesIpFirewall": false,
+  "notes": [
+    "One VETH may serve multiple containers — never assume 1:1.",
+    "Bridge membership does not imply IP firewall traversal."
+  ]
+}

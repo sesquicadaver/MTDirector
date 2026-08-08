@@ -39,3 +39,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Bridge/VLAN/switch metadata discovery: VLAN table + HW-offload observations, L2/L3 path indicators, unknown chip finding, no SwOS/transit-ACL/write path (M1-16).
 - Packet-path read allowlist: `/container`, `/app`, `/interface/veth`, `/ip/vrf` with network-significant proplists; env/mounts/shell payload forbidden (N1-01).
 - RouterOS capability profile: versioned embedded compatibility manifest, SupportState rules (ROS6/testing/unknown), deterministic capability hash without observations, topology-validation invalidation (M1-17).
+- Packet-path topology graph: Container/App→VETH→Bridge→Bridge-VLAN/VLAN-IF→VRF projection with shared-VETH findings; `/interface/vlan/print` allowlisted; no 1:1 or firewall-path assumptions (N1-02).

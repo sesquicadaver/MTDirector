@@ -1,8 +1,8 @@
 namespace Mfc.RouterOs.Commands;
 
 /// <summary>
-/// Compile-time packet-path read allowlist surface (N1-01).
-/// Topology projection and path classification belong to later N1 issues.
+/// Compile-time packet-path read allowlist surface (N1-01 / N1-02).
+/// Path classification (CPU/HW) belongs to N1-03.
 /// </summary>
 public static class PacketPathAllowlist
 {
@@ -12,6 +12,7 @@ public static class PacketPathAllowlist
         RosReadCommandId.Apps,
         RosReadCommandId.VethInterfaces,
         RosReadCommandId.IpVrfs,
+        RosReadCommandId.VlanInterfaces,
     ];
 
     public static IReadOnlyList<RosReadCommandId> CommandIds => CommandSet;
@@ -22,6 +23,7 @@ public static class PacketPathAllowlist
         "/app/print",
         "/interface/veth/print",
         "/ip/vrf/print",
+        "/interface/vlan/print",
     ];
 
     /// <summary>Property names that must never appear on N1 packet-path allowlist profiles.</summary>

@@ -199,6 +199,8 @@ public static class RosReadCommandRegistry
                 PacketPathAllowlistProfiles.VethInterfaces),
             Def(RosReadCommandId.IpVrfs, "/ip/vrf/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
                 PacketPathAllowlistProfiles.IpVrfs),
+            Def(RosReadCommandId.VlanInterfaces, "/interface/vlan/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                PacketPathAllowlistProfiles.VlanInterfaces),
         ];
 
         Dictionary<RosReadCommandId, RosReadCommandDefinition> map = new(all.Length);

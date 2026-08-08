@@ -47,4 +47,7 @@ public enum RosReadCommandId
     Apps = 38,
     VethInterfaces = 39,
     IpVrfs = 40,
+
+    /// <summary>L3 VLAN interfaces for topology projection (N1-02, next-1).</summary>
+    VlanInterfaces = 41,
 }
