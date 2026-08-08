@@ -3,7 +3,7 @@
 **Дата оновлення:** 8 серпня 2026  
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач  
 **Продукт:** MikroTik Firewall Controller (MTDirector)  
-**Базовий коміт аудиту:** M1-10 (typed read executor) — черга зсунута на M1-11
+**Базовий коміт аудиту:** M1-11 (system/service discovery) — черга зсунута на M1-12
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -41,13 +41,13 @@
 | Область | Closed | Open | % |
 |---------|-------:|-----:|--:|
 | M0 Bootstrap | 10 | 0 | 100% |
-| M1 Read-only slice | 10 | 24 | 29% |
+| M1 Read-only slice | 11 | 23 | 32% |
 | N1 Packet-path weave | 0 | 7 | 0% |
 | M2–M6 (решта MVP) | 0 | 58 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **20** | **116** | **~15% issues** |
+| **Разом** | **21** | **115** | **~15% issues** |
 
-MVP issues (109) = 20 done + **89 remaining** до MVP CLOSED.  
+MVP issues (109) = 21 done + **88 remaining** до MVP CLOSED.  
 Post-MVP M7 = **27** після MVP.
 
 ### 2.2 DONE (не в черзі)
@@ -65,19 +65,20 @@ Post-MVP M7 = **27** після MVP.
 | M1-08 | #18 | Asynchronous tagged RouterOS API session |
 | M1-09 | #19 | Authenticated API-SSL connection + modern /login |
 | M1-10 | #20 | Typed allowlisted RouterOS read executor |
+| M1-11 | #21 | System and service discovery (identity/API-SSL) |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
-| `Mfc.RouterOs` | word/sentence/session/API-SSL/typed executor (M1-06..10); немає discovery mappers |
+| `Mfc.RouterOs` | protocol + typed executor + system/service discovery (M1-06..11); next: interfaces |
 | `Mfc.Contracts` | лише marker — немає proto gRPC inventory/diff |
 | `Mfc.Application` | inventory/snapshot use cases (M1-05); RouterOS port без реалізації |
 | `Mfc.Controller` | health-only gRPC + persistence/secrets DI |
 | `Mfc.Desktop` | connection shell; **немає** inventory/snapshot/diff UI |
 | Persistence | schema snapshots є; EF adapters для inventory/capture — наступні issues |
 
-**NEXT = черга #7:** [M1-11](https://github.com/sesquicadaver/MTDirector/issues/21).
+**NEXT = черга #8:** [M1-12](https://github.com/sesquicadaver/MTDirector/issues/22).
 
 ---
 
@@ -104,7 +105,7 @@ Post-MVP M7 = **27** після MVP.
 
 | # | ID | GitHub | Задача |
 |--:|----|-------:|--------|
-| 7 | M1-11 | #21 | Implement system and service discovery |
+| ~~7~~ | ~~M1-11~~ | ~~#21~~ | ~~Implement system and service discovery~~ → §2.2 DONE |
 | 8 | M1-12 | #22 | Implement interface and address discovery |
 | 9 | M1-13 | #23 | Implement firewall and address-list discovery |
 | 10 | M1-14 | #24 | Implement routing and firewall-dependency discovery |

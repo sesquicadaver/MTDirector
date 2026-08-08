@@ -1,0 +1,63 @@
+{
+  "schema": "mfc.system-service-discovery.sanitized/v1",
+  "identity": {
+    "name": "lab-gw1",
+    "rawProperties": {}
+  },
+  "resource": {
+    "version": "7.16.2 (stable)",
+    "buildTime": "2024-11-26 12:00:00",
+    "architectureName": "x86_64",
+    "boardName": "CHR",
+    "platform": "MikroTik",
+    "uptime": "1d2h3m4s",
+    "rawProperties": {
+      "free-memory": "observation-only-extra"
+    }
+  },
+  "routerboard": {
+    "available": false,
+    "model": null,
+    "serialNumber": null,
+    "rawProperties": {}
+  },
+  "packages": [
+    {
+      "id": "*1",
+      "name": "routeros",
+      "version": "7.16.2",
+      "buildTime": "2024-11-26 12:00:00",
+      "scheduled": null,
+      "disabled": "false",
+      "rawProperties": {}
+    }
+  ],
+  "clock": {
+    "time": "12:00:00",
+    "date": "2026-08-08",
+    "timeZoneName": "UTC",
+    "gmtOffset": "+00:00",
+    "dstActive": "false",
+    "rawProperties": {}
+  },
+  "apiSsl": {
+    "found": true,
+    "disabled": false,
+    "port": "8729",
+    "addressPrefixes": "10.0.0.0/8",
+    "certificate": "controller-api",
+    "tlsVersion": "only-1.2",
+    "vrf": "main",
+    "rawProperties": {}
+  },
+  "forbiddenAbsent": [
+    "password",
+    "private-key",
+    "secret",
+    "show-sensitive"
+  ],
+  "notes": [
+    "Sanitized fixture for M1-11; no live CHR required.",
+    "Uptime is present for observation tests but must not enter configuration hash material."
+  ]
+}

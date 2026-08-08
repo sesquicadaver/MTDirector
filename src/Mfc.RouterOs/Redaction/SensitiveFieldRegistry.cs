@@ -23,6 +23,7 @@ public static class SensitiveFieldRegistry
     {
         "comment",
         "note",
+        "serial-number",
     };
 
     /// <summary>Returns true when the attribute must never be requested or stored.</summary>

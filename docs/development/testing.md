@@ -18,7 +18,7 @@ Working tree must stay clean after build/test.
 
 | Project | Role |
 |---------|------|
-| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS word/sentence/session/API-SSL/typed read executor) |
+| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS word/sentence/session/API-SSL/typed read/system discovery) |
 | `tests/Mfc.IntegrationTests` | Controller health, Desktop connection, PostgreSQL bootstrap (Testcontainers) |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts (no live CHR required) |
 
