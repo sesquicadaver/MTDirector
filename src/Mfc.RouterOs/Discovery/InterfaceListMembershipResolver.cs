@@ -7,6 +7,8 @@ public sealed class DiscoveryFinding
     public const string MissingInterfaceReference = "MISSING_INTERFACE_REFERENCE";
     public const string MissingListReference = "MISSING_LIST_REFERENCE";
     public const string InvalidCidr = "INVALID_CIDR";
+    public const string MissingRoutingTableReference = "MISSING_ROUTING_TABLE_REFERENCE";
+    public const string UnsupportedForEditing = "UNSUPPORTED_FOR_EDITING";
 
     public required string Code { get; init; }
 
