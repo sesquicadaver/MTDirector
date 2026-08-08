@@ -24,7 +24,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Application ports / use cases | Done (M1-05) | `src/Mfc.Application/Inventory/`, `Snapshots/` + narrow ports |
 | RouterOS word-length codec | Done (M1-06) | `src/Mfc.RouterOs/Protocol/ApiWordLengthCodec.cs` |
 | RouterOS sentence codec | Done (M1-07) | `ApiSentenceParser` / `ApiSentenceEncoder` |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-08 (#18) |
+| Tagged API session | Done (M1-08) | `src/Mfc.RouterOs/Session/RosSession.cs` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-09 (#19) |
 
 ## ADRs
 
