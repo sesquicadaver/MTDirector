@@ -30,7 +30,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | System/service discovery | Done (M1-11) | `src/Mfc.RouterOs/Discovery/SystemServiceDiscovery.cs` |
 | Interface/address discovery | Done (M1-12) | `src/Mfc.RouterOs/Discovery/InterfaceAddressDiscovery.cs` |
 | Firewall filter discovery | Done (M1-13) | `src/Mfc.RouterOs/Discovery/FirewallFilterDiscovery.cs` |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-14 (#24) |
+| Routing/dependency discovery | Done (M1-14) | `src/Mfc.RouterOs/Discovery/RoutingDependencyDiscovery.cs` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-15 (#25) |
 
 ## ADRs
 
