@@ -13,6 +13,14 @@ Avalonia Desktop  --gRPC/mTLS-->  ASP.NET Core Controller
 
 Normative detail lives in `TOR-1.md` and the MVP specifications. This folder records **decisions** (ADRs), not a restatement of the full ТЗ.
 
+## Domain progress (M1)
+
+| Slice | Status | Location |
+|-------|--------|----------|
+| Inventory aggregates | Done (M1-01) | `src/Mfc.Domain/Inventory/` |
+| Snapshot / capability VOs | Done (M1-02) | `src/Mfc.Domain/Snapshots/`, `src/Mfc.Domain/Capabilities/` |
+| Persistence schema | Next (M1-03) | — |
+
 ## ADRs
 
 | ID | Title | Status |
