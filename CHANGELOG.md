@@ -25,3 +25,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Inventory/snapshot PostgreSQL schema: sites/nodes/devices, connection profiles, capture operations, content-addressed payloads, immutable completed captures (M1-03; Vertical Slice §8).
 - Secure RouterOS connection profiles with AES-256-GCM envelope secrets, INTERNAL_CA/SPKI trust, pin-change audit, and Desktop-safe views (M1-04).
 - ROADMAP v0.2: audit of DONE vs remaining work and a single linear queue of 122 unimplemented atomic tasks (95 to MVP, 27 post-MVP).
+- Read-only application ports and use cases: inventory/snapshot orchestration, RouterOS/persistence ports, typed errors, authorization boundary, hand-written fakes (M1-05).

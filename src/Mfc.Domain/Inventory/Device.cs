@@ -62,6 +62,35 @@ public sealed class Device
             rowVersion: 1);
     }
 
+    /// <summary>Rebuilds a device from persistence.</summary>
+    public static Device Reconstitute(
+        DeviceId id,
+        NodeId nodeId,
+        NonEmptyName displayName,
+        ManagementEndpoint managementEndpoint,
+        DeviceRole role,
+        bool enabled,
+        SupportState? lastSupportState,
+        ulong rowVersion)
+    {
+        ArgumentNullException.ThrowIfNull(displayName);
+        ArgumentNullException.ThrowIfNull(managementEndpoint);
+        if (rowVersion == 0)
+        {
+            throw new DomainInvariantException("row_version must be greater than zero.");
+        }
+
+        return new Device(
+            id,
+            nodeId,
+            displayName,
+            managementEndpoint,
+            role,
+            enabled,
+            lastSupportState,
+            rowVersion);
+    }
+
     public void Rename(NonEmptyName displayName)
     {
         ArgumentNullException.ThrowIfNull(displayName);
