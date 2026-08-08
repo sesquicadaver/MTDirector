@@ -30,3 +30,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - RouterOS API sentence streaming parser/encoder with order-preserving attributes, duplicate policy, and pooled leases (M1-07).
 - Asynchronous tagged RouterOS API session: single read loop, serialized writes, bounded pending map, /cancel, stress-tested routing (M1-08).
 - Authenticated RouterOS API-SSL connection with INTERNAL_CA/SPKI validation, modern /login, and local test-CA coverage (M1-09).
+- Typed allowlisted RouterOS read executor: compile-time command catalogue, explicit `.proplist`, static query profiles, trap/fatal mapping, sensitive redaction, architecture block on Write namespaces (M1-10).
