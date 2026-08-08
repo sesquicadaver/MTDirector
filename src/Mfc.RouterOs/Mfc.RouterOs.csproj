@@ -3,6 +3,10 @@
     <ProjectReference Include="..\Mfc.Application\Mfc.Application.csproj" />
     <ProjectReference Include="..\Mfc.Domain\Mfc.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Capabilities\Manifests\compatibility-manifest.v1.json"
+                      LogicalName="Mfc.RouterOs.Capabilities.Manifests.compatibility-manifest.v1.json" />
+  </ItemGroup>
   <PropertyGroup>
     <RootNamespace>Mfc.RouterOs</RootNamespace>
     <AssemblyName>Mfc.RouterOs</AssemblyName>

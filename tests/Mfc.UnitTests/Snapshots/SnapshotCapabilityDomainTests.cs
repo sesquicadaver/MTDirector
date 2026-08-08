@@ -89,6 +89,7 @@ public sealed class SupportStateAndRouterOsVersionTests
     [Theory]
     [InlineData("7.16.2", 7, 16, 2, null)]
     [InlineData("7.16.2-stable", 7, 16, 2, "stable")]
+    [InlineData("7.16.2 (stable)", 7, 16, 2, "stable")]
     [InlineData("6.49", 6, 49, 0, null)]
     public void RouterOsVersionParsesValidForms(string text, int major, int minor, int patch, string? channel)
     {

@@ -69,18 +69,32 @@ public sealed class RouterOsVersion : IEquatable<RouterOsVersion>
         return new RouterOsVersion(major, minor, patch, normalizedChannel);
     }
 
-    /// <summary>Parses <c>7.16.2</c> or <c>7.16.2-stable</c> forms. Rejects free-form text.</summary>
+    /// <summary>
+    /// Parses <c>7.16.2</c>, <c>7.16.2-stable</c>, or RouterOS resource form <c>7.16.2 (stable)</c>.
+    /// Rejects free-form text.
+    /// </summary>
     public static RouterOsVersion Parse(string value)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(value);
         string trimmed = value.Trim();
         string numeric = trimmed;
         string? channel = null;
-        int dash = trimmed.IndexOf('-', StringComparison.Ordinal);
-        if (dash >= 0)
+
+        int openParen = trimmed.IndexOf('(', StringComparison.Ordinal);
+        int closeParen = trimmed.LastIndexOf(')');
+        if (openParen >= 0 && closeParen > openParen)
         {
-            numeric = trimmed[..dash];
-            channel = trimmed[(dash + 1)..];
+            numeric = trimmed[..openParen].Trim();
+            channel = trimmed[(openParen + 1)..closeParen].Trim();
+        }
+        else
+        {
+            int dash = trimmed.IndexOf('-', StringComparison.Ordinal);
+            if (dash >= 0)
+            {
+                numeric = trimmed[..dash];
+                channel = trimmed[(dash + 1)..];
+            }
         }
 
         string[] parts = numeric.Split('.', StringSplitOptions.None);

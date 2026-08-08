@@ -1,0 +1,19 @@
+{
+  "schema": "mfc.compatibility-manifest.fixture/v1",
+  "notes": [
+    "Mirrors embedded Mfc.RouterOs.Capabilities.Manifests.compatibility-manifest.v1.json sections required by M1-17.",
+    "Runtime observations such as uptime must never enter capability hash material."
+  ],
+  "expectedSchemaVersion": 1,
+  "requiredSections": [
+    "supportedRouterOsBuilds",
+    "architectures",
+    "boardClasses",
+    "requiredMenus",
+    "requiredProperties",
+    "knownIncompatibilities"
+  ],
+  "sampleBuilds": ["7.16.2", "7.12.0"],
+  "readOnlyChannels": ["testing", "development"],
+  "legacyMajor": 6
+}
