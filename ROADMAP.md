@@ -3,7 +3,7 @@
 **Дата оновлення:** 8 серпня 2026  
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач  
 **Продукт:** MikroTik Firewall Controller (MTDirector)  
-**Базовий коміт аудиту:** M1-05 (application ports) — черга зсунута на M1-06
+**Базовий коміт аудиту:** M1-06 (word-length codec) — черга зсунута на M1-07
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -41,13 +41,13 @@
 | Область | Closed | Open | % |
 |---------|-------:|-----:|--:|
 | M0 Bootstrap | 10 | 0 | 100% |
-| M1 Read-only slice | 5 | 29 | 15% |
+| M1 Read-only slice | 6 | 28 | 18% |
 | N1 Packet-path weave | 0 | 7 | 0% |
 | M2–M6 (решта MVP) | 0 | 58 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **15** | **121** | **~11% issues** |
+| **Разом** | **16** | **120** | **~12% issues** |
 
-MVP issues (109) = 15 done + **94 remaining** до MVP CLOSED.  
+MVP issues (109) = 16 done + **93 remaining** до MVP CLOSED.  
 Post-MVP M7 = **27** після MVP.
 
 ### 2.2 DONE (не в черзі)
@@ -60,19 +60,20 @@ Post-MVP M7 = **27** після MVP.
 | M1-03 | #13 | PG schema: sites/nodes/devices/profiles/captures/payloads (Vertical Slice §8) |
 | M1-04 | #14 | AES-256-GCM connection profiles, trust INTERNAL_CA/SPKI, audit pin-change |
 | M1-05 | #15 | Read-only application ports + inventory/snapshot use cases |
+| M1-06 | #16 | RouterOS API word-length codec (canonical + fragmented) |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
-| `Mfc.RouterOs` | лише `AssemblyMarker` — немає protocol/TLS/discovery |
+| `Mfc.RouterOs` | word-length codec (M1-06); немає sentence/session/TLS/discovery |
 | `Mfc.Contracts` | лише marker — немає proto gRPC inventory/diff |
 | `Mfc.Application` | inventory/snapshot use cases (M1-05); RouterOS port без реалізації |
 | `Mfc.Controller` | health-only gRPC + persistence/secrets DI |
 | `Mfc.Desktop` | connection shell; **немає** inventory/snapshot/diff UI |
 | Persistence | schema snapshots є; EF adapters для inventory/capture — наступні issues |
 
-**NEXT = черга #1:** [M1-06](https://github.com/sesquicadaver/MTDirector/issues/16).
+**NEXT = черга #3:** [M1-07](https://github.com/sesquicadaver/MTDirector/issues/17).
 
 ---
 
@@ -89,7 +90,7 @@ Post-MVP M7 = **27** після MVP.
 | # | ID | GitHub | Задача |
 |--:|----|-------:|--------|
 | ~~1~~ | ~~M1-05~~ | ~~#15~~ | ~~Define read-only application ports and use cases~~ → §2.2 DONE |
-| 2 | M1-06 | #16 | Implement RouterOS word-length codec |
+| ~~2~~ | ~~M1-06~~ | ~~#16~~ | ~~Implement RouterOS word-length codec~~ → §2.2 DONE |
 | 3 | M1-07 | #17 | Implement RouterOS sentence encoder and parser |
 | 4 | M1-08 | #18 | Implement asynchronous tagged RouterOS session |
 | 5 | M1-09 | #19 | Implement authenticated TLS RouterOS connection |
@@ -280,7 +281,7 @@ Post-MVP M7 = **27** після MVP.
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 121 відкритих атомарних задач (#2…#122; #1 M1-05 → §2.2 DONE).
+**Кінець черги:** 120 відкритих атомарних задач (#3…#122; #1–#2 → §2.2 DONE).
 
 ---
 
@@ -288,10 +289,10 @@ Post-MVP M7 = **27** після MVP.
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 94 | M1 залишок + N1 + M2–M6 |
+| До MVP CLOSED | 93 | M1 залишок + N1 + M2–M6 |
 | Post-MVP M7 | 27 | лише після M6-09 |
-| **Нереалізовано разом** | **121** | GitHub OPEN |
-| Вже CLOSED | 15 | M0 + M1-01…05 — поза чергою |
+| **Нереалізовано разом** | **120** | GitHub OPEN |
+| Вже CLOSED | 16 | M0 + M1-01…06 — поза чергою |
 
 ---
 
@@ -303,7 +304,8 @@ Post-MVP M7 = **27** після MVP.
 | Inventory domain + snapshot VO | M1-01…02 | unit domain | **DONE** |
 | Inventory/snapshot schema + secrets | M1-03…04 | PG constraints; ciphertext-only | **DONE** |
 | Application ports / use cases | M1-05 | unit ports; typed errors | **DONE** |
-| API-SSL read adapter + discovery | M1-06…17 | unit codec/session; CHR later | TODO #2 |
+| Word-length codec | M1-06 | normative vectors; round-trip | **DONE** |
+| API-SSL read adapter + discovery | M1-07…17 | unit sentence/session; CHR later | TODO #3 |
 | Packet-path / HW-offload | N1-01…03 | fixtures path classes | TODO |
 | Canonical hash + semantic diff | M1-19…24 | Canonical vectors; diff unit | TODO |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | TODO |
@@ -336,7 +338,7 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **чергу #2** → [M1-06 / issue #16](https://github.com/sesquicadaver/MTDirector/issues/16).  
+1. Відкрити **чергу #3** → [M1-07 / issue #17](https://github.com/sesquicadaver/MTDirector/issues/17).  
 2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.  
 3. Не стартувати M2, доки не закрито **M1-34** (черга #33).  
 4. Не стартувати M4, доки не закрито **M5-10** (черга #71).  

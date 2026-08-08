@@ -22,7 +22,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Persistence schema | Done (M1-03) | `sites`/`nodes`/`devices`, `capture_operations`, `snapshot_*` |
 | Secure connection profiles | Done (M1-04) | AES-256-GCM envelope secrets + INTERNAL_CA/SPKI trust |
 | Application ports / use cases | Done (M1-05) | `src/Mfc.Application/Inventory/`, `Snapshots/` + narrow ports |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-06 (#16) |
+| RouterOS word-length codec | Done (M1-06) | `src/Mfc.RouterOs/Protocol/ApiWordLengthCodec.cs` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-07 (#17) |
 
 ## ADRs
 
