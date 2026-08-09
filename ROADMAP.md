@@ -3,7 +3,7 @@
 **Дата оновлення:** 9 серпня 2026  
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач  
 **Продукт:** MikroTik Firewall Controller (MTDirector)  
-**Базовий коміт аудиту:** M1-20 (raw snapshot assembly) — черга зсунута на M1-21
+**Базовий коміт аудиту:** M1-21 (canonicalization primitives) — черга зсунута на M1-22
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -41,13 +41,13 @@
 | Область | Closed | Open | % |
 |---------|-------:|-----:|--:|
 | M0 Bootstrap | 10 | 0 | 100% |
-| M1 Read-only slice | 20 | 14 | 59% |
+| M1 Read-only slice | 21 | 13 | 62% |
 | N1 Packet-path weave | 3 | 4 | 43% |
 | M2–M6 (решта MVP) | 0 | 58 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **33** | **103** | **~24% issues** |
+| **Разом** | **34** | **102** | **~25% issues** |
 
-MVP issues (109) = 33 done + **76 remaining** до MVP CLOSED.  
+MVP issues (109) = 34 done + **75 remaining** до MVP CLOSED.  
 Post-MVP M7 = **27** після MVP.
 
 ### 2.2 DONE (не в черзі)
@@ -78,19 +78,20 @@ Post-MVP M7 = **27** після MVP.
 | M1-18 | #28 | Node topology validation (declared vs observed; no auto-scan) |
 | M1-19 | #29 | Stable-read snapshot coordinator (fingerprints + bounded retry) |
 | M1-20 | #30 | Raw snapshot assembly + centralized redaction |
+| M1-21 | #31 | Canonicalization primitives (normalize + hash contracts) |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
-| `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw snapshot assembly; next: canonicalization (M1-21) |
+| `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw snapshot; next: menu canonical snapshots (M1-22) |
 | `Mfc.Contracts` | лише marker — немає proto gRPC inventory/diff |
-| `Mfc.Application` | inventory/snapshot/stable-read/raw-assembly + topology validation use cases; RouterOS port без session impl |
+| `Mfc.Application` | inventory/snapshot/canonicalization facade + topology validation; RouterOS port без session impl |
 | `Mfc.Controller` | health-only gRPC + persistence/secrets DI |
 | `Mfc.Desktop` | connection shell; **немає** inventory/snapshot/diff UI |
 | Persistence | schema snapshots є; EF adapters для inventory/capture — наступні issues |
 
-**NEXT = черга #20:** [M1-21](https://github.com/sesquicadaver/MTDirector/issues/31).
+**NEXT = черга #21:** [M1-22](https://github.com/sesquicadaver/MTDirector/issues/32).
 
 ---
 
@@ -140,7 +141,7 @@ Post-MVP M7 = **27** після MVP.
 |--:|----|-------:|--------|
 | ~~18~~ | ~~M1-19~~ | ~~#29~~ | ~~Implement stable-read snapshot coordinator~~ → §2.2 DONE |
 | ~~19~~ | ~~M1-20~~ | ~~#30~~ | ~~Implement raw snapshot assembly and redaction~~ → §2.2 DONE |
-| 20 | M1-21 | #31 | Implement canonicalization primitives |
+| ~~20~~ | ~~M1-21~~ | ~~#31~~ | ~~Implement canonicalization primitives~~ → §2.2 DONE |
 | 21 | M1-22 | #32 | Implement menu-specific canonical snapshots |
 | 22 | M1-23 | #33 | Persist snapshots and detect identical captures |
 | 23 | M1-24 | #34 | Implement deterministic semantic snapshot diff |
@@ -339,8 +340,9 @@ Post-MVP M7 = **27** після MVP.
 | Node topology validation | M1-18 | declared vs observed; no auto-scan | **DONE** |
 | Stable-read coordinator | M1-19 | fingerprints; bounded retry; SNAPSHOT_UNSTABLE | **DONE** |
 | Raw snapshot assembly | M1-20 | versioned redacted raw; size limit; secret scan | **DONE** |
+| Canonicalization primitives | M1-21 | IP/set/JSON normalize; config≠obs hashes | **DONE** |
 | Packet-path blockers | N1-04 | analysis blockers from path class | TODO |
-| Canonical + persist + diff | M1-21…24 | primitives; vectors; diff unit | TODO #20 |
+| Menu canonical + persist + diff | M1-22…24 | section maps; vectors; diff unit | TODO #21 |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | TODO |
 | M1 acceptance gate | M1-30…34 | CHR suites | TODO |
 | Policy compose + analysis | M2 | analysis unit; SoD | TODO |
@@ -371,7 +373,7 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **чергу #20** → [M1-21 / issue #31](https://github.com/sesquicadaver/MTDirector/issues/31).  
+1. Відкрити **чергу #21** → [M1-22 / issue #32](https://github.com/sesquicadaver/MTDirector/issues/32).  
 2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.  
 3. Не стартувати M2, доки не закрито **M1-34** (черга #33).  
 4. Не стартувати M4, доки не закрито **M5-10** (черга #71).  

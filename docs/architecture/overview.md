@@ -40,7 +40,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Node topology validation | Done (M1-18) | `src/Mfc.Domain/Topology/NodeTopologyValidator.cs` |
 | Stable-read coordinator | Done (M1-19) | `src/Mfc.RouterOs/Snapshot/StableReadCoordinator.cs` |
 | Raw snapshot assembly | Done (M1-20) | `src/Mfc.RouterOs/Snapshot/RawSnapshotAssembler.cs` |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-21 (#31) |
+| Canonicalization primitives | Done (M1-21) | `src/Mfc.Domain/Canonicalization/` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-22 (#32) |
 
 ## ADRs
 

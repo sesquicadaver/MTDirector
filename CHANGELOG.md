@@ -44,3 +44,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Node topology validation: declared node vs explicit device observations (cardinality, VRRP groups/version/split-master, uplink evidence, SWITCH transit ban, capability-cache short-circuit) without network auto-scan (M1-18).
 - Stable-read snapshot coordinator: critical-menu configuration fingerprints around discovery, bounded retry/jitter, cancellation, SNAPSHOT_UNSTABLE without persisting partial complete captures (M1-19).
 - Raw snapshot assembly: versioned redacted JSON envelope with per-section capture status, centralized secret stripping, separate capture timestamps, deterministic serialization, and typed size-limit errors (M1-20).
+- Canonicalization primitives: IP/prefix normalization, sorted sets, deterministic JSON writer, .id/counter exclusion, separate configuration/observation hashes, snapshot hash with schema version, idempotent Canonicalize (M1-21).
