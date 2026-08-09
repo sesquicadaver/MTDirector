@@ -37,7 +37,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Capability profile | Done (M1-17) | `src/Mfc.RouterOs/Capabilities/CapabilityProfileEvaluator.cs` |
 | Packet-path topology graph | Done (N1-02) | `src/Mfc.RouterOs/Discovery/PacketPathTopologyDiscovery.cs` |
 | Packet-path class | Done (N1-03) | `src/Mfc.RouterOs/Discovery/PacketPathClassifier.cs` |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-18 (#28) |
+| Node topology validation | Done (M1-18) | `src/Mfc.Domain/Topology/NodeTopologyValidator.cs` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue starts at M1-19 (#29) |
 
 ## ADRs
 
