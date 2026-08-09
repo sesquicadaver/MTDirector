@@ -37,6 +37,8 @@ public sealed class MfcDbContext : DbContext
 
     public DbSet<SnapshotCaptureEntity> SnapshotCaptures => Set<SnapshotCaptureEntity>();
 
+    public DbSet<SnapshotCaptureSectionEntity> SnapshotCaptureSections => Set<SnapshotCaptureSectionEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MfcDbContext).Assembly);
@@ -98,6 +100,17 @@ public sealed class MfcDbContext : DbContext
             {
                 throw new InvalidOperationException(
                     "Completed snapshot_captures are immutable and cannot be updated through the application DbContext.");
+            }
+        }
+
+        // Sections are written only with completed captures; treat the table as append-only.
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<SnapshotCaptureSectionEntity> entry
+                 in ChangeTracker.Entries<SnapshotCaptureSectionEntity>())
+        {
+            if (entry.State is EntityState.Modified or EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "snapshot_capture_sections is append-only: update and delete are not allowed through the application DbContext.");
             }
         }
     }

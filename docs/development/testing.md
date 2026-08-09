@@ -18,8 +18,8 @@ Working tree must stay clean after build/test.
 
 | Project | Role |
 |---------|------|
-| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization primitives, menu canonical projector) |
-| `tests/Mfc.IntegrationTests` | Controller health, Desktop connection, PostgreSQL bootstrap (Testcontainers) |
+| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit) |
+| `tests/Mfc.IntegrationTests` | Controller health, Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers) |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts (no live CHR required) |
 
 ## PostgreSQL integration

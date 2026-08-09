@@ -18,4 +18,7 @@ public static class ApplicationPermissions
     public const string SnapshotCapture = "snapshot.capture";
     public const string SnapshotRead = "snapshot.read";
     public const string SnapshotCompare = "snapshot.compare";
+
+    /// <summary>Required to return raw (sanitized) snapshot payload bytes (M1-23 AC#11).</summary>
+    public const string SnapshotRawRead = "snapshot.raw.read";
 }

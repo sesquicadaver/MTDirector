@@ -258,6 +258,7 @@ public sealed class SnapshotUseCaseTests
         FakeRouterOsReadPort routerOs = new();
         FakeSnapshotCapturePort capture = new();
         FakeSnapshotStore snapshots = new();
+        FakeAuditEventWriter audit = new();
 
         SiteView site = (await new CreateSiteUseCase(auth, sites).ExecuteAsync(
             new CreateSiteCommand { Actor = "a", Code = "LAB01", Name = "Lab" })).Value!;
@@ -294,26 +295,33 @@ public sealed class SnapshotUseCaseTests
         Assert.False(discovery.Value!.RouterOsMutated);
         Assert.False(routerOs.MutatedRouterOs);
 
-        CaptureSnapshotUseCase captureUseCase = new(auth, devices, profiles, capture, snapshots);
+        Guid idempotencyKey = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        CaptureSnapshotUseCase captureUseCase = new(auth, devices, profiles, capture, snapshots, audit);
         ApplicationResult<SnapshotView> first = await captureUseCase.ExecuteAsync(
-            new CaptureSnapshotCommand { Actor = "a", DeviceId = device.Id });
+            new CaptureSnapshotCommand { Actor = "a", DeviceId = device.Id, IdempotencyKey = idempotencyKey });
         ApplicationResult<SnapshotView> second = await captureUseCase.ExecuteAsync(
-            new CaptureSnapshotCommand { Actor = "a", DeviceId = device.Id });
+            new CaptureSnapshotCommand { Actor = "a", DeviceId = device.Id, IdempotencyKey = idempotencyKey });
 
         Assert.True(first.IsSuccess);
         Assert.True(second.IsSuccess);
         Assert.Equal(first.Value!.Id, second.Value!.Id);
-        Assert.Equal(2, capture.CaptureCount);
+        // Second call is idempotent by key — capture port is not invoked again.
+        Assert.Equal(1, capture.CaptureCount);
 
-        ApplicationResult<IReadOnlyList<SnapshotView>> list =
+        ApplicationResult<SnapshotListPageView> list =
             await new ListSnapshotsUseCase(auth, snapshots).ExecuteAsync(
                 new ListSnapshotsQuery { Actor = "a", DeviceId = device.Id });
         Assert.True(list.IsSuccess);
-        Assert.Single(list.Value!);
+        Assert.Single(list.Value!.Items);
 
         capture.NextResult = FakeSnapshotCapturePort.CreateResult(Enumerable.Repeat((byte)2, 32).ToArray());
         ApplicationResult<SnapshotView> third = await captureUseCase.ExecuteAsync(
-            new CaptureSnapshotCommand { Actor = "a", DeviceId = device.Id });
+            new CaptureSnapshotCommand
+            {
+                Actor = "a",
+                DeviceId = device.Id,
+                IdempotencyKey = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+            });
         Assert.NotEqual(first.Value.Id, third.Value!.Id);
 
         ApplicationResult<SnapshotDiffView> diff = await new CompareSnapshotsUseCase(auth, snapshots).ExecuteAsync(
@@ -352,7 +360,9 @@ public sealed class SnapshotUseCaseTests
         FakeRouterOsReadPort routerOs = new();
         FakeSnapshotCapturePort capture = new();
         FakeSnapshotStore snapshots = new();
+        FakeAuditEventWriter audit = new();
         Guid missingId = Guid.NewGuid();
+        Guid idempotencyKey = Guid.Parse("33333333-3333-3333-3333-333333333333");
 
         ApplicationResult<DeviceDiscoveryView> discoverMissing =
             await new DiscoverDeviceUseCase(auth, devices, profiles, routerOs).ExecuteAsync(
@@ -360,8 +370,8 @@ public sealed class SnapshotUseCaseTests
         Assert.Equal("not_found", discoverMissing.Error!.Code);
 
         ApplicationResult<SnapshotView> captureMissing =
-            await new CaptureSnapshotUseCase(auth, devices, profiles, capture, snapshots).ExecuteAsync(
-                new CaptureSnapshotCommand { Actor = "a", DeviceId = missingId });
+            await new CaptureSnapshotUseCase(auth, devices, profiles, capture, snapshots, audit).ExecuteAsync(
+                new CaptureSnapshotCommand { Actor = "a", DeviceId = missingId, IdempotencyKey = idempotencyKey });
         Assert.Equal("not_found", captureMissing.Error!.Code);
 
         ApplicationResult<SnapshotView> getMissing =
@@ -408,8 +418,13 @@ public sealed class SnapshotUseCaseTests
         Assert.Equal("failed", noProfile.Error!.Code);
 
         ApplicationResult<SnapshotView> captureNoProfile =
-            await new CaptureSnapshotUseCase(auth, devices, profiles, capture, snapshots).ExecuteAsync(
-                new CaptureSnapshotCommand { Actor = "a", DeviceId = device.Id });
+            await new CaptureSnapshotUseCase(auth, devices, profiles, capture, snapshots, audit).ExecuteAsync(
+                new CaptureSnapshotCommand
+                {
+                    Actor = "a",
+                    DeviceId = device.Id,
+                    IdempotencyKey = Guid.Parse("44444444-4444-4444-4444-444444444444"),
+                });
         Assert.Equal("failed", captureNoProfile.Error!.Code);
 
         auth.DeniedPermissions.Add(ApplicationPermissions.DiscoveryRead);
@@ -423,8 +438,13 @@ public sealed class SnapshotUseCaseTests
                 new DiscoverDeviceCommand { Actor = "guest", DeviceId = device.Id })).Error!.Code);
         Assert.Equal(
             "forbidden",
-            (await new CaptureSnapshotUseCase(auth, devices, profiles, capture, snapshots).ExecuteAsync(
-                new CaptureSnapshotCommand { Actor = "guest", DeviceId = device.Id })).Error!.Code);
+            (await new CaptureSnapshotUseCase(auth, devices, profiles, capture, snapshots, audit).ExecuteAsync(
+                new CaptureSnapshotCommand
+                {
+                    Actor = "guest",
+                    DeviceId = device.Id,
+                    IdempotencyKey = Guid.Parse("55555555-5555-5555-5555-555555555555"),
+                })).Error!.Code);
         Assert.Equal(
             "forbidden",
             (await new GetSnapshotUseCase(auth, snapshots).ExecuteAsync(

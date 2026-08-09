@@ -9,6 +9,8 @@ using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Snapshots;
 using Auth = Mfc.Application.Common.AuthorizationGuard;
 
+// CaptureSnapshotUseCase lives in CaptureSnapshotUseCase.cs (M1-23).
+
 namespace Mfc.Application.Snapshots;
 
 public sealed class DiscoverDeviceCommand
@@ -110,108 +112,6 @@ public sealed class DiscoverDeviceUseCase
     }
 }
 
-public sealed class CaptureSnapshotCommand
-{
-    public required string Actor { get; init; }
-
-    public required Guid DeviceId { get; init; }
-}
-
-public sealed class CaptureSnapshotUseCase
-{
-    private readonly IAuthorizationBoundary _auth;
-    private readonly IDeviceStore _devices;
-    private readonly IConnectionProfileReadStore _profiles;
-    private readonly ISnapshotCapturePort _capture;
-    private readonly ISnapshotStore _snapshots;
-
-    public CaptureSnapshotUseCase(
-        IAuthorizationBoundary auth,
-        IDeviceStore devices,
-        IConnectionProfileReadStore profiles,
-        ISnapshotCapturePort capture,
-        ISnapshotStore snapshots)
-    {
-        ArgumentNullException.ThrowIfNull(auth);
-        ArgumentNullException.ThrowIfNull(devices);
-        ArgumentNullException.ThrowIfNull(profiles);
-        ArgumentNullException.ThrowIfNull(capture);
-        ArgumentNullException.ThrowIfNull(snapshots);
-        _auth = auth;
-        _devices = devices;
-        _profiles = profiles;
-        _capture = capture;
-        _snapshots = snapshots;
-    }
-
-    public async Task<ApplicationResult<SnapshotView>> ExecuteAsync(
-        CaptureSnapshotCommand command,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(command);
-        ApplicationError? authError = await Auth.EnsureAsync(
-            _auth, command.Actor, ApplicationPermissions.SnapshotCapture, cancellationToken).ConfigureAwait(false);
-        if (authError is not null)
-        {
-            return ApplicationResults.Fail(authError);
-        }
-
-        Device? device = await _devices.GetAsync(new DeviceId(command.DeviceId), cancellationToken)
-            .ConfigureAwait(false);
-        if (device is null)
-        {
-            return ApplicationResults.Fail(
-                ApplicationError.NotFound($"Device '{command.DeviceId}' not found."));
-        }
-
-        ConnectionProfileReadModel? profile = await _profiles.GetAsync(device.Id, cancellationToken)
-            .ConfigureAwait(false);
-        if (profile is null)
-        {
-            return ApplicationResults.Fail(
-                ApplicationError.Failed($"Connection profile for device '{command.DeviceId}' is missing."));
-        }
-
-        RouterOsReadTarget target = new()
-        {
-            DeviceId = device.Id,
-            Endpoint = device.ManagementEndpoint,
-            SecretReference = profile.SecretReference,
-            TrustMode = profile.TrustMode,
-            CaProfileRef = profile.CaProfileRef,
-            PinnedSpkiSha256 = profile.PinnedSpkiSha256,
-        };
-
-        SnapshotCaptureResult captured = await _capture.CaptureAsync(target, cancellationToken)
-            .ConfigureAwait(false);
-
-        StoredSnapshot? existing = await _snapshots
-            .FindCompletedBySnapshotHashAsync(device.Id, captured.SnapshotHash, cancellationToken)
-            .ConfigureAwait(false);
-        if (existing is not null)
-        {
-            // Idempotent: identical snapshot hash returns the existing capture.
-            return ApplicationResults.Ok(ViewMapper.ToView(existing));
-        }
-
-        SnapshotMetadata metadata = SnapshotMetadata.CreateCompleted(
-            device.Id,
-            captured.ConfigurationHash,
-            captured.ObservationHash,
-            captured.CapabilityHash,
-            captured.SnapshotHash,
-            DateTimeOffset.UtcNow);
-
-        StoredSnapshot stored = new()
-        {
-            Metadata = metadata,
-            SchemaVersion = captured.SchemaVersion,
-        };
-        await _snapshots.AddAsync(stored, cancellationToken).ConfigureAwait(false);
-        return ApplicationResults.Ok(ViewMapper.ToView(stored));
-    }
-}
-
 public sealed class GetSnapshotQuery
 {
     public required string Actor { get; init; }
@@ -261,6 +161,19 @@ public sealed class ListSnapshotsQuery
     public required string Actor { get; init; }
 
     public required Guid DeviceId { get; init; }
+
+    /// <summary>Page size (1..200). Defaults to 50.</summary>
+    public int Limit { get; init; } = 50;
+
+    /// <summary>Opaque cursor from a previous page.</summary>
+    public string? Cursor { get; init; }
+}
+
+public sealed class SnapshotListPageView
+{
+    public required IReadOnlyList<SnapshotView> Items { get; init; }
+
+    public string? NextCursor { get; init; }
 }
 
 public sealed class ListSnapshotsUseCase
@@ -276,7 +189,7 @@ public sealed class ListSnapshotsUseCase
         _snapshots = snapshots;
     }
 
-    public async Task<ApplicationResult<IReadOnlyList<SnapshotView>>> ExecuteAsync(
+    public async Task<ApplicationResult<SnapshotListPageView>> ExecuteAsync(
         ListSnapshotsQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -288,11 +201,85 @@ public sealed class ListSnapshotsUseCase
             return ApplicationResults.Fail(authError);
         }
 
-        IReadOnlyList<StoredSnapshot> items = await _snapshots
-            .ListByDeviceAsync(new DeviceId(query.DeviceId), cancellationToken)
+        int limit = query.Limit <= 0 ? 50 : Math.Min(query.Limit, 200);
+        StoredSnapshotPage page = await _snapshots
+            .ListByDevicePageAsync(new DeviceId(query.DeviceId), limit, query.Cursor, cancellationToken)
             .ConfigureAwait(false);
-        IReadOnlyList<SnapshotView> views = items.Select(ViewMapper.ToView).ToArray();
-        return ApplicationResults.Ok(views);
+        return ApplicationResults.Ok(new SnapshotListPageView
+        {
+            Items = page.Items.Select(ViewMapper.ToView).ToArray(),
+            NextCursor = page.NextCursor,
+        });
+    }
+}
+
+public sealed class GetRawSnapshotPayloadQuery
+{
+    public required string Actor { get; init; }
+
+    public required Guid SnapshotId { get; init; }
+}
+
+/// <summary>
+/// Returns the sanitized raw payload for a capture. Requires <see cref="ApplicationPermissions.SnapshotRawRead"/>
+/// in addition to ordinary snapshot.read (M1-23 AC#11).
+/// </summary>
+public sealed class GetRawSnapshotPayloadUseCase
+{
+    private readonly IAuthorizationBoundary _auth;
+    private readonly ISnapshotStore _snapshots;
+
+    public GetRawSnapshotPayloadUseCase(IAuthorizationBoundary auth, ISnapshotStore snapshots)
+    {
+        ArgumentNullException.ThrowIfNull(auth);
+        ArgumentNullException.ThrowIfNull(snapshots);
+        _auth = auth;
+        _snapshots = snapshots;
+    }
+
+    public async Task<ApplicationResult<StoredSnapshotPayload>> ExecuteAsync(
+        GetRawSnapshotPayloadQuery query,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        ApplicationError? readError = await Auth.EnsureAsync(
+            _auth, query.Actor, ApplicationPermissions.SnapshotRead, cancellationToken).ConfigureAwait(false);
+        if (readError is not null)
+        {
+            return ApplicationResults.Fail(readError);
+        }
+
+        ApplicationError? rawError = await Auth.EnsureAsync(
+            _auth, query.Actor, ApplicationPermissions.SnapshotRawRead, cancellationToken).ConfigureAwait(false);
+        if (rawError is not null)
+        {
+            return ApplicationResults.Fail(rawError);
+        }
+
+        StoredSnapshot? snapshot = await _snapshots.GetAsync(new SnapshotId(query.SnapshotId), cancellationToken)
+            .ConfigureAwait(false);
+        if (snapshot is null)
+        {
+            return ApplicationResults.Fail(
+                ApplicationError.NotFound($"Snapshot '{query.SnapshotId}' not found."));
+        }
+
+        if (snapshot.RawPayloadHash is null)
+        {
+            return ApplicationResults.Fail(
+                ApplicationError.Failed("Snapshot has no raw payload."));
+        }
+
+        StoredSnapshotPayload? payload = await _snapshots
+            .GetPayloadAsync(snapshot.RawPayloadHash, cancellationToken)
+            .ConfigureAwait(false);
+        if (payload is null)
+        {
+            return ApplicationResults.Fail(
+                ApplicationError.NotFound("Raw payload was not found."));
+        }
+
+        return ApplicationResults.Ok(payload);
     }
 }
 
