@@ -1,0 +1,66 @@
+namespace Mfc.Desktop.Services;
+
+/// <summary>One field-level change line mirrored from DiffEntry.FieldDiff (no reinterpretation).</summary>
+public sealed class SnapshotDiffFieldLine
+{
+    public required string FieldName { get; init; }
+
+    public required string Summary { get; init; }
+}
+
+/// <summary>One DiffEntry presentation row for virtualized ListBox binding.</summary>
+public sealed class SnapshotDiffEntryItem
+{
+    public required string SectionId { get; init; }
+
+    public required string DomainText { get; init; }
+
+    public required string ChangesText { get; init; }
+
+    public required string RecordKey { get; init; }
+
+    public required string OrdinalText { get; init; }
+
+    public required string ConfidenceText { get; init; }
+
+    public required IReadOnlyList<SnapshotDiffFieldLine> FieldLines { get; init; }
+
+    public string HeaderLine =>
+        $"{SectionId} · {DomainText} · {ChangesText} · {RecordKey} · {OrdinalText}";
+}
+
+/// <summary>Section group for sidebar navigation.</summary>
+public sealed class SnapshotDiffSectionGroup
+{
+    public required string SectionId { get; init; }
+
+    public required int EntryCount { get; init; }
+
+    public required IReadOnlyList<SnapshotDiffEntryItem> Entries { get; init; }
+}
+
+/// <summary>Result of a server CompareSnapshots load for Desktop presentation.</summary>
+public sealed class SnapshotDiffLoadResult
+{
+    public required bool Succeeded { get; init; }
+
+    public string? Error { get; init; }
+
+    public Guid? LeftCaptureId { get; init; }
+
+    public Guid? RightCaptureId { get; init; }
+
+    public bool Identical { get; init; }
+
+    public bool IsNoDifferences { get; init; }
+
+    public IReadOnlyList<string> Warnings { get; init; } = [];
+
+    public IReadOnlyList<SnapshotCaptureListItem> Captures { get; init; } = [];
+
+    public IReadOnlyList<SnapshotDiffSectionGroup> SectionGroups { get; init; } = [];
+
+    public IReadOnlyList<SnapshotDiffEntryItem> AllEntries { get; init; } = [];
+
+    public bool IsLoading { get; init; }
+}

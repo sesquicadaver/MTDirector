@@ -29,7 +29,9 @@ public sealed class App : Application, IAsyncDisposable
         GrpcSnapshotViewerClient snapshotClient = new(connection, options);
         SnapshotViewerService snapshotService = new(snapshotClient);
         SnapshotViewerViewModel snapshotVm = new(snapshotService, connection, inventoryVm);
-        _shell = new ShellViewModel(connection, options, inventoryVm, snapshotVm);
+        SnapshotDiffService diffService = new(snapshotClient);
+        SnapshotDiffViewModel diffVm = new(diffService, connection, inventoryVm);
+        _shell = new ShellViewModel(connection, options, inventoryVm, snapshotVm, diffVm);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

@@ -226,5 +226,14 @@ public sealed class SnapshotViewerServiceTests
 
             throw new InvalidOperationException($"Section '{sectionId}' was not found for capture.");
         }
+
+        public Task<DiffPage> CompareSnapshotsAsync(
+            Guid leftCaptureId,
+            Guid rightCaptureId,
+            CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return Task.FromResult(new DiffPage { Identical = true });
+        }
     }
 }
