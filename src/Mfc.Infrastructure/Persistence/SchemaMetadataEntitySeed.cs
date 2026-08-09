@@ -13,10 +13,14 @@ public static class SchemaMetadataEntitySeed
     public const string InventorySnapshotSchemaKey = "inventory.snapshot.schema";
     public const string InventorySnapshotSchemaValue = "m1-03";
 
+    public const string SnapshotPersistSchemaKey = "snapshot.persist.schema";
+    public const string SnapshotPersistSchemaValue = "m1-23";
+
     public static void EnsureBootstrapMetadata(MfcDbContext db)
     {
         EnsureKey(db, BootstrapSchemaKey, BootstrapSchemaValue);
         EnsureKey(db, InventorySnapshotSchemaKey, InventorySnapshotSchemaValue);
+        EnsureKey(db, SnapshotPersistSchemaKey, SnapshotPersistSchemaValue);
     }
 
     private static void EnsureKey(MfcDbContext db, string key, string value)

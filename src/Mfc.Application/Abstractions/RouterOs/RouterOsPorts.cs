@@ -62,4 +62,41 @@ public sealed class SnapshotCaptureResult
     public required SnapshotHash SnapshotHash { get; init; }
 
     public required int SchemaVersion { get; init; }
+
+    /// <summary>Uncompressed sanitized raw snapshot bytes (hashed before compression).</summary>
+    public required ReadOnlyMemory<byte> RawPayload { get; init; }
+
+    /// <summary>Uncompressed canonical configuration document bytes.</summary>
+    public required ReadOnlyMemory<byte> ConfigurationPayload { get; init; }
+
+    /// <summary>Uncompressed canonical observation document bytes.</summary>
+    public required ReadOnlyMemory<byte> ObservationPayload { get; init; }
+
+    /// <summary>Uncompressed canonical capability document bytes.</summary>
+    public required ReadOnlyMemory<byte> CapabilityPayload { get; init; }
+
+    /// <summary>Optional per-section mappings for <c>snapshot_capture_sections</c>.</summary>
+    public IReadOnlyList<CapturedSectionDescriptor> Sections { get; init; } = [];
+}
+
+/// <summary>One menu section mapping persisted with a capture (Canonical Spec §28.2).</summary>
+public sealed class CapturedSectionDescriptor
+{
+    public required string SectionId { get; init; }
+
+    public required int SectionVersion { get; init; }
+
+    public required short Status { get; init; }
+
+    public required bool Ordered { get; init; }
+
+    public int ConfigurationRecordCount { get; init; }
+
+    public int ObservationRecordCount { get; init; }
+
+    public ReadOnlyMemory<byte>? RawPayload { get; init; }
+
+    public ReadOnlyMemory<byte>? ConfigurationPayload { get; init; }
+
+    public ReadOnlyMemory<byte>? ObservationPayload { get; init; }
 }

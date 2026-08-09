@@ -193,6 +193,24 @@ public sealed class SnapshotMetadata : IEquatable<SnapshotMetadata>
         CapabilityHash capabilityHash,
         SnapshotHash snapshotHash,
         DateTimeOffset completedAtUtc)
+        => CreateCompleted(
+            SnapshotId.New(),
+            deviceId,
+            configurationHash,
+            observationHash,
+            capabilityHash,
+            snapshotHash,
+            completedAtUtc);
+
+    /// <summary>Rehydrates a completed snapshot from persistence with a known identity.</summary>
+    public static SnapshotMetadata CreateCompleted(
+        SnapshotId id,
+        DeviceId deviceId,
+        ConfigurationHash configurationHash,
+        ObservationHash observationHash,
+        CapabilityHash capabilityHash,
+        SnapshotHash snapshotHash,
+        DateTimeOffset completedAtUtc)
     {
         if (completedAtUtc.Offset != TimeSpan.Zero)
         {
@@ -200,7 +218,7 @@ public sealed class SnapshotMetadata : IEquatable<SnapshotMetadata>
         }
 
         return new SnapshotMetadata(
-            SnapshotId.New(),
+            id,
             deviceId,
             SnapshotStatus.Completed,
             configurationHash,

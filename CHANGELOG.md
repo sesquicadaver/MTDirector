@@ -46,3 +46,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Raw snapshot assembly: versioned redacted JSON envelope with per-section capture status, centralized secret stripping, separate capture timestamps, deterministic serialization, and typed size-limit errors (M1-20).
 - Canonicalization primitives: IP/prefix normalization, sorted sets, deterministic JSON writer, .id/counter exclusion, separate configuration/observation hashes, snapshot hash with schema version, idempotent Canonicalize (M1-21).
 - Menu-specific canonical snapshots: discovery→section-registry projection with ordered firewall, config/observation splits (routes, VRRP role, dynamic address-lists, interface running), unknown properties in compatibility observations only (M1-22).
+- Canonical snapshot persistence: content-addressed Brotli payloads, `snapshot_capture_sections`, atomic `PersistCompletedAsync`, hash indexes, cursor pagination, idempotent capture operations (M1-23).

@@ -33,6 +33,12 @@ internal sealed class SnapshotCaptureConfiguration : IEntityTypeConfiguration<Sn
         builder.HasIndex(e => new { e.OperationId, e.DeviceId })
             .IsUnique()
             .HasDatabaseName("uq_snapshot_capture_device_operation");
+        builder.HasIndex(e => e.ConfigurationHash)
+            .HasDatabaseName("IX_snapshot_captures_ConfigurationHash");
+        builder.HasIndex(e => e.ObservationHash)
+            .HasDatabaseName("IX_snapshot_captures_ObservationHash");
+        builder.HasIndex(e => e.SnapshotHash)
+            .HasDatabaseName("IX_snapshot_captures_SnapshotHash");
         builder.HasOne<CaptureOperationEntity>()
             .WithMany()
             .HasForeignKey(e => e.OperationId)

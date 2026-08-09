@@ -1,3 +1,4 @@
+using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Snapshots;
@@ -39,6 +40,52 @@ public sealed class StoredSnapshot
     public required SnapshotMetadata Metadata { get; init; }
 
     public required int SchemaVersion { get; init; }
+
+    public Guid? OperationId { get; init; }
+
+    public Hash256? RawPayloadHash { get; init; }
+
+    public Hash256? ConfigurationPayloadHash { get; init; }
+
+    public Hash256? ObservationPayloadHash { get; init; }
+
+    public Hash256? CapabilityPayloadHash { get; init; }
+}
+
+/// <summary>Cursor page of device snapshots (M1-23 AC#6).</summary>
+public sealed class StoredSnapshotPage
+{
+    public required IReadOnlyList<StoredSnapshot> Items { get; init; }
+
+    public string? NextCursor { get; init; }
+}
+
+/// <summary>Decompressed content-addressed payload with integrity-verified hash.</summary>
+public sealed class StoredSnapshotPayload
+{
+    public required Hash256 PayloadHash { get; init; }
+
+    public required SnapshotPayloadKind Kind { get; init; }
+
+    public required int SchemaVersion { get; init; }
+
+    public required SnapshotCompression Compression { get; init; }
+
+    public required ReadOnlyMemory<byte> UncompressedBytes { get; init; }
+}
+
+/// <summary>Atomic persist request for a new completed capture (M1-23).</summary>
+public sealed class SnapshotPersistRequest
+{
+    public required DeviceId DeviceId { get; init; }
+
+    public required Guid RequestedBy { get; init; }
+
+    public required Guid IdempotencyKey { get; init; }
+
+    public required SnapshotCaptureResult Capture { get; init; }
+
+    public required DateTimeOffset CapturedAtUtc { get; init; }
 }
 
 public interface ISnapshotStore
@@ -49,12 +96,34 @@ public interface ISnapshotStore
         DeviceId deviceId,
         CancellationToken cancellationToken = default);
 
+    /// <summary>Paginated listing ordered by completed_at desc, id desc.</summary>
+    Task<StoredSnapshotPage> ListByDevicePageAsync(
+        DeviceId deviceId,
+        int limit,
+        string? cursor,
+        CancellationToken cancellationToken = default);
+
     Task<StoredSnapshot?> FindCompletedBySnapshotHashAsync(
         DeviceId deviceId,
         SnapshotHash snapshotHash,
         CancellationToken cancellationToken = default);
 
-    Task AddAsync(StoredSnapshot snapshot, CancellationToken cancellationToken = default);
+    /// <summary>Returns a completed capture linked to an idempotent capture operation, if any.</summary>
+    Task<StoredSnapshot?> FindByIdempotencyAsync(
+        Guid requestedBy,
+        Guid idempotencyKey,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Atomically inserts payloads (ON CONFLICT DO NOTHING), sections, capture operation, and completed capture.
+    /// </summary>
+    Task<StoredSnapshot> PersistCompletedAsync(
+        SnapshotPersistRequest request,
+        CancellationToken cancellationToken = default);
+
+    Task<StoredSnapshotPayload?> GetPayloadAsync(
+        Hash256 payloadHash,
+        CancellationToken cancellationToken = default);
 }
 
 /// <summary>Loads connection profile fields needed to open a RouterOS read target (no password).</summary>

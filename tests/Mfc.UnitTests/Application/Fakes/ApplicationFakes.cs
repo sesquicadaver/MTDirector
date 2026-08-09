@@ -1,3 +1,6 @@
+using System.Security.Cryptography;
+using System.Text;
+using Mfc.Application.Abstractions.Audit;
 using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.ConnectionProfiles;
 using Mfc.Application.Abstractions.Persistence;
@@ -88,15 +91,26 @@ internal sealed class FakeDeviceStore : IDeviceStore
     }
 }
 
+internal sealed class FakeAuditEventWriter : IAuditEventWriter
+{
+    public List<(string Actor, string Action, string PayloadJson)> Events { get; } = [];
+
+    public Task AppendAsync(
+        string actor,
+        string action,
+        string payloadJson,
+        CancellationToken cancellationToken = default)
+    {
+        Events.Add((actor, action, payloadJson));
+        return Task.CompletedTask;
+    }
+}
+
 internal sealed class FakeSnapshotStore : ISnapshotStore
 {
     private readonly Dictionary<Guid, StoredSnapshot> _byId = [];
-
-    public Task AddAsync(StoredSnapshot snapshot, CancellationToken cancellationToken = default)
-    {
-        _byId[snapshot.Metadata.Id.Value] = snapshot;
-        return Task.CompletedTask;
-    }
+    private readonly Dictionary<(Guid RequestedBy, Guid Key), Guid> _idempotency = [];
+    private readonly Dictionary<string, StoredSnapshotPayload> _payloads = new(StringComparer.Ordinal);
 
     public Task<StoredSnapshot?> GetAsync(SnapshotId id, CancellationToken cancellationToken = default)
         => Task.FromResult(_byId.TryGetValue(id.Value, out StoredSnapshot? s) ? s : null);
@@ -106,6 +120,37 @@ internal sealed class FakeSnapshotStore : ISnapshotStore
         CancellationToken cancellationToken = default)
         => Task.FromResult<IReadOnlyList<StoredSnapshot>>(
             _byId.Values.Where(s => s.Metadata.DeviceId == deviceId).ToArray());
+
+    public Task<StoredSnapshotPage> ListByDevicePageAsync(
+        DeviceId deviceId,
+        int limit,
+        string? cursor,
+        CancellationToken cancellationToken = default)
+    {
+        List<StoredSnapshot> all = _byId.Values
+            .Where(s => s.Metadata.DeviceId == deviceId)
+            .OrderByDescending(s => s.Metadata.CompletedAtUtc)
+            .ThenByDescending(s => s.Metadata.Id.Value)
+            .ToList();
+        int skip = 0;
+        if (!string.IsNullOrWhiteSpace(cursor) && int.TryParse(cursor, out int parsed))
+        {
+            skip = Math.Max(0, parsed);
+        }
+
+        List<StoredSnapshot> page = all.Skip(skip).Take(limit).ToList();
+        string? next = skip + page.Count < all.Count
+            ? (skip + page.Count).ToString(System.Globalization.CultureInfo.InvariantCulture)
+            : null;
+        return Task.FromResult(new StoredSnapshotPage { Items = page, NextCursor = next });
+    }
+
+    public Task AddAsync(StoredSnapshot snapshot, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        _byId[snapshot.Metadata.Id.Value] = snapshot;
+        return Task.CompletedTask;
+    }
 
     public Task<StoredSnapshot?> FindCompletedBySnapshotHashAsync(
         DeviceId deviceId,
@@ -118,6 +163,91 @@ internal sealed class FakeSnapshotStore : ISnapshotStore
             && s.Metadata.SnapshotHash is { } hash
             && hash.Equals(snapshotHash));
         return Task.FromResult(match);
+    }
+
+    public Task<StoredSnapshot?> FindByIdempotencyAsync(
+        Guid requestedBy,
+        Guid idempotencyKey,
+        CancellationToken cancellationToken = default)
+    {
+        if (_idempotency.TryGetValue((requestedBy, idempotencyKey), out Guid id)
+            && _byId.TryGetValue(id, out StoredSnapshot? snapshot))
+        {
+            return Task.FromResult<StoredSnapshot?>(snapshot);
+        }
+
+        return Task.FromResult<StoredSnapshot?>(null);
+    }
+
+    public Task<StoredSnapshot> PersistCompletedAsync(
+        SnapshotPersistRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        Hash256 rawHash = StorePayload(request.Capture.RawPayload, SnapshotPayloadKind.RawSanitized, request.Capture.SchemaVersion);
+        Hash256 configPayloadHash = StorePayload(
+            request.Capture.ConfigurationPayload,
+            SnapshotPayloadKind.CanonicalConfiguration,
+            request.Capture.SchemaVersion);
+        Hash256 obsPayloadHash = StorePayload(
+            request.Capture.ObservationPayload,
+            SnapshotPayloadKind.CanonicalObservations,
+            request.Capture.SchemaVersion);
+        Hash256 capPayloadHash = StorePayload(
+            request.Capture.CapabilityPayload,
+            SnapshotPayloadKind.CanonicalCapabilities,
+            request.Capture.SchemaVersion);
+
+        SnapshotMetadata metadata = SnapshotMetadata.CreateCompleted(
+            request.DeviceId,
+            request.Capture.ConfigurationHash,
+            request.Capture.ObservationHash,
+            request.Capture.CapabilityHash,
+            request.Capture.SnapshotHash,
+            request.CapturedAtUtc);
+
+        StoredSnapshot stored = new()
+        {
+            Metadata = metadata,
+            SchemaVersion = request.Capture.SchemaVersion,
+            OperationId = Guid.NewGuid(),
+            RawPayloadHash = rawHash,
+            ConfigurationPayloadHash = configPayloadHash,
+            ObservationPayloadHash = obsPayloadHash,
+            CapabilityPayloadHash = capPayloadHash,
+        };
+        _byId[stored.Metadata.Id.Value] = stored;
+        _idempotency[(request.RequestedBy, request.IdempotencyKey)] = stored.Metadata.Id.Value;
+        return Task.FromResult(stored);
+    }
+
+    public Task<StoredSnapshotPayload?> GetPayloadAsync(
+        Hash256 payloadHash,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(_payloads.TryGetValue(payloadHash.ToString(), out StoredSnapshotPayload? p) ? p : null);
+
+    private Hash256 StorePayload(ReadOnlyMemory<byte> bytes, SnapshotPayloadKind kind, int schemaVersion)
+    {
+        if (bytes.Length == 0)
+        {
+            bytes = Encoding.UTF8.GetBytes("{}");
+        }
+
+        byte[] copy = bytes.ToArray();
+        Hash256 hash = Hash256.Create(SHA256.HashData(copy));
+        string key = hash.ToString();
+        if (!_payloads.ContainsKey(key))
+        {
+            _payloads[key] = new StoredSnapshotPayload
+            {
+                PayloadHash = hash,
+                Kind = kind,
+                SchemaVersion = schemaVersion,
+                Compression = SnapshotCompression.Brotli,
+                UncompressedBytes = copy,
+            };
+        }
+
+        return hash;
     }
 }
 
@@ -164,6 +294,8 @@ internal sealed class FakeSnapshotCapturePort : ISnapshotCapturePort
     public static SnapshotCaptureResult CreateResult(byte[] digest32)
     {
         Hash256 digest = Hash256.Create(digest32);
+        byte[] body = Encoding.UTF8.GetBytes(
+            "{\"digest\":\"" + Convert.ToHexString(digest32).ToLowerInvariant() + "\"}");
         return new SnapshotCaptureResult
         {
             ConfigurationHash = ConfigurationHash.FromDigest(digest),
@@ -171,6 +303,22 @@ internal sealed class FakeSnapshotCapturePort : ISnapshotCapturePort
             CapabilityHash = CapabilityHash.FromDigest(digest),
             SnapshotHash = SnapshotHash.FromDigest(digest),
             SchemaVersion = 1,
+            RawPayload = body,
+            ConfigurationPayload = body,
+            ObservationPayload = body,
+            CapabilityPayload = body,
+            Sections =
+            [
+                new CapturedSectionDescriptor
+                {
+                    SectionId = "system.identity",
+                    SectionVersion = 1,
+                    Status = 1,
+                    Ordered = false,
+                    ConfigurationRecordCount = 1,
+                    ConfigurationPayload = body,
+                },
+            ],
         };
     }
 }

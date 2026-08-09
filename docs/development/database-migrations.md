@@ -8,8 +8,9 @@ PostgreSQL is the only supported production database. SQLite is forbidden.
 |-------------------------|-------|-----------|
 | `bootstrap.schema` | `m0-07` | `InitialBootstrap` |
 | `inventory.snapshot.schema` | `m1-03` | `InventorySnapshotSchema` |
+| `snapshot.persist.schema` | `m1-23` | `SnapshotCaptureSectionsM123` |
 
-M1 inventory/snapshot tables follow Vertical Slice §8 (`sites`, `nodes`, `devices`, `device_connection_profiles`, `capture_operations`, `snapshot_captures`, `snapshot_payloads`). Topology tables from the early issue draft are **not** persisted in M1.
+M1 inventory/snapshot tables follow Vertical Slice §8 (`sites`, `nodes`, `devices`, `device_connection_profiles`, `capture_operations`, `snapshot_captures`, `snapshot_payloads`) plus Canonical Spec §28.2 `snapshot_capture_sections` (M1-23). Topology tables from the early issue draft are **not** persisted in M1.
 
 ## Local PostgreSQL
 

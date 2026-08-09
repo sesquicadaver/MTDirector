@@ -20,6 +20,7 @@ public sealed class InventorySnapshotSchemaTests
         "devices",
         "nodes",
         "sites",
+        "snapshot_capture_sections",
         "snapshot_captures",
         "snapshot_payloads",
     ];
@@ -45,6 +46,7 @@ public sealed class InventorySnapshotSchemaTests
         IEnumerable<string> applied = await db.Database.GetAppliedMigrationsAsync();
         Assert.Contains(applied, name => name.Contains("InitialBootstrap", StringComparison.Ordinal));
         Assert.Contains(applied, name => name.Contains("InventorySnapshotSchema", StringComparison.Ordinal));
+        Assert.Contains(applied, name => name.Contains("SnapshotCaptureSectionsM123", StringComparison.Ordinal));
         Assert.Empty(await db.Database.GetPendingMigrationsAsync());
 
         List<string> tables = await QueryPublicTablesAsync(connectionString, InventoryTables);
@@ -54,6 +56,11 @@ public sealed class InventorySnapshotSchemaTests
             SchemaMetadataEntitySeed.InventorySnapshotSchemaKey);
         Assert.NotNull(meta);
         Assert.Equal(SchemaMetadataEntitySeed.InventorySnapshotSchemaValue, meta.Value);
+
+        SchemaMetadataEntity? persistMeta = await db.SchemaMetadata.FindAsync(
+            SchemaMetadataEntitySeed.SnapshotPersistSchemaKey);
+        Assert.NotNull(persistMeta);
+        Assert.Equal(SchemaMetadataEntitySeed.SnapshotPersistSchemaValue, persistMeta.Value);
     }
 
     [Fact]

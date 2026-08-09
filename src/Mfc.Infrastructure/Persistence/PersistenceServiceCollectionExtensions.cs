@@ -1,4 +1,6 @@
+using Mfc.Application.Abstractions.Persistence;
 using Mfc.Infrastructure.Persistence.Hosting;
+using Mfc.Infrastructure.Persistence.Snapshots;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,6 +30,8 @@ public static class PersistenceServiceCollectionExtensions
             options.EnableDetailedErrors(false);
         });
 
+        // IAuditEventWriter → EfAuditEventWriter is registered in AddMfcSecrets (Security).
+        services.AddScoped<ISnapshotStore, EfSnapshotStore>();
         services.AddHostedService<DatabaseSchemaGuardHostedService>();
         return services;
     }
