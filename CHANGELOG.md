@@ -45,3 +45,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Stable-read snapshot coordinator: critical-menu configuration fingerprints around discovery, bounded retry/jitter, cancellation, SNAPSHOT_UNSTABLE without persisting partial complete captures (M1-19).
 - Raw snapshot assembly: versioned redacted JSON envelope with per-section capture status, centralized secret stripping, separate capture timestamps, deterministic serialization, and typed size-limit errors (M1-20).
 - Canonicalization primitives: IP/prefix normalization, sorted sets, deterministic JSON writer, .id/counter exclusion, separate configuration/observation hashes, snapshot hash with schema version, idempotent Canonicalize (M1-21).
+- Menu-specific canonical snapshots: discovery→section-registry projection with ordered firewall, config/observation splits (routes, VRRP role, dynamic address-lists, interface running), unknown properties in compatibility observations only (M1-22).

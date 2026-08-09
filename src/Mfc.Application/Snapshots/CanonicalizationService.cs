@@ -5,7 +5,7 @@ namespace Mfc.Application.Snapshots;
 
 /// <summary>
 /// Application-facing facade over domain canonicalization primitives (M1-21).
-/// Menu-specific section mapping lands in M1-22.
+/// Menu-specific discovery→canonical projection lives in <c>Mfc.RouterOs.Snapshot.DiscoveryCanonicalProjector</c> (M1-22).
 /// </summary>
 public static class CanonicalizationService
 {
