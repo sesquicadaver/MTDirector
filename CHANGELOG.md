@@ -43,3 +43,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Packet-path classification: CPU_FIREWALL / HARDWARE_OFFLOADED / MIXED / INDETERMINATE for ingress/egress pairs with blocker hints (N1-03).
 - Node topology validation: declared node vs explicit device observations (cardinality, VRRP groups/version/split-master, uplink evidence, SWITCH transit ban, capability-cache short-circuit) without network auto-scan (M1-18).
 - Stable-read snapshot coordinator: critical-menu configuration fingerprints around discovery, bounded retry/jitter, cancellation, SNAPSHOT_UNSTABLE without persisting partial complete captures (M1-19).
+- Raw snapshot assembly: versioned redacted JSON envelope with per-section capture status, centralized secret stripping, separate capture timestamps, deterministic serialization, and typed size-limit errors (M1-20).

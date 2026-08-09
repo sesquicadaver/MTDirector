@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "capture": {
+    "startedAtUtc": "2026-08-09T05:00:00.0000000Z",
+    "completedAtUtc": "2026-08-09T05:00:01.0000000Z"
+  },
+  "sections": [
+    {
+      "sourceMenu": "/ip/firewall/filter/print",
+      "commandId": "Ipv4Filter",
+      "captureStatus": "completed",
+      "errorCode": null,
+      "errorMessage": null,
+      "records": [
+        {
+          "properties": {
+            "action": "accept",
+            "chain": "forward",
+            "comment": "lab-forward",
+            "disabled": "false"
+          },
+          "unknownProperties": {
+            "vendor-extra": "keep-me"
+          }
+        }
+      ]
+    },
+    {
+      "sourceMenu": "/ip/service/print",
+      "commandId": "IpServices",
+      "captureStatus": "partial_error",
+      "errorCode": "ROS_TRAP",
+      "errorMessage": "failure: not enough permissions (trap preserved)",
+      "records": [
+        {
+          "properties": {
+            "disabled": "false",
+            "name": "api-ssl",
+            "port": "8729"
+          },
+          "unknownProperties": {}
+        }
+      ]
+    }
+  ]
+}
