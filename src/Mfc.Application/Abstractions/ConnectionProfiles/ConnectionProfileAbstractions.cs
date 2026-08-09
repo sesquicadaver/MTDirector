@@ -48,6 +48,9 @@ public sealed class UpsertConnectionProfileCommand
     public long MaxResponseBytes { get; init; } = 16_777_216;
 
     public required string Actor { get; init; }
+
+    /// <summary>Client-supplied idempotency key for UpdateDeviceConnection (M1-25).</summary>
+    public Guid IdempotencyKey { get; init; }
 }
 
 /// <summary>Persists encrypted connection profiles without exposing secrets to Desktop clients.</summary>

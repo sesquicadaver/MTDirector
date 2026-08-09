@@ -18,6 +18,29 @@ namespace Mfc.UnitTests.Application;
 
 public sealed class InventoryUseCaseTests
 {
+    private static CreateSiteUseCase CreateSite(
+        FakeAuthorizationBoundary auth,
+        FakeSiteStore sites,
+        FakeIdempotencyStore? idempotency = null,
+        FakeAuditEventWriter? audit = null)
+        => new(auth, sites, idempotency ?? new FakeIdempotencyStore(), audit ?? new FakeAuditEventWriter());
+
+    private static CreateNodeUseCase CreateNode(
+        FakeAuthorizationBoundary auth,
+        FakeSiteStore sites,
+        FakeNodeStore nodes,
+        FakeIdempotencyStore? idempotency = null,
+        FakeAuditEventWriter? audit = null)
+        => new(auth, sites, nodes, idempotency ?? new FakeIdempotencyStore(), audit ?? new FakeAuditEventWriter());
+
+    private static RegisterDeviceUseCase RegisterDevice(
+        FakeAuthorizationBoundary auth,
+        FakeNodeStore nodes,
+        FakeDeviceStore devices,
+        FakeIdempotencyStore? idempotency = null,
+        FakeAuditEventWriter? audit = null)
+        => new(auth, nodes, devices, idempotency ?? new FakeIdempotencyStore(), audit ?? new FakeAuditEventWriter());
+
     [Fact]
     public async Task CreateSiteAndNodeAndRegisterDevice()
     {
@@ -25,16 +48,25 @@ public sealed class InventoryUseCaseTests
         FakeSiteStore sites = new();
         FakeNodeStore nodes = new();
         FakeDeviceStore devices = new();
+        FakeIdempotencyStore idempotency = new();
+        FakeAuditEventWriter audit = new();
 
-        ApplicationResult<SiteView> site = await new CreateSiteUseCase(auth, sites).ExecuteAsync(
-            new CreateSiteCommand { Actor = "admin", Code = "EDGE01", Name = "Edge" });
+        ApplicationResult<SiteView> site = await CreateSite(auth, sites, idempotency, audit).ExecuteAsync(
+            new CreateSiteCommand
+            {
+                Actor = "admin",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = "EDGE01",
+                Name = "Edge",
+            });
         Assert.True(site.IsSuccess);
         Assert.Equal("EDGE01", site.Value!.Code);
 
-        ApplicationResult<NodeView> node = await new CreateNodeUseCase(auth, sites, nodes).ExecuteAsync(
+        ApplicationResult<NodeView> node = await CreateNode(auth, sites, nodes, idempotency, audit).ExecuteAsync(
             new CreateNodeCommand
             {
                 Actor = "admin",
+                IdempotencyKey = Guid.NewGuid(),
                 SiteId = site.Value.Id,
                 Name = "r1",
                 DeclaredKind = NodeKind.Router,
@@ -42,18 +74,173 @@ public sealed class InventoryUseCaseTests
             });
         Assert.True(node.IsSuccess);
 
-        ApplicationResult<DeviceView> device = await new RegisterDeviceUseCase(auth, nodes, devices).ExecuteAsync(
-            new RegisterDeviceCommand
-            {
-                Actor = "admin",
-                NodeId = node.Value!.Id,
-                DisplayName = "r1",
-                ManagementHost = "10.0.0.1",
-                Role = DeviceRole.Router,
-            });
+        ApplicationResult<DeviceView> device = await RegisterDevice(auth, nodes, devices, idempotency, audit)
+            .ExecuteAsync(
+                new RegisterDeviceCommand
+                {
+                    Actor = "admin",
+                    IdempotencyKey = Guid.NewGuid(),
+                    NodeId = node.Value!.Id,
+                    DisplayName = "r1",
+                    ManagementHost = "10.0.0.1",
+                    Role = DeviceRole.Router,
+                });
         Assert.True(device.IsSuccess);
         Assert.Equal("10.0.0.1", device.Value!.ManagementHost);
         Assert.Null(device.Value.GetType().GetProperty("Password"));
+        Assert.Contains(audit.Events, e => e.Action == CreateSiteUseCase.Operation);
+    }
+
+    [Fact]
+    public async Task ListSitesPaginatesAndRequiresReadPermission()
+    {
+        FakeAuthorizationBoundary auth = new();
+        FakeSiteStore sites = new();
+        CreateSiteUseCase create = CreateSite(auth, sites);
+        for (int i = 0; i < 3; i++)
+        {
+            Assert.True((await create.ExecuteAsync(new CreateSiteCommand
+            {
+                Actor = "admin",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = $"S{i:00}",
+                Name = $"Site {i}",
+            })).IsSuccess);
+        }
+
+        ListSitesUseCase list = new(auth, sites);
+        ApplicationResult<SiteListPageView> page1 = await list.ExecuteAsync(
+            new ListSitesQuery { Actor = "admin", Limit = 2 });
+        Assert.True(page1.IsSuccess);
+        Assert.Equal(2, page1.Value!.Items.Count);
+        Assert.False(string.IsNullOrWhiteSpace(page1.Value.NextCursor));
+
+        ApplicationResult<SiteListPageView> page2 = await list.ExecuteAsync(
+            new ListSitesQuery { Actor = "admin", Limit = 2, Cursor = page1.Value.NextCursor });
+        Assert.True(page2.IsSuccess);
+        Assert.Single(page2.Value!.Items);
+
+        auth.DeniedPermissions.Add(ApplicationPermissions.InventoryRead);
+        ApplicationResult<SiteListPageView> forbidden = await list.ExecuteAsync(
+            new ListSitesQuery { Actor = "guest", Limit = 10 });
+        Assert.Equal("forbidden", forbidden.Error!.Code);
+    }
+
+    [Fact]
+    public async Task GetNodeReturnsDevicesAndNotFound()
+    {
+        FakeAuthorizationBoundary auth = new();
+        FakeSiteStore sites = new();
+        FakeNodeStore nodes = new();
+        FakeDeviceStore devices = new();
+        SiteView site = (await CreateSite(auth, sites).ExecuteAsync(new CreateSiteCommand
+        {
+            Actor = "a",
+            IdempotencyKey = Guid.NewGuid(),
+            Code = "GN01",
+            Name = "GetNode",
+        })).Value!;
+        NodeView node = (await CreateNode(auth, sites, nodes).ExecuteAsync(new CreateNodeCommand
+        {
+            Actor = "a",
+            IdempotencyKey = Guid.NewGuid(),
+            SiteId = site.Id,
+            Name = "core",
+            DeclaredKind = NodeKind.Router,
+            DeclaredUplinkMode = DeclaredUplinkMode.One,
+        })).Value!;
+        DeviceView device = (await RegisterDevice(auth, nodes, devices).ExecuteAsync(new RegisterDeviceCommand
+        {
+            Actor = "a",
+            IdempotencyKey = Guid.NewGuid(),
+            NodeId = node.Id,
+            DisplayName = "core",
+            ManagementHost = "192.0.2.10",
+            Role = DeviceRole.Router,
+        })).Value!;
+
+        GetNodeUseCase getNode = new(auth, nodes, devices);
+        ApplicationResult<NodeDetailsView> details = await getNode.ExecuteAsync(
+            new GetNodeQuery { Actor = "a", NodeId = node.Id });
+        Assert.True(details.IsSuccess);
+        Assert.Equal(node.Id, details.Value!.Node.Id);
+        Assert.Single(details.Value.Devices);
+        Assert.Equal(device.Id, details.Value.Devices[0].Id);
+
+        ApplicationResult<NodeDetailsView> missing = await getNode.ExecuteAsync(
+            new GetNodeQuery { Actor = "a", NodeId = Guid.NewGuid() });
+        Assert.Equal("not_found", missing.Error!.Code);
+    }
+
+    [Fact]
+    public async Task UpdateDeviceHonorsOptimisticConcurrencyAndIdempotency()
+    {
+        FakeAuthorizationBoundary auth = new();
+        FakeSiteStore sites = new();
+        FakeNodeStore nodes = new();
+        FakeDeviceStore devices = new();
+        FakeIdempotencyStore idempotency = new();
+        SiteView site = (await CreateSite(auth, sites, idempotency).ExecuteAsync(new CreateSiteCommand
+        {
+            Actor = "a",
+            IdempotencyKey = Guid.NewGuid(),
+            Code = "UD01",
+            Name = "Update",
+        })).Value!;
+        NodeView node = (await CreateNode(auth, sites, nodes, idempotency).ExecuteAsync(new CreateNodeCommand
+        {
+            Actor = "a",
+            IdempotencyKey = Guid.NewGuid(),
+            SiteId = site.Id,
+            Name = "n",
+            DeclaredKind = NodeKind.Router,
+            DeclaredUplinkMode = DeclaredUplinkMode.One,
+        })).Value!;
+        DeviceView device = (await RegisterDevice(auth, nodes, devices, idempotency).ExecuteAsync(
+            new RegisterDeviceCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                NodeId = node.Id,
+                DisplayName = "d",
+                ManagementHost = "192.0.2.11",
+                Role = DeviceRole.Router,
+            })).Value!;
+
+        UpdateDeviceUseCase update = new(auth, devices, idempotency, new FakeAuditEventWriter());
+        Guid key = Guid.NewGuid();
+        ApplicationResult<DeviceView> first = await update.ExecuteAsync(new UpdateDeviceCommand
+        {
+            Actor = "a",
+            IdempotencyKey = key,
+            DeviceId = device.Id,
+            ExpectedRowVersion = device.RowVersion,
+            DisplayName = "renamed",
+        });
+        Assert.True(first.IsSuccess);
+        Assert.Equal("renamed", first.Value!.DisplayName);
+
+        ApplicationResult<DeviceView> replay = await update.ExecuteAsync(new UpdateDeviceCommand
+        {
+            Actor = "a",
+            IdempotencyKey = key,
+            DeviceId = device.Id,
+            ExpectedRowVersion = device.RowVersion,
+            DisplayName = "renamed",
+        });
+        Assert.True(replay.IsSuccess);
+        Assert.Equal(first.Value.Id, replay.Value!.Id);
+        Assert.Equal(first.Value.RowVersion, replay.Value.RowVersion);
+
+        ApplicationResult<DeviceView> stale = await update.ExecuteAsync(new UpdateDeviceCommand
+        {
+            Actor = "a",
+            IdempotencyKey = Guid.NewGuid(),
+            DeviceId = device.Id,
+            ExpectedRowVersion = device.RowVersion,
+            DisplayName = "stale",
+        });
+        Assert.Equal("conflict", stale.Error!.Code);
     }
 
     [Fact]
@@ -61,10 +248,11 @@ public sealed class InventoryUseCaseTests
     {
         FakeAuthorizationBoundary auth = new();
         FakeSiteStore sites = new();
-        CreateSiteUseCase useCase = new(auth, sites);
+        CreateSiteUseCase useCase = CreateSite(auth, sites);
         Assert.True((await useCase.ExecuteAsync(new CreateSiteCommand
         {
             Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
             Code = "DUP1",
             Name = "One",
         })).IsSuccess);
@@ -72,6 +260,7 @@ public sealed class InventoryUseCaseTests
         ApplicationResult<SiteView> second = await useCase.ExecuteAsync(new CreateSiteCommand
         {
             Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
             Code = "DUP1",
             Name = "Two",
         });
@@ -84,14 +273,26 @@ public sealed class InventoryUseCaseTests
     {
         FakeAuthorizationBoundary auth = new();
         FakeSiteStore sites = new();
-        CreateSiteUseCase useCase = new(auth, sites);
+        CreateSiteUseCase useCase = CreateSite(auth, sites);
         ApplicationResult<SiteView> badCode = await useCase.ExecuteAsync(
-            new CreateSiteCommand { Actor = "admin", Code = "bad code!", Name = "X" });
+            new CreateSiteCommand
+            {
+                Actor = "admin",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = "bad code!",
+                Name = "X",
+            });
         Assert.True(badCode.IsFailure);
         Assert.Equal("validation", badCode.Error!.Code);
 
         ApplicationResult<SiteView> blank = await useCase.ExecuteAsync(
-            new CreateSiteCommand { Actor = "admin", Code = "OK01", Name = "   " });
+            new CreateSiteCommand
+            {
+                Actor = "admin",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = "OK01",
+                Name = "   ",
+            });
         Assert.Equal("validation", blank.Error!.Code);
     }
 
@@ -101,14 +302,21 @@ public sealed class InventoryUseCaseTests
         FakeAuthorizationBoundary auth = new();
         FakeSiteStore sites = new();
         FakeNodeStore nodes = new();
-        SiteView site = (await new CreateSiteUseCase(auth, sites).ExecuteAsync(
-            new CreateSiteCommand { Actor = "a", Code = "SITE1", Name = "Site" })).Value!;
-        CreateNodeUseCase useCase = new(auth, sites, nodes);
+        SiteView site = (await CreateSite(auth, sites).ExecuteAsync(
+            new CreateSiteCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = "SITE1",
+                Name = "Site",
+            })).Value!;
+        CreateNodeUseCase useCase = CreateNode(auth, sites, nodes);
 
         ApplicationResult<NodeView> missingSite = await useCase.ExecuteAsync(
             new CreateNodeCommand
             {
                 Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
                 SiteId = Guid.NewGuid(),
                 Name = "n1",
                 DeclaredKind = NodeKind.Router,
@@ -119,6 +327,7 @@ public sealed class InventoryUseCaseTests
         Assert.True((await useCase.ExecuteAsync(new CreateNodeCommand
         {
             Actor = "a",
+            IdempotencyKey = Guid.NewGuid(),
             SiteId = site.Id,
             Name = "dup",
             DeclaredKind = NodeKind.Router,
@@ -129,6 +338,7 @@ public sealed class InventoryUseCaseTests
             new CreateNodeCommand
             {
                 Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
                 SiteId = site.Id,
                 Name = "dup",
                 DeclaredKind = NodeKind.Router,
@@ -140,6 +350,7 @@ public sealed class InventoryUseCaseTests
             new CreateNodeCommand
             {
                 Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
                 SiteId = site.Id,
                 Name = " ",
                 DeclaredKind = NodeKind.Router,
@@ -155,23 +366,31 @@ public sealed class InventoryUseCaseTests
         FakeSiteStore sites = new();
         FakeNodeStore nodes = new();
         FakeDeviceStore devices = new();
-        SiteView site = (await new CreateSiteUseCase(auth, sites).ExecuteAsync(
-            new CreateSiteCommand { Actor = "a", Code = "SITE2", Name = "Site" })).Value!;
-        NodeView node = (await new CreateNodeUseCase(auth, sites, nodes).ExecuteAsync(
+        SiteView site = (await CreateSite(auth, sites).ExecuteAsync(
+            new CreateSiteCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = "SITE2",
+                Name = "Site",
+            })).Value!;
+        NodeView node = (await CreateNode(auth, sites, nodes).ExecuteAsync(
             new CreateNodeCommand
             {
                 Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
                 SiteId = site.Id,
                 Name = "n",
                 DeclaredKind = NodeKind.Router,
                 DeclaredUplinkMode = DeclaredUplinkMode.One,
             })).Value!;
-        RegisterDeviceUseCase useCase = new(auth, nodes, devices);
+        RegisterDeviceUseCase useCase = RegisterDevice(auth, nodes, devices);
 
         ApplicationResult<DeviceView> missing = await useCase.ExecuteAsync(
             new RegisterDeviceCommand
             {
                 Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
                 NodeId = Guid.NewGuid(),
                 DisplayName = "d",
                 ManagementHost = "10.0.0.1",
@@ -183,6 +402,7 @@ public sealed class InventoryUseCaseTests
             new RegisterDeviceCommand
             {
                 Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
                 NodeId = node.Id,
                 DisplayName = "d",
                 ManagementHost = "not an ip",
@@ -196,11 +416,13 @@ public sealed class InventoryUseCaseTests
     {
         FakeAuthorizationBoundary auth = new();
         FakeConnectionProfileService profiles = new();
+        FakeIdempotencyStore idempotency = new();
         ApplicationResult<ConnectionProfileView> result =
-            await new UpdateConnectionProfileUseCase(auth, profiles).ExecuteAsync(
+            await new UpdateConnectionProfileUseCase(auth, profiles, idempotency).ExecuteAsync(
                 new UpsertConnectionProfileCommand
                 {
                     Actor = "admin",
+                    IdempotencyKey = Guid.NewGuid(),
                     DeviceId = Guid.NewGuid(),
                     Username = "ro",
                     PasswordUtf8 = Encoding.UTF8.GetBytes("secret"),
@@ -220,10 +442,12 @@ public sealed class InventoryUseCaseTests
     {
         FakeAuthorizationBoundary auth = new();
         FakeConnectionProfileService profiles = new();
-        UpdateConnectionProfileUseCase useCase = new(auth, profiles);
+        FakeIdempotencyStore idempotency = new();
+        UpdateConnectionProfileUseCase useCase = new(auth, profiles, idempotency);
         UpsertConnectionProfileCommand command = new()
         {
             Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
             DeviceId = Guid.NewGuid(),
             Username = "ro",
             PasswordUtf8 = Encoding.UTF8.GetBytes("secret"),
@@ -236,17 +460,52 @@ public sealed class InventoryUseCaseTests
         Assert.Equal("failed", failed.Error!.Code);
 
         profiles.ThrowOnUpsert = new ArgumentException("bad arg");
+        command = new UpsertConnectionProfileCommand
+        {
+            Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
+            DeviceId = command.DeviceId,
+            Username = "ro",
+            PasswordUtf8 = Encoding.UTF8.GetBytes("secret"),
+            TrustMode = CertificateTrustMode.InternalCa,
+            CaProfileRef = "lab-ca",
+        };
         ApplicationResult<ConnectionProfileView> validation = await useCase.ExecuteAsync(command);
         Assert.Equal("validation", validation.Error!.Code);
 
         auth.DeniedPermissions.Add(ApplicationPermissions.ConnectionProfileWrite);
-        ApplicationResult<ConnectionProfileView> forbidden = await useCase.ExecuteAsync(command);
+        ApplicationResult<ConnectionProfileView> forbidden = await useCase.ExecuteAsync(
+            new UpsertConnectionProfileCommand
+            {
+                Actor = "admin",
+                IdempotencyKey = Guid.NewGuid(),
+                DeviceId = Guid.NewGuid(),
+                Username = "ro",
+                PasswordUtf8 = Encoding.UTF8.GetBytes("secret"),
+                TrustMode = CertificateTrustMode.InternalCa,
+                CaProfileRef = "lab-ca",
+            });
         Assert.Equal("forbidden", forbidden.Error!.Code);
     }
 }
 
 public sealed class SnapshotUseCaseTests
 {
+    private static CreateSiteUseCase CreateSite(FakeAuthorizationBoundary auth, FakeSiteStore sites)
+        => new(auth, sites, new FakeIdempotencyStore(), new FakeAuditEventWriter());
+
+    private static CreateNodeUseCase CreateNode(
+        FakeAuthorizationBoundary auth,
+        FakeSiteStore sites,
+        FakeNodeStore nodes)
+        => new(auth, sites, nodes, new FakeIdempotencyStore(), new FakeAuditEventWriter());
+
+    private static RegisterDeviceUseCase RegisterDevice(
+        FakeAuthorizationBoundary auth,
+        FakeNodeStore nodes,
+        FakeDeviceStore devices)
+        => new(auth, nodes, devices, new FakeIdempotencyStore(), new FakeAuditEventWriter());
+
     [Fact]
     public async Task DiscoverDeviceIsReadOnlyAndCaptureIsIdempotentByHash()
     {
@@ -260,21 +519,29 @@ public sealed class SnapshotUseCaseTests
         FakeSnapshotStore snapshots = new();
         FakeAuditEventWriter audit = new();
 
-        SiteView site = (await new CreateSiteUseCase(auth, sites).ExecuteAsync(
-            new CreateSiteCommand { Actor = "a", Code = "LAB01", Name = "Lab" })).Value!;
-        NodeView node = (await new CreateNodeUseCase(auth, sites, nodes).ExecuteAsync(
+        SiteView site = (await CreateSite(auth, sites).ExecuteAsync(
+            new CreateSiteCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = "LAB01",
+                Name = "Lab",
+            })).Value!;
+        NodeView node = (await CreateNode(auth, sites, nodes).ExecuteAsync(
             new CreateNodeCommand
             {
                 Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
                 SiteId = site.Id,
                 Name = "core",
                 DeclaredKind = NodeKind.Router,
                 DeclaredUplinkMode = DeclaredUplinkMode.One,
             })).Value!;
-        DeviceView device = (await new RegisterDeviceUseCase(auth, nodes, devices).ExecuteAsync(
+        DeviceView device = (await RegisterDevice(auth, nodes, devices).ExecuteAsync(
             new RegisterDeviceCommand
             {
                 Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
                 NodeId = node.Id,
                 DisplayName = "core",
                 ManagementHost = "192.0.2.1",
@@ -305,7 +572,6 @@ public sealed class SnapshotUseCaseTests
         Assert.True(first.IsSuccess);
         Assert.True(second.IsSuccess);
         Assert.Equal(first.Value!.Id, second.Value!.Id);
-        // Second call is idempotent by key — capture port is not invoked again.
         Assert.Equal(1, capture.CaptureCount);
 
         ApplicationResult<SnapshotListPageView> list =
@@ -391,21 +657,29 @@ public sealed class SnapshotUseCaseTests
 
         FakeSiteStore sites = new();
         FakeNodeStore nodes = new();
-        SiteView site = (await new CreateSiteUseCase(auth, sites).ExecuteAsync(
-            new CreateSiteCommand { Actor = "a", Code = "LAB02", Name = "Lab" })).Value!;
-        NodeView node = (await new CreateNodeUseCase(auth, sites, nodes).ExecuteAsync(
+        SiteView site = (await CreateSite(auth, sites).ExecuteAsync(
+            new CreateSiteCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = "LAB02",
+                Name = "Lab",
+            })).Value!;
+        NodeView node = (await CreateNode(auth, sites, nodes).ExecuteAsync(
             new CreateNodeCommand
             {
                 Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
                 SiteId = site.Id,
                 Name = "core",
                 DeclaredKind = NodeKind.Router,
                 DeclaredUplinkMode = DeclaredUplinkMode.One,
             })).Value!;
-        DeviceView device = (await new RegisterDeviceUseCase(auth, nodes, devices).ExecuteAsync(
+        DeviceView device = (await RegisterDevice(auth, nodes, devices).ExecuteAsync(
             new RegisterDeviceCommand
             {
                 Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
                 NodeId = node.Id,
                 DisplayName = "core",
                 ManagementHost = "192.0.2.2",
@@ -474,21 +748,29 @@ public sealed class SnapshotUseCaseTests
         FakeConnectionProfileReadStore profiles = new();
         FakeStableReadCoordinatorPort coordinator = new();
 
-        SiteView site = (await new CreateSiteUseCase(auth, sites).ExecuteAsync(
-            new CreateSiteCommand { Actor = "a", Code = "STB01", Name = "Stable" })).Value!;
-        NodeView node = (await new CreateNodeUseCase(auth, sites, nodes).ExecuteAsync(
+        SiteView site = (await CreateSite(auth, sites).ExecuteAsync(
+            new CreateSiteCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = "STB01",
+                Name = "Stable",
+            })).Value!;
+        NodeView node = (await CreateNode(auth, sites, nodes).ExecuteAsync(
             new CreateNodeCommand
             {
                 Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
                 SiteId = site.Id,
                 Name = "edge",
                 DeclaredKind = NodeKind.Router,
                 DeclaredUplinkMode = DeclaredUplinkMode.One,
             })).Value!;
-        DeviceView device = (await new RegisterDeviceUseCase(auth, nodes, devices).ExecuteAsync(
+        DeviceView device = (await RegisterDevice(auth, nodes, devices).ExecuteAsync(
             new RegisterDeviceCommand
             {
                 Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
                 NodeId = node.Id,
                 DisplayName = "edge",
                 ManagementHost = "192.0.2.8",
@@ -595,8 +877,14 @@ public sealed class SnapshotUseCaseTests
         auth.DeniedPermissions.Add(ApplicationPermissions.InventoryWrite);
         FakeSiteStore sites = new();
 
-        ApplicationResult<SiteView> result = await new CreateSiteUseCase(auth, sites).ExecuteAsync(
-            new CreateSiteCommand { Actor = "guest", Code = "NOPE1", Name = "Nope" });
+        ApplicationResult<SiteView> result = await CreateSite(auth, sites).ExecuteAsync(
+            new CreateSiteCommand
+            {
+                Actor = "guest",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = "NOPE1",
+                Name = "Nope",
+            });
         Assert.False(result.IsSuccess);
         Assert.Equal("forbidden", result.Error!.Code);
     }

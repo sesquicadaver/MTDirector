@@ -1,3 +1,5 @@
+using System.Text.Json;
+using Mfc.Application.Abstractions.Audit;
 using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Common;
@@ -14,6 +16,8 @@ public sealed class CreateSiteCommand
 {
     public required string Actor { get; init; }
 
+    public required Guid IdempotencyKey { get; init; }
+
     public required string Code { get; init; }
 
     public required string Name { get; init; }
@@ -21,15 +25,27 @@ public sealed class CreateSiteCommand
 
 public sealed class CreateSiteUseCase
 {
+    public const string Operation = "inventory.create_site";
+
     private readonly IAuthorizationBoundary _auth;
     private readonly ISiteStore _sites;
+    private readonly IIdempotencyStore _idempotency;
+    private readonly IAuditEventWriter _audit;
 
-    public CreateSiteUseCase(IAuthorizationBoundary auth, ISiteStore sites)
+    public CreateSiteUseCase(
+        IAuthorizationBoundary auth,
+        ISiteStore sites,
+        IIdempotencyStore idempotency,
+        IAuditEventWriter audit)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(sites);
+        ArgumentNullException.ThrowIfNull(idempotency);
+        ArgumentNullException.ThrowIfNull(audit);
         _auth = auth;
         _sites = sites;
+        _idempotency = idempotency;
+        _audit = audit;
     }
 
     public async Task<ApplicationResult<SiteView>> ExecuteAsync(
@@ -44,6 +60,36 @@ public sealed class CreateSiteUseCase
             return ApplicationResults.Fail(authError);
         }
 
+        ApplicationError? keyError = IdempotencySupport.ValidateKey(command.IdempotencyKey);
+        if (keyError is not null)
+        {
+            return ApplicationResults.Fail(keyError);
+        }
+
+        byte[] requestHash = IdempotencySupport.HashRequest(new
+        {
+            command.Code,
+            command.Name,
+        });
+        ApplicationResult<SiteView>? replay = await IdempotencySupport.TryReplayAsync(
+            _idempotency,
+            command.Actor,
+            Operation,
+            command.IdempotencyKey,
+            requestHash,
+            async (id, ct) =>
+            {
+                Site? existing = await _sites.GetAsync(new SiteId(id), ct).ConfigureAwait(false);
+                return existing is null
+                    ? ApplicationResults.Fail(ApplicationError.NotFound($"Site '{id}' not found."))
+                    : ApplicationResults.Ok(ViewMapper.ToView(existing));
+            },
+            cancellationToken).ConfigureAwait(false);
+        if (replay is not null)
+        {
+            return replay.Value;
+        }
+
         try
         {
             SiteCode code = SiteCode.Create(command.Code);
@@ -56,6 +102,14 @@ public sealed class CreateSiteUseCase
 
             Site site = Site.Create(code, name);
             await _sites.AddAsync(site, cancellationToken).ConfigureAwait(false);
+            await _idempotency.SaveAsync(
+                command.Actor, Operation, command.IdempotencyKey, requestHash, site.Id.Value, cancellationToken)
+                .ConfigureAwait(false);
+            await _audit.AppendAsync(
+                command.Actor,
+                Operation,
+                JsonSerializer.Serialize(new { site_id = site.Id.Value, code = site.Code.Value }),
+                cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ViewMapper.ToView(site));
         }
         catch (DomainInvariantException ex)
@@ -69,9 +123,55 @@ public sealed class CreateSiteUseCase
     }
 }
 
+public sealed class ListSitesQuery
+{
+    public required string Actor { get; init; }
+
+    public int Limit { get; init; } = 50;
+
+    public string? Cursor { get; init; }
+}
+
+public sealed class ListSitesUseCase
+{
+    private readonly IAuthorizationBoundary _auth;
+    private readonly ISiteStore _sites;
+
+    public ListSitesUseCase(IAuthorizationBoundary auth, ISiteStore sites)
+    {
+        ArgumentNullException.ThrowIfNull(auth);
+        ArgumentNullException.ThrowIfNull(sites);
+        _auth = auth;
+        _sites = sites;
+    }
+
+    public async Task<ApplicationResult<SiteListPageView>> ExecuteAsync(
+        ListSitesQuery query,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        ApplicationError? authError = await Auth.EnsureAsync(
+            _auth, query.Actor, ApplicationPermissions.InventoryRead, cancellationToken).ConfigureAwait(false);
+        if (authError is not null)
+        {
+            return ApplicationResults.Fail(authError);
+        }
+
+        int limit = query.Limit <= 0 ? 50 : Math.Min(query.Limit, 200);
+        SitePage page = await _sites.ListPageAsync(limit, query.Cursor, cancellationToken).ConfigureAwait(false);
+        return ApplicationResults.Ok(new SiteListPageView
+        {
+            Items = page.Items.Select(ViewMapper.ToView).ToArray(),
+            NextCursor = page.NextCursor,
+        });
+    }
+}
+
 public sealed class CreateNodeCommand
 {
     public required string Actor { get; init; }
+
+    public required Guid IdempotencyKey { get; init; }
 
     public required Guid SiteId { get; init; }
 
@@ -84,18 +184,31 @@ public sealed class CreateNodeCommand
 
 public sealed class CreateNodeUseCase
 {
+    public const string Operation = "inventory.create_node";
+
     private readonly IAuthorizationBoundary _auth;
     private readonly ISiteStore _sites;
     private readonly INodeStore _nodes;
+    private readonly IIdempotencyStore _idempotency;
+    private readonly IAuditEventWriter _audit;
 
-    public CreateNodeUseCase(IAuthorizationBoundary auth, ISiteStore sites, INodeStore nodes)
+    public CreateNodeUseCase(
+        IAuthorizationBoundary auth,
+        ISiteStore sites,
+        INodeStore nodes,
+        IIdempotencyStore idempotency,
+        IAuditEventWriter audit)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(sites);
         ArgumentNullException.ThrowIfNull(nodes);
+        ArgumentNullException.ThrowIfNull(idempotency);
+        ArgumentNullException.ThrowIfNull(audit);
         _auth = auth;
         _sites = sites;
         _nodes = nodes;
+        _idempotency = idempotency;
+        _audit = audit;
     }
 
     public async Task<ApplicationResult<NodeView>> ExecuteAsync(
@@ -108,6 +221,38 @@ public sealed class CreateNodeUseCase
         if (authError is not null)
         {
             return ApplicationResults.Fail(authError);
+        }
+
+        ApplicationError? keyError = IdempotencySupport.ValidateKey(command.IdempotencyKey);
+        if (keyError is not null)
+        {
+            return ApplicationResults.Fail(keyError);
+        }
+
+        byte[] requestHash = IdempotencySupport.HashRequest(new
+        {
+            command.SiteId,
+            command.Name,
+            kind = command.DeclaredKind.ToString(),
+            uplink = command.DeclaredUplinkMode.ToString(),
+        });
+        ApplicationResult<NodeView>? replay = await IdempotencySupport.TryReplayAsync(
+            _idempotency,
+            command.Actor,
+            Operation,
+            command.IdempotencyKey,
+            requestHash,
+            async (id, ct) =>
+            {
+                Node? existing = await _nodes.GetAsync(new NodeId(id), ct).ConfigureAwait(false);
+                return existing is null
+                    ? ApplicationResults.Fail(ApplicationError.NotFound($"Node '{id}' not found."))
+                    : ApplicationResults.Ok(ViewMapper.ToView(existing));
+            },
+            cancellationToken).ConfigureAwait(false);
+        if (replay is not null)
+        {
+            return replay.Value;
         }
 
         SiteId siteId = new(command.SiteId);
@@ -128,6 +273,14 @@ public sealed class CreateNodeUseCase
 
             Node node = Node.Create(siteId, name, command.DeclaredKind, command.DeclaredUplinkMode);
             await _nodes.AddAsync(node, cancellationToken).ConfigureAwait(false);
+            await _idempotency.SaveAsync(
+                command.Actor, Operation, command.IdempotencyKey, requestHash, node.Id.Value, cancellationToken)
+                .ConfigureAwait(false);
+            await _audit.AppendAsync(
+                command.Actor,
+                Operation,
+                JsonSerializer.Serialize(new { node_id = node.Id.Value, site_id = siteId.Value }),
+                cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ViewMapper.ToView(node));
         }
         catch (DomainInvariantException ex)
@@ -141,9 +294,63 @@ public sealed class CreateNodeUseCase
     }
 }
 
+public sealed class GetNodeQuery
+{
+    public required string Actor { get; init; }
+
+    public required Guid NodeId { get; init; }
+}
+
+public sealed class GetNodeUseCase
+{
+    private readonly IAuthorizationBoundary _auth;
+    private readonly INodeStore _nodes;
+    private readonly IDeviceStore _devices;
+
+    public GetNodeUseCase(IAuthorizationBoundary auth, INodeStore nodes, IDeviceStore devices)
+    {
+        ArgumentNullException.ThrowIfNull(auth);
+        ArgumentNullException.ThrowIfNull(nodes);
+        ArgumentNullException.ThrowIfNull(devices);
+        _auth = auth;
+        _nodes = nodes;
+        _devices = devices;
+    }
+
+    public async Task<ApplicationResult<NodeDetailsView>> ExecuteAsync(
+        GetNodeQuery query,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        ApplicationError? authError = await Auth.EnsureAsync(
+            _auth, query.Actor, ApplicationPermissions.InventoryRead, cancellationToken).ConfigureAwait(false);
+        if (authError is not null)
+        {
+            return ApplicationResults.Fail(authError);
+        }
+
+        Node? node = await _nodes.GetAsync(new NodeId(query.NodeId), cancellationToken).ConfigureAwait(false);
+        if (node is null)
+        {
+            return ApplicationResults.Fail(ApplicationError.NotFound($"Node '{query.NodeId}' not found."));
+        }
+
+        IReadOnlyList<Device> devices = await _devices
+            .ListByNodeAsync(node.Id, cancellationToken)
+            .ConfigureAwait(false);
+        return ApplicationResults.Ok(new NodeDetailsView
+        {
+            Node = ViewMapper.ToView(node),
+            Devices = devices.Select(ViewMapper.ToView).ToArray(),
+        });
+    }
+}
+
 public sealed class RegisterDeviceCommand
 {
     public required string Actor { get; init; }
+
+    public required Guid IdempotencyKey { get; init; }
 
     public required Guid NodeId { get; init; }
 
@@ -158,18 +365,31 @@ public sealed class RegisterDeviceCommand
 
 public sealed class RegisterDeviceUseCase
 {
+    public const string Operation = "inventory.register_device";
+
     private readonly IAuthorizationBoundary _auth;
     private readonly INodeStore _nodes;
     private readonly IDeviceStore _devices;
+    private readonly IIdempotencyStore _idempotency;
+    private readonly IAuditEventWriter _audit;
 
-    public RegisterDeviceUseCase(IAuthorizationBoundary auth, INodeStore nodes, IDeviceStore devices)
+    public RegisterDeviceUseCase(
+        IAuthorizationBoundary auth,
+        INodeStore nodes,
+        IDeviceStore devices,
+        IIdempotencyStore idempotency,
+        IAuditEventWriter audit)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
         ArgumentNullException.ThrowIfNull(devices);
+        ArgumentNullException.ThrowIfNull(idempotency);
+        ArgumentNullException.ThrowIfNull(audit);
         _auth = auth;
         _nodes = nodes;
         _devices = devices;
+        _idempotency = idempotency;
+        _audit = audit;
     }
 
     public async Task<ApplicationResult<DeviceView>> ExecuteAsync(
@@ -182,6 +402,39 @@ public sealed class RegisterDeviceUseCase
         if (authError is not null)
         {
             return ApplicationResults.Fail(authError);
+        }
+
+        ApplicationError? keyError = IdempotencySupport.ValidateKey(command.IdempotencyKey);
+        if (keyError is not null)
+        {
+            return ApplicationResults.Fail(keyError);
+        }
+
+        byte[] requestHash = IdempotencySupport.HashRequest(new
+        {
+            command.NodeId,
+            command.DisplayName,
+            command.ManagementHost,
+            command.ManagementPort,
+            role = command.Role.ToString(),
+        });
+        ApplicationResult<DeviceView>? replay = await IdempotencySupport.TryReplayAsync(
+            _idempotency,
+            command.Actor,
+            Operation,
+            command.IdempotencyKey,
+            requestHash,
+            async (id, ct) =>
+            {
+                Device? existing = await _devices.GetAsync(new DeviceId(id), ct).ConfigureAwait(false);
+                return existing is null
+                    ? ApplicationResults.Fail(ApplicationError.NotFound($"Device '{id}' not found."))
+                    : ApplicationResults.Ok(ViewMapper.ToView(existing));
+            },
+            cancellationToken).ConfigureAwait(false);
+        if (replay is not null)
+        {
+            return replay.Value;
         }
 
         NodeId nodeId = new(command.NodeId);
@@ -199,6 +452,176 @@ public sealed class RegisterDeviceUseCase
                 command.Role);
             await _devices.AddAsync(device, cancellationToken).ConfigureAwait(false);
             await _nodes.UpdateAsync(node, cancellationToken).ConfigureAwait(false);
+            await _idempotency.SaveAsync(
+                command.Actor, Operation, command.IdempotencyKey, requestHash, device.Id.Value, cancellationToken)
+                .ConfigureAwait(false);
+            await _audit.AppendAsync(
+                command.Actor,
+                Operation,
+                JsonSerializer.Serialize(new
+                {
+                    device_id = device.Id.Value,
+                    node_id = nodeId.Value,
+                    management_host = device.ManagementEndpoint.Host.Value,
+                }),
+                cancellationToken).ConfigureAwait(false);
+            return ApplicationResults.Ok(ViewMapper.ToView(device));
+        }
+        catch (DomainInvariantException ex)
+        {
+            return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
+        }
+        catch (ArgumentException ex)
+        {
+            return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
+        }
+    }
+}
+
+public sealed class UpdateDeviceCommand
+{
+    public required string Actor { get; init; }
+
+    public required Guid IdempotencyKey { get; init; }
+
+    public required Guid DeviceId { get; init; }
+
+    public required ulong ExpectedRowVersion { get; init; }
+
+    public string? DisplayName { get; init; }
+
+    public string? ManagementHost { get; init; }
+
+    public ushort? ManagementPort { get; init; }
+
+    public bool? Enabled { get; init; }
+
+    public DeviceRole? Role { get; init; }
+}
+
+public sealed class UpdateDeviceUseCase
+{
+    public const string Operation = "inventory.update_device";
+
+    private readonly IAuthorizationBoundary _auth;
+    private readonly IDeviceStore _devices;
+    private readonly IIdempotencyStore _idempotency;
+    private readonly IAuditEventWriter _audit;
+
+    public UpdateDeviceUseCase(
+        IAuthorizationBoundary auth,
+        IDeviceStore devices,
+        IIdempotencyStore idempotency,
+        IAuditEventWriter audit)
+    {
+        ArgumentNullException.ThrowIfNull(auth);
+        ArgumentNullException.ThrowIfNull(devices);
+        ArgumentNullException.ThrowIfNull(idempotency);
+        ArgumentNullException.ThrowIfNull(audit);
+        _auth = auth;
+        _devices = devices;
+        _idempotency = idempotency;
+        _audit = audit;
+    }
+
+    public async Task<ApplicationResult<DeviceView>> ExecuteAsync(
+        UpdateDeviceCommand command,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+        ApplicationError? authError = await Auth.EnsureAsync(
+            _auth, command.Actor, ApplicationPermissions.InventoryWrite, cancellationToken).ConfigureAwait(false);
+        if (authError is not null)
+        {
+            return ApplicationResults.Fail(authError);
+        }
+
+        ApplicationError? keyError = IdempotencySupport.ValidateKey(command.IdempotencyKey);
+        if (keyError is not null)
+        {
+            return ApplicationResults.Fail(keyError);
+        }
+
+        byte[] requestHash = IdempotencySupport.HashRequest(new
+        {
+            command.DeviceId,
+            command.ExpectedRowVersion,
+            command.DisplayName,
+            command.ManagementHost,
+            command.ManagementPort,
+            command.Enabled,
+            role = command.Role?.ToString(),
+        });
+        ApplicationResult<DeviceView>? replay = await IdempotencySupport.TryReplayAsync(
+            _idempotency,
+            command.Actor,
+            Operation,
+            command.IdempotencyKey,
+            requestHash,
+            async (id, ct) =>
+            {
+                Device? existing = await _devices.GetAsync(new DeviceId(id), ct).ConfigureAwait(false);
+                return existing is null
+                    ? ApplicationResults.Fail(ApplicationError.NotFound($"Device '{id}' not found."))
+                    : ApplicationResults.Ok(ViewMapper.ToView(existing));
+            },
+            cancellationToken).ConfigureAwait(false);
+        if (replay is not null)
+        {
+            return replay.Value;
+        }
+
+        Device? device = await _devices.GetAsync(new DeviceId(command.DeviceId), cancellationToken)
+            .ConfigureAwait(false);
+        if (device is null)
+        {
+            return ApplicationResults.Fail(ApplicationError.NotFound($"Device '{command.DeviceId}' not found."));
+        }
+
+        if (device.RowVersion != command.ExpectedRowVersion)
+        {
+            return ApplicationResults.Fail(
+                ApplicationError.Conflict(
+                    $"Device row_version mismatch: expected {command.ExpectedRowVersion}, actual {device.RowVersion}."));
+        }
+
+        try
+        {
+            if (command.DisplayName is not null)
+            {
+                device.Rename(NonEmptyName.Create(command.DisplayName));
+            }
+
+            if (command.ManagementHost is not null || command.ManagementPort is not null)
+            {
+                string host = command.ManagementHost ?? device.ManagementEndpoint.Host.Value;
+                ushort port = command.ManagementPort ?? device.ManagementEndpoint.Port;
+                device.Relocate(ManagementEndpoint.Create(host, port));
+            }
+
+            if (command.Enabled is not null)
+            {
+                device.SetEnabled(command.Enabled.Value);
+            }
+
+            if (command.Role is not null)
+            {
+                device.SetRole(command.Role.Value);
+            }
+
+            await _devices.UpdateAsync(device, cancellationToken).ConfigureAwait(false);
+            await _idempotency.SaveAsync(
+                command.Actor, Operation, command.IdempotencyKey, requestHash, device.Id.Value, cancellationToken)
+                .ConfigureAwait(false);
+            await _audit.AppendAsync(
+                command.Actor,
+                Operation,
+                JsonSerializer.Serialize(new
+                {
+                    device_id = device.Id.Value,
+                    row_version = device.RowVersion,
+                }),
+                cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ViewMapper.ToView(device));
         }
         catch (DomainInvariantException ex)

@@ -241,7 +241,11 @@
         }
       },
       "mfc.contracts": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "Google.Protobuf": "[3.35.1, )",
+          "Grpc.AspNetCore": "[2.83.0, )"
+        }
       },
       "mfc.domain": {
         "type": "Project"

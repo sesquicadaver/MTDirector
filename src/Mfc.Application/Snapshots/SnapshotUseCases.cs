@@ -69,7 +69,25 @@ public sealed class DiscoverDeviceUseCase
         }
 
         (Device device, RouterOsReadTarget target) = prepared.Value!;
-        RouterOsProbeResult probe = await _routerOs.ProbeAsync(target, cancellationToken).ConfigureAwait(false);
+        RouterOsProbeResult probe;
+        try
+        {
+            probe = await _routerOs.ProbeAsync(target, cancellationToken).ConfigureAwait(false);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return ApplicationResults.Fail(ApplicationError.Failed(ex.Message));
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            return ApplicationResults.Fail(
+                ApplicationError.Dependency("RouterOS probe failed (sanitized)."));
+        }
+
         device.RecordSupportState(probe.SupportState);
         await _devices.UpdateAsync(device, cancellationToken).ConfigureAwait(false);
 

@@ -21,6 +21,7 @@ internal sealed class DeviceConfiguration : IEntityTypeConfiguration<DeviceEntit
         builder.Property(e => e.ManagementHostKind).IsRequired();
         builder.Property(e => e.ManagementPort).IsRequired().HasDefaultValue(8729);
         builder.Property(e => e.Enabled).IsRequired().HasDefaultValue(true);
+        builder.Property(e => e.Role).IsRequired().HasDefaultValue((short)0);
         builder.Property(e => e.RowVersion).IsRequired().HasDefaultValue(1L);
         builder.Property(e => e.CreatedAtUtc).IsRequired();
         builder.Property(e => e.UpdatedAtUtc).IsRequired();

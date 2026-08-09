@@ -1,14 +1,22 @@
+using Mfc.Application.Abstractions.Authorization;
+using Mfc.Application.Abstractions.RouterOs;
+using Mfc.Application.Inventory;
+using Mfc.Application.Snapshots;
+using Mfc.Controller.Authorization;
 using Mfc.Controller.Configuration;
+using Mfc.Controller.Grpc;
 using Mfc.Infrastructure.Persistence;
 using Mfc.Infrastructure.Persistence.Logging;
 using Mfc.Infrastructure.Security;
+using Mfc.RouterOs.Ports;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Mfc.Controller;
 
 /// <summary>
-/// Composition root: health-only gRPC host with PostgreSQL schema guard (M0-05/M0-07).
+/// Composition root: health + inventory gRPC host with PostgreSQL schema guard (M0-05/M0-07, M1-25).
 /// </summary>
 public static class Program
 {
@@ -53,7 +61,8 @@ public static class Program
     }
 
     /// <summary>
-    /// Builds a configured health-only host. Used by Main and integration tests.
+    /// Builds a configured Controller host. Used by Main and integration tests.
+    /// Tests may replace <see cref="IRouterOsReadPort"/> (and other services) via <paramref name="configure"/>.
     /// </summary>
     public static WebApplication BuildHost(string[] args, Action<WebApplicationBuilder>? configure = null)
     {
@@ -93,6 +102,11 @@ public static class Program
         builder.Services.AddMfcPersistence(options.Database.ConnectionString);
         builder.Services.AddMfcSecrets(options.Security.MasterKeyProvider);
 
+        RegisterAuthorization(builder.Services, options, builder.Environment.EnvironmentName);
+        RegisterInventoryApplication(builder.Services);
+        builder.Services.TryAddSingleton<IRouterOsReadPort, ProbeOnlyRouterOsReadPort>();
+        builder.Services.AddSingleton<ValidateDeviceConnectionCoordinator>();
+
         builder.WebHost.ConfigureKestrel(kestrel =>
         {
             kestrel.ConfigureEndpointDefaults(endpoint =>
@@ -107,13 +121,44 @@ public static class Program
         builder.Services.AddGrpcHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy("process"), tags: ["live"]);
 
-        // No RouterOS client registration in M0.
-
         configure?.Invoke(builder);
 
         WebApplication app = builder.Build();
         app.MapGrpcHealthChecksService();
+        app.MapGrpcService<InventoryGrpcService>();
         return app;
+    }
+
+    private static void RegisterAuthorization(
+        IServiceCollection services,
+        ControllerOptions options,
+        string environmentName)
+    {
+        bool isDevelopment = string.Equals(
+            environmentName,
+            Environments.Development,
+            StringComparison.OrdinalIgnoreCase);
+        if (isDevelopment && options.Authentication.AllowDevelopmentAuthentication)
+        {
+            services.AddSingleton<IAuthorizationBoundary, AllowAllAuthorizationBoundary>();
+        }
+        else
+        {
+            // Fail-closed until real authentication lands.
+            services.AddSingleton<IAuthorizationBoundary, DenyAllAuthorizationBoundary>();
+        }
+    }
+
+    private static void RegisterInventoryApplication(IServiceCollection services)
+    {
+        services.AddScoped<ListSitesUseCase>();
+        services.AddScoped<CreateSiteUseCase>();
+        services.AddScoped<CreateNodeUseCase>();
+        services.AddScoped<GetNodeUseCase>();
+        services.AddScoped<RegisterDeviceUseCase>();
+        services.AddScoped<UpdateDeviceUseCase>();
+        services.AddScoped<UpdateConnectionProfileUseCase>();
+        services.AddScoped<DiscoverDeviceUseCase>();
     }
 
     public static bool ContainsMigrateOnly(IEnumerable<string> args)

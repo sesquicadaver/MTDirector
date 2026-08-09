@@ -21,6 +21,9 @@ public sealed class Device
 
     public SupportState? LastSupportState { get; private set; }
 
+    /// <summary>Last successfully persisted capture for this device, if any.</summary>
+    public Guid? LastCompletedCaptureId { get; private set; }
+
     public ulong RowVersion { get; private set; }
 
     private Device(
@@ -31,6 +34,7 @@ public sealed class Device
         DeviceRole role,
         bool enabled,
         SupportState? lastSupportState,
+        Guid? lastCompletedCaptureId,
         ulong rowVersion)
     {
         Id = id;
@@ -40,6 +44,7 @@ public sealed class Device
         Role = role;
         Enabled = enabled;
         LastSupportState = lastSupportState;
+        LastCompletedCaptureId = lastCompletedCaptureId;
         RowVersion = rowVersion;
     }
 
@@ -59,6 +64,7 @@ public sealed class Device
             role,
             enabled: true,
             lastSupportState: null,
+            lastCompletedCaptureId: null,
             rowVersion: 1);
     }
 
@@ -71,7 +77,8 @@ public sealed class Device
         DeviceRole role,
         bool enabled,
         SupportState? lastSupportState,
-        ulong rowVersion)
+        ulong rowVersion,
+        Guid? lastCompletedCaptureId = null)
     {
         ArgumentNullException.ThrowIfNull(displayName);
         ArgumentNullException.ThrowIfNull(managementEndpoint);
@@ -88,6 +95,7 @@ public sealed class Device
             role,
             enabled,
             lastSupportState,
+            lastCompletedCaptureId,
             rowVersion);
     }
 
@@ -120,6 +128,18 @@ public sealed class Device
     public void RecordSupportState(SupportState state)
     {
         LastSupportState = state;
+        Touch();
+    }
+
+    /// <summary>Links the most recent completed capture (does not clear history).</summary>
+    public void RecordCompletedCapture(Guid captureId)
+    {
+        if (captureId == Guid.Empty)
+        {
+            throw new DomainInvariantException("last_completed_capture_id cannot be empty.");
+        }
+
+        LastCompletedCaptureId = captureId;
         Touch();
     }
 

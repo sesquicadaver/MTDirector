@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
 using Mfc.Application.Abstractions.Audit;
 using Mfc.Application.Abstractions.Authorization;
@@ -174,16 +172,5 @@ public sealed class CaptureSnapshotUseCase
             identical,
         });
         await _audit.AppendAsync(actor, action, payload, cancellationToken).ConfigureAwait(false);
-    }
-}
-
-/// <summary>Maps string actors onto capture_operations.RequestedBy GUID keys.</summary>
-internal static class ActorKey
-{
-    public static Guid FromActor(string actor)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(actor);
-        byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(actor.Trim()));
-        return new Guid(hash.AsSpan(0, 16));
     }
 }

@@ -18,8 +18,8 @@ Working tree must stay clean after build/test.
 
 | Project | Role |
 |---------|------|
-| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24) |
-| `tests/Mfc.IntegrationTests` | Controller health, Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers) |
+| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory proto contracts M1-25) |
+| `tests/Mfc.IntegrationTests` | Controller health + Inventory gRPC host (M1-25), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers) |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts (no live CHR required) |
 
 ## Living Specification — semantic diff (M1-24)
@@ -43,6 +43,24 @@ Canonical Spec §29–35 / Initial Issue Set M1-24 AC → module → tests:
 | Duplicate unmanaged fingerprints → no false MOVED | Phase 3/4 uniqueness | `DuplicateUnmanagedIdenticalFingerprintsDoNotFalseMove` |
 
 Filter: `dotnet test --filter FullyQualifiedName~SemanticDiff`.
+
+## Living Specification — inventory gRPC (M1-25)
+
+Vertical Slice §9.2 / Initial Issue Set M1-25 AC → module → tests (Issue Spec = Vertical Slice; Issue Set `DiscoverDevice`/`GetDiscoveryStatus` names are not on the wire):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| VS §9.2 RPC surface | `inventory.proto` / `InventoryGrpcService` | `InventoryServiceDescriptorExposesVerticalSliceRpcs` |
+| Mutation idempotency | `IIdempotencyStore` + use cases | `InventoryLifecycleListGetRegisterValidateAndIdempotency` |
+| Optimistic concurrency | `UpdateDeviceUseCase` / `row_version` | `UpdateDeviceHonorsOptimisticConcurrencyAndIdempotency` |
+| No credentials in responses | `DeviceConnectionSummary` | `DeviceConnectionSummaryHasNoPasswordFields` + host test |
+| ValidateDeviceConnection = probe | `DiscoverDeviceUseCase` | host Validate + `DiscoverDeviceIsReadOnly…` |
+| Concurrent probe coalesce | `ValidateDeviceConnectionCoordinator` | concurrent Validate in host test |
+| Auth before use case | `IAuthorizationBoundary` | `InventoryMutationsAreForbiddenWithoutPermission` |
+| Pagination | `ListSitesUseCase` | `ListSitesPaginatesAndRequiresReadPermission` |
+| Contract round-trip | `Uuid` / `Site` | `InventoryProtoContractTests` |
+
+Filter: `dotnet test --filter FullyQualifiedName~Inventory`.
 
 Full Living Spec index: [`ROADMAP.md`](../../ROADMAP.md) §5.
 

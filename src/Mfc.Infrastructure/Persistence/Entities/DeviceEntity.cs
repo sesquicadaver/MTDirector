@@ -17,6 +17,9 @@ public sealed class DeviceEntity
 
     public bool Enabled { get; set; }
 
+    /// <summary>Persisted <see cref="Mfc.Domain.Inventory.DeviceRole"/> (M1-25).</summary>
+    public short Role { get; set; }
+
     public short? LastSupportState { get; set; }
 
     public Guid? LastCompletedCaptureId { get; set; }
