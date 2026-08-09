@@ -23,6 +23,11 @@ public sealed record ApplicationError(string Code, string Message)
 
     public static ApplicationError Failed(string message) =>
         new("failed", message);
+
+    /// <summary>Stable-read exhausted retries with configuration drift (M1-19).</summary>
+    public static ApplicationError SnapshotUnstable(
+        string message = "Configuration changed during snapshot reads (SNAPSHOT_UNSTABLE).")
+        => new("snapshot_unstable", message);
 }
 
 /// <summary>Untyped failure carrier that converts to <see cref="ApplicationResult{T}"/>.</summary>

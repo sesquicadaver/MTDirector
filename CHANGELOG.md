@@ -42,3 +42,4 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Packet-path topology graph: Container/App→VETH→Bridge→Bridge-VLAN/VLAN-IF→VRF projection with shared-VETH findings; `/interface/vlan/print` allowlisted; no 1:1 or firewall-path assumptions (N1-02).
 - Packet-path classification: CPU_FIREWALL / HARDWARE_OFFLOADED / MIXED / INDETERMINATE for ingress/egress pairs with blocker hints (N1-03).
 - Node topology validation: declared node vs explicit device observations (cardinality, VRRP groups/version/split-master, uplink evidence, SWITCH transit ban, capability-cache short-circuit) without network auto-scan (M1-18).
+- Stable-read snapshot coordinator: critical-menu configuration fingerprints around discovery, bounded retry/jitter, cancellation, SNAPSHOT_UNSTABLE without persisting partial complete captures (M1-19).

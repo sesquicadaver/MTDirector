@@ -3,7 +3,7 @@
 **Дата оновлення:** 9 серпня 2026  
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач  
 **Продукт:** MikroTik Firewall Controller (MTDirector)  
-**Базовий коміт аудиту:** M1-18 (node topology validation) — черга зсунута на M1-19
+**Базовий коміт аудиту:** M1-19 (stable-read coordinator) — черга зсунута на M1-20
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -41,13 +41,13 @@
 | Область | Closed | Open | % |
 |---------|-------:|-----:|--:|
 | M0 Bootstrap | 10 | 0 | 100% |
-| M1 Read-only slice | 18 | 16 | 53% |
+| M1 Read-only slice | 19 | 15 | 56% |
 | N1 Packet-path weave | 3 | 4 | 43% |
 | M2–M6 (решта MVP) | 0 | 58 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **31** | **105** | **~23% issues** |
+| **Разом** | **32** | **104** | **~24% issues** |
 
-MVP issues (109) = 31 done + **78 remaining** до MVP CLOSED.  
+MVP issues (109) = 32 done + **77 remaining** до MVP CLOSED.  
 Post-MVP M7 = **27** після MVP.
 
 ### 2.2 DONE (не в черзі)
@@ -76,19 +76,20 @@ Post-MVP M7 = **27** після MVP.
 | N1-02 | #46 | Packet-path topology graph (Container→VETH→Bridge→VLAN→VRF) |
 | N1-03 | #47 | Packet-path class CPU / HW-offload / MIXED / INDETERMINATE |
 | M1-18 | #28 | Node topology validation (declared vs observed; no auto-scan) |
+| M1-19 | #29 | Stable-read snapshot coordinator (fingerprints + bounded retry) |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
-| `Mfc.RouterOs` | protocol + discovery + capability + N1 topology/path class; next: stable-read coordinator (M1-19) |
+| `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read coordinator; next: raw snapshot assembly (M1-20) |
 | `Mfc.Contracts` | лише marker — немає proto gRPC inventory/diff |
-| `Mfc.Application` | inventory/snapshot + topology validation use cases; RouterOS port без реалізації |
+| `Mfc.Application` | inventory/snapshot/stable-read + topology validation use cases; RouterOS port без session impl |
 | `Mfc.Controller` | health-only gRPC + persistence/secrets DI |
 | `Mfc.Desktop` | connection shell; **немає** inventory/snapshot/diff UI |
 | Persistence | schema snapshots є; EF adapters для inventory/capture — наступні issues |
 
-**NEXT = черга #18:** [M1-19](https://github.com/sesquicadaver/MTDirector/issues/29).
+**NEXT = черга #19:** [M1-20](https://github.com/sesquicadaver/MTDirector/issues/30).
 
 ---
 
@@ -136,7 +137,7 @@ Post-MVP M7 = **27** після MVP.
 
 | # | ID | GitHub | Задача |
 |--:|----|-------:|--------|
-| 18 | M1-19 | #29 | Implement stable-read snapshot coordinator |
+| ~~18~~ | ~~M1-19~~ | ~~#29~~ | ~~Implement stable-read snapshot coordinator~~ → §2.2 DONE |
 | 19 | M1-20 | #30 | Implement raw snapshot assembly and redaction |
 | 20 | M1-21 | #31 | Implement canonicalization primitives |
 | 21 | M1-22 | #32 | Implement menu-specific canonical snapshots |
@@ -335,8 +336,9 @@ Post-MVP M7 = **27** після MVP.
 | Packet-path topology graph | N1-02 | Container→VETH→Bridge→VLAN→VRF | **DONE** |
 | Packet-path class | N1-03 | CPU/HW/MIXED/INDETERMINATE | **DONE** |
 | Node topology validation | M1-18 | declared vs observed; no auto-scan | **DONE** |
+| Stable-read coordinator | M1-19 | fingerprints; bounded retry; SNAPSHOT_UNSTABLE | **DONE** |
 | Packet-path blockers | N1-04 | analysis blockers from path class | TODO |
-| Canonical hash + semantic diff | M1-19…24 | Canonical vectors; diff unit | TODO #18 |
+| Raw snapshot + canonical + diff | M1-20…24 | assembly; vectors; diff unit | TODO #19 |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | TODO |
 | M1 acceptance gate | M1-30…34 | CHR suites | TODO |
 | Policy compose + analysis | M2 | analysis unit; SoD | TODO |
@@ -367,7 +369,7 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **чергу #18** → [M1-19 / issue #29](https://github.com/sesquicadaver/MTDirector/issues/29).  
+1. Відкрити **чергу #19** → [M1-20 / issue #30](https://github.com/sesquicadaver/MTDirector/issues/30).  
 2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.  
 3. Не стартувати M2, доки не закрито **M1-34** (черга #33).  
 4. Не стартувати M4, доки не закрито **M5-10** (черга #71).  

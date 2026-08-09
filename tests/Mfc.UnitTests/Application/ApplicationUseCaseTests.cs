@@ -2,6 +2,7 @@ using System.Text;
 using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.ConnectionProfiles;
 using Mfc.Application.Abstractions.Persistence;
+using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Common;
 using Mfc.Application.Inventory;
 using Mfc.Application.Models;
@@ -444,6 +445,63 @@ public sealed class SnapshotUseCaseTests
     }
 
     [Fact]
+    public async Task CoordinateStableReadMapsUnstableAndDoesNotMarkComplete()
+    {
+        FakeAuthorizationBoundary auth = new();
+        FakeSiteStore sites = new();
+        FakeNodeStore nodes = new();
+        FakeDeviceStore devices = new();
+        FakeConnectionProfileReadStore profiles = new();
+        FakeStableReadCoordinatorPort coordinator = new();
+
+        SiteView site = (await new CreateSiteUseCase(auth, sites).ExecuteAsync(
+            new CreateSiteCommand { Actor = "a", Code = "STB01", Name = "Stable" })).Value!;
+        NodeView node = (await new CreateNodeUseCase(auth, sites, nodes).ExecuteAsync(
+            new CreateNodeCommand
+            {
+                Actor = "a",
+                SiteId = site.Id,
+                Name = "edge",
+                DeclaredKind = NodeKind.Router,
+                DeclaredUplinkMode = DeclaredUplinkMode.One,
+            })).Value!;
+        DeviceView device = (await new RegisterDeviceUseCase(auth, nodes, devices).ExecuteAsync(
+            new RegisterDeviceCommand
+            {
+                Actor = "a",
+                NodeId = node.Id,
+                DisplayName = "edge",
+                ManagementHost = "192.0.2.8",
+                Role = DeviceRole.Router,
+            })).Value!;
+        profiles.ByDevice[device.Id] = new ConnectionProfileReadModel
+        {
+            SecretReference = SecretReference.From(Guid.NewGuid()),
+            TrustMode = CertificateTrustMode.InternalCa,
+            CaProfileRef = "ca",
+        };
+
+        CoordinateStableReadUseCase useCase = new(auth, devices, profiles, coordinator);
+        ApplicationResult<StableReadCoordinationResult> ok = await useCase.ExecuteAsync(
+            new CoordinateStableReadCommand { Actor = "a", DeviceId = device.Id });
+        Assert.True(ok.IsSuccess);
+        Assert.True(ok.Value!.IsComplete);
+
+        coordinator.NextResult = new StableReadCoordinationResult
+        {
+            Outcome = StableReadOutcomeCodes.SnapshotUnstable,
+            AttemptsUsed = 3,
+            ConfigurationFingerprintHex = null,
+            DiscoverySectionDigests = null,
+        };
+        ApplicationResult<StableReadCoordinationResult> unstable = await useCase.ExecuteAsync(
+            new CoordinateStableReadCommand { Actor = "a", DeviceId = device.Id });
+        Assert.True(unstable.IsFailure);
+        Assert.Equal("snapshot_unstable", unstable.Error!.Code);
+        Assert.False(coordinator.NextResult.IsComplete);
+    }
+
+    [Fact]
     public async Task CompareSnapshotsHandlesNullHashPairs()
     {
         FakeAuthorizationBoundary auth = new();
@@ -532,5 +590,6 @@ public sealed class ApplicationResultTests
 
         Assert.Equal("dependency", ApplicationError.Dependency("d").Code);
         Assert.Equal("forbidden", ApplicationError.Forbidden().Code);
+        Assert.Equal("snapshot_unstable", ApplicationError.SnapshotUnstable().Code);
     }
 }
