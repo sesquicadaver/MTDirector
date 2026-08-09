@@ -18,8 +18,8 @@ Working tree must stay clean after build/test.
 
 | Project | Role |
 |---------|------|
-| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28, Desktop semantic diff viewer M1-29) |
-| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN/VRRP vertical-slice acceptance M1-30/M1-31/M1-32 |
+| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28, Desktop semantic diff viewer M1-29, fault-injection matrix M1-33) |
+| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN/VRRP vertical-slice acceptance M1-30/M1-31/M1-32, fault-injection acceptance M1-33 |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts + optional live CHR TLS gate (`MFC_CHR_STANDALONE_HOST`) |
 
 ## Living Specification — semantic diff (M1-24)
@@ -172,6 +172,27 @@ Initial Issue Set M1-32 AC → module → tests:
 | Provision outside adapter | `provision-vrrp.sh` | `VrrpTopologiesDeclareDistinctMembers…` |
 
 Filter: `dotnet test --filter FullyQualifiedName~VrrpVerticalSlice`.
+
+## Living Specification — protocol/snapshot fault injection (M1-33)
+
+Initial Issue Set M1-33 AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Fragmented prefix/word | `FaultInjectionTransport` + parser | `FragmentedLengthPrefixAndWordResolve…` |
+| Interleaved tagged replies | `RosSession` harness | `InterleavedTaggedRepliesCompleteWithZeroPending` |
+| !trap / !fatal | executor + session | `TrapYieldsRosTrapCode…` / `FatalYieldsApiFatal…` |
+| timeout / /cancel | session | `CommandTimeout…` / `CancelCommandIsDeterministic…` |
+| TLS/socket close mid-command | peer pipe complete | `PeerCloseMidCommandYieldsDefinedLifecycle…` |
+| oversized word/sentence | codec/parser | `OversizedWordAndSentenceYieldTypedCodes` |
+| unstable config | `StableReadCoordinator` | `UnstableConfigurationYieldsSnapshotUnstable…` |
+| controller cancel + no complete | capture port + gRPC | `FaultsDoNotPersistCompleteCaptures…` |
+| DB fail → no orphans | `ISnapshotStore` conflict | same acceptance test |
+| restart + recovery | host Stop/Start | `CompletedCaptureSurvivesControllerRestart` |
+| bounded memory on faults | codec loop | `RepeatedOversizedWordFaultsDoNotGrow…` |
+| no production network | unit + Testcontainers only | suite location |
+
+Filter: `dotnet test --filter FullyQualifiedName~FaultInjection`.
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
 

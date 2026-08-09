@@ -124,6 +124,17 @@ public sealed class CaptureSnapshotUseCase
         }
         catch (InvalidOperationException ex)
         {
+            // Fault-injection / capture ports surface typed codes via message prefix (M1-33).
+            if (ex.Message.StartsWith("SNAPSHOT_UNSTABLE", StringComparison.Ordinal))
+            {
+                return ApplicationResults.Fail(ApplicationError.SnapshotUnstable(ex.Message));
+            }
+
+            if (ex.Message.StartsWith("SNAPSHOT_TOO_LARGE", StringComparison.Ordinal))
+            {
+                return ApplicationResults.Fail(ApplicationError.SnapshotTooLarge(ex.Message));
+            }
+
             return ApplicationResults.Fail(ApplicationError.Failed(ex.Message));
         }
         catch (OperationCanceledException)
