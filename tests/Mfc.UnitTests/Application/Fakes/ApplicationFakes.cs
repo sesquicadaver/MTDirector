@@ -175,6 +175,30 @@ internal sealed class FakeSnapshotCapturePort : ISnapshotCapturePort
     }
 }
 
+internal sealed class FakeStableReadCoordinatorPort : IStableReadCoordinatorPort
+{
+    public StableReadCoordinationResult NextResult { get; set; } = new()
+    {
+        Outcome = StableReadOutcomeCodes.Accepted,
+        AttemptsUsed = 1,
+        ConfigurationFingerprintHex = new string('a', 64),
+        DiscoverySectionDigests = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["filter"] = new string('b', 64),
+        },
+    };
+
+    public int CoordinateCount { get; private set; }
+
+    public Task<StableReadCoordinationResult> CoordinateAsync(
+        RouterOsReadTarget target,
+        CancellationToken cancellationToken = default)
+    {
+        CoordinateCount++;
+        return Task.FromResult(NextResult);
+    }
+}
+
 internal sealed class FakeConnectionProfileService : IConnectionProfileService
 {
     public List<UpsertConnectionProfileCommand> Upserts { get; } = [];
