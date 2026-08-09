@@ -120,6 +120,9 @@ public sealed class SnapshotGrpcHostTests
                 deadline: Deadline());
             Assert.Equal(32, summary.SnapshotHash.Value.Length);
             Assert.Equal(SnapshotCaptureStatus.Completed, summary.Status);
+            Assert.Contains(
+                summary.Sections,
+                s => s.SectionId == "system.identity" && s.Status == SnapshotSectionCaptureStatus.Ok);
 
             SnapshotSectionPage section = await snapshots.GetSnapshotSectionAsync(
                 new GetSnapshotSectionRequest

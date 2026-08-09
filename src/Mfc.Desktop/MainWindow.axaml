@@ -1,17 +1,18 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Mfc.Desktop.ViewModels"
+        xmlns:svc="using:Mfc.Desktop.Services"
         x:Class="Mfc.Desktop.MainWindow"
         x:DataType="vm:ShellViewModel"
         Title="MikroTik Firewall Controller"
-        Width="1100"
-        Height="720"
-        MinWidth="800"
-        MinHeight="520">
-  <DockPanel Margin="20">
-    <StackPanel DockPanel.Dock="Top" Spacing="10" Margin="0,0,0,16">
+        Width="1280"
+        Height="820"
+        MinWidth="960"
+        MinHeight="640">
+  <DockPanel Margin="16">
+    <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,12">
       <TextBlock FontSize="22" FontWeight="SemiBold" Text="MTDirector" />
-      <TextBlock Opacity="0.8" Text="Controller connection + inventory tree" />
+      <TextBlock Opacity="0.8" Text="Controller connection · inventory · snapshot viewer (read-only)" />
       <TextBlock Text="{Binding ControllerEndpoint, StringFormat=Endpoint: {0}}" />
       <TextBlock FontSize="16" Text="{Binding StatusText, StringFormat=Status: {0}}" FontWeight="Bold" />
       <TextBlock Text="{Binding ErrorText}"
@@ -24,9 +25,10 @@
       </StackPanel>
     </StackPanel>
 
-    <Grid ColumnDefinitions="2*,16,3*" RowDefinitions="Auto,*,Auto">
+    <Grid ColumnDefinitions="220,12,220,12,*" RowDefinitions="Auto,*,Auto">
+      <!-- Inventory -->
       <DockPanel Grid.Column="0" Grid.Row="0" Margin="0,0,0,8">
-        <StackPanel Orientation="Horizontal" Spacing="10" DockPanel.Dock="Right">
+        <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
           <Border Background="#E8EEF5"
                   CornerRadius="4"
                   Padding="8,2"
@@ -35,9 +37,9 @@
           </Border>
           <Button Content="Refresh"
                   Command="{Binding Inventory.RefreshCommand}"
-                  MinWidth="100" />
+                  MinWidth="80" />
         </StackPanel>
-        <TextBlock FontSize="16" FontWeight="SemiBold" Text="Inventory" VerticalAlignment="Center" />
+        <TextBlock FontSize="15" FontWeight="SemiBold" Text="Inventory" VerticalAlignment="Center" />
       </DockPanel>
 
       <Border Grid.Column="0"
@@ -50,10 +52,9 @@
           <TreeView.ItemTemplate>
             <TreeDataTemplate DataType="vm:InventoryNodeViewModel"
                               ItemsSource="{Binding Children}">
-              <StackPanel Orientation="Horizontal" Spacing="8" ToolTip.Tip="{Binding DetailSummary}">
-                <TextBlock Text="{Binding KindLabel}" Opacity="0.65" Width="52" />
+              <StackPanel Orientation="Horizontal" Spacing="6" ToolTip.Tip="{Binding DetailSummary}">
+                <TextBlock Text="{Binding KindLabel}" Opacity="0.65" Width="48" />
                 <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" />
-                <TextBlock Text="{Binding Subtitle}" Opacity="0.75" />
               </StackPanel>
             </TreeDataTemplate>
           </TreeView.ItemTemplate>
@@ -68,36 +69,151 @@
                  Text="{Binding Inventory.ErrorText}"
                  IsVisible="{Binding Inventory.HasError}" />
 
-      <TextBlock Grid.Column="2"
-                 Grid.Row="0"
-                 FontSize="16"
-                 FontWeight="SemiBold"
-                 Text="Details"
-                 Margin="0,0,0,8" />
+      <!-- Snapshot sections -->
+      <DockPanel Grid.Column="2" Grid.Row="0" Margin="0,0,0,8">
+        <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
+          <CheckBox Content="Technical"
+                    IsChecked="{Binding Snapshot.ShowTechnicalView}"
+                    ToolTip.Tip="Show sanitized unknown-properties section" />
+          <Button Content="Reload"
+                  Command="{Binding Snapshot.ReloadCommand}"
+                  MinWidth="80" />
+        </StackPanel>
+        <TextBlock FontSize="15" FontWeight="SemiBold" Text="Sections" VerticalAlignment="Center" />
+      </DockPanel>
 
       <Border Grid.Column="2"
+              Grid.Row="1"
+              BorderBrush="#D0D5DD"
+              BorderThickness="1"
+              Padding="4">
+        <ListBox ItemsSource="{Binding Snapshot.VisibleSections}"
+                 SelectedItem="{Binding Snapshot.SelectedSection, Mode=TwoWay}">
+          <ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+              <VirtualizingStackPanel />
+            </ItemsPanelTemplate>
+          </ListBox.ItemsPanel>
+          <ListBox.ItemTemplate>
+            <DataTemplate DataType="svc:SnapshotSectionListItem">
+              <StackPanel Spacing="2" Margin="2">
+                <TextBlock Text="{Binding SectionId}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                <TextBlock Opacity="0.75"
+                           Text="{Binding StatusText, StringFormat=Status: {0}}" />
+              </StackPanel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Border>
+
+      <TextBlock Grid.Column="2"
+                 Grid.Row="2"
+                 Margin="0,8,0,0"
+                 TextWrapping="Wrap"
+                 Foreground="#B00020"
+                 Text="{Binding Snapshot.ErrorText}"
+                 IsVisible="{Binding Snapshot.HasError}" />
+
+      <!-- Snapshot details -->
+      <DockPanel Grid.Column="4" Grid.Row="0" Margin="0,0,0,8">
+        <Button Content="Copy sanitized"
+                Command="{Binding Snapshot.CopySanitizedCommand}"
+                DockPanel.Dock="Right"
+                MinWidth="120" />
+        <TextBlock FontSize="15" FontWeight="SemiBold" Text="Snapshot (read-only)" VerticalAlignment="Center" />
+      </DockPanel>
+
+      <Border Grid.Column="4"
               Grid.Row="1"
               Grid.RowSpan="2"
               BorderBrush="#D0D5DD"
               BorderThickness="1"
-              Padding="12">
-        <StackPanel Spacing="8" IsVisible="{Binding Inventory.HasSelection}">
-          <TextBlock FontSize="18" FontWeight="SemiBold" Text="{Binding Inventory.SelectedNode.DisplayName}" />
-          <TextBlock Text="{Binding Inventory.SelectedNode.KindLabel, StringFormat=Kind: {0}}" />
-          <TextBlock Text="{Binding Inventory.SelectedNode.StatusText, StringFormat=Status: {0}}" />
-          <TextBlock Text="{Binding Inventory.SelectedNode.NodeKindText, StringFormat=Node kind: {0}}" />
-          <TextBlock Text="{Binding Inventory.SelectedNode.UplinkModeText, StringFormat=Uplink: {0}}" />
-          <TextBlock Text="{Binding Inventory.SelectedNode.SupportStateText, StringFormat=Support: {0}}" />
-          <TextBlock Text="{Binding Inventory.SelectedNode.ReachabilityText, StringFormat=Reachability: {0}}" />
-          <TextBlock Text="{Binding Inventory.SelectedNode.RouterOsVersionText, StringFormat=RouterOS: {0}}" />
-          <TextBlock Text="{Binding Inventory.SelectedNode.ModelText, StringFormat=Model: {0}}" />
-          <TextBlock Text="{Binding Inventory.SelectedNode.VrrpRolesText, StringFormat=VRRP roles: {0}}" />
-          <TextBlock Text="{Binding Inventory.SelectedNode.LastSnapshotText, StringFormat=Last snapshot: {0}}" />
-          <TextBlock Text="{Binding Inventory.SelectedNode.DetailSummary}"
-                     TextWrapping="Wrap"
-                     Opacity="0.8"
-                     Margin="0,8,0,0" />
-        </StackPanel>
+              Padding="10">
+        <Grid RowDefinitions="Auto,Auto,*,*">
+          <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,8">
+            <TextBlock Text="{Binding Snapshot.HintText}" TextWrapping="Wrap" Opacity="0.85" />
+            <TextBlock Text="{Binding Snapshot.StatusText, StringFormat=Capture status: {0}}" />
+            <TextBlock Text="{Binding Snapshot.SchemaVersionText, StringFormat=Schema version: {0}}" />
+            <TextBlock Text="{Binding Snapshot.CompletedAtText, StringFormat=Completed: {0}}" />
+            <TextBlock Text="{Binding Snapshot.ConfigurationHashText, StringFormat=configuration_hash: {0}}"
+                       FontFamily="Consolas,Menlo,monospace"
+                       TextWrapping="Wrap" />
+            <TextBlock Text="{Binding Snapshot.ObservationHashText, StringFormat=observation_hash: {0}}"
+                       FontFamily="Consolas,Menlo,monospace"
+                       TextWrapping="Wrap" />
+            <TextBlock Text="{Binding Snapshot.CapabilityHashText, StringFormat=capability_hash: {0}}"
+                       FontFamily="Consolas,Menlo,monospace"
+                       TextWrapping="Wrap" />
+            <ComboBox ItemsSource="{Binding Snapshot.Captures}"
+                      SelectedItem="{Binding Snapshot.SelectedCapture, Mode=TwoWay}"
+                      MinWidth="280"
+                      PlaceholderText="Captures">
+              <ComboBox.ItemTemplate>
+                <DataTemplate DataType="svc:SnapshotCaptureListItem">
+                  <TextBlock>
+                    <TextBlock.Text>
+                      <MultiBinding StringFormat="{}{0} · {1} · schema {2}">
+                        <Binding Path="CompletedAtText" />
+                        <Binding Path="StatusText" />
+                        <Binding Path="SchemaVersion" />
+                      </MultiBinding>
+                    </TextBlock.Text>
+                  </TextBlock>
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBlock Text="Loading…"
+                       IsVisible="{Binding Snapshot.IsLoading}"
+                       FontWeight="SemiBold"
+                       Opacity="0.7" />
+          </StackPanel>
+
+          <TextBlock Grid.Row="1"
+                     Margin="0,4,0,4"
+                     FontWeight="SemiBold"
+                     Text="Configuration records" />
+          <ListBox Grid.Row="2"
+                   ItemsSource="{Binding Snapshot.ConfigurationRecords}"
+                   Margin="0,0,0,8">
+            <ListBox.ItemsPanel>
+              <ItemsPanelTemplate>
+                <VirtualizingStackPanel />
+              </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+              <DataTemplate DataType="svc:SnapshotRecordListItem">
+                <StackPanel Spacing="2" Margin="2">
+                  <TextBlock FontWeight="SemiBold"
+                             Text="{Binding OrdinalText, StringFormat=[{0}]}" />
+                  <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" />
+                </StackPanel>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+
+          <DockPanel Grid.Row="3">
+            <TextBlock DockPanel.Dock="Top"
+                       Margin="0,0,0,4"
+                       FontWeight="SemiBold"
+                       Text="Observation records" />
+            <ListBox ItemsSource="{Binding Snapshot.ObservationRecords}">
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="svc:SnapshotRecordListItem">
+                  <StackPanel Spacing="2" Margin="2">
+                    <TextBlock FontWeight="SemiBold"
+                               Text="{Binding OrdinalText, StringFormat=[{0}]}" />
+                    <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" />
+                  </StackPanel>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </DockPanel>
+        </Grid>
       </Border>
     </Grid>
   </DockPanel>

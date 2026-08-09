@@ -172,7 +172,37 @@ public sealed class GetSnapshotUseCase
                 ApplicationError.NotFound($"Snapshot '{query.SnapshotId}' not found."));
         }
 
-        return ApplicationResults.Ok(ViewMapper.ToView(snapshot));
+        IReadOnlyList<StoredSnapshotSectionDescriptor> sections = await _snapshots
+            .ListSectionDescriptorsAsync(snapshot.Metadata.Id, cancellationToken)
+            .ConfigureAwait(false);
+        SnapshotView view = ViewMapper.ToView(snapshot);
+        return ApplicationResults.Ok(new SnapshotView
+        {
+            Id = view.Id,
+            DeviceId = view.DeviceId,
+            Status = view.Status,
+            ConfigurationHashHex = view.ConfigurationHashHex,
+            ObservationHashHex = view.ObservationHashHex,
+            CapabilityHashHex = view.CapabilityHashHex,
+            SnapshotHashHex = view.SnapshotHashHex,
+            CompletedAtUtc = view.CompletedAtUtc,
+            SchemaVersion = view.SchemaVersion,
+            OperationId = view.OperationId,
+            Deduplicated = view.Deduplicated,
+            Sections = sections
+                .OrderBy(static s => s.SectionId, StringComparer.Ordinal)
+                .Select(static s => new SnapshotSectionSummaryView
+                {
+                    SectionId = s.SectionId,
+                    Status = s.Status,
+                    Ordered = s.Ordered,
+                    ConfigurationRecordCount = s.ConfigurationRecordCount,
+                    ObservationRecordCount = s.ObservationRecordCount,
+                    CapabilityRecordCount = s.CapabilityRecordCount,
+                    CompatibilityRecordCount = s.CompatibilityRecordCount,
+                })
+                .ToArray(),
+        });
     }
 }
 

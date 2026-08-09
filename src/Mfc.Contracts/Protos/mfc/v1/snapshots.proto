@@ -122,6 +122,27 @@ message GetSnapshotSummaryRequest {
   Uuid capture_id = 1;
 }
 
+// Per-section capture outcome (Vertical Slice §15.1 + raw partial_error).
+// Persisted as snapshot_capture_sections.status (Canonical Spec §28.2).
+enum SnapshotSectionCaptureStatus {
+  SNAPSHOT_SECTION_CAPTURE_STATUS_UNSPECIFIED = 0;
+  SNAPSHOT_SECTION_CAPTURE_STATUS_OK = 1;
+  SNAPSHOT_SECTION_CAPTURE_STATUS_UNSUPPORTED = 2;
+  SNAPSHOT_SECTION_CAPTURE_STATUS_NOT_APPLICABLE = 3;
+  SNAPSHOT_SECTION_CAPTURE_STATUS_FAILED = 4;
+  SNAPSHOT_SECTION_CAPTURE_STATUS_PARTIAL_ERROR = 5;
+}
+
+message SnapshotSectionSummary {
+  string section_id = 1;
+  SnapshotSectionCaptureStatus status = 2;
+  bool ordered = 3;
+  uint32 configuration_record_count = 4;
+  uint32 observation_record_count = 5;
+  uint32 capability_record_count = 6;
+  uint32 compatibility_record_count = 7;
+}
+
 message SnapshotSummary {
   Uuid capture_id = 1;
   Uuid device_id = 2;
@@ -132,6 +153,8 @@ message SnapshotSummary {
   Sha256 capability_hash = 7;
   Sha256 snapshot_hash = 8;
   google.protobuf.Timestamp completed_at = 9;
+  // Populated by GetSnapshotSummary. ListCaptures may omit sections (empty).
+  repeated SnapshotSectionSummary sections = 10;
 }
 
 message GetSnapshotSectionRequest {

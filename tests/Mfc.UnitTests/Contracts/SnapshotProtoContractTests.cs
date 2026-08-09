@@ -106,11 +106,36 @@ public sealed class SnapshotProtoContractTests
     }
 
     [Fact]
+    public void SnapshotSummarySectionsRoundTripWithCaptureStatus()
+    {
+        SnapshotSummary summary = new()
+        {
+            CaptureId = new Uuid { Value = ByteString.CopyFrom(Guid.NewGuid().ToByteArray(bigEndian: true)) },
+            DeviceId = new Uuid { Value = ByteString.CopyFrom(Guid.NewGuid().ToByteArray(bigEndian: true)) },
+            Status = SnapshotCaptureStatus.Completed,
+            SchemaVersion = 1,
+        };
+        summary.Sections.Add(new SnapshotSectionSummary
+        {
+            SectionId = "system.identity",
+            Status = SnapshotSectionCaptureStatus.Ok,
+            Ordered = false,
+            ConfigurationRecordCount = 1,
+        });
+
+        SnapshotSummary parsed = SnapshotSummary.Parser.ParseFrom(summary.ToByteArray());
+        Assert.Single(parsed.Sections);
+        Assert.Equal("system.identity", parsed.Sections[0].SectionId);
+        Assert.Equal(SnapshotSectionCaptureStatus.Ok, parsed.Sections[0].Status);
+    }
+
+    [Fact]
     public void SnapshotResponseMessagesHaveNoPasswordFields()
     {
         MessageDescriptor[] descriptors =
         [
             SnapshotSummary.Descriptor,
+            SnapshotSectionSummary.Descriptor,
             SnapshotSectionPage.Descriptor,
             SnapshotRecord.Descriptor,
             DiffPage.Descriptor,

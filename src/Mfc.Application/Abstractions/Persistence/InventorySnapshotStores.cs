@@ -181,6 +181,31 @@ public interface ISnapshotStore
     Task<IReadOnlyList<CanonicalSection>> LoadCanonicalSectionsAsync(
         SnapshotId id,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Loads per-section capture descriptors (status + record counts) without decompressing payloads.
+    /// </summary>
+    Task<IReadOnlyList<StoredSnapshotSectionDescriptor>> ListSectionDescriptorsAsync(
+        SnapshotId id,
+        CancellationToken cancellationToken = default);
+}
+
+/// <summary>Lightweight section row for GetSnapshotSummary (M1-28 desktop viewer).</summary>
+public sealed class StoredSnapshotSectionDescriptor
+{
+    public required string SectionId { get; init; }
+
+    public required short Status { get; init; }
+
+    public required bool Ordered { get; init; }
+
+    public int ConfigurationRecordCount { get; init; }
+
+    public int ObservationRecordCount { get; init; }
+
+    public int CapabilityRecordCount { get; init; }
+
+    public int CompatibilityRecordCount { get; init; }
 }
 
 /// <summary>Loads connection profile fields needed to open a RouterOS read target (no password).</summary>

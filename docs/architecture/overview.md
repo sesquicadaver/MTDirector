@@ -47,7 +47,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Inventory/discovery gRPC | Done (M1-25) | `Protos/mfc/v1/inventory.proto`, `InventoryGrpcService` (VS §9.2; ValidateDeviceConnection ← DiscoverDeviceUseCase) |
 | Snapshot/diff gRPC | Done (M1-26) | `Protos/mfc/v1/snapshots.proto`, `SnapshotGrpcService` (VS §9.3; DiffEntry = Canonical Spec §30; Issue Set CaptureSnapshot→StartCapture) |
 | Desktop inventory tree | Done (M1-27) | Avalonia Site→Node→Device tree; `ListNodes` RPC; Contracts-only Desktop client; cached-on-error refresh |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M1-28 (#38) |
+| Desktop snapshot viewer | Done (M1-28) | Read-only Avalonia viewer; `SnapshotSummary.sections` statuses; config/obs split; sanitized export |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M1-29 (#39) |
 
 ## ADRs
 
