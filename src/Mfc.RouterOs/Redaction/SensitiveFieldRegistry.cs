@@ -12,11 +12,17 @@ public static class SensitiveFieldRegistry
         "secret",
         "passphrase",
         "private-key",
+        "private_key",
+        "privatekey",
         "psk",
         "shared-key",
         "certificate-key",
         "auth-key",
         "user-password",
+        "token",
+        "access-token",
+        "api-key",
+        "apikey",
         // Container/App secrets and non-network payload (next-1 / N1-01).
         "env",
         "envs",
@@ -57,6 +63,28 @@ public static class SensitiveFieldRegistry
         }
 
         return value ?? string.Empty;
+    }
+
+    /// <summary>
+    /// Removes forbidden attributes from a property bag for raw snapshot storage (M1-20).
+    /// Unknown non-forbidden properties are preserved; order is ordinal by key.
+    /// </summary>
+    public static IReadOnlyDictionary<string, string> RedactForStorage(
+        IReadOnlyDictionary<string, string> properties)
+    {
+        ArgumentNullException.ThrowIfNull(properties);
+        SortedDictionary<string, string> kept = new(StringComparer.Ordinal);
+        foreach ((string key, string value) in properties)
+        {
+            if (string.IsNullOrWhiteSpace(key) || IsForbidden(key))
+            {
+                continue;
+            }
+
+            kept[key] = value;
+        }
+
+        return kept;
     }
 
     private static string Normalize(string attributeName)

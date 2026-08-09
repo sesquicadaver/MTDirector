@@ -28,6 +28,10 @@ public sealed record ApplicationError(string Code, string Message)
     public static ApplicationError SnapshotUnstable(
         string message = "Configuration changed during snapshot reads (SNAPSHOT_UNSTABLE).")
         => new("snapshot_unstable", message);
+
+    /// <summary>Assembled raw snapshot exceeded the compiled size limit (M1-20).</summary>
+    public static ApplicationError SnapshotTooLarge(string message)
+        => new("snapshot_too_large", message);
 }
 
 /// <summary>Untyped failure carrier that converts to <see cref="ApplicationResult{T}"/>.</summary>
