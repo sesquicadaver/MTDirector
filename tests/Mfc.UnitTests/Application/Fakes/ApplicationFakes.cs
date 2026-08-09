@@ -5,7 +5,6 @@ using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.ConnectionProfiles;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
-using Mfc.Application.Abstractions.Secrets;
 using Mfc.Domain.Canonicalization;
 using Mfc.Domain.Capabilities;
 using Mfc.Domain.Inventory;
@@ -47,6 +46,30 @@ internal sealed class FakeSiteStore : ISiteStore
 
     public Task<Site?> GetAsync(SiteId id, CancellationToken cancellationToken = default)
         => Task.FromResult(_byId.TryGetValue(id.Value, out Site? site) ? site : null);
+
+    public Task<IReadOnlyList<Site>> ListAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<Site>>(
+            _byId.Values.OrderBy(s => s.Code.Value, StringComparer.Ordinal).ThenBy(s => s.Id.Value).ToArray());
+
+    public Task<SitePage> ListPageAsync(int limit, string? cursor, CancellationToken cancellationToken = default)
+    {
+        int take = Math.Clamp(limit, 1, 200);
+        List<Site> ordered = _byId.Values
+            .OrderBy(s => s.Code.Value, StringComparer.Ordinal)
+            .ThenBy(s => s.Id.Value)
+            .ToList();
+        int skip = 0;
+        if (!string.IsNullOrWhiteSpace(cursor) && int.TryParse(cursor, out int parsed))
+        {
+            skip = Math.Max(0, parsed);
+        }
+
+        List<Site> page = ordered.Skip(skip).Take(take).ToList();
+        string? next = skip + page.Count < ordered.Count
+            ? (skip + page.Count).ToString(System.Globalization.CultureInfo.InvariantCulture)
+            : null;
+        return Task.FromResult(new SitePage { Items = page, NextCursor = next });
+    }
 }
 
 internal sealed class FakeNodeStore : INodeStore
@@ -70,6 +93,14 @@ internal sealed class FakeNodeStore : INodeStore
         _byId[node.Id.Value] = node;
         return Task.CompletedTask;
     }
+
+    public Task<IReadOnlyList<Node>> ListBySiteAsync(SiteId siteId, CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<Node>>(
+            _byId.Values
+                .Where(n => n.SiteId == siteId)
+                .OrderBy(n => n.Name.Value, StringComparer.Ordinal)
+                .ThenBy(n => n.Id.Value)
+                .ToArray());
 }
 
 internal sealed class FakeDeviceStore : IDeviceStore
@@ -88,6 +119,55 @@ internal sealed class FakeDeviceStore : IDeviceStore
     public Task UpdateAsync(Device device, CancellationToken cancellationToken = default)
     {
         _byId[device.Id.Value] = device;
+        return Task.CompletedTask;
+    }
+
+    public Task<IReadOnlyList<Device>> ListByNodeAsync(NodeId nodeId, CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<Device>>(
+            _byId.Values
+                .Where(d => d.NodeId == nodeId)
+                .OrderBy(d => d.DisplayName.Value, StringComparer.Ordinal)
+                .ThenBy(d => d.Id.Value)
+                .ToArray());
+}
+
+internal sealed class FakeIdempotencyStore : IIdempotencyStore
+{
+    private readonly Dictionary<(string Actor, string Operation, Guid Key), (byte[] Hash, Guid ResourceId)> _records = [];
+
+    public Task<IdempotencyLookupResult> TryGetAsync(
+        string actor,
+        string operation,
+        Guid idempotencyKey,
+        ReadOnlyMemory<byte> requestHash,
+        CancellationToken cancellationToken = default)
+    {
+        if (!_records.TryGetValue((actor.Trim(), operation.Trim(), idempotencyKey), out var existing))
+        {
+            return Task.FromResult(new IdempotencyLookupResult { Found = false });
+        }
+
+        if (!existing.Hash.AsSpan().SequenceEqual(requestHash.Span))
+        {
+            return Task.FromResult(new IdempotencyLookupResult { Found = true, Conflict = true });
+        }
+
+        return Task.FromResult(new IdempotencyLookupResult
+        {
+            Found = true,
+            ResourceId = existing.ResourceId,
+        });
+    }
+
+    public Task SaveAsync(
+        string actor,
+        string operation,
+        Guid idempotencyKey,
+        ReadOnlyMemory<byte> requestHash,
+        Guid resourceId,
+        CancellationToken cancellationToken = default)
+    {
+        _records[(actor.Trim(), operation.Trim(), idempotencyKey)] = (requestHash.ToArray(), resourceId);
         return Task.CompletedTask;
     }
 }
@@ -303,18 +383,38 @@ internal sealed class FakeRouterOsReadPort : IRouterOsReadPort
 {
     public bool MutatedRouterOs { get; private set; }
 
+    public int ProbeCount { get; private set; }
+
+    public TimeSpan ProbeDelay { get; set; }
+
     public Task<RouterOsProbeResult> ProbeAsync(
         RouterOsReadTarget target,
         CancellationToken cancellationToken = default)
     {
-        // Read-only probe — never mutates RouterOS.
+        ProbeCount++;
         MutatedRouterOs = false;
-        return Task.FromResult(new RouterOsProbeResult
+        if (ProbeDelay > TimeSpan.Zero)
+        {
+            return ProbeSlowAsync(target, cancellationToken);
+        }
+
+        return Task.FromResult(CreateResult(target));
+    }
+
+    private async Task<RouterOsProbeResult> ProbeSlowAsync(
+        RouterOsReadTarget target,
+        CancellationToken cancellationToken)
+    {
+        await Task.Delay(ProbeDelay, cancellationToken).ConfigureAwait(false);
+        return CreateResult(target);
+    }
+
+    private static RouterOsProbeResult CreateResult(RouterOsReadTarget target)
+        => new()
         {
             Identity = $"CHR-{target.DeviceId.Value:N}"[..16],
             SupportState = SupportState.Supported,
-        });
-    }
+        };
 }
 
 internal sealed class FakeSnapshotCapturePort : ISnapshotCapturePort
@@ -391,6 +491,8 @@ internal sealed class FakeConnectionProfileService : IConnectionProfileService
 {
     public List<UpsertConnectionProfileCommand> Upserts { get; } = [];
 
+    public Dictionary<Guid, ConnectionProfileView> Views { get; } = [];
+
     public Exception? ThrowOnUpsert { get; set; }
 
     public Task<ConnectionProfileView> UpsertAsync(
@@ -403,7 +505,7 @@ internal sealed class FakeConnectionProfileService : IConnectionProfileService
         }
 
         Upserts.Add(command);
-        return Task.FromResult(new ConnectionProfileView
+        ConnectionProfileView view = new()
         {
             DeviceId = command.DeviceId,
             Username = command.Username,
@@ -415,7 +517,9 @@ internal sealed class FakeConnectionProfileService : IConnectionProfileService
             CommandTimeoutMs = command.CommandTimeoutMs,
             MaxResponseBytes = command.MaxResponseBytes,
             RowVersion = 1,
-        });
+        };
+        Views[command.DeviceId] = view;
+        return Task.FromResult(view);
     }
 
     public Task<ConnectionProfileView> RotatePasswordAsync(
@@ -433,5 +537,5 @@ internal sealed class FakeConnectionProfileService : IConnectionProfileService
         => throw new NotSupportedException();
 
     public Task<ConnectionProfileView?> GetViewAsync(Guid deviceId, CancellationToken cancellationToken = default)
-        => Task.FromResult<ConnectionProfileView?>(null);
+        => Task.FromResult(Views.TryGetValue(deviceId, out ConnectionProfileView? view) ? view : null);
 }

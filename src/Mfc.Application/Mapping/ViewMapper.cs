@@ -37,6 +37,7 @@ internal static class ViewMapper
         Role = device.Role,
         Enabled = device.Enabled,
         LastSupportState = device.LastSupportState,
+        LastCompletedCaptureId = device.LastCompletedCaptureId,
         RowVersion = device.RowVersion,
     };
 

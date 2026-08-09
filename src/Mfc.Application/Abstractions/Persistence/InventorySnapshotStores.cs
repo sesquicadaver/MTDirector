@@ -13,6 +13,19 @@ public interface ISiteStore
     Task AddAsync(Site site, CancellationToken cancellationToken = default);
 
     Task<Site?> GetAsync(SiteId id, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<Site>> ListAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>Cursor page ordered by code ascending, then id ascending.</summary>
+    Task<SitePage> ListPageAsync(int limit, string? cursor, CancellationToken cancellationToken = default);
+}
+
+/// <summary>Cursor page of sites.</summary>
+public sealed class SitePage
+{
+    public required IReadOnlyList<Site> Items { get; init; }
+
+    public string? NextCursor { get; init; }
 }
 
 public interface INodeStore
@@ -24,6 +37,8 @@ public interface INodeStore
     Task<Node?> GetAsync(NodeId id, CancellationToken cancellationToken = default);
 
     Task UpdateAsync(Node node, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<Node>> ListBySiteAsync(SiteId siteId, CancellationToken cancellationToken = default);
 }
 
 public interface IDeviceStore
@@ -33,6 +48,40 @@ public interface IDeviceStore
     Task<Device?> GetAsync(DeviceId id, CancellationToken cancellationToken = default);
 
     Task UpdateAsync(Device device, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<Device>> ListByNodeAsync(NodeId nodeId, CancellationToken cancellationToken = default);
+}
+
+/// <summary>Durable mutation idempotency (idempotency_records).</summary>
+public interface IIdempotencyStore
+{
+    /// <summary>
+    /// Returns a previously stored resource id when the same actor/operation/key was completed.
+    /// When the key exists with a different request hash, returns conflict=true.
+    /// </summary>
+    Task<IdempotencyLookupResult> TryGetAsync(
+        string actor,
+        string operation,
+        Guid idempotencyKey,
+        ReadOnlyMemory<byte> requestHash,
+        CancellationToken cancellationToken = default);
+
+    Task SaveAsync(
+        string actor,
+        string operation,
+        Guid idempotencyKey,
+        ReadOnlyMemory<byte> requestHash,
+        Guid resourceId,
+        CancellationToken cancellationToken = default);
+}
+
+public sealed class IdempotencyLookupResult
+{
+    public bool Found { get; init; }
+
+    public bool Conflict { get; init; }
+
+    public Guid? ResourceId { get; init; }
 }
 
 /// <summary>Snapshot metadata plus capture schema version for application persistence.</summary>

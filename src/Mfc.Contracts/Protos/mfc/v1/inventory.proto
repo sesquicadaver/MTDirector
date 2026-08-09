@@ -1,0 +1,193 @@
+syntax = "proto3";
+
+package mfc.v1;
+
+option csharp_namespace = "Mfc.Contracts.Mfc.V1";
+
+import "mfc/v1/common.proto";
+
+// InventoryService — Vertical Slice §9.2 (Issue Spec = Vertical Slice).
+// Issue Set DiscoverDevice maps to ValidateDeviceConnection; GetDiscoveryStatus deferred (full discovery = StartCapture in M1-26).
+service InventoryService {
+  rpc ListSites(ListSitesRequest) returns (ListSitesResponse);
+  rpc CreateSite(CreateSiteRequest) returns (Site);
+  rpc CreateNode(CreateNodeRequest) returns (Node);
+  rpc GetNode(GetNodeRequest) returns (NodeDetails);
+  rpc RegisterDevice(RegisterDeviceRequest) returns (Device);
+  rpc UpdateDevice(UpdateDeviceRequest) returns (Device);
+  rpc UpdateDeviceConnection(UpdateDeviceConnectionRequest) returns (DeviceConnectionSummary);
+  rpc ValidateDeviceConnection(ValidateDeviceConnectionRequest) returns (ValidateDeviceConnectionResponse);
+}
+
+enum SiteStatus {
+  SITE_STATUS_UNSPECIFIED = 0;
+  SITE_STATUS_DRAFT = 1;
+  SITE_STATUS_ACTIVE = 2;
+  SITE_STATUS_DISABLED = 3;
+}
+
+enum NodeKind {
+  NODE_KIND_UNSPECIFIED = 0;
+  NODE_KIND_ROUTER = 1;
+  NODE_KIND_VRRP = 2;
+  NODE_KIND_SWITCH = 3;
+}
+
+enum NodeStatus {
+  NODE_STATUS_UNSPECIFIED = 0;
+  NODE_STATUS_DRAFT = 1;
+  NODE_STATUS_ACTIVE = 2;
+  NODE_STATUS_DISABLED = 3;
+}
+
+enum DeclaredUplinkMode {
+  DECLARED_UPLINK_MODE_UNSPECIFIED = 0;
+  DECLARED_UPLINK_MODE_NONE = 1;
+  DECLARED_UPLINK_MODE_ONE = 2;
+  DECLARED_UPLINK_MODE_FAILOVER = 3;
+  DECLARED_UPLINK_MODE_BALANCED = 4;
+  DECLARED_UPLINK_MODE_MIXED = 5;
+}
+
+enum DeviceRole {
+  DEVICE_ROLE_UNSPECIFIED = 0;
+  DEVICE_ROLE_ROUTER = 1;
+  DEVICE_ROLE_L3_SWITCH = 2;
+  DEVICE_ROLE_L2_SWITCH = 3;
+  DEVICE_ROLE_UNKNOWN = 4;
+}
+
+enum SupportState {
+  SUPPORT_STATE_UNSPECIFIED = 0;
+  SUPPORT_STATE_SUPPORTED = 1;
+  SUPPORT_STATE_READ_ONLY = 2;
+  SUPPORT_STATE_NEEDS_REVALIDATION = 3;
+  SUPPORT_STATE_UNSUPPORTED = 4;
+}
+
+enum CertificateTrustMode {
+  CERTIFICATE_TRUST_MODE_UNSPECIFIED = 0;
+  CERTIFICATE_TRUST_MODE_INTERNAL_CA = 1;
+  CERTIFICATE_TRUST_MODE_SPKI_PIN = 2;
+}
+
+message Site {
+  Uuid id = 1;
+  string code = 2;
+  string name = 3;
+  SiteStatus status = 4;
+  uint64 row_version = 5;
+}
+
+message Node {
+  Uuid id = 1;
+  Uuid site_id = 2;
+  string name = 3;
+  NodeKind declared_kind = 4;
+  DeclaredUplinkMode declared_uplink_mode = 5;
+  NodeStatus status = 6;
+  uint64 row_version = 7;
+}
+
+message Device {
+  Uuid id = 1;
+  Uuid node_id = 2;
+  string display_name = 3;
+  string management_host = 4;
+  uint32 management_port = 5;
+  bool enabled = 6;
+  SupportState last_support_state = 7;
+  optional Uuid last_completed_capture_id = 8;
+  uint64 row_version = 9;
+  DeviceRole role = 10;
+}
+
+message NodeDetails {
+  Node node = 1;
+  repeated Device devices = 2;
+}
+
+// Desktop-safe connection summary — never includes password/ciphertext.
+message DeviceConnectionSummary {
+  Uuid device_id = 1;
+  string username = 2;
+  CertificateTrustMode trust_mode = 3;
+  optional string ca_profile_ref = 4;
+  bool has_pinned_spki = 5;
+  uint32 connect_timeout_ms = 6;
+  uint32 command_timeout_ms = 7;
+  uint64 max_response_bytes = 8;
+  uint64 row_version = 9;
+}
+
+message ListSitesRequest {
+  PageRequest page = 1;
+}
+
+message ListSitesResponse {
+  repeated Site sites = 1;
+  PageResponse page = 2;
+}
+
+message CreateSiteRequest {
+  Uuid idempotency_key = 1;
+  string code = 2;
+  string name = 3;
+}
+
+message CreateNodeRequest {
+  Uuid idempotency_key = 1;
+  Uuid site_id = 2;
+  string name = 3;
+  NodeKind declared_kind = 4;
+  DeclaredUplinkMode declared_uplink_mode = 5;
+}
+
+message GetNodeRequest {
+  Uuid node_id = 1;
+}
+
+message RegisterDeviceRequest {
+  Uuid idempotency_key = 1;
+  Uuid node_id = 2;
+  string display_name = 3;
+  string management_host = 4;
+  uint32 management_port = 5;
+  DeviceRole role = 6;
+}
+
+message UpdateDeviceRequest {
+  Uuid idempotency_key = 1;
+  Uuid device_id = 2;
+  uint64 expected_row_version = 3;
+  optional string display_name = 4;
+  optional string management_host = 5;
+  optional uint32 management_port = 6;
+  optional bool enabled = 7;
+  optional DeviceRole role = 8;
+}
+
+message UpdateDeviceConnectionRequest {
+  Uuid idempotency_key = 1;
+  Uuid device_id = 2;
+  string username = 3;
+  // Password UTF-8 bytes are accepted for upsert only; never echoed in responses.
+  bytes password_utf8 = 4;
+  CertificateTrustMode trust_mode = 5;
+  optional string ca_profile_ref = 6;
+  optional Sha256 pinned_spki_sha256 = 7;
+  uint32 connect_timeout_ms = 8;
+  uint32 command_timeout_ms = 9;
+  uint64 max_response_bytes = 10;
+}
+
+message ValidateDeviceConnectionRequest {
+  Uuid device_id = 1;
+}
+
+message ValidateDeviceConnectionResponse {
+  Uuid device_id = 1;
+  string observed_identity = 2;
+  SupportState support_state = 3;
+  bool routeros_mutated = 4;
+}

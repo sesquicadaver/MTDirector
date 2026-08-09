@@ -90,6 +90,10 @@ public sealed class ArchitectureBoundaryTests
         => AssertDoesNotReference(RouterOs, "Mfc.Infrastructure", "RouterOs must not reference Infrastructure");
 
     [Fact]
+    public void ContractsMustNotDependOnDomain()
+        => AssertDoesNotReference(Contracts, "Mfc.Domain", "Contracts must not reference Domain");
+
+    [Fact]
     public void DesktopMustNotDependOnDomain()
         => AssertDoesNotReference(Desktop, "Mfc.Domain", "Desktop must not reference Domain");
 

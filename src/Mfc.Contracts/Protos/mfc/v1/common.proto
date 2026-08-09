@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package mfc.v1;
+
+option csharp_namespace = "Mfc.Contracts.Mfc.V1";
+
+// Network-byte-order UUID (exactly 16 bytes).
+message Uuid {
+  bytes value = 1;
+}
+
+// SHA-256 digest (exactly 32 bytes).
+message Sha256 {
+  bytes value = 1;
+}
+
+message PageRequest {
+  uint32 page_size = 1;
+  string page_token = 2;
+}
+
+message PageResponse {
+  string next_page_token = 1;
+}
+
+message ErrorDetail {
+  string code = 1;
+  bool retryable = 2;
+  Uuid correlation_id = 3;
+  optional Uuid target_id = 4;
+  optional string section_id = 5;
+  optional string sanitized_detail = 6;
+}

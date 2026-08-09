@@ -3,6 +3,7 @@ using System;
 using Mfc.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Mfc.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(MfcDbContext))]
-    partial class MfcDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260809081842_DeviceRoleM125")]
+    partial class DeviceRoleM125
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

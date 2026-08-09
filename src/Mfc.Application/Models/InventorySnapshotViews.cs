@@ -17,6 +17,13 @@ public sealed class SiteView
     public required ulong RowVersion { get; init; }
 }
 
+public sealed class SiteListPageView
+{
+    public required IReadOnlyList<SiteView> Items { get; init; }
+
+    public string? NextCursor { get; init; }
+}
+
 public sealed class NodeView
 {
     public required Guid Id { get; init; }
@@ -52,7 +59,16 @@ public sealed class DeviceView
 
     public SupportState? LastSupportState { get; init; }
 
+    public Guid? LastCompletedCaptureId { get; init; }
+
     public required ulong RowVersion { get; init; }
+}
+
+public sealed class NodeDetailsView
+{
+    public required NodeView Node { get; init; }
+
+    public required IReadOnlyList<DeviceView> Devices { get; init; }
 }
 
 public sealed class SnapshotView
