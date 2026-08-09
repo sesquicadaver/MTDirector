@@ -1,6 +1,12 @@
-# Minimal standalone fixture (synthetic)
-
+# Minimal standalone fixture (synthetic) — M1-30
 # Addresses match topologies/standalone/topology.json
+# Applied ONLY via testlab/chr/scripts/provision-standalone.sh (outside product adapter).
+#
+# /certificate add name=lab-api-ssl common-name=chr-standalone days-valid=365
+# /ip service set api-ssl certificate=lab-api-ssl disabled=no port=8729
 # /ip address add address=10.255.10.10/24 interface=ether1
 # /ip route add dst-address=0.0.0.0/0 gateway=10.255.10.1
+# /system identity set name=chr-standalone
+# /ip firewall filter add chain=forward action=accept comment="fwc:rule:aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee:v1" src-address=203.0.113.10
+# /ip firewall filter add chain=forward action=accept comment="fwc:rule:11111111-2222-4333-8444-555555555555:v1" dst-address=198.51.100.1
 # No secrets. Expand when CHR runner automation lands.

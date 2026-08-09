@@ -3,7 +3,7 @@
 **Дата оновлення:** 9 серпня 2026  
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач  
 **Продукт:** MikroTik Firewall Controller (MTDirector)  
-**Базовий коміт аудиту:** M1-29 (Desktop semantic diff viewer) — черга зсунута на M1-30
+**Базовий коміт аудиту:** M1-30 (Standalone CHR vertical-slice acceptance) — черга зсунута на M1-31
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -41,13 +41,13 @@
 | Область | Closed | Open | % |
 |---------|-------:|-----:|--:|
 | M0 Bootstrap | 10 | 0 | 100% |
-| M1 Read-only slice | 29 | 5 | 85% |
+| M1 Read-only slice | 30 | 4 | 88% |
 | N1 Packet-path weave | 3 | 4 | 43% |
 | M2–M6 (решта MVP) | 0 | 58 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **42** | **94** | **~31% issues** |
+| **Разом** | **43** | **93** | **~32% issues** |
 
-MVP issues (109) = 42 done + **67 remaining** до MVP CLOSED.  
+MVP issues (109) = 43 done + **66 remaining** до MVP CLOSED.  
 Post-MVP M7 = **27** після MVP.
 
 ### 2.2 DONE (не в черзі)
@@ -87,6 +87,7 @@ Post-MVP M7 = **27** після MVP.
 | M1-27 | #37 | Desktop inventory tree (Site→Node→Device); `ListNodes` RPC; optional Device observation fields; single-flight cached refresh |
 | M1-28 | #38 | Desktop snapshot viewer (sections/status/hashes/schema; config≠obs; technical unknown-props; sanitized copy; `SnapshotSummary.sections`) |
 | M1-29 | #39 | Desktop semantic diff viewer (CompareSnapshots UI; section groups; server-side only; No differences) |
+| M1-30 | #40 | Standalone CHR vertical-slice acceptance (in-process suite + live TLS gate + lab provision script) |
 
 ### 2.3 Поточні прогалини (код)
 
@@ -99,7 +100,7 @@ Post-MVP M7 = **27** після MVP.
 | `Mfc.Desktop` | connection shell + inventory tree + snapshot viewer + semantic diff viewer |
 | Persistence | inventory EF stores + idempotency_records + snapshot CAS — наступні issues |
 
-**NEXT = черга #29:** [M1-30](https://github.com/sesquicadaver/MTDirector/issues/40).
+**NEXT = черга #30:** [M1-31](https://github.com/sesquicadaver/MTDirector/issues/41).
 
 ---
 
@@ -163,7 +164,7 @@ Post-MVP M7 = **27** після MVP.
 | ~~26~~ | ~~M1-27~~ | ~~#37~~ | ~~Add desktop inventory tree~~ → §2.2 DONE (`ListNodes` + Avalonia Site→Node→Device tree; cached single-flight refresh) |
 | ~~27~~ | ~~M1-28~~ | ~~#38~~ | ~~Add desktop snapshot viewer~~ → §2.2 DONE (read-only Avalonia viewer; `SnapshotSummary.sections`; sanitized export) |
 | ~~28~~ | ~~M1-29~~ | ~~#39~~ | ~~Add desktop semantic diff viewer~~ → §2.2 DONE (CompareSnapshots UI; section groups; no local recompute) |
-| 29 | M1-30 | #40 | Add standalone CHR vertical-slice acceptance test |
+| ~~29~~ | ~~M1-30~~ | ~~#40~~ | ~~Add standalone CHR vertical-slice acceptance test~~ → §2.2 DONE |
 | 30 | M1-31 | #41 | Add multi-WAN CHR vertical-slice acceptance test |
 | 31 | M1-32 | #42 | Add VRRP CHR vertical-slice acceptance test |
 | 32 | M1-33 | #43 | Add protocol and snapshot fault-injection suite |
@@ -354,7 +355,7 @@ Post-MVP M7 = **27** після MVP.
 | Persist canonical snapshots | M1-23 | PG sections; payload dedupe; pagination; immutability | **DONE** |
 | Semantic snapshot diff | M1-24 | `SemanticDiffEngine` unit AC#1–13; CompareSnapshotsUseCase | **DONE** |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | M1-25…29 DONE |
-| M1 acceptance gate | M1-30…34 | CHR suites | TODO |
+| M1 acceptance gate | M1-30…34 | CHR suites | M1-30 DONE; M1-31…34 TODO |
 | Policy compose + analysis | M2 | analysis unit; SoD | TODO |
 | Deterministic filter artifact | M3 | golden artifacts | TODO |
 | Anchor bootstrap | M5 | equivalence; crash recovery | TODO |
@@ -383,7 +384,7 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **чергу #29** → [M1-30 / issue #40](https://github.com/sesquicadaver/MTDirector/issues/40).  
+1. Відкрити **чергу #30** → [M1-31 / issue #41](https://github.com/sesquicadaver/MTDirector/issues/41).  
 2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.  
 3. Не стартувати M2, доки не закрито **M1-34** (черга #33).  
 4. Не стартувати M4, доки не закрито **M5-10** (черга #71).  

@@ -95,4 +95,14 @@ public sealed class ChrLabSkeletonTests
 
         Assert.Empty(hits);
     }
+
+    [Fact]
+    public void StandaloneProvisioningScriptExistsOutsideProductAdapter()
+    {
+        string script = Path.Combine(RepoRoot, "testlab", "chr", "scripts", "provision-standalone.sh");
+        Assert.True(File.Exists(script), "M1-30 AC#11 requires testlab provisioning outside Mfc.RouterOs.");
+        string text = File.ReadAllText(script);
+        Assert.Contains("OUTSIDE Mfc.RouterOs", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Mfc.RouterOs", Path.GetDirectoryName(script)!, StringComparison.Ordinal);
+    }
 }
