@@ -18,8 +18,8 @@ Working tree must stay clean after build/test.
 
 | Project | Role |
 |---------|------|
-| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory proto contracts M1-25) |
-| `tests/Mfc.IntegrationTests` | Controller health + Inventory gRPC host (M1-25), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers) |
+| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26) |
+| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers) |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts (no live CHR required) |
 
 ## Living Specification — semantic diff (M1-24)
@@ -61,6 +61,27 @@ Vertical Slice §9.2 / Initial Issue Set M1-25 AC → module → tests (Issue Sp
 | Contract round-trip | `Uuid` / `Site` | `InventoryProtoContractTests` |
 
 Filter: `dotnet test --filter FullyQualifiedName~Inventory`.
+
+## Living Specification — snapshot/diff gRPC (M1-26)
+
+Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| VS §9.3 RPC surface | `snapshots.proto` / `SnapshotGrpcService` | `SnapshotServiceDescriptorExposesVerticalSliceRpcs` |
+| Capture progress streaming | `CaptureProgressHub` + WatchCapture | `StartWatchListSectionCompareAndCancel` |
+| Section paging (no unbounded payload) | `GetSnapshotSectionUseCase` | host GetSnapshotSection pages |
+| Pagination / continuation | ListCaptures + DiffPage + section page | host list/section/diff pages |
+| Watch cancellation without hang | WatchCapture + CTS | cancel mid-flight in host test |
+| Viewer ≠ unredacted raw | SnapshotService has no raw RPC | descriptor + section records only |
+| Diff stable ordering | `CompareSnapshotsUseCase` / SemanticDiffEngine | CompareSnapshots entries ordered |
+| Hashes as 32-byte Sha256 | `SnapshotProtoMapper.HexToSha256Bytes` | summary hashes length 32 |
+| Unknown enum forward-compat | DiffEntry proto3 | `DiffEntryWithUnknownEnumValuesRoundTrips` |
+| No EF/RouterOS DTO on wire | Contracts only | mapper from Application views |
+| Contract serialization | Uuid/Sha256/SnapshotSectionPage | `SnapshotProtoContractTests` |
+| No password fields | response descriptors | `SnapshotResponseMessagesHaveNoPasswordFields` |
+
+Filter: `dotnet test --filter FullyQualifiedName~Snapshot`.
 
 Full Living Spec index: [`ROADMAP.md`](../../ROADMAP.md) §5.
 

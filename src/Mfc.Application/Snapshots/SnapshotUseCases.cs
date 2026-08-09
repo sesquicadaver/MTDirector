@@ -227,7 +227,7 @@ public sealed class ListSnapshotsUseCase
             .ConfigureAwait(false);
         return ApplicationResults.Ok(new SnapshotListPageView
         {
-            Items = page.Items.Select(ViewMapper.ToView).ToArray(),
+            Items = page.Items.Select(static s => ViewMapper.ToView(s)).ToArray(),
             NextCursor = page.NextCursor,
         });
     }
@@ -476,4 +476,147 @@ public sealed class CompareSnapshotsUseCase
 
         return left.Value.Equals(right.Value);
     }
+}
+
+public sealed class GetSnapshotSectionQuery
+{
+    public required string Actor { get; init; }
+
+    public required Guid CaptureId { get; init; }
+
+    public required string SectionId { get; init; }
+
+    /// <summary>Optional domain filter (configuration / observation / …).</summary>
+    public DiffDomain? Domain { get; init; }
+
+    /// <summary>Page size (1..200). Defaults to 50.</summary>
+    public int Limit { get; init; } = 50;
+
+    /// <summary>Opaque cursor from a previous page (record offset).</summary>
+    public string? Cursor { get; init; }
+}
+
+/// <summary>
+/// Loads canonical section records for Viewer. Never returns raw unredacted payloads (M1-26 AC#6).
+/// </summary>
+public sealed class GetSnapshotSectionUseCase
+{
+    private readonly IAuthorizationBoundary _auth;
+    private readonly ISnapshotStore _snapshots;
+
+    public GetSnapshotSectionUseCase(IAuthorizationBoundary auth, ISnapshotStore snapshots)
+    {
+        ArgumentNullException.ThrowIfNull(auth);
+        ArgumentNullException.ThrowIfNull(snapshots);
+        _auth = auth;
+        _snapshots = snapshots;
+    }
+
+    public async Task<ApplicationResult<SnapshotSectionPageView>> ExecuteAsync(
+        GetSnapshotSectionQuery query,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        ApplicationError? authError = await Auth.EnsureAsync(
+            _auth, query.Actor, ApplicationPermissions.SnapshotRead, cancellationToken).ConfigureAwait(false);
+        if (authError is not null)
+        {
+            return ApplicationResults.Fail(authError);
+        }
+
+        if (string.IsNullOrWhiteSpace(query.SectionId))
+        {
+            return ApplicationResults.Fail(ApplicationError.Failed("section_id is required."));
+        }
+
+        StoredSnapshot? snapshot = await _snapshots.GetAsync(new SnapshotId(query.CaptureId), cancellationToken)
+            .ConfigureAwait(false);
+        if (snapshot is null)
+        {
+            return ApplicationResults.Fail(
+                ApplicationError.NotFound($"Snapshot '{query.CaptureId}' not found."));
+        }
+
+        IReadOnlyList<CanonicalSection> sections = await _snapshots
+            .LoadCanonicalSectionsAsync(snapshot.Metadata.Id, cancellationToken)
+            .ConfigureAwait(false);
+
+        string sectionId = query.SectionId.Trim();
+        CanonicalSection? matched = sections.FirstOrDefault(s =>
+            string.Equals(s.SectionId, sectionId, StringComparison.Ordinal)
+            && (query.Domain is null || MapDomain(s) == query.Domain.Value));
+
+        if (matched is null)
+        {
+            return ApplicationResults.Fail(
+                ApplicationError.NotFound($"Section '{sectionId}' was not found for capture."));
+        }
+
+        int limit = query.Limit <= 0 ? 50 : Math.Min(query.Limit, 200);
+        int offset = DecodeOffset(query.Cursor);
+        if (offset < 0 || offset > matched.Records.Count)
+        {
+            return ApplicationResults.Fail(ApplicationError.Failed("Invalid page token."));
+        }
+
+        DiffDomain domain = MapDomain(matched);
+        List<SnapshotRecordView> page = [];
+        int end = Math.Min(offset + limit, matched.Records.Count);
+        for (int i = offset; i < end; i++)
+        {
+            DiffRecordView view = new(matched.Records[i], i, matched.SectionId, domain);
+            Dictionary<string, string> props = new(view.Properties, StringComparer.Ordinal);
+            page.Add(new SnapshotRecordView
+            {
+                StableKey = view.RecordKey,
+                Ordinal = matched.Ordered ? view.Ordinal : null,
+                Configuration = domain == DiffDomain.Configuration ? props : new Dictionary<string, string>(StringComparer.Ordinal),
+                Observations = domain == DiffDomain.Observation ? props : new Dictionary<string, string>(StringComparer.Ordinal),
+            });
+        }
+
+        string? next = end < matched.Records.Count ? EncodeOffset(end) : null;
+        return ApplicationResults.Ok(new SnapshotSectionPageView
+        {
+            CaptureId = query.CaptureId,
+            SectionId = matched.SectionId,
+            Ordered = matched.Ordered,
+            Records = page,
+            NextCursor = next,
+        });
+    }
+
+    private static DiffDomain MapDomain(CanonicalSection section)
+    {
+        if (section.SectionId.StartsWith("capability.", StringComparison.Ordinal)
+            || string.Equals(section.SectionId, "capability.profile", StringComparison.Ordinal))
+        {
+            return DiffDomain.Capability;
+        }
+
+        if (section.SectionId.StartsWith("compatibility.", StringComparison.Ordinal))
+        {
+            return DiffDomain.Compatibility;
+        }
+
+        return section.Domain == CanonicalDomain.Configuration
+            ? DiffDomain.Configuration
+            : DiffDomain.Observation;
+    }
+
+    private static int DecodeOffset(string? cursor)
+    {
+        if (string.IsNullOrWhiteSpace(cursor))
+        {
+            return 0;
+        }
+
+        return int.TryParse(cursor, System.Globalization.NumberStyles.Integer,
+            System.Globalization.CultureInfo.InvariantCulture, out int offset)
+            ? offset
+            : -1;
+    }
+
+    private static string EncodeOffset(int offset)
+        => offset.ToString(System.Globalization.CultureInfo.InvariantCulture);
 }
