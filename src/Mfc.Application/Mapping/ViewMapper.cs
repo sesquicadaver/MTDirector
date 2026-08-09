@@ -41,7 +41,7 @@ internal static class ViewMapper
         RowVersion = device.RowVersion,
     };
 
-    public static SnapshotView ToView(StoredSnapshot snapshot) => new()
+    public static SnapshotView ToView(StoredSnapshot snapshot, bool deduplicated = false) => new()
     {
         Id = snapshot.Metadata.Id.Value,
         DeviceId = snapshot.Metadata.DeviceId.Value,
@@ -52,5 +52,7 @@ internal static class ViewMapper
         SnapshotHashHex = snapshot.Metadata.SnapshotHash?.ToString(),
         CompletedAtUtc = snapshot.Metadata.CompletedAtUtc,
         SchemaVersion = snapshot.SchemaVersion,
+        OperationId = snapshot.OperationId,
+        Deduplicated = deduplicated,
     };
 }

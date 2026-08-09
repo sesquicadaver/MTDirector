@@ -90,6 +90,42 @@ public sealed class SnapshotView
     public DateTimeOffset? CompletedAtUtc { get; init; }
 
     public int SchemaVersion { get; init; }
+
+    /// <summary>Capture operation id when known (persisted or in-flight StartCapture).</summary>
+    public Guid? OperationId { get; init; }
+
+    /// <summary>True when StartCapture reused an idempotent or identical completed capture.</summary>
+    public bool Deduplicated { get; init; }
+}
+
+/// <summary>Paged canonical section records for Viewer (never raw unredacted payload).</summary>
+public sealed class SnapshotSectionPageView
+{
+    public required Guid CaptureId { get; init; }
+
+    public required string SectionId { get; init; }
+
+    public required bool Ordered { get; init; }
+
+    public required IReadOnlyList<SnapshotRecordView> Records { get; init; }
+
+    public string? NextCursor { get; init; }
+}
+
+/// <summary>One canonical record projected for gRPC SnapshotRecord.</summary>
+public sealed class SnapshotRecordView
+{
+    public required string StableKey { get; init; }
+
+    public int? Ordinal { get; init; }
+
+    /// <summary>Configuration-domain property bag (string values).</summary>
+    public IReadOnlyDictionary<string, string> Configuration { get; init; } =
+        new Dictionary<string, string>(StringComparer.Ordinal);
+
+    /// <summary>Observation-domain property bag (string values).</summary>
+    public IReadOnlyDictionary<string, string> Observations { get; init; } =
+        new Dictionary<string, string>(StringComparer.Ordinal);
 }
 
 public sealed class SnapshotDiffView

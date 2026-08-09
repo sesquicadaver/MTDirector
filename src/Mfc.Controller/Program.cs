@@ -16,7 +16,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 namespace Mfc.Controller;
 
 /// <summary>
-/// Composition root: health + inventory gRPC host with PostgreSQL schema guard (M0-05/M0-07, M1-25).
+/// Composition root: health + inventory/snapshot gRPC host with PostgreSQL schema guard (M0-05/M0-07, M1-25/M1-26).
 /// </summary>
 public static class Program
 {
@@ -104,8 +104,11 @@ public static class Program
 
         RegisterAuthorization(builder.Services, options, builder.Environment.EnvironmentName);
         RegisterInventoryApplication(builder.Services);
+        RegisterSnapshotApplication(builder.Services);
         builder.Services.TryAddSingleton<IRouterOsReadPort, ProbeOnlyRouterOsReadPort>();
+        builder.Services.TryAddSingleton<ISnapshotCapturePort, NotConfiguredSnapshotCapturePort>();
         builder.Services.AddSingleton<ValidateDeviceConnectionCoordinator>();
+        builder.Services.AddSingleton<CaptureProgressHub>();
 
         builder.WebHost.ConfigureKestrel(kestrel =>
         {
@@ -126,6 +129,7 @@ public static class Program
         WebApplication app = builder.Build();
         app.MapGrpcHealthChecksService();
         app.MapGrpcService<InventoryGrpcService>();
+        app.MapGrpcService<SnapshotGrpcService>();
         return app;
     }
 
@@ -159,6 +163,16 @@ public static class Program
         services.AddScoped<UpdateDeviceUseCase>();
         services.AddScoped<UpdateConnectionProfileUseCase>();
         services.AddScoped<DiscoverDeviceUseCase>();
+    }
+
+    private static void RegisterSnapshotApplication(IServiceCollection services)
+    {
+        services.AddScoped<CaptureSnapshotUseCase>();
+        services.AddScoped<ListSnapshotsUseCase>();
+        services.AddScoped<GetSnapshotUseCase>();
+        services.AddScoped<GetSnapshotSectionUseCase>();
+        services.AddScoped<CompareSnapshotsUseCase>();
+        services.AddScoped<GetRawSnapshotPayloadUseCase>();
     }
 
     public static bool ContainsMigrateOnly(IEnumerable<string> args)

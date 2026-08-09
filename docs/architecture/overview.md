@@ -45,7 +45,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Persist canonical snapshots | Done (M1-23) | `EfSnapshotStore`, `snapshot_capture_sections`, Brotli content-addressed payloads |
 | Semantic snapshot diff | Done (M1-24) | `src/Mfc.Domain/Diff/`, `CompareSnapshotsUseCase`, `LoadCanonicalSectionsAsync` |
 | Inventory/discovery gRPC | Done (M1-25) | `Protos/mfc/v1/inventory.proto`, `InventoryGrpcService` (VS §9.2; ValidateDeviceConnection ← DiscoverDeviceUseCase) |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M1-26 (#36) |
+| Snapshot/diff gRPC | Done (M1-26) | `Protos/mfc/v1/snapshots.proto`, `SnapshotGrpcService` (VS §9.3; DiffEntry = Canonical Spec §30; Issue Set CaptureSnapshot→StartCapture) |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M1-27 (#37) |
 
 ## ADRs
 

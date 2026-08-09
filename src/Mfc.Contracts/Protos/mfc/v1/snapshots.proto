@@ -1,0 +1,212 @@
+syntax = "proto3";
+
+package mfc.v1;
+
+option csharp_namespace = "Mfc.Contracts.Mfc.V1";
+
+import "google/protobuf/timestamp.proto";
+import "mfc/v1/common.proto";
+
+// SnapshotService — Vertical Slice §9.3 (Issue Spec = Vertical Slice).
+// Issue Set aliases (not on the wire): CaptureSnapshot→StartCapture,
+// WatchSnapshotCapture→WatchCapture, ListSnapshots→ListCaptures.
+// DiffEntry follows Canonical Spec §30 (repeated DiffChange + FieldDiff);
+// Vertical Slice §9.7 single-change DiffEntry is obsolete relative to M1-24.
+service SnapshotService {
+  rpc StartCapture(StartCaptureRequest) returns (StartCaptureResponse);
+  rpc WatchCapture(WatchCaptureRequest) returns (stream CaptureProgress);
+  rpc ListCaptures(ListCapturesRequest) returns (ListCapturesResponse);
+  rpc GetSnapshotSummary(GetSnapshotSummaryRequest) returns (SnapshotSummary);
+  rpc GetSnapshotSection(GetSnapshotSectionRequest) returns (SnapshotSectionPage);
+  rpc CompareSnapshots(CompareSnapshotsRequest) returns (DiffPage);
+}
+
+enum SnapshotCaptureStatus {
+  SNAPSHOT_CAPTURE_STATUS_UNSPECIFIED = 0;
+  SNAPSHOT_CAPTURE_STATUS_QUEUED = 1;
+  SNAPSHOT_CAPTURE_STATUS_CONNECTING = 2;
+  SNAPSHOT_CAPTURE_STATUS_AUTHENTICATING = 3;
+  SNAPSHOT_CAPTURE_STATUS_READING_PASS_1 = 4;
+  SNAPSHOT_CAPTURE_STATUS_CANONICALIZING_PASS_1 = 5;
+  SNAPSHOT_CAPTURE_STATUS_READING_PASS_2 = 6;
+  SNAPSHOT_CAPTURE_STATUS_VERIFYING_STABILITY = 7;
+  SNAPSHOT_CAPTURE_STATUS_PERSISTING = 8;
+  SNAPSHOT_CAPTURE_STATUS_COMPLETED = 9;
+  SNAPSHOT_CAPTURE_STATUS_FAILED = 10;
+  SNAPSHOT_CAPTURE_STATUS_CANCELED = 11;
+}
+
+enum CaptureStage {
+  CAPTURE_STAGE_UNSPECIFIED = 0;
+  CAPTURE_STAGE_QUEUED = 1;
+  CAPTURE_STAGE_CONNECTING = 2;
+  CAPTURE_STAGE_AUTHENTICATING = 3;
+  CAPTURE_STAGE_READING_PASS_1 = 4;
+  CAPTURE_STAGE_CANONICALIZING_PASS_1 = 5;
+  CAPTURE_STAGE_READING_PASS_2 = 6;
+  CAPTURE_STAGE_VERIFYING_STABILITY = 7;
+  CAPTURE_STAGE_PERSISTING = 8;
+  CAPTURE_STAGE_COMPLETED = 9;
+  CAPTURE_STAGE_FAILED = 10;
+  CAPTURE_STAGE_CANCELED = 11;
+}
+
+enum DiffDomain {
+  DIFF_DOMAIN_UNSPECIFIED = 0;
+  DIFF_DOMAIN_CONFIGURATION = 1;
+  DIFF_DOMAIN_OBSERVATION = 2;
+  DIFF_DOMAIN_CAPABILITY = 3;
+  DIFF_DOMAIN_COMPATIBILITY = 4;
+}
+
+enum DiffChange {
+  DIFF_CHANGE_UNSPECIFIED = 0;
+  DIFF_CHANGE_ADDED = 1;
+  DIFF_CHANGE_REMOVED = 2;
+  DIFF_CHANGE_MODIFIED = 3;
+  DIFF_CHANGE_MOVED = 4;
+  DIFF_CHANGE_STATE_CHANGED = 5;
+  DIFF_CHANGE_SECTION_STATUS_CHANGED = 6;
+}
+
+// Canonical Spec §30 MatchConfidence (CONTROLLER_ID / NATURAL_KEY / …).
+enum MatchConfidence {
+  MATCH_CONFIDENCE_UNSPECIFIED = 0;
+  MATCH_CONFIDENCE_CONTROLLER_ID = 1;
+  MATCH_CONFIDENCE_NATURAL_KEY = 2;
+  MATCH_CONFIDENCE_EXACT_FINGERPRINT = 3;
+  MATCH_CONFIDENCE_EXACT_SEQUENCE = 4;
+  MATCH_CONFIDENCE_CONSERVATIVE = 5;
+}
+
+message StartCaptureRequest {
+  oneof target {
+    Uuid device_id = 1;
+    Uuid node_id = 2;
+  }
+
+  Uuid idempotency_key = 3;
+}
+
+message StartCaptureResponse {
+  Uuid operation_id = 1;
+  bool deduplicated = 2;
+  optional Uuid capture_id = 3;
+}
+
+message WatchCaptureRequest {
+  Uuid operation_id = 1;
+}
+
+message CaptureProgress {
+  Uuid operation_id = 1;
+  Uuid capture_id = 2;
+  Uuid device_id = 3;
+  CaptureStage stage = 4;
+  optional string current_section = 5;
+  optional ErrorDetail error = 6;
+  google.protobuf.Timestamp occurred_at = 7;
+}
+
+message ListCapturesRequest {
+  Uuid device_id = 1;
+  PageRequest page = 2;
+}
+
+message ListCapturesResponse {
+  repeated SnapshotSummary captures = 1;
+  PageResponse page = 2;
+}
+
+message GetSnapshotSummaryRequest {
+  Uuid capture_id = 1;
+}
+
+message SnapshotSummary {
+  Uuid capture_id = 1;
+  Uuid device_id = 2;
+  SnapshotCaptureStatus status = 3;
+  uint32 schema_version = 4;
+  Sha256 configuration_hash = 5;
+  Sha256 observation_hash = 6;
+  Sha256 capability_hash = 7;
+  Sha256 snapshot_hash = 8;
+  google.protobuf.Timestamp completed_at = 9;
+}
+
+message GetSnapshotSectionRequest {
+  Uuid capture_id = 1;
+  string section_id = 2;
+  // When set, selects configuration vs observation (or capability) document for section_id.
+  optional DiffDomain domain = 3;
+  PageRequest page = 4;
+}
+
+message CanonicalList {
+  repeated CanonicalValue values = 1;
+}
+
+message CanonicalValue {
+  oneof kind {
+    string string_value = 1;
+    sint64 signed_integer = 2;
+    uint64 unsigned_integer = 3;
+    bool boolean_value = 4;
+    bytes binary_value = 5;
+    CanonicalList list_value = 6;
+  }
+}
+
+message CanonicalField {
+  string name = 1;
+  CanonicalValue value = 2;
+}
+
+message SnapshotRecord {
+  string stable_key = 1;
+  optional uint32 ordinal = 2;
+  repeated CanonicalField configuration = 3;
+  repeated CanonicalField observations = 4;
+}
+
+message SnapshotSectionPage {
+  Uuid capture_id = 1;
+  string section_id = 2;
+  bool ordered = 3;
+  repeated SnapshotRecord records = 4;
+  string next_page_token = 5;
+}
+
+message CompareSnapshotsRequest {
+  Uuid left_capture_id = 1;
+  Uuid right_capture_id = 2;
+  PageRequest page = 3;
+}
+
+message FieldDiff {
+  string field_name = 1;
+  optional CanonicalValue before = 2;
+  optional CanonicalValue after = 3;
+  repeated CanonicalValue added_values = 4;
+  repeated CanonicalValue removed_values = 5;
+}
+
+message DiffEntry {
+  string section_id = 1;
+  DiffDomain domain = 2;
+  repeated DiffChange changes = 3;
+  MatchConfidence confidence = 4;
+  string record_key = 5;
+  optional uint32 before_ordinal = 6;
+  optional uint32 after_ordinal = 7;
+  optional SnapshotRecord before = 8;
+  optional SnapshotRecord after = 9;
+  repeated FieldDiff field_diffs = 10;
+}
+
+message DiffPage {
+  repeated DiffEntry entries = 1;
+  string next_page_token = 2;
+  bool identical = 3;
+  repeated string warnings = 4;
+}

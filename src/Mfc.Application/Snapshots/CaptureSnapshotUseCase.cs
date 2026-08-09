@@ -96,7 +96,7 @@ public sealed class CaptureSnapshotUseCase
                 byIdempotency,
                 identical: true,
                 cancellationToken).ConfigureAwait(false);
-            return ApplicationResults.Ok(ViewMapper.ToView(byIdempotency));
+            return ApplicationResults.Ok(ViewMapper.ToView(byIdempotency, deduplicated: true));
         }
 
         ConnectionProfileReadModel? profile = await _profiles.GetAsync(device.Id, cancellationToken)
@@ -117,8 +117,24 @@ public sealed class CaptureSnapshotUseCase
             PinnedSpkiSha256 = profile.PinnedSpkiSha256,
         };
 
-        SnapshotCaptureResult captured = await _capture.CaptureAsync(target, cancellationToken)
-            .ConfigureAwait(false);
+        SnapshotCaptureResult captured;
+        try
+        {
+            captured = await _capture.CaptureAsync(target, cancellationToken).ConfigureAwait(false);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return ApplicationResults.Fail(ApplicationError.Failed(ex.Message));
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            return ApplicationResults.Fail(
+                ApplicationError.Dependency("Snapshot capture failed (sanitized)."));
+        }
 
         StoredSnapshot? existing = await _snapshots
             .FindCompletedBySnapshotHashAsync(device.Id, captured.SnapshotHash, cancellationToken)
@@ -131,7 +147,7 @@ public sealed class CaptureSnapshotUseCase
                 existing,
                 identical: true,
                 cancellationToken).ConfigureAwait(false);
-            return ApplicationResults.Ok(ViewMapper.ToView(existing));
+            return ApplicationResults.Ok(ViewMapper.ToView(existing, deduplicated: true));
         }
 
         StoredSnapshot stored = await _snapshots.PersistCompletedAsync(
@@ -152,7 +168,7 @@ public sealed class CaptureSnapshotUseCase
             identical: false,
             cancellationToken).ConfigureAwait(false);
 
-        return ApplicationResults.Ok(ViewMapper.ToView(stored));
+        return ApplicationResults.Ok(ViewMapper.ToView(stored, deduplicated: false));
     }
 
     private async Task AuditAsync(
