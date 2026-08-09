@@ -19,8 +19,8 @@ Working tree must stay clean after build/test.
 | Project | Role |
 |---------|------|
 | `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28, Desktop semantic diff viewer M1-29) |
-| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers) |
-| `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts (no live CHR required) |
+| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone vertical-slice acceptance M1-30 |
+| `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts + optional live CHR TLS gate (`MFC_CHR_STANDALONE_HOST`) |
 
 ## Living Specification — semantic diff (M1-24)
 
@@ -116,6 +116,25 @@ Initial Issue Set M1-29 AC → module → tests:
 | No local semantic recompute | Desktop calls CompareSnapshots only | `CompareCalls == 1` |
 
 Filter: `dotnet test --filter FullyQualifiedName~SnapshotDiff`.
+
+## Living Specification — standalone CHR vertical slice (M1-30)
+
+Initial Issue Set M1-30 AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| API-SSL trust path | connection profile → `RouterOsReadTarget` | `StandaloneVerticalSliceHashesDiffPersistAndApiSslTrust` |
+| Live CHR certificate | TLS probe (gated) | `LiveChrApiSslCertificateIsPresentAndTrustedByLabPolicy` |
+| Supported sections | `SnapshotSummary.sections` | expected section ids + Ok status |
+| Identical captures → same hashes | snapshot-hash dedupe | identical StartCapture |
+| Filter change → config hash + MODIFIED | CompareSnapshots | action accept→drop field diff |
+| Running change → observation only | hash compare + obs DiffEntry | InterfaceRunning toggle |
+| Persist after Controller restart | second host, same PG | GetSnapshotSummary after Stop/Start |
+| Desktop inventory/snapshot/diff | Shell wiring | `DesktopVerticalSliceWiringTests` |
+| No product write path | allowlist + lab script | `RegistryRejectsWrite…` + `provision-standalone.sh` |
+| Provisioning outside adapter | `testlab/chr/scripts/` | `StandaloneProvisioningScriptExistsOutsideProductAdapter` |
+
+Filter: `dotnet test --filter FullyQualifiedName~StandaloneVerticalSlice`.
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
 

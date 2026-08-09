@@ -38,5 +38,6 @@ Each topology directory contains `topology.json` with management/WAN addressing,
 2. Place it under `testlab/chr/private/` (gitignored).
 3. `cp manifest.example.json manifest.local.json` and set `imageSha256` / `imagePath`.
 4. Follow topology `reset` / `cleanup` procedures before and after runs.
+5. For standalone M1-30: run `scripts/provision-standalone.sh`, then set `MFC_CHR_STANDALONE_HOST`.
 
 See also [`docs/development/chr-lab.md`](../../docs/development/chr-lab.md).

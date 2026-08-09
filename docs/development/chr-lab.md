@@ -31,3 +31,10 @@
 ## Runner policy
 
 RouterOS integration workflow (when enabled) must target only an isolated self-hosted runner. Untrusted PR code must not run with production network access.
+
+## Standalone vertical-slice acceptance (M1-30)
+
+1. Provision with `testlab/chr/scripts/provision-standalone.sh` (outside `Mfc.RouterOs`).
+2. Export `MFC_CHR_STANDALONE_HOST` (optional `MFC_CHR_STANDALONE_PORT`, default 8729).
+3. Run live TLS gate: `dotnet test tests/Mfc.RouterOs.IntegrationTests --filter FullyQualifiedName~LiveChrApiSsl`.
+4. Always-on (no CHR image) path: `dotnet test tests/Mfc.IntegrationTests --filter FullyQualifiedName~StandaloneVerticalSlice` (Postgres Testcontainers).
