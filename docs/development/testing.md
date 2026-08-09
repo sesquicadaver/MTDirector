@@ -18,7 +18,7 @@ Working tree must stay clean after build/test.
 
 | Project | Role |
 |---------|------|
-| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27) |
+| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28) |
 | `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers) |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts (no live CHR required) |
 
@@ -81,6 +81,22 @@ Initial Issue Set M1-27 AC → module → tests:
 | GUI/state tests | unit (no Avalonia headless) | `InventoryTreeServiceTests` |
 
 Filter: `dotnet test --filter FullyQualifiedName~InventoryTree`.
+
+## Living Specification — desktop snapshot viewer (M1-28)
+
+Initial Issue Set M1-28 AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Sections + capture status | `SnapshotSummary.sections` / `ListSectionDescriptorsAsync` | host GetSnapshotSummary sections + `SnapshotSummarySectionsRoundTrip…` |
+| Config vs observations | `SnapshotViewerService.LoadSectionAsync` | `LoadDeviceLoadsSummarySectionsAndSeparatesDomains` |
+| Three hashes + schema version | summary header mapping | same unit test |
+| Unknown props technical-only | `ShowTechnicalView` / `IsTechnicalOnly` | `ExportIncludesTechnicalSectionWhenRequested` |
+| No credentials in copy/export | field filter + export | domain test strips `password` |
+| Virtualization / off-UI load | ListBox `VirtualizingStackPanel` + `Task.Run` | UI wiring + service loads on background |
+| Read-only viewer | no mutation RPCs from Desktop client | `ISnapshotViewerClient` surface |
+
+Filter: `dotnet test --filter FullyQualifiedName~SnapshotViewer`.
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
 

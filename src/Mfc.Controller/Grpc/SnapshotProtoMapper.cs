@@ -52,8 +52,32 @@ public static class SnapshotProtoMapper
             summary.CompletedAt = Timestamp.FromDateTimeOffset(completed);
         }
 
+        foreach (SnapshotSectionSummaryView section in view.Sections)
+        {
+            summary.Sections.Add(new SnapshotSectionSummary
+            {
+                SectionId = section.SectionId,
+                Status = ToProtoSectionStatus(section.Status),
+                Ordered = section.Ordered,
+                ConfigurationRecordCount = checked((uint)Math.Max(section.ConfigurationRecordCount, 0)),
+                ObservationRecordCount = checked((uint)Math.Max(section.ObservationRecordCount, 0)),
+                CapabilityRecordCount = checked((uint)Math.Max(section.CapabilityRecordCount, 0)),
+                CompatibilityRecordCount = checked((uint)Math.Max(section.CompatibilityRecordCount, 0)),
+            });
+        }
+
         return summary;
     }
+
+    private static SnapshotSectionCaptureStatus ToProtoSectionStatus(short status) => status switch
+    {
+        1 => SnapshotSectionCaptureStatus.Ok,
+        2 => SnapshotSectionCaptureStatus.Unsupported,
+        3 => SnapshotSectionCaptureStatus.NotApplicable,
+        4 => SnapshotSectionCaptureStatus.Failed,
+        5 => SnapshotSectionCaptureStatus.PartialError,
+        _ => SnapshotSectionCaptureStatus.Unspecified,
+    };
 
     public static SnapshotSectionPage ToProto(SnapshotSectionPageView view)
     {

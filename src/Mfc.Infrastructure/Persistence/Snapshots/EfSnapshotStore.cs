@@ -410,6 +410,30 @@ public sealed class EfSnapshotStore : ISnapshotStore
         return sections;
     }
 
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<StoredSnapshotSectionDescriptor>> ListSectionDescriptorsAsync(
+        SnapshotId id,
+        CancellationToken cancellationToken = default)
+    {
+        List<SnapshotCaptureSectionEntity> rows = await _db.SnapshotCaptureSections
+            .AsNoTracking()
+            .Where(s => s.CaptureId == id.Value)
+            .OrderBy(s => s.SectionId)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        return rows.Select(static row => new StoredSnapshotSectionDescriptor
+        {
+            SectionId = row.SectionId,
+            Status = row.Status,
+            Ordered = row.Ordered,
+            ConfigurationRecordCount = row.ConfigurationRecordCount,
+            ObservationRecordCount = row.ObservationRecordCount,
+            CapabilityRecordCount = row.CapabilityRecordCount,
+            CompatibilityRecordCount = row.CompatibilityRecordCount,
+        }).ToArray();
+    }
+
     private async Task TryAddParsedSectionAsync(
         List<CanonicalSection> sections,
         byte[]? payloadHash,

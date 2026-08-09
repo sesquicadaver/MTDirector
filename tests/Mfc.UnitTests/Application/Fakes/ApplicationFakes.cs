@@ -196,6 +196,9 @@ internal sealed class FakeSnapshotStore : ISnapshotStore
     /// <summary>Injected or persist-parsed canonical sections keyed by snapshot id (M1-24).</summary>
     public Dictionary<Guid, List<CanonicalSection>> SectionsBySnapshot { get; } = [];
 
+    /// <summary>Persisted section descriptors for GetSnapshotSummary (M1-28).</summary>
+    public Dictionary<Guid, List<StoredSnapshotSectionDescriptor>> SectionDescriptorsBySnapshot { get; } = [];
+
     public Task<StoredSnapshot?> GetAsync(SnapshotId id, CancellationToken cancellationToken = default)
         => Task.FromResult(_byId.TryGetValue(id.Value, out StoredSnapshot? s) ? s : null);
 
@@ -302,6 +305,16 @@ internal sealed class FakeSnapshotStore : ISnapshotStore
         _byId[stored.Metadata.Id.Value] = stored;
         _idempotency[(request.RequestedBy, request.IdempotencyKey)] = stored.Metadata.Id.Value;
         SectionsBySnapshot[stored.Metadata.Id.Value] = ParseSections(request.Capture);
+        SectionDescriptorsBySnapshot[stored.Metadata.Id.Value] = request.Capture.Sections
+            .Select(static s => new StoredSnapshotSectionDescriptor
+            {
+                SectionId = s.SectionId,
+                Status = s.Status,
+                Ordered = s.Ordered,
+                ConfigurationRecordCount = s.ConfigurationRecordCount,
+                ObservationRecordCount = s.ObservationRecordCount,
+            })
+            .ToList();
         return Task.FromResult(stored);
     }
 
@@ -320,6 +333,18 @@ internal sealed class FakeSnapshotStore : ISnapshotStore
         }
 
         return Task.FromResult<IReadOnlyList<CanonicalSection>>([]);
+    }
+
+    public Task<IReadOnlyList<StoredSnapshotSectionDescriptor>> ListSectionDescriptorsAsync(
+        SnapshotId id,
+        CancellationToken cancellationToken = default)
+    {
+        if (SectionDescriptorsBySnapshot.TryGetValue(id.Value, out List<StoredSnapshotSectionDescriptor>? rows))
+        {
+            return Task.FromResult<IReadOnlyList<StoredSnapshotSectionDescriptor>>(rows);
+        }
+
+        return Task.FromResult<IReadOnlyList<StoredSnapshotSectionDescriptor>>([]);
     }
 
     private static List<CanonicalSection> ParseSections(SnapshotCaptureResult capture)

@@ -118,6 +118,29 @@ public sealed class SnapshotView
 
     /// <summary>True when StartCapture reused an idempotent or identical completed capture.</summary>
     public bool Deduplicated { get; init; }
+
+    /// <summary>
+    /// Per-section capture status for GetSnapshotSummary (empty for ListCaptures items).
+    /// </summary>
+    public IReadOnlyList<SnapshotSectionSummaryView> Sections { get; init; } = [];
+}
+
+/// <summary>Section status row exposed on SnapshotSummary (M1-28).</summary>
+public sealed class SnapshotSectionSummaryView
+{
+    public required string SectionId { get; init; }
+
+    public required short Status { get; init; }
+
+    public required bool Ordered { get; init; }
+
+    public int ConfigurationRecordCount { get; init; }
+
+    public int ObservationRecordCount { get; init; }
+
+    public int CapabilityRecordCount { get; init; }
+
+    public int CompatibilityRecordCount { get; init; }
 }
 
 /// <summary>Paged canonical section records for Viewer (never raw unredacted payload).</summary>
