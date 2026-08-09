@@ -18,7 +18,7 @@ Working tree must stay clean after build/test.
 
 | Project | Role |
 |---------|------|
-| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28) |
+| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28, Desktop semantic diff viewer M1-29) |
 | `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers) |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts (no live CHR required) |
 
@@ -97,6 +97,25 @@ Initial Issue Set M1-28 AC → module → tests:
 | Read-only viewer | no mutation RPCs from Desktop client | `ISnapshotViewerClient` surface |
 
 Filter: `dotnet test --filter FullyQualifiedName~SnapshotViewer`.
+
+## Living Specification — desktop semantic diff viewer (M1-29)
+
+Initial Issue Set M1-29 AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Base/target selection | `SnapshotDiffViewModel` / `LoadCapturesAsync` | `CompareMapsServerEntriesWithoutLocalRecompute` |
+| Group by sections | `SnapshotDiffService` section groups | same |
+| ADDED/REMOVED/MODIFIED/MOVED/STATE_CHANGED | wire `DiffChange` → `ChangesText` | same |
+| Config vs observation | domain filter checkboxes + DomainText | same |
+| Explicit rule order | `order: before → after` | ordinal assertion |
+| Address-list entry level | server DiffEntry record_key | address-lists entry present |
+| No differences state | `IsNoDifferences` | `IdenticalEmptyDiffIsNoDifferences` |
+| Unknown props not masked | compatibility.unknown-properties kept | mapped in compare test |
+| Virtualized rows | ListBox `VirtualizingStackPanel` | MainWindow Diff tab |
+| No local semantic recompute | Desktop calls CompareSnapshots only | `CompareCalls == 1` |
+
+Filter: `dotnet test --filter FullyQualifiedName~SnapshotDiff`.
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
 

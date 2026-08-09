@@ -6,7 +6,7 @@ using Mfc.Desktop.Services;
 
 namespace Mfc.Desktop.ViewModels;
 
-/// <summary>Shell view-model: connection status, inventory tree, snapshot viewer, and commands. Network work stays off the UI thread.</summary>
+/// <summary>Shell view-model: connection, inventory, snapshot viewer, and semantic diff viewer.</summary>
 public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
 {
     private readonly IControllerConnectionService _connection;
@@ -16,12 +16,14 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
         IControllerConnectionService connection,
         DesktopOptions options,
         InventoryTreeViewModel inventory,
-        SnapshotViewerViewModel snapshot)
+        SnapshotViewerViewModel snapshot,
+        SnapshotDiffViewModel diff)
     {
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _options = options ?? throw new ArgumentNullException(nameof(options));
         Inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
         Snapshot = snapshot ?? throw new ArgumentNullException(nameof(snapshot));
+        Diff = diff ?? throw new ArgumentNullException(nameof(diff));
         _connection.StateChanged += OnConnectionStateChanged;
         SyncFromService();
     }
@@ -29,6 +31,8 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
     public InventoryTreeViewModel Inventory { get; }
 
     public SnapshotViewerViewModel Snapshot { get; }
+
+    public SnapshotDiffViewModel Diff { get; }
 
     public string ControllerEndpoint => _options.ControllerEndpoint;
 
@@ -126,6 +130,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         _connection.StateChanged -= OnConnectionStateChanged;
+        Diff.Dispose();
         Snapshot.Dispose();
         Inventory.Dispose();
         await _connection.DisposeAsync().ConfigureAwait(false);

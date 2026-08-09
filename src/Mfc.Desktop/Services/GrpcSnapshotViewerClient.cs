@@ -90,6 +90,41 @@ public sealed class GrpcSnapshotViewerClient : ISnapshotViewerClient
         return all;
     }
 
+    public async Task<DiffPage> CompareSnapshotsAsync(
+        Guid leftCaptureId,
+        Guid rightCaptureId,
+        CancellationToken cancellationToken = default)
+    {
+        SnapshotService.SnapshotServiceClient client = CreateClient();
+        Metadata headers = ActorHeaders();
+        DiffPage aggregate = new();
+        string pageToken = string.Empty;
+        do
+        {
+            DiffPage page = await client.CompareSnapshotsAsync(
+                    new CompareSnapshotsRequest
+                    {
+                        LeftCaptureId = DesktopProtoUuid.FromGuid(leftCaptureId),
+                        RightCaptureId = DesktopProtoUuid.FromGuid(rightCaptureId),
+                        Page = new PageRequest { PageSize = DefaultPageSize, PageToken = pageToken },
+                    },
+                    headers,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+            if (aggregate.Entries.Count == 0)
+            {
+                aggregate.Identical = page.Identical;
+                aggregate.Warnings.AddRange(page.Warnings);
+            }
+
+            aggregate.Entries.AddRange(page.Entries);
+            pageToken = page.NextPageToken ?? string.Empty;
+        }
+        while (!string.IsNullOrEmpty(pageToken));
+
+        return aggregate;
+    }
+
     private SnapshotService.SnapshotServiceClient CreateClient()
     {
         GrpcChannel? channel = _connection.Channel;

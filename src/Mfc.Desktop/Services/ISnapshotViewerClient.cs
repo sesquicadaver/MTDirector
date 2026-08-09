@@ -19,4 +19,10 @@ public interface ISnapshotViewerClient
         string sectionId,
         DiffDomain domain,
         CancellationToken cancellationToken = default);
+
+    /// <summary>Fetches all CompareSnapshots pages (server-side semantic diff; no local recompute).</summary>
+    Task<DiffPage> CompareSnapshotsAsync(
+        Guid leftCaptureId,
+        Guid rightCaptureId,
+        CancellationToken cancellationToken = default);
 }
