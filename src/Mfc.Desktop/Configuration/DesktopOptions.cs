@@ -8,6 +8,9 @@ public sealed class DesktopOptions
     /// <summary>Controller gRPC base address, e.g. https://127.0.0.1:5101</summary>
     public string ControllerEndpoint { get; init; } = "https://127.0.0.1:5101";
 
+    /// <summary>Actor identity sent as <c>x-mfc-actor</c> on inventory RPCs.</summary>
+    public string Actor { get; init; } = "desktop";
+
     /// <summary>Per-attempt health check timeout.</summary>
     public int HealthCheckTimeoutSeconds { get; init; } = 5;
 

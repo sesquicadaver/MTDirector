@@ -23,7 +23,10 @@ public sealed class App : Application, IAsyncDisposable
     {
         DesktopOptions options = LoadOptions();
         ControllerConnectionService connection = new(options);
-        _shell = new ShellViewModel(connection, options);
+        GrpcInventoryTreeClient inventoryClient = new(connection, options);
+        InventoryTreeService inventoryTree = new(inventoryClient);
+        InventoryTreeViewModel inventoryVm = new(inventoryTree, connection);
+        _shell = new ShellViewModel(connection, options, inventoryVm);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

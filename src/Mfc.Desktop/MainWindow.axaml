@@ -4,14 +4,16 @@
         x:Class="Mfc.Desktop.MainWindow"
         x:DataType="vm:ShellViewModel"
         Title="MikroTik Firewall Controller"
-        Width="720"
-        Height="420">
-  <DockPanel Margin="24">
-    <StackPanel DockPanel.Dock="Top" Spacing="12">
+        Width="1100"
+        Height="720"
+        MinWidth="800"
+        MinHeight="520">
+  <DockPanel Margin="20">
+    <StackPanel DockPanel.Dock="Top" Spacing="10" Margin="0,0,0,16">
       <TextBlock FontSize="22" FontWeight="SemiBold" Text="MTDirector" />
-      <TextBlock Opacity="0.8" Text="Controller connection shell" />
+      <TextBlock Opacity="0.8" Text="Controller connection + inventory tree" />
       <TextBlock Text="{Binding ControllerEndpoint, StringFormat=Endpoint: {0}}" />
-      <TextBlock FontSize="18" Text="{Binding StatusText, StringFormat=Status: {0}}" FontWeight="Bold" />
+      <TextBlock FontSize="16" Text="{Binding StatusText, StringFormat=Status: {0}}" FontWeight="Bold" />
       <TextBlock Text="{Binding ErrorText}"
                  TextWrapping="Wrap"
                  IsVisible="{Binding HasError}"
@@ -21,5 +23,82 @@
         <Button Content="Disconnect" Command="{Binding DisconnectCommand}" MinWidth="120" />
       </StackPanel>
     </StackPanel>
+
+    <Grid ColumnDefinitions="2*,16,3*" RowDefinitions="Auto,*,Auto">
+      <DockPanel Grid.Column="0" Grid.Row="0" Margin="0,0,0,8">
+        <StackPanel Orientation="Horizontal" Spacing="10" DockPanel.Dock="Right">
+          <Border Background="#E8EEF5"
+                  CornerRadius="4"
+                  Padding="8,2"
+                  IsVisible="{Binding Inventory.IsCached}">
+            <TextBlock Text="{Binding Inventory.CachedBadgeText}" FontWeight="SemiBold" />
+          </Border>
+          <Button Content="Refresh"
+                  Command="{Binding Inventory.RefreshCommand}"
+                  MinWidth="100" />
+        </StackPanel>
+        <TextBlock FontSize="16" FontWeight="SemiBold" Text="Inventory" VerticalAlignment="Center" />
+      </DockPanel>
+
+      <Border Grid.Column="0"
+              Grid.Row="1"
+              BorderBrush="#D0D5DD"
+              BorderThickness="1"
+              Padding="4">
+        <TreeView ItemsSource="{Binding Inventory.Roots}"
+                  SelectedItem="{Binding Inventory.SelectedNode, Mode=TwoWay}">
+          <TreeView.ItemTemplate>
+            <TreeDataTemplate DataType="vm:InventoryNodeViewModel"
+                              ItemsSource="{Binding Children}">
+              <StackPanel Orientation="Horizontal" Spacing="8" ToolTip.Tip="{Binding DetailSummary}">
+                <TextBlock Text="{Binding KindLabel}" Opacity="0.65" Width="52" />
+                <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Subtitle}" Opacity="0.75" />
+              </StackPanel>
+            </TreeDataTemplate>
+          </TreeView.ItemTemplate>
+        </TreeView>
+      </Border>
+
+      <TextBlock Grid.Column="0"
+                 Grid.Row="2"
+                 Margin="0,8,0,0"
+                 TextWrapping="Wrap"
+                 Foreground="#B00020"
+                 Text="{Binding Inventory.ErrorText}"
+                 IsVisible="{Binding Inventory.HasError}" />
+
+      <TextBlock Grid.Column="2"
+                 Grid.Row="0"
+                 FontSize="16"
+                 FontWeight="SemiBold"
+                 Text="Details"
+                 Margin="0,0,0,8" />
+
+      <Border Grid.Column="2"
+              Grid.Row="1"
+              Grid.RowSpan="2"
+              BorderBrush="#D0D5DD"
+              BorderThickness="1"
+              Padding="12">
+        <StackPanel Spacing="8" IsVisible="{Binding Inventory.HasSelection}">
+          <TextBlock FontSize="18" FontWeight="SemiBold" Text="{Binding Inventory.SelectedNode.DisplayName}" />
+          <TextBlock Text="{Binding Inventory.SelectedNode.KindLabel, StringFormat=Kind: {0}}" />
+          <TextBlock Text="{Binding Inventory.SelectedNode.StatusText, StringFormat=Status: {0}}" />
+          <TextBlock Text="{Binding Inventory.SelectedNode.NodeKindText, StringFormat=Node kind: {0}}" />
+          <TextBlock Text="{Binding Inventory.SelectedNode.UplinkModeText, StringFormat=Uplink: {0}}" />
+          <TextBlock Text="{Binding Inventory.SelectedNode.SupportStateText, StringFormat=Support: {0}}" />
+          <TextBlock Text="{Binding Inventory.SelectedNode.ReachabilityText, StringFormat=Reachability: {0}}" />
+          <TextBlock Text="{Binding Inventory.SelectedNode.RouterOsVersionText, StringFormat=RouterOS: {0}}" />
+          <TextBlock Text="{Binding Inventory.SelectedNode.ModelText, StringFormat=Model: {0}}" />
+          <TextBlock Text="{Binding Inventory.SelectedNode.VrrpRolesText, StringFormat=VRRP roles: {0}}" />
+          <TextBlock Text="{Binding Inventory.SelectedNode.LastSnapshotText, StringFormat=Last snapshot: {0}}" />
+          <TextBlock Text="{Binding Inventory.SelectedNode.DetailSummary}"
+                     TextWrapping="Wrap"
+                     Opacity="0.8"
+                     Margin="0,8,0,0" />
+        </StackPanel>
+      </Border>
+    </Grid>
   </DockPanel>
 </Window>

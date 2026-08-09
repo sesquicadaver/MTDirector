@@ -3,7 +3,7 @@
 **Дата оновлення:** 9 серпня 2026  
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач  
 **Продукт:** MikroTik Firewall Controller (MTDirector)  
-**Базовий коміт аудиту:** M1-26 (snapshot/diff gRPC, Vertical Slice §9.3) — черга зсунута на M1-27
+**Базовий коміт аудиту:** M1-27 (Desktop inventory tree) — черга зсунута на M1-28
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -41,13 +41,13 @@
 | Область | Closed | Open | % |
 |---------|-------:|-----:|--:|
 | M0 Bootstrap | 10 | 0 | 100% |
-| M1 Read-only slice | 26 | 8 | 76% |
+| M1 Read-only slice | 27 | 7 | 79% |
 | N1 Packet-path weave | 3 | 4 | 43% |
 | M2–M6 (решта MVP) | 0 | 58 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **39** | **97** | **~29% issues** |
+| **Разом** | **40** | **96** | **~29% issues** |
 
-MVP issues (109) = 39 done + **70 remaining** до MVP CLOSED.  
+MVP issues (109) = 40 done + **69 remaining** до MVP CLOSED.  
 Post-MVP M7 = **27** після MVP.
 
 ### 2.2 DONE (не в черзі)
@@ -84,19 +84,20 @@ Post-MVP M7 = **27** після MVP.
 | M1-24 | #34 | Deterministic semantic snapshot diff (`SemanticDiffEngine`, CompareSnapshotsUseCase) |
 | M1-25 | #35 | Inventory/discovery gRPC (`InventoryService` Vertical Slice §9.2; Issue Set `DiscoverDevice` → `ValidateDeviceConnection`; `GetDiscoveryStatus` deferred to M1-26 `StartCapture`) |
 | M1-26 | #36 | Snapshot/diff gRPC (`SnapshotService` VS §9.3; Issue Set `CaptureSnapshot`→`StartCapture`, `WatchSnapshotCapture`→`WatchCapture`, `ListSnapshots`→`ListCaptures`; DiffEntry = Canonical Spec §30) |
+| M1-27 | #37 | Desktop inventory tree (Site→Node→Device); `ListNodes` RPC; optional Device observation fields; single-flight cached refresh |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
 | `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors; default `ProbeOnlyRouterOsReadPort` + `NotConfiguredSnapshotCapturePort` |
-| `Mfc.Contracts` | `mfc.v1` inventory + snapshot/diff protos (`SnapshotService`) |
-| `Mfc.Application` | inventory CRUD + ValidateDeviceConnection/`DiscoverDeviceUseCase`; snapshot capture+persist+semantic compare + section paging |
+| `Mfc.Contracts` | `mfc.v1` inventory (+ `ListNodes` / Device observation fields) + snapshot/diff protos |
+| `Mfc.Application` | inventory CRUD + `ListNodesUseCase` + ValidateDeviceConnection/`DiscoverDeviceUseCase`; snapshot capture+persist+semantic compare + section paging |
 | `Mfc.Controller` | health + `InventoryService` + `SnapshotService` gRPC (`CaptureProgressHub`) |
-| `Mfc.Desktop` | connection shell; **немає** inventory/snapshot/diff UI |
+| `Mfc.Desktop` | connection shell + inventory tree; **немає** snapshot/diff UI |
 | Persistence | inventory EF stores + idempotency_records + snapshot CAS — наступні issues |
 
-**NEXT = черга #26:** [M1-27](https://github.com/sesquicadaver/MTDirector/issues/37).
+**NEXT = черга #27:** [M1-28](https://github.com/sesquicadaver/MTDirector/issues/38).
 
 ---
 
@@ -157,7 +158,7 @@ Post-MVP M7 = **27** після MVP.
 |--:|----|-------:|--------|
 | ~~24~~ | ~~M1-25~~ | ~~#35~~ | ~~Add inventory and discovery gRPC services~~ → §2.2 DONE (VS §9.2 names; Issue Set DiscoverDevice→ValidateDeviceConnection) |
 | ~~25~~ | ~~M1-26~~ | ~~#36~~ | ~~Add snapshot and diff gRPC services~~ → §2.2 DONE (VS §9.3; Issue Set CaptureSnapshot→StartCapture, WatchSnapshotCapture→WatchCapture, ListSnapshots→ListCaptures; Diff = Canonical Spec §30) |
-| 26 | M1-27 | #37 | Add desktop inventory tree |
+| ~~26~~ | ~~M1-27~~ | ~~#37~~ | ~~Add desktop inventory tree~~ → §2.2 DONE (`ListNodes` + Avalonia Site→Node→Device tree; cached single-flight refresh) |
 | 27 | M1-28 | #38 | Add desktop snapshot viewer |
 | 28 | M1-29 | #39 | Add desktop semantic diff viewer |
 | 29 | M1-30 | #40 | Add standalone CHR vertical-slice acceptance test |
@@ -350,7 +351,7 @@ Post-MVP M7 = **27** після MVP.
 | Packet-path blockers | N1-04 | analysis blockers from path class | TODO |
 | Persist canonical snapshots | M1-23 | PG sections; payload dedupe; pagination; immutability | **DONE** |
 | Semantic snapshot diff | M1-24 | `SemanticDiffEngine` unit AC#1–13; CompareSnapshotsUseCase | **DONE** |
-| gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | M1-25/M1-26 DONE; M1-27…29 TODO |
+| gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | M1-25…27 DONE; M1-28…29 TODO |
 | M1 acceptance gate | M1-30…34 | CHR suites | TODO |
 | Policy compose + analysis | M2 | analysis unit; SoD | TODO |
 | Deterministic filter artifact | M3 | golden artifacts | TODO |
@@ -380,7 +381,7 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **чергу #26** → [M1-27 / issue #37](https://github.com/sesquicadaver/MTDirector/issues/37).  
+1. Відкрити **чергу #27** → [M1-28 / issue #38](https://github.com/sesquicadaver/MTDirector/issues/38).  
 2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.  
 3. Не стартувати M2, доки не закрито **M1-34** (черга #33).  
 4. Не стартувати M4, доки не закрито **M5-10** (черга #71).  

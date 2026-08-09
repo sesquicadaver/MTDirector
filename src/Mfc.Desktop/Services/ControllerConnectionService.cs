@@ -31,6 +31,10 @@ public sealed class ControllerConnectionService : IControllerConnectionService
 
     public string? LastError => _lastError;
 
+    /// <inheritdoc />
+    public GrpcChannel? Channel =>
+        _state == ControllerConnectionState.Connected ? _channel : null;
+
     public event EventHandler? StateChanged;
 
     public async Task ConnectAsync(CancellationToken cancellationToken = default)

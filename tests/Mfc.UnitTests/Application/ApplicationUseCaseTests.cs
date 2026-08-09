@@ -159,17 +159,75 @@ public sealed class InventoryUseCaseTests
             Role = DeviceRole.Router,
         })).Value!;
 
-        GetNodeUseCase getNode = new(auth, nodes, devices);
+        GetNodeUseCase getNode = new(auth, nodes, devices, new FakeSnapshotStore());
         ApplicationResult<NodeDetailsView> details = await getNode.ExecuteAsync(
             new GetNodeQuery { Actor = "a", NodeId = node.Id });
         Assert.True(details.IsSuccess);
         Assert.Equal(node.Id, details.Value!.Node.Id);
         Assert.Single(details.Value.Devices);
         Assert.Equal(device.Id, details.Value.Devices[0].Id);
+        Assert.Equal("Unknown", details.Value.Devices[0].Reachability);
+        Assert.Null(details.Value.Devices[0].RouterOsVersion);
+        Assert.Null(details.Value.Devices[0].Model);
+        Assert.Empty(details.Value.Devices[0].VrrpRoleLabels);
 
         ApplicationResult<NodeDetailsView> missing = await getNode.ExecuteAsync(
             new GetNodeQuery { Actor = "a", NodeId = Guid.NewGuid() });
         Assert.Equal("not_found", missing.Error!.Code);
+    }
+
+    [Fact]
+    public async Task ListNodesPaginatesBySiteAndRequiresReadPermission()
+    {
+        FakeAuthorizationBoundary auth = new();
+        FakeSiteStore sites = new();
+        FakeNodeStore nodes = new();
+        SiteView site = (await CreateSite(auth, sites).ExecuteAsync(new CreateSiteCommand
+        {
+            Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
+            Code = "LN01",
+            Name = "ListNodes",
+        })).Value!;
+        for (int i = 0; i < 3; i++)
+        {
+            Assert.True((await CreateNode(auth, sites, nodes).ExecuteAsync(new CreateNodeCommand
+            {
+                Actor = "admin",
+                IdempotencyKey = Guid.NewGuid(),
+                SiteId = site.Id,
+                Name = $"n{i:00}",
+                DeclaredKind = NodeKind.Router,
+                DeclaredUplinkMode = DeclaredUplinkMode.One,
+            })).IsSuccess);
+        }
+
+        ListNodesUseCase list = new(auth, sites, nodes);
+        ApplicationResult<NodeListPageView> page1 = await list.ExecuteAsync(
+            new ListNodesQuery { Actor = "admin", SiteId = site.Id, Limit = 2 });
+        Assert.True(page1.IsSuccess);
+        Assert.Equal(2, page1.Value!.Items.Count);
+        Assert.False(string.IsNullOrWhiteSpace(page1.Value.NextCursor));
+
+        ApplicationResult<NodeListPageView> page2 = await list.ExecuteAsync(
+            new ListNodesQuery
+            {
+                Actor = "admin",
+                SiteId = site.Id,
+                Limit = 2,
+                Cursor = page1.Value.NextCursor,
+            });
+        Assert.True(page2.IsSuccess);
+        Assert.Single(page2.Value!.Items);
+
+        ApplicationResult<NodeListPageView> missingSite = await list.ExecuteAsync(
+            new ListNodesQuery { Actor = "admin", SiteId = Guid.NewGuid(), Limit = 10 });
+        Assert.Equal("not_found", missingSite.Error!.Code);
+
+        auth.DeniedPermissions.Add(ApplicationPermissions.InventoryRead);
+        ApplicationResult<NodeListPageView> forbidden = await list.ExecuteAsync(
+            new ListNodesQuery { Actor = "guest", SiteId = site.Id, Limit = 10 });
+        Assert.Equal("forbidden", forbidden.Error!.Code);
     }
 
     [Fact]

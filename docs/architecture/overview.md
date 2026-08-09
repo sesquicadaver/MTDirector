@@ -46,7 +46,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Semantic snapshot diff | Done (M1-24) | `src/Mfc.Domain/Diff/`, `CompareSnapshotsUseCase`, `LoadCanonicalSectionsAsync` |
 | Inventory/discovery gRPC | Done (M1-25) | `Protos/mfc/v1/inventory.proto`, `InventoryGrpcService` (VS §9.2; ValidateDeviceConnection ← DiscoverDeviceUseCase) |
 | Snapshot/diff gRPC | Done (M1-26) | `Protos/mfc/v1/snapshots.proto`, `SnapshotGrpcService` (VS §9.3; DiffEntry = Canonical Spec §30; Issue Set CaptureSnapshot→StartCapture) |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M1-27 (#37) |
+| Desktop inventory tree | Done (M1-27) | Avalonia Site→Node→Device tree; `ListNodes` RPC; Contracts-only Desktop client; cached-on-error refresh |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M1-28 (#38) |
 
 ## ADRs
 
