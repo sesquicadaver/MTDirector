@@ -50,7 +50,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Desktop snapshot viewer | Done (M1-28) | Read-only Avalonia viewer; `SnapshotSummary.sections` statuses; config/obs split; sanitized export |
 | Desktop semantic diff viewer | Done (M1-29) | Avalonia CompareSnapshots UI; section-grouped DiffEntry rows; no local recompute |
 | Standalone CHR acceptance | Done (M1-30) | In-process vertical-slice suite + live CHR TLS gate + lab provision script |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M1-31 (#41) |
+| Multi-WAN CHR acceptance | Done (M1-31) | Failover/balanced routing+NAT+mangle slice; config≠obs route diffs; lab provision |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M1-32 (#42) |
 
 ## ADRs
 

@@ -1,3 +1,16 @@
-# Synthetic multi-WAN balanced fixture placeholder.
-# WAN1 10.255.31.0/30; WAN2 10.255.32.0/30.
+# Synthetic multi-WAN balanced fixture — M1-31
+# WAN1 10.255.31.0/30; WAN2 10.255.32.0/30 (both balanced).
+# Applied via testlab/chr/scripts/provision-multi-wan.sh balanced (outside product adapter).
+#
+# /system identity set name=chr-multi-wan-balanced
+# /ip address add address=10.255.30.10/24 interface=ether1
+# /routing table add name=wan1 fib
+# /routing table add name=wan2 fib
+# /ip route add dst-address=0.0.0.0/0 gateway=10.255.31.1 routing-table=wan1 distance=1
+# /ip route add dst-address=0.0.0.0/0 gateway=10.255.32.1 routing-table=wan2 distance=1
+# /ip firewall nat add chain=srcnat action=masquerade out-interface=wan1
+# /ip firewall nat add chain=srcnat action=masquerade out-interface=wan2
+# /ip firewall mangle add chain=prerouting action=mark-routing new-routing-mark=wan1 passthrough=yes
+# /ip firewall mangle add chain=prerouting action=mark-routing new-routing-mark=wan2 passthrough=yes
+# /ip settings set rp-filter=strict
 # No secrets.

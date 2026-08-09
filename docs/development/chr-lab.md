@@ -38,3 +38,9 @@ RouterOS integration workflow (when enabled) must target only an isolated self-h
 2. Export `MFC_CHR_STANDALONE_HOST` (optional `MFC_CHR_STANDALONE_PORT`, default 8729).
 3. Run live TLS gate: `dotnet test tests/Mfc.RouterOs.IntegrationTests --filter FullyQualifiedName~LiveChrApiSsl`.
 4. Always-on (no CHR image) path: `dotnet test tests/Mfc.IntegrationTests --filter FullyQualifiedName~StandaloneVerticalSlice` (Postgres Testcontainers).
+
+## Multi-WAN vertical-slice acceptance (M1-31)
+
+1. Provision with `testlab/chr/scripts/provision-multi-wan.sh failover|balanced`.
+2. Optional live hosts: `MFC_CHR_MULTIWAN_FAILOVER_HOST` / `MFC_CHR_MULTIWAN_BALANCED_HOST`.
+3. Always-on path: `dotnet test tests/Mfc.IntegrationTests --filter FullyQualifiedName~MultiWan`.
