@@ -51,7 +51,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Desktop semantic diff viewer | Done (M1-29) | Avalonia CompareSnapshots UI; section-grouped DiffEntry rows; no local recompute |
 | Standalone CHR acceptance | Done (M1-30) | In-process vertical-slice suite + live CHR TLS gate + lab provision script |
 | Multi-WAN CHR acceptance | Done (M1-31) | Failover/balanced routing+NAT+mangle slice; config≠obs route diffs; lab provision |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M1-32 (#42) |
+| VRRP CHR acceptance | Done (M1-32) | Active/passive + split-master; per-VRID roles; role≠config hash; topology blockers; lab provision |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M1-33 (#43) |
 
 ## ADRs
 

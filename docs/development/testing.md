@@ -19,7 +19,7 @@ Working tree must stay clean after build/test.
 | Project | Role |
 |---------|------|
 | `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28, Desktop semantic diff viewer M1-29) |
-| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN vertical-slice acceptance M1-30/M1-31 |
+| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN/VRRP vertical-slice acceptance M1-30/M1-31/M1-32 |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts + optional live CHR TLS gate (`MFC_CHR_STANDALONE_HOST`) |
 
 ## Living Specification — semantic diff (M1-24)
@@ -153,6 +153,25 @@ Initial Issue Set M1-31 AC → module → tests:
 | Provision outside adapter | `provision-multi-wan.sh` | skeleton script test |
 
 Filter: `dotnet test --filter FullyQualifiedName~MultiWan`.
+
+## Living Specification — VRRP CHR vertical slice (M1-32)
+
+Initial Issue Set M1-32 AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Connect per physical member | RegisterDevice hosts + capture target | host assertions on `LastTarget` |
+| VRRP groups + per-VRID roles | `ha.vrrp` config/obs sections | `AssertVrrpGroupsAndRolesAsync` |
+| Active/passive classification | topology findings + `NodeTopologyValidator` | valid one-master pair |
+| Split-master ≠ global master | `VRRP_SPLIT_MASTER` + `global-master=false` | split-master capture + validator |
+| Role switch → obs hash only | StartCapture + CompareSnapshots | config stable / obs changed |
+| Version mismatch blocker | `NodeTopologyValidator` | `VRRP_VERSION_MISMATCH` |
+| Unreachable member not masked | missing facts | `FACTS_DEVICE_UNKNOWN` |
+| Per-member snapshots + node view | GetNode / ListNodes | two devices, distinct capture ids |
+| No VRRP writes | SnapshotService surface | `SnapshotServiceHasNoVrrpMutationRpcs` |
+| Provision outside adapter | `provision-vrrp.sh` | `VrrpTopologiesDeclareDistinctMembers…` |
+
+Filter: `dotnet test --filter FullyQualifiedName~VrrpVerticalSlice`.
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
 

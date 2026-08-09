@@ -1,3 +1,10 @@
-# Synthetic VRRP split-master fixture placeholder.
+# Synthetic VRRP split-master fixture — M1-32
 # Members 10.255.50.10/11, VIP 10.255.50.20, partitioned WANs.
+# Applied via testlab/chr/scripts/provision-vrrp.sh split-master (outside product adapter).
+#
+# /system identity set name=chr-vrrp-split-master-a
+# /ip address add address=10.255.50.10/24 interface=ether1
+# /interface vrrp add name=vrrp-10 interface=ether1 vrid=10 priority=200 version=3
+# /ip address add address=10.255.50.20/24 interface=vrrp-10
+# Both members report master=true under lab partition (dual-master).
 # No secrets.
