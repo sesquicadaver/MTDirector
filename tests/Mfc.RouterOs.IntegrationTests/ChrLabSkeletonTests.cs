@@ -134,4 +134,35 @@ public sealed class ChrLabSkeletonTests
         Assert.Contains("failover", text, StringComparison.Ordinal);
         Assert.Contains("balanced", text, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void VrrpTopologiesDeclareDistinctMembersAndProvisionScript()
+    {
+        string active = Path.Combine(RepoRoot, "testlab", "chr", "topologies", "vrrp-active-passive", "topology.json");
+        string split = Path.Combine(RepoRoot, "testlab", "chr", "topologies", "vrrp-split-master", "topology.json");
+        using (JsonDocument doc = JsonDocument.Parse(File.ReadAllText(active)))
+        {
+            JsonElement addresses = doc.RootElement.GetProperty("management").GetProperty("deviceAddresses");
+            Assert.Equal(2, addresses.GetArrayLength());
+            Assert.Equal("10.255.40.10", addresses[0].GetString());
+            Assert.Equal("10.255.40.11", addresses[1].GetString());
+            Assert.Equal("10.255.40.20", doc.RootElement.GetProperty("management").GetProperty("virtualAddress").GetString());
+        }
+
+        using (JsonDocument doc = JsonDocument.Parse(File.ReadAllText(split)))
+        {
+            JsonElement addresses = doc.RootElement.GetProperty("management").GetProperty("deviceAddresses");
+            Assert.Equal(2, addresses.GetArrayLength());
+            Assert.Equal("10.255.50.10", addresses[0].GetString());
+            Assert.Equal("10.255.50.11", addresses[1].GetString());
+            Assert.Equal(2, doc.RootElement.GetProperty("wanSimulators").GetArrayLength());
+        }
+
+        string script = Path.Combine(RepoRoot, "testlab", "chr", "scripts", "provision-vrrp.sh");
+        Assert.True(File.Exists(script), "M1-32 requires VRRP provisioning outside Mfc.RouterOs.");
+        string text = File.ReadAllText(script);
+        Assert.Contains("OUTSIDE Mfc.RouterOs", text, StringComparison.Ordinal);
+        Assert.Contains("active-passive", text, StringComparison.Ordinal);
+        Assert.Contains("split-master", text, StringComparison.Ordinal);
+    }
 }

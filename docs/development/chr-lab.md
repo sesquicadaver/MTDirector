@@ -44,3 +44,9 @@ RouterOS integration workflow (when enabled) must target only an isolated self-h
 1. Provision with `testlab/chr/scripts/provision-multi-wan.sh failover|balanced`.
 2. Optional live hosts: `MFC_CHR_MULTIWAN_FAILOVER_HOST` / `MFC_CHR_MULTIWAN_BALANCED_HOST`.
 3. Always-on path: `dotnet test tests/Mfc.IntegrationTests --filter FullyQualifiedName~MultiWan`.
+
+## VRRP vertical-slice acceptance (M1-32)
+
+1. Provision with `testlab/chr/scripts/provision-vrrp.sh active-passive|split-master`.
+2. Optional live hosts: `MFC_CHR_VRRP_ACTIVE_PASSIVE_HOST` / `MFC_CHR_VRRP_SPLIT_MASTER_HOST`.
+3. Always-on path: `dotnet test tests/Mfc.IntegrationTests --filter FullyQualifiedName~VrrpVerticalSlice`.
