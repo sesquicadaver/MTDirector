@@ -19,7 +19,7 @@ Working tree must stay clean after build/test.
 | Project | Role |
 |---------|------|
 | `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28, Desktop semantic diff viewer M1-29) |
-| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone vertical-slice acceptance M1-30 |
+| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN vertical-slice acceptance M1-30/M1-31 |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts + optional live CHR TLS gate (`MFC_CHR_STANDALONE_HOST`) |
 
 ## Living Specification — semantic diff (M1-24)
@@ -135,6 +135,24 @@ Initial Issue Set M1-30 AC → module → tests:
 | Provisioning outside adapter | `testlab/chr/scripts/` | `StandaloneProvisioningScriptExistsOutsideProductAdapter` |
 
 Filter: `dotnet test --filter FullyQualifiedName~StandaloneVerticalSlice`.
+
+## Living Specification — multi-WAN CHR vertical slice (M1-31)
+
+Initial Issue Set M1-31 AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Topology failover/balanced | topology.json + capture mode | `MultiWanTopologiesDeclareDistinctUplinkRoles…` + host test |
+| Routing tables/rules/NAT/mangle | section ids on summary | `AssertExpectedSections` |
+| Primary/backup not mixed | `uplink-role` on tables | `AssertUplinksNotMixedAsync` |
+| Active-state ≠ config hash | default-state observation | active toggle assertions |
+| Static route → config hash | static-routes change | gateway change assertions |
+| Strict rp-filter finding | ipv4.settings + topology.validation | `AssertStrictRpFilterFindingAsync` |
+| Config vs operational diffs | CompareSnapshots domains | routeDiff entries |
+| No WAN/routing writes | SnapshotService surface | `SnapshotServiceHasNoRoutingOrWanMutationRpcs` |
+| Provision outside adapter | `provision-multi-wan.sh` | skeleton script test |
+
+Filter: `dotnet test --filter FullyQualifiedName~MultiWan`.
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
 

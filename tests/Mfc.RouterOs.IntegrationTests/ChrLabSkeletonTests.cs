@@ -105,4 +105,33 @@ public sealed class ChrLabSkeletonTests
         Assert.Contains("OUTSIDE Mfc.RouterOs", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Mfc.RouterOs", Path.GetDirectoryName(script)!, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void MultiWanTopologiesDeclareDistinctUplinkRolesAndProvisionScript()
+    {
+        string failover = Path.Combine(RepoRoot, "testlab", "chr", "topologies", "multi-wan-failover", "topology.json");
+        string balanced = Path.Combine(RepoRoot, "testlab", "chr", "topologies", "multi-wan-balanced", "topology.json");
+        using (JsonDocument doc = JsonDocument.Parse(File.ReadAllText(failover)))
+        {
+            JsonElement wans = doc.RootElement.GetProperty("wanSimulators");
+            Assert.Equal(2, wans.GetArrayLength());
+            Assert.Equal("primary", wans[0].GetProperty("role").GetString());
+            Assert.Equal("secondary", wans[1].GetProperty("role").GetString());
+        }
+
+        using (JsonDocument doc = JsonDocument.Parse(File.ReadAllText(balanced)))
+        {
+            JsonElement wans = doc.RootElement.GetProperty("wanSimulators");
+            Assert.Equal(2, wans.GetArrayLength());
+            Assert.Equal("balanced", wans[0].GetProperty("role").GetString());
+            Assert.Equal("balanced", wans[1].GetProperty("role").GetString());
+        }
+
+        string script = Path.Combine(RepoRoot, "testlab", "chr", "scripts", "provision-multi-wan.sh");
+        Assert.True(File.Exists(script), "M1-31 requires multi-WAN provisioning outside Mfc.RouterOs.");
+        string text = File.ReadAllText(script);
+        Assert.Contains("OUTSIDE Mfc.RouterOs", text, StringComparison.Ordinal);
+        Assert.Contains("failover", text, StringComparison.Ordinal);
+        Assert.Contains("balanced", text, StringComparison.Ordinal);
+    }
 }
