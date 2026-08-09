@@ -98,6 +98,16 @@ public sealed class InventoryGrpcHostTests
                 headers,
                 deadline: Deadline());
 
+            ListNodesResponse listedNodes = await client.ListNodesAsync(
+                new ListNodesRequest
+                {
+                    SiteId = site.Id,
+                    Page = new PageRequest { PageSize = 50 },
+                },
+                headers,
+                deadline: Deadline());
+            Assert.Contains(listedNodes.Nodes, n => n.Id.Equals(node.Id));
+
             Device device = await client.RegisterDeviceAsync(
                 new RegisterDeviceRequest
                 {
@@ -118,6 +128,11 @@ public sealed class InventoryGrpcHostTests
             Assert.Equal(node.Id, details.Node.Id);
             Assert.Single(details.Devices);
             Assert.Equal(device.Id, details.Devices[0].Id);
+            Assert.Equal("Unknown", details.Devices[0].Reachability);
+            Assert.False(details.Devices[0].HasRouterosVersion);
+            Assert.False(details.Devices[0].HasModel);
+            Assert.Empty(details.Devices[0].VrrpRoleLabels);
+            Assert.Null(details.Devices[0].LastSnapshotAt);
 
             byte[] password = Encoding.UTF8.GetBytes("super-secret-password");
             DeviceConnectionSummary summary = await client.UpdateDeviceConnectionAsync(

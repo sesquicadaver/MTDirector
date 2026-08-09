@@ -18,8 +18,8 @@ Working tree must stay clean after build/test.
 
 | Project | Role |
 |---------|------|
-| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26) |
-| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers) |
+| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27) |
+| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers) |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts (no live CHR required) |
 
 ## Living Specification — semantic diff (M1-24)
@@ -58,9 +58,29 @@ Vertical Slice §9.2 / Initial Issue Set M1-25 AC → module → tests (Issue Sp
 | Concurrent probe coalesce | `ValidateDeviceConnectionCoordinator` | concurrent Validate in host test |
 | Auth before use case | `IAuthorizationBoundary` | `InventoryMutationsAreForbiddenWithoutPermission` |
 | Pagination | `ListSitesUseCase` | `ListSitesPaginatesAndRequiresReadPermission` |
+| ListNodes pagination (M1-27) | `ListNodesUseCase` | `ListNodesPaginatesBySiteAndRequiresReadPermission` + host ListNodes |
 | Contract round-trip | `Uuid` / `Site` | `InventoryProtoContractTests` |
 
 Filter: `dotnet test --filter FullyQualifiedName~Inventory`.
+
+## Living Specification — desktop inventory tree (M1-27)
+
+Initial Issue Set M1-27 AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Tree uses server data | `InventoryTreeService` + `IInventoryTreeClient` | `RefreshBuildsSiteNodeDeviceHierarchy` |
+| UI/VM without Domain objects | Desktop → Contracts only | `InventoryTreeViewModelAssemblyHasNoDomainOrRouterOsReferences` + architecture |
+| Display fields (reachability/version/model/support/kind/uplink/VRRP/last snapshot) | Device proto + `InventoryNodeViewModel` | hierarchy test + host GetNode observation defaults |
+| Refresh cancellation | `InventoryTreeService.RefreshAsync` | `CancellationStopsRefresh` |
+| No parallel overlapping refresh | single-flight coalesce | `ParallelRefreshDoesNotStartTwoOverlappingLoads` |
+| Large inventory paged | `ListSites`/`ListNodes` page loops | `ListNodesPaginates…` + `GrpcInventoryTreeClient` |
+| Error keeps last successful tree | `InventoryTreeService` | `FailedRefreshPreservesPreviousTreeAndSetsCached` |
+| Cached state marked | `IsCached` / UI badge | failed-refresh test + MainWindow badge |
+| No RouterOS/SQL in ViewModel | presentation DTOs only | assembly + architecture Desktop bans |
+| GUI/state tests | unit (no Avalonia headless) | `InventoryTreeServiceTests` |
+
+Filter: `dotnet test --filter FullyQualifiedName~InventoryTree`.
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
 

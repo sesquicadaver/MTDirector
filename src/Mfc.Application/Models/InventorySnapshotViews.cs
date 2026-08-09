@@ -41,6 +41,13 @@ public sealed class NodeView
     public required ulong RowVersion { get; init; }
 }
 
+public sealed class NodeListPageView
+{
+    public required IReadOnlyList<NodeView> Items { get; init; }
+
+    public string? NextCursor { get; init; }
+}
+
 public sealed class DeviceView
 {
     public required Guid Id { get; init; }
@@ -62,6 +69,21 @@ public sealed class DeviceView
     public Guid? LastCompletedCaptureId { get; init; }
 
     public required ulong RowVersion { get; init; }
+
+    /// <summary>Observed RouterOS version when known; null means unset (UI shows —).</summary>
+    public string? RouterOsVersion { get; init; }
+
+    /// <summary>Observed hardware model when known; null means unset (UI shows —).</summary>
+    public string? Model { get; init; }
+
+    /// <summary>Unknown / Reachable / Unreachable. Defaults to Unknown until probe wiring.</summary>
+    public string Reachability { get; init; } = "Unknown";
+
+    /// <summary>VRRP role labels when topology observation is wired; empty until then.</summary>
+    public IReadOnlyList<string> VrrpRoleLabels { get; init; } = [];
+
+    /// <summary>CompletedAtUtc of last completed capture when resolvable.</summary>
+    public DateTimeOffset? LastSnapshotAtUtc { get; init; }
 }
 
 public sealed class NodeDetailsView

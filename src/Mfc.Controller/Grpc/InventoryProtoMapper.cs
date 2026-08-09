@@ -1,3 +1,4 @@
+using Google.Protobuf.WellKnownTypes;
 using Mfc.Application.Abstractions.ConnectionProfiles;
 using Mfc.Application.Models;
 using Mfc.Contracts.Mfc.V1;
@@ -56,10 +57,31 @@ internal static class InventoryProtoMapper
                 : ToProto(view.LastSupportState.Value),
             RowVersion = view.RowVersion,
             Role = ToProto(view.Role),
+            Reachability = string.IsNullOrWhiteSpace(view.Reachability) ? "Unknown" : view.Reachability,
         };
         if (view.LastCompletedCaptureId is Guid captureId)
         {
             device.LastCompletedCaptureId = ProtoUuid.FromGuid(captureId);
+        }
+
+        if (!string.IsNullOrWhiteSpace(view.RouterOsVersion))
+        {
+            device.RouterosVersion = view.RouterOsVersion;
+        }
+
+        if (!string.IsNullOrWhiteSpace(view.Model))
+        {
+            device.Model = view.Model;
+        }
+
+        if (view.VrrpRoleLabels.Count > 0)
+        {
+            device.VrrpRoleLabels.AddRange(view.VrrpRoleLabels);
+        }
+
+        if (view.LastSnapshotAtUtc is DateTimeOffset lastSnapshot)
+        {
+            device.LastSnapshotAt = Timestamp.FromDateTimeOffset(lastSnapshot);
         }
 
         return device;

@@ -18,6 +18,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
     public const string ActorMetadataKey = "x-mfc-actor";
 
     private readonly ListSitesUseCase _listSites;
+    private readonly ListNodesUseCase _listNodes;
     private readonly CreateSiteUseCase _createSite;
     private readonly CreateNodeUseCase _createNode;
     private readonly GetNodeUseCase _getNode;
@@ -30,6 +31,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
 
     public InventoryGrpcService(
         ListSitesUseCase listSites,
+        ListNodesUseCase listNodes,
         CreateSiteUseCase createSite,
         CreateNodeUseCase createNode,
         GetNodeUseCase getNode,
@@ -41,6 +43,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(listSites);
+        ArgumentNullException.ThrowIfNull(listNodes);
         ArgumentNullException.ThrowIfNull(createSite);
         ArgumentNullException.ThrowIfNull(createNode);
         ArgumentNullException.ThrowIfNull(getNode);
@@ -51,6 +54,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         ArgumentNullException.ThrowIfNull(probeCoordinator);
         ArgumentNullException.ThrowIfNull(environment);
         _listSites = listSites;
+        _listNodes = listNodes;
         _createSite = createSite;
         _createNode = createNode;
         _getNode = getNode;
@@ -81,6 +85,29 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
             Page = new PageResponse { NextPageToken = page.NextCursor ?? string.Empty },
         };
         response.Sites.AddRange(page.Items.Select(InventoryProtoMapper.ToProto));
+        return response;
+    }
+
+    public override async Task<ListNodesResponse> ListNodes(ListNodesRequest request, ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        string actor = ResolveActor(context);
+        int limit = request.Page?.PageSize is > 0 and var size ? (int)size : 50;
+        ApplicationResult<NodeListPageView> result = await _listNodes.ExecuteAsync(
+            new ListNodesQuery
+            {
+                Actor = actor,
+                SiteId = ProtoUuid.ToGuid(request.SiteId),
+                Limit = limit,
+                Cursor = string.IsNullOrWhiteSpace(request.Page?.PageToken) ? null : request.Page.PageToken,
+            },
+            context.CancellationToken).ConfigureAwait(false);
+        NodeListPageView page = Unwrap(result);
+        ListNodesResponse response = new()
+        {
+            Page = new PageResponse { NextPageToken = page.NextCursor ?? string.Empty },
+        };
+        response.Nodes.AddRange(page.Items.Select(InventoryProtoMapper.ToProto));
         return response;
     }
 

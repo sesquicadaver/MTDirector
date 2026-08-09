@@ -52,9 +52,11 @@ public sealed class ControllerConnectionServiceTests
 
             Assert.Equal(ControllerConnectionState.Connected, service.State);
             Assert.Null(service.LastError);
+            Assert.NotNull(service.Channel);
 
             await service.DisconnectAsync();
             Assert.Equal(ControllerConnectionState.Disconnected, service.State);
+            Assert.Null(service.Channel);
         }
         finally
         {

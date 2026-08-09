@@ -8,6 +8,7 @@ using Mfc.Application.Models;
 using Mfc.Domain;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
+using Mfc.Domain.Snapshots;
 using Auth = Mfc.Application.Common.AuthorizationGuard;
 
 namespace Mfc.Application.Inventory;
@@ -167,6 +168,113 @@ public sealed class ListSitesUseCase
     }
 }
 
+public sealed class ListNodesQuery
+{
+    public required string Actor { get; init; }
+
+    public required Guid SiteId { get; init; }
+
+    public int Limit { get; init; } = 50;
+
+    public string? Cursor { get; init; }
+}
+
+public sealed class ListNodesUseCase
+{
+    private readonly IAuthorizationBoundary _auth;
+    private readonly ISiteStore _sites;
+    private readonly INodeStore _nodes;
+
+    public ListNodesUseCase(IAuthorizationBoundary auth, ISiteStore sites, INodeStore nodes)
+    {
+        ArgumentNullException.ThrowIfNull(auth);
+        ArgumentNullException.ThrowIfNull(sites);
+        ArgumentNullException.ThrowIfNull(nodes);
+        _auth = auth;
+        _sites = sites;
+        _nodes = nodes;
+    }
+
+    /// <summary>
+    /// Lists nodes for a site with stable cursor pagination (name, then id).
+    /// MVP pages in-memory from <see cref="INodeStore.ListBySiteAsync"/>.
+    /// </summary>
+    public async Task<ApplicationResult<NodeListPageView>> ExecuteAsync(
+        ListNodesQuery query,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        ApplicationError? authError = await Auth.EnsureAsync(
+            _auth, query.Actor, ApplicationPermissions.InventoryRead, cancellationToken).ConfigureAwait(false);
+        if (authError is not null)
+        {
+            return ApplicationResults.Fail(authError);
+        }
+
+        SiteId siteId = new(query.SiteId);
+        Site? site = await _sites.GetAsync(siteId, cancellationToken).ConfigureAwait(false);
+        if (site is null)
+        {
+            return ApplicationResults.Fail(ApplicationError.NotFound($"Site '{query.SiteId}' not found."));
+        }
+
+        int limit = query.Limit <= 0 ? 50 : Math.Min(query.Limit, 200);
+        IReadOnlyList<Node> all = await _nodes.ListBySiteAsync(siteId, cancellationToken).ConfigureAwait(false);
+        IEnumerable<Node> ordered = all
+            .OrderBy(n => n.Name.Value, StringComparer.Ordinal)
+            .ThenBy(n => n.Id.Value);
+
+        if (!string.IsNullOrWhiteSpace(query.Cursor)
+            && TryDecodeNodeCursor(query.Cursor, out string cursorName, out Guid cursorId))
+        {
+            ordered = ordered.Where(n =>
+                string.Compare(n.Name.Value, cursorName, StringComparison.Ordinal) > 0
+                || (string.Equals(n.Name.Value, cursorName, StringComparison.Ordinal)
+                    && n.Id.Value.CompareTo(cursorId) > 0));
+        }
+
+        List<Node> page = ordered.Take(limit + 1).ToList();
+        string? next = null;
+        if (page.Count > limit)
+        {
+            Node last = page[limit - 1];
+            next = EncodeNodeCursor(last.Name.Value, last.Id.Value);
+            page.RemoveAt(limit);
+        }
+
+        return ApplicationResults.Ok(new NodeListPageView
+        {
+            Items = page.Select(ViewMapper.ToView).ToArray(),
+            NextCursor = next,
+        });
+    }
+
+    private static string EncodeNodeCursor(string name, Guid id)
+        => Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes($"{name}\n{id:D}"));
+
+    private static bool TryDecodeNodeCursor(string cursor, out string name, out Guid id)
+    {
+        name = string.Empty;
+        id = Guid.Empty;
+        try
+        {
+            string decoded = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(cursor));
+            string[] parts = decoded.Split('\n');
+            if (parts.Length != 2 || !Guid.TryParse(parts[1], out id))
+            {
+                return false;
+            }
+
+            name = parts[0];
+            return name.Length > 0;
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
+    }
+}
+
 public sealed class CreateNodeCommand
 {
     public required string Actor { get; init; }
@@ -306,15 +414,22 @@ public sealed class GetNodeUseCase
     private readonly IAuthorizationBoundary _auth;
     private readonly INodeStore _nodes;
     private readonly IDeviceStore _devices;
+    private readonly ISnapshotStore _snapshots;
 
-    public GetNodeUseCase(IAuthorizationBoundary auth, INodeStore nodes, IDeviceStore devices)
+    public GetNodeUseCase(
+        IAuthorizationBoundary auth,
+        INodeStore nodes,
+        IDeviceStore devices,
+        ISnapshotStore snapshots)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
         ArgumentNullException.ThrowIfNull(devices);
+        ArgumentNullException.ThrowIfNull(snapshots);
         _auth = auth;
         _nodes = nodes;
         _devices = devices;
+        _snapshots = snapshots;
     }
 
     public async Task<ApplicationResult<NodeDetailsView>> ExecuteAsync(
@@ -338,11 +453,54 @@ public sealed class GetNodeUseCase
         IReadOnlyList<Device> devices = await _devices
             .ListByNodeAsync(node.Id, cancellationToken)
             .ConfigureAwait(false);
+
+        Dictionary<Guid, DateTimeOffset> completedAtByCapture = await ResolveLastSnapshotTimesAsync(
+            devices,
+            cancellationToken).ConfigureAwait(false);
+
+        DeviceView[] deviceViews = devices.Select(device =>
+        {
+            DateTimeOffset? lastSnapshot = null;
+            if (device.LastCompletedCaptureId is Guid captureId
+                && completedAtByCapture.TryGetValue(captureId, out DateTimeOffset completedAt))
+            {
+                lastSnapshot = completedAt;
+            }
+
+            return ViewMapper.ToView(device, lastSnapshot);
+        }).ToArray();
+
         return ApplicationResults.Ok(new NodeDetailsView
         {
             Node = ViewMapper.ToView(node),
-            Devices = devices.Select(ViewMapper.ToView).ToArray(),
+            Devices = deviceViews,
         });
+    }
+
+    private async Task<Dictionary<Guid, DateTimeOffset>> ResolveLastSnapshotTimesAsync(
+        IReadOnlyList<Device> devices,
+        CancellationToken cancellationToken)
+    {
+        Guid[] captureIds = devices
+            .Select(d => d.LastCompletedCaptureId)
+            .Where(id => id.HasValue)
+            .Select(id => id!.Value)
+            .Distinct()
+            .ToArray();
+
+        Dictionary<Guid, DateTimeOffset> map = new(captureIds.Length);
+        foreach (Guid captureId in captureIds)
+        {
+            StoredSnapshot? snapshot = await _snapshots
+                .GetAsync(new SnapshotId(captureId), cancellationToken)
+                .ConfigureAwait(false);
+            if (snapshot?.Metadata.CompletedAtUtc is DateTimeOffset completedAt)
+            {
+                map[captureId] = completedAt;
+            }
+        }
+
+        return map;
     }
 }
 

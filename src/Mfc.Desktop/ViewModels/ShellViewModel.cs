@@ -6,19 +6,25 @@ using Mfc.Desktop.Services;
 
 namespace Mfc.Desktop.ViewModels;
 
-/// <summary>Shell view-model: connection status and commands. Network work stays off the UI thread.</summary>
+/// <summary>Shell view-model: connection status, inventory tree, and commands. Network work stays off the UI thread.</summary>
 public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
 {
     private readonly IControllerConnectionService _connection;
     private readonly DesktopOptions _options;
 
-    public ShellViewModel(IControllerConnectionService connection, DesktopOptions options)
+    public ShellViewModel(
+        IControllerConnectionService connection,
+        DesktopOptions options,
+        InventoryTreeViewModel inventory)
     {
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _options = options ?? throw new ArgumentNullException(nameof(options));
+        Inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
         _connection.StateChanged += OnConnectionStateChanged;
         SyncFromService();
     }
+
+    public InventoryTreeViewModel Inventory { get; }
 
     public string ControllerEndpoint => _options.ControllerEndpoint;
 
@@ -116,6 +122,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         _connection.StateChanged -= OnConnectionStateChanged;
+        Inventory.Dispose();
         await _connection.DisposeAsync().ConfigureAwait(false);
     }
 }

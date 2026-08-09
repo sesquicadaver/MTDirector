@@ -156,6 +156,7 @@ public static class Program
     private static void RegisterInventoryApplication(IServiceCollection services)
     {
         services.AddScoped<ListSitesUseCase>();
+        services.AddScoped<ListNodesUseCase>();
         services.AddScoped<CreateSiteUseCase>();
         services.AddScoped<CreateNodeUseCase>();
         services.AddScoped<GetNodeUseCase>();
