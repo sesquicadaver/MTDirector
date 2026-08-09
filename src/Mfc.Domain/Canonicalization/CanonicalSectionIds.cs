@@ -55,4 +55,61 @@ public static class CanonicalSectionIds
             or FirewallIpv4Mangle
             or FirewallIpv6Mangle
             or RoutingRules;
+
+    /// <summary>
+    /// Section identifiers in registry declaration order (Canonical Spec §35 sort key #1).
+    /// </summary>
+    public static IReadOnlyList<string> AllInRegistryOrder { get; } =
+    [
+        SystemIdentity,
+        SystemResource,
+        ManagementIpServices,
+        NetworkInterfaces,
+        NetworkIpv4Addresses,
+        NetworkIpv6Addresses,
+        NetworkInterfaceLists,
+        FirewallIpv4Filter,
+        FirewallIpv6Filter,
+        FirewallIpv4AddressLists,
+        FirewallIpv6AddressLists,
+        FirewallIpv4Nat,
+        FirewallIpv6Nat,
+        FirewallIpv4Raw,
+        FirewallIpv6Raw,
+        FirewallIpv4Mangle,
+        FirewallIpv6Mangle,
+        RoutingTables,
+        RoutingRules,
+        RoutingIpv4StaticRoutes,
+        RoutingIpv6StaticRoutes,
+        RoutingIpv4DefaultState,
+        RoutingIpv6DefaultState,
+        NetworkIpv4Settings,
+        NetworkIpv6Settings,
+        HaVrrp,
+        BridgeInstances,
+        BridgePorts,
+        BridgeSettings,
+        BridgeVlans,
+        SwitchInstances,
+        SwitchPorts,
+        CapabilitiesDevice,
+        CompatibilityFindings,
+        CompatibilityUnknownProperties,
+        TopologyValidation,
+    ];
+
+    /// <summary>Lookup of registry order index by section id (unknown → absent).</summary>
+    public static Dictionary<string, int> RegistryOrderIndex { get; } = BuildRegistryOrderIndex();
+
+    private static Dictionary<string, int> BuildRegistryOrderIndex()
+    {
+        Dictionary<string, int> map = new(StringComparer.Ordinal);
+        for (int i = 0; i < AllInRegistryOrder.Count; i++)
+        {
+            map[AllInRegistryOrder[i]] = i;
+        }
+
+        return map;
+    }
 }

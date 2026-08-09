@@ -2,6 +2,7 @@ using System.Buffers.Binary;
 using System.Text.Json;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
+using Mfc.Domain.Canonicalization;
 using Mfc.Domain.Capabilities;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Snapshots;
@@ -383,6 +384,54 @@ public sealed class EfSnapshotStore : ISnapshotStore
             Compression = (SnapshotCompression)entity.Compression,
             UncompressedBytes = uncompressed,
         };
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<CanonicalSection>> LoadCanonicalSectionsAsync(
+        SnapshotId id,
+        CancellationToken cancellationToken = default)
+    {
+        List<SnapshotCaptureSectionEntity> rows = await _db.SnapshotCaptureSections
+            .AsNoTracking()
+            .Where(s => s.CaptureId == id.Value)
+            .OrderBy(s => s.SectionId)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        List<CanonicalSection> sections = [];
+        foreach (SnapshotCaptureSectionEntity row in rows)
+        {
+            await TryAddParsedSectionAsync(sections, row.ConfigurationHash, cancellationToken)
+                .ConfigureAwait(false);
+            await TryAddParsedSectionAsync(sections, row.ObservationHash, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        return sections;
+    }
+
+    private async Task TryAddParsedSectionAsync(
+        List<CanonicalSection> sections,
+        byte[]? payloadHash,
+        CancellationToken cancellationToken)
+    {
+        if (payloadHash is null || payloadHash.Length == 0)
+        {
+            return;
+        }
+
+        StoredSnapshotPayload? payload = await GetPayloadAsync(Hash256.Create(payloadHash), cancellationToken)
+            .ConfigureAwait(false);
+        if (payload is null)
+        {
+            return;
+        }
+
+        if (CanonicalSection.TryParse(payload.UncompressedBytes.Span, out CanonicalSection? section)
+            && section is not null)
+        {
+            sections.Add(section);
+        }
     }
 
     private async Task<byte[]> UpsertPayloadAsync(

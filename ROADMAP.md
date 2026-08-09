@@ -3,7 +3,7 @@
 **Дата оновлення:** 9 серпня 2026  
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач  
 **Продукт:** MikroTik Firewall Controller (MTDirector)  
-**Базовий коміт аудиту:** M1-23 (persist canonical snapshots) — черга зсунута на M1-24
+**Базовий коміт аудиту:** M1-24 (deterministic semantic snapshot diff) — черга зсунута на M1-25
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -41,13 +41,13 @@
 | Область | Closed | Open | % |
 |---------|-------:|-----:|--:|
 | M0 Bootstrap | 10 | 0 | 100% |
-| M1 Read-only slice | 23 | 11 | 68% |
+| M1 Read-only slice | 24 | 10 | 71% |
 | N1 Packet-path weave | 3 | 4 | 43% |
 | M2–M6 (решта MVP) | 0 | 58 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **36** | **100** | **~26% issues** |
+| **Разом** | **37** | **99** | **~27% issues** |
 
-MVP issues (109) = 36 done + **73 remaining** до MVP CLOSED.  
+MVP issues (109) = 37 done + **72 remaining** до MVP CLOSED.  
 Post-MVP M7 = **27** після MVP.
 
 ### 2.2 DONE (не в черзі)
@@ -81,6 +81,7 @@ Post-MVP M7 = **27** після MVP.
 | M1-21 | #31 | Canonicalization primitives (normalize + hash contracts) |
 | M1-22 | #32 | Menu-specific canonical snapshots (discovery→section registry + config/obs split) |
 | M1-23 | #33 | Persist canonical snapshots (CAS payloads, sections, identical capture, pagination) |
+| M1-24 | #34 | Deterministic semantic snapshot diff (`SemanticDiffEngine`, CompareSnapshotsUseCase) |
 
 ### 2.3 Поточні прогалини (код)
 
@@ -88,12 +89,12 @@ Post-MVP M7 = **27** після MVP.
 |--------|------|
 | `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors |
 | `Mfc.Contracts` | лише marker — немає proto gRPC inventory/diff |
-| `Mfc.Application` | inventory/snapshot capture+persist orchestration; RouterOS capture port без production session wiring |
+| `Mfc.Application` | inventory/snapshot capture+persist+semantic compare; RouterOS capture port без production session wiring |
 | `Mfc.Controller` | health-only gRPC + persistence/secrets DI |
 | `Mfc.Desktop` | connection shell; **немає** inventory/snapshot/diff UI |
-| Persistence | inventory + snapshot captures/payloads/sections; EF snapshot store; inventory CRUD stores — наступні issues |
+| Persistence | inventory + snapshot captures/payloads/sections; EF snapshot store + LoadCanonicalSections — наступні issues |
 
-**NEXT = черга #23:** [M1-24](https://github.com/sesquicadaver/MTDirector/issues/34).
+**NEXT = черга #24:** [M1-25](https://github.com/sesquicadaver/MTDirector/issues/35).
 
 ---
 
@@ -146,7 +147,7 @@ Post-MVP M7 = **27** після MVP.
 | ~~20~~ | ~~M1-21~~ | ~~#31~~ | ~~Implement canonicalization primitives~~ → §2.2 DONE |
 | ~~21~~ | ~~M1-22~~ | ~~#32~~ | ~~Implement menu-specific canonical snapshots~~ → §2.2 DONE |
 | ~~22~~ | ~~M1-23~~ | ~~#33~~ | ~~Persist snapshots and detect identical captures~~ → §2.2 DONE |
-| 23 | M1-24 | #34 | Implement deterministic semantic snapshot diff |
+| ~~23~~ | ~~M1-24~~ | ~~#34~~ | ~~Implement deterministic semantic snapshot diff~~ → §2.2 DONE |
 
 #### Блок A5 — M1 API / Desktop / acceptance gate
 
@@ -301,7 +302,7 @@ Post-MVP M7 = **27** після MVP.
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 117 відкритих атомарних задач (#6…#122; #1–#5 → §2.2 DONE).
+**Кінець черги:** 116 відкритих атомарних задач (#6…#122; #1–#5 → §2.2 DONE; M1-24 → §2.2 DONE).
 
 ---
 
@@ -309,9 +310,9 @@ Post-MVP M7 = **27** після MVP.
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 90 | M1 залишок + N1 + M2–M6 |
+| До MVP CLOSED | 89 | M1 залишок + N1 + M2–M6 |
 | Post-MVP M7 | 27 | лише після M6-09 |
-| **Нереалізовано разом** | **117** | GitHub OPEN |
+| **Нереалізовано разом** | **116** | GitHub OPEN (локальний прогрес M1-24) |
 | Вже CLOSED | 19 | M0 + M1-01…09 — поза чергою |
 
 ---
@@ -346,7 +347,7 @@ Post-MVP M7 = **27** після MVP.
 | Menu canonical snapshots | M1-22 | section registry; config≠obs; unknown→compat obs | **DONE** |
 | Packet-path blockers | N1-04 | analysis blockers from path class | TODO |
 | Persist canonical snapshots | M1-23 | PG sections; payload dedupe; pagination; immutability | **DONE** |
-| Semantic snapshot diff | M1-24 | diff unit | TODO #23 |
+| Semantic snapshot diff | M1-24 | `SemanticDiffEngine` unit AC#1–13; CompareSnapshotsUseCase | **DONE** |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | TODO |
 | M1 acceptance gate | M1-30…34 | CHR suites | TODO |
 | Policy compose + analysis | M2 | analysis unit; SoD | TODO |
@@ -377,7 +378,7 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **чергу #23** → [M1-24 / issue #34](https://github.com/sesquicadaver/MTDirector/issues/34).  
+1. Відкрити **чергу #24** → [M1-25 / issue #35](https://github.com/sesquicadaver/MTDirector/issues/35).  
 2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.  
 3. Не стартувати M2, доки не закрито **M1-34** (черга #33).  
 4. Не стартувати M4, доки не закрито **M5-10** (черга #71).  

@@ -6,6 +6,7 @@ using Mfc.Application.Abstractions.ConnectionProfiles;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Abstractions.Secrets;
+using Mfc.Domain.Canonicalization;
 using Mfc.Domain.Capabilities;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
@@ -112,6 +113,9 @@ internal sealed class FakeSnapshotStore : ISnapshotStore
     private readonly Dictionary<(Guid RequestedBy, Guid Key), Guid> _idempotency = [];
     private readonly Dictionary<string, StoredSnapshotPayload> _payloads = new(StringComparer.Ordinal);
 
+    /// <summary>Injected or persist-parsed canonical sections keyed by snapshot id (M1-24).</summary>
+    public Dictionary<Guid, List<CanonicalSection>> SectionsBySnapshot { get; } = [];
+
     public Task<StoredSnapshot?> GetAsync(SnapshotId id, CancellationToken cancellationToken = default)
         => Task.FromResult(_byId.TryGetValue(id.Value, out StoredSnapshot? s) ? s : null);
 
@@ -217,6 +221,7 @@ internal sealed class FakeSnapshotStore : ISnapshotStore
         };
         _byId[stored.Metadata.Id.Value] = stored;
         _idempotency[(request.RequestedBy, request.IdempotencyKey)] = stored.Metadata.Id.Value;
+        SectionsBySnapshot[stored.Metadata.Id.Value] = ParseSections(request.Capture);
         return Task.FromResult(stored);
     }
 
@@ -224,6 +229,41 @@ internal sealed class FakeSnapshotStore : ISnapshotStore
         Hash256 payloadHash,
         CancellationToken cancellationToken = default)
         => Task.FromResult(_payloads.TryGetValue(payloadHash.ToString(), out StoredSnapshotPayload? p) ? p : null);
+
+    public Task<IReadOnlyList<CanonicalSection>> LoadCanonicalSectionsAsync(
+        SnapshotId id,
+        CancellationToken cancellationToken = default)
+    {
+        if (SectionsBySnapshot.TryGetValue(id.Value, out List<CanonicalSection>? sections))
+        {
+            return Task.FromResult<IReadOnlyList<CanonicalSection>>(sections);
+        }
+
+        return Task.FromResult<IReadOnlyList<CanonicalSection>>([]);
+    }
+
+    private static List<CanonicalSection> ParseSections(SnapshotCaptureResult capture)
+    {
+        List<CanonicalSection> sections = [];
+        foreach (CapturedSectionDescriptor descriptor in capture.Sections)
+        {
+            if (descriptor.ConfigurationPayload is { Length: > 0 } config
+                && CanonicalSection.TryParse(config.Span, out CanonicalSection? configSection)
+                && configSection is not null)
+            {
+                sections.Add(configSection);
+            }
+
+            if (descriptor.ObservationPayload is { Length: > 0 } obs
+                && CanonicalSection.TryParse(obs.Span, out CanonicalSection? obsSection)
+                && obsSection is not null)
+            {
+                sections.Add(obsSection);
+            }
+        }
+
+        return sections;
+    }
 
     private Hash256 StorePayload(ReadOnlyMemory<byte> bytes, SnapshotPayloadKind kind, int schemaVersion)
     {
