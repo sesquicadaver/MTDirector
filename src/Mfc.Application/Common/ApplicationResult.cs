@@ -32,6 +32,16 @@ public sealed record ApplicationError(string Code, string Message)
     /// <summary>Assembled raw snapshot exceeded the compiled size limit (M1-20).</summary>
     public static ApplicationError SnapshotTooLarge(string message)
         => new("snapshot_too_large", message);
+
+    /// <summary>Semantic compare requires both snapshots to belong to the same device (M1-24).</summary>
+    public static ApplicationError SnapshotsFromDifferentDevices(
+        string message = "Snapshots belong to different devices (SNAPSHOTS_FROM_DIFFERENT_DEVICES).")
+        => new("snapshots_from_different_devices", message);
+
+    /// <summary>Semantic compare requires completed snapshots with snapshot hashes (M1-24).</summary>
+    public static ApplicationError SnapshotNotCompleted(
+        string message = "One or both snapshots are not completed (SNAPSHOT_NOT_COMPLETED).")
+        => new("snapshot_not_completed", message);
 }
 
 /// <summary>Untyped failure carrier that converts to <see cref="ApplicationResult{T}"/>.</summary>

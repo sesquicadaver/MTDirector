@@ -22,7 +22,7 @@ public sealed class CanonicalRecord
 /// <summary>
 /// Canonical section document (<c>mfc.canonical-section/1</c>) with deterministic bytes.
 /// </summary>
-public sealed class CanonicalSection
+public sealed partial class CanonicalSection
 {
     public const string Schema = "mfc.canonical-section/1";
     public const string Version = "1";

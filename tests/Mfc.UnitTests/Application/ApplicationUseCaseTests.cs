@@ -522,57 +522,66 @@ public sealed class SnapshotUseCaseTests
     }
 
     [Fact]
-    public async Task CompareSnapshotsHandlesNullHashPairs()
+    public async Task CompareSnapshotsRequiresCompletedSnapshotsAndFallsBackToHashFields()
     {
         FakeAuthorizationBoundary auth = new();
         FakeSnapshotStore snapshots = new();
         DeviceId deviceId = new(Guid.NewGuid());
-        StoredSnapshot left = new()
+        StoredSnapshot failed = new()
         {
             Metadata = SnapshotMetadata.CreateFailed(deviceId, DateTimeOffset.UtcNow),
+            SchemaVersion = 1,
+        };
+        await snapshots.AddAsync(failed);
+
+        ApplicationResult<SnapshotDiffView> notCompleted = await new CompareSnapshotsUseCase(auth, snapshots).ExecuteAsync(
+            new CompareSnapshotsQuery
+            {
+                Actor = "a",
+                LeftSnapshotId = failed.Metadata.Id.Value,
+                RightSnapshotId = failed.Metadata.Id.Value,
+            });
+        Assert.Equal("snapshot_not_completed", notCompleted.Error!.Code);
+
+        byte[] digestA = Enumerable.Repeat((byte)9, 32).ToArray();
+        byte[] digestB = Enumerable.Repeat((byte)8, 32).ToArray();
+        Hash256 hashA = Hash256.Create(digestA);
+        Hash256 hashB = Hash256.Create(digestB);
+        StoredSnapshot left = new()
+        {
+            Metadata = SnapshotMetadata.CreateCompleted(
+                deviceId,
+                ConfigurationHash.FromDigest(hashA),
+                ObservationHash.FromDigest(hashA),
+                CapabilityHash.FromDigest(hashA),
+                SnapshotHash.FromDigest(hashA),
+                DateTimeOffset.UtcNow),
             SchemaVersion = 1,
         };
         StoredSnapshot right = new()
         {
-            Metadata = SnapshotMetadata.CreateFailed(deviceId, DateTimeOffset.UtcNow),
+            Metadata = SnapshotMetadata.CreateCompleted(
+                deviceId,
+                ConfigurationHash.FromDigest(hashB),
+                ObservationHash.FromDigest(hashB),
+                CapabilityHash.FromDigest(hashB),
+                SnapshotHash.FromDigest(hashB),
+                DateTimeOffset.UtcNow),
             SchemaVersion = 1,
         };
         await snapshots.AddAsync(left);
         await snapshots.AddAsync(right);
-
-        ApplicationResult<SnapshotDiffView> bothNull = await new CompareSnapshotsUseCase(auth, snapshots).ExecuteAsync(
-            new CompareSnapshotsQuery
-            {
-                Actor = "a",
-                LeftSnapshotId = left.Metadata.Id.Value,
-                RightSnapshotId = right.Metadata.Id.Value,
-            });
-        Assert.True(bothNull.IsSuccess);
-        Assert.True(bothNull.Value!.Identical);
-
-        byte[] digest = Enumerable.Repeat((byte)9, 32).ToArray();
-        Hash256 hash = Hash256.Create(digest);
-        StoredSnapshot completed = new()
-        {
-            Metadata = SnapshotMetadata.CreateCompleted(
-                deviceId,
-                ConfigurationHash.FromDigest(hash),
-                ObservationHash.FromDigest(hash),
-                CapabilityHash.FromDigest(hash),
-                SnapshotHash.FromDigest(hash),
-                DateTimeOffset.UtcNow),
-            SchemaVersion = 1,
-        };
-        await snapshots.AddAsync(completed);
 
         ApplicationResult<SnapshotDiffView> mixed = await new CompareSnapshotsUseCase(auth, snapshots).ExecuteAsync(
             new CompareSnapshotsQuery
             {
                 Actor = "a",
                 LeftSnapshotId = left.Metadata.Id.Value,
-                RightSnapshotId = completed.Metadata.Id.Value,
+                RightSnapshotId = right.Metadata.Id.Value,
             });
+        Assert.True(mixed.IsSuccess);
         Assert.False(mixed.Value!.Identical);
+        Assert.Empty(mixed.Value.Entries);
         Assert.Contains("configuration_hash", mixed.Value.ChangedFields);
         Assert.Contains("observation_hash", mixed.Value.ChangedFields);
         Assert.Contains("capability_hash", mixed.Value.ChangedFields);

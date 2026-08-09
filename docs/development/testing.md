@@ -18,9 +18,33 @@ Working tree must stay clean after build/test.
 
 | Project | Role |
 |---------|------|
-| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit) |
+| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24) |
 | `tests/Mfc.IntegrationTests` | Controller health, Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers) |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts (no live CHR required) |
+
+## Living Specification — semantic diff (M1-24)
+
+Canonical Spec §29–35 / Initial Issue Set M1-24 AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Config vs observation separation | `SemanticDiffEngine` / `RecordMatcher` | `ObservationVrrpRoleChangeIsStateChangedNotModified` |
+| MOVED same fingerprint, different ordinal | `RecordMatcher` phase 3 | `OrderedExactFingerprintMoveEmitsMoved` |
+| `fwc:rule` → MODIFIED | `FwcRuleMarker` + ControllerId match | `FwcMarkerActionChangeIsModified` |
+| Unmanaged unique fingerprint move | ExactFingerprint | `UnmanagedUniqueFingerprintMoveIsMovedExactFingerprint` |
+| Unmanaged content change → REMOVED+ADDED | Conservative | `UnmanagedContentChangeIsRemovedPlusAddedWithoutModified` |
+| Ordered mid-list insert | Ordered matching | `OrderedMidListInsertProducesAddedNotChaos` |
+| Address-list set / order irrelevant | NaturalKey | `AddressListOrderIrrelevantAndNewEntryIsAdded` |
+| Interface-list members CSV set | `FieldDiffComparer` | `InterfaceListMembersCsvSetFieldDiff` |
+| VRRP STATE_CHANGED | Observation domain | `VrrpObservationStateChanged` |
+| Determinism | §35 sort | `DiffIsDeterministicAcrossRuns` |
+| Identical empty | Utf8Bytes short-circuit | `IdenticalSectionsProduceEmptyDocument` |
+| >20000 ordered → DIFF_COMPLEXITY_LIMIT | `DiffLimits` / `OrderedDiff` | `HugeOrderedSectionEmitsComplexityWarningWithoutThrow` |
+| Duplicate unmanaged fingerprints → no false MOVED | Phase 3/4 uniqueness | `DuplicateUnmanagedIdenticalFingerprintsDoNotFalseMove` |
+
+Filter: `dotnet test --filter FullyQualifiedName~SemanticDiff`.
+
+Full Living Spec index: [`ROADMAP.md`](../../ROADMAP.md) §5.
 
 ## PostgreSQL integration
 

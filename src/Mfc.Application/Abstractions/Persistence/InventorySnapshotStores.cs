@@ -1,4 +1,5 @@
 using Mfc.Application.Abstractions.RouterOs;
+using Mfc.Domain.Canonicalization;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Snapshots;
@@ -123,6 +124,13 @@ public interface ISnapshotStore
 
     Task<StoredSnapshotPayload?> GetPayloadAsync(
         Hash256 payloadHash,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Loads parsed canonical sections for a completed capture (configuration + observation payloads).
+    /// </summary>
+    Task<IReadOnlyList<CanonicalSection>> LoadCanonicalSectionsAsync(
+        SnapshotId id,
         CancellationToken cancellationToken = default);
 }
 

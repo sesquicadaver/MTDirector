@@ -43,7 +43,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Canonicalization primitives | Done (M1-21) | `src/Mfc.Domain/Canonicalization/` |
 | Menu-specific canonical snapshots | Done (M1-22) | `src/Mfc.RouterOs/Snapshot/DiscoveryCanonicalProjector.cs` |
 | Persist canonical snapshots | Done (M1-23) | `EfSnapshotStore`, `snapshot_capture_sections`, Brotli content-addressed payloads |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M1-24 (#34) |
+| Semantic snapshot diff | Done (M1-24) | `src/Mfc.Domain/Diff/`, `CompareSnapshotsUseCase`, `LoadCanonicalSectionsAsync` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M1-25 (#35) |
 
 ## ADRs
 

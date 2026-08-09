@@ -4,6 +4,8 @@ using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Common;
 using Mfc.Application.Mapping;
 using Mfc.Application.Models;
+using Mfc.Domain.Canonicalization;
+using Mfc.Domain.Diff;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Snapshots;
@@ -293,7 +295,7 @@ public sealed class CompareSnapshotsQuery
 }
 
 /// <summary>
-/// Hash-level compare for M1-05. Full semantic section diff lands in M1-24.
+/// Semantic section diff (M1-24) with hash-level fallback when canonical sections are unavailable.
 /// </summary>
 public sealed class CompareSnapshotsUseCase
 {
@@ -330,6 +332,71 @@ public sealed class CompareSnapshotsUseCase
                 ApplicationError.NotFound("One or both snapshots were not found."));
         }
 
+        if (left.Metadata.DeviceId != right.Metadata.DeviceId)
+        {
+            return ApplicationResults.Fail(ApplicationError.SnapshotsFromDifferentDevices());
+        }
+
+        if (left.Metadata.Status != SnapshotStatus.Completed
+            || right.Metadata.Status != SnapshotStatus.Completed
+            || left.Metadata.SnapshotHash is null
+            || right.Metadata.SnapshotHash is null)
+        {
+            return ApplicationResults.Fail(ApplicationError.SnapshotNotCompleted());
+        }
+
+        if (left.Metadata.SnapshotHash.Value.Equals(right.Metadata.SnapshotHash.Value))
+        {
+            return ApplicationResults.Ok(new SnapshotDiffView
+            {
+                LeftSnapshotId = left.Metadata.Id.Value,
+                RightSnapshotId = right.Metadata.Id.Value,
+                Identical = true,
+                ChangedFields = [],
+                Entries = [],
+                Warnings = [],
+            });
+        }
+
+        IReadOnlyList<CanonicalSection> baseSections = await _snapshots
+            .LoadCanonicalSectionsAsync(left.Metadata.Id, cancellationToken)
+            .ConfigureAwait(false);
+        IReadOnlyList<CanonicalSection> targetSections = await _snapshots
+            .LoadCanonicalSectionsAsync(right.Metadata.Id, cancellationToken)
+            .ConfigureAwait(false);
+
+        if (baseSections.Count == 0 && targetSections.Count == 0)
+        {
+            List<string> changed = BuildHashChangedFields(left, right);
+            return ApplicationResults.Ok(new SnapshotDiffView
+            {
+                LeftSnapshotId = left.Metadata.Id.Value,
+                RightSnapshotId = right.Metadata.Id.Value,
+                Identical = changed.Count == 0,
+                ChangedFields = changed,
+                Entries = [],
+                Warnings = [],
+            });
+        }
+
+        DiffDocument document = SemanticDiffEngine.Compare(baseSections, targetSections);
+        return ApplicationResults.Ok(new SnapshotDiffView
+        {
+            LeftSnapshotId = left.Metadata.Id.Value,
+            RightSnapshotId = right.Metadata.Id.Value,
+            Identical = document.Identical,
+            ChangedFields = document.Identical ? [] : BuildHashChangedFields(left, right),
+            Entries = document.Entries.Select(ToEntryView).ToArray(),
+            Warnings = document.Warnings.Select(static w => new SnapshotDiffWarningView
+            {
+                Code = w.Code,
+                Message = w.Message,
+            }).ToArray(),
+        });
+    }
+
+    private static List<string> BuildHashChangedFields(StoredSnapshot left, StoredSnapshot right)
+    {
         List<string> changed = [];
         if (!NullableHashEquals(left.Metadata.ConfigurationHash, right.Metadata.ConfigurationHash))
         {
@@ -351,14 +418,30 @@ public sealed class CompareSnapshotsUseCase
             changed.Add("snapshot_hash");
         }
 
-        return ApplicationResults.Ok(new SnapshotDiffView
-        {
-            LeftSnapshotId = left.Metadata.Id.Value,
-            RightSnapshotId = right.Metadata.Id.Value,
-            Identical = changed.Count == 0,
-            ChangedFields = changed,
-        });
+        return changed;
     }
+
+    private static SnapshotDiffEntryView ToEntryView(DiffEntry entry)
+        => new()
+        {
+            SectionId = entry.SectionId,
+            Domain = entry.Domain.ToString(),
+            Changes = entry.Changes.Select(static c => c.ToString()).ToArray(),
+            Confidence = entry.Confidence.ToString(),
+            RecordKey = entry.RecordKey,
+            BeforeOrdinal = entry.BeforeOrdinal,
+            AfterOrdinal = entry.AfterOrdinal,
+            BeforeProps = entry.BeforeProps,
+            AfterProps = entry.AfterProps,
+            FieldChanges = entry.FieldChanges.Select(static f => new SnapshotDiffFieldChangeView
+            {
+                FieldName = f.FieldName,
+                Before = f.Before,
+                After = f.After,
+                AddedValues = f.AddedValues,
+                RemovedValues = f.RemovedValues,
+            }).ToArray(),
+        };
 
     private static bool NullableHashEquals<T>(T? left, T? right)
         where T : struct, IEquatable<T>
