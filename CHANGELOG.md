@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- M1 Closed acceptance package (M1-34): operator docs (connection profiles, snapshots/diff, support manifest, troubleshooting), formal acceptance report with known limitations and clean-environment RC procedure; documentation gate tests.
 - Repository governance baseline (`.gitignore`, `.gitattributes`, contributing and security docs, PR/issue templates, CODEOWNERS).
 - Normative specifications, ROADMAP, and GitHub issue tracker for M0–M7.
 - Pinned .NET 10 SDK (`global.json` 10.0.302), Central Package Management, deterministic build props, `.editorconfig`, and NuGet.config.

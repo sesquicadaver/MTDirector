@@ -4,15 +4,18 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 
 ## Статус
 
-M1 in progress (inventory domain). Track work in [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
+**M1 CLOSED** (read-only vertical slice). Track remaining work in [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
+
+Acceptance package: [`docs/development/m1-vertical-slice-acceptance.md`](docs/development/m1-vertical-slice-acceptance.md).
 
 Див. також [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md), [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Швидкий старт
 
 1. [`docs/development/local-environment.md`](docs/development/local-environment.md)
-2. [`docs/development/testing.md`](docs/development/testing.md)
-3. Architecture decisions: [`docs/architecture/overview.md`](docs/architecture/overview.md)
+2. [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md)
+3. [`docs/development/testing.md`](docs/development/testing.md)
+4. Architecture decisions: [`docs/architecture/overview.md`](docs/architecture/overview.md)
 
 ## Документи
 
@@ -21,6 +24,7 @@ M1 in progress (inventory domain). Track work in [`ROADMAP.md`](ROADMAP.md) / [`
 | [`ROADMAP.md`](ROADMAP.md) | **Єдиний порядок атомарних задач** (M0→M6 + N1 + M7) |
 | [`ISSUES.md`](ISSUES.md) | Мапінг логічних ID → GitHub issues |
 | [`docs/architecture/overview.md`](docs/architecture/overview.md) | Огляд + ADR index |
+| [`docs/development/m1-vertical-slice-acceptance.md`](docs/development/m1-vertical-slice-acceptance.md) | M1 acceptance report + known limitations |
 | [Issues](https://github.com/sesquicadaver/MTDirector/issues) | Трекер реалізації |
 | [`TOR-1.md`](TOR-1.md) | Базове архітектурне рішення |
 | [`TOR-2.md`](TOR-2.md) | Scope MVP / поза MVP |

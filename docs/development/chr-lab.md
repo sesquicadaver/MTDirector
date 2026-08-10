@@ -50,3 +50,16 @@ RouterOS integration workflow (when enabled) must target only an isolated self-h
 1. Provision with `testlab/chr/scripts/provision-vrrp.sh active-passive|split-master`.
 2. Optional live hosts: `MFC_CHR_VRRP_ACTIVE_PASSIVE_HOST` / `MFC_CHR_VRRP_SPLIT_MASTER_HOST`.
 3. Always-on path: `dotnet test tests/Mfc.IntegrationTests --filter FullyQualifiedName~VrrpVerticalSlice`.
+
+## Adding a synthetic CHR device (operator procedure)
+
+1. Obtain a legal CHR image offline; place under `testlab/chr/private/` (gitignored).
+2. Copy `manifest.example.json` → `manifest.local.json` and set `imageSha256` / `imagePath`.
+3. Pick a topology under `testlab/chr/topologies/` and follow its `reset` steps.
+4. Run the matching provision script in `testlab/chr/scripts/` (outside `Mfc.RouterOs`).
+5. In Controller (Desktop or gRPC): CreateSite → CreateNode → RegisterDevice with the topology management address → UpdateDeviceConnection (INTERNAL_CA + lab CA ref).
+6. Run `StartCapture` / acceptance filters; never apply fixtures through product write RPCs.
+
+## M1 acceptance package
+
+Formal close checklist and known limitations: [`m1-vertical-slice-acceptance.md`](m1-vertical-slice-acceptance.md).

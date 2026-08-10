@@ -53,7 +53,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Multi-WAN CHR acceptance | Done (M1-31) | Failover/balanced routing+NAT+mangle slice; config≠obs route diffs; lab provision |
 | VRRP CHR acceptance | Done (M1-32) | Active/passive + split-master; per-VRID roles; role≠config hash; topology blockers; lab provision |
 | Fault-injection suite | Done (M1-33) | Protocol/session/stable-read matrix + snapshot capture faults; typed codes; no orphan completes |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M1-34 (#44) |
+| M1 acceptance package | Done (M1-34) | Operator docs + acceptance report; **M1 CLOSED** |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-01 (#48) |
 
 ## ADRs
 
