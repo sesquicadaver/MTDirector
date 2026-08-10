@@ -28,3 +28,10 @@ public readonly record struct AddressObjectId(Guid Value)
 
     public override string ToString() => Value.ToString("D");
 }
+
+public readonly record struct ServiceObjectId(Guid Value)
+{
+    public static ServiceObjectId New() => new(Guid.NewGuid());
+
+    public override string ToString() => Value.ToString("D");
+}

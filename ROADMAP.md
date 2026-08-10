@@ -3,7 +3,7 @@
 **Дата оновлення:** 10 серпня 2026  
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач  
 **Продукт:** MikroTik Firewall Controller (MTDirector)  
-**Базовий коміт аудиту:** M2-03 (static address objects + selectors) — M1 CLOSED; черга зсунута на M2-04
+**Базовий коміт аудиту:** M2-04 (typed service objects + selectors) — M1 CLOSED; черга зсунута на M2-05
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -95,6 +95,7 @@ Post-MVP M7 = **27** після MVP.
 | M2-01 | #48 | Policy document lifecycle + document-centric `policies` / `policy_revisions` persistence |
 | M2-02 | #49 | Fixed Policy Pipeline v1 + company-baseline chain contracts (DROP/REJECT/RETURN_TO_UNMANAGED) |
 | M2-03 | #50 | Static address objects (HOST/PREFIX/IPv4 RANGE) + include/exclude selectors |
+| M2-04 | #51 | Typed service objects (protocol/ports/ICMP) + include-only selectors |
 
 ### 2.3 Поточні прогалини (код)
 
@@ -102,13 +103,13 @@ Post-MVP M7 = **27** після MVP.
 |--------|------|
 | `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors; default `ProbeOnlyRouterOsReadPort` + `NotConfiguredSnapshotCapturePort` |
 | `Mfc.Contracts` | `mfc.v1` inventory (+ `ListNodes` / Device observation fields) + snapshot/diff protos (`SnapshotSummary.sections`) |
-| `Mfc.Application` | inventory/snapshot + `IPolicyStore` + `AddressSelectorEvaluator` |
+| `Mfc.Application` | inventory/snapshot + `IPolicyStore` + address/service selector evaluators |
 | `Mfc.Controller` | health + `InventoryService` + `SnapshotService` gRPC (`CaptureProgressHub`) |
 | `Mfc.Desktop` | connection shell + inventory tree + snapshot viewer + semantic diff viewer |
-| Persistence | inventory + snapshot CAS + policy lifecycle — service objects у наступних issues |
-| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address objects/selectors — services/zones/rules у M2-04+ |
+| Persistence | inventory + snapshot CAS + policy lifecycle — zones/bindings у наступних issues |
+| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service objects — zones/rules у M2-05+ |
 
-**NEXT = черга #37:** [M2-04](https://github.com/sesquicadaver/MTDirector/issues/51).
+**NEXT = черга #38:** [M2-05](https://github.com/sesquicadaver/MTDirector/issues/52).
 
 ---
 
@@ -185,7 +186,7 @@ Post-MVP M7 = **27** після MVP.
 | ~~34~~ | ~~M2-01~~ | ~~#48~~ | ~~Implement policy document lifecycle and persistence~~ → §2.2 DONE |
 | ~~35~~ | ~~M2-02~~ | ~~#49~~ | ~~Implement fixed Policy Pipeline v1 and chain contracts~~ → §2.2 DONE |
 | ~~36~~ | ~~M2-03~~ | ~~#50~~ | ~~Implement address objects and selectors~~ → §2.2 DONE |
-| 37 | M2-04 | #51 | Implement service objects and selectors |
+| ~~37~~ | ~~M2-04~~ | ~~#51~~ | ~~Implement service objects and selectors~~ → §2.2 DONE |
 | 38 | M2-05 | #52 | Implement logical zones and Node bindings |
 | 39 | N1-05 | #67 | Bind zones to VETH/VLAN/bridge without ContainerPolicy entities |
 | 40 | M2-06 | #53 | Implement policy rules, predicates and effects |
@@ -392,9 +393,9 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **чергу #37** → [M2-04 / issue #51](https://github.com/sesquicadaver/MTDirector/issues/51).  
+1. Відкрити **чергу #38** → [M2-05 / issue #52](https://github.com/sesquicadaver/MTDirector/issues/52).  
 2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.  
-3. Не стартувати M2, доки не закрито **M1-34** (черга #33) — **DONE**; M2-01…M2-03 — **DONE**.  
+3. Не стартувати M2, доки не закрито **M1-34** (черга #33) — **DONE**; M2-01…M2-04 — **DONE**.  
 4. Не стартувати M4, доки не закрито **M5-10** (черга #71).  
 5. Не стартувати M7, доки не закрито **M6-09** (черга #95).
 
