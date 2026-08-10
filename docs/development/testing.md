@@ -246,6 +246,26 @@ Policy Model §12–§15 + Issue Set M2-02 AC → module → tests:
 
 Filter: `dotnet test --filter FullyQualifiedName~PolicyPipeline|FullyQualifiedName~ChainContract`.
 
+## Living Specification — address objects and selectors (M2-03)
+
+Policy Model §11 / §16–§17 + Issue Set M2-03 AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| HOST / PREFIX / IPv4 RANGE | `AddressEntry` / `AddressObject` | `SupportsHostPrefixAndIpv4RangeMasksPrefixHostBits` |
+| FQDN/dynamic/timeout forbidden | typed entry API | `Ipv6RangeAndFqdnStyleEntriesAreImpossible` |
+| Family checked | `AddressObject.Create` | `FamilyMismatchIsRejected` |
+| Prefix host bits masked | `AddressInterval.FromPrefix` | host-bits assert in object test |
+| Disjoint normalize + merge | `AddressSetAlgebra.Normalize` | `NormalizationMergesOverlapsDuplicatesAndAdjacentDeterministically` |
+| AddressSelector include/exclude | `AddressSelector` / resolver | `AddressSelectorTests` |
+| Empty include = Universe | resolver | `EmptyIncludeMeansUniverseMinusExclusions` |
+| Empty result = RULE_UNSATISFIABLE | `AddressSelectorResolveResult` | `UniverseMinusEverythingIsUnsatisfiableBlocker` |
+| Inline IP forbidden | `ManagedRuleAddressConstraint` | `InlineIpInManagedRuleIsForbidden` |
+| UUID visibility | `AddressObjectVisibility` + evaluator | `VisibilityIsUuidScopedUpwardReferencesForbidden` |
+| Property-based normalize/subset/∩ | `AddressSetAlgebraPropertyTests` | 200 seeded trials each |
+
+Filter: `dotnet test --filter FullyQualifiedName~Address`.
+
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
 Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):

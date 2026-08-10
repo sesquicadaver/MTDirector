@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Static address objects and selectors (M2-03): HOST/PREFIX/IPv4-RANGE entries with masked prefixes, disjoint-interval normalization, include/exclude universe semantics, UUID visibility, and application selector evaluation.
 - Fixed Policy Pipeline v1 and chain contracts (M2-02): immutable 13-stage pipeline with owner/effect permissions; company-baseline `ChainContract` (DROP/REJECT/RETURN_TO_UNMANAGED); overlays cannot change contracts; ACCEPT default disposition impossible.
 - Policy document lifecycle and persistence (M2-01): `Policy` / `PolicyRevision` aggregates, MFC-CJ1 canonical writer and content/parent-context hashes, Brotli-backed `policies`/`policy_revisions` schema with approved-payload immutability at the DbContext boundary.
 - M1 Closed acceptance package (M1-34): operator docs (connection profiles, snapshots/diff, support manifest, troubleshooting), formal acceptance report with known limitations and clean-environment RC procedure; documentation gate tests.
