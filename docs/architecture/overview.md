@@ -55,7 +55,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Fault-injection suite | Done (M1-33) | Protocol/session/stable-read matrix + snapshot capture faults; typed codes; no orphan completes |
 | M1 acceptance package | Done (M1-34) | Operator docs + acceptance report; **M1 CLOSED** |
 | Policy document lifecycle | Done (M2-01) | `Policy` / `PolicyRevision`, MFC-CJ1 hash, Brotli `policy_revisions` |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-02 (#49) |
+| Policy Pipeline v1 + chain contracts | Done (M2-02) | Fixed stages + owner/effect matrix; company-only `ChainContract` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-03 (#50) |
 
 ## ADRs
 

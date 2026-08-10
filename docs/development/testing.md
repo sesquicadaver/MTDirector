@@ -228,6 +228,24 @@ Policy Model §7–§9 / §33 / §66 + Issue Set M2-01 AC → module → tests:
 
 Filter: `dotnet test --filter FullyQualifiedName~Policy`.
 
+## Living Specification — policy pipeline and chain contracts (M2-02)
+
+Policy Model §12–§15 + Issue Set M2-02 AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| All Pipeline v1 stages | `PolicyPipelineV1.OrderedStages` | `OrderedStagesMatchNormativePipelineV1` |
+| Stage order not user-editable | hardcoded domain catalog | same + no DB stage table |
+| Scope/effect permissions | `IsOwnerEffectAllowed` | `AllowedOwnerEffectCombinationsPass` / `ForbiddenOwnerEffectCombinationsThrow` |
+| Chain contracts DROP/REJECT/RETURN_TO_UNMANAGED | `ChainContract` | `SupportsNormativeDispositions` / `ReturnToUnmanagedRequiresMigrationCoexistenceAndIsCritical` |
+| Default ACCEPT impossible | `ChainDefaultDisposition` | `AcceptDefaultDispositionIsImpossible` |
+| Contract only company baseline | `PolicyDocument` / `ChainContractSet` | `CompanyBaselineMayDefineContractsOverlaysCannot` |
+| Site/Node cannot change contract | `WithChainContracts` | same |
+| Deterministic IPv4/IPv6 × INPUT/FORWARD/OUTPUT | `OrderedSurfaces` | `StageOrderIsIdenticalForEveryFamilyAndChainSurface` |
+| Forbidden owner/effect unit coverage | permission matrix | `ForbiddenOwnerEffectCombinationsThrow` |
+
+Filter: `dotnet test --filter FullyQualifiedName~PolicyPipeline|FullyQualifiedName~ChainContract`.
+
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
 Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):
