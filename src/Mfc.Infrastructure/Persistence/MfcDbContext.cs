@@ -39,6 +39,10 @@ public sealed class MfcDbContext : DbContext
 
     public DbSet<SnapshotCaptureSectionEntity> SnapshotCaptureSections => Set<SnapshotCaptureSectionEntity>();
 
+    public DbSet<PolicyEntity> Policies => Set<PolicyEntity>();
+
+    public DbSet<PolicyRevisionEntity> PolicyRevisions => Set<PolicyRevisionEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MfcDbContext).Assembly);
@@ -113,5 +117,64 @@ public sealed class MfcDbContext : DbContext
                     "snapshot_capture_sections is append-only: update and delete are not allowed through the application DbContext.");
             }
         }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<PolicyRevisionEntity> entry
+                 in ChangeTracker.Entries<PolicyRevisionEntity>())
+        {
+            if (entry.State is EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "policy_revisions cannot be deleted through the application DbContext.");
+            }
+
+            if (entry.State is not EntityState.Modified)
+            {
+                continue;
+            }
+
+            short originalState = entry.Property(e => e.State).OriginalValue;
+            bool payloadWasFrozen = originalState is PolicyRevisionEntity.ApprovedState
+                or PolicyRevisionEntity.RejectedState
+                or PolicyRevisionEntity.SupersededState
+                or PolicyRevisionEntity.RevokedState;
+
+            if (!payloadWasFrozen)
+            {
+                continue;
+            }
+
+            if (PayloadFieldsModified(entry))
+            {
+                throw new InvalidOperationException(
+                    "Approved/terminal policy_revision payload is immutable and cannot be updated through the application DbContext.");
+            }
+
+            // APPROVED may transition to SUPERSEDED/REVOKED; other terminal states are frozen.
+            if (originalState != PolicyRevisionEntity.ApprovedState)
+            {
+                throw new InvalidOperationException(
+                    "Terminal policy_revision state cannot be updated through the application DbContext.");
+            }
+
+            short newState = entry.Entity.State;
+            if (newState is not (PolicyRevisionEntity.SupersededState or PolicyRevisionEntity.RevokedState))
+            {
+                throw new InvalidOperationException(
+                    "APPROVED policy_revision may only transition to SUPERSEDED or REVOKED through the application DbContext.");
+            }
+        }
     }
+
+    private static bool PayloadFieldsModified(
+        Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<PolicyRevisionEntity> entry)
+        => entry.Property(e => e.ContentHash).IsModified
+           || entry.Property(e => e.ParentContextHash).IsModified
+           || entry.Property(e => e.CompressedPayload).IsModified
+           || entry.Property(e => e.Compression).IsModified
+           || entry.Property(e => e.UncompressedSize).IsModified
+           || entry.Property(e => e.SchemaVersion).IsModified
+           || entry.Property(e => e.RevisionNumber).IsModified
+           || entry.Property(e => e.PolicyId).IsModified
+           || entry.Property(e => e.CreatedBy).IsModified
+           || entry.Property(e => e.CreatedAtUtc).IsModified;
 }

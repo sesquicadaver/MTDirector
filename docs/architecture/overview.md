@@ -54,7 +54,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | VRRP CHR acceptance | Done (M1-32) | Active/passive + split-master; per-VRID roles; role≠config hash; topology blockers; lab provision |
 | Fault-injection suite | Done (M1-33) | Protocol/session/stable-read matrix + snapshot capture faults; typed codes; no orphan completes |
 | M1 acceptance package | Done (M1-34) | Operator docs + acceptance report; **M1 CLOSED** |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-01 (#48) |
+| Policy document lifecycle | Done (M2-01) | `Policy` / `PolicyRevision`, MFC-CJ1 hash, Brotli `policy_revisions` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-02 (#49) |
 
 ## ADRs
 
