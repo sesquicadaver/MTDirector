@@ -194,6 +194,21 @@ Initial Issue Set M1-33 AC → module → tests:
 
 Filter: `dotnet test --filter FullyQualifiedName~FaultInjection`.
 
+## Living Specification — M1 vertical-slice acceptance package (M1-34)
+
+Initial Issue Set M1-34 AC → module → tests/docs:
+
+| AC / вимога | Модуль | Тест / документ |
+|-------------|--------|-----------------|
+| Standalone/Multi-WAN/VRRP/Fault matrices | acceptance suites | filters in [`m1-vertical-slice-acceptance.md`](m1-vertical-slice-acceptance.md) |
+| Identical config hash / no runtime config drift | M1-30…32 suites | Living Spec rows above |
+| Desktop server data | Shell ViewModels | `DesktopVerticalSliceWiringTests` |
+| No write path / no Desktop RouterOS | Architecture + csproj | `RouterOsMustNotExposeForbiddenWriteNamespaces` + `DesktopAssembliesDoNotReferenceRouterOs` |
+| Fixtures / vuln / architecture / restore | docs + gates | fixtures README; `dotnet list … --vulnerable`; ArchitectureBoundary; recovery + migrate |
+| CHANGELOG + known limitations + RC | acceptance package | `M1VerticalSliceAcceptanceDocumentationTests` |
+
+Filter: `dotnet test --filter FullyQualifiedName~M1VerticalSliceAcceptance`.
+
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
 Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):

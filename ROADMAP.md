@@ -3,7 +3,7 @@
 **Дата оновлення:** 9 серпня 2026  
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач  
 **Продукт:** MikroTik Firewall Controller (MTDirector)  
-**Базовий коміт аудиту:** M1-33 (protocol/snapshot fault-injection suite) — черга зсунута на M1-34
+**Базовий коміт аудиту:** M1-34 (read-only vertical-slice acceptance) — **M1 CLOSED**; черга зсунута на M2-01
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -41,13 +41,13 @@
 | Область | Closed | Open | % |
 |---------|-------:|-----:|--:|
 | M0 Bootstrap | 10 | 0 | 100% |
-| M1 Read-only slice | 33 | 1 | 97% |
+| M1 Read-only slice | 34 | 0 | 100% |
 | N1 Packet-path weave | 3 | 4 | 43% |
 | M2–M6 (решта MVP) | 0 | 58 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **46** | **90** | **~34% issues** |
+| **Разом** | **47** | **89** | **~35% issues** |
 
-MVP issues (109) = 46 done + **63 remaining** до MVP CLOSED.  
+MVP issues (109) = 47 done + **62 remaining** до MVP CLOSED.  
 Post-MVP M7 = **27** після MVP.
 
 ### 2.2 DONE (не в черзі)
@@ -91,6 +91,7 @@ Post-MVP M7 = **27** після MVP.
 | M1-31 | #41 | Multi-WAN CHR vertical-slice acceptance (failover/balanced; config≠obs route diffs; lab provision) |
 | M1-32 | #42 | VRRP CHR vertical-slice acceptance (active/passive + split-master; per-VRID roles; topology blockers) |
 | M1-33 | #43 | Protocol/snapshot fault-injection suite (typed codes, pending=0, no orphan completes, recovery) |
+| M1-34 | #44 | **M1 CLOSED** — vertical-slice acceptance package (docs + gates + known limitations) |
 
 ### 2.3 Поточні прогалини (код)
 
@@ -103,7 +104,7 @@ Post-MVP M7 = **27** після MVP.
 | `Mfc.Desktop` | connection shell + inventory tree + snapshot viewer + semantic diff viewer |
 | Persistence | inventory EF stores + idempotency_records + snapshot CAS — наступні issues |
 
-**NEXT = черга #33:** [M1-34](https://github.com/sesquicadaver/MTDirector/issues/44).
+**NEXT = черга #34:** [M2-01](https://github.com/sesquicadaver/MTDirector/issues/48).
 
 ---
 
@@ -171,7 +172,7 @@ Post-MVP M7 = **27** після MVP.
 | ~~30~~ | ~~M1-31~~ | ~~#41~~ | ~~Add multi-WAN CHR vertical-slice acceptance test~~ → §2.2 DONE |
 | ~~31~~ | ~~M1-32~~ | ~~#42~~ | ~~Add VRRP CHR vertical-slice acceptance test~~ → §2.2 DONE |
 | ~~32~~ | ~~M1-33~~ | ~~#43~~ | ~~Add protocol and snapshot fault-injection suite~~ → §2.2 DONE |
-| 33 | M1-34 | #44 | Complete read-only vertical-slice acceptance (**M1 CLOSED**) |
+| ~~33~~ | ~~M1-34~~ | ~~#44~~ | ~~Complete read-only vertical-slice acceptance (**M1 CLOSED**)~~ → §2.2 DONE |
 
 #### Блок A6 — M2 Policy core (+ N1)
 
@@ -358,7 +359,7 @@ Post-MVP M7 = **27** після MVP.
 | Persist canonical snapshots | M1-23 | PG sections; payload dedupe; pagination; immutability | **DONE** |
 | Semantic snapshot diff | M1-24 | `SemanticDiffEngine` unit AC#1–13; CompareSnapshotsUseCase | **DONE** |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | M1-25…29 DONE |
-| M1 acceptance gate | M1-30…34 | CHR suites | M1-30…33 DONE; M1-34 TODO |
+| M1 acceptance gate | M1-30…34 | CHR suites + acceptance package | **M1 CLOSED** |
 | Policy compose + analysis | M2 | analysis unit; SoD | TODO |
 | Deterministic filter artifact | M3 | golden artifacts | TODO |
 | Anchor bootstrap | M5 | equivalence; crash recovery | TODO |
@@ -387,9 +388,9 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **чергу #33** → [M1-34 / issue #44](https://github.com/sesquicadaver/MTDirector/issues/44).  
+1. Відкрити **чергу #34** → [M2-01 / issue #48](https://github.com/sesquicadaver/MTDirector/issues/48).  
 2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.  
-3. Не стартувати M2, доки не закрито **M1-34** (черга #33).  
+3. Не стартувати M2, доки не закрито **M1-34** (черга #33) — **DONE**.  
 4. Не стартувати M4, доки не закрито **M5-10** (черга #71).  
 5. Не стартувати M7, доки не закрито **M6-09** (черга #95).
 
