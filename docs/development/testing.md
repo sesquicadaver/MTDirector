@@ -209,6 +209,25 @@ Initial Issue Set M1-34 AC → module → tests/docs:
 
 Filter: `dotnet test --filter FullyQualifiedName~M1VerticalSliceAcceptance`.
 
+## Living Specification — policy document lifecycle (M2-01)
+
+Policy Model §7–§9 / §33 / §66 + Issue Set M2-01 AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Kinds COMPANY/SITE/NODE/EXCEPTION | `Policy` / `PolicyEnums` | `CreateSupportsNormativeKinds` |
+| Normative revision states + transitions | `PolicyRevision` | `LifecycleDraftToApprovedAndTerminalTransitions` |
+| Edit only DRAFT; VALIDATED→DRAFT on edit | `PolicyRevision.ReplaceDocument` | `ReplaceDocumentOnValidatedReturnsToDraftAndChangesHash` |
+| APPROVED payload immutable | domain + DbContext | unit reject + `ApprovedPayloadIsImmutableDeleteForbiddenLifecycleStateAllowed` |
+| Hash over exact canonical bytes | `PolicyHashing` / `PolicyCanonicalWriter` | `PolicyCanonicalHashTests` |
+| Draft edit changes hash / clears validation | domain + store | unit + `DraftEditPersistsNewHashAndInvalidatesValidationState` |
+| Approved not update/delete via app role | `MfcDbContext` | `ApprovedPayloadIsImmutableDeleteForbiddenLifecycleStateAllowed` |
+| Clone approved → new DRAFT | `CloneToDraft` + store | unit + `CloneApprovedPersistsNewDraftRevision` |
+| Payload compressed; hash before compression | `BrotliPayloadCodec` + store | `ContentHashIsSha256OfExactCanonicalBytesIndependentOfBrotli` + persist round-trip |
+| Lifecycle unit + PostgreSQL integration | unit + Testcontainers | `FullyQualifiedName~Policy` |
+
+Filter: `dotnet test --filter FullyQualifiedName~Policy`.
+
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
 Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):

@@ -1,6 +1,7 @@
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Infrastructure.Persistence.Hosting;
 using Mfc.Infrastructure.Persistence.Inventory;
+using Mfc.Infrastructure.Persistence.Policies;
 using Mfc.Infrastructure.Persistence.Snapshots;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +39,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IConnectionProfileReadStore, EfConnectionProfileReadStore>();
         services.AddScoped<IIdempotencyStore, EfIdempotencyStore>();
         services.AddScoped<ISnapshotStore, EfSnapshotStore>();
+        services.AddScoped<IPolicyStore, EfPolicyStore>();
         services.AddHostedService<DatabaseSchemaGuardHostedService>();
         return services;
     }

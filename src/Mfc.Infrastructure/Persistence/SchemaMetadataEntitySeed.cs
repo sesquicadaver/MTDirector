@@ -16,11 +16,15 @@ public static class SchemaMetadataEntitySeed
     public const string SnapshotPersistSchemaKey = "snapshot.persist.schema";
     public const string SnapshotPersistSchemaValue = "m1-23";
 
+    public const string PolicyLifecycleSchemaKey = "policy.lifecycle.schema";
+    public const string PolicyLifecycleSchemaValue = "m2-01";
+
     public static void EnsureBootstrapMetadata(MfcDbContext db)
     {
         EnsureKey(db, BootstrapSchemaKey, BootstrapSchemaValue);
         EnsureKey(db, InventorySnapshotSchemaKey, InventorySnapshotSchemaValue);
         EnsureKey(db, SnapshotPersistSchemaKey, SnapshotPersistSchemaValue);
+        EnsureKey(db, PolicyLifecycleSchemaKey, PolicyLifecycleSchemaValue);
     }
 
     private static void EnsureKey(MfcDbContext db, string key, string value)
