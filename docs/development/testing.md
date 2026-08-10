@@ -266,6 +266,27 @@ Policy Model §11 / §16–§17 + Issue Set M2-03 AC → module → tests:
 
 Filter: `dotnet test --filter FullyQualifiedName~Address`.
 
+## Living Specification — service objects and selectors (M2-04)
+
+Policy Model §18–§19 + Issue Set M2-04 AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Numeric protocol semantics | `IpProtocol` | `ProtocolSemanticsUseNumericValueTcpUdpPortsSupported` |
+| TCP/UDP source/dest ports | `ServiceTerm` / `PortSet` | same |
+| ICMP / ICMPv6 separated | `ServiceObject.CanonicalizeTerms` | `IcmpAndIcmpV6AreSeparatedWrongFamilySelectorRejected` |
+| Ports only on port-capable protocols | `ServiceTerm.Create` | `PortMatcherWithoutPortCapableProtocolIsForbidden` |
+| Wrong ICMP family rejected | resolver | `Ipv4RuleRejectsIcmpV6ServiceObject` |
+| Port intervals normalize/merge | `PortSet.Normalize` | merge test + property trials |
+| Duplicate terms canonicalized | `CanonicalizeTerms` | order-independent object test |
+| protocol=any + ports forbidden | `ServiceTerm` | `ProtocolAnyWithPortsIsForbiddenEmptyObjectForbidden` |
+| No service negation | `ServiceSelector` | `ServiceSelectorHasNoNegationEmptyIncludeIsAnyProtocol` |
+| Empty service object forbidden | `ServiceObject.Create` | same |
+| UUID visibility | `ServiceObjectVisibility` + evaluator | `VisibilityIsUuidScopedUpwardForbidden` |
+| Canonical order ≠ input order | canonicalize | property + object tests |
+
+Filter: `dotnet test --filter FullyQualifiedName~Service`.
+
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
 Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):
