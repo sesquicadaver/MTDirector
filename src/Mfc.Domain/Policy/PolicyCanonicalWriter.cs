@@ -19,7 +19,8 @@ public static class PolicyCanonicalWriter
             ("schema_version", w => w.WriteNumber(document.SchemaVersion)),
             ("policy_kind", w => w.WriteString(FormatKind(document.Kind))),
             ("owner_scope", w => w.WriteString(FormatOwnerScope(document.OwnerScope))),
-            ("chain_contracts", w => WriteElementArray(w, document.ChainContracts)),
+            ("pipeline_version", w => w.WriteString(PolicyPipelineV1.Version)),
+            ("chain_contracts", w => WriteChainContracts(w, document.ChainContracts)),
             ("zone_definitions", w => WriteElementArray(w, document.ZoneDefinitions)),
             ("address_objects", w => WriteElementArray(w, document.AddressObjects)),
             ("service_objects", w => WriteElementArray(w, document.ServiceObjects)),
@@ -61,6 +62,38 @@ public static class PolicyCanonicalWriter
             PolicyRevisionState.Revoked => "REVOKED",
             _ => throw new DomainInvariantException($"Unknown revision state '{state}'."),
         };
+
+    private static void WriteChainContracts(CanonicalJsonWriter writer, ChainContractSet contracts)
+    {
+        writer.WriteArrayStart();
+        for (int i = 0; i < contracts.Items.Count; i++)
+        {
+            if (i > 0)
+            {
+                writer.WriteComma();
+            }
+
+            WriteChainContract(writer, contracts.Items[i]);
+        }
+
+        writer.WriteArrayEnd();
+    }
+
+    private static void WriteChainContract(CanonicalJsonWriter writer, ChainContract contract)
+    {
+        List<(string Key, Action<CanonicalJsonWriter> WriteValue)> properties =
+        [
+            ("family", w => w.WriteString(PolicyPipelineV1.FormatFamily(contract.Family))),
+            ("chain", w => w.WriteString(PolicyPipelineV1.FormatFilterChain(contract.Chain))),
+            ("default_disposition", w => w.WriteString(PolicyPipelineV1.FormatDisposition(contract.DefaultDisposition))),
+        ];
+        if (contract.RejectModeValue is RejectMode mode)
+        {
+            properties.Add(("reject_mode", w => w.WriteString(PolicyPipelineV1.FormatRejectMode(mode))));
+        }
+
+        writer.WriteObject(properties);
+    }
 
     private static void WriteElementArray(CanonicalJsonWriter writer, IReadOnlyList<JsonElement> elements)
     {

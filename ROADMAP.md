@@ -3,7 +3,7 @@
 **Дата оновлення:** 10 серпня 2026  
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач  
 **Продукт:** MikroTik Firewall Controller (MTDirector)  
-**Базовий коміт аудиту:** M2-01 (policy document lifecycle) — M1 CLOSED; черга зсунута на M2-02
+**Базовий коміт аудиту:** M2-02 (fixed Policy Pipeline v1 + chain contracts) — M1 CLOSED; черга зсунута на M2-03
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -93,6 +93,7 @@ Post-MVP M7 = **27** після MVP.
 | M1-33 | #43 | Protocol/snapshot fault-injection suite (typed codes, pending=0, no orphan completes, recovery) |
 | M1-34 | #44 | **M1 CLOSED** — vertical-slice acceptance package (docs + gates + known limitations) |
 | M2-01 | #48 | Policy document lifecycle + document-centric `policies` / `policy_revisions` persistence |
+| M2-02 | #49 | Fixed Policy Pipeline v1 + company-baseline chain contracts (DROP/REJECT/RETURN_TO_UNMANAGED) |
 
 ### 2.3 Поточні прогалини (код)
 
@@ -103,9 +104,10 @@ Post-MVP M7 = **27** після MVP.
 | `Mfc.Application` | inventory CRUD + `ListNodesUseCase` + ValidateDeviceConnection/`DiscoverDeviceUseCase`; snapshot capture+persist+semantic compare + section paging/descriptors; `IPolicyStore` |
 | `Mfc.Controller` | health + `InventoryService` + `SnapshotService` gRPC (`CaptureProgressHub`) |
 | `Mfc.Desktop` | connection shell + inventory tree + snapshot viewer + semantic diff viewer |
-| Persistence | inventory + snapshot CAS + policy lifecycle (`policies` / `policy_revisions`) — pipeline/objects у наступних issues |
+| Persistence | inventory + snapshot CAS + policy lifecycle — address/service objects у наступних issues |
+| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts — objects/rules у M2-03+ |
 
-**NEXT = черга #35:** [M2-02](https://github.com/sesquicadaver/MTDirector/issues/49).
+**NEXT = черга #36:** [M2-03](https://github.com/sesquicadaver/MTDirector/issues/50).
 
 ---
 
@@ -180,7 +182,7 @@ Post-MVP M7 = **27** після MVP.
 | # | ID | GitHub | Задача |
 |--:|----|-------:|--------|
 | ~~34~~ | ~~M2-01~~ | ~~#48~~ | ~~Implement policy document lifecycle and persistence~~ → §2.2 DONE |
-| 35 | M2-02 | #49 | Implement fixed Policy Pipeline v1 and chain contracts |
+| ~~35~~ | ~~M2-02~~ | ~~#49~~ | ~~Implement fixed Policy Pipeline v1 and chain contracts~~ → §2.2 DONE |
 | 36 | M2-03 | #50 | Implement address objects and selectors |
 | 37 | M2-04 | #51 | Implement service objects and selectors |
 | 38 | M2-05 | #52 | Implement logical zones and Node bindings |
@@ -389,9 +391,9 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **чергу #35** → [M2-02 / issue #49](https://github.com/sesquicadaver/MTDirector/issues/49).  
+1. Відкрити **чергу #36** → [M2-03 / issue #50](https://github.com/sesquicadaver/MTDirector/issues/50).  
 2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.  
-3. Не стартувати M2, доки не закрито **M1-34** (черга #33) — **DONE**; M2-01 (черга #34) — **DONE**.  
+3. Не стартувати M2, доки не закрито **M1-34** (черга #33) — **DONE**; M2-01/#34 і M2-02/#35 — **DONE**.  
 4. Не стартувати M4, доки не закрито **M5-10** (черга #71).  
 5. Не стартувати M7, доки не закрито **M6-09** (черга #95).
 
