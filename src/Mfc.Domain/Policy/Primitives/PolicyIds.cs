@@ -21,3 +21,10 @@ public readonly record struct UserId(Guid Value)
 
     public override string ToString() => Value.ToString("D");
 }
+
+public readonly record struct AddressObjectId(Guid Value)
+{
+    public static AddressObjectId New() => new(Guid.NewGuid());
+
+    public override string ToString() => Value.ToString("D");
+}
