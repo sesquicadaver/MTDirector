@@ -19,12 +19,16 @@ public static class SchemaMetadataEntitySeed
     public const string PolicyLifecycleSchemaKey = "policy.lifecycle.schema";
     public const string PolicyLifecycleSchemaValue = "m2-01";
 
+    public const string ZoneBindingsSchemaKey = "policy.zone_bindings.schema";
+    public const string ZoneBindingsSchemaValue = "m2-05";
+
     public static void EnsureBootstrapMetadata(MfcDbContext db)
     {
         EnsureKey(db, BootstrapSchemaKey, BootstrapSchemaValue);
         EnsureKey(db, InventorySnapshotSchemaKey, InventorySnapshotSchemaValue);
         EnsureKey(db, SnapshotPersistSchemaKey, SnapshotPersistSchemaValue);
         EnsureKey(db, PolicyLifecycleSchemaKey, PolicyLifecycleSchemaValue);
+        EnsureKey(db, ZoneBindingsSchemaKey, ZoneBindingsSchemaValue);
     }
 
     private static void EnsureKey(MfcDbContext db, string key, string value)

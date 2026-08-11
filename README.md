@@ -4,7 +4,7 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 
 ## Статус
 
-**M1 CLOSED** (read-only vertical slice). Track remaining work in [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
+**M1 CLOSED**; M2 through **M2-05** (zones/bindings). Track remaining work in [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
 
 Acceptance package: [`docs/development/m1-vertical-slice-acceptance.md`](docs/development/m1-vertical-slice-acceptance.md).
 

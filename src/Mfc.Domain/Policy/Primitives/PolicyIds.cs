@@ -35,3 +35,17 @@ public readonly record struct ServiceObjectId(Guid Value)
 
     public override string ToString() => Value.ToString("D");
 }
+
+public readonly record struct ZoneId(Guid Value)
+{
+    public static ZoneId New() => new(Guid.NewGuid());
+
+    public override string ToString() => Value.ToString("D");
+}
+
+public readonly record struct NodeZoneBindingId(Guid Value)
+{
+    public static NodeZoneBindingId New() => new(Guid.NewGuid());
+
+    public override string ToString() => Value.ToString("D");
+}

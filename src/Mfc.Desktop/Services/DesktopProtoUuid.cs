@@ -4,7 +4,7 @@ using Mfc.Contracts.Mfc.V1;
 namespace Mfc.Desktop.Services;
 
 /// <summary>Network-byte-order UUID helpers for Desktop gRPC clients.</summary>
-internal static class DesktopProtoUuid
+public static class DesktopProtoUuid
 {
     public static Uuid FromGuid(Guid value)
     {

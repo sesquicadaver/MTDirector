@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Logical zones and Node bindings (M2-05): desired catalog SoT (`zone_definitions` / `node_zone_bindings`), Domain resolve + AnalysisStale, Application CRUD/resolve use cases, `mfc.v1.ZoneService` gRPC, Desktop Zones panel (Contracts-only); AC#10–11 and PolicyDocument zone embedding deferred to M2-06+.
 - Typed service objects and selectors (M2-04): numeric IP protocols, TCP/UDP/SCTP ports, separated ICMP/ICMPv6, include-only selectors (no negation), UUID visibility, canonical term ordering.
 - Static address objects and selectors (M2-03): HOST/PREFIX/IPv4-RANGE entries with masked prefixes, disjoint-interval normalization, include/exclude universe semantics, UUID visibility, and application selector evaluation.
 - Fixed Policy Pipeline v1 and chain contracts (M2-02): immutable 13-stage pipeline with owner/effect permissions; company-baseline `ChainContract` (DROP/REJECT/RETURN_TO_UNMANAGED); overlays cannot change contracts; ACCEPT default disposition impossible.

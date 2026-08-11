@@ -7,11 +7,12 @@ namespace Mfc.Desktop.ViewModels;
 /// <summary>Pure presentation node for the inventory TreeView (no Domain/RouterOS/SQL types).</summary>
 public sealed partial class InventoryNodeViewModel : ObservableObject
 {
-    public InventoryNodeViewModel(InventoryTreeItem item)
+    public InventoryNodeViewModel(InventoryTreeItem item, Guid? parentId = null)
     {
         ArgumentNullException.ThrowIfNull(item);
         Kind = item.Kind;
         Id = item.Id;
+        ParentId = parentId;
         DisplayName = item.DisplayName;
         StatusText = item.StatusText;
         NodeKindText = item.NodeKindText;
@@ -24,13 +25,15 @@ public sealed partial class InventoryNodeViewModel : ObservableObject
         LastSnapshotText = item.LastSnapshotText;
         foreach (InventoryTreeItem child in item.Children)
         {
-            Children.Add(new InventoryNodeViewModel(child));
+            Children.Add(new InventoryNodeViewModel(child, parentId: item.Id));
         }
     }
 
     public InventoryTreeKind Kind { get; }
 
     public Guid Id { get; }
+
+    public Guid? ParentId { get; }
 
     public string DisplayName { get; }
 

@@ -159,11 +159,13 @@ public static class DiscoveryCanonicalProjector
                 ("type", iface.Type),
                 ("mtu", iface.Mtu),
                 ("mac-address", iface.MacAddress),
-                ("disabled", iface.Disabled))));
+                ("disabled", iface.Disabled),
+                ("dynamic", iface.Dynamic))));
             ifaceObs.Add(Record(Props(
                 ("name", name),
                 ("running", iface.Running),
-                ("actual-mtu", iface.ActualMtu))));
+                ("actual-mtu", iface.ActualMtu),
+                ("dynamic", iface.Dynamic))));
             CollectUnknown(unknown, CanonicalSectionIds.NetworkInterfaces, iface.RawProperties);
         }
 

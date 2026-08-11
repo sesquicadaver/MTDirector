@@ -1,0 +1,151 @@
+syntax = "proto3";
+
+package mfc.v1;
+
+option csharp_namespace = "Mfc.Contracts.Mfc.V1";
+
+import "mfc/v1/common.proto";
+
+// ZoneService — Policy Model §§20–21 / M2-05 desired zone catalog + Node bindings.
+service ZoneService {
+  rpc CreateZoneDefinition(CreateZoneDefinitionRequest) returns (ZoneDefinition);
+  rpc UpdateZoneDefinition(UpdateZoneDefinitionRequest) returns (ZoneDefinition);
+  rpc ListZoneDefinitions(ListZoneDefinitionsRequest) returns (ListZoneDefinitionsResponse);
+  rpc DeleteZoneDefinition(DeleteZoneDefinitionRequest) returns (DeleteZoneDefinitionResponse);
+  rpc UpsertNodeZoneBinding(UpsertNodeZoneBindingRequest) returns (NodeZoneBinding);
+  rpc DeleteNodeZoneBinding(DeleteNodeZoneBindingRequest) returns (DeleteNodeZoneBindingResponse);
+  rpc ListNodeZoneBindings(ListNodeZoneBindingsRequest) returns (ListNodeZoneBindingsResponse);
+  rpc ResolveZonesForDevice(ResolveZonesForDeviceRequest) returns (ZoneResolveBatch);
+  rpc ResolveZonesForNode(ResolveZonesForNodeRequest) returns (ZoneResolveBatch);
+}
+
+enum PolicyOwnerScope {
+  POLICY_OWNER_SCOPE_UNSPECIFIED = 0;
+  POLICY_OWNER_SCOPE_COMPANY = 1;
+  POLICY_OWNER_SCOPE_SITE = 2;
+  POLICY_OWNER_SCOPE_NODE = 3;
+}
+
+enum NodeZoneBindingKind {
+  NODE_ZONE_BINDING_KIND_UNSPECIFIED = 0;
+  NODE_ZONE_BINDING_KIND_INTERFACE_LIST = 1;
+  NODE_ZONE_BINDING_KIND_SINGLE_INTERFACE = 2;
+  NODE_ZONE_BINDING_KIND_EXPLICIT_INTERFACE_SET = 3;
+}
+
+message ZoneDefinition {
+  Uuid id = 1;
+  PolicyOwnerScope owner_scope = 2;
+  optional Uuid owner_id = 3;
+  string key = 4;
+  string name = 5;
+  optional string description = 6;
+  uint64 row_version = 7;
+}
+
+message NodeZoneBinding {
+  Uuid id = 1;
+  Uuid node_id = 2;
+  Uuid zone_id = 3;
+  NodeZoneBindingKind kind = 4;
+  repeated string values = 5;
+  Sha256 expected_dependency_hash = 6;
+  optional Sha256 last_resolved_dependency_hash = 7;
+  bool analysis_stale = 8;
+  uint64 row_version = 9;
+}
+
+message ZoneResolveBlocker {
+  string code = 1;
+  string message = 2;
+  optional string subject = 3;
+}
+
+message ZoneBindingResolveResult {
+  Uuid binding_id = 1;
+  Uuid zone_id = 2;
+  Uuid device_id = 3;
+  repeated string resolved_members = 4;
+  Sha256 fresh_dependency_hash = 5;
+  bool analysis_stale = 6;
+  repeated ZoneResolveBlocker blockers = 7;
+  NodeZoneBinding binding = 8;
+}
+
+message ZoneResolveBatch {
+  repeated ZoneBindingResolveResult results = 1;
+}
+
+message CreateZoneDefinitionRequest {
+  Uuid idempotency_key = 1;
+  PolicyOwnerScope owner_scope = 2;
+  optional Uuid owner_id = 3;
+  string key = 4;
+  string name = 5;
+  optional string description = 6;
+}
+
+message UpdateZoneDefinitionRequest {
+  Uuid idempotency_key = 1;
+  Uuid zone_id = 2;
+  uint64 expected_row_version = 3;
+  optional string name = 4;
+  optional string description = 5;
+  // When true, clears description regardless of description field.
+  bool reset_description = 6;
+}
+
+message ListZoneDefinitionsRequest {
+  optional PolicyOwnerScope owner_scope = 1;
+  optional Uuid owner_id = 2;
+}
+
+message ListZoneDefinitionsResponse {
+  repeated ZoneDefinition zones = 1;
+}
+
+message DeleteZoneDefinitionRequest {
+  Uuid idempotency_key = 1;
+  Uuid zone_id = 2;
+  uint64 expected_row_version = 3;
+}
+
+message DeleteZoneDefinitionResponse {
+  bool deleted = 1;
+}
+
+message UpsertNodeZoneBindingRequest {
+  Uuid idempotency_key = 1;
+  Uuid node_id = 2;
+  Uuid zone_id = 3;
+  NodeZoneBindingKind kind = 4;
+  repeated string values = 5;
+  optional Sha256 expected_dependency_hash = 6;
+  optional uint64 expected_row_version = 7;
+}
+
+message DeleteNodeZoneBindingRequest {
+  Uuid idempotency_key = 1;
+  Uuid binding_id = 2;
+  uint64 expected_row_version = 3;
+}
+
+message DeleteNodeZoneBindingResponse {
+  bool deleted = 1;
+}
+
+message ListNodeZoneBindingsRequest {
+  Uuid node_id = 1;
+}
+
+message ListNodeZoneBindingsResponse {
+  repeated NodeZoneBinding bindings = 1;
+}
+
+message ResolveZonesForDeviceRequest {
+  Uuid device_id = 1;
+}
+
+message ResolveZonesForNodeRequest {
+  Uuid node_id = 1;
+}
