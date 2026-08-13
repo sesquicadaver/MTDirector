@@ -946,6 +946,258 @@ public sealed class SnapshotUseCaseTests
         Assert.False(result.IsSuccess);
         Assert.Equal("forbidden", result.Error!.Code);
     }
+
+    [Fact]
+    public async Task GetSnapshotMapsFailedMetadataAndCaptureDedupesIdenticalHash()
+    {
+        FakeAuthorizationBoundary auth = new();
+        FakeSiteStore sites = new();
+        FakeNodeStore nodes = new();
+        FakeDeviceStore devices = new();
+        FakeConnectionProfileReadStore profiles = new();
+        FakeSnapshotCapturePort capture = new();
+        FakeSnapshotStore snapshots = new();
+        FakeAuditEventWriter audit = new();
+
+        SiteView site = (await CreateSite(auth, sites).ExecuteAsync(
+            new CreateSiteCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = "COV1",
+                Name = "Cov",
+            })).Value!;
+        NodeView node = (await CreateNode(auth, sites, nodes).ExecuteAsync(
+            new CreateNodeCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                SiteId = site.Id,
+                Name = "n",
+                DeclaredKind = NodeKind.Router,
+                DeclaredUplinkMode = DeclaredUplinkMode.One,
+            })).Value!;
+        DeviceView device = (await RegisterDevice(auth, nodes, devices).ExecuteAsync(
+            new RegisterDeviceCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                NodeId = node.Id,
+                DisplayName = "d",
+                ManagementHost = "192.0.2.20",
+                Role = DeviceRole.Router,
+            })).Value!;
+        profiles.ByDevice[device.Id] = new ConnectionProfileReadModel
+        {
+            SecretReference = SecretReference.From(Guid.NewGuid()),
+            TrustMode = CertificateTrustMode.InternalCa,
+            CaProfileRef = "ca",
+        };
+
+        StoredSnapshot failed = new()
+        {
+            Metadata = SnapshotMetadata.CreateFailed(new DeviceId(device.Id), DateTimeOffset.UtcNow),
+            SchemaVersion = 1,
+        };
+        await snapshots.AddAsync(failed);
+        ApplicationResult<SnapshotView> failedView = await new GetSnapshotUseCase(auth, snapshots).ExecuteAsync(
+            new GetSnapshotQuery { Actor = "a", SnapshotId = failed.Metadata.Id.Value });
+        Assert.True(failedView.IsSuccess);
+        Assert.Null(failedView.Value!.ConfigurationHashHex);
+        Assert.Null(failedView.Value.ObservationHashHex);
+        Assert.Null(failedView.Value.CapabilityHashHex);
+        Assert.Null(failedView.Value.SnapshotHashHex);
+        Assert.False(failedView.Value.Deduplicated);
+
+        CaptureSnapshotUseCase captureUseCase = new(auth, devices, profiles, capture, snapshots, audit);
+        byte[] digest = Enumerable.Repeat((byte)6, 32).ToArray();
+        capture.NextResult = FakeSnapshotCapturePort.CreateResult(digest);
+        ApplicationResult<SnapshotView> first = await captureUseCase.ExecuteAsync(
+            new CaptureSnapshotCommand
+            {
+                Actor = "a",
+                DeviceId = device.Id,
+                IdempotencyKey = Guid.Parse("66666666-6666-6666-6666-666666666666"),
+            });
+        ApplicationResult<SnapshotView> deduped = await captureUseCase.ExecuteAsync(
+            new CaptureSnapshotCommand
+            {
+                Actor = "a",
+                DeviceId = device.Id,
+                IdempotencyKey = Guid.Parse("77777777-7777-7777-7777-777777777777"),
+            });
+        Assert.True(first.IsSuccess);
+        Assert.True(deduped.IsSuccess);
+        Assert.Equal(first.Value!.Id, deduped.Value!.Id);
+        Assert.False(first.Value.Deduplicated);
+        Assert.True(deduped.Value.Deduplicated);
+        Assert.Equal(2, capture.CaptureCount);
+    }
+
+    [Fact]
+    public async Task CaptureAndDiscoverMapDependencyAndValidationFailures()
+    {
+        FakeAuthorizationBoundary auth = new();
+        FakeSiteStore sites = new();
+        FakeNodeStore nodes = new();
+        FakeDeviceStore devices = new();
+        FakeConnectionProfileReadStore profiles = new();
+        FakeRouterOsReadPort routerOs = new();
+        FakeSnapshotCapturePort capture = new();
+        FakeSnapshotStore snapshots = new();
+        FakeAuditEventWriter audit = new();
+
+        SiteView site = (await CreateSite(auth, sites).ExecuteAsync(
+            new CreateSiteCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = "COV2",
+                Name = "Cov2",
+            })).Value!;
+        NodeView node = (await CreateNode(auth, sites, nodes).ExecuteAsync(
+            new CreateNodeCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                SiteId = site.Id,
+                Name = "n",
+                DeclaredKind = NodeKind.Router,
+                DeclaredUplinkMode = DeclaredUplinkMode.One,
+            })).Value!;
+        DeviceView device = (await RegisterDevice(auth, nodes, devices).ExecuteAsync(
+            new RegisterDeviceCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                NodeId = node.Id,
+                DisplayName = "d",
+                ManagementHost = "192.0.2.21",
+                Role = DeviceRole.Router,
+            })).Value!;
+        profiles.ByDevice[device.Id] = new ConnectionProfileReadModel
+        {
+            SecretReference = SecretReference.From(Guid.NewGuid()),
+            TrustMode = CertificateTrustMode.InternalCa,
+            CaProfileRef = "ca",
+        };
+
+        CaptureSnapshotUseCase captureUseCase = new(auth, devices, profiles, capture, snapshots, audit);
+        ApplicationResult<SnapshotView> emptyKey = await captureUseCase.ExecuteAsync(
+            new CaptureSnapshotCommand { Actor = "a", DeviceId = device.Id, IdempotencyKey = Guid.Empty });
+        Assert.Equal("failed", emptyKey.Error!.Code);
+
+        capture.NextResult = FakeSnapshotCapturePort.CreateResult(Enumerable.Repeat((byte)1, 32).ToArray());
+        ThrowingSnapshotCapturePort unstable = new(new InvalidOperationException("SNAPSHOT_UNSTABLE drift"));
+        ApplicationResult<SnapshotView> unstableResult = await new CaptureSnapshotUseCase(
+            auth, devices, profiles, unstable, snapshots, audit).ExecuteAsync(
+            new CaptureSnapshotCommand
+            {
+                Actor = "a",
+                DeviceId = device.Id,
+                IdempotencyKey = Guid.Parse("88888888-8888-8888-8888-888888888888"),
+            });
+        Assert.Equal("snapshot_unstable", unstableResult.Error!.Code);
+
+        ThrowingSnapshotCapturePort tooLarge = new(new InvalidOperationException("SNAPSHOT_TOO_LARGE limit"));
+        ApplicationResult<SnapshotView> tooLargeResult = await new CaptureSnapshotUseCase(
+            auth, devices, profiles, tooLarge, snapshots, audit).ExecuteAsync(
+            new CaptureSnapshotCommand
+            {
+                Actor = "a",
+                DeviceId = device.Id,
+                IdempotencyKey = Guid.Parse("99999999-9999-9999-9999-999999999999"),
+            });
+        Assert.Equal("snapshot_too_large", tooLargeResult.Error!.Code);
+
+        ThrowingSnapshotCapturePort dependency = new(new IOException("network down"));
+        ApplicationResult<SnapshotView> dependencyResult = await new CaptureSnapshotUseCase(
+            auth, devices, profiles, dependency, snapshots, audit).ExecuteAsync(
+            new CaptureSnapshotCommand
+            {
+                Actor = "a",
+                DeviceId = device.Id,
+                IdempotencyKey = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+            });
+        Assert.Equal("dependency", dependencyResult.Error!.Code);
+
+        routerOs.ThrowOnProbe = new IOException("probe failed");
+        ApplicationResult<DeviceDiscoveryView> probeDependency =
+            await new DiscoverDeviceUseCase(auth, devices, profiles, routerOs).ExecuteAsync(
+                new DiscoverDeviceCommand { Actor = "a", DeviceId = device.Id });
+        Assert.Equal("dependency", probeDependency.Error!.Code);
+    }
+
+    [Fact]
+    public async Task GetNodeMapsLastSnapshotTimestampWhenCaptureExists()
+    {
+        FakeAuthorizationBoundary auth = new();
+        FakeSiteStore sites = new();
+        FakeNodeStore nodes = new();
+        FakeDeviceStore devices = new();
+        FakeSnapshotStore snapshots = new();
+
+        SiteView site = (await CreateSite(auth, sites).ExecuteAsync(
+            new CreateSiteCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = "GN02",
+                Name = "GetNode2",
+            })).Value!;
+        NodeView node = (await CreateNode(auth, sites, nodes).ExecuteAsync(
+            new CreateNodeCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                SiteId = site.Id,
+                Name = "core",
+                DeclaredKind = NodeKind.Router,
+                DeclaredUplinkMode = DeclaredUplinkMode.One,
+            })).Value!;
+        DeviceView device = (await RegisterDevice(auth, nodes, devices).ExecuteAsync(
+            new RegisterDeviceCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                NodeId = node.Id,
+                DisplayName = "core",
+                ManagementHost = "192.0.2.22",
+                Role = DeviceRole.Router,
+            })).Value!;
+
+        DateTimeOffset completedAt = DateTimeOffset.UtcNow;
+        StoredSnapshot stored = new()
+        {
+            Metadata = SnapshotMetadata.CreateCompleted(
+                new DeviceId(device.Id),
+                ConfigurationHash.FromDigest(Hash256.Create(Enumerable.Repeat((byte)3, 32).ToArray())),
+                ObservationHash.FromDigest(Hash256.Create(Enumerable.Repeat((byte)4, 32).ToArray())),
+                CapabilityHash.FromDigest(Hash256.Create(Enumerable.Repeat((byte)5, 32).ToArray())),
+                SnapshotHash.FromDigest(Hash256.Create(Enumerable.Repeat((byte)6, 32).ToArray())),
+                completedAt),
+            SchemaVersion = 1,
+        };
+        await snapshots.AddAsync(stored);
+
+        Device? persisted = await devices.GetAsync(new DeviceId(device.Id));
+        Assert.NotNull(persisted);
+        persisted!.RecordCompletedCapture(stored.Metadata.Id.Value);
+        await devices.UpdateAsync(persisted);
+
+        ApplicationResult<NodeDetailsView> details = await new GetNodeUseCase(auth, nodes, devices, snapshots)
+            .ExecuteAsync(new GetNodeQuery { Actor = "a", NodeId = node.Id });
+        Assert.True(details.IsSuccess);
+        Assert.Equal(completedAt, details.Value!.Devices[0].LastSnapshotAtUtc);
+    }
+
+    private sealed class ThrowingSnapshotCapturePort(Exception ex) : ISnapshotCapturePort
+    {
+        public Task<SnapshotCaptureResult> CaptureAsync(
+            RouterOsReadTarget target,
+            CancellationToken cancellationToken = default)
+            => throw ex;
+    }
 }
 
 public sealed class ApplicationResultTests

@@ -11,6 +11,11 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 - Pin transitive `SSH.NET` to 2026.0.0 (CPM) so NuGet audit no longer fails restore on GHSA-q939-rpr3-3284 from Testcontainers 4.13.
 
+### Fixed
+
+- Desktop inventory cancel race: await shared refresh before surfacing cancellation so `IsRefreshing` clears consistently.
+- Unit tests: explicit non-UTC offsets; zone/snapshot/policy coverage to meet Domain/Application CI thresholds.
+
 ### Added
 
 - Logical zones and Node bindings (M2-05): desired catalog SoT (`zone_definitions` / `node_zone_bindings`), Domain resolve + AnalysisStale, Application CRUD/resolve use cases, `mfc.v1.ZoneService` gRPC, Desktop Zones panel (Contracts-only); AC#10–11 and PolicyDocument zone embedding deferred to M2-06+.

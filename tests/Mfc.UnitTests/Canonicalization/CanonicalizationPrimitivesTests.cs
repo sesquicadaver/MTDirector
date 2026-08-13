@@ -15,6 +15,34 @@ public sealed class CanonicalizationPrimitivesTests
     private static readonly string[] OrderedInput = ["c", "a", "b"];
 
     [Fact]
+    public void RegistrySectionIdsExposeOrderedFlagAndIndex()
+    {
+        HashSet<string> orderedIds =
+        [
+            CanonicalSectionIds.FirewallIpv4Filter,
+            CanonicalSectionIds.FirewallIpv6Filter,
+            CanonicalSectionIds.FirewallIpv4Nat,
+            CanonicalSectionIds.FirewallIpv6Nat,
+            CanonicalSectionIds.FirewallIpv4Raw,
+            CanonicalSectionIds.FirewallIpv6Raw,
+            CanonicalSectionIds.FirewallIpv4Mangle,
+            CanonicalSectionIds.FirewallIpv6Mangle,
+            CanonicalSectionIds.RoutingRules,
+        ];
+
+        for (int i = 0; i < CanonicalSectionIds.AllInRegistryOrder.Count; i++)
+        {
+            string sectionId = CanonicalSectionIds.AllInRegistryOrder[i];
+            Assert.Equal(orderedIds.Contains(sectionId), CanonicalSectionIds.IsOrdered(sectionId));
+            Assert.True(CanonicalSectionIds.RegistryOrderIndex.TryGetValue(sectionId, out int index));
+            Assert.Equal(i, index);
+        }
+
+        Assert.False(CanonicalSectionIds.IsOrdered("unknown.section"));
+        Assert.False(CanonicalSectionIds.RegistryOrderIndex.ContainsKey("unknown.section"));
+    }
+
+    [Fact]
     public void IpAddressesAndPrefixesHaveCanonicalForm()
     {
         Assert.True(CanonicalIp.TryCanonicalizeAddress("192.168.1.10", out string v4, out _));

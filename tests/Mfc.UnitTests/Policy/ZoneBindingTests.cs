@@ -229,4 +229,97 @@ public sealed class ZoneResolveEngineTests
         Assert.Contains(result.Blockers, b => b.Code == ZoneResolveBlockerCodes.ObservationUnavailable);
         Assert.True(result.AnalysisStale);
     }
+
+    [Fact]
+    public void InterfaceListCycleAndMissingListProduceTypedBlockers()
+    {
+        NodeZoneBinding binding = NodeZoneBinding.Create(
+            new NodeId(Guid.NewGuid()),
+            ZoneId.New(),
+            NodeZoneBindingKind.InterfaceList,
+            ["LAN"],
+            Hash256.Create(new byte[32]));
+
+        ZoneBindingResolveResult cycle = ZoneResolveEngine.Resolve(
+            binding,
+            new ZoneResolveDeviceObservation
+            {
+                DeviceId = new DeviceId(Guid.NewGuid()),
+                ObservationAvailable = true,
+                Interfaces =
+                [
+                    new ZoneResolveInterfaceObservation { Name = "ether1", Dynamic = false },
+                ],
+                InterfaceLists =
+                [
+                    new InterfaceListSpec { Name = "LAN", Include = ["WAN"], Exclude = [] },
+                    new InterfaceListSpec { Name = "WAN", Include = ["LAN"], Exclude = [] },
+                ],
+                InterfaceListMembers =
+                [
+                    new InterfaceListMemberSpec { List = "LAN", Interface = "ether1", Disabled = false },
+                ],
+            });
+        Assert.Contains(cycle.Blockers, b => b.Code == ZoneResolveBlockerCodes.InterfaceListCycle);
+
+        ZoneBindingResolveResult missing = ZoneResolveEngine.Resolve(
+            binding,
+            new ZoneResolveDeviceObservation
+            {
+                DeviceId = new DeviceId(Guid.NewGuid()),
+                ObservationAvailable = true,
+                Interfaces =
+                [
+                    new ZoneResolveInterfaceObservation { Name = "ether1", Dynamic = false },
+                ],
+                InterfaceLists = [],
+                InterfaceListMembers = [],
+            });
+        Assert.Contains(missing.Blockers, b => b.Code == ZoneResolveBlockerCodes.MissingInterfaceList);
+        Assert.Contains(missing.Blockers, b => b.Code == ZoneResolveBlockerCodes.EmptyResolvedSet);
+    }
+}
+
+public sealed class ZoneDefinitionOwnerScopeTests
+{
+    [Fact]
+    public void NodeScopeAndReconstituteValidateOwners()
+    {
+        Guid nodeId = Guid.NewGuid();
+        ZoneDefinition zone = ZoneDefinition.Create(
+            PolicyOwnerScope.Node,
+            nodeId,
+            NonEmptyName.Create("guest"),
+            NonEmptyName.Create("Guest"),
+            "  note  ");
+        Assert.Equal("note", zone.Description);
+        zone.SetDescription(null);
+        Assert.Null(zone.Description);
+
+        ZoneDefinition reconstituted = ZoneDefinition.Reconstitute(
+            zone.Id,
+            zone.OwnerScope,
+            zone.OwnerId,
+            zone.Key,
+            zone.Name,
+            "again",
+            zone.RowVersion);
+        Assert.Equal("again", reconstituted.Description);
+
+        Assert.Throws<DomainInvariantException>(() =>
+            ZoneDefinition.Create(
+                PolicyOwnerScope.Node,
+                null,
+                NonEmptyName.Create("x"),
+                NonEmptyName.Create("X")));
+        Assert.Throws<DomainInvariantException>(() =>
+            ZoneDefinition.Reconstitute(
+                ZoneId.New(),
+                PolicyOwnerScope.Company,
+                null,
+                NonEmptyName.Create("x"),
+                NonEmptyName.Create("X"),
+                null,
+                rowVersion: 0));
+    }
 }

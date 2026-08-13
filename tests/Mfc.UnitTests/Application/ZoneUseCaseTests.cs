@@ -279,4 +279,205 @@ public sealed class ZoneUseCaseTests
         Assert.NotNull(persisted);
         Assert.True(persisted!.AnalysisStale);
     }
+
+    [Fact]
+    public async Task ListDeleteAndUpsertUpdateCoverRemainingZoneUseCases()
+    {
+        FakeAuthorizationBoundary auth = new();
+        FakeSiteStore sites = new();
+        FakeNodeStore nodes = new();
+        FakeZoneDefinitionStore zones = new();
+        FakeNodeZoneBindingStore bindings = new();
+        FakeIdempotencyStore idempotency = new();
+        FakeAuditEventWriter audit = new();
+
+        Site site = Site.Create(SiteCode.Create("ZLAB"), NonEmptyName.Create("Zone Lab"));
+        await sites.AddAsync(site);
+        Node node = Node.Create(site.Id, NonEmptyName.Create("edge"), NodeKind.Router, DeclaredUplinkMode.One);
+        await nodes.AddAsync(node);
+
+        CreateZoneDefinitionUseCase create = new(auth, zones, idempotency, audit);
+        ApplicationResult<ZoneDefinitionView> created = await create.ExecuteAsync(new CreateZoneDefinitionCommand
+        {
+            Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
+            OwnerScope = PolicyOwnerScope.Company,
+            Key = "dmz",
+            Name = "DMZ",
+            Description = "perimeter",
+        });
+        Assert.True(created.IsSuccess);
+
+        ApplicationResult<ZoneDefinitionView> duplicateKey = await create.ExecuteAsync(new CreateZoneDefinitionCommand
+        {
+            Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
+            OwnerScope = PolicyOwnerScope.Company,
+            Key = "dmz",
+            Name = "DMZ2",
+        });
+        Assert.True(duplicateKey.IsFailure);
+        Assert.Equal("conflict", duplicateKey.Error!.Code);
+
+        ListZoneDefinitionsUseCase listZones = new(auth, zones);
+        ApplicationResult<IReadOnlyList<ZoneDefinitionView>> listed = await listZones.ExecuteAsync(
+            new ListZoneDefinitionsQuery
+            {
+                Actor = "admin",
+                OwnerScope = PolicyOwnerScope.Company,
+            });
+        Assert.True(listed.IsSuccess);
+        Assert.Contains(listed.Value!, z => z.Key == "dmz");
+
+        UpdateZoneDefinitionUseCase update = new(auth, zones, idempotency, audit);
+        ApplicationResult<ZoneDefinitionView> cleared = await update.ExecuteAsync(new UpdateZoneDefinitionCommand
+        {
+            Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
+            ZoneId = created.Value!.Id,
+            ExpectedRowVersion = created.Value.RowVersion,
+            ClearDescription = true,
+        });
+        Assert.True(cleared.IsSuccess);
+        Assert.Null(cleared.Value!.Description);
+
+        ApplicationResult<ZoneDefinitionView> described = await update.ExecuteAsync(new UpdateZoneDefinitionCommand
+        {
+            Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
+            ZoneId = created.Value.Id,
+            ExpectedRowVersion = cleared.Value.RowVersion,
+            Description = "updated",
+        });
+        Assert.True(described.IsSuccess);
+        Assert.Equal("updated", described.Value!.Description);
+
+        UpsertNodeZoneBindingUseCase upsert = new(auth, nodes, zones, bindings, idempotency, audit);
+        ApplicationResult<NodeZoneBindingView> binding = await upsert.ExecuteAsync(new UpsertNodeZoneBindingCommand
+        {
+            Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
+            NodeId = node.Id.Value,
+            ZoneId = created.Value.Id,
+            Kind = NodeZoneBindingKind.InterfaceList,
+            Values = ["LAN"],
+        });
+        Assert.True(binding.IsSuccess);
+
+        ApplicationResult<NodeZoneBindingView> missingRowVersion = await upsert.ExecuteAsync(new UpsertNodeZoneBindingCommand
+        {
+            Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
+            NodeId = node.Id.Value,
+            ZoneId = created.Value.Id,
+            Kind = NodeZoneBindingKind.InterfaceList,
+            Values = ["WAN"],
+        });
+        Assert.True(missingRowVersion.IsFailure);
+        Assert.Equal("validation", missingRowVersion.Error!.Code);
+
+        Hash256 expectedDigest = NodeZoneBinding.ComputeDependencyHash(
+            NodeZoneBindingKind.InterfaceList, ["WAN"], []);
+        byte[] expectedHash = expectedDigest.Bytes.ToArray();
+        ApplicationResult<NodeZoneBindingView> updatedBinding = await upsert.ExecuteAsync(new UpsertNodeZoneBindingCommand
+        {
+            Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
+            NodeId = node.Id.Value,
+            ZoneId = created.Value.Id,
+            Kind = NodeZoneBindingKind.InterfaceList,
+            Values = ["WAN"],
+            ExpectedDependencyHash = expectedHash,
+            ExpectedRowVersion = binding.Value!.RowVersion,
+        });
+        Assert.True(updatedBinding.IsSuccess);
+        Assert.Equal(["WAN"], updatedBinding.Value!.Values);
+
+        ApplicationResult<NodeZoneBindingView> badHash = await upsert.ExecuteAsync(new UpsertNodeZoneBindingCommand
+        {
+            Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
+            NodeId = node.Id.Value,
+            ZoneId = created.Value.Id,
+            Kind = NodeZoneBindingKind.InterfaceList,
+            Values = ["WAN"],
+            ExpectedDependencyHash = [1, 2, 3],
+            ExpectedRowVersion = updatedBinding.Value.RowVersion,
+        });
+        Assert.True(badHash.IsFailure);
+        Assert.Equal("validation", badHash.Error!.Code);
+
+        ListNodeZoneBindingsUseCase listBindings = new(auth, nodes, bindings);
+        ApplicationResult<IReadOnlyList<NodeZoneBindingView>> listedBindings = await listBindings.ExecuteAsync(
+            new ListNodeZoneBindingsQuery { Actor = "admin", NodeId = node.Id.Value });
+        Assert.True(listedBindings.IsSuccess);
+        Assert.Single(listedBindings.Value!);
+
+        DeleteZoneDefinitionUseCase deleteZone = new(auth, zones, bindings, idempotency, audit);
+        ApplicationResult<bool> blockedDelete = await deleteZone.ExecuteAsync(new DeleteZoneDefinitionCommand
+        {
+            Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
+            ZoneId = created.Value.Id,
+            ExpectedRowVersion = described.Value.RowVersion,
+        });
+        Assert.True(blockedDelete.IsFailure);
+        Assert.Equal("conflict", blockedDelete.Error!.Code);
+
+        DeleteNodeZoneBindingUseCase deleteBinding = new(auth, bindings, idempotency, audit);
+        ApplicationResult<bool> deletedBinding = await deleteBinding.ExecuteAsync(new DeleteNodeZoneBindingCommand
+        {
+            Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
+            BindingId = updatedBinding.Value.Id,
+            ExpectedRowVersion = updatedBinding.Value.RowVersion,
+        });
+        Assert.True(deletedBinding.IsSuccess);
+
+        ApplicationResult<bool> deletedZone = await deleteZone.ExecuteAsync(new DeleteZoneDefinitionCommand
+        {
+            Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
+            ZoneId = created.Value.Id,
+            ExpectedRowVersion = described.Value.RowVersion,
+        });
+        Assert.True(deletedZone.IsSuccess);
+
+        ApplicationResult<bool> missingBinding = await deleteBinding.ExecuteAsync(new DeleteNodeZoneBindingCommand
+        {
+            Actor = "admin",
+            IdempotencyKey = Guid.NewGuid(),
+            BindingId = Guid.NewGuid(),
+            ExpectedRowVersion = 1,
+        });
+        Assert.True(missingBinding.IsFailure);
+        Assert.Equal("not_found", missingBinding.Error!.Code);
+
+        ApplicationResult<IReadOnlyList<NodeZoneBindingView>> missingNode = await listBindings.ExecuteAsync(
+            new ListNodeZoneBindingsQuery { Actor = "admin", NodeId = Guid.NewGuid() });
+        Assert.True(missingNode.IsFailure);
+        Assert.Equal("not_found", missingNode.Error!.Code);
+    }
+
+    [Fact]
+    public async Task ZoneReadPermissionRequiredForListOperations()
+    {
+        FakeAuthorizationBoundary auth = new();
+        auth.DeniedPermissions.Add(ApplicationPermissions.ZoneRead);
+        FakeZoneDefinitionStore zones = new();
+        FakeNodeStore nodes = new();
+        FakeNodeZoneBindingStore bindings = new();
+
+        ListZoneDefinitionsUseCase listZones = new(auth, zones);
+        ApplicationResult<IReadOnlyList<ZoneDefinitionView>> zonesResult = await listZones.ExecuteAsync(
+            new ListZoneDefinitionsQuery { Actor = "viewer" });
+        Assert.True(zonesResult.IsFailure);
+        Assert.Equal("forbidden", zonesResult.Error!.Code);
+
+        ListNodeZoneBindingsUseCase listBindings = new(auth, nodes, bindings);
+        ApplicationResult<IReadOnlyList<NodeZoneBindingView>> bindingsResult = await listBindings.ExecuteAsync(
+            new ListNodeZoneBindingsQuery { Actor = "viewer", NodeId = Guid.NewGuid() });
+        Assert.True(bindingsResult.IsFailure);
+        Assert.Equal("forbidden", bindingsResult.Error!.Code);
+    }
 }

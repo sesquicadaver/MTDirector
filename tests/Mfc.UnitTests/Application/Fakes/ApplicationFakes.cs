@@ -325,6 +325,22 @@ internal sealed class FakeSnapshotStore : ISnapshotStore
         CancellationToken cancellationToken = default)
         => Task.FromResult(_payloads.TryGetValue(payloadHash.ToString(), out StoredSnapshotPayload? p) ? p : null);
 
+    /// <summary>Registers a content-addressed payload for unit tests.</summary>
+    public Hash256 RegisterPayload(ReadOnlyMemory<byte> bytes, SnapshotPayloadKind kind = SnapshotPayloadKind.RawSanitized)
+    {
+        byte[] copy = bytes.ToArray();
+        Hash256 hash = Hash256.Create(SHA256.HashData(copy));
+        _payloads[hash.ToString()] = new StoredSnapshotPayload
+        {
+            PayloadHash = hash,
+            Kind = kind,
+            SchemaVersion = 1,
+            Compression = SnapshotCompression.Brotli,
+            UncompressedBytes = copy,
+        };
+        return hash;
+    }
+
     public Task<IReadOnlyList<CanonicalSection>> LoadCanonicalSectionsAsync(
         SnapshotId id,
         CancellationToken cancellationToken = default)
@@ -414,12 +430,18 @@ internal sealed class FakeRouterOsReadPort : IRouterOsReadPort
 
     public TimeSpan ProbeDelay { get; set; }
 
+    public Exception? ThrowOnProbe { get; set; }
+
     public Task<RouterOsProbeResult> ProbeAsync(
         RouterOsReadTarget target,
         CancellationToken cancellationToken = default)
     {
         ProbeCount++;
         MutatedRouterOs = false;
+        if (ThrowOnProbe is not null)
+        {
+            throw ThrowOnProbe;
+        }
         if (ProbeDelay > TimeSpan.Zero)
         {
             return ProbeSlowAsync(target, cancellationToken);
