@@ -339,8 +339,11 @@ public sealed class UplinkZoneVrrpTests
         m1.Configure(180, owner: true);
         m1.RecordObservation(VrrpMemberObservedState.Master, DateTimeOffset.UtcNow);
         m2.RecordObservation(VrrpMemberObservedState.Backup, DateTimeOffset.UtcNow);
+        // Explicit non-zero offset: DateTimeOffset.Now is UTC on CI runners and would not throw.
         Assert.Throws<DomainInvariantException>(() =>
-            m2.RecordObservation(VrrpMemberObservedState.Init, DateTimeOffset.Now));
+            m2.RecordObservation(
+                VrrpMemberObservedState.Init,
+                new DateTimeOffset(2026, 8, 13, 12, 0, 0, TimeSpan.FromHours(3))));
 
         group.SetPreemption(false);
         group.SetAdvertisementInterval(TimeSpan.FromMilliseconds(500));
