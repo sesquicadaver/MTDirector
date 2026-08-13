@@ -1,6 +1,8 @@
 using Mfc.Domain.Canonicalization;
 using Mfc.Domain.Inventory;
+using Mfc.RouterOs.Commands;
 using Mfc.RouterOs.Discovery;
+using Mfc.RouterOs.Session;
 using Mfc.RouterOs.Snapshot;
 using Xunit;
 
@@ -262,6 +264,98 @@ public sealed class DiscoveryCanonicalProjectorTests
         Assert.Equal(a.ConfigurationHash.ToString(), b.ConfigurationHash.ToString());
         Assert.NotEqual(a.ObservationHash.ToString(), b.ObservationHash.ToString());
         Assert.NotEqual(a.SnapshotHash.ToString(), b.SnapshotHash.ToString());
+    }
+
+    [Fact]
+    public void PacketPathTopologyEmitsContainerVethAndSharedVethSections()
+    {
+        // AC-J: projector emits LOCK-2 sections from discovery fixtures.
+        PacketPathTopologyResult topology = PacketPathTopologyDiscovery.BuildResult(
+            containers: Ok(
+                RosReadCommandId.Containers,
+                Row(("name", "pihole"), ("interface", "veth1"), ("status", "running")),
+                Row(("name", "pg"), ("interface", "veth1"), ("status", "stopped"))),
+            apps: Ok(
+                RosReadCommandId.Apps,
+                Row(("name", "store"), ("interface", "veth2"), ("running", "true"))),
+            vethInterfaces: Ok(
+                RosReadCommandId.VethInterfaces,
+                Row(("name", "veth1"), ("running", "true")),
+                Row(("name", "veth2"), ("running", "true"))),
+            vlanInterfaces: Ok(RosReadCommandId.VlanInterfaces),
+            bridges: EmptyBridges(),
+            vrfs: Ok(RosReadCommandId.IpVrfs));
+
+        CanonicalDeviceSnapshot snapshot = DiscoveryCanonicalProjector.Project(new DiscoveryCanonicalInput
+        {
+            PacketPathTopology = topology,
+        });
+
+        CanonicalSection containerVeth = Assert.Single(
+            snapshot.ConfigurationSections,
+            s => s.SectionId == CanonicalSectionIds.TopologyContainerVeth);
+        Assert.False(containerVeth.Ordered);
+        Assert.Contains(
+            containerVeth.Records,
+            r => r.Properties["endpoint_kind"] == "container"
+                 && r.Properties["endpoint_name"] == "pihole"
+                 && r.Properties["veth_name"] == "veth1");
+        Assert.Contains(
+            containerVeth.Records,
+            r => r.Properties["endpoint_kind"] == "container"
+                 && r.Properties["endpoint_name"] == "pg"
+                 && r.Properties["veth_name"] == "veth1");
+        Assert.Contains(
+            containerVeth.Records,
+            r => r.Properties["endpoint_kind"] == "app"
+                 && r.Properties["endpoint_name"] == "store"
+                 && r.Properties["veth_name"] == "veth2");
+
+        CanonicalSection shared = Assert.Single(
+            snapshot.ConfigurationSections,
+            s => s.SectionId == CanonicalSectionIds.TopologySharedVeth);
+        Assert.Contains(shared.Records, r => r.Properties["veth_name"] == "veth1");
+        Assert.DoesNotContain(
+            snapshot.ConfigurationSections,
+            s => s.SectionId == CanonicalSectionIds.TopologyValidation);
+        Assert.DoesNotContain(
+            snapshot.ObservationSections,
+            s => s.SectionId is CanonicalSectionIds.TopologyContainerVeth
+                or CanonicalSectionIds.TopologySharedVeth);
+    }
+
+    private static BridgeSwitchDiscoveryResult EmptyBridges()
+        => BridgeSwitchDiscovery.BuildResult(
+            Ok(RosReadCommandId.Bridges),
+            Ok(RosReadCommandId.BridgePorts),
+            Ok(RosReadCommandId.BridgeSettings),
+            Ok(RosReadCommandId.BridgeVlans),
+            Ok(RosReadCommandId.EthernetSwitches),
+            Ok(RosReadCommandId.EthernetSwitchPorts));
+
+    private static RosReadCommandResult Ok(RosReadCommandId id, params RosReadRecord[] rows)
+        => new()
+        {
+            CommandId = id,
+            Lifecycle = RosCommandLifecycle.Completed,
+            Records = rows,
+            SessionInvalidated = false,
+            Error = null,
+        };
+
+    private static RosReadRecord Row(params (string Name, string Value)[] properties)
+    {
+        Dictionary<string, string> known = new(StringComparer.Ordinal);
+        foreach ((string name, string value) in properties)
+        {
+            known[name] = value;
+        }
+
+        return new RosReadRecord
+        {
+            KnownProperties = known,
+            RawProperties = new Dictionary<string, string>(StringComparer.Ordinal),
+        };
     }
 
     private static FirewallFilterRuleDiscovery FilterRule(

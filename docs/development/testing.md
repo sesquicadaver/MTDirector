@@ -314,6 +314,37 @@ Observation input: latest completed capture sections via `SnapshotZoneResolveObs
 
 Filter: `dotnet test --filter "FullyQualifiedName~Zone\|FullyQualifiedName~ArchitectureBoundary"`.
 
+## Living Specification — zone VETH/VLAN/bridge resolve (N1-05)
+
+Issue #67 / PRD rev 2 → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| A Plain vlan/bridge/veth via IF table | `ZoneResolveEngine` | `PlainVlanBridgeVethNamesResolveViaInterfaceTable` |
+| B `container:X` expands to VETH set | `ZoneResolveEngine` + observation edges | `ContainerMarkerExpandsToVethSet` |
+| C `app:Y` expands similarly | `ZoneResolveEngine` | `AppMarkerExpandsToVethSet` |
+| D Missing container/app → `ZONE_MISSING_*` | `ZoneResolveEngine` | `MissingContainerAndAppProduceTypedBlockers` |
+| D2 Empty marker remainder (`container:` / `app: `) → typed missing | `ZoneResolveEngine` | `EmptyMarkerRemainderProducesTypedMissingBlocker` |
+| E Unresolved VETH → `ZONE_*_VETH_UNRESOLVED` (+ empty) | `ZoneResolveEngine` | `UnresolvedVethAfterExpansionProducesTypedBlocker` |
+| F Shared VETH → `ZONE_SHARED_VETH` + keep members | `ZoneResolveEngine` LOCK-5 | `SharedVethProducesBlockerButKeepsResolvedMembers` |
+| G Marker as InterfaceList name → `ZONE_MARKER_NOT_ALLOWED_ON_INTERFACE_LIST` | `ZoneResolveEngine` | `MarkerOnInterfaceListProducesTypedBlockerWithoutExpansion` |
+| H App enrichment from `topology.container-veth` / `topology.shared-veth` | `SnapshotZoneResolveObservationSource` | `ParsesContainerVethAndSharedVethCanonicalSections` |
+| H2 Interfaces without topology + marker → typed missing (not `MISSING_INTERFACE` on marker) | App + Domain | `InterfacesWithoutTopologySectionsYieldTypedMarkerBlockers` |
+| H3 / LOCK-6 Hash v1 (`mfc.zone.dependency.v1`) = kind + binding values + post-expansion members | `NodeZoneBinding.ComputeDependencyHash` | `DependencyHashV1UsesMarkersAndPostExpansionMembers` |
+| I Architecture: Domain/App ↛ RouterOs; Desktop Contracts-only | ArchitectureBoundary | `ArchitectureBoundaryTests` |
+| J Projector emits LOCK-2 sections from discovery | `DiscoveryCanonicalProjector` + `PacketPathTopologyDiscovery` | `PacketPathTopologyEmitsContainerVethAndSharedVethSections` |
+| K Living Spec + ROADMAP NEXT → M2-06 | docs | this matrix + ROADMAP §3 |
+
+**LOCK-6 (hash):** prefix stays `mfc.zone.dependency.v1`; inputs are binding kind, raw binding values (markers allowed), and post-expansion interface member names (sorted). Marker tokens are not rewritten into the hash as VETH names — expansion affects the members list only.
+
+**LOCK-7 (blocker codes):** `ZONE_MISSING_CONTAINER`, `ZONE_MISSING_APP`, `ZONE_CONTAINER_VETH_UNRESOLVED`, `ZONE_APP_VETH_UNRESOLVED`, `ZONE_SHARED_VETH`, `ZONE_MARKER_NOT_ALLOWED_ON_INTERFACE_LIST` (plus pre-existing `ZONE_MISSING_INTERFACE` / `ZONE_EMPTY_RESOLVED_SET` / `ZONE_OBSERVATION_UNAVAILABLE` unchanged).
+
+Canonical section IDs: `topology.container-veth`, `topology.shared-veth` (configuration). Domain observation DTOs are plain strings only.
+
+**Known residual (tracked, non-blocking for N1-05 library slice):** live `ISnapshotCapturePort` still defaults to `NotConfiguredSnapshotCapturePort`; `DiscoveryCanonicalProjector` (M1-22) is not yet on the production capture path. Marker expansion works whenever LOCK-2 sections are present in a persisted snapshot; assemblers that adopt the projector **must** set `DiscoveryCanonicalInput.PacketPathTopology`. Same seam as M1-22 — not a Domain/App gap.
+
+Filter: `dotnet test --filter "FullyQualifiedName~ZoneResolve|FullyQualifiedName~SnapshotZoneResolve|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DiscoveryCanonical|FullyQualifiedName~CanonicalSectionIds"`.
+
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
 Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):

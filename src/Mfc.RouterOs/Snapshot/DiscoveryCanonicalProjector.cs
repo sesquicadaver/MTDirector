@@ -61,6 +61,11 @@ public static class DiscoveryCanonicalProjector
                 BuildCapabilityProperties(capabilities)));
         }
 
+        if (input.PacketPathTopology is { } packetPath)
+        {
+            ProjectPacketPathMembership(packetPath, configuration);
+        }
+
         if (input.TopologyValidation is { } topology)
         {
             observations.Add(ProjectTopologyValidation(topology));
@@ -595,6 +600,88 @@ public static class DiscoveryCanonicalProjector
                     ("vlan-mode", p.VlanMode),
                     ("l3-hw-offloading", p.L3HwOffloading))))
                 .ToArray()));
+    }
+
+    /// <summary>
+    /// Emits minimal N1-05 membership sections from an in-RouterOs packet-path result.
+    /// Does not project the full graph, VRF, bridge-VLAN zone graph, or classifier.
+    /// </summary>
+    private static void ProjectPacketPathMembership(
+        PacketPathTopologyResult topology,
+        List<CanonicalSectionInput> configuration)
+    {
+        List<CanonicalRecordInput> edgeRecords = [];
+        foreach (PacketPathTopologyEdge edge in topology.Edges
+                     .Where(static e => e.Kind == PacketPathEdgeKind.UsesVeth)
+                     .OrderBy(e => e.FromKey, StringComparer.Ordinal)
+                     .ThenBy(e => e.ToKey, StringComparer.Ordinal))
+        {
+            if (!TryParseEndpointKey(edge.FromKey, out string endpointKind, out string endpointName))
+            {
+                continue;
+            }
+
+            if (!TryParseVethKey(edge.ToKey, out string vethName))
+            {
+                continue;
+            }
+
+            edgeRecords.Add(Record(Props(
+                ("endpoint_kind", endpointKind),
+                ("endpoint_name", endpointName),
+                ("veth_name", vethName))));
+        }
+
+        configuration.Add(Section(
+            CanonicalSectionIds.TopologyContainerVeth,
+            CanonicalDomain.Configuration,
+            ordered: false,
+            edgeRecords));
+
+        configuration.Add(Section(
+            CanonicalSectionIds.TopologySharedVeth,
+            CanonicalDomain.Configuration,
+            ordered: false,
+            topology.SharedVethNames
+                .OrderBy(n => n, StringComparer.Ordinal)
+                .Select(n => Record(Props(("veth_name", n))))
+                .ToArray()));
+    }
+
+    private static bool TryParseEndpointKey(string key, out string endpointKind, out string endpointName)
+    {
+        endpointKind = string.Empty;
+        endpointName = string.Empty;
+        const string containerPrefix = "container:";
+        const string appPrefix = "app:";
+        if (key.StartsWith(containerPrefix, StringComparison.Ordinal))
+        {
+            endpointKind = "container";
+            endpointName = key[containerPrefix.Length..];
+            return endpointName.Length > 0;
+        }
+
+        if (key.StartsWith(appPrefix, StringComparison.Ordinal))
+        {
+            endpointKind = "app";
+            endpointName = key[appPrefix.Length..];
+            return endpointName.Length > 0;
+        }
+
+        return false;
+    }
+
+    private static bool TryParseVethKey(string key, out string vethName)
+    {
+        const string prefix = "veth:";
+        if (key.StartsWith(prefix, StringComparison.Ordinal) && key.Length > prefix.Length)
+        {
+            vethName = key[prefix.Length..];
+            return true;
+        }
+
+        vethName = string.Empty;
+        return false;
     }
 
     private static CanonicalSectionInput ProjectTopologyValidation(NodeTopologyValidationResult topology)
