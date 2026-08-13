@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading.Channels;
-using Mfc.Contracts.Mfc.V1;
 using Google.Protobuf.WellKnownTypes;
+using Mfc.Contracts.Mfc.V1;
 
 namespace Mfc.Controller.Grpc;
 

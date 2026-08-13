@@ -31,7 +31,10 @@ public sealed class App : Application, IAsyncDisposable
         SnapshotViewerViewModel snapshotVm = new(snapshotService, connection, inventoryVm);
         SnapshotDiffService diffService = new(snapshotClient);
         SnapshotDiffViewModel diffVm = new(diffService, connection, inventoryVm);
-        _shell = new ShellViewModel(connection, options, inventoryVm, snapshotVm, diffVm);
+        GrpcZoneServiceClient zoneClient = new(connection, options);
+        ZonePanelService zonePanel = new(zoneClient);
+        ZonesViewModel zonesVm = new(zonePanel, connection, inventoryVm);
+        _shell = new ShellViewModel(connection, options, inventoryVm, snapshotVm, diffVm, zonesVm);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

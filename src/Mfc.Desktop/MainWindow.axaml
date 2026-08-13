@@ -12,7 +12,7 @@
   <DockPanel Margin="16">
     <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,12">
       <TextBlock FontSize="22" FontWeight="SemiBold" Text="MTDirector" />
-      <TextBlock Opacity="0.8" Text="Controller · inventory · snapshot viewer · semantic diff (read-only)" />
+      <TextBlock Opacity="0.8" Text="Controller · inventory · snapshot · semantic diff · zones" />
       <TextBlock Text="{Binding ControllerEndpoint, StringFormat=Endpoint: {0}}" />
       <TextBlock FontSize="16" Text="{Binding StatusText, StringFormat=Status: {0}}" FontWeight="Bold" />
       <TextBlock Text="{Binding ErrorText}"
@@ -301,6 +301,86 @@
                         </ItemsControl.ItemTemplate>
                       </ItemsControl>
                     </StackPanel>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </Border>
+          </Grid>
+        </TabItem>
+
+        <TabItem Header="Zones">
+          <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,*,Auto,*,Auto,*" Margin="0,8,0,0">
+            <DockPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Margin="0,0,0,8">
+              <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
+                <Button Content="Refresh" Command="{Binding Zones.RefreshCommand}" MinWidth="80" />
+                <Button Content="Resolve node" Command="{Binding Zones.ResolveCommand}" MinWidth="110" />
+              </StackPanel>
+              <StackPanel Spacing="2">
+                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Logical zones &amp; Node bindings" />
+                <TextBlock Text="{Binding Zones.SelectedNodeHint}" Opacity="0.8" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding Zones.ErrorText}"
+                           Foreground="#B00020"
+                           TextWrapping="Wrap"
+                           IsVisible="{Binding Zones.HasError}" />
+              </StackPanel>
+            </DockPanel>
+
+            <Border Grid.Column="0" Grid.Row="1" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+              <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
+                  <TextBlock FontWeight="SemiBold" Text="Company zones" />
+                  <TextBox PlaceholderText="key" Text="{Binding Zones.NewZoneKey}" />
+                  <TextBox PlaceholderText="name" Text="{Binding Zones.NewZoneName}" />
+                  <TextBox PlaceholderText="description (optional)" Text="{Binding Zones.NewZoneDescription}" />
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Content="Create" Command="{Binding Zones.CreateZoneCommand}" MinWidth="90" />
+                    <Button Content="Delete" Command="{Binding Zones.DeleteZoneCommand}" MinWidth="90" />
+                  </StackPanel>
+                </StackPanel>
+                <ListBox ItemsSource="{Binding Zones.Zones}"
+                         SelectedItem="{Binding Zones.SelectedZone, Mode=TwoWay}">
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="svc:ZoneDefinitionListItem">
+                      <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+              </DockPanel>
+            </Border>
+
+            <Border Grid.Column="2" Grid.Row="1" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+              <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
+                  <TextBlock FontWeight="SemiBold" Text="Node bindings" />
+                  <ComboBox ItemsSource="{Binding Zones.BindingKinds}"
+                            SelectedItem="{Binding Zones.SelectedBindingKind, Mode=TwoWay}"
+                            MinWidth="220" />
+                  <TextBox PlaceholderText="values (comma-separated)" Text="{Binding Zones.BindingValuesText}" />
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Content="Upsert binding" Command="{Binding Zones.UpsertBindingCommand}" MinWidth="120" />
+                    <Button Content="Delete binding" Command="{Binding Zones.DeleteBindingCommand}" MinWidth="120" />
+                  </StackPanel>
+                </StackPanel>
+                <ListBox ItemsSource="{Binding Zones.Bindings}"
+                         SelectedItem="{Binding Zones.SelectedBinding, Mode=TwoWay}">
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="svc:NodeZoneBindingListItem">
+                      <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+              </DockPanel>
+            </Border>
+
+            <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
+                       Margin="0,12,0,4" FontWeight="SemiBold" Text="Resolve results / blockers" />
+            <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Grid.RowSpan="3"
+                    BorderBrush="#D0D5DD" BorderThickness="1" Padding="4">
+              <ListBox ItemsSource="{Binding Zones.ResolveResults}">
+                <ListBox.ItemTemplate>
+                  <DataTemplate DataType="svc:ZoneResolveResultListItem">
+                    <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="4"
+                               FontFamily="Consolas,Menlo,monospace" />
                   </DataTemplate>
                 </ListBox.ItemTemplate>
               </ListBox>

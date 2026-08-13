@@ -1,11 +1,13 @@
+using Mfc.Domain.Policy;
+
 namespace Mfc.RouterOs.Discovery;
 
 /// <summary>Validation finding produced while resolving interface-list membership.</summary>
 public sealed class DiscoveryFinding
 {
-    public const string InterfaceListCycle = "INTERFACE_LIST_CYCLE";
-    public const string MissingInterfaceReference = "MISSING_INTERFACE_REFERENCE";
-    public const string MissingListReference = "MISSING_LIST_REFERENCE";
+    public const string InterfaceListCycle = InterfaceListMembershipFinding.InterfaceListCycle;
+    public const string MissingInterfaceReference = InterfaceListMembershipFinding.MissingInterfaceReference;
+    public const string MissingListReference = InterfaceListMembershipFinding.MissingListReference;
     public const string InvalidCidr = "INVALID_CIDR";
     public const string MissingRoutingTableReference = "MISSING_ROUTING_TABLE_REFERENCE";
     public const string UnsupportedForEditing = "UNSUPPORTED_FOR_EDITING";
@@ -25,7 +27,7 @@ public sealed class DiscoveryFinding
     public string? Subject { get; init; }
 }
 
-/// <summary>Input list definition for membership resolution.</summary>
+/// <summary>Input list definition for membership resolution (RouterOS discovery adapter).</summary>
 public sealed class InterfaceListSpec
 {
     public required string Name { get; init; }
@@ -57,8 +59,7 @@ public sealed class ResolvedInterfaceListMembership
 }
 
 /// <summary>
-/// Deterministic interface-list membership resolution (Read Adapter Spec §23).
-/// Order: include → exclude → explicit members. Reply order must not affect the result.
+/// Thin RouterOS discovery adapter that delegates to Domain <see cref="InterfaceListMembership"/>.
 /// </summary>
 public static class InterfaceListMembershipResolver
 {
@@ -72,157 +73,39 @@ public static class InterfaceListMembershipResolver
         ArgumentNullException.ThrowIfNull(members);
         ArgumentNullException.ThrowIfNull(knownInterfaces);
 
-        Dictionary<string, InterfaceListSpec> listByName = lists
-            .OrderBy(l => l.Name, StringComparer.Ordinal)
-            .GroupBy(l => l.Name, StringComparer.Ordinal)
-            .ToDictionary(g => g.Key, g => g.First(), StringComparer.Ordinal);
-
-        Dictionary<string, SortedSet<string>> explicitByList = new(StringComparer.Ordinal);
-        List<DiscoveryFinding> found = [];
-
-        foreach (InterfaceListMemberSpec member in members
-                     .OrderBy(m => m.List, StringComparer.Ordinal)
-                     .ThenBy(m => m.Interface, StringComparer.Ordinal))
-        {
-            if (member.Disabled || string.IsNullOrWhiteSpace(member.List) || string.IsNullOrWhiteSpace(member.Interface))
-            {
-                continue;
-            }
-
-            if (!knownInterfaces.Contains(member.Interface))
-            {
-                found.Add(new DiscoveryFinding
+        IReadOnlyList<Mfc.Domain.Policy.ResolvedInterfaceListMembership> domainResolved =
+            InterfaceListMembership.Resolve(
+                lists.Select(l => new Mfc.Domain.Policy.InterfaceListSpec
                 {
-                    Code = DiscoveryFinding.MissingInterfaceReference,
-                    Message = $"Interface-list member references unknown interface '{member.Interface}'.",
-                    Subject = member.Interface,
-                });
-            }
-
-            if (!explicitByList.TryGetValue(member.List, out SortedSet<string>? set))
-            {
-                set = new SortedSet<string>(StringComparer.Ordinal);
-                explicitByList[member.List] = set;
-            }
-
-            set.Add(member.Interface);
-        }
-
-        List<ResolvedInterfaceListMembership> resolved = [];
-        foreach (string listName in listByName.Keys.OrderBy(n => n, StringComparer.Ordinal))
-        {
-            HashSet<string> stack = new(StringComparer.Ordinal);
-            SortedSet<string> membersSet = ResolveList(
-                listName,
-                listByName,
-                explicitByList,
-                stack,
-                found,
-                out bool hasCycle);
-            resolved.Add(new ResolvedInterfaceListMembership
-            {
-                ListName = listName,
-                Members = membersSet.ToArray(),
-                HasCycle = hasCycle,
-            });
-        }
-
-        findings = found;
-        return resolved;
-    }
-
-    private static SortedSet<string> ResolveList(
-        string listName,
-        Dictionary<string, InterfaceListSpec> listByName,
-        Dictionary<string, SortedSet<string>> explicitByList,
-        HashSet<string> stack,
-        List<DiscoveryFinding> findings,
-        out bool hasCycle)
-    {
-        hasCycle = false;
-        if (!listByName.TryGetValue(listName, out InterfaceListSpec? list))
-        {
-            findings.Add(new DiscoveryFinding
-            {
-                Code = DiscoveryFinding.MissingListReference,
-                Message = $"Referenced interface list '{listName}' does not exist.",
-                Subject = listName,
-            });
-            return [];
-        }
-
-        if (!stack.Add(listName))
-        {
-            hasCycle = true;
-            findings.Add(new DiscoveryFinding
-            {
-                Code = DiscoveryFinding.InterfaceListCycle,
-                Message = $"Interface list '{listName}' participates in an include/exclude cycle.",
-                Subject = listName,
-            });
-            // Spec: cycle is not replaced by a silent empty success — finding is required.
-            return [];
-        }
-
-        try
-        {
-            SortedSet<string> result = new(StringComparer.Ordinal);
-
-            foreach (string include in list.Include.OrderBy(n => n, StringComparer.Ordinal))
-            {
-                if (string.IsNullOrWhiteSpace(include))
+                    Name = l.Name,
+                    Include = l.Include,
+                    Exclude = l.Exclude,
+                }),
+                members.Select(m => new Mfc.Domain.Policy.InterfaceListMemberSpec
                 {
-                    continue;
-                }
+                    List = m.List,
+                    Interface = m.Interface,
+                    Disabled = m.Disabled,
+                }),
+                knownInterfaces,
+                out IReadOnlyList<InterfaceListMembershipFinding> domainFindings);
 
-                SortedSet<string> included = ResolveList(
-                    include,
-                    listByName,
-                    explicitByList,
-                    stack,
-                    findings,
-                    out bool includeCycle);
-                hasCycle |= includeCycle;
-                foreach (string name in included)
-                {
-                    result.Add(name);
-                }
-            }
-
-            foreach (string exclude in list.Exclude.OrderBy(n => n, StringComparer.Ordinal))
+        findings = domainFindings
+            .Select(f => new DiscoveryFinding
             {
-                if (string.IsNullOrWhiteSpace(exclude))
-                {
-                    continue;
-                }
+                Code = f.Code,
+                Message = f.Message,
+                Subject = f.Subject,
+            })
+            .ToArray();
 
-                SortedSet<string> excluded = ResolveList(
-                    exclude,
-                    listByName,
-                    explicitByList,
-                    stack,
-                    findings,
-                    out bool excludeCycle);
-                hasCycle |= excludeCycle;
-                foreach (string name in excluded)
-                {
-                    result.Remove(name);
-                }
-            }
-
-            if (explicitByList.TryGetValue(listName, out SortedSet<string>? explicitMembers))
+        return domainResolved
+            .Select(r => new ResolvedInterfaceListMembership
             {
-                foreach (string name in explicitMembers)
-                {
-                    result.Add(name);
-                }
-            }
-
-            return result;
-        }
-        finally
-        {
-            stack.Remove(listName);
-        }
+                ListName = r.ListName,
+                Members = r.Members,
+                HasCycle = r.HasCycle,
+            })
+            .ToArray();
     }
 }

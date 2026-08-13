@@ -287,6 +287,33 @@ Policy Model §18–§19 + Issue Set M2-04 AC → module → tests:
 
 Filter: `dotnet test --filter FullyQualifiedName~Service`.
 
+## Living Specification — logical zones and Node bindings (M2-05)
+
+Policy Model §§20–21 + Issue Set M2-05 AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Three Policy binding kinds | `NodeZoneBindingKind` / `NodeZoneBinding` | `ZoneBindingTests` |
+| `expected_dependency_hash` stored | Domain + `EfNodeZoneBindingStore` | unit + `ZoneBindingsPersistTests` |
+| Resolve per Device | `ZoneResolveEngine` + `ResolveZonesForDeviceUseCase` | Domain + `ZoneUseCaseTests` |
+| VRRP different physical names | Domain resolve fixtures | `InterfaceListIncludeExcludeHonoredAndVrrpNamesMayDiffer` |
+| Dynamic iface → blocker | `ZoneResolveEngine` | Domain unit |
+| Empty resolved → blocker | `ZoneResolveEngine` | Domain unit |
+| Missing iface → blocker | `ZoneResolveEngine` | Domain unit |
+| Interface-list include/exclude | Domain `InterfaceListMembership` (+ RouterOs delegate) | Domain + optional RouterOs regression |
+| Membership change → AnalysisStale | `NodeZoneBinding.RecordResolve` + resolve use case | Domain + `ZoneUseCaseTests` |
+| Optimistic concurrency | Update zone/binding RowVersion → Conflict | `ZoneUseCaseTests` + persist |
+| Catalog SoT tables | `zone_definitions` / `node_zone_bindings` | `ZoneBindingsPersistTests` |
+| `PolicyDocument.ZoneDefinitions` stays `[]` | `PolicyDocument` | composition/hash embedding deferred (M2-06+) |
+| gRPC `mfc.v1.ZoneService` | `zones.proto` / `ZoneGrpcService` | `ZoneProtoContractTests` |
+| Desktop CRUD + blockers | `ZonePanelService` / Zones tab | `ZonesDesktopServiceTests` |
+| AC#10–11 ZoneSelector / rules | — | **Deferred to M2-06** (Living Spec + ROADMAP) |
+| No Domain/App→RouterOs; Desktop Contracts-only | ArchitectureBoundary | `ArchitectureBoundaryTests` |
+
+Observation input: latest completed capture sections via `SnapshotZoneResolveObservationSource` (`network.interfaces` + `network.interface-lists`). Missing capture → `ZONE_OBSERVATION_UNAVAILABLE`.
+
+Filter: `dotnet test --filter "FullyQualifiedName~Zone\|FullyQualifiedName~ArchitectureBoundary"`.
+
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
 Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):

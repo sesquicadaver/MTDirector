@@ -80,6 +80,17 @@ public sealed class InventoryTreeService : IInventoryTreeService
         Task completed = await Task.WhenAny(shared, tcs.Task).ConfigureAwait(false);
         if (ReferenceEquals(completed, tcs.Task))
         {
+            // Wait for the shared load to settle so Current.IsRefreshing is cleared before
+            // surfacing cancellation to the caller (avoids racing the OCE catch in RefreshCoreAsync).
+            try
+            {
+                _ = await shared.ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // Expected when the shared work observes the same cancelled token.
+            }
+
             cancellationToken.ThrowIfCancellationRequested();
         }
 

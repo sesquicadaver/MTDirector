@@ -294,10 +294,12 @@ public sealed class TopologyObservationTests
     [Fact]
     public void RejectsNonUtcAndEmptyInterfaceKeys()
     {
+        // Explicit non-zero offset: DateTimeOffset.Now is UTC on CI runners and would not throw.
+        DateTimeOffset nonUtc = new(2026, 8, 13, 12, 0, 0, TimeSpan.FromHours(3));
         Assert.Throws<DomainInvariantException>(() =>
             TopologyObservation.Create(
                 NodeId.New(),
-                DateTimeOffset.Now,
+                nonUtc,
                 ["ether1"],
                 Array.Empty<VrrpRoleObservation>()));
 
@@ -374,7 +376,8 @@ public sealed class SnapshotMetadataTests
         ObservationHash observation = ObservationHash.ParseHex(new string('b', 64));
         CapabilityHash capability = CapabilityHash.ParseHex(new string('c', 64));
         SnapshotHash snapshot = SnapshotHash.ParseHex(new string('d', 64));
-        DateTimeOffset local = DateTimeOffset.Now;
+        // Explicit non-zero offset: DateTimeOffset.Now is UTC on CI runners and would not throw.
+        DateTimeOffset local = new(2026, 8, 13, 12, 0, 0, TimeSpan.FromHours(3));
 
         Assert.Throws<DomainInvariantException>(() =>
             SnapshotMetadata.CreateCompleted(DeviceId.New(), config, observation, capability, snapshot, local));

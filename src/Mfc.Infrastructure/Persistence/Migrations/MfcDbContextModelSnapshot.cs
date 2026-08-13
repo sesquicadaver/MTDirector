@@ -381,6 +381,70 @@ namespace Mfc.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Mfc.Infrastructure.Persistence.Entities.NodeZoneBindingEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("AnalysisStale")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<byte[]>("ExpectedDependencyHash")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<short>("Kind")
+                        .HasColumnType("smallint");
+
+                    b.Property<byte[]>("LastResolvedDependencyHash")
+                        .HasColumnType("bytea");
+
+                    b.Property<Guid>("NodeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<long>("RowVersion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L);
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ValuesJson")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ZoneId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ZoneId")
+                        .HasDatabaseName("ix_node_zone_bindings_zone");
+
+                    b.HasIndex("NodeId", "ZoneId")
+                        .IsUnique()
+                        .HasDatabaseName("uq_node_zone_bindings_node_zone");
+
+                    b.ToTable("node_zone_bindings", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_node_zone_bindings_expected_hash", "octet_length(\"ExpectedDependencyHash\") = 32");
+
+                            t.HasCheckConstraint("ck_node_zone_bindings_kind", "\"Kind\" BETWEEN 0 AND 2");
+
+                            t.HasCheckConstraint("ck_node_zone_bindings_last_hash", "\"LastResolvedDependencyHash\" IS NULL OR octet_length(\"LastResolvedDependencyHash\") = 32");
+
+                            t.HasCheckConstraint("ck_node_zone_bindings_row_version", "\"RowVersion\" > 0");
+
+                            t.HasCheckConstraint("ck_node_zone_bindings_values", "length(btrim(\"ValuesJson\")) > 2");
+                        });
+                });
+
             modelBuilder.Entity("Mfc.Infrastructure.Persistence.Entities.PolicyEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -761,6 +825,59 @@ namespace Mfc.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Mfc.Infrastructure.Persistence.Entities.ZoneDefinitionEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("OwnerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<short>("OwnerScope")
+                        .HasColumnType("smallint");
+
+                    b.Property<long>("RowVersion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L);
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerScope", "OwnerId", "Key")
+                        .IsUnique()
+                        .HasDatabaseName("uq_zone_definitions_owner_key");
+
+                    b.ToTable("zone_definitions", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_zone_definitions_key", "length(btrim(\"Key\")) BETWEEN 1 AND 128");
+
+                            t.HasCheckConstraint("ck_zone_definitions_name", "length(btrim(\"Name\")) BETWEEN 1 AND 128");
+
+                            t.HasCheckConstraint("ck_zone_definitions_owner_rules", "(\n  (\"OwnerScope\" = 0 AND \"OwnerId\" IS NULL)\n  OR (\"OwnerScope\" IN (1, 2) AND \"OwnerId\" IS NOT NULL)\n)");
+
+                            t.HasCheckConstraint("ck_zone_definitions_owner_scope", "\"OwnerScope\" BETWEEN 0 AND 2");
+
+                            t.HasCheckConstraint("ck_zone_definitions_row_version", "\"RowVersion\" > 0");
+                        });
+                });
+
             modelBuilder.Entity("Mfc.Infrastructure.Persistence.Entities.DeviceConnectionProfileEntity", b =>
                 {
                     b.HasOne("Mfc.Infrastructure.Persistence.Entities.DeviceEntity", null)
@@ -790,6 +907,21 @@ namespace Mfc.Infrastructure.Persistence.Migrations
                     b.HasOne("Mfc.Infrastructure.Persistence.Entities.SiteEntity", null)
                         .WithMany()
                         .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Mfc.Infrastructure.Persistence.Entities.NodeZoneBindingEntity", b =>
+                {
+                    b.HasOne("Mfc.Infrastructure.Persistence.Entities.NodeEntity", null)
+                        .WithMany()
+                        .HasForeignKey("NodeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Mfc.Infrastructure.Persistence.Entities.ZoneDefinitionEntity", null)
+                        .WithMany()
+                        .HasForeignKey("ZoneId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

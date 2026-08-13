@@ -9,6 +9,8 @@ using Mfc.Domain.Canonicalization;
 using Mfc.Domain.Capabilities;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
+using Mfc.Domain.Policy;
+using Mfc.Domain.Policy.Primitives;
 using Mfc.Domain.Snapshots;
 
 namespace Mfc.UnitTests.Application.Fakes;
@@ -323,6 +325,22 @@ internal sealed class FakeSnapshotStore : ISnapshotStore
         CancellationToken cancellationToken = default)
         => Task.FromResult(_payloads.TryGetValue(payloadHash.ToString(), out StoredSnapshotPayload? p) ? p : null);
 
+    /// <summary>Registers a content-addressed payload for unit tests.</summary>
+    public Hash256 RegisterPayload(ReadOnlyMemory<byte> bytes, SnapshotPayloadKind kind = SnapshotPayloadKind.RawSanitized)
+    {
+        byte[] copy = bytes.ToArray();
+        Hash256 hash = Hash256.Create(SHA256.HashData(copy));
+        _payloads[hash.ToString()] = new StoredSnapshotPayload
+        {
+            PayloadHash = hash,
+            Kind = kind,
+            SchemaVersion = 1,
+            Compression = SnapshotCompression.Brotli,
+            UncompressedBytes = copy,
+        };
+        return hash;
+    }
+
     public Task<IReadOnlyList<CanonicalSection>> LoadCanonicalSectionsAsync(
         SnapshotId id,
         CancellationToken cancellationToken = default)
@@ -412,12 +430,18 @@ internal sealed class FakeRouterOsReadPort : IRouterOsReadPort
 
     public TimeSpan ProbeDelay { get; set; }
 
+    public Exception? ThrowOnProbe { get; set; }
+
     public Task<RouterOsProbeResult> ProbeAsync(
         RouterOsReadTarget target,
         CancellationToken cancellationToken = default)
     {
         ProbeCount++;
         MutatedRouterOs = false;
+        if (ThrowOnProbe is not null)
+        {
+            throw ThrowOnProbe;
+        }
         if (ProbeDelay > TimeSpan.Zero)
         {
             return ProbeSlowAsync(target, cancellationToken);
@@ -563,4 +587,146 @@ internal sealed class FakeConnectionProfileService : IConnectionProfileService
 
     public Task<ConnectionProfileView?> GetViewAsync(Guid deviceId, CancellationToken cancellationToken = default)
         => Task.FromResult(Views.TryGetValue(deviceId, out ConnectionProfileView? view) ? view : null);
+}
+
+internal sealed class FakeZoneDefinitionStore : IZoneDefinitionStore
+{
+    private readonly Dictionary<Guid, ZoneDefinition> _byId = [];
+
+    public Task AddAsync(ZoneDefinition zone, CancellationToken cancellationToken = default)
+    {
+        _byId[zone.Id.Value] = zone;
+        return Task.CompletedTask;
+    }
+
+    public Task<ZoneDefinition?> GetAsync(ZoneId id, CancellationToken cancellationToken = default)
+        => Task.FromResult(_byId.TryGetValue(id.Value, out ZoneDefinition? zone) ? zone : null);
+
+    public Task UpdateAsync(ZoneDefinition zone, CancellationToken cancellationToken = default)
+    {
+        _byId[zone.Id.Value] = zone;
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteAsync(ZoneId id, CancellationToken cancellationToken = default)
+    {
+        _byId.Remove(id.Value);
+        return Task.CompletedTask;
+    }
+
+    public Task<bool> KeyExistsAsync(
+        PolicyOwnerScope ownerScope,
+        Guid? ownerId,
+        NonEmptyName key,
+        ZoneId? excludingId = null,
+        CancellationToken cancellationToken = default)
+    {
+        bool exists = _byId.Values.Any(z =>
+            z.OwnerScope == ownerScope
+            && z.OwnerId == ownerId
+            && z.Key.Equals(key)
+            && (excludingId is null || z.Id.Value != excludingId.Value.Value));
+        return Task.FromResult(exists);
+    }
+
+    public Task<IReadOnlyList<ZoneDefinition>> ListAsync(
+        PolicyOwnerScope? ownerScope = null,
+        Guid? ownerId = null,
+        CancellationToken cancellationToken = default)
+    {
+        IEnumerable<ZoneDefinition> query = _byId.Values;
+        if (ownerScope is not null)
+        {
+            query = query.Where(z => z.OwnerScope == ownerScope && z.OwnerId == ownerId);
+        }
+
+        return Task.FromResult<IReadOnlyList<ZoneDefinition>>(
+            query.OrderBy(z => z.Key.Value, StringComparer.Ordinal).ToArray());
+    }
+}
+
+internal sealed class FakeNodeZoneBindingStore : INodeZoneBindingStore
+{
+    private readonly Dictionary<Guid, NodeZoneBinding> _byId = [];
+
+    public Task AddAsync(NodeZoneBinding binding, CancellationToken cancellationToken = default)
+    {
+        _byId[binding.Id.Value] = Clone(binding);
+        return Task.CompletedTask;
+    }
+
+    public Task<NodeZoneBinding?> GetAsync(NodeZoneBindingId id, CancellationToken cancellationToken = default)
+        => Task.FromResult(_byId.TryGetValue(id.Value, out NodeZoneBinding? b) ? Clone(b) : null);
+
+    public Task<NodeZoneBinding?> GetByNodeAndZoneAsync(
+        NodeId nodeId,
+        ZoneId zoneId,
+        CancellationToken cancellationToken = default)
+    {
+        NodeZoneBinding? found = _byId.Values.FirstOrDefault(b => b.NodeId == nodeId && b.ZoneId == zoneId);
+        return Task.FromResult(found is null ? null : Clone(found));
+    }
+
+    public Task UpdateAsync(NodeZoneBinding binding, CancellationToken cancellationToken = default)
+    {
+        _byId[binding.Id.Value] = Clone(binding);
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteAsync(NodeZoneBindingId id, CancellationToken cancellationToken = default)
+    {
+        _byId.Remove(id.Value);
+        return Task.CompletedTask;
+    }
+
+    public Task<IReadOnlyList<NodeZoneBinding>> ListByNodeAsync(
+        NodeId nodeId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<NodeZoneBinding>>(
+            _byId.Values.Where(b => b.NodeId == nodeId).OrderBy(b => b.Id.Value).Select(Clone).ToArray());
+
+    public Task<IReadOnlyList<NodeZoneBinding>> ListByZoneAsync(
+        ZoneId zoneId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<NodeZoneBinding>>(
+            _byId.Values.Where(b => b.ZoneId == zoneId).OrderBy(b => b.Id.Value).Select(Clone).ToArray());
+
+    public Task<int> CountByZoneAsync(ZoneId zoneId, CancellationToken cancellationToken = default)
+        => Task.FromResult(_byId.Values.Count(b => b.ZoneId == zoneId));
+
+    private static NodeZoneBinding Clone(NodeZoneBinding binding)
+        => NodeZoneBinding.Reconstitute(
+            binding.Id,
+            binding.NodeId,
+            binding.ZoneId,
+            binding.Kind,
+            binding.Values.ToArray(),
+            binding.ExpectedDependencyHash,
+            binding.LastResolvedDependencyHash,
+            binding.AnalysisStale,
+            binding.RowVersion);
+}
+
+internal sealed class FakeZoneResolveObservationSource : IZoneResolveObservationSource
+{
+    public Dictionary<Guid, ZoneResolveDeviceObservation> ByDevice { get; } = [];
+
+    public Task<ZoneResolveDeviceObservation> GetForDeviceAsync(
+        DeviceId deviceId,
+        CancellationToken cancellationToken = default)
+    {
+        if (ByDevice.TryGetValue(deviceId.Value, out ZoneResolveDeviceObservation? observation))
+        {
+            return Task.FromResult(observation);
+        }
+
+        return Task.FromResult(new ZoneResolveDeviceObservation
+        {
+            DeviceId = deviceId,
+            Interfaces = [],
+            InterfaceLists = [],
+            InterfaceListMembers = [],
+            ObservationAvailable = false,
+        });
+    }
 }

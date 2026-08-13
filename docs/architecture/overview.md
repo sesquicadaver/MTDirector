@@ -58,7 +58,7 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Policy Pipeline v1 + chain contracts | Done (M2-02) | Fixed stages + owner/effect matrix; company-only `ChainContract` |
 | Address objects + selectors | Done (M2-03) | Typed entries, interval algebra, `AddressSelectorEvaluator` |
 | Service objects + selectors | Done (M2-04) | Numeric protocols, ports, ICMP split, `ServiceSelectorEvaluator` |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-05 (#52) |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at N1-05 (#67) / M2-06 |
 
 ## ADRs
 

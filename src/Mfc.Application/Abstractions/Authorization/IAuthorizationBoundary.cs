@@ -21,4 +21,10 @@ public static class ApplicationPermissions
 
     /// <summary>Required to return raw (sanitized) snapshot payload bytes (M1-23 AC#11).</summary>
     public const string SnapshotRawRead = "snapshot.raw.read";
+
+    /// <summary>Read zone definitions and node bindings (M2-05).</summary>
+    public const string ZoneRead = "zone.read";
+
+    /// <summary>Mutate zone definitions and node bindings (M2-05).</summary>
+    public const string ZoneWrite = "zone.write";
 }

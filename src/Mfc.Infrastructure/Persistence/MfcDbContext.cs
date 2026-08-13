@@ -43,6 +43,10 @@ public sealed class MfcDbContext : DbContext
 
     public DbSet<PolicyRevisionEntity> PolicyRevisions => Set<PolicyRevisionEntity>();
 
+    public DbSet<ZoneDefinitionEntity> ZoneDefinitions => Set<ZoneDefinitionEntity>();
+
+    public DbSet<NodeZoneBindingEntity> NodeZoneBindings => Set<NodeZoneBindingEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MfcDbContext).Assembly);

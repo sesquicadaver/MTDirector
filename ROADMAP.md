@@ -1,9 +1,9 @@
 # MTDirector — ROADMAP реалізації v0.2
 
-**Дата оновлення:** 10 серпня 2026  
-**Статус:** нормативний індекс + **лінійна черга** атомарних задач  
-**Продукт:** MikroTik Firewall Controller (MTDirector)  
-**Базовий коміт аудиту:** M2-04 (typed service objects + selectors) — M1 CLOSED; черга зсунута на M2-05
+**Дата оновлення:** 11 серпня 2026
+**Статус:** нормативний індекс + **лінійна черга** атомарних задач
+**Продукт:** MikroTik Firewall Controller (MTDirector)
+**Базовий коміт аудиту:** M2-05 (logical zones + Node bindings) — M1 CLOSED; черга зсунута на N1-05 / M2-06
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -96,20 +96,21 @@ Post-MVP M7 = **27** після MVP.
 | M2-02 | #49 | Fixed Policy Pipeline v1 + company-baseline chain contracts (DROP/REJECT/RETURN_TO_UNMANAGED) |
 | M2-03 | #50 | Static address objects (HOST/PREFIX/IPv4 RANGE) + include/exclude selectors |
 | M2-04 | #51 | Typed service objects (protocol/ports/ICMP) + include-only selectors |
+| M2-05 | #52 | Logical zones + Node bindings (catalog SoT, ZoneService, Desktop CRUD; AC#10–11 deferred) |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
 | `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors; default `ProbeOnlyRouterOsReadPort` + `NotConfiguredSnapshotCapturePort` |
-| `Mfc.Contracts` | `mfc.v1` inventory (+ `ListNodes` / Device observation fields) + snapshot/diff protos (`SnapshotSummary.sections`) |
-| `Mfc.Application` | inventory/snapshot + `IPolicyStore` + address/service selector evaluators |
-| `Mfc.Controller` | health + `InventoryService` + `SnapshotService` gRPC (`CaptureProgressHub`) |
-| `Mfc.Desktop` | connection shell + inventory tree + snapshot viewer + semantic diff viewer |
-| Persistence | inventory + snapshot CAS + policy lifecycle — zones/bindings у наступних issues |
-| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service objects — zones/rules у M2-05+ |
+| `Mfc.Contracts` | `mfc.v1` inventory + snapshot/diff + `ZoneService` (`zones.proto`) |
+| `Mfc.Application` | inventory/snapshot + policy store + address/service evaluators + zone CRUD/resolve |
+| `Mfc.Controller` | health + `InventoryService` + `SnapshotService` + `ZoneService` gRPC |
+| `Mfc.Desktop` | connection shell + inventory tree + snapshot/diff viewers + Zones panel |
+| Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings |
+| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone aggregates — rules/selectors у M2-06 |
 
-**NEXT = черга #38:** [M2-05](https://github.com/sesquicadaver/MTDirector/issues/52).
+**NEXT = черга #39:** [N1-05](https://github.com/sesquicadaver/MTDirector/issues/67) (після merge M2-05); потім M2-06 (#53).
 
 ---
 
@@ -187,7 +188,7 @@ Post-MVP M7 = **27** після MVP.
 | ~~35~~ | ~~M2-02~~ | ~~#49~~ | ~~Implement fixed Policy Pipeline v1 and chain contracts~~ → §2.2 DONE |
 | ~~36~~ | ~~M2-03~~ | ~~#50~~ | ~~Implement address objects and selectors~~ → §2.2 DONE |
 | ~~37~~ | ~~M2-04~~ | ~~#51~~ | ~~Implement service objects and selectors~~ → §2.2 DONE |
-| 38 | M2-05 | #52 | Implement logical zones and Node bindings |
+| ~~38~~ | ~~M2-05~~ | ~~#52~~ | ~~Implement logical zones and Node bindings~~ → §2.2 (catalog SoT + ZoneService + Desktop; AC#10–11 → M2-06) |
 | 39 | N1-05 | #67 | Bind zones to VETH/VLAN/bridge without ContainerPolicy entities |
 | 40 | M2-06 | #53 | Implement policy rules, predicates and effects |
 | 41 | M2-07 | #54 | Implement deterministic policy composition |
@@ -361,6 +362,7 @@ Post-MVP M7 = **27** після MVP.
 | Canonicalization primitives | M1-21 | IP/set/JSON normalize; config≠obs hashes | **DONE** |
 | Menu canonical snapshots | M1-22 | section registry; config≠obs; unknown→compat obs | **DONE** |
 | Packet-path blockers | N1-04 | analysis blockers from path class | TODO |
+| Logical zones + Node bindings | M2-05 | catalog SoT; per-Device resolve; ZoneService; Desktop CRUD; AC#10–11 deferred | **DONE** |
 | Persist canonical snapshots | M1-23 | PG sections; payload dedupe; pagination; immutability | **DONE** |
 | Semantic snapshot diff | M1-24 | `SemanticDiffEngine` unit AC#1–13; CompareSnapshotsUseCase | **DONE** |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | M1-25…29 DONE |
@@ -393,10 +395,10 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **чергу #38** → [M2-05 / issue #52](https://github.com/sesquicadaver/MTDirector/issues/52).  
-2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.  
-3. Не стартувати M2, доки не закрито **M1-34** (черга #33) — **DONE**; M2-01…M2-04 — **DONE**.  
-4. Не стартувати M4, доки не закрито **M5-10** (черга #71).  
+1. Відкрити **чергу #39** → [N1-05 / issue #67](https://github.com/sesquicadaver/MTDirector/issues/67) (після merge M2-05 #52).
+2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.
+3. Не стартувати M2, доки не закрито **M1-34** (черга #33) — **DONE**; M2-01…M2-05 — **DONE** (AC#10–11 deferred to M2-06).
+4. Не стартувати M4, доки не закрито **M5-10** (черга #71).
 5. Не стартувати M7, доки не закрито **M6-09** (черга #95).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
