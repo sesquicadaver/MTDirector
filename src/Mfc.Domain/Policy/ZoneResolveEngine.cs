@@ -122,92 +122,92 @@ public static class ZoneResolveEngine
                 break;
 
             case NodeZoneBindingKind.InterfaceList:
-            {
-                string listName = binding.Values[0];
-                IReadOnlyList<ResolvedInterfaceListMembership> memberships = InterfaceListMembership.Resolve(
-                    observation.InterfaceLists,
-                    observation.InterfaceListMembers,
-                    known,
-                    out IReadOnlyList<InterfaceListMembershipFinding> findings);
+                {
+                    string listName = binding.Values[0];
+                    IReadOnlyList<ResolvedInterfaceListMembership> memberships = InterfaceListMembership.Resolve(
+                        observation.InterfaceLists,
+                        observation.InterfaceListMembers,
+                        known,
+                        out IReadOnlyList<InterfaceListMembershipFinding> findings);
 
-                foreach (InterfaceListMembershipFinding finding in findings)
-                {
-                    if (finding.Code == InterfaceListMembershipFinding.InterfaceListCycle)
+                    foreach (InterfaceListMembershipFinding finding in findings)
                     {
-                        blockers.Add(new ZoneResolveBlocker
+                        if (finding.Code == InterfaceListMembershipFinding.InterfaceListCycle)
                         {
-                            Code = ZoneResolveBlockerCodes.InterfaceListCycle,
-                            Message = finding.Message,
-                            Subject = finding.Subject,
-                        });
-                    }
-                    else if (finding.Code == InterfaceListMembershipFinding.MissingListReference
-                             && string.Equals(finding.Subject, listName, StringComparison.Ordinal))
-                    {
-                        blockers.Add(new ZoneResolveBlocker
+                            blockers.Add(new ZoneResolveBlocker
+                            {
+                                Code = ZoneResolveBlockerCodes.InterfaceListCycle,
+                                Message = finding.Message,
+                                Subject = finding.Subject,
+                            });
+                        }
+                        else if (finding.Code == InterfaceListMembershipFinding.MissingListReference
+                                 && string.Equals(finding.Subject, listName, StringComparison.Ordinal))
                         {
-                            Code = ZoneResolveBlockerCodes.MissingInterfaceList,
-                            Message = finding.Message,
-                            Subject = finding.Subject,
-                        });
-                    }
-                    else if (finding.Code == InterfaceListMembershipFinding.MissingInterfaceReference)
-                    {
-                        blockers.Add(new ZoneResolveBlocker
-                        {
-                            Code = ZoneResolveBlockerCodes.MissingInterface,
-                            Message = finding.Message,
-                            Subject = finding.Subject,
-                        });
-                    }
-                }
-
-                ResolvedInterfaceListMembership? match = memberships
-                    .FirstOrDefault(m => string.Equals(m.ListName, listName, StringComparison.Ordinal));
-                if (match is null)
-                {
-                    if (blockers.All(b => b.Code != ZoneResolveBlockerCodes.MissingInterfaceList))
-                    {
-                        blockers.Add(new ZoneResolveBlocker
-                        {
-                            Code = ZoneResolveBlockerCodes.MissingInterfaceList,
-                            Message = $"Interface list '{listName}' does not exist on device.",
-                            Subject = listName,
-                        });
-                    }
-                }
-                else
-                {
-                    foreach (string name in match.Members)
-                    {
-                        if (!interfaces.TryGetValue(name, out ZoneResolveInterfaceObservation? iface))
+                            blockers.Add(new ZoneResolveBlocker
+                            {
+                                Code = ZoneResolveBlockerCodes.MissingInterfaceList,
+                                Message = finding.Message,
+                                Subject = finding.Subject,
+                            });
+                        }
+                        else if (finding.Code == InterfaceListMembershipFinding.MissingInterfaceReference)
                         {
                             blockers.Add(new ZoneResolveBlocker
                             {
                                 Code = ZoneResolveBlockerCodes.MissingInterface,
-                                Message = $"Resolved list member '{name}' does not exist on device.",
-                                Subject = name,
+                                Message = finding.Message,
+                                Subject = finding.Subject,
                             });
-                            continue;
                         }
+                    }
 
-                        if (iface.Dynamic)
+                    ResolvedInterfaceListMembership? match = memberships
+                        .FirstOrDefault(m => string.Equals(m.ListName, listName, StringComparison.Ordinal));
+                    if (match is null)
+                    {
+                        if (blockers.All(b => b.Code != ZoneResolveBlockerCodes.MissingInterfaceList))
                         {
                             blockers.Add(new ZoneResolveBlocker
                             {
-                                Code = ZoneResolveBlockerCodes.DynamicInterface,
-                                Message = $"Dynamic interface '{name}' is blocked for security zones.",
-                                Subject = name,
+                                Code = ZoneResolveBlockerCodes.MissingInterfaceList,
+                                Message = $"Interface list '{listName}' does not exist on device.",
+                                Subject = listName,
                             });
-                            continue;
                         }
-
-                        resolved.Add(name);
                     }
-                }
+                    else
+                    {
+                        foreach (string name in match.Members)
+                        {
+                            if (!interfaces.TryGetValue(name, out ZoneResolveInterfaceObservation? iface))
+                            {
+                                blockers.Add(new ZoneResolveBlocker
+                                {
+                                    Code = ZoneResolveBlockerCodes.MissingInterface,
+                                    Message = $"Resolved list member '{name}' does not exist on device.",
+                                    Subject = name,
+                                });
+                                continue;
+                            }
 
-                break;
-            }
+                            if (iface.Dynamic)
+                            {
+                                blockers.Add(new ZoneResolveBlocker
+                                {
+                                    Code = ZoneResolveBlockerCodes.DynamicInterface,
+                                    Message = $"Dynamic interface '{name}' is blocked for security zones.",
+                                    Subject = name,
+                                });
+                                continue;
+                            }
+
+                            resolved.Add(name);
+                        }
+                    }
+
+                    break;
+                }
 
             default:
                 throw new DomainInvariantException($"Unknown binding kind '{binding.Kind}'.");

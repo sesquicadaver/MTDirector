@@ -118,17 +118,17 @@ public sealed class EfZoneDefinitionStore : IZoneDefinitionStore
         ZoneDefinition zone,
         DateTimeOffset created,
         DateTimeOffset updated) => new()
-    {
-        Id = zone.Id.Value,
-        OwnerScope = (short)zone.OwnerScope,
-        OwnerId = zone.OwnerId,
-        Key = zone.Key.Value,
-        Name = zone.Name.Value,
-        Description = zone.Description,
-        RowVersion = (long)zone.RowVersion,
-        CreatedAtUtc = created,
-        UpdatedAtUtc = updated,
-    };
+        {
+            Id = zone.Id.Value,
+            OwnerScope = (short)zone.OwnerScope,
+            OwnerId = zone.OwnerId,
+            Key = zone.Key.Value,
+            Name = zone.Name.Value,
+            Description = zone.Description,
+            RowVersion = (long)zone.RowVersion,
+            CreatedAtUtc = created,
+            UpdatedAtUtc = updated,
+        };
 
     private static ZoneDefinition ToDomain(ZoneDefinitionEntity entity)
         => ZoneDefinition.Reconstitute(
@@ -258,19 +258,19 @@ public sealed class EfNodeZoneBindingStore : INodeZoneBindingStore
         NodeZoneBinding binding,
         DateTimeOffset created,
         DateTimeOffset updated) => new()
-    {
-        Id = binding.Id.Value,
-        NodeId = binding.NodeId.Value,
-        ZoneId = binding.ZoneId.Value,
-        Kind = (short)binding.Kind,
-        ValuesJson = SerializeValues(binding.Values),
-        ExpectedDependencyHash = binding.ExpectedDependencyHash.Bytes.ToArray(),
-        LastResolvedDependencyHash = binding.LastResolvedDependencyHash?.Bytes.ToArray(),
-        AnalysisStale = binding.AnalysisStale,
-        RowVersion = (long)binding.RowVersion,
-        CreatedAtUtc = created,
-        UpdatedAtUtc = updated,
-    };
+        {
+            Id = binding.Id.Value,
+            NodeId = binding.NodeId.Value,
+            ZoneId = binding.ZoneId.Value,
+            Kind = (short)binding.Kind,
+            ValuesJson = SerializeValues(binding.Values),
+            ExpectedDependencyHash = binding.ExpectedDependencyHash.Bytes.ToArray(),
+            LastResolvedDependencyHash = binding.LastResolvedDependencyHash?.Bytes.ToArray(),
+            AnalysisStale = binding.AnalysisStale,
+            RowVersion = (long)binding.RowVersion,
+            CreatedAtUtc = created,
+            UpdatedAtUtc = updated,
+        };
 
     private static NodeZoneBinding ToDomain(NodeZoneBindingEntity entity)
         => NodeZoneBinding.Reconstitute(
