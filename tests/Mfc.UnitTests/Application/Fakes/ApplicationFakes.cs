@@ -730,3 +730,73 @@ internal sealed class FakeZoneResolveObservationSource : IZoneResolveObservation
         });
     }
 }
+
+internal sealed class FakePolicyStore : IPolicyStore
+{
+    private readonly Dictionary<Guid, Domain.Policy.Policy> _policies = [];
+    private readonly Dictionary<Guid, PolicyRevision> _revisions = [];
+
+    public Task AddPolicyAsync(Domain.Policy.Policy policy, CancellationToken cancellationToken = default)
+    {
+        _policies[policy.Id.Value] = policy;
+        return Task.CompletedTask;
+    }
+
+    public Task<Domain.Policy.Policy?> GetPolicyAsync(PolicyId id, CancellationToken cancellationToken = default)
+        => Task.FromResult(_policies.TryGetValue(id.Value, out Domain.Policy.Policy? policy) ? policy : null);
+
+    public Task UpdatePolicyAsync(Domain.Policy.Policy policy, CancellationToken cancellationToken = default)
+    {
+        _policies[policy.Id.Value] = policy;
+        return Task.CompletedTask;
+    }
+
+    public Task AddRevisionAsync(PolicyRevision revision, CancellationToken cancellationToken = default)
+    {
+        _revisions[revision.Id.Value] = Clone(revision);
+        return Task.CompletedTask;
+    }
+
+    public Task SaveRevisionAsync(PolicyRevision revision, CancellationToken cancellationToken = default)
+    {
+        _revisions[revision.Id.Value] = Clone(revision);
+        return Task.CompletedTask;
+    }
+
+    public Task<PolicyRevision?> GetRevisionAsync(PolicyRevisionId id, CancellationToken cancellationToken = default)
+        => Task.FromResult(_revisions.TryGetValue(id.Value, out PolicyRevision? revision) ? Clone(revision) : null);
+
+    public Task<IReadOnlyList<PolicyRevision>> ListRevisionsAsync(
+        PolicyId policyId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<PolicyRevision>>(
+            _revisions.Values
+                .Where(r => r.PolicyId == policyId)
+                .OrderBy(r => r.RevisionNumber)
+                .Select(Clone)
+                .ToArray());
+
+    public Task<uint> GetLatestRevisionNumberAsync(PolicyId policyId, CancellationToken cancellationToken = default)
+    {
+        uint max = _revisions.Values
+            .Where(r => r.PolicyId == policyId)
+            .Select(r => r.RevisionNumber)
+            .DefaultIfEmpty(0u)
+            .Max();
+        return Task.FromResult(max);
+    }
+
+    private static PolicyRevision Clone(PolicyRevision revision)
+        => PolicyRevision.Reconstitute(
+            revision.Id,
+            revision.PolicyId,
+            revision.RevisionNumber,
+            revision.SchemaVersion,
+            revision.ContentHash,
+            revision.ParentContextHash,
+            revision.State,
+            revision.CreatedBy,
+            revision.CreatedAtUtc,
+            revision.ApprovedAtUtc,
+            revision.CanonicalBytes.ToArray());
+}

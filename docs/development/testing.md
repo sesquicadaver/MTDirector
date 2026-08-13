@@ -307,12 +307,51 @@ Policy Model §§20–21 + Issue Set M2-05 AC → module → tests:
 | `PolicyDocument.ZoneDefinitions` stays `[]` | `PolicyDocument` | composition/hash embedding deferred (M2-06+) |
 | gRPC `mfc.v1.ZoneService` | `zones.proto` / `ZoneGrpcService` | `ZoneProtoContractTests` |
 | Desktop CRUD + blockers | `ZonePanelService` / Zones tab | `ZonesDesktopServiceTests` |
-| AC#10–11 ZoneSelector / rules | — | **Deferred to M2-06** (Living Spec + ROADMAP) |
+| AC#10–11 ZoneSelector / rules | `ZoneSelector` + `PolicyRule` (M2-06 Domain) | `PolicyRuleTests` D7 |
 | No Domain/App→RouterOs; Desktop Contracts-only | ArchitectureBoundary | `ArchitectureBoundaryTests` |
 
 Observation input: latest completed capture sections via `SnapshotZoneResolveObservationSource` (`network.interfaces` + `network.interface-lists`). Missing capture → `ZONE_OBSERVATION_UNAVAILABLE`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Zone\|FullyQualifiedName~ArchitectureBoundary"`.
+
+## Living Specification — typed policy rules (M2-06)
+
+Policy Model §§22–27 + Issue Set M2-06 AC#1–12 → Domain + Application + gRPC + thin Desktop:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Normative managed matchers | `TrafficPredicate` | `PolicyRuleTests` D1/D8 |
+| Unsupported matchers no surface | Domain types (no raw matcher) | D10 |
+| Effects ACCEPT/DROP/REJECT/FASTTRACK/EXEMPT | `RuleEffectSpec` / `PolicyRuleEffect` | D1 |
+| REJECT typed reject mode | `RuleEffectSpec` | D1 |
+| TCP_RESET TCP-only | `TrafficPredicate.IsTcpOnly` | D2 |
+| Contiguous ordinals | `PolicyRuleSet` + `AddRuleUseCase` | D5 / A2 |
+| Rule UUID ≠ ordinal | `RuleId` / `PolicyRule` | D5 |
+| Disabled ∉ active | `PolicyRuleSet.ActiveRules` + `ListRulesUseCase` | D6 / A4 |
+| exception_eligible deny-only | `PolicyRule` | D3 |
+| Log prefix ≤32 ASCII | `LogSpecification` | D4 |
+| No raw matcher string | `TrafficPredicate` | D8/D10 |
+| Deterministic canonicalize | `PolicyCanonicalWriter` | D9/D11 |
+| ZoneSelector chain constraints | `ZoneSelector.EnsureAllowedOnChain` | D7 |
+| Writer↔reader hash | `PolicyDocumentReader` | D11 |
+| Legacy opaque rules → `POLICY_RULES_UNSUPPORTED_SHAPE` | `PolicyDocumentReader` | D12 |
+| Typed `PolicyDocument.Rules` | `PolicyDocument` | D9/D11 + lifecycle hash tests |
+| Draft-only mutate | `AddRuleUseCase` / `PolicyRevision.ReplaceDocument` | A1 |
+| `expected_content_hash` CAS | App mutators | A3 / `PolicyGrpcHostTests` |
+| Zone hard / Address·Service soft `POLICY_SELECTOR_CATALOG_SOFT` | `PolicyRevisionSupport` | A5 / O1 |
+| Non-empty doc address/service arrays → hard UUID membership | `EnsureAddressServiceCatalog` | A5b |
+| gRPC `mfc.v1.PolicyService` | `policy.proto` / `PolicyGrpcService` | `PolicyProtoContractTests` / C2 |
+| Desktop thin list (Contracts-only) | `PolicyPanelService` | U1 `PolicyDesktopServiceTests` |
+| Architecture boundary | Desktop → Contracts only | C3 `ArchitectureBoundaryTests` |
+
+**Residuals (documented, non-blocking):** TCP_RESET on App/gRPC path needs an in-document service catalog that proves TCP-only (`IsTcpOnly`); CreateDraft starts with empty service_objects, so wire TCP_RESET remains Domain-proven until Address/Service object CRUD embeds catalogs. Idempotency hashes now include predicate+logging.
+
+Filter:
+```bash
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~Policy"
+dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~Policy"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ArchitectureBoundary"
+```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
 

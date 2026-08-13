@@ -1,5 +1,5 @@
-using System.Text.Json;
 using Mfc.Domain;
+using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Policy;
 using Mfc.Domain.Policy.Primitives;
@@ -93,9 +93,18 @@ public sealed class PolicyLifecycleTests
         Hash256 before = revision.ContentHash;
         revision.MarkValidated();
 
-        using JsonDocument rule = JsonDocument.Parse("""{"id":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"}""");
         PolicyDocument edited = PolicyDocument.CreateEmpty(policy.Kind, policy.OwnerScope)
-            .WithRules([rule.RootElement.Clone()]);
+            .WithRules(
+            [
+                PolicyRule.Create(
+                    IpAddressFamily.IPv4,
+                    PolicyFilterChain.Forward,
+                    PolicyPipelineStage.CompanyDeny,
+                    ordinal: 0,
+                    TrafficPredicate.Create(),
+                    RuleEffectSpec.Create(PolicyRuleEffect.Drop),
+                    id: new RuleId(Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"))),
+            ]);
         revision.ReplaceDocument(edited, parentContextHash: null);
 
         Assert.Equal(PolicyRevisionState.Draft, revision.State);
