@@ -42,6 +42,10 @@ public static class CanonicalSectionIds
     public const string CapabilitiesDevice = "capabilities.device";
     public const string CompatibilityFindings = "compatibility.findings";
     public const string CompatibilityUnknownProperties = "compatibility.unknown-properties";
+    /// <summary>Container/app → VETH membership edges for zone marker expansion (N1-05).</summary>
+    public const string TopologyContainerVeth = "topology.container-veth";
+    /// <summary>VETH names shared by multiple containers/apps (N1-05 / N1-02 semantics).</summary>
+    public const string TopologySharedVeth = "topology.shared-veth";
     public const string TopologyValidation = "topology.validation";
 
     /// <summary>True when the section preserves RouterOS reply order (firewall/routing rules).</summary>
@@ -96,6 +100,8 @@ public static class CanonicalSectionIds
         CapabilitiesDevice,
         CompatibilityFindings,
         CompatibilityUnknownProperties,
+        TopologyContainerVeth,
+        TopologySharedVeth,
         TopologyValidation,
     ];
 

@@ -22,7 +22,7 @@ Runtime role/route active-state changes must not alter configuration hash (prove
 
 ## Section registry
 
-Canonical section ids live in `Mfc.Domain.Canonicalization.CanonicalSectionIds` (e.g. `firewall.ipv4.filter`, `ha.vrrp`, `routing.ipv4.default-state`, `topology.validation`). Unknown RouterOS properties go to `compatibility.unknown-properties` observations — never silently dropped.
+Canonical section ids live in `Mfc.Domain.Canonicalization.CanonicalSectionIds` (e.g. `firewall.ipv4.filter`, `ha.vrrp`, `routing.ipv4.default-state`, `topology.container-veth`, `topology.shared-veth`, `topology.validation`). Unknown RouterOS properties go to `compatibility.unknown-properties` observations — never silently dropped.
 
 ## Semantic diff
 

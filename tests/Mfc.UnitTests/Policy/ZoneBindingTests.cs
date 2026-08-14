@@ -278,6 +278,308 @@ public sealed class ZoneResolveEngineTests
         Assert.Contains(missing.Blockers, b => b.Code == ZoneResolveBlockerCodes.MissingInterfaceList);
         Assert.Contains(missing.Blockers, b => b.Code == ZoneResolveBlockerCodes.EmptyResolvedSet);
     }
+
+    [Fact]
+    public void PlainVlanBridgeVethNamesResolveViaInterfaceTable()
+    {
+        // AC-A: plain vlan/bridge/veth names still resolve via IF table.
+        NodeZoneBinding binding = NodeZoneBinding.Create(
+            new NodeId(Guid.NewGuid()),
+            ZoneId.New(),
+            NodeZoneBindingKind.ExplicitInterfaceSet,
+            ["vlan120", "bridge-lan", "veth1"],
+            Hash256.Create(new byte[32]));
+
+        ZoneBindingResolveResult result = ZoneResolveEngine.Resolve(
+            binding,
+            Observation(
+                interfaces:
+                [
+                    Iface("vlan120"),
+                    Iface("bridge-lan"),
+                    Iface("veth1"),
+                ]));
+
+        Assert.Equal(["bridge-lan", "veth1", "vlan120"], result.ResolvedMembers);
+        Assert.DoesNotContain(result.Blockers, b => b.Code == ZoneResolveBlockerCodes.EmptyResolvedSet);
+    }
+
+    [Fact]
+    public void ContainerMarkerExpandsToVethSet()
+    {
+        // AC-B
+        NodeZoneBinding binding = NodeZoneBinding.Create(
+            new NodeId(Guid.NewGuid()),
+            ZoneId.New(),
+            NodeZoneBindingKind.SingleInterface,
+            ["container:pihole"],
+            Hash256.Create(new byte[32]));
+
+        ZoneBindingResolveResult result = ZoneResolveEngine.Resolve(
+            binding,
+            Observation(
+                interfaces: [Iface("veth1"), Iface("veth2")],
+                edges:
+                [
+                    Edge("container", "pihole", "veth1"),
+                    Edge("container", "pihole", "veth2"),
+                ]));
+
+        Assert.Equal(["veth1", "veth2"], result.ResolvedMembers);
+        Assert.Empty(result.Blockers);
+    }
+
+    [Fact]
+    public void AppMarkerExpandsToVethSet()
+    {
+        // AC-C
+        NodeZoneBinding binding = NodeZoneBinding.Create(
+            new NodeId(Guid.NewGuid()),
+            ZoneId.New(),
+            NodeZoneBindingKind.SingleInterface,
+            ["app:store"],
+            Hash256.Create(new byte[32]));
+
+        ZoneBindingResolveResult result = ZoneResolveEngine.Resolve(
+            binding,
+            Observation(
+                interfaces: [Iface("veth-app")],
+                edges: [Edge("app", "store", "veth-app")]));
+
+        Assert.Equal(["veth-app"], result.ResolvedMembers);
+        Assert.Empty(result.Blockers);
+    }
+
+    [Fact]
+    public void EmptyMarkerRemainderProducesTypedMissingBlocker()
+    {
+        // Architect must-fix: empty container:/app: remainder
+        NodeZoneBinding emptyContainer = NodeZoneBinding.Create(
+            new NodeId(Guid.NewGuid()),
+            ZoneId.New(),
+            NodeZoneBindingKind.SingleInterface,
+            ["container:"],
+            Hash256.Create(new byte[32]));
+        ZoneBindingResolveResult containerResult = ZoneResolveEngine.Resolve(
+            emptyContainer,
+            Observation(interfaces: [Iface("veth1")], edges: [Edge("container", "x", "veth1")]));
+        Assert.Contains(
+            containerResult.Blockers,
+            b => b.Code == ZoneResolveBlockerCodes.MissingContainer
+                 && string.Equals(b.Subject, "container:", StringComparison.Ordinal));
+        Assert.DoesNotContain(
+            containerResult.Blockers,
+            b => b.Code == ZoneResolveBlockerCodes.MissingInterface
+                 && string.Equals(b.Subject, "container:", StringComparison.Ordinal));
+
+        NodeZoneBinding emptyApp = NodeZoneBinding.Create(
+            new NodeId(Guid.NewGuid()),
+            ZoneId.New(),
+            NodeZoneBindingKind.SingleInterface,
+            ["app:   "],
+            Hash256.Create(new byte[32]));
+        Assert.Equal(["app:"], emptyApp.Values);
+        ZoneBindingResolveResult appResult = ZoneResolveEngine.Resolve(
+            emptyApp,
+            Observation(interfaces: [Iface("veth1")], edges: [Edge("app", "x", "veth1")]));
+        Assert.Contains(
+            appResult.Blockers,
+            b => b.Code == ZoneResolveBlockerCodes.MissingApp
+                 && string.Equals(b.Subject, "app:", StringComparison.Ordinal)
+                 && b.Message.Contains("empty name", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void MissingContainerAndAppProduceTypedBlockers()
+    {
+        // AC-D
+        NodeZoneBinding containerBinding = NodeZoneBinding.Create(
+            new NodeId(Guid.NewGuid()),
+            ZoneId.New(),
+            NodeZoneBindingKind.SingleInterface,
+            ["container:missing"],
+            Hash256.Create(new byte[32]));
+        ZoneBindingResolveResult missingContainer = ZoneResolveEngine.Resolve(
+            containerBinding,
+            Observation(interfaces: [Iface("ether1")]));
+        Assert.Contains(missingContainer.Blockers, b => b.Code == ZoneResolveBlockerCodes.MissingContainer);
+        Assert.DoesNotContain(
+            missingContainer.Blockers,
+            b => b.Code == ZoneResolveBlockerCodes.MissingInterface
+                 && string.Equals(b.Subject, "container:missing", StringComparison.Ordinal));
+        Assert.Contains(missingContainer.Blockers, b => b.Code == ZoneResolveBlockerCodes.EmptyResolvedSet);
+
+        NodeZoneBinding appBinding = NodeZoneBinding.Create(
+            new NodeId(Guid.NewGuid()),
+            ZoneId.New(),
+            NodeZoneBindingKind.SingleInterface,
+            ["app:missing"],
+            Hash256.Create(new byte[32]));
+        ZoneBindingResolveResult missingApp = ZoneResolveEngine.Resolve(
+            appBinding,
+            Observation(interfaces: [Iface("ether1")]));
+        Assert.Contains(missingApp.Blockers, b => b.Code == ZoneResolveBlockerCodes.MissingApp);
+        Assert.Contains(missingApp.Blockers, b => b.Code == ZoneResolveBlockerCodes.EmptyResolvedSet);
+    }
+
+    [Fact]
+    public void UnresolvedVethAfterExpansionProducesTypedBlocker()
+    {
+        // AC-E
+        NodeZoneBinding binding = NodeZoneBinding.Create(
+            new NodeId(Guid.NewGuid()),
+            ZoneId.New(),
+            NodeZoneBindingKind.SingleInterface,
+            ["container:pihole"],
+            Hash256.Create(new byte[32]));
+
+        ZoneBindingResolveResult emptyVeth = ZoneResolveEngine.Resolve(
+            binding,
+            Observation(
+                interfaces: [Iface("ether1")],
+                edges: [Edge("container", "pihole", "   ")]));
+        Assert.Contains(emptyVeth.Blockers, b => b.Code == ZoneResolveBlockerCodes.ContainerVethUnresolved);
+        Assert.Contains(emptyVeth.Blockers, b => b.Code == ZoneResolveBlockerCodes.EmptyResolvedSet);
+        Assert.Empty(emptyVeth.ResolvedMembers);
+
+        ZoneBindingResolveResult missingIf = ZoneResolveEngine.Resolve(
+            binding,
+            Observation(
+                interfaces: [Iface("ether1")],
+                edges: [Edge("container", "pihole", "veth-gone")]));
+        Assert.Contains(missingIf.Blockers, b => b.Code == ZoneResolveBlockerCodes.ContainerVethUnresolved);
+        Assert.Contains(missingIf.Blockers, b => b.Code == ZoneResolveBlockerCodes.MissingInterface);
+        Assert.Contains(missingIf.Blockers, b => b.Code == ZoneResolveBlockerCodes.EmptyResolvedSet);
+
+        NodeZoneBinding appBinding = NodeZoneBinding.Create(
+            new NodeId(Guid.NewGuid()),
+            ZoneId.New(),
+            NodeZoneBindingKind.SingleInterface,
+            ["app:store"],
+            Hash256.Create(new byte[32]));
+        ZoneBindingResolveResult appUnresolved = ZoneResolveEngine.Resolve(
+            appBinding,
+            Observation(
+                interfaces: [Iface("ether1")],
+                edges: [Edge("app", "store", "veth-gone")]));
+        Assert.Contains(appUnresolved.Blockers, b => b.Code == ZoneResolveBlockerCodes.AppVethUnresolved);
+    }
+
+    [Fact]
+    public void SharedVethProducesBlockerButKeepsResolvedMembers()
+    {
+        // AC-F / LOCK-5
+        NodeZoneBinding binding = NodeZoneBinding.Create(
+            new NodeId(Guid.NewGuid()),
+            ZoneId.New(),
+            NodeZoneBindingKind.SingleInterface,
+            ["container:pihole"],
+            Hash256.Create(new byte[32]));
+
+        ZoneBindingResolveResult result = ZoneResolveEngine.Resolve(
+            binding,
+            Observation(
+                interfaces: [Iface("veth1")],
+                edges: [Edge("container", "pihole", "veth1")],
+                shared: ["veth1"]));
+
+        Assert.Equal(["veth1"], result.ResolvedMembers);
+        Assert.Contains(result.Blockers, b => b.Code == ZoneResolveBlockerCodes.SharedVeth && b.Subject == "veth1");
+        Assert.DoesNotContain(result.Blockers, b => b.Code == ZoneResolveBlockerCodes.EmptyResolvedSet);
+    }
+
+    [Fact]
+    public void MarkerOnInterfaceListProducesTypedBlockerWithoutExpansion()
+    {
+        // AC-G
+        NodeZoneBinding binding = NodeZoneBinding.Create(
+            new NodeId(Guid.NewGuid()),
+            ZoneId.New(),
+            NodeZoneBindingKind.InterfaceList,
+            ["container:pihole"],
+            Hash256.Create(new byte[32]));
+
+        ZoneBindingResolveResult result = ZoneResolveEngine.Resolve(
+            binding,
+            Observation(
+                interfaces: [Iface("veth1")],
+                edges: [Edge("container", "pihole", "veth1")],
+                lists:
+                [
+                    new InterfaceListSpec { Name = "LAN", Include = [], Exclude = [] },
+                ],
+                members:
+                [
+                    new InterfaceListMemberSpec { List = "LAN", Interface = "veth1", Disabled = false },
+                ]));
+
+        Assert.Contains(
+            result.Blockers,
+            b => b.Code == ZoneResolveBlockerCodes.MarkerNotAllowedOnInterfaceList);
+        Assert.Empty(result.ResolvedMembers);
+        Assert.Contains(result.Blockers, b => b.Code == ZoneResolveBlockerCodes.EmptyResolvedSet);
+    }
+
+    [Fact]
+    public void DependencyHashV1UsesMarkersAndPostExpansionMembers()
+    {
+        // AC-H3 / LOCK-6 — hash prefix stays mfc.zone.dependency.v1
+        string[] values = ["container:pihole"];
+        string[] members = ["veth1", "veth2"];
+        Hash256 a = NodeZoneBinding.ComputeDependencyHash(
+            NodeZoneBindingKind.SingleInterface,
+            values,
+            members);
+        Hash256 b = NodeZoneBinding.ComputeDependencyHash(
+            NodeZoneBindingKind.SingleInterface,
+            values,
+            members);
+        Assert.Equal(a, b);
+
+        NodeZoneBinding binding = NodeZoneBinding.Create(
+            new NodeId(Guid.NewGuid()),
+            ZoneId.New(),
+            NodeZoneBindingKind.SingleInterface,
+            values,
+            a);
+
+        ZoneBindingResolveResult result = ZoneResolveEngine.Resolve(
+            binding,
+            Observation(
+                interfaces: [Iface("veth1"), Iface("veth2")],
+                edges:
+                [
+                    Edge("container", "pihole", "veth1"),
+                    Edge("container", "pihole", "veth2"),
+                ]));
+
+        Assert.Equal(a, result.FreshDependencyHash);
+        Assert.False(result.AnalysisStale);
+        Assert.Equal(NodeZoneBinding.DependencyHashPrefix, "mfc.zone.dependency.v1");
+    }
+
+    private static ZoneResolveDeviceObservation Observation(
+        IReadOnlyList<ZoneResolveInterfaceObservation>? interfaces = null,
+        IReadOnlyList<ZoneResolveContainerVethEdge>? edges = null,
+        IReadOnlyList<string>? shared = null,
+        IReadOnlyList<InterfaceListSpec>? lists = null,
+        IReadOnlyList<InterfaceListMemberSpec>? members = null)
+        => new()
+        {
+            DeviceId = new DeviceId(Guid.NewGuid()),
+            ObservationAvailable = true,
+            Interfaces = interfaces ?? [],
+            InterfaceLists = lists ?? [],
+            InterfaceListMembers = members ?? [],
+            ContainerVethEdges = edges ?? [],
+            SharedVethNames = shared ?? [],
+        };
+
+    private static ZoneResolveInterfaceObservation Iface(string name, bool dynamic = false)
+        => new() { Name = name, Dynamic = dynamic };
+
+    private static ZoneResolveContainerVethEdge Edge(string kind, string endpoint, string veth)
+        => new() { EndpointKind = kind, EndpointName = endpoint, VethName = veth };
 }
 
 public sealed class ZoneDefinitionOwnerScopeTests

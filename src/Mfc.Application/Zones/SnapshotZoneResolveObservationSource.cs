@@ -45,9 +45,12 @@ public sealed class SnapshotZoneResolveObservationSource : IZoneResolveObservati
         List<ZoneResolveInterfaceObservation> interfaces = ParseInterfaces(sections);
         (IReadOnlyList<InterfaceListSpec> lists, IReadOnlyList<InterfaceListMemberSpec> members) =
             ParseInterfaceLists(sections);
+        IReadOnlyList<ZoneResolveContainerVethEdge> containerVethEdges = ParseContainerVethEdges(sections);
+        IReadOnlyList<string> sharedVethNames = ParseSharedVethNames(sections);
 
         // Observation is available when we have at least the interfaces section material,
         // even if the set is empty (empty → resolve blockers as designed).
+        // Topology sections are optional: plain IF names still resolve; markers get typed blockers.
         bool hasInterfaceSection = sections.Any(s =>
             string.Equals(s.SectionId, CanonicalSectionIds.NetworkInterfaces, StringComparison.Ordinal));
         if (!hasInterfaceSection)
@@ -61,6 +64,8 @@ public sealed class SnapshotZoneResolveObservationSource : IZoneResolveObservati
             Interfaces = interfaces,
             InterfaceLists = lists,
             InterfaceListMembers = members,
+            ContainerVethEdges = containerVethEdges,
+            SharedVethNames = sharedVethNames,
             ObservationAvailable = true,
         };
     }
@@ -71,6 +76,8 @@ public sealed class SnapshotZoneResolveObservationSource : IZoneResolveObservati
         Interfaces = [],
         InterfaceLists = [],
         InterfaceListMembers = [],
+        ContainerVethEdges = [],
+        SharedVethNames = [],
         ObservationAvailable = false,
     };
 
@@ -153,6 +160,79 @@ public sealed class SnapshotZoneResolveObservationSource : IZoneResolveObservati
         }
 
         return (lists, members);
+    }
+
+    /// <summary>
+    /// Parses <c>topology.container-veth</c> configuration records into Domain-pure edges.
+    /// </summary>
+    private static List<ZoneResolveContainerVethEdge> ParseContainerVethEdges(
+        IReadOnlyList<CanonicalSection> sections)
+    {
+        List<ZoneResolveContainerVethEdge> edges = [];
+        foreach (CanonicalSection section in sections
+                     .Where(s => string.Equals(
+                         s.SectionId,
+                         CanonicalSectionIds.TopologyContainerVeth,
+                         StringComparison.Ordinal)
+                         && s.Domain == CanonicalDomain.Configuration))
+        {
+            foreach (CanonicalRecord record in section.Records)
+            {
+                string? kind = GetOptional(record, "endpoint_kind");
+                string? endpointName = GetOptional(record, "endpoint_name");
+                string? vethName = GetOptional(record, "veth_name");
+                if (string.IsNullOrWhiteSpace(kind)
+                    || string.IsNullOrWhiteSpace(endpointName)
+                    || string.IsNullOrWhiteSpace(vethName))
+                {
+                    continue;
+                }
+
+                string normalizedKind = kind.Trim();
+                if (!string.Equals(normalizedKind, ZoneResolveEngine.EndpointKindContainer, StringComparison.Ordinal)
+                    && !string.Equals(normalizedKind, ZoneResolveEngine.EndpointKindApp, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                edges.Add(new ZoneResolveContainerVethEdge
+                {
+                    EndpointKind = normalizedKind,
+                    EndpointName = endpointName.Trim(),
+                    VethName = vethName.Trim(),
+                });
+            }
+        }
+
+        return edges
+            .OrderBy(e => e.EndpointKind, StringComparer.Ordinal)
+            .ThenBy(e => e.EndpointName, StringComparer.Ordinal)
+            .ThenBy(e => e.VethName, StringComparer.Ordinal)
+            .ToList();
+    }
+
+    /// <summary>Parses <c>topology.shared-veth</c> configuration records.</summary>
+    private static List<string> ParseSharedVethNames(IReadOnlyList<CanonicalSection> sections)
+    {
+        HashSet<string> names = new(StringComparer.Ordinal);
+        foreach (CanonicalSection section in sections
+                     .Where(s => string.Equals(
+                         s.SectionId,
+                         CanonicalSectionIds.TopologySharedVeth,
+                         StringComparison.Ordinal)
+                         && s.Domain == CanonicalDomain.Configuration))
+        {
+            foreach (CanonicalRecord record in section.Records)
+            {
+                string? vethName = GetOptional(record, "veth_name");
+                if (!string.IsNullOrWhiteSpace(vethName))
+                {
+                    names.Add(vethName.Trim());
+                }
+            }
+        }
+
+        return names.OrderBy(n => n, StringComparer.Ordinal).ToList();
     }
 
     private static string? GetOptional(CanonicalRecord record, string key)
