@@ -1,0 +1,13 @@
+---
+description: Always commit, push, open PRs, and squash-merge when work is ready
+alwaysApply: true
+---
+
+# Git / PR autopilot
+
+Do not wait for a separate user request.
+
+- **Commit + push** on the current feature branch when a cycle is complete (no secrets).
+- **Open a PR** to `main` as soon as the branch has pushable work (`gh pr create`).
+- **Squash-merge** a PR when it is `MERGEABLE`, required CI is green, and unresolved review threads are triaged (`gh pr merge --squash`). Then pull `main`.
+- Do not force-push. Do not skip hooks. If merge is blocked (conflicts, red CI, missing rights), stop and report the blocker.
