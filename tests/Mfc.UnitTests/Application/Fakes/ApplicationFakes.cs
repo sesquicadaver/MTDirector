@@ -786,6 +786,25 @@ internal sealed class FakePolicyStore : IPolicyStore
         return Task.FromResult(max);
     }
 
+    public Task<IReadOnlyList<Domain.Policy.Policy>> ListActiveByKindAsync(
+        PolicyKind kind,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<Domain.Policy.Policy>>(
+            _policies.Values
+                .Where(p => p.Kind == kind && p.Status == PolicyStatus.Active)
+                .OrderBy(p => p.Id.Value)
+                .ToArray());
+
+    public Task<IReadOnlyList<Domain.Policy.Policy>> ListActiveByOwnerAsync(
+        PolicyKind kind,
+        Guid ownerId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<Domain.Policy.Policy>>(
+            _policies.Values
+                .Where(p => p.Kind == kind && p.Status == PolicyStatus.Active && p.OwnerId == ownerId)
+                .OrderBy(p => p.Id.Value)
+                .ToArray());
+
     private static PolicyRevision Clone(PolicyRevision revision)
         => PolicyRevision.Reconstitute(
             revision.Id,

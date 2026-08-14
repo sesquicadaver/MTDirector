@@ -20,6 +20,19 @@ public static class AddressObjectVisibility
 {
     public static bool CanReference(AddressConsumerContext consumer, AddressObject referenced)
     {
+        ArgumentNullException.ThrowIfNull(referenced);
+        return CanReference(
+            consumer,
+            new PolicyObjectIdentity(
+                referenced.Id.Value,
+                referenced.OwnerScope,
+                referenced.OwnerId,
+                referenced.ExceptionRevisionId));
+    }
+
+    /// <summary>Compose-time visibility against a lightweight object identity.</summary>
+    public static bool CanReference(AddressConsumerContext consumer, PolicyObjectIdentity referenced)
+    {
         ArgumentNullException.ThrowIfNull(consumer);
         ArgumentNullException.ThrowIfNull(referenced);
 

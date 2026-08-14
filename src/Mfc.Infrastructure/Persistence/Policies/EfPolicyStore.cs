@@ -167,6 +167,34 @@ public sealed class EfPolicyStore : IPolicyStore
         return max is null ? 0u : checked((uint)max.Value);
     }
 
+    public async Task<IReadOnlyList<Policy>> ListActiveByKindAsync(
+        PolicyKind kind,
+        CancellationToken cancellationToken = default)
+    {
+        List<PolicyEntity> rows = await _db.Policies.AsNoTracking()
+            .Where(p => p.Kind == (short)kind && p.Status == (short)PolicyStatus.Active)
+            .OrderBy(p => p.Id)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+        return rows.Select(ToDomainPolicy).ToArray();
+    }
+
+    public async Task<IReadOnlyList<Policy>> ListActiveByOwnerAsync(
+        PolicyKind kind,
+        Guid ownerId,
+        CancellationToken cancellationToken = default)
+    {
+        List<PolicyEntity> rows = await _db.Policies.AsNoTracking()
+            .Where(p =>
+                p.Kind == (short)kind
+                && p.Status == (short)PolicyStatus.Active
+                && p.OwnerId == ownerId)
+            .OrderBy(p => p.Id)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+        return rows.Select(ToDomainPolicy).ToArray();
+    }
+
     private static Policy ToDomainPolicy(PolicyEntity entity)
         => Policy.Reconstitute(
             new PolicyId(entity.Id),

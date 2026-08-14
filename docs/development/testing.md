@@ -385,6 +385,44 @@ dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~P
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ArchitectureBoundary"
 ```
 
+## Living Specification — deterministic policy composition (M2-07)
+
+Policy Model §§29–34.1 + Issue Set M2-07 AC#1–14 → Domain composer + Application load/select + `ComposeEffectivePolicy` (Desktop OUT):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Company baseline required | `EffectivePolicyComposer` / `ComposeEffectivePolicyUseCase` | D1 / A1 / A4 |
+| Site/Node overlays optional | composer + App 0\|1 overlay | D2 / A2 |
+| UUID-only resolve (no names) | merged object namespace | D3 |
+| Parent context hashes | `PolicyHashing.ComputeParentContextHash` | D4 / A3 |
+| Scope visibility | `AddressObjectVisibility` / `PolicyObjectIdentity` | D5 |
+| Stage ownership | `PolicyPipelineV1.IsOwnerEffectAllowed` | D6 |
+| Disabled ∉ active; ordinals kept | composer active list | D7 |
+| No auto-dedup | duplicate predicates kept | D8 |
+| Pipeline v1; exemption stages empty | §31 order | D9 |
+| No VRRP/WAN/device/bindings | composer signature + request | D10 / C1 |
+| Deterministic logical hash | `PolicyHashing.HashLogicalEffective` | D11 / D12 |
+| Unused object INFO | `UNUSED_POLICY_OBJECT` | D13 / O3 |
+| UUID collision objects/rules | `POLICY_COMPOSE_UUID_COLLISION` | D14 / D15 |
+| Missing zone catalog | `POLICY_COMPOSE_ZONE_NOT_FOUND` | D16 |
+| Hash ≠ synthetic `PolicyDocument` write | LOCK-10 IncrementalHash | D17 |
+| Absent overlay ≠ 32 zero bytes | omit-if-absent | D18 |
+| Prefix + NUL + uint32 exception count 0 | `BuildLogicalEffectivePreimage` | D19 |
+| Unique ACTIVE company; archived ignored | `ListActiveByKindAsync` | A4 / A5 / A7 |
+| Missing node → `not_found` | App | A6 |
+| gRPC `ComposeEffectivePolicy` | `policy.proto` / `PolicyGrpcService` | C2 / C4 |
+| `POLICY_COMPOSE_*` trailer FailedPrecondition, retryable=false | `GrpcApplicationErrorMapper` | O1 |
+| Architecture boundary Domain/App ↛ RouterOs | existing | C3 |
+
+**Residuals (documented, non-blocking):** Exception insert / `EXEMPT_DENY_STAGE` and non-zero exception-count hash slot are M2-08. Desktop does not call compose.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~EffectivePolicy|FullyQualifiedName~ComposeEffective|FullyQualifiedName~LogicalEffective|FullyQualifiedName~PolicyHashing|FullyQualifiedName~ArchitectureBoundary"
+dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~PolicyGrpc|FullyQualifiedName~PolicyProto"
+```
+
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
 Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):

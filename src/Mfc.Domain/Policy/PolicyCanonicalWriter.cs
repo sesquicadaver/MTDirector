@@ -33,6 +33,24 @@ public static class PolicyCanonicalWriter
         return writer.ToUtf8Bytes();
     }
 
+    /// <summary>Canonical MFC-CJ1 bytes for a single rule object (schema-fixed property order).</summary>
+    public static byte[] WriteRuleBytes(PolicyRule rule)
+    {
+        ArgumentNullException.ThrowIfNull(rule);
+        CanonicalJsonWriter writer = new();
+        WriteRule(writer, rule);
+        return writer.ToUtf8Bytes();
+    }
+
+    /// <summary>Canonical MFC-CJ1 bytes for a chain-contract array (company baseline only).</summary>
+    public static byte[] WriteChainContractSetBytes(ChainContractSet contracts)
+    {
+        ArgumentNullException.ThrowIfNull(contracts);
+        CanonicalJsonWriter writer = new();
+        WriteChainContracts(writer, contracts);
+        return writer.ToUtf8Bytes();
+    }
+
     public static string FormatKind(PolicyKind kind)
         => kind switch
         {

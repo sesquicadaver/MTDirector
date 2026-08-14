@@ -13,23 +13,32 @@ public static class GrpcApplicationErrorMapper
     public static RpcException ToRpcException(ApplicationError error, Guid? correlationId = null)
     {
         ArgumentNullException.ThrowIfNull(error);
-        StatusCode statusCode = error.Code switch
+        StatusCode statusCode;
+        bool retryable;
+        if (error.Code.StartsWith("POLICY_COMPOSE_", StringComparison.Ordinal))
         {
-            "unauthorized" => StatusCode.Unauthenticated,
-            "forbidden" => StatusCode.PermissionDenied,
-            "not_found" => StatusCode.NotFound,
-            "conflict" => StatusCode.Aborted,
-            "validation" => StatusCode.InvalidArgument,
-            "failed" => StatusCode.FailedPrecondition,
-            "dependency" => StatusCode.Unavailable,
-            "snapshot_unstable" => StatusCode.Aborted,
-            "snapshot_too_large" => StatusCode.ResourceExhausted,
-            "snapshots_from_different_devices" => StatusCode.InvalidArgument,
-            "snapshot_not_completed" => StatusCode.FailedPrecondition,
-            _ => StatusCode.Internal,
-        };
-
-        bool retryable = statusCode is StatusCode.Unavailable or StatusCode.Aborted;
+            statusCode = StatusCode.FailedPrecondition;
+            retryable = false;
+        }
+        else
+        {
+            statusCode = error.Code switch
+            {
+                "unauthorized" => StatusCode.Unauthenticated,
+                "forbidden" => StatusCode.PermissionDenied,
+                "not_found" => StatusCode.NotFound,
+                "conflict" => StatusCode.Aborted,
+                "validation" => StatusCode.InvalidArgument,
+                "failed" => StatusCode.FailedPrecondition,
+                "dependency" => StatusCode.Unavailable,
+                "snapshot_unstable" => StatusCode.Aborted,
+                "snapshot_too_large" => StatusCode.ResourceExhausted,
+                "snapshots_from_different_devices" => StatusCode.InvalidArgument,
+                "snapshot_not_completed" => StatusCode.FailedPrecondition,
+                _ => StatusCode.Internal,
+            };
+            retryable = statusCode is StatusCode.Unavailable or StatusCode.Aborted;
+        }
         ErrorDetail detail = new()
         {
             Code = error.Code,
