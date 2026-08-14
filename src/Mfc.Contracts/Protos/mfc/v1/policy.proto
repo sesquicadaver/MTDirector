@@ -1,0 +1,317 @@
+syntax = "proto3";
+
+package mfc.v1;
+
+option csharp_namespace = "Mfc.Contracts.Mfc.V1";
+
+import "mfc/v1/common.proto";
+import "mfc/v1/zones.proto";
+
+// PolicyService — Policy Model §§7–9 / §§22–27 / M2-06 typed rules + draft CRUD.
+service PolicyService {
+  rpc CreateDraftPolicy(CreateDraftPolicyRequest) returns (PolicyDraft);
+  rpc GetPolicyRevision(GetPolicyRevisionRequest) returns (PolicyRevision);
+  rpc ListRules(ListRulesRequest) returns (ListRulesResponse);
+  rpc GetRule(GetRuleRequest) returns (PolicyRule);
+  rpc AddRule(AddRuleRequest) returns (PolicyRuleMutation);
+  rpc UpdateRule(UpdateRuleRequest) returns (PolicyRuleMutation);
+  rpc DeleteRule(DeleteRuleRequest) returns (PolicyRuleMutation);
+  rpc ReorderRules(ReorderRulesRequest) returns (PolicyRuleMutation);
+}
+
+enum PolicyKind {
+  POLICY_KIND_UNSPECIFIED = 0;
+  POLICY_KIND_COMPANY_BASELINE = 1;
+  POLICY_KIND_SITE_OVERLAY = 2;
+  POLICY_KIND_NODE_OVERLAY = 3;
+  POLICY_KIND_EXCEPTION = 4;
+}
+
+enum PolicyRevisionState {
+  POLICY_REVISION_STATE_UNSPECIFIED = 0;
+  POLICY_REVISION_STATE_DRAFT = 1;
+  POLICY_REVISION_STATE_VALIDATED = 2;
+  POLICY_REVISION_STATE_IN_REVIEW = 3;
+  POLICY_REVISION_STATE_APPROVED = 4;
+  POLICY_REVISION_STATE_REJECTED = 5;
+  POLICY_REVISION_STATE_SUPERSEDED = 6;
+  POLICY_REVISION_STATE_REVOKED = 7;
+}
+
+enum IpAddressFamily {
+  IP_ADDRESS_FAMILY_UNSPECIFIED = 0;
+  IP_ADDRESS_FAMILY_IPV4 = 1;
+  IP_ADDRESS_FAMILY_IPV6 = 2;
+}
+
+enum PolicyFilterChain {
+  POLICY_FILTER_CHAIN_UNSPECIFIED = 0;
+  POLICY_FILTER_CHAIN_INPUT = 1;
+  POLICY_FILTER_CHAIN_FORWARD = 2;
+  POLICY_FILTER_CHAIN_OUTPUT = 3;
+}
+
+enum PolicyPipelineStage {
+  POLICY_PIPELINE_STAGE_UNSPECIFIED = 0;
+  POLICY_PIPELINE_STAGE_PROTECTED_CONTROL_PLANE = 1;
+  POLICY_PIPELINE_STAGE_MANDATORY_PRE_STATE_DENY = 2;
+  POLICY_PIPELINE_STAGE_STATE_PRELUDE = 3;
+  POLICY_PIPELINE_STAGE_COMPANY_DENY_EXEMPTIONS = 4;
+  POLICY_PIPELINE_STAGE_COMPANY_DENY = 5;
+  POLICY_PIPELINE_STAGE_SITE_DENY_EXEMPTIONS = 6;
+  POLICY_PIPELINE_STAGE_SITE_DENY = 7;
+  POLICY_PIPELINE_STAGE_NODE_DENY_EXEMPTIONS = 8;
+  POLICY_PIPELINE_STAGE_NODE_DENY = 9;
+  POLICY_PIPELINE_STAGE_COMPANY_ALLOW = 10;
+  POLICY_PIPELINE_STAGE_SITE_ALLOW = 11;
+  POLICY_PIPELINE_STAGE_NODE_ALLOW = 12;
+  POLICY_PIPELINE_STAGE_DEFAULT_DISPOSITION = 13;
+}
+
+enum PolicyRuleEffect {
+  POLICY_RULE_EFFECT_UNSPECIFIED = 0;
+  POLICY_RULE_EFFECT_ACCEPT = 1;
+  POLICY_RULE_EFFECT_DROP = 2;
+  POLICY_RULE_EFFECT_REJECT = 3;
+  POLICY_RULE_EFFECT_FASTTRACK_ACCEPT = 4;
+  POLICY_RULE_EFFECT_EXEMPT_DENY_STAGE = 5;
+}
+
+enum RejectMode {
+  REJECT_MODE_UNSPECIFIED = 0;
+  REJECT_MODE_TCP_RESET = 1;
+  REJECT_MODE_ADMIN_PROHIBITED = 2;
+  REJECT_MODE_PORT_UNREACHABLE = 3;
+}
+
+enum ConnectionState {
+  CONNECTION_STATE_UNSPECIFIED = 0;
+  CONNECTION_STATE_NEW = 1;
+  CONNECTION_STATE_ESTABLISHED = 2;
+  CONNECTION_STATE_RELATED = 3;
+  CONNECTION_STATE_INVALID = 4;
+  CONNECTION_STATE_UNTRACKED = 5;
+}
+
+enum ConnectionNatState {
+  CONNECTION_NAT_STATE_UNSPECIFIED = 0;
+  CONNECTION_NAT_STATE_SRCNAT = 1;
+  CONNECTION_NAT_STATE_DSTNAT = 2;
+}
+
+enum AddressType {
+  ADDRESS_TYPE_UNSPECIFIED = 0;
+  ADDRESS_TYPE_LOCAL = 1;
+  ADDRESS_TYPE_UNICAST = 2;
+  ADDRESS_TYPE_BROADCAST = 3;
+  ADDRESS_TYPE_MULTICAST = 4;
+  ADDRESS_TYPE_ANYCAST = 5;
+  ADDRESS_TYPE_BLACKHOLE = 6;
+  ADDRESS_TYPE_PROHIBIT = 7;
+  ADDRESS_TYPE_UNREACHABLE = 8;
+}
+
+enum TcpHeaderBit {
+  TCP_HEADER_BIT_UNSPECIFIED = 0;
+  TCP_HEADER_BIT_FIN = 1;
+  TCP_HEADER_BIT_SYN = 2;
+  TCP_HEADER_BIT_RST = 3;
+  TCP_HEADER_BIT_PSH = 4;
+  TCP_HEADER_BIT_ACK = 5;
+  TCP_HEADER_BIT_URG = 6;
+  TCP_HEADER_BIT_ECE = 7;
+  TCP_HEADER_BIT_CWR = 8;
+}
+
+enum IpsecDirection {
+  IPSEC_DIRECTION_UNSPECIFIED = 0;
+  IPSEC_DIRECTION_IN = 1;
+  IPSEC_DIRECTION_OUT = 2;
+}
+
+enum IpsecPolicyKind {
+  IPSEC_POLICY_KIND_UNSPECIFIED = 0;
+  IPSEC_POLICY_KIND_IPSEC = 1;
+  IPSEC_POLICY_KIND_NONE = 2;
+}
+
+message PolicyWarning {
+  string code = 1;
+  string message = 2;
+  optional string subject = 3;
+}
+
+message ZoneSelector {
+  repeated Uuid include = 1;
+  repeated Uuid exclude = 2;
+}
+
+message AddressSelector {
+  repeated Uuid include = 1;
+  repeated Uuid exclude = 2;
+}
+
+message ServiceSelector {
+  repeated Uuid include = 1;
+}
+
+message TcpFlagConstraint {
+  repeated TcpHeaderBit required_present = 1;
+  repeated TcpHeaderBit required_absent = 2;
+}
+
+message IpsecPolicyPredicate {
+  IpsecDirection direction = 1;
+  IpsecPolicyKind policy = 2;
+}
+
+message TrafficPredicate {
+  optional AddressSelector source_addresses = 1;
+  optional AddressSelector destination_addresses = 2;
+  optional ZoneSelector ingress_zones = 3;
+  optional ZoneSelector egress_zones = 4;
+  optional ServiceSelector services = 5;
+  repeated ConnectionState connection_states = 6;
+  repeated ConnectionNatState connection_nat_states = 7;
+  repeated AddressType source_address_types = 8;
+  repeated AddressType destination_address_types = 9;
+  optional TcpFlagConstraint tcp_flags = 10;
+  optional IpsecPolicyPredicate ipsec_policy = 11;
+}
+
+message RuleEffect {
+  PolicyRuleEffect kind = 1;
+  optional RejectMode reject_mode = 2;
+}
+
+message LogSpecification {
+  bool enabled = 1;
+  optional string prefix = 2;
+}
+
+message PolicyRule {
+  Uuid id = 1;
+  IpAddressFamily family = 2;
+  PolicyFilterChain chain = 3;
+  PolicyPipelineStage stage = 4;
+  uint32 ordinal = 5;
+  bool enabled = 6;
+  TrafficPredicate predicate = 7;
+  RuleEffect effect = 8;
+  LogSpecification logging = 9;
+  bool exception_eligible = 10;
+  string description = 11;
+  repeated PolicyWarning warnings = 12;
+}
+
+message PolicyRevision {
+  Uuid id = 1;
+  Uuid policy_id = 2;
+  uint32 revision_number = 3;
+  uint32 schema_version = 4;
+  PolicyRevisionState state = 5;
+  Sha256 content_hash = 6;
+  optional Sha256 parent_context_hash = 7;
+  PolicyKind kind = 8;
+  PolicyOwnerScope owner_scope = 9;
+  repeated PolicyRule rules = 10;
+  repeated PolicyWarning warnings = 11;
+}
+
+message PolicyDraft {
+  Uuid policy_id = 1;
+  Uuid revision_id = 2;
+  string name = 3;
+  PolicyKind kind = 4;
+  PolicyOwnerScope owner_scope = 5;
+  optional Uuid owner_id = 6;
+  uint32 revision_number = 7;
+  Sha256 content_hash = 8;
+}
+
+message PolicyRuleMutation {
+  Sha256 content_hash = 1;
+  optional PolicyRule rule = 2;
+  repeated PolicyRule rules = 3;
+  repeated PolicyWarning warnings = 4;
+}
+
+message CreateDraftPolicyRequest {
+  Uuid idempotency_key = 1;
+  string name = 2;
+  PolicyKind kind = 3;
+  PolicyOwnerScope owner_scope = 4;
+  optional Uuid owner_id = 5;
+  optional Sha256 parent_context_hash = 6;
+}
+
+message GetPolicyRevisionRequest {
+  Uuid revision_id = 1;
+}
+
+message ListRulesRequest {
+  Uuid revision_id = 1;
+  bool active_only = 2;
+}
+
+message ListRulesResponse {
+  Uuid revision_id = 1;
+  Sha256 content_hash = 2;
+  repeated PolicyRule rules = 3;
+  repeated PolicyWarning warnings = 4;
+}
+
+message GetRuleRequest {
+  Uuid revision_id = 1;
+  Uuid rule_id = 2;
+}
+
+message AddRuleRequest {
+  Uuid idempotency_key = 1;
+  Uuid revision_id = 2;
+  Sha256 expected_content_hash = 3;
+  IpAddressFamily family = 4;
+  PolicyFilterChain chain = 5;
+  PolicyPipelineStage stage = 6;
+  uint32 ordinal = 7;
+  bool enabled = 8;
+  TrafficPredicate predicate = 9;
+  RuleEffect effect = 10;
+  LogSpecification logging = 11;
+  bool exception_eligible = 12;
+  string description = 13;
+}
+
+message UpdateRuleRequest {
+  Uuid idempotency_key = 1;
+  Uuid revision_id = 2;
+  Uuid rule_id = 3;
+  Sha256 expected_content_hash = 4;
+  IpAddressFamily family = 5;
+  PolicyFilterChain chain = 6;
+  PolicyPipelineStage stage = 7;
+  uint32 ordinal = 8;
+  bool enabled = 9;
+  TrafficPredicate predicate = 10;
+  RuleEffect effect = 11;
+  LogSpecification logging = 12;
+  bool exception_eligible = 13;
+  string description = 14;
+}
+
+message DeleteRuleRequest {
+  Uuid idempotency_key = 1;
+  Uuid revision_id = 2;
+  Uuid rule_id = 3;
+  Sha256 expected_content_hash = 4;
+}
+
+message ReorderRulesRequest {
+  Uuid idempotency_key = 1;
+  Uuid revision_id = 2;
+  Sha256 expected_content_hash = 3;
+  IpAddressFamily family = 4;
+  PolicyFilterChain chain = 5;
+  PolicyPipelineStage stage = 6;
+  repeated Uuid ordered_rule_ids = 7;
+}

@@ -17,6 +17,7 @@ using Xunit;
 using DomainDeclaredUplinkMode = Mfc.Domain.Inventory.DeclaredUplinkMode;
 using DomainDevice = Mfc.Domain.Inventory.Device;
 using DomainDeviceRole = Mfc.Domain.Inventory.DeviceRole;
+using DomainIpAddressFamily = Mfc.Domain.Inventory.IpAddressFamily;
 using DomainNode = Mfc.Domain.Inventory.Node;
 using DomainNodeKind = Mfc.Domain.Inventory.NodeKind;
 using DomainNodeStatus = Mfc.Domain.Inventory.NodeStatus;
@@ -386,7 +387,7 @@ public sealed class VrrpVerticalSliceAcceptanceTests
             [
                 new ObservedVrrpInstance
                 {
-                    Family = IpAddressFamily.IPv4,
+                    Family = DomainIpAddressFamily.IPv4,
                     Vrid = 10,
                     InterfaceKey = "ether1",
                     ObservedState = state,

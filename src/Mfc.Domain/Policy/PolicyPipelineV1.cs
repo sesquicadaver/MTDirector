@@ -231,6 +231,21 @@ public static class PolicyPipelineV1
             _ => throw new DomainInvariantException($"Unknown pipeline stage '{stage}'."),
         };
 
+    /// <summary>
+    /// Ensures <paramref name="effect"/> is in the normative allowed set for <paramref name="stage"/>
+    /// (Policy Model §13). Does not check owner/kind placement — use <see cref="EnsureOwnerEffectAllowed"/>.
+    /// </summary>
+    public static void EnsureAllowedEffect(PolicyPipelineStage stage, PolicyRuleEffect effect)
+    {
+        if (AllowedEffects(stage).Contains(effect))
+        {
+            return;
+        }
+
+        throw new DomainInvariantException(
+            $"Effect {FormatEffect(effect)} is not allowed in stage {FormatStage(stage)}.");
+    }
+
     private static bool MatchesExemptionScope(PolicyPipelineStage stage, PolicyOwnerScope ownerScope)
         => stage switch
         {

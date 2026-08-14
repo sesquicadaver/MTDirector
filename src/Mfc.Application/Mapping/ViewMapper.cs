@@ -122,4 +122,109 @@ internal static class ViewMapper
             Binding = bindingView,
         };
     }
+
+    public static PolicyRuleView ToView(PolicyRule rule, PolicyDocument document)
+    {
+        ArgumentNullException.ThrowIfNull(rule);
+        ArgumentNullException.ThrowIfNull(document);
+        IReadOnlyList<PolicyWarningView> warnings =
+            Policies.PolicyRevisionSupport.CollectSoftCatalogWarnings(document, rule.Predicate);
+        return new PolicyRuleView
+        {
+            Id = rule.Id.Value,
+            Family = rule.Family,
+            Chain = rule.Chain,
+            Stage = rule.Stage,
+            Ordinal = rule.Ordinal,
+            Enabled = rule.Enabled,
+            Predicate = ToView(rule.Predicate),
+            Effect = new RuleEffectView
+            {
+                Kind = rule.Effect.Kind,
+                RejectMode = rule.Effect.RejectModeValue,
+            },
+            Logging = new LogSpecificationView
+            {
+                Enabled = rule.Logging.Enabled,
+                Prefix = rule.Logging.Prefix,
+            },
+            ExceptionEligible = rule.ExceptionEligible,
+            Description = rule.Description,
+            Warnings = warnings,
+        };
+    }
+
+    public static PolicyRevisionView ToView(PolicyRevision revision, PolicyDocument document)
+    {
+        ArgumentNullException.ThrowIfNull(revision);
+        ArgumentNullException.ThrowIfNull(document);
+        PolicyRuleView[] rules = document.Rules.Select(r => ToView(r, document)).ToArray();
+        return new PolicyRevisionView
+        {
+            Id = revision.Id.Value,
+            PolicyId = revision.PolicyId.Value,
+            RevisionNumber = revision.RevisionNumber,
+            SchemaVersion = revision.SchemaVersion,
+            State = revision.State,
+            ContentHashHex = revision.ContentHash.ToString(),
+            ParentContextHashHex = revision.ParentContextHash?.ToString(),
+            Kind = document.Kind,
+            OwnerScope = document.OwnerScope,
+            Rules = rules,
+            Warnings = Policies.PolicyRevisionSupport.MergeWarnings(rules),
+        };
+    }
+
+    private static TrafficPredicateView ToView(TrafficPredicate predicate) => new()
+    {
+        SourceAddresses = ToView(predicate.SourceAddresses),
+        DestinationAddresses = ToView(predicate.DestinationAddresses),
+        IngressZones = ToView(predicate.IngressZones),
+        EgressZones = ToView(predicate.EgressZones),
+        Services = ToView(predicate.Services),
+        ConnectionStates = predicate.ConnectionStates,
+        ConnectionNatStates = predicate.ConnectionNatStates,
+        SourceAddressTypes = predicate.SourceAddressTypes,
+        DestinationAddressTypes = predicate.DestinationAddressTypes,
+        TcpFlags = predicate.TcpFlags is null
+            ? null
+            : new TcpFlagConstraintView
+            {
+                RequiredPresent = predicate.TcpFlags.RequiredPresent.ToArray(),
+                RequiredAbsent = predicate.TcpFlags.RequiredAbsent.ToArray(),
+            },
+        IpsecPolicy = predicate.IpsecPolicy is null
+            ? null
+            : new IpsecPolicyPredicateView
+            {
+                Direction = predicate.IpsecPolicy.Direction,
+                Policy = predicate.IpsecPolicy.Policy,
+            },
+    };
+
+    private static AddressSelectorView? ToView(AddressSelector? selector)
+        => selector is null
+            ? null
+            : new AddressSelectorView
+            {
+                Include = selector.Include.Select(static id => id.Value).ToArray(),
+                Exclude = selector.Exclude.Select(static id => id.Value).ToArray(),
+            };
+
+    private static ZoneSelectorView? ToView(ZoneSelector? selector)
+        => selector is null
+            ? null
+            : new ZoneSelectorView
+            {
+                Include = selector.Include.Select(static id => id.Value).ToArray(),
+                Exclude = selector.Exclude.Select(static id => id.Value).ToArray(),
+            };
+
+    private static ServiceSelectorView? ToView(ServiceSelector? selector)
+        => selector is null
+            ? null
+            : new ServiceSelectorView
+            {
+                Include = selector.Include.Select(static id => id.Value).ToArray(),
+            };
 }

@@ -4,7 +4,8 @@ namespace Mfc.Domain.Policy;
 
 /// <summary>
 /// In-memory MFC-CJ1 policy revision document (Policy Model §33).
-/// Object/rule/test bodies remain opaque JSON until later M2 issues model them.
+/// Zone/address/service/test bodies remain opaque JSON until later M2 issues model them;
+/// rules are typed <see cref="PolicyRule"/> (M2-06).
 /// </summary>
 public sealed class PolicyDocument
 {
@@ -26,7 +27,7 @@ public sealed class PolicyDocument
 
     public IReadOnlyList<JsonElement> ServiceObjects { get; }
 
-    public IReadOnlyList<JsonElement> Rules { get; }
+    public IReadOnlyList<PolicyRule> Rules { get; }
 
     public IReadOnlyList<JsonElement> Tests { get; }
 
@@ -41,7 +42,7 @@ public sealed class PolicyDocument
         IReadOnlyList<JsonElement>? zoneDefinitions = null,
         IReadOnlyList<JsonElement>? addressObjects = null,
         IReadOnlyList<JsonElement>? serviceObjects = null,
-        IReadOnlyList<JsonElement>? rules = null,
+        IReadOnlyList<PolicyRule>? rules = null,
         IReadOnlyList<JsonElement>? tests = null,
         IReadOnlyDictionary<string, string>? exceptionMetadata = null)
     {
@@ -56,6 +57,12 @@ public sealed class PolicyDocument
                 : ChainContractSet.ForNonBaseline(kind));
         contracts.EnsureCannotBeChangedBy(kind);
 
+        IReadOnlyList<PolicyRule> typedRules = rules ?? [];
+        if (typedRules.Count > 0)
+        {
+            PolicyRuleSet.EnsureContiguousOrdinals(typedRules);
+        }
+
         SchemaVersion = schemaVersion;
         Kind = kind;
         OwnerScope = ownerScope;
@@ -63,7 +70,7 @@ public sealed class PolicyDocument
         ZoneDefinitions = zoneDefinitions ?? [];
         AddressObjects = addressObjects ?? [];
         ServiceObjects = serviceObjects ?? [];
-        Rules = rules ?? [];
+        Rules = typedRules;
         Tests = tests ?? [];
         ExceptionMetadata = exceptionMetadata ?? new Dictionary<string, string>(StringComparer.Ordinal);
     }
@@ -108,8 +115,8 @@ public sealed class PolicyDocument
             ExceptionMetadata);
     }
 
-    /// <summary>Returns a copy with an additional opaque rule object (draft editing helper).</summary>
-    public PolicyDocument WithRules(IReadOnlyList<JsonElement> rules)
+    /// <summary>Returns a copy with replacement typed rules (draft editing helper).</summary>
+    public PolicyDocument WithRules(IReadOnlyList<PolicyRule> rules)
     {
         ArgumentNullException.ThrowIfNull(rules);
         return new PolicyDocument(

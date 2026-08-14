@@ -60,7 +60,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Service objects + selectors | Done (M2-04) | Numeric protocols, ports, ICMP split, `ServiceSelectorEvaluator` |
 | Logical zones + Node bindings | Done (M2-05) | `ZoneDefinition` / `NodeZoneBinding`, ZoneService, Desktop Zones |
 | Zone VETH/VLAN/bridge resolve | Done (N1-05) | `topology.container-veth` / `shared-veth`; marker expand in `ZoneResolveEngine`; live capture←projector residual (M1-22) |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-06 (#53) |
+| Typed policy rules | Done (M2-06) | Typed rules/predicates; App CAS CRUD; `PolicyService`; thin Desktop list |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-07 (#54) |
 
 ## ADRs
 

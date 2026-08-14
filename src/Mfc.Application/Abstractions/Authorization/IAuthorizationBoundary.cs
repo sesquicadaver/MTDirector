@@ -27,4 +27,10 @@ public static class ApplicationPermissions
 
     /// <summary>Mutate zone definitions and node bindings (M2-05).</summary>
     public const string ZoneWrite = "zone.write";
+
+    /// <summary>Read policy revisions and rules (M2-06).</summary>
+    public const string PolicyRead = "policy.read";
+
+    /// <summary>Create drafts and mutate policy rules (M2-06).</summary>
+    public const string PolicyWrite = "policy.write";
 }
