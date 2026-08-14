@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using Mfc.Domain;
 using Mfc.Domain.Inventory;
@@ -378,6 +379,218 @@ public sealed class PolicyRuleTests
         DomainInvariantException ex = Assert.Throws<DomainInvariantException>(() =>
             PolicyDocumentReader.Read(stream.ToArray()));
         Assert.Contains(PolicyDocumentReader.UnsupportedRulesShapeCode, ex.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ReaderRoundTripsFullPredicateAndAlternateEnums()
+    {
+        AddressObjectId src = AddressObjectId.New();
+        AddressObjectId dst = AddressObjectId.New();
+        ZoneId ingress = ZoneId.New();
+        ZoneId egress = ZoneId.New();
+        TrafficPredicate predicate = TrafficPredicate.Create(
+            sourceAddresses: AddressSelector.Create([src], [AddressObjectId.New()]),
+            destinationAddresses: AddressSelector.Create([dst]),
+            ingressZones: ZoneSelector.Create([ingress], [ZoneId.New()]),
+            egressZones: ZoneSelector.Create([egress]),
+            connectionStates: [ConnectionState.Invalid, ConnectionState.Untracked],
+            connectionNatStates: [ConnectionNatState.DstNat, ConnectionNatState.SrcNat],
+            sourceAddressTypes:
+            [
+                AddressType.Broadcast, AddressType.Multicast, AddressType.Anycast,
+                AddressType.Blackhole, AddressType.Prohibit, AddressType.Unreachable,
+            ],
+            destinationAddressTypes: [AddressType.Unicast, AddressType.Local],
+            tcpFlags: TcpFlagConstraint.Create(
+                [TcpHeaderBit.Fin, TcpHeaderBit.Rst, TcpHeaderBit.Psh, TcpHeaderBit.Ece],
+                [TcpHeaderBit.Urg, TcpHeaderBit.Cwr]),
+            ipsecPolicy: IpsecPolicyPredicate.Create(IpsecDirection.In, IpsecPolicyKind.Ipsec));
+
+        PolicyRule ipv6 = PolicyRule.Create(
+            IpAddressFamily.IPv6,
+            PolicyFilterChain.Input,
+            PolicyPipelineStage.ProtectedControlPlane,
+            0,
+            TrafficPredicate.Create(),
+            RuleEffectSpec.Create(PolicyRuleEffect.Accept),
+            LogSpecification.Disabled,
+            id: new RuleId(Guid.Parse("33333333-3333-3333-3333-333333333333")));
+
+        PolicyRule output = PolicyRule.Create(
+            IpAddressFamily.IPv4,
+            PolicyFilterChain.Output,
+            PolicyPipelineStage.NodeAllow,
+            0,
+            TrafficPredicate.Create(egressZones: ZoneSelector.Create([egress])),
+            RuleEffectSpec.Create(PolicyRuleEffect.Accept),
+            LogSpecification.Create(true, "out"),
+            id: new RuleId(Guid.Parse("44444444-4444-4444-4444-444444444444")));
+
+        PolicyRule forward = PolicyRule.Create(
+            IpAddressFamily.IPv4,
+            PolicyFilterChain.Forward,
+            PolicyPipelineStage.SiteDeny,
+            0,
+            predicate,
+            RuleEffectSpec.Create(PolicyRuleEffect.Reject, RejectMode.PortUnreachable),
+            LogSpecification.Create(true, "full"),
+            id: new RuleId(Guid.Parse("55555555-5555-5555-5555-555555555555")));
+
+        PolicyDocument document = PolicyDocument.CreateEmpty(
+                PolicyKind.CompanyBaseline, PolicyOwnerScope.Company)
+            .WithRules([ipv6, output, forward]);
+        byte[] bytes = PolicyCanonicalWriter.Write(document);
+        PolicyDocument parsed = PolicyDocumentReader.Read(bytes);
+        Assert.Equal(3, parsed.Rules.Count);
+        Assert.Equal(IpAddressFamily.IPv6, parsed.Rules[0].Family);
+        Assert.Equal(PolicyFilterChain.Input, parsed.Rules[0].Chain);
+        Assert.Equal(PolicyFilterChain.Output, parsed.Rules[1].Chain);
+        Assert.NotNull(parsed.Rules[2].Predicate.SourceAddresses);
+        Assert.NotNull(parsed.Rules[2].Predicate.ConnectionNatStates);
+        Assert.Equal(bytes, PolicyCanonicalWriter.Write(parsed));
+
+        PolicyDocument site = PolicyDocument.CreateEmpty(PolicyKind.SiteOverlay, PolicyOwnerScope.Site);
+        PolicyDocument parsedSite = PolicyDocumentReader.Read(PolicyCanonicalWriter.Write(site));
+        Assert.Equal(PolicyKind.SiteOverlay, parsedSite.Kind);
+        Assert.Empty(parsedSite.ChainContracts.Items);
+
+        PolicyDocument node = PolicyDocument.CreateEmpty(PolicyKind.NodeOverlay, PolicyOwnerScope.Node);
+        Assert.Equal(PolicyKind.NodeOverlay, PolicyDocumentReader.Read(PolicyCanonicalWriter.Write(node)).Kind);
+    }
+
+    [Fact]
+    public void ReaderRejectsMalformedDocumentsAndUnknownEnums()
+    {
+        Assert.Throws<DomainInvariantException>(() => PolicyDocumentReader.Read("{}"u8.ToArray()));
+        Assert.Throws<DomainInvariantException>(() => PolicyDocumentReader.Read("not-json"u8.ToArray()));
+
+        PolicyDocument empty = PolicyDocument.CreateEmpty(PolicyKind.CompanyBaseline, PolicyOwnerScope.Company);
+        byte[] good = PolicyCanonicalWriter.Write(empty);
+
+        DomainInvariantException schema = Assert.Throws<DomainInvariantException>(
+            () => PolicyDocumentReader.Read(ReplaceJsonField(good, "schema", "\"other\"")));
+        Assert.Contains("schema", schema.Message, StringComparison.OrdinalIgnoreCase);
+
+        DomainInvariantException kind = Assert.Throws<DomainInvariantException>(
+            () => PolicyDocumentReader.Read(ReplaceJsonField(good, "policy_kind", "\"UNKNOWN\"")));
+        Assert.Contains("kind", kind.Message, StringComparison.OrdinalIgnoreCase);
+
+        DomainInvariantException scope = Assert.Throws<DomainInvariantException>(
+            () => PolicyDocumentReader.Read(ReplaceJsonField(good, "owner_scope", "\"UNKNOWN\"")));
+        Assert.Contains("owner scope", scope.Message, StringComparison.OrdinalIgnoreCase);
+
+        DomainInvariantException rulesShape = Assert.Throws<DomainInvariantException>(
+            () => PolicyDocumentReader.Read(ReplaceJsonField(good, "rules", "{}")));
+        Assert.Contains(PolicyDocumentReader.UnsupportedRulesShapeCode, rulesShape.Message, StringComparison.Ordinal);
+
+        DomainInvariantException ruleNotObject = Assert.Throws<DomainInvariantException>(
+            () => PolicyDocumentReader.Read(ReplaceJsonField(good, "rules", "[1]")));
+        Assert.Contains(PolicyDocumentReader.UnsupportedRulesShapeCode, ruleNotObject.Message, StringComparison.Ordinal);
+
+        DomainInvariantException contracts = Assert.Throws<DomainInvariantException>(
+            () => PolicyDocumentReader.Read(ReplaceJsonField(good, "chain_contracts", "{}")));
+        Assert.Contains("chain_contracts", contracts.Message, StringComparison.Ordinal);
+
+        DomainInvariantException metadata = Assert.Throws<DomainInvariantException>(
+            () => PolicyDocumentReader.Read(ReplaceJsonField(good, "exception_metadata", "[]")));
+        Assert.Contains("exception_metadata", metadata.Message, StringComparison.Ordinal);
+
+        PolicyDocument site = PolicyDocument.CreateEmpty(PolicyKind.SiteOverlay, PolicyOwnerScope.Site);
+        byte[] siteBytes = PolicyCanonicalWriter.Write(site);
+        DomainInvariantException overlayContracts = Assert.Throws<DomainInvariantException>(
+            () => PolicyDocumentReader.Read(ReplaceJsonField(
+                siteBytes,
+                "chain_contracts",
+                """[{"family":"IPv4","chain":"FORWARD","default_disposition":"DROP"}]""")));
+        Assert.Contains("cannot define chain contracts", overlayContracts.Message, StringComparison.Ordinal);
+
+        byte[] withRule = PolicyCanonicalWriter.Write(DocumentWithRule(ValidRule(
+            PolicyPipelineStage.CompanyAllow,
+            RuleEffectSpec.Create(PolicyRuleEffect.Accept))));
+        string json = Encoding.UTF8.GetString(withRule);
+        Assert.Throws<DomainInvariantException>(() =>
+            PolicyDocumentReader.Read(Encoding.UTF8.GetBytes(json.Replace("\"IPv4\"", "\"IPvX\"", StringComparison.Ordinal))));
+        Assert.Throws<DomainInvariantException>(() =>
+            PolicyDocumentReader.Read(Encoding.UTF8.GetBytes(json.Replace("\"FORWARD\"", "\"SIDEWAYS\"", StringComparison.Ordinal))));
+        Assert.Throws<DomainInvariantException>(() =>
+            PolicyDocumentReader.Read(Encoding.UTF8.GetBytes(json.Replace("\"COMPANY_ALLOW\"", "\"NOPE\"", StringComparison.Ordinal))));
+        Assert.Throws<DomainInvariantException>(() =>
+            PolicyDocumentReader.Read(Encoding.UTF8.GetBytes(json.Replace("\"ACCEPT\"", "\"YEET\"", StringComparison.Ordinal))));
+        Assert.Throws<DomainInvariantException>(() =>
+            PolicyDocumentReader.Read(Encoding.UTF8.GetBytes(json.Replace("\"COMPANY\"", "\"GALAXY\"", StringComparison.Ordinal))));
+    }
+
+    [Fact]
+    public void PolicyRuleSetRejectsDuplicateMissingAndInvalidReorder()
+    {
+        PolicyRule a = ValidRule(
+            PolicyPipelineStage.CompanyDeny,
+            RuleEffectSpec.Create(PolicyRuleEffect.Drop),
+            id: RuleId.New());
+        PolicyRule b = ValidRule(
+            PolicyPipelineStage.CompanyDeny,
+            RuleEffectSpec.Create(PolicyRuleEffect.Drop),
+            ordinal: 1,
+            id: RuleId.New());
+
+        Assert.Throws<DomainInvariantException>(() => PolicyRuleSet.WithAdd([a], a));
+        Assert.Throws<DomainInvariantException>(() => PolicyRuleSet.WithDelete([a], RuleId.New()));
+        Assert.Throws<DomainInvariantException>(() =>
+            PolicyRuleSet.WithUpdate([a], b.WithOrdinal(0)));
+        Assert.Throws<DomainInvariantException>(() =>
+            PolicyRuleSet.EnsureContiguousOrdinals([a, a]));
+        Assert.Throws<DomainInvariantException>(() =>
+            PolicyRuleSet.WithReorder(
+                [a, b],
+                IpAddressFamily.IPv4,
+                PolicyFilterChain.Forward,
+                PolicyPipelineStage.CompanyDeny,
+                [a.Id]));
+        Assert.Throws<DomainInvariantException>(() =>
+            PolicyRuleSet.WithReorder(
+                [a, b],
+                IpAddressFamily.IPv4,
+                PolicyFilterChain.Forward,
+                PolicyPipelineStage.CompanyDeny,
+                [a.Id, a.Id]));
+
+        PolicyRule moved = PolicyRule.Create(
+            IpAddressFamily.IPv4,
+            PolicyFilterChain.Forward,
+            PolicyPipelineStage.CompanyAllow,
+            0,
+            TrafficPredicate.Create(),
+            RuleEffectSpec.Create(PolicyRuleEffect.Accept),
+            id: a.Id);
+        IReadOnlyList<PolicyRule> updated = PolicyRuleSet.WithUpdate([a, b], moved);
+        Assert.Contains(updated, r => r.Id == a.Id && r.Stage == PolicyPipelineStage.CompanyAllow);
+        Assert.Equal(0u, updated.Single(r => r.Id == b.Id).Ordinal);
+    }
+
+    private static byte[] ReplaceJsonField(byte[] utf8, string name, string rawValue)
+    {
+        using JsonDocument doc = JsonDocument.Parse(utf8);
+        using MemoryStream stream = new();
+        using (Utf8JsonWriter writer = new(stream))
+        {
+            writer.WriteStartObject();
+            foreach (JsonProperty property in doc.RootElement.EnumerateObject())
+            {
+                if (property.NameEquals(name))
+                {
+                    writer.WritePropertyName(name);
+                    writer.WriteRawValue(rawValue);
+                }
+                else
+                {
+                    property.WriteTo(writer);
+                }
+            }
+
+            writer.WriteEndObject();
+        }
+
+        return stream.ToArray();
     }
 
     private static PolicyRule ValidRule(
