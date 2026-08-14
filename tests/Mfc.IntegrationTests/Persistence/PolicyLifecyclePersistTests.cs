@@ -1,6 +1,6 @@
-using System.Text.Json;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Controller;
+using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Policy;
 using Mfc.Domain.Policy.Primitives;
@@ -128,9 +128,18 @@ public sealed class PolicyLifecyclePersistTests
         await store.SaveRevisionAsync(revision);
         Hash256 before = revision.ContentHash;
 
-        using JsonDocument rule = JsonDocument.Parse("""{"id":"cccccccc-cccc-cccc-cccc-cccccccccccc"}""");
         revision.ReplaceDocument(
-            PolicyDocument.CreateEmpty(policy.Kind, policy.OwnerScope).WithRules([rule.RootElement.Clone()]),
+            PolicyDocument.CreateEmpty(policy.Kind, policy.OwnerScope).WithRules(
+            [
+                PolicyRule.Create(
+                    IpAddressFamily.IPv4,
+                    PolicyFilterChain.Forward,
+                    PolicyPipelineStage.CompanyDeny,
+                    ordinal: 0,
+                    TrafficPredicate.Create(),
+                    RuleEffectSpec.Create(PolicyRuleEffect.Drop),
+                    id: new RuleId(Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"))),
+            ]),
             null);
         await store.SaveRevisionAsync(revision);
 

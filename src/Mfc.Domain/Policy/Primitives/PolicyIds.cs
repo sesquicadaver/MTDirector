@@ -49,3 +49,11 @@ public readonly record struct NodeZoneBindingId(Guid Value)
 
     public override string ToString() => Value.ToString("D");
 }
+
+/// <summary>Stable identity for a managed filter rule (Policy Model §23); independent of ordinal.</summary>
+public readonly record struct RuleId(Guid Value)
+{
+    public static RuleId New() => new(Guid.NewGuid());
+
+    public override string ToString() => Value.ToString("D");
+}

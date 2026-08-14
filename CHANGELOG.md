@@ -18,6 +18,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Typed policy rules full stack (M2-06): Domain typed rules + Application draft/rule CRUD with `expected_content_hash` CAS, Zone hard / Address·Service soft `POLICY_SELECTOR_CATALOG_SOFT`, `mfc.v1.PolicyService` gRPC, thin Desktop Policies panel (Contracts-only).
+- Typed policy rules Domain (M2-06 Domain slice, superseded by full stack above): `PolicyRule` / `TrafficPredicate` / `ZoneSelector` / `RuleEffectSpec` / `LogSpecification`, typed `PolicyDocument.Rules`, MFC-CJ1 reader with `POLICY_RULES_UNSUPPORTED_SHAPE`, contiguous ordinals.
 - Logical zones and Node bindings (M2-05): desired catalog SoT (`zone_definitions` / `node_zone_bindings`), Domain resolve + AnalysisStale, Application CRUD/resolve use cases, `mfc.v1.ZoneService` gRPC, Desktop Zones panel (Contracts-only); AC#10–11 and PolicyDocument zone embedding deferred to M2-06+.
 - Typed service objects and selectors (M2-04): numeric IP protocols, TCP/UDP/SCTP ports, separated ICMP/ICMPv6, include-only selectors (no negation), UUID visibility, canonical term ordering.
 - Static address objects and selectors (M2-03): HOST/PREFIX/IPv4-RANGE entries with masked prefixes, disjoint-interval normalization, include/exclude universe semantics, UUID visibility, and application selector evaluation.

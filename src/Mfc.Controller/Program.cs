@@ -2,6 +2,7 @@ using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Inventory;
+using Mfc.Application.Policies;
 using Mfc.Application.Snapshots;
 using Mfc.Application.Zones;
 using Mfc.Controller.Authorization;
@@ -18,7 +19,8 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 namespace Mfc.Controller;
 
 /// <summary>
-/// Composition root: health + inventory/snapshot/zone gRPC host with PostgreSQL schema guard (M0-05/M0-07, M1-25/M1-26, M2-05).
+/// Composition root: health + inventory/snapshot/zone/policy gRPC host with PostgreSQL schema guard
+/// (M0-05/M0-07, M1-25/M1-26, M2-05/M2-06).
 /// </summary>
 public static class Program
 {
@@ -108,6 +110,7 @@ public static class Program
         RegisterInventoryApplication(builder.Services);
         RegisterSnapshotApplication(builder.Services);
         RegisterZoneApplication(builder.Services);
+        RegisterPolicyApplication(builder.Services);
         builder.Services.TryAddSingleton<IRouterOsReadPort, ProbeOnlyRouterOsReadPort>();
         builder.Services.TryAddSingleton<ISnapshotCapturePort, NotConfiguredSnapshotCapturePort>();
         builder.Services.AddSingleton<ValidateDeviceConnectionCoordinator>();
@@ -134,6 +137,7 @@ public static class Program
         app.MapGrpcService<InventoryGrpcService>();
         app.MapGrpcService<SnapshotGrpcService>();
         app.MapGrpcService<ZoneGrpcService>();
+        app.MapGrpcService<PolicyGrpcService>();
         return app;
     }
 
@@ -192,6 +196,18 @@ public static class Program
         services.AddScoped<ListNodeZoneBindingsUseCase>();
         services.AddScoped<ResolveZonesForDeviceUseCase>();
         services.AddScoped<ResolveZonesForNodeUseCase>();
+    }
+
+    private static void RegisterPolicyApplication(IServiceCollection services)
+    {
+        services.AddScoped<CreateDraftPolicyUseCase>();
+        services.AddScoped<GetPolicyRevisionUseCase>();
+        services.AddScoped<ListRulesUseCase>();
+        services.AddScoped<GetRuleUseCase>();
+        services.AddScoped<AddRuleUseCase>();
+        services.AddScoped<UpdateRuleUseCase>();
+        services.AddScoped<DeleteRuleUseCase>();
+        services.AddScoped<ReorderRulesUseCase>();
     }
 
     public static bool ContainsMigrateOnly(IEnumerable<string> args)

@@ -12,7 +12,7 @@
   <DockPanel Margin="16">
     <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,12">
       <TextBlock FontSize="22" FontWeight="SemiBold" Text="MTDirector" />
-      <TextBlock Opacity="0.8" Text="Controller · inventory · snapshot · semantic diff · zones" />
+      <TextBlock Opacity="0.8" Text="Controller · inventory · snapshot · semantic diff · zones · policies" />
       <TextBlock Text="{Binding ControllerEndpoint, StringFormat=Endpoint: {0}}" />
       <TextBlock FontSize="16" Text="{Binding StatusText, StringFormat=Status: {0}}" FontWeight="Bold" />
       <TextBlock Text="{Binding ErrorText}"
@@ -386,6 +386,31 @@
               </ListBox>
             </Border>
           </Grid>
+        </TabItem>
+
+        <TabItem Header="Policies">
+          <DockPanel Margin="8" LastChildFill="True">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+              <TextBox PlaceholderText="revision UUID"
+                       Text="{Binding Policies.RevisionIdText}"
+                       MinWidth="280" />
+              <Button Content="List rules" Command="{Binding Policies.RefreshCommand}" MinWidth="100" />
+            </StackPanel>
+            <TextBlock DockPanel.Dock="Top"
+                       Text="{Binding Policies.ErrorText}"
+                       Foreground="IndianRed"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,8"
+                       IsVisible="{Binding Policies.HasError}" />
+            <ListBox ItemsSource="{Binding Policies.Rules}">
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="svc:PolicyRuleListItem">
+                  <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="4"
+                             FontFamily="Consolas,Menlo,monospace" />
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </DockPanel>
         </TabItem>
       </TabControl>
     </Grid>

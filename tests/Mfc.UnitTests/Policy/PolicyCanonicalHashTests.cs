@@ -1,8 +1,9 @@
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
+using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Policy;
+using Mfc.Domain.Policy.Primitives;
 using Mfc.Infrastructure.Persistence.Snapshots;
 using Xunit;
 
@@ -54,8 +55,17 @@ public sealed class PolicyCanonicalHashTests
         PolicyDocument empty = PolicyDocument.CreateEmpty(
             PolicyKind.CompanyBaseline,
             PolicyOwnerScope.Company);
-        using JsonDocument rule = JsonDocument.Parse("""{"id":"bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"}""");
-        PolicyDocument withRule = empty.WithRules([rule.RootElement.Clone()]);
+        PolicyDocument withRule = empty.WithRules(
+        [
+            PolicyRule.Create(
+                IpAddressFamily.IPv4,
+                PolicyFilterChain.Forward,
+                PolicyPipelineStage.CompanyDeny,
+                ordinal: 0,
+                TrafficPredicate.Create(),
+                RuleEffectSpec.Create(PolicyRuleEffect.Drop),
+                id: new RuleId(Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"))),
+        ]);
 
         Assert.NotEqual(
             PolicyHashing.HashContent(empty).ToString(),

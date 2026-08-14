@@ -34,7 +34,10 @@ public sealed class App : Application, IAsyncDisposable
         GrpcZoneServiceClient zoneClient = new(connection, options);
         ZonePanelService zonePanel = new(zoneClient);
         ZonesViewModel zonesVm = new(zonePanel, connection, inventoryVm);
-        _shell = new ShellViewModel(connection, options, inventoryVm, snapshotVm, diffVm, zonesVm);
+        GrpcPolicyServiceClient policyClient = new(connection, options);
+        PolicyPanelService policyPanel = new(policyClient);
+        PoliciesViewModel policiesVm = new(policyPanel, connection);
+        _shell = new ShellViewModel(connection, options, inventoryVm, snapshotVm, diffVm, zonesVm, policiesVm);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

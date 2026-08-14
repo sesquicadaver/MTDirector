@@ -8,7 +8,7 @@ namespace Mfc.UnitTests.Desktop;
 public sealed class DesktopVerticalSliceWiringTests
 {
     [Fact]
-    public void ShellExposesInventorySnapshotDiffAndZonesViewModels()
+    public void ShellExposesInventorySnapshotDiffZonesAndPoliciesViewModels()
     {
         System.Reflection.PropertyInfo[] properties = typeof(ShellViewModel).GetProperties();
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Inventory)
@@ -19,10 +19,12 @@ public sealed class DesktopVerticalSliceWiringTests
                                          && p.PropertyType == typeof(SnapshotDiffViewModel));
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Zones)
                                          && p.PropertyType == typeof(ZonesViewModel));
+        Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Policies)
+                                         && p.PropertyType == typeof(PoliciesViewModel));
     }
 
     [Fact]
-    public void DesktopClientsCoverInventorySnapshotCompareAndZoneRpcs()
+    public void DesktopClientsCoverInventorySnapshotCompareZoneAndPolicyRpcs()
     {
         Type client = typeof(ISnapshotViewerClient);
         Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.ListCapturesAsync)));
@@ -39,5 +41,9 @@ public sealed class DesktopVerticalSliceWiringTests
         Assert.NotNull(zones.GetMethod(nameof(IZoneServiceClient.ListZoneDefinitionsAsync)));
         Assert.NotNull(zones.GetMethod(nameof(IZoneServiceClient.UpsertNodeZoneBindingAsync)));
         Assert.NotNull(zones.GetMethod(nameof(IZoneServiceClient.ResolveZonesForNodeAsync)));
+
+        Type policies = typeof(IPolicyServiceClient);
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ListRulesAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.GetPolicyRevisionAsync)));
     }
 }
