@@ -338,6 +338,7 @@ Policy Model §§22–27 + Issue Set M2-06 AC#1–12 → Domain + Application + 
 | Typed `PolicyDocument.Rules` | `PolicyDocument` | D9/D11 + lifecycle hash tests |
 | Draft-only mutate | `AddRuleUseCase` / `PolicyRevision.ReplaceDocument` | A1 |
 | `expected_content_hash` CAS | App mutators | A3 / `PolicyGrpcHostTests` |
+| GetRevision / GetRule / Update / Delete / Reorder + idempotent replay | `PolicyRuleUseCases` | `GetRevisionAndGetRuleRoundTrip`, `UpdateDeleteReorderAndIdempotentReplay`, `DraftReplayCatalogBranchesAndBadHashLength` |
 | Zone hard / Address·Service soft `POLICY_SELECTOR_CATALOG_SOFT` | `PolicyRevisionSupport` | A5 / O1 |
 | Non-empty doc address/service arrays → hard UUID membership | `EnsureAddressServiceCatalog` | A5b |
 | gRPC `mfc.v1.PolicyService` | `policy.proto` / `PolicyGrpcService` | `PolicyProtoContractTests` / C2 |
