@@ -18,6 +18,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Deterministic logical policy composition (M2-07): Domain `EffectivePolicyComposer` + `PolicyHashing.HashLogicalEffective` (prefix `mfc.policy.logical_effective.v1`, omit-absent overlay digests, exception count 0), Application load/select of unique ACTIVE company + optional overlays, `ComposeEffectivePolicy` RPC with `POLICY_COMPOSE_*` → FailedPrecondition.
 - Zone resolve for VETH/VLAN/bridge markers (N1-05): canonical `topology.container-veth` / `topology.shared-veth` projection, Domain `container:`/`app:` expansion with typed blockers (shared-VETH keeps members), Application snapshot enrichment without RouterOs coupling; hash stays `mfc.zone.dependency.v1`. Live capture still omits projector membership until M1-22 capture wiring populates `PacketPathTopology` (documented residual).
 - Typed policy rules full stack (M2-06): Domain typed rules + Application draft/rule CRUD with `expected_content_hash` CAS, Zone hard / Address·Service soft `POLICY_SELECTOR_CATALOG_SOFT`, `mfc.v1.PolicyService` gRPC, thin Desktop Policies panel (Contracts-only).
 - Typed policy rules Domain (M2-06 Domain slice, superseded by full stack above): `PolicyRule` / `TrafficPredicate` / `ZoneSelector` / `RuleEffectSpec` / `LogSpecification`, typed `PolicyDocument.Rules`, MFC-CJ1 reader with `POLICY_RULES_UNSUPPORTED_SHAPE`, contiguous ordinals.

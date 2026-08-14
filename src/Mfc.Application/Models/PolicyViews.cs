@@ -190,3 +190,37 @@ public sealed class PolicyRuleListView
 
     public required IReadOnlyList<PolicyWarningView> Warnings { get; init; }
 }
+
+/// <summary>Loaded approved revision identity used in effective-policy refs (M2-07).</summary>
+public sealed class PolicyRevisionRefView
+{
+    public required Guid PolicyId { get; init; }
+
+    public required Guid RevisionId { get; init; }
+
+    public required uint RevisionNumber { get; init; }
+
+    public required byte[] ContentHash { get; init; }
+
+    public required string ContentHashHex { get; init; }
+}
+
+/// <summary>Compute-on-read logical effective policy for a Node (M2-07).</summary>
+public sealed class EffectivePolicyView
+{
+    public required Guid NodeId { get; init; }
+
+    public required byte[] LogicalEffectiveHash { get; init; }
+
+    public required string LogicalEffectiveHashHex { get; init; }
+
+    public required PolicyRevisionRefView Company { get; init; }
+
+    public PolicyRevisionRefView? Site { get; init; }
+
+    public PolicyRevisionRefView? Node { get; init; }
+
+    public required IReadOnlyList<PolicyRuleView> ActiveRules { get; init; }
+
+    public required IReadOnlyList<PolicyWarningView> Findings { get; init; }
+}

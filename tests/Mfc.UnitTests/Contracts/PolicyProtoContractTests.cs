@@ -10,6 +10,7 @@ public sealed class PolicyProtoContractTests
     public void PolicyServiceDescriptorExposesDraftAndRuleRpcs()
     {
         string[] methods = PolicyService.Descriptor.Methods.Select(m => m.Name).OrderBy(n => n).ToArray();
+        Assert.Contains("ComposeEffectivePolicy", methods);
         Assert.Contains("CreateDraftPolicy", methods);
         Assert.Contains("GetPolicyRevision", methods);
         Assert.Contains("ListRules", methods);
@@ -49,5 +50,34 @@ public sealed class PolicyProtoContractTests
             PolicyService.Descriptor.Methods,
             static m => m.Name.Contains("password", StringComparison.OrdinalIgnoreCase)
                         || m.Name.Contains("secret", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void C1ComposeEffectivePolicyRequestIsNodeIdOnly()
+    {
+        Google.Protobuf.Reflection.MessageDescriptor descriptor = ComposeEffectivePolicyRequest.Descriptor;
+        Assert.Equal("node_id", descriptor.Fields.InDeclarationOrder()[0].Name);
+        Assert.Single(descriptor.Fields.InDeclarationOrder());
+        Assert.DoesNotContain(
+            descriptor.Fields.InDeclarationOrder(),
+            static f => f.Name.Contains("vrrp", StringComparison.OrdinalIgnoreCase)
+                        || f.Name.Contains("wan", StringComparison.OrdinalIgnoreCase)
+                        || f.Name.Contains("device", StringComparison.OrdinalIgnoreCase)
+                        || f.Name.Contains("binding", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void C4EffectivePolicyExposesRepeatedFindings()
+    {
+        Google.Protobuf.Reflection.FieldDescriptor findings = EffectivePolicy.Descriptor.FindFieldByName("findings");
+        Assert.NotNull(findings);
+        Assert.True(findings.IsRepeated);
+        Assert.Equal("PolicyWarning", findings.MessageType.Name);
+        Assert.NotNull(EffectivePolicy.Descriptor.FindFieldByName("logical_effective_hash"));
+        Assert.NotNull(EffectivePolicy.Descriptor.FindFieldByName("company"));
+        Assert.NotNull(PolicyRevisionRef.Descriptor.FindFieldByName("policy_id"));
+        Assert.NotNull(PolicyRevisionRef.Descriptor.FindFieldByName("revision_id"));
+        Assert.NotNull(PolicyRevisionRef.Descriptor.FindFieldByName("revision_number"));
+        Assert.NotNull(PolicyRevisionRef.Descriptor.FindFieldByName("content_hash"));
     }
 }

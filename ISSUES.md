@@ -145,4 +145,4 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 
-Start here (linear queue): [#53 M2-06](https://github.com/sesquicadaver/MTDirector/issues/53) — see [`ROADMAP.md`](ROADMAP.md) §3.
+Start here (linear queue): [#55 M2-08](https://github.com/sesquicadaver/MTDirector/issues/55) — see [`ROADMAP.md`](ROADMAP.md) §3.

@@ -6,7 +6,7 @@ using Mfc.Contracts.Mfc.V1;
 
 namespace Mfc.Controller.Grpc;
 
-/// <summary>gRPC surface for M2-06 PolicyService (draft + typed rule CRUD).</summary>
+/// <summary>gRPC surface for PolicyService (draft/rule CRUD + M2-07 compose).</summary>
 public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
 {
     public const string ActorMetadataKey = InventoryGrpcService.ActorMetadataKey;
@@ -19,6 +19,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
     private readonly UpdateRuleUseCase _updateRule;
     private readonly DeleteRuleUseCase _deleteRule;
     private readonly ReorderRulesUseCase _reorderRules;
+    private readonly ComposeEffectivePolicyUseCase _composeEffective;
     private readonly IHostEnvironment _environment;
 
     public PolicyGrpcService(
@@ -30,6 +31,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         UpdateRuleUseCase updateRule,
         DeleteRuleUseCase deleteRule,
         ReorderRulesUseCase reorderRules,
+        ComposeEffectivePolicyUseCase composeEffective,
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(createDraft);
@@ -40,6 +42,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         ArgumentNullException.ThrowIfNull(updateRule);
         ArgumentNullException.ThrowIfNull(deleteRule);
         ArgumentNullException.ThrowIfNull(reorderRules);
+        ArgumentNullException.ThrowIfNull(composeEffective);
         ArgumentNullException.ThrowIfNull(environment);
         _createDraft = createDraft;
         _getRevision = getRevision;
@@ -49,6 +52,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         _updateRule = updateRule;
         _deleteRule = deleteRule;
         _reorderRules = reorderRules;
+        _composeEffective = composeEffective;
         _environment = environment;
     }
 
@@ -208,6 +212,21 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
                 Chain = PolicyProtoMapper.ToDomain(request.Chain),
                 Stage = PolicyProtoMapper.ToDomain(request.Stage),
                 OrderedRuleIds = request.OrderedRuleIds.Select(ProtoUuid.ToGuid).ToArray(),
+            },
+            context.CancellationToken).ConfigureAwait(false);
+        return PolicyProtoMapper.ToProto(Unwrap(result));
+    }
+
+    public override async Task<EffectivePolicy> ComposeEffectivePolicy(
+        ComposeEffectivePolicyRequest request,
+        ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ApplicationResult<EffectivePolicyView> result = await _composeEffective.ExecuteAsync(
+            new ComposeEffectivePolicyQuery
+            {
+                Actor = ResolveActor(context),
+                NodeId = ProtoUuid.ToGuid(request.NodeId),
             },
             context.CancellationToken).ConfigureAwait(false);
         return PolicyProtoMapper.ToProto(Unwrap(result));

@@ -29,4 +29,15 @@ public interface IPolicyStore
 
     /// <summary>Highest revision_number for the policy, or 0 when none exist.</summary>
     Task<uint> GetLatestRevisionNumberAsync(PolicyId policyId, CancellationToken cancellationToken = default);
+
+    /// <summary>Active (non-archived) policies of the given kind, any owner.</summary>
+    Task<IReadOnlyList<Policy>> ListActiveByKindAsync(
+        PolicyKind kind,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Active (non-archived) policies of the given kind owned by <paramref name="ownerId"/>.</summary>
+    Task<IReadOnlyList<Policy>> ListActiveByOwnerAsync(
+        PolicyKind kind,
+        Guid ownerId,
+        CancellationToken cancellationToken = default);
 }

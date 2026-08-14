@@ -125,6 +125,42 @@ internal static class PolicyProtoMapper
         return message;
     }
 
+    public static EffectivePolicy ToProto(EffectivePolicyView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        EffectivePolicy message = new()
+        {
+            NodeId = ProtoUuid.FromGuid(view.NodeId),
+            LogicalEffectiveHash = ToSha256(view.LogicalEffectiveHash),
+            Company = ToProto(view.Company),
+        };
+        if (view.Site is not null)
+        {
+            message.Site = ToProto(view.Site);
+        }
+
+        if (view.Node is not null)
+        {
+            message.Node = ToProto(view.Node);
+        }
+
+        message.Rules.AddRange(view.ActiveRules.Select(ToProto));
+        message.Findings.AddRange(view.Findings.Select(ToProto));
+        return message;
+    }
+
+    public static PolicyRevisionRef ToProto(PolicyRevisionRefView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        return new PolicyRevisionRef
+        {
+            PolicyId = ProtoUuid.FromGuid(view.PolicyId),
+            RevisionId = ProtoUuid.FromGuid(view.RevisionId),
+            RevisionNumber = view.RevisionNumber,
+            ContentHash = ToSha256(view.ContentHash),
+        };
+    }
+
     public static PolicyWarning ToProto(PolicyWarningView view)
     {
         PolicyWarning message = new()
@@ -631,14 +667,20 @@ internal static class PolicyProtoMapper
         _ => ProtoIpsecPolicyKind.Unspecified,
     };
 
-    private static Sha256 HexToSha256(string hex)
+    private static Sha256 ToSha256(byte[] bytes)
     {
-        byte[] bytes = Convert.FromHexString(hex);
+        ArgumentNullException.ThrowIfNull(bytes);
         if (bytes.Length != 32)
         {
-            throw new InvalidOperationException("Content hash must be 32 bytes.");
+            throw new InvalidOperationException("SHA-256 digest must be 32 bytes.");
         }
 
         return new Sha256 { Value = ByteString.CopyFrom(bytes) };
+    }
+
+    private static Sha256 HexToSha256(string hex)
+    {
+        byte[] bytes = Convert.FromHexString(hex);
+        return ToSha256(bytes);
     }
 }

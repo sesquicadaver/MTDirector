@@ -208,6 +208,7 @@ public static class Program
         services.AddScoped<UpdateRuleUseCase>();
         services.AddScoped<DeleteRuleUseCase>();
         services.AddScoped<ReorderRulesUseCase>();
+        services.AddScoped<ComposeEffectivePolicyUseCase>();
     }
 
     public static bool ContainsMigrateOnly(IEnumerable<string> args)

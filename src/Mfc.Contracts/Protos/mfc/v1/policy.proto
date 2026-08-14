@@ -17,6 +17,7 @@ service PolicyService {
   rpc UpdateRule(UpdateRuleRequest) returns (PolicyRuleMutation);
   rpc DeleteRule(DeleteRuleRequest) returns (PolicyRuleMutation);
   rpc ReorderRules(ReorderRulesRequest) returns (PolicyRuleMutation);
+  rpc ComposeEffectivePolicy(ComposeEffectivePolicyRequest) returns (EffectivePolicy);
 }
 
 enum PolicyKind {
@@ -314,4 +315,25 @@ message ReorderRulesRequest {
   PolicyFilterChain chain = 5;
   PolicyPipelineStage stage = 6;
   repeated Uuid ordered_rule_ids = 7;
+}
+
+message ComposeEffectivePolicyRequest {
+  Uuid node_id = 1;
+}
+
+message PolicyRevisionRef {
+  Uuid policy_id = 1;
+  Uuid revision_id = 2;
+  uint32 revision_number = 3;
+  Sha256 content_hash = 4;
+}
+
+message EffectivePolicy {
+  Uuid node_id = 1;
+  Sha256 logical_effective_hash = 2;
+  PolicyRevisionRef company = 3;
+  optional PolicyRevisionRef site = 4;
+  optional PolicyRevisionRef node = 5;
+  repeated PolicyRule rules = 6;
+  repeated PolicyWarning findings = 7;
 }

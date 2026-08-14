@@ -129,6 +129,13 @@ internal static class ViewMapper
         ArgumentNullException.ThrowIfNull(document);
         IReadOnlyList<PolicyWarningView> warnings =
             Policies.PolicyRevisionSupport.CollectSoftCatalogWarnings(document, rule.Predicate);
+        return ToView(rule, warnings);
+    }
+
+    /// <summary>Maps a composed (already resolved) rule; warnings default to empty.</summary>
+    public static PolicyRuleView ToView(PolicyRule rule, IReadOnlyList<PolicyWarningView>? warnings = null)
+    {
+        ArgumentNullException.ThrowIfNull(rule);
         return new PolicyRuleView
         {
             Id = rule.Id.Value,
@@ -150,7 +157,7 @@ internal static class ViewMapper
             },
             ExceptionEligible = rule.ExceptionEligible,
             Description = rule.Description,
-            Warnings = warnings,
+            Warnings = warnings ?? [],
         };
     }
 

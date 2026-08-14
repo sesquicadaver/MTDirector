@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.Security.Cryptography;
 using System.Text;
 using Mfc.Domain.Inventory.Primitives;
@@ -5,12 +6,16 @@ using Mfc.Domain.Inventory.Primitives;
 namespace Mfc.Domain.Policy;
 
 /// <summary>
-/// Policy revision content and parent-context hash contracts (Policy Model §8, §33–§34).
-/// Content hash is always over exact uncompressed canonical bytes.
+/// Policy revision content, parent-context, and logical-effective hash contracts
+/// (Policy Model §8, §33–§34). Content hash is always over exact uncompressed canonical bytes.
+/// Logical effective hash MUST NOT be <c>HashContent(PolicyCanonicalWriter.Write(synthetic document))</c>.
 /// </summary>
 public static class PolicyHashing
 {
     public const string ParentContextPrefix = "mfc.policy.parent_context.v1";
+
+    /// <summary>UTF-8 prefix for <see cref="HashLogicalEffective"/> (NUL-terminated in the preimage).</summary>
+    public const string LogicalEffectivePrefix = "mfc.policy.logical_effective.v1";
 
     /// <summary>policy_revision_hash = SHA256(exact canonical revision bytes).</summary>
     public static Hash256 HashContent(ReadOnlySpan<byte> canonicalBytes)
@@ -58,6 +63,114 @@ public static class PolicyHashing
                 Require(waivedRuleHash, "EXCEPTION requires waived rule hash.")),
             _ => throw new DomainInvariantException($"Unknown policy kind '{kind}'."),
         };
+    }
+
+    /// <summary>
+    /// SHA-256 of the logical-effective preimage (Policy Model §34.1 / LOCK-10 IncrementalHash).
+    /// Absent site/node overlays omit their 32-byte slots (no zero padding) unless
+    /// <paramref name="padAbsentSiteWithZeros"/> is set for anti-B1 tests.
+    /// </summary>
+    public static Hash256 HashLogicalEffective(
+        uint schemaVersion,
+        Hash256 companyContentHash,
+        Hash256? siteContentHash,
+        Hash256? nodeContentHash,
+        uint exceptionCount,
+        IReadOnlyList<byte[]> canonicalMergedObjects,
+        IReadOnlyList<byte[]> canonicalActiveRules,
+        byte[] chainContractBytes,
+        bool padAbsentSiteWithZeros = false,
+        bool includeExceptionCountSlot = true)
+    {
+        byte[] preimage = BuildLogicalEffectivePreimage(
+            schemaVersion,
+            companyContentHash,
+            siteContentHash,
+            nodeContentHash,
+            exceptionCount,
+            canonicalMergedObjects,
+            canonicalActiveRules,
+            chainContractBytes,
+            padAbsentSiteWithZeros,
+            includeExceptionCountSlot);
+        using IncrementalHash hasher = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        hasher.AppendData(preimage);
+        return Hash256.Create(hasher.GetHashAndReset());
+    }
+
+    /// <summary>
+    /// Exact logical-effective preimage bytes. Exposed so tests can prove prefix+NUL and
+    /// the uint32 exception-count slot (D19) without hashing a synthetic <see cref="PolicyDocument"/>.
+    /// </summary>
+    public static byte[] BuildLogicalEffectivePreimage(
+        uint schemaVersion,
+        Hash256 companyContentHash,
+        Hash256? siteContentHash,
+        Hash256? nodeContentHash,
+        uint exceptionCount,
+        IReadOnlyList<byte[]> canonicalMergedObjects,
+        IReadOnlyList<byte[]> canonicalActiveRules,
+        byte[] chainContractBytes,
+        bool padAbsentSiteWithZeros = false,
+        bool includeExceptionCountSlot = true)
+    {
+        ArgumentNullException.ThrowIfNull(companyContentHash);
+        ArgumentNullException.ThrowIfNull(canonicalMergedObjects);
+        ArgumentNullException.ThrowIfNull(canonicalActiveRules);
+        ArgumentNullException.ThrowIfNull(chainContractBytes);
+
+        using MemoryStream stream = new();
+        WriteUtf8(stream, LogicalEffectivePrefix);
+        stream.WriteByte(0);
+        WriteUtf8(stream, PolicyDocument.SchemaName);
+        stream.WriteByte(0);
+        WriteUInt32Be(stream, schemaVersion);
+        WriteUtf8(stream, PolicyPipelineV1.Version);
+        stream.WriteByte(0);
+        stream.Write(companyContentHash.Bytes);
+        if (siteContentHash is not null)
+        {
+            stream.Write(siteContentHash.Bytes);
+        }
+        else if (padAbsentSiteWithZeros)
+        {
+            stream.Write(new byte[Hash256.Size]);
+        }
+
+        if (nodeContentHash is not null)
+        {
+            stream.Write(nodeContentHash.Bytes);
+        }
+
+        if (includeExceptionCountSlot)
+        {
+            WriteUInt32Be(stream, exceptionCount);
+        }
+
+        foreach (byte[] objectBytes in canonicalMergedObjects)
+        {
+            ArgumentNullException.ThrowIfNull(objectBytes);
+            stream.Write(objectBytes);
+        }
+
+        foreach (byte[] ruleBytes in canonicalActiveRules)
+        {
+            ArgumentNullException.ThrowIfNull(ruleBytes);
+            stream.Write(ruleBytes);
+        }
+
+        stream.Write(chainContractBytes);
+        return stream.ToArray();
+    }
+
+    private static void WriteUtf8(Stream stream, string value)
+        => stream.Write(Encoding.UTF8.GetBytes(value));
+
+    private static void WriteUInt32Be(Stream stream, uint value)
+    {
+        Span<byte> slot = stackalloc byte[4];
+        BinaryPrimitives.WriteUInt32BigEndian(slot, value);
+        stream.Write(slot);
     }
 
     private static Hash256 HashComposite(PolicyKind kind, params Hash256?[] ordered)
