@@ -5,27 +5,23 @@ using Mfc.Domain.Policy.Primitives;
 namespace Mfc.Domain.Policy;
 
 /// <summary>
-/// Pure logical policy composer for a Node (Policy Model §§29–34.1 / M2-07).
-/// No VRRP role, WAN, device, or zone-binding inputs; exceptions are out of scope (count slot = 0).
+/// Pure logical policy composer for a Node (Policy Model §§29–34.1 / M2-07 + M2-08 exceptions).
+/// No VRRP role, WAN, device, zone-binding, or clock inputs.
 /// </summary>
 public static class EffectivePolicyComposer
 {
     /// <summary>
-    /// Composes company (required) with optional site/node overlays into an ephemeral effective policy.
+    /// Composes company (required) with optional site/node overlays and exception layers
+    /// into an ephemeral effective policy.
     /// </summary>
-    /// <param name="company">Company baseline layer; null → <c>POLICY_COMPOSE_COMPANY_REQUIRED</c>.</param>
-    /// <param name="site">Optional site overlay.</param>
-    /// <param name="node">Optional node overlay.</param>
-    /// <param name="nodeId">Target node id (visibility for NODE-owned objects).</param>
-    /// <param name="siteId">Parent site id (visibility for SITE-owned objects from NODE rules).</param>
-    /// <param name="knownZoneIds">Zone catalog ids from Application (<see cref="ZoneDefinition"/> store).</param>
     public static PolicyComposeResult Compose(
         PolicyLayer? company,
         PolicyLayer? site,
         PolicyLayer? node,
         Guid nodeId,
         Guid? siteId,
-        IReadOnlySet<Guid> knownZoneIds)
+        IReadOnlySet<Guid> knownZoneIds,
+        IReadOnlyList<PolicyLayer>? exceptions = null)
     {
         ArgumentNullException.ThrowIfNull(knownZoneIds);
         if (company is null)
@@ -98,7 +94,49 @@ public static class EffectivePolicyComposer
             active.Add(rule);
         }
 
-        PolicyRule[] orderedActive = OrderActive(active);
+        List<ActiveEntry> entries = active
+            .Select(static r => new ActiveEntry(r, Guid.Empty, Guid.Empty))
+            .ToList();
+        IReadOnlyList<PolicyLayer> exceptionLayers = exceptions ?? [];
+        foreach (PolicyLayer exception in exceptionLayers)
+        {
+            PolicyComposeResult? exceptionError = ExceptionComposeProof.Evaluate(
+                exception,
+                company,
+                site,
+                node,
+                allRules.Select(static t => t.Rule).ToArray(),
+                active,
+                out PolicyRule? exemptRule);
+            if (exceptionError is not null)
+            {
+                return exceptionError;
+            }
+
+            PolicyComposeResult? selectorError = ValidateSelectors(
+                exception,
+                exemptRule!,
+                nodeId,
+                siteId,
+                knownZoneIds,
+                addresses,
+                services);
+            if (selectorError is not null)
+            {
+                return selectorError;
+            }
+
+            if (!ruleIds.Add(exemptRule!.Id.Value))
+            {
+                return PolicyComposeResult.Fail(
+                    PolicyComposeCodes.UuidCollision,
+                    $"Rule UUID '{exemptRule.Id.Value:D}' collides across policy layers.");
+            }
+
+            entries.Add(new ActiveEntry(exemptRule, exception.RevisionId, exception.PolicyId));
+        }
+
+        PolicyRule[] orderedActive = OrderActive(entries);
         JsonElement[] mergedAddresses = addresses.Values
             .OrderBy(static o => o.Id)
             .Select(static o => o.Element)
@@ -109,10 +147,16 @@ public static class EffectivePolicyComposer
             .ToArray();
 
         List<PolicyComposeFinding> findings = CollectUnused(addresses, services, orderedActive);
+        Hash256[] exceptionHashes = exceptionLayers
+            .OrderBy(static e => e.PolicyDocument.ExceptionMetadata!.WaivedRuleId.Value)
+            .ThenBy(static e => e.PolicyId)
+            .Select(static e => e.ContentHash)
+            .ToArray();
         Hash256 logicalHash = HashComposed(
             company,
             site,
             node,
+            exceptionHashes,
             mergedAddresses,
             mergedServices,
             orderedActive);
@@ -486,6 +530,7 @@ public static class EffectivePolicyComposer
         PolicyLayer company,
         PolicyLayer? site,
         PolicyLayer? node,
+        IReadOnlyList<Hash256> exceptionHashes,
         IReadOnlyList<JsonElement> mergedAddresses,
         IReadOnlyList<JsonElement> mergedServices,
         IReadOnlyList<PolicyRule> orderedActive)
@@ -503,19 +548,21 @@ public static class EffectivePolicyComposer
             company.ContentHash,
             site?.ContentHash,
             node?.ContentHash,
-            exceptionCount: 0,
+            exceptionHashes,
             objectBytes,
             ruleBytes,
             chainBytes);
     }
 
-    private static PolicyRule[] OrderActive(IReadOnlyList<PolicyRule> active)
-        => active
-            .OrderBy(static r => r.Family)
-            .ThenBy(static r => r.Chain)
-            .ThenBy(static r => PolicyPipelineV1.Ordinal(r.Stage))
-            .ThenBy(static r => r.Ordinal)
-            .ThenBy(static r => r.Id.Value)
+    private static PolicyRule[] OrderActive(IReadOnlyList<ActiveEntry> entries)
+        => entries
+            .OrderBy(static e => e.Rule.Family)
+            .ThenBy(static e => e.Rule.Chain)
+            .ThenBy(static e => PolicyPipelineV1.Ordinal(e.Rule.Stage))
+            .ThenBy(static e => e.RevisionId)
+            .ThenBy(static e => e.Rule.Ordinal)
+            .ThenBy(static e => e.Rule.Id.Value)
+            .Select(static e => e.Rule)
             .ToArray();
 
     private static IEnumerable<PolicyLayer> EnumerateLayers(PolicyLayer company, PolicyLayer? site, PolicyLayer? node)
@@ -576,6 +623,8 @@ public static class EffectivePolicyComposer
     }
 
     private sealed record ParsedObject(Guid Id, PolicyObjectIdentity Identity, JsonElement Element);
+
+    private readonly record struct ActiveEntry(PolicyRule Rule, Guid RevisionId, Guid PolicyId);
 
     private readonly struct IdentityParseResult
     {

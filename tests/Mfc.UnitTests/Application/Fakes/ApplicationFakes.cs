@@ -819,3 +819,8 @@ internal sealed class FakePolicyStore : IPolicyStore
             revision.ApprovedAtUtc,
             revision.CanonicalBytes.ToArray());
 }
+
+internal sealed class FakeClock : Mfc.Application.Abstractions.Time.IClock
+{
+    public DateTimeOffset UtcNow { get; set; } = new(2026, 8, 15, 0, 0, 0, TimeSpan.Zero);
+}

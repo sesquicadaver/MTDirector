@@ -1,6 +1,7 @@
 using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
+using Mfc.Application.Abstractions.Time;
 using Mfc.Application.Inventory;
 using Mfc.Application.Policies;
 using Mfc.Application.Snapshots;
@@ -200,6 +201,7 @@ public static class Program
 
     private static void RegisterPolicyApplication(IServiceCollection services)
     {
+        services.AddSingleton<IClock, SystemClock>();
         services.AddScoped<CreateDraftPolicyUseCase>();
         services.AddScoped<GetPolicyRevisionUseCase>();
         services.AddScoped<ListRulesUseCase>();
@@ -209,6 +211,7 @@ public static class Program
         services.AddScoped<DeleteRuleUseCase>();
         services.AddScoped<ReorderRulesUseCase>();
         services.AddScoped<ComposeEffectivePolicyUseCase>();
+        services.AddScoped<UpdateExceptionMetadataUseCase>();
     }
 
     public static bool ContainsMigrateOnly(IEnumerable<string> args)

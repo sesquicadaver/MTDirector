@@ -1,5 +1,6 @@
 using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.Persistence;
+using Mfc.Application.Abstractions.Time;
 using Mfc.Application.Common;
 using Mfc.Application.Mapping;
 using Mfc.Application.Models;
@@ -29,21 +30,25 @@ public sealed class ComposeEffectivePolicyUseCase
     private readonly INodeStore _nodes;
     private readonly IPolicyStore _policies;
     private readonly IZoneDefinitionStore _zones;
+    private readonly IClock _clock;
 
     public ComposeEffectivePolicyUseCase(
         IAuthorizationBoundary auth,
         INodeStore nodes,
         IPolicyStore policies,
-        IZoneDefinitionStore zones)
+        IZoneDefinitionStore zones,
+        IClock clock)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
         ArgumentNullException.ThrowIfNull(policies);
         ArgumentNullException.ThrowIfNull(zones);
+        ArgumentNullException.ThrowIfNull(clock);
         _auth = auth;
         _nodes = nodes;
         _policies = policies;
         _zones = zones;
+        _clock = clock;
     }
 
     public async Task<ApplicationResult<EffectivePolicyView>> ExecuteAsync(
@@ -115,6 +120,13 @@ public sealed class ComposeEffectivePolicyUseCase
             return ApplicationResults.Fail(nodeError);
         }
 
+        (IReadOnlyList<PolicyLayer>? exceptionLayers, ApplicationError? exceptionError) =
+            await LoadExceptionsAsync(node, cancellationToken).ConfigureAwait(false);
+        if (exceptionError is not null)
+        {
+            return ApplicationResults.Fail(exceptionError);
+        }
+
         IReadOnlyList<ZoneDefinition> zones = await _zones.ListAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         HashSet<Guid> knownZoneIds = zones.Select(static z => z.Id.Value).ToHashSet();
@@ -125,7 +137,8 @@ public sealed class ComposeEffectivePolicyUseCase
             nodeLayer,
             node.Id.Value,
             node.SiteId.Value,
-            knownZoneIds);
+            knownZoneIds,
+            exceptionLayers);
         if (composed.IsFailure)
         {
             return ComposeFail(composed.Code!, composed.Message!);
@@ -174,6 +187,63 @@ public sealed class ComposeEffectivePolicyUseCase
         return await LoadApprovedLayerAsync(overlays[0], cancellationToken).ConfigureAwait(false);
     }
 
+    private async Task<(IReadOnlyList<PolicyLayer>? Layers, ApplicationError? Error)> LoadExceptionsAsync(
+        Node node,
+        CancellationToken cancellationToken)
+    {
+        List<PolicyLayer> layers = [];
+        ApplicationError? siteError = await AppendExceptionLayersAsync(
+            node.SiteId.Value, layers, cancellationToken).ConfigureAwait(false);
+        if (siteError is not null)
+        {
+            return (null, siteError);
+        }
+
+        ApplicationError? nodeError = await AppendExceptionLayersAsync(
+            node.Id.Value, layers, cancellationToken).ConfigureAwait(false);
+        if (nodeError is not null)
+        {
+            return (null, nodeError);
+        }
+
+        return (layers, null);
+    }
+
+    private async Task<ApplicationError?> AppendExceptionLayersAsync(
+        Guid ownerId,
+        List<PolicyLayer> layers,
+        CancellationToken cancellationToken)
+    {
+        IReadOnlyList<Policy> policies = await _policies
+            .ListActiveByOwnerAsync(PolicyKind.Exception, ownerId, cancellationToken)
+            .ConfigureAwait(false);
+        DateTimeOffset now = _clock.UtcNow;
+        foreach (Policy policy in policies)
+        {
+            (PolicyLayer? layer, PolicyRevisionRefView? _, ApplicationError? error) =
+                await LoadApprovedLayerAsync(policy, cancellationToken).ConfigureAwait(false);
+            if (error is not null)
+            {
+                return error;
+            }
+
+            if (layer is null)
+            {
+                continue;
+            }
+
+            ExceptionMetadata? metadata = layer.PolicyDocument.ExceptionMetadata;
+            if (metadata is not null && metadata.IsExpired(now))
+            {
+                continue;
+            }
+
+            layers.Add(layer);
+        }
+
+        return null;
+    }
+
     private async Task<(PolicyLayer? Layer, PolicyRevisionRefView? Ref, ApplicationError? Error)>
         LoadApprovedLayerAsync(Policy policy, CancellationToken cancellationToken)
     {
@@ -197,6 +267,8 @@ public sealed class ComposeEffectivePolicyUseCase
 
         PolicyLayer layer = new()
         {
+            PolicyId = policy.Id.Value,
+            RevisionId = approved.Id.Value,
             Kind = policy.Kind,
             OwnerScope = policy.OwnerScope,
             OwnerId = policy.OwnerId,

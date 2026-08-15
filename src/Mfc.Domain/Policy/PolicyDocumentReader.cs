@@ -61,7 +61,7 @@ public static class PolicyDocumentReader
         IReadOnlyList<JsonElement> services = CloneArray(root.GetProperty("service_objects"));
         IReadOnlyList<PolicyRule> rules = ReadRules(root.GetProperty("rules"));
         IReadOnlyList<JsonElement> tests = CloneArray(root.GetProperty("tests"));
-        IReadOnlyDictionary<string, string> exceptionMetadata = ReadStringMap(root.GetProperty("exception_metadata"));
+        ExceptionMetadata? exceptionMetadata = ReadExceptionMetadata(root.GetProperty("exception_metadata"));
 
         return new PolicyDocument(
             kind,
@@ -331,25 +331,59 @@ public static class PolicyDocumentReader
         return items;
     }
 
-    private static Dictionary<string, string> ReadStringMap(JsonElement element)
+    private static ExceptionMetadata? ReadExceptionMetadata(JsonElement element)
     {
         if (element.ValueKind != JsonValueKind.Object)
         {
             throw new DomainInvariantException("exception_metadata must be a JSON object.");
         }
 
-        Dictionary<string, string> map = new(StringComparer.Ordinal);
+        if (!element.EnumerateObject().Any())
+        {
+            return null;
+        }
+
+        HashSet<string> allowed =
+        [
+            "target_scope",
+            "target_scope_id",
+            "target_stage",
+            "waived_rule_id",
+            "valid_from",
+            "valid_until",
+            "reason",
+            "ticket_reference",
+            "supersedes_exception_id",
+        ];
         foreach (JsonProperty property in element.EnumerateObject())
         {
+            if (!allowed.Contains(property.Name))
+            {
+                throw new DomainInvariantException($"Unknown exception_metadata property '{property.Name}'.");
+            }
+
             if (property.Value.ValueKind != JsonValueKind.String)
             {
                 throw new DomainInvariantException("exception_metadata values must be strings.");
             }
-
-            map[property.Name] = property.Value.GetString() ?? string.Empty;
         }
 
-        return map;
+        Guid? supersedes = null;
+        if (element.TryGetProperty("supersedes_exception_id", out JsonElement supersedesElement))
+        {
+            supersedes = ParseGuid(RequireString(element, "supersedes_exception_id"), "supersedes_exception_id");
+        }
+
+        return ExceptionMetadata.Create(
+            ParseOwnerScope(RequireString(element, "target_scope")),
+            ParseGuid(RequireString(element, "target_scope_id"), "target_scope_id"),
+            ParseStage(RequireString(element, "target_stage")),
+            new RuleId(ParseGuid(RequireString(element, "waived_rule_id"), "waived_rule_id")),
+            ExceptionMetadata.ParseTimestamp(RequireString(element, "valid_from"), "valid_from"),
+            ExceptionMetadata.ParseTimestamp(RequireString(element, "valid_until"), "valid_until"),
+            RequireString(element, "reason"),
+            RequireString(element, "ticket_reference"),
+            supersedes);
     }
 
     private static Guid[] ReadGuidArray(JsonElement parent, string name)

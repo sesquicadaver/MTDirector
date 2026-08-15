@@ -18,6 +18,7 @@ service PolicyService {
   rpc DeleteRule(DeleteRuleRequest) returns (PolicyRuleMutation);
   rpc ReorderRules(ReorderRulesRequest) returns (PolicyRuleMutation);
   rpc ComposeEffectivePolicy(ComposeEffectivePolicyRequest) returns (EffectivePolicy);
+  rpc UpdateExceptionMetadata(UpdateExceptionMetadataRequest) returns (PolicyRevision);
 }
 
 enum PolicyKind {
@@ -217,6 +218,7 @@ message PolicyRevision {
   PolicyOwnerScope owner_scope = 9;
   repeated PolicyRule rules = 10;
   repeated PolicyWarning warnings = 11;
+  optional ExceptionMetadata exception_metadata = 12;
 }
 
 message PolicyDraft {
@@ -336,4 +338,23 @@ message EffectivePolicy {
   optional PolicyRevisionRef node = 5;
   repeated PolicyRule rules = 6;
   repeated PolicyWarning findings = 7;
+}
+
+message ExceptionMetadata {
+  PolicyOwnerScope target_scope = 1;
+  Uuid target_scope_id = 2;
+  PolicyPipelineStage target_stage = 3;
+  Uuid waived_rule_id = 4;
+  string valid_from = 5;
+  string valid_until = 6;
+  string reason = 7;
+  string ticket_reference = 8;
+  optional Uuid supersedes_exception_id = 9;
+}
+
+message UpdateExceptionMetadataRequest {
+  Uuid idempotency_key = 1;
+  Uuid revision_id = 2;
+  Sha256 expected_content_hash = 3;
+  ExceptionMetadata metadata = 4;
 }

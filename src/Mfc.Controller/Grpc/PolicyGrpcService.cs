@@ -3,10 +3,11 @@ using Mfc.Application.Common;
 using Mfc.Application.Models;
 using Mfc.Application.Policies;
 using Mfc.Contracts.Mfc.V1;
+using Mfc.Domain;
 
 namespace Mfc.Controller.Grpc;
 
-/// <summary>gRPC surface for PolicyService (draft/rule CRUD + M2-07 compose).</summary>
+/// <summary>gRPC surface for PolicyService (draft/rule CRUD + compose + exception metadata).</summary>
 public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
 {
     public const string ActorMetadataKey = InventoryGrpcService.ActorMetadataKey;
@@ -20,6 +21,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
     private readonly DeleteRuleUseCase _deleteRule;
     private readonly ReorderRulesUseCase _reorderRules;
     private readonly ComposeEffectivePolicyUseCase _composeEffective;
+    private readonly UpdateExceptionMetadataUseCase _updateExceptionMetadata;
     private readonly IHostEnvironment _environment;
 
     public PolicyGrpcService(
@@ -32,6 +34,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         DeleteRuleUseCase deleteRule,
         ReorderRulesUseCase reorderRules,
         ComposeEffectivePolicyUseCase composeEffective,
+        UpdateExceptionMetadataUseCase updateExceptionMetadata,
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(createDraft);
@@ -43,6 +46,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         ArgumentNullException.ThrowIfNull(deleteRule);
         ArgumentNullException.ThrowIfNull(reorderRules);
         ArgumentNullException.ThrowIfNull(composeEffective);
+        ArgumentNullException.ThrowIfNull(updateExceptionMetadata);
         ArgumentNullException.ThrowIfNull(environment);
         _createDraft = createDraft;
         _getRevision = getRevision;
@@ -53,6 +57,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         _deleteRule = deleteRule;
         _reorderRules = reorderRules;
         _composeEffective = composeEffective;
+        _updateExceptionMetadata = updateExceptionMetadata;
         _environment = environment;
     }
 
@@ -227,6 +232,40 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
             {
                 Actor = ResolveActor(context),
                 NodeId = ProtoUuid.ToGuid(request.NodeId),
+            },
+            context.CancellationToken).ConfigureAwait(false);
+        return PolicyProtoMapper.ToProto(Unwrap(result));
+    }
+
+    public override async Task<global::Mfc.Contracts.Mfc.V1.PolicyRevision> UpdateExceptionMetadata(
+        UpdateExceptionMetadataRequest request,
+        ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        if (request.Metadata is null)
+        {
+            throw GrpcApplicationErrorMapper.ToRpcException(
+                ApplicationError.Validation("exception_metadata is required."));
+        }
+
+        ExceptionMetadataInput metadata;
+        try
+        {
+            metadata = PolicyProtoMapper.ToInput(request.Metadata);
+        }
+        catch (DomainInvariantException ex)
+        {
+            throw GrpcApplicationErrorMapper.ToRpcException(ApplicationError.Validation(ex.Message));
+        }
+
+        ApplicationResult<PolicyRevisionView> result = await _updateExceptionMetadata.ExecuteAsync(
+            new UpdateExceptionMetadataCommand
+            {
+                Actor = ResolveActor(context),
+                IdempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey),
+                RevisionId = ProtoUuid.ToGuid(request.RevisionId),
+                ExpectedContentHash = PolicyProtoMapper.ToHashBytes(request.ExpectedContentHash),
+                Metadata = metadata,
             },
             context.CancellationToken).ConfigureAwait(false);
         return PolicyProtoMapper.ToProto(Unwrap(result));

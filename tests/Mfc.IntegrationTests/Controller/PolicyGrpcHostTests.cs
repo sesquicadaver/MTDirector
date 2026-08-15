@@ -237,6 +237,250 @@ public sealed class PolicyGrpcHostTests
     }
 
     [Fact]
+    public async Task C2ComposeEffectivePolicyIncludesExemptionAndHashDiffers()
+    {
+        string connectionString = await _postgres.CreateFreshDatabaseAsync();
+        string url = $"http://127.0.0.1:{GetFreeTcpPort()}";
+
+        await using var app = Program.BuildHost(DevArgs(url, connectionString));
+        await app.Services.MigrateAsync();
+        await app.StartAsync();
+
+        try
+        {
+            await WaitForPortAsync(url, TimeSpan.FromSeconds(10));
+            using GrpcChannel channel = GrpcChannel.ForAddress(url);
+            PolicyService.PolicyServiceClient policy = new(channel);
+            InventoryService.InventoryServiceClient inventory = new(channel);
+            Metadata headers = ActorHeaders("tester");
+
+            Site site = await inventory.CreateSiteAsync(
+                new CreateSiteRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    Code = "C2E",
+                    Name = "Compose C2 exception",
+                },
+                headers,
+                deadline: Deadline());
+            Node node = await inventory.CreateNodeAsync(
+                new CreateNodeRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    SiteId = site.Id,
+                    Name = "edge",
+                    DeclaredKind = NodeKind.Router,
+                    DeclaredUplinkMode = DeclaredUplinkMode.One,
+                },
+                headers,
+                deadline: Deadline());
+
+            PolicyDraft companyDraft = await policy.CreateDraftPolicyAsync(
+                new CreateDraftPolicyRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    Name = "company-baseline",
+                    Kind = PolicyKind.CompanyBaseline,
+                    OwnerScope = PolicyOwnerScope.Company,
+                },
+                headers,
+                deadline: Deadline());
+            Guid addr = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+            Guid denyId = await ReplaceCompanyWithDenyAsync(app, ProtoUuid.ToGuid(companyDraft.RevisionId), addr);
+            await ApproveRevisionAsync(app, ProtoUuid.ToGuid(companyDraft.RevisionId));
+
+            PolicyDraft exDraft = await policy.CreateDraftPolicyAsync(
+                new CreateDraftPolicyRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    Name = "site-exception",
+                    Kind = PolicyKind.Exception,
+                    OwnerScope = PolicyOwnerScope.Site,
+                    OwnerId = site.Id,
+                    ParentContextHash = new Sha256 { Value = ByteString.CopyFrom(new byte[32]) },
+                },
+                headers,
+                deadline: Deadline());
+            global::Mfc.Contracts.Mfc.V1.PolicyRevision withMeta = await policy.UpdateExceptionMetadataAsync(
+                new UpdateExceptionMetadataRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    RevisionId = exDraft.RevisionId,
+                    ExpectedContentHash = exDraft.ContentHash,
+                    Metadata = new ExceptionMetadata
+                    {
+                        TargetScope = PolicyOwnerScope.Site,
+                        TargetScopeId = site.Id,
+                        TargetStage = PolicyPipelineStage.CompanyDeny,
+                        WaivedRuleId = ProtoUuid.FromGuid(denyId),
+                        ValidFrom = DomainPolicy.ExceptionMetadata.FormatTimestamp(
+                            new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero)),
+                        ValidUntil = DomainPolicy.ExceptionMetadata.FormatTimestamp(
+                            new DateTimeOffset(2027, 1, 1, 0, 0, 0, TimeSpan.Zero)),
+                        Reason = "change window",
+                        TicketReference = "TICKET-C2",
+                    },
+                },
+                headers,
+                deadline: Deadline());
+            PolicyRuleMutation exempt = await policy.AddRuleAsync(
+                new AddRuleRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    RevisionId = exDraft.RevisionId,
+                    ExpectedContentHash = withMeta.ContentHash,
+                    Family = IpAddressFamily.Ipv4,
+                    Chain = PolicyFilterChain.Forward,
+                    Stage = PolicyPipelineStage.CompanyDenyExemptions,
+                    Enabled = true,
+                    Effect = new RuleEffect { Kind = PolicyRuleEffect.ExemptDenyStage },
+                    Predicate = new TrafficPredicate
+                    {
+                        SourceAddresses = new AddressSelector
+                        {
+                            Include = { ProtoUuid.FromGuid(addr) },
+                        },
+                    },
+                },
+                headers,
+                deadline: Deadline());
+            await ApproveRevisionAsync(app, ProtoUuid.ToGuid(exDraft.RevisionId));
+
+            EffectivePolicy withException = await policy.ComposeEffectivePolicyAsync(
+                new ComposeEffectivePolicyRequest { NodeId = node.Id },
+                headers,
+                deadline: Deadline());
+            Assert.Equal(2, withException.Rules.Count);
+            Assert.Equal(PolicyPipelineStage.CompanyDenyExemptions, withException.Rules[0].Stage);
+            Assert.Equal(exempt.Rule!.Id, withException.Rules[0].Id);
+            Assert.Equal(denyId, ProtoUuid.ToGuid(withException.Rules[1].Id));
+
+            await ArchivePolicyAsync(app, ProtoUuid.ToGuid(exDraft.PolicyId));
+            EffectivePolicy withoutException = await policy.ComposeEffectivePolicyAsync(
+                new ComposeEffectivePolicyRequest { NodeId = node.Id },
+                headers,
+                deadline: Deadline());
+            Assert.Single(withoutException.Rules);
+            Assert.NotEqual(withException.LogicalEffectiveHash, withoutException.LogicalEffectiveHash);
+        }
+        finally
+        {
+            using CancellationTokenSource stopCts = new(TimeSpan.FromSeconds(5));
+            await app.StopAsync(stopCts.Token);
+        }
+    }
+
+    [Fact]
+    public async Task CMetaUpdateExceptionMetadataCasDraftOnlyAndGetRevision()
+    {
+        string connectionString = await _postgres.CreateFreshDatabaseAsync();
+        string url = $"http://127.0.0.1:{GetFreeTcpPort()}";
+
+        await using var app = Program.BuildHost(DevArgs(url, connectionString));
+        await app.Services.MigrateAsync();
+        await app.StartAsync();
+
+        try
+        {
+            await WaitForPortAsync(url, TimeSpan.FromSeconds(10));
+            using GrpcChannel channel = GrpcChannel.ForAddress(url);
+            PolicyService.PolicyServiceClient policy = new(channel);
+            InventoryService.InventoryServiceClient inventory = new(channel);
+            Metadata headers = ActorHeaders("tester");
+
+            Site site = await inventory.CreateSiteAsync(
+                new CreateSiteRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    Code = "CM",
+                    Name = "C_META",
+                },
+                headers,
+                deadline: Deadline());
+            PolicyDraft exDraft = await policy.CreateDraftPolicyAsync(
+                new CreateDraftPolicyRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    Name = "site-exception",
+                    Kind = PolicyKind.Exception,
+                    OwnerScope = PolicyOwnerScope.Site,
+                    OwnerId = site.Id,
+                    ParentContextHash = new Sha256 { Value = ByteString.CopyFrom(new byte[32]) },
+                },
+                headers,
+                deadline: Deadline());
+            ExceptionMetadata metadata = new()
+            {
+                TargetScope = PolicyOwnerScope.Site,
+                TargetScopeId = site.Id,
+                TargetStage = PolicyPipelineStage.CompanyDeny,
+                WaivedRuleId = ProtoUuid.FromGuid(Guid.NewGuid()),
+                ValidFrom = DomainPolicy.ExceptionMetadata.FormatTimestamp(
+                    new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero)),
+                ValidUntil = DomainPolicy.ExceptionMetadata.FormatTimestamp(
+                    new DateTimeOffset(2027, 1, 1, 0, 0, 0, TimeSpan.Zero)),
+                Reason = "change window",
+                TicketReference = "TICKET-META",
+            };
+            global::Mfc.Contracts.Mfc.V1.PolicyRevision updated = await policy.UpdateExceptionMetadataAsync(
+                new UpdateExceptionMetadataRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    RevisionId = exDraft.RevisionId,
+                    ExpectedContentHash = exDraft.ContentHash,
+                    Metadata = metadata,
+                },
+                headers,
+                deadline: Deadline());
+            Assert.NotNull(updated.ExceptionMetadata);
+            Assert.Equal("TICKET-META", updated.ExceptionMetadata.TicketReference);
+
+            global::Mfc.Contracts.Mfc.V1.PolicyRevision fetched = await policy.GetPolicyRevisionAsync(
+                new GetPolicyRevisionRequest { RevisionId = exDraft.RevisionId },
+                headers,
+                deadline: Deadline());
+            Assert.NotNull(fetched.ExceptionMetadata);
+            Assert.Equal(updated.ExceptionMetadata.TicketReference, fetched.ExceptionMetadata.TicketReference);
+
+            RpcException cas = await Assert.ThrowsAsync<RpcException>(async () =>
+            {
+                await policy.UpdateExceptionMetadataAsync(
+                    new UpdateExceptionMetadataRequest
+                    {
+                        IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                        RevisionId = exDraft.RevisionId,
+                        ExpectedContentHash = exDraft.ContentHash,
+                        Metadata = metadata,
+                    },
+                    headers,
+                    deadline: Deadline());
+            });
+            Assert.Equal(StatusCode.Aborted, cas.StatusCode);
+
+            await ApproveRevisionAsync(app, ProtoUuid.ToGuid(exDraft.RevisionId));
+            RpcException draftOnly = await Assert.ThrowsAsync<RpcException>(async () =>
+            {
+                await policy.UpdateExceptionMetadataAsync(
+                    new UpdateExceptionMetadataRequest
+                    {
+                        IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                        RevisionId = exDraft.RevisionId,
+                        ExpectedContentHash = updated.ContentHash,
+                        Metadata = metadata,
+                    },
+                    headers,
+                    deadline: Deadline());
+            });
+            Assert.Equal(StatusCode.InvalidArgument, draftOnly.StatusCode);
+        }
+        finally
+        {
+            using CancellationTokenSource stopCts = new(TimeSpan.FromSeconds(5));
+            await app.StopAsync(stopCts.Token);
+        }
+    }
+
+    [Fact]
     public async Task O1TwoActiveCompaniesDecodeComposeTrailer()
     {
         string connectionString = await _postgres.CreateFreshDatabaseAsync();
@@ -321,6 +565,93 @@ public sealed class PolicyGrpcHostTests
     }
 
     [Fact]
+    public async Task O1EmptyExceptionMetadataDecodesExceptionTrailer()
+    {
+        string connectionString = await _postgres.CreateFreshDatabaseAsync();
+        string url = $"http://127.0.0.1:{GetFreeTcpPort()}";
+
+        await using var app = Program.BuildHost(DevArgs(url, connectionString));
+        await app.Services.MigrateAsync();
+        await app.StartAsync();
+
+        try
+        {
+            await WaitForPortAsync(url, TimeSpan.FromSeconds(10));
+            using GrpcChannel channel = GrpcChannel.ForAddress(url);
+            PolicyService.PolicyServiceClient policy = new(channel);
+            InventoryService.InventoryServiceClient inventory = new(channel);
+            Metadata headers = ActorHeaders("tester");
+
+            Site site = await inventory.CreateSiteAsync(
+                new CreateSiteRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    Code = "O1E",
+                    Name = "Exception O1",
+                },
+                headers,
+                deadline: Deadline());
+            Node node = await inventory.CreateNodeAsync(
+                new CreateNodeRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    SiteId = site.Id,
+                    Name = "edge",
+                    DeclaredKind = NodeKind.Router,
+                    DeclaredUplinkMode = DeclaredUplinkMode.One,
+                },
+                headers,
+                deadline: Deadline());
+            PolicyDraft company = await policy.CreateDraftPolicyAsync(
+                new CreateDraftPolicyRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    Name = "company-baseline",
+                    Kind = PolicyKind.CompanyBaseline,
+                    OwnerScope = PolicyOwnerScope.Company,
+                },
+                headers,
+                deadline: Deadline());
+            await ApproveRevisionAsync(app, ProtoUuid.ToGuid(company.RevisionId));
+            PolicyDraft exception = await policy.CreateDraftPolicyAsync(
+                new CreateDraftPolicyRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    Name = "empty-exception",
+                    Kind = PolicyKind.Exception,
+                    OwnerScope = PolicyOwnerScope.Site,
+                    OwnerId = site.Id,
+                    ParentContextHash = new Sha256 { Value = ByteString.CopyFrom(new byte[32]) },
+                },
+                headers,
+                deadline: Deadline());
+            await ApproveRevisionAsync(app, ProtoUuid.ToGuid(exception.RevisionId));
+
+            RpcException ex = await Assert.ThrowsAsync<RpcException>(async () =>
+            {
+                await policy.ComposeEffectivePolicyAsync(
+                    new ComposeEffectivePolicyRequest { NodeId = node.Id },
+                    headers,
+                    deadline: Deadline());
+            });
+            Assert.Equal(StatusCode.FailedPrecondition, ex.StatusCode);
+            byte[]? trailer = ex.Trailers.GetValueBytes(GrpcApplicationErrorMapper.ErrorDetailMetadataKey);
+            Assert.NotNull(trailer);
+            ErrorDetail detail = ErrorDetail.Parser.ParseFrom(trailer);
+            Assert.StartsWith("POLICY_EXCEPTION_", detail.Code, StringComparison.Ordinal);
+            Assert.NotEqual("failed", detail.Code, StringComparer.Ordinal);
+            Assert.NotEqual("conflict", detail.Code, StringComparer.Ordinal);
+            Assert.Equal(DomainPolicy.PolicyExceptionCodes.MetadataInvalid, detail.Code);
+            Assert.False(detail.Retryable);
+        }
+        finally
+        {
+            using CancellationTokenSource stopCts = new(TimeSpan.FromSeconds(5));
+            await app.StopAsync(stopCts.Token);
+        }
+    }
+
+    [Fact]
     public async Task O3UnusedPolicyObjectFindingOnSuccess()
     {
         string connectionString = await _postgres.CreateFreshDatabaseAsync();
@@ -388,6 +719,45 @@ public sealed class PolicyGrpcHostTests
             using CancellationTokenSource stopCts = new(TimeSpan.FromSeconds(5));
             await app.StopAsync(stopCts.Token);
         }
+    }
+
+    private static async Task ArchivePolicyAsync(WebApplication app, Guid policyId)
+    {
+        await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
+        IPolicyStore store = scope.ServiceProvider.GetRequiredService<IPolicyStore>();
+        DomainPolicy.Policy? policy = await store.GetPolicyAsync(new PolicyId(policyId));
+        Assert.NotNull(policy);
+        policy!.Archive();
+        await store.UpdatePolicyAsync(policy);
+    }
+
+    private static async Task<Guid> ReplaceCompanyWithDenyAsync(WebApplication app, Guid revisionId, Guid addressId)
+    {
+        await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
+        IPolicyStore store = scope.ServiceProvider.GetRequiredService<IPolicyStore>();
+        DomainPolicy.PolicyRevision? revision = await store.GetRevisionAsync(new PolicyRevisionId(revisionId));
+        Assert.NotNull(revision);
+        DomainPolicy.PolicyRule deny = DomainPolicy.PolicyRule.Create(
+            Mfc.Domain.Inventory.IpAddressFamily.IPv4,
+            DomainPolicy.PolicyFilterChain.Forward,
+            DomainPolicy.PolicyPipelineStage.CompanyDeny,
+            ordinal: 0,
+            DomainPolicy.TrafficPredicate.Create(
+                sourceAddresses: DomainPolicy.AddressSelector.Create(
+                    [new Mfc.Domain.Policy.Primitives.AddressObjectId(addressId)])),
+            DomainPolicy.RuleEffectSpec.Create(DomainPolicy.PolicyRuleEffect.Drop),
+            exceptionEligible: true);
+        DomainPolicy.PolicyDocument document = new(
+            DomainPolicy.PolicyKind.CompanyBaseline,
+            DomainPolicy.PolicyOwnerScope.Company,
+            addressObjects:
+            [
+                System.Text.Json.JsonDocument.Parse("{\"id\":\"" + addressId + "\"}").RootElement.Clone(),
+            ],
+            rules: [deny]);
+        revision!.ReplaceDocument(document, parentContextHash: null);
+        await store.SaveRevisionAsync(revision);
+        return deny.Id.Value;
     }
 
     private static async Task ApproveRevisionAsync(WebApplication app, Guid revisionId)

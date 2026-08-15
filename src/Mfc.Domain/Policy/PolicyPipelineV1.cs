@@ -246,6 +246,28 @@ public static class PolicyPipelineV1
             $"Effect {FormatEffect(effect)} is not allowed in stage {FormatStage(stage)}.");
     }
 
+    /// <summary>
+    /// Maps a deny stage to its exemption twin. Returns false for non-deny stages.
+    /// </summary>
+    public static bool TryExemptionTwin(PolicyPipelineStage denyStage, out PolicyPipelineStage exemptionStage)
+    {
+        switch (denyStage)
+        {
+            case PolicyPipelineStage.CompanyDeny:
+                exemptionStage = PolicyPipelineStage.CompanyDenyExemptions;
+                return true;
+            case PolicyPipelineStage.SiteDeny:
+                exemptionStage = PolicyPipelineStage.SiteDenyExemptions;
+                return true;
+            case PolicyPipelineStage.NodeDeny:
+                exemptionStage = PolicyPipelineStage.NodeDenyExemptions;
+                return true;
+            default:
+                exemptionStage = default;
+                return false;
+        }
+    }
+
     private static bool MatchesExemptionScope(PolicyPipelineStage stage, PolicyOwnerScope ownerScope)
         => stage switch
         {
