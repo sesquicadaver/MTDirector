@@ -37,8 +37,8 @@ public static class EffectivePolicyComposer
             return parentError;
         }
 
-        Dictionary<Guid, ParsedObject> addresses = [];
-        Dictionary<Guid, ParsedObject> services = [];
+        Dictionary<Guid, ComposedPolicyObject> addresses = [];
+        Dictionary<Guid, ComposedPolicyObject> services = [];
         PolicyComposeResult? objectError = MergeObjects(company, site, node, addresses, services);
         if (objectError is not null)
         {
@@ -107,6 +107,8 @@ public static class EffectivePolicyComposer
                 node,
                 allRules.Select(static t => t.Rule).ToArray(),
                 active,
+                addresses,
+                services,
                 out PolicyRule? exemptRule);
             if (exceptionError is not null)
             {
@@ -243,8 +245,8 @@ public static class EffectivePolicyComposer
         PolicyLayer company,
         PolicyLayer? site,
         PolicyLayer? node,
-        Dictionary<Guid, ParsedObject> addresses,
-        Dictionary<Guid, ParsedObject> services)
+        Dictionary<Guid, ComposedPolicyObject> addresses,
+        Dictionary<Guid, ComposedPolicyObject> services)
     {
         foreach (PolicyLayer layer in EnumerateLayers(company, site, node))
         {
@@ -275,7 +277,7 @@ public static class EffectivePolicyComposer
     private static PolicyComposeResult? IngestObjects(
         PolicyLayer layer,
         IReadOnlyList<JsonElement> elements,
-        Dictionary<Guid, ParsedObject> target,
+        Dictionary<Guid, ComposedPolicyObject> target,
         string kindLabel)
     {
         foreach (JsonElement element in elements)
@@ -303,7 +305,7 @@ public static class EffectivePolicyComposer
                 return identityResult.Failure;
             }
 
-            target[id] = new ParsedObject(id, identityResult.Identity!, element.Clone());
+            target[id] = new ComposedPolicyObject(id, identityResult.Identity!, element.Clone());
         }
 
         return null;
@@ -364,8 +366,8 @@ public static class EffectivePolicyComposer
         Guid nodeId,
         Guid? siteId,
         IReadOnlySet<Guid> knownZoneIds,
-        Dictionary<Guid, ParsedObject> addresses,
-        Dictionary<Guid, ParsedObject> services)
+        Dictionary<Guid, ComposedPolicyObject> addresses,
+        Dictionary<Guid, ComposedPolicyObject> services)
     {
         AddressConsumerContext consumer = new()
         {
@@ -398,7 +400,7 @@ public static class EffectivePolicyComposer
         {
             foreach (ServiceObjectId serviceId in rule.Predicate.Services.Include)
             {
-                if (!services.TryGetValue(serviceId.Value, out ParsedObject? parsed))
+                if (!services.TryGetValue(serviceId.Value, out ComposedPolicyObject? parsed))
                 {
                     return PolicyComposeResult.Fail(
                         PolicyComposeCodes.SelectorUnresolved,
@@ -425,13 +427,13 @@ public static class EffectivePolicyComposer
 
     private static PolicyComposeResult? ValidateAddressSelector(
         AddressSelector selector,
-        Dictionary<Guid, ParsedObject> addresses,
+        Dictionary<Guid, ComposedPolicyObject> addresses,
         AddressConsumerContext consumer,
         Guid ruleId)
     {
         foreach (AddressObjectId id in selector.Include.Concat(selector.Exclude))
         {
-            if (!addresses.TryGetValue(id.Value, out ParsedObject? parsed))
+            if (!addresses.TryGetValue(id.Value, out ComposedPolicyObject? parsed))
             {
                 return PolicyComposeResult.Fail(
                     PolicyComposeCodes.SelectorUnresolved,
@@ -470,8 +472,8 @@ public static class EffectivePolicyComposer
     }
 
     private static List<PolicyComposeFinding> CollectUnused(
-        Dictionary<Guid, ParsedObject> addresses,
-        Dictionary<Guid, ParsedObject> services,
+        Dictionary<Guid, ComposedPolicyObject> addresses,
+        Dictionary<Guid, ComposedPolicyObject> services,
         IReadOnlyList<PolicyRule> activeRules)
     {
         HashSet<Guid> usedAddresses = [];
@@ -621,8 +623,6 @@ public static class EffectivePolicyComposer
         value = default;
         return false;
     }
-
-    private sealed record ParsedObject(Guid Id, PolicyObjectIdentity Identity, JsonElement Element);
 
     private readonly record struct ActiveEntry(PolicyRule Rule, Guid RevisionId, Guid PolicyId);
 

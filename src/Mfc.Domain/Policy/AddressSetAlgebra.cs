@@ -178,6 +178,35 @@ public static class AddressSetAlgebra
         return true;
     }
 
+    /// <summary>True when the intersection of two same-family normalized sets is empty.</summary>
+    public static bool IsDisjoint(
+        IReadOnlyList<AddressInterval> left,
+        IReadOnlyList<AddressInterval> right)
+    {
+        ArgumentNullException.ThrowIfNull(left);
+        ArgumentNullException.ThrowIfNull(right);
+        if (left.Count == 0 || right.Count == 0)
+        {
+            return true;
+        }
+
+        if (left[0].Family != right[0].Family)
+        {
+            return true;
+        }
+
+        return Intersect(left, right).Count == 0;
+    }
+
+    public static bool AreEqual(
+        IReadOnlyList<AddressInterval> left,
+        IReadOnlyList<AddressInterval> right)
+    {
+        ArgumentNullException.ThrowIfNull(left);
+        ArgumentNullException.ThrowIfNull(right);
+        return Normalize(left).SequenceEqual(Normalize(right));
+    }
+
     private static IEnumerable<AddressInterval> SubtractOne(AddressInterval piece, AddressInterval cut)
     {
         if (cut.End < piece.Start || cut.Start > piece.End)

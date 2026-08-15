@@ -1,10 +1,11 @@
+using Mfc.Domain.Inventory;
 using Mfc.Domain.Policy.Primitives;
 
 namespace Mfc.Domain.Policy;
 
 /// <summary>
-/// Fail-closed structural subset / overlap proofs for exception predicates (M2-08 LOCK-3′).
-/// Interval/port algebra is out of scope (M2-09 residual).
+/// Fail-closed subset / overlap proofs for exception predicates (M2-08 L5 + M2-09 interval algebra).
+/// tcp_flags and ipsec stay equality on the subset gate; addresses/ports/services/zones use packet space.
 /// </summary>
 public static class ExceptionPredicateProof
 {
@@ -17,166 +18,81 @@ public static class ExceptionPredicateProof
     }
 
     /// <summary>
-    /// Returns a <c>POLICY_EXCEPTION_*</c> code when <paramref name="exception"/> is not a
-    /// fail-closed structural subset of <paramref name="target"/>; otherwise null.
+    /// Returns a blocker code when <paramref name="exception"/> is not a fail-closed subset of
+    /// <paramref name="target"/>; otherwise null.
     /// </summary>
-    public static string? CheckSubset(TrafficPredicate exception, TrafficPredicate target)
+    public static string? CheckSubset(
+        TrafficPredicate exception,
+        TrafficPredicate target,
+        IpAddressFamily family,
+        PolicyFilterChain chain,
+        IReadOnlyDictionary<AddressObjectId, AddressObject> addresses,
+        IReadOnlyDictionary<ServiceObjectId, ServiceObject> services)
     {
         ArgumentNullException.ThrowIfNull(exception);
         ArgumentNullException.ThrowIfNull(target);
+        ArgumentNullException.ThrowIfNull(addresses);
+        ArgumentNullException.ThrowIfNull(services);
         if (IsAddressUniverse(target))
         {
             return PolicyExceptionCodes.UniverseTarget;
         }
 
-        return CheckAddress(exception.SourceAddresses, target.SourceAddresses)
-               ?? CheckAddress(exception.DestinationAddresses, target.DestinationAddresses)
-               ?? CheckZones(exception.IngressZones, target.IngressZones)
-               ?? CheckZones(exception.EgressZones, target.EgressZones)
-               ?? CheckServices(exception.Services, target.Services)
-               ?? CheckEnums(exception.ConnectionStates, target.ConnectionStates)
-               ?? CheckEnums(exception.ConnectionNatStates, target.ConnectionNatStates)
-               ?? CheckEnums(exception.SourceAddressTypes, target.SourceAddressTypes)
-               ?? CheckEnums(exception.DestinationAddressTypes, target.DestinationAddressTypes)
-               ?? CheckTcpFlags(exception.TcpFlags, target.TcpFlags)
-               ?? CheckIpsec(exception.IpsecPolicy, target.IpsecPolicy);
+        string? flags = CheckTcpFlags(exception.TcpFlags, target.TcpFlags)
+                        ?? CheckIpsec(exception.IpsecPolicy, target.IpsecPolicy);
+        if (flags is not null)
+        {
+            return flags;
+        }
+
+        PredicateAlgebraResult inner = PredicateNormalizer.Normalize(exception, family, chain, addresses, services);
+        if (inner.IsFailure)
+        {
+            return inner.Code;
+        }
+
+        PredicateAlgebraResult cover = PredicateNormalizer.Normalize(target, family, chain, addresses, services);
+        if (cover.IsFailure)
+        {
+            return cover.Code;
+        }
+
+        return PredicateAlgebra.IsSubset(inner.Value!, cover.Value!)
+            ? null
+            : PolicyExceptionCodes.NotSubset;
     }
 
     /// <summary>
-    /// True when no dimension has disjoint nonempty UUID/enum includes (AC#6).
-    /// UUID-disjoint success is a named M2-09 residual (interval overlap possible).
+    /// Returns <see cref="PolicyExceptionCodes.Overlap"/> when the predicates share packet space,
+    /// <see cref="PredicateAlgebraCodes.ComplexityLimit"/> or a selector code on proof failure,
+    /// and null when they are disjoint.
     /// </summary>
-    public static bool StructurallyOverlaps(TrafficPredicate left, TrafficPredicate right)
+    public static string? CheckOverlap(
+        TrafficPredicate left,
+        TrafficPredicate right,
+        IpAddressFamily family,
+        PolicyFilterChain chain,
+        IReadOnlyDictionary<AddressObjectId, AddressObject> addresses,
+        IReadOnlyDictionary<ServiceObjectId, ServiceObject> services)
     {
         ArgumentNullException.ThrowIfNull(left);
         ArgumentNullException.ThrowIfNull(right);
-        if (DisjointAddresses(left.SourceAddresses, right.SourceAddresses))
+        ArgumentNullException.ThrowIfNull(addresses);
+        ArgumentNullException.ThrowIfNull(services);
+        PredicateAlgebraResult a = PredicateNormalizer.Normalize(left, family, chain, addresses, services);
+        if (a.IsFailure)
         {
-            return false;
+            return a.Code;
         }
 
-        if (DisjointAddresses(left.DestinationAddresses, right.DestinationAddresses))
+        PredicateAlgebraResult b = PredicateNormalizer.Normalize(right, family, chain, addresses, services);
+        if (b.IsFailure)
         {
-            return false;
+            return b.Code;
         }
 
-        if (DisjointZones(left.IngressZones, right.IngressZones))
-        {
-            return false;
-        }
-
-        if (DisjointZones(left.EgressZones, right.EgressZones))
-        {
-            return false;
-        }
-
-        if (DisjointServices(left.Services, right.Services))
-        {
-            return false;
-        }
-
-        if (DisjointEnums(left.ConnectionStates, right.ConnectionStates))
-        {
-            return false;
-        }
-
-        if (DisjointEnums(left.ConnectionNatStates, right.ConnectionNatStates))
-        {
-            return false;
-        }
-
-        if (DisjointEnums(left.SourceAddressTypes, right.SourceAddressTypes))
-        {
-            return false;
-        }
-
-        return !DisjointEnums(left.DestinationAddressTypes, right.DestinationAddressTypes);
-    }
-
-    private static string? CheckAddress(AddressSelector? exception, AddressSelector? target)
-    {
-        if (IsUnconstrainedAddress(target))
-        {
-            return null;
-        }
-
-        if (IsUnconstrainedAddress(exception))
-        {
-            return PolicyExceptionCodes.NotSubset;
-        }
-
-        HashSet<Guid> targetInclude = target!.Include.Select(static id => id.Value).ToHashSet();
-        if (exception!.Include.Any(id => !targetInclude.Contains(id.Value)))
-        {
-            return PolicyExceptionCodes.NotSubset;
-        }
-
-        HashSet<Guid> targetExclude = target.Exclude.Select(static id => id.Value).ToHashSet();
-        HashSet<Guid> exceptionExclude = exception.Exclude.Select(static id => id.Value).ToHashSet();
-        return targetExclude.Any(id => !exceptionExclude.Contains(id))
-            ? PolicyExceptionCodes.NotSubset
-            : null;
-    }
-
-    private static string? CheckZones(ZoneSelector? exception, ZoneSelector? target)
-    {
-        if (IsUnconstrainedZones(target))
-        {
-            return null;
-        }
-
-        if (IsUnconstrainedZones(exception))
-        {
-            return PolicyExceptionCodes.NotSubset;
-        }
-
-        HashSet<Guid> targetInclude = target!.Include.Select(static id => id.Value).ToHashSet();
-        if (exception!.Include.Any(id => !targetInclude.Contains(id.Value)))
-        {
-            return PolicyExceptionCodes.NotSubset;
-        }
-
-        HashSet<Guid> targetExclude = target.Exclude.Select(static id => id.Value).ToHashSet();
-        HashSet<Guid> exceptionExclude = exception.Exclude.Select(static id => id.Value).ToHashSet();
-        return targetExclude.Any(id => !exceptionExclude.Contains(id))
-            ? PolicyExceptionCodes.NotSubset
-            : null;
-    }
-
-    private static string? CheckServices(ServiceSelector? exception, ServiceSelector? target)
-    {
-        if (IsUnconstrainedServices(target))
-        {
-            return null;
-        }
-
-        if (IsUnconstrainedServices(exception))
-        {
-            return PolicyExceptionCodes.NotSubset;
-        }
-
-        HashSet<Guid> targetInclude = target!.Include.Select(static id => id.Value).ToHashSet();
-        return exception!.Include.Any(id => !targetInclude.Contains(id.Value))
-            ? PolicyExceptionCodes.NotSubset
-            : null;
-    }
-
-    private static string? CheckEnums<T>(IReadOnlyList<T>? exception, IReadOnlyList<T>? target)
-        where T : struct, Enum
-    {
-        if (target is null)
-        {
-            return null;
-        }
-
-        if (exception is null)
-        {
-            return PolicyExceptionCodes.NotSubset;
-        }
-
-        HashSet<T> allowed = [.. target];
-        return exception.Any(value => !allowed.Contains(value))
-            ? PolicyExceptionCodes.NotSubset
+        return PredicateAlgebra.Overlaps(a.Value!, b.Value!)
+            ? PolicyExceptionCodes.Overlap
             : null;
     }
 
@@ -215,59 +131,8 @@ public static class ExceptionPredicateProof
             : PolicyExceptionCodes.NotSubset;
     }
 
-    private static bool DisjointAddresses(AddressSelector? left, AddressSelector? right)
-    {
-        if (IsUnconstrainedAddress(left) || IsUnconstrainedAddress(right))
-        {
-            return false;
-        }
-
-        HashSet<Guid> leftIds = left!.Include.Select(static id => id.Value).ToHashSet();
-        return !leftIds.Overlaps(right!.Include.Select(static id => id.Value));
-    }
-
-    private static bool DisjointZones(ZoneSelector? left, ZoneSelector? right)
-    {
-        if (IsUnconstrainedZones(left) || IsUnconstrainedZones(right))
-        {
-            return false;
-        }
-
-        HashSet<Guid> leftIds = left!.Include.Select(static id => id.Value).ToHashSet();
-        return !leftIds.Overlaps(right!.Include.Select(static id => id.Value));
-    }
-
-    private static bool DisjointServices(ServiceSelector? left, ServiceSelector? right)
-    {
-        if (IsUnconstrainedServices(left) || IsUnconstrainedServices(right))
-        {
-            return false;
-        }
-
-        HashSet<Guid> leftIds = left!.Include.Select(static id => id.Value).ToHashSet();
-        return !leftIds.Overlaps(right!.Include.Select(static id => id.Value));
-    }
-
-    private static bool DisjointEnums<T>(IReadOnlyList<T>? left, IReadOnlyList<T>? right)
-        where T : struct, Enum
-    {
-        if (left is null || right is null)
-        {
-            return false;
-        }
-
-        HashSet<T> leftSet = [.. left];
-        return !leftSet.Overlaps(right);
-    }
-
     private static bool IsUnconstrainedAddress(AddressSelector? selector)
         => selector is null || selector.UsesUniverseInclude;
-
-    private static bool IsUnconstrainedZones(ZoneSelector? selector)
-        => selector is null || selector.Include.Count == 0;
-
-    private static bool IsUnconstrainedServices(ServiceSelector? selector)
-        => selector is null || selector.MatchesAnyProtocol;
 
     private static bool SameSet<T>(IReadOnlyList<T> left, IReadOnlyList<T> right)
         where T : struct, Enum

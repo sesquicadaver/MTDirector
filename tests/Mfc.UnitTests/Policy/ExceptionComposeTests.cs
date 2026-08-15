@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
@@ -131,6 +132,7 @@ public sealed class ExceptionComposeTests
     [Fact]
     public void D5OmitAddressExcludeVsTargetExcludeIsNotSubset()
     {
+        Guid inside = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee");
         PolicyRule deny = PolicyRule.Create(
             IpAddressFamily.IPv4,
             PolicyFilterChain.Forward,
@@ -139,10 +141,13 @@ public sealed class ExceptionComposeTests
             TrafficPredicate.Create(
                 sourceAddresses: AddressSelector.Create(
                     [new AddressObjectId(AddrTarget)],
-                    [new AddressObjectId(AddrOther)])),
+                    [new AddressObjectId(inside)])),
             RuleEffectSpec.Create(PolicyRuleEffect.Drop),
             exceptionEligible: true);
-        PolicyLayer company = CompanyWithDeny(deny);
+        PolicyLayer company = CompanyWithExtraAddresses(
+            deny,
+            AddressPrefix(AddrTarget, "10.0.0.0", 24),
+            AddressHost(inside, "10.0.0.2"));
         PolicyLayer exception = ExceptionLayer(company, Guid.NewGuid(), deny.Id, ExemptRule(AddrSubset));
         PolicyComposeResult result = Compose(company, exception);
         Assert.True(result.IsFailure);
@@ -367,6 +372,87 @@ public sealed class ExceptionComposeTests
     }
 
     [Fact]
+    public void D5IntervalHostInsidePrefixDifferentUuidSucceeds()
+    {
+        Guid hostId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc");
+        PolicyRule deny = DenyRule(AddrTarget);
+        PolicyLayer company = CompanyWithExtraAddresses(deny, AddressPrefix(AddrTarget, "10.0.0.0", 24), AddressHost(hostId, "10.0.0.1"));
+        PolicyLayer exception = ExceptionLayer(company, Guid.NewGuid(), deny.Id, ExemptRule(hostId));
+        PolicyComposeResult result = Compose(company, exception);
+        Assert.True(result.IsSuccess);
+        Assert.Equal(PolicyPipelineStage.CompanyDenyExemptions, result.Value!.ActiveRules[0].Stage);
+    }
+
+    [Fact]
+    public void D6DifferentUuidsSamePrefixIsOverlap()
+    {
+        Guid samePrefix = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc");
+        PolicyRule target = DenyRule(AddrTarget);
+        PolicyRule other = DenyRule(samePrefix, id: RuleId.New(), ordinal: 1);
+        PolicyLayer company = CompanyWithExtraAddresses(
+            target,
+            AddressPrefix(AddrTarget, "10.0.0.0", 24),
+            AddressPrefix(samePrefix, "10.0.0.0", 24),
+            extraDeny: other);
+        PolicyLayer exception = ExceptionLayer(company, Guid.NewGuid(), target.Id, ExemptRule(AddrSubset));
+        PolicyComposeResult result = Compose(company, exception);
+        Assert.True(result.IsFailure);
+        Assert.Equal(PolicyExceptionCodes.Overlap, result.Code);
+    }
+
+    [Fact]
+    public void UnparseableExceptionPathObjectIsSelectorUnresolved()
+    {
+        PolicyRule deny = DenyRule(AddrTarget);
+        PolicyDocument document = new(
+            PolicyKind.CompanyBaseline,
+            PolicyOwnerScope.Company,
+            addressObjects: [JsonDocument.Parse("{\"id\":\"" + AddrTarget + "\"}").RootElement.Clone()],
+            rules: [deny]);
+        PolicyLayer company = CompanyLayer(document);
+        PolicyLayer exception = ExceptionLayer(company, Guid.NewGuid(), deny.Id, ExemptRule(AddrSubset));
+        PolicyComposeResult result = Compose(company, exception);
+        Assert.True(result.IsFailure);
+        Assert.Equal(PolicyComposeCodes.SelectorUnresolved, result.Code);
+    }
+
+    [Fact]
+    public void PredicateComplexityLimitOnExceptionServiceExpansion()
+    {
+        Guid fat = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd");
+        PolicyRule deny = PolicyRule.Create(
+            IpAddressFamily.IPv4,
+            PolicyFilterChain.Forward,
+            PolicyPipelineStage.CompanyDeny,
+            0,
+            TrafficPredicate.Create(
+                sourceAddresses: AddressSelector.Create([new AddressObjectId(AddrTarget)]),
+                services: ServiceSelector.Create([new ServiceObjectId(fat)])),
+            RuleEffectSpec.Create(PolicyRuleEffect.Drop),
+            exceptionEligible: true);
+        PolicyDocument document = new(
+            PolicyKind.CompanyBaseline,
+            PolicyOwnerScope.Company,
+            addressObjects: [AddressJson(AddrTarget), AddressJson(AddrOther)],
+            serviceObjects: [FatServiceJson(fat, PredicateAlgebraCodes.MaxCubesPerRule + 1)],
+            rules: [deny]);
+        PolicyLayer company = CompanyLayer(document);
+        PolicyRule exempt = PolicyRule.Create(
+            IpAddressFamily.IPv4,
+            PolicyFilterChain.Forward,
+            PolicyPipelineStage.CompanyDenyExemptions,
+            0,
+            TrafficPredicate.Create(
+                sourceAddresses: AddressSelector.Create([new AddressObjectId(AddrSubset)]),
+                services: ServiceSelector.Create([new ServiceObjectId(fat)])),
+            RuleEffectSpec.Create(PolicyRuleEffect.ExemptDenyStage));
+        PolicyLayer exception = ExceptionLayer(company, Guid.NewGuid(), deny.Id, exempt);
+        PolicyComposeResult result = Compose(company, exception);
+        Assert.True(result.IsFailure);
+        Assert.Equal(PredicateAlgebraCodes.ComplexityLimit, result.Code);
+    }
+
+    [Fact]
     public void D7MandatoryDenyForbidden()
     {
         PolicyRule deny = PolicyRule.Create(
@@ -547,7 +633,7 @@ public sealed class ExceptionComposeTests
         PolicyDocument siteDoc = new(
             PolicyKind.SiteOverlay,
             PolicyOwnerScope.Site,
-            addressObjects: [ObjectJson(AddrTarget)],
+            addressObjects: [AddressJson(AddrTarget)],
             rules: [deny]);
         PolicyLayer site = Overlay(PolicyKind.SiteOverlay, PolicyOwnerScope.Site, siteId, siteDoc, company.ContentHash);
         PolicyRule exempt = PolicyRule.Create(
@@ -720,6 +806,44 @@ public sealed class ExceptionComposeTests
         => EffectivePolicyComposer.Compose(
             company, null, null, Guid.NewGuid(), Guid.NewGuid(), knownZones, exceptions);
 
+    private static PolicyLayer CompanyWithExtraAddresses(
+        PolicyRule deny,
+        JsonElement first,
+        JsonElement second,
+        PolicyRule? extraDeny = null)
+    {
+        List<PolicyRule> rules = [deny];
+        if (extraDeny is not null)
+        {
+            rules.Add(extraDeny);
+        }
+
+        return CompanyLayer(new PolicyDocument(
+            PolicyKind.CompanyBaseline,
+            PolicyOwnerScope.Company,
+            addressObjects: [first, second],
+            rules: rules));
+    }
+
+    private static JsonElement FatServiceJson(Guid id, int termCount)
+    {
+        List<string> terms = [];
+        byte protocol = 1;
+        for (int i = 0; i < termCount; i++)
+        {
+            if (protocol == IpProtocol.IcmpV6)
+            {
+                protocol++;
+            }
+
+            terms.Add("{\"protocol\":{\"number\":" + protocol.ToString(CultureInfo.InvariantCulture) + "}}");
+            protocol++;
+        }
+
+        return JsonDocument.Parse(
+            "{\"id\":\"" + id + "\",\"name\":\"fat\",\"terms\":[" + string.Join(",", terms) + "]}").RootElement.Clone();
+    }
+
     private static PolicyLayer CompanyWithDeny(
         PolicyRule? deny = null,
         PolicyRule? extraDeny = null,
@@ -732,8 +856,8 @@ public sealed class ExceptionComposeTests
             rules.Add(extraDeny);
         }
 
-        List<JsonElement> addresses = [ObjectJson(AddrTarget), ObjectJson(AddrOther)];
-        List<JsonElement> services = extraService is Guid sid ? [ObjectJson(sid)] : [];
+        List<JsonElement> addresses = [AddressJson(AddrTarget), AddressJson(AddrOther)];
+        List<JsonElement> services = extraService is Guid sid ? [ServiceJson(sid)] : [];
         return CompanyLayer(new PolicyDocument(
             PolicyKind.CompanyBaseline,
             PolicyOwnerScope.Company,
@@ -868,7 +992,38 @@ public sealed class ExceptionComposeTests
             enabled: enabled);
 
     private static JsonElement ObjectJson(Guid id)
-        => JsonDocument.Parse("{\"id\":\"" + id + "\"}").RootElement.Clone();
+        => AddressJson(id);
+
+    private static JsonElement AddressJson(Guid id)
+    {
+        if (id == Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"))
+        {
+            return AddressPrefix(id, "10.0.0.0", 24);
+        }
+
+        if (id == Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"))
+        {
+            return AddressHost(id, "10.0.1.1");
+        }
+
+        return AddressHost(id, "10.0.0.1");
+    }
+
+    private static JsonElement AddressPrefix(Guid id, string address, int prefixLength)
+        => JsonDocument.Parse(
+            "{\"id\":\"" + id + "\",\"name\":\"addr\",\"family\":\"IPv4\",\"entries\":[{\"kind\":\"PREFIX\",\"address\":\"" +
+            address + "\",\"prefix_length\":" + prefixLength + "}]}").RootElement.Clone();
+
+    private static JsonElement AddressHost(Guid id, string address)
+        => JsonDocument.Parse(
+            "{\"id\":\"" + id + "\",\"name\":\"addr\",\"family\":\"IPv4\",\"entries\":[{\"kind\":\"HOST\",\"address\":\"" +
+            address + "\"}]}").RootElement.Clone();
+
+    private static JsonElement ServiceJson(Guid id, byte protocol = 6, ushort port = 80)
+        => JsonDocument.Parse(
+            "{\"id\":\"" + id +
+            "\",\"name\":\"svc\",\"terms\":[{\"protocol\":{\"number\":" + protocol +
+            "},\"destination_ports\":[{\"start\":" + port + ",\"end\":" + port + "}]}]}").RootElement.Clone();
 
     private static int ReadExceptionCount(byte[] preimage, Hash256 companyHash)
     {

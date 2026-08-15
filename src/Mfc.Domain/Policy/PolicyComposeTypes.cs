@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace Mfc.Domain.Policy;
 
 /// <summary>Frozen <c>POLICY_COMPOSE_*</c> codes (LOCK-11) plus compose INFO findings.</summary>
@@ -103,3 +105,6 @@ public sealed class PolicyComposeResult
         return new PolicyComposeResult(false, code, message, null);
     }
 }
+
+/// <summary>Compose-time catalog entry: identity plus original JSON (M2-07 merge / M2-09 parse).</summary>
+public sealed record ComposedPolicyObject(Guid Id, PolicyObjectIdentity Identity, JsonElement Element);

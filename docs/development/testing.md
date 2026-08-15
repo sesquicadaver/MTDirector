@@ -414,7 +414,7 @@ Policy Model §§29–34.1 + Issue Set M2-07 AC#1–14 → Domain composer + App
 | `POLICY_COMPOSE_*` trailer FailedPrecondition, retryable=false | `GrpcApplicationErrorMapper` | O1 |
 | Architecture boundary Domain/App ↛ RouterOs | existing | C3 |
 
-**Residuals (documented, non-blocking):** Desktop does not call compose. Interval/port algebra for exception overlap is M2-09.
+**Residuals (documented, non-blocking):** Desktop does not call compose.
 
 Filter:
 ```bash
@@ -434,7 +434,7 @@ Policy Model §28 + Issue Set M2-08 AC#1–14 → Domain proofs + Application lo
 | `target_stage` = waived rule; rule stage = twin | `PolicyPipelineV1.TryExemptionTwin` | D3 |
 | Family/chain match | `ExceptionComposeProof` | D4 |
 | Fail-closed structural subset (all dimensions) | `ExceptionPredicateProof` | D5 |
-| UUID-disjoint overlap residual | `StructurallyOverlaps` | D6 |
+| UUID-disjoint include may still overlap in interval space | superseded by M2-09 | D6 (interval) |
 | Mandatory deny forbidden | composer | D7 |
 | Effect EXEMPT only; EXEMPT not on deny stages | `EnsureAllowedEffect` | D8 / D14 |
 | Company-wide EXCEPTION forbidden | `Policy.ValidateOwner` / CreateDraft | D9 / A9 |
@@ -456,12 +456,47 @@ Policy Model §28 + Issue Set M2-08 AC#1–14 → Domain proofs + Application lo
 | `POLICY_EXCEPTION_*` trailer FailedPrecondition, retryable=false | `GrpcApplicationErrorMapper` | O1 |
 | No expire ROS writer; Desktop OUT | ArchitectureBoundary | C3 / C14 |
 
-**Residuals (documented, non-blocking):** UUID-disjoint overlap is unsound in interval space until M2-09. Domain composer does not expire (Application `IClock` filter only). Desktop does not call compose.
+**Residuals (documented, non-blocking):** Domain composer does not expire (Application `IClock` filter only). Desktop does not call compose.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ExceptionMetadata|FullyQualifiedName~EffectivePolicy|FullyQualifiedName~ComposeEffective|FullyQualifiedName~PolicyHashing|FullyQualifiedName~UpdateException|FullyQualifiedName~ArchitectureBoundary"
+dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~PolicyGrpc|FullyQualifiedName~PolicyProto"
+```
+
+## Living Specification — bounded packet predicate algebra (M2-09)
+
+Policy Model §37 + Issue Set M2-09 AC#1–11 → Domain algebra library + exception-proof rewire (Desktop OUT, no new RPC):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Exact representations (intervals, UUID zone sets, protocol bits, ports, ICMP, conn/NAT/addr-type, flags, IPsec) | `AtomicTrafficCube` / `ProtocolBitSet` / `SymbolicSet` | P1 |
+| Relations empty/equal/disjoint/subset/superset/partial overlap; no INDETERMINATE | `PredicateAlgebra.Relate` | P2 |
+| TCP present∩absent after intersect → empty | `AtomicTrafficCube.Intersect` | P3 |
+| Protocol-specific port spaces | TCP:80 ⟂ UDP:80 | P4 |
+| IPv4 and IPv6 never mix | cube family | P5 |
+| 128 cubes/rule; 4096 residual fragments | `NormalizedPredicate.Create` | P6 |
+| Overflow → `PREDICATE_COMPLEXITY_LIMIT` | compose + mapper | CX / O1p |
+| No unbounded fallback | complexity fail | P6 / CX |
+| Algebraic identities (xUnit trials, no FsCheck) | `PredicateAlgebraPropertyTests` | P9 |
+| Port interval algebra | `PortSetAlgebra` | P7 |
+| JSON HOST/PREFIX/RANGE + service terms | `PolicyObjectJsonReader` | P8 |
+| Exception subset is interval-true (host∈prefix, different UUID) | `ExceptionPredicateProof` | D5i |
+| Same prefix, different UUID → `POLICY_EXCEPTION_OVERLAP` | overlap rewire | D6i |
+| Disjoint hosts, different UUID still compose | D6 | D6d |
+| Flags/IPsec equality (omit-vs-constrained) | D5 flags/ipsec | D5 |
+| Unparseable exception-path object → `POLICY_COMPOSE_SELECTOR_UNRESOLVED` | catalog builder | UR |
+| Compose invokes algebra only for exceptions | L4 | M2-07 stub objects still compose |
+| `PREDICATE_*` trailer FailedPrecondition, retryable=false | `GrpcApplicationErrorMapper` | O1p |
+| Hash preimage format unchanged; Desktop OUT; no new RPC | existing | D15 / C1 / C3 |
+
+**Residuals (documented, non-blocking):** Flag/IPsec exception subset stays equality (not flag-implication). Cube subtract omits ICMP/flags/IPsec residuals that cannot be represented. M2-10 analysis engine OUT. Desktop does not call compose.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PredicateAlgebra|FullyQualifiedName~PortSetAlgebra|FullyQualifiedName~PolicyObjectJson|FullyQualifiedName~ExceptionCompose|FullyQualifiedName~ComposeEffective|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
 dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~PolicyGrpc|FullyQualifiedName~PolicyProto"
 ```
 

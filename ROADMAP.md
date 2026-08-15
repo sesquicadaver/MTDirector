@@ -3,7 +3,7 @@
 **Дата оновлення:** 15 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M2-08 — M1 CLOSED; черга зсунута на M2-09
+**Базовий коміт аудиту:** M2-09 — M1 CLOSED; черга зсунута на M2-10
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -101,6 +101,7 @@ Post-MVP M7 = **27** після MVP.
 | M2-06 | #53 | Typed policy rules/predicates/effects; App content-hash CAS CRUD; `PolicyService`; thin Desktop list |
 | M2-07 | #54 | Deterministic logical policy composition; `ComposeEffectivePolicy`; IncrementalHash `logical_effective.v1` |
 | M2-08 | #55 | Scoped deny-stage exceptions; `UpdateExceptionMetadata`; `EXEMPT_DENY_STAGE` insert; exception hash slot |
+| M2-09 | #56 | Bounded packet predicate algebra; exception subset/overlap rewired to intervals |
 
 ### 2.3 Поточні прогалини (код)
 
@@ -112,9 +113,9 @@ Post-MVP M7 = **27** після MVP.
 | `Mfc.Controller` | health + `InventoryService` + `SnapshotService` + `ZoneService` + `PolicyService` (compose + `UpdateExceptionMetadata`) gRPC |
 | `Mfc.Desktop` | connection shell + inventory tree + snapshot/diff viewers + Zones + thin Policies panel |
 | Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings |
-| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions (M2-08) |
+| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) |
 
-**NEXT = M2-09:** [M2-09](https://github.com/sesquicadaver/MTDirector/issues/56) normalized predicate algebra (після M2-08 #55 DONE).
+**NEXT = M2-10:** [M2-10](https://github.com/sesquicadaver/MTDirector/issues/57) structural and satisfiability analysis (після M2-09 #56 DONE).
 
 ---
 
@@ -197,7 +198,8 @@ Post-MVP M7 = **27** після MVP.
 | ~~40~~ | ~~M2-06~~ | ~~#53~~ | ~~Implement policy rules, predicates and effects~~ → DONE (typed rules + App CAS + PolicyService + thin Desktop) |
 | ~~41~~ | ~~M2-07~~ | ~~#54~~ | ~~Implement deterministic policy composition~~ → DONE (logical compose + `ComposeEffectivePolicy` + IncrementalHash) |
 | ~~42~~ | ~~M2-08~~ | ~~#55~~ | ~~Implement temporary deny-stage exceptions~~ → DONE (typed metadata + compose insert + exception hash slot) |
-| 43 | M2-09 | #56 | Implement normalized predicate algebra |
+| ~~43~~ | ~~M2-09~~ | ~~#56~~ | ~~Implement normalized predicate algebra~~ → DONE (bounded cubes + exception interval proofs) |
+| 44 | M2-10 | #57 | Implement structural and satisfiability analysis |
 | 44 | M2-10 | #57 | Implement structural and satisfiability analysis |
 | 45 | M2-11 | #58 | Implement duplicate, shadow and overlap analysis |
 | 46 | M2-12 | #59 | Implement actual RouterOS filter-context analysis |
@@ -403,9 +405,9 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **M2-09** → [issue #56](https://github.com/sesquicadaver/MTDirector/issues/56) (M2-08 #55 DONE).
+1. Відкрити **M2-10** → [issue #57](https://github.com/sesquicadaver/MTDirector/issues/57) (M2-09 #56 DONE).
 2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.
-3. Не стартувати M2, доки не закрито **M1-34** (черга #33) — **DONE**; M2-01…M2-08 + N1-05 — **DONE**.
+3. Не стартувати M2, доки не закрито **M1-34** (черга #33) — **DONE**; M2-01…M2-09 + N1-05 — **DONE**.
 4. Не стартувати M4, доки не закрито **M5-10** (черга #71).
 5. Не стартувати M7, доки не закрито **M6-09** (черга #95).
 
