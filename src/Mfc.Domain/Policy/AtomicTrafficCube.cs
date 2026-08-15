@@ -416,17 +416,17 @@ public sealed class AtomicTrafficCube
             return left;
         }
 
-        try
-        {
-            return TcpFlagConstraint.Create(
-                left.RequiredPresent.Concat(right.RequiredPresent),
-                left.RequiredAbsent.Concat(right.RequiredAbsent));
-        }
-        catch (DomainInvariantException)
+        HashSet<TcpHeaderBit> present = left.RequiredPresent.ToHashSet();
+        present.UnionWith(right.RequiredPresent);
+        HashSet<TcpHeaderBit> absent = left.RequiredAbsent.ToHashSet();
+        absent.UnionWith(right.RequiredAbsent);
+        if (present.Overlaps(absent))
         {
             empty = true;
             return null;
         }
+
+        return TcpFlagConstraint.Create(present, absent);
     }
 
     private static bool IpsecSubset(IpsecPolicyPredicate? inner, IpsecPolicyPredicate? cover)

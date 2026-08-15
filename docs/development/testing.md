@@ -474,6 +474,7 @@ Policy Model §37 + Issue Set M2-09 AC#1–11 → Domain algebra library + excep
 | Exact representations (intervals, UUID zone sets, protocol bits, ports, ICMP, conn/NAT/addr-type, flags, IPsec) | `AtomicTrafficCube` / `ProtocolBitSet` / `SymbolicSet` | P1 |
 | Relations empty/equal/disjoint/subset/superset/partial overlap; no INDETERMINATE | `PredicateAlgebra.Relate` | P2 |
 | TCP present∩absent after intersect → empty | `AtomicTrafficCube.Intersect` | P3 |
+| Identical TCP flags remain overlapping (`Intersect(A,A)` with SYN) | `IntersectFlags` set-union | P3i |
 | Protocol-specific port spaces | TCP:80 ⟂ UDP:80 | P4 |
 | IPv4 and IPv6 never mix | cube family | P5 |
 | 128 cubes/rule; 4096 residual fragments | `NormalizedPredicate.Create` | P6 |
@@ -482,16 +483,19 @@ Policy Model §37 + Issue Set M2-09 AC#1–11 → Domain algebra library + excep
 | Algebraic identities (xUnit trials, no FsCheck) | `PredicateAlgebraPropertyTests` | P9 |
 | Port interval algebra | `PortSetAlgebra` | P7 |
 | JSON HOST/PREFIX/RANGE + service terms | `PolicyObjectJsonReader` | P8 |
+| Malformed service ports/object (missing bounds, non-array) → parse failure | `PolicyObjectJsonReader` | P8u |
 | Exception subset is interval-true (host∈prefix, different UUID) | `ExceptionPredicateProof` | D5i |
 | Same prefix, different UUID → `POLICY_EXCEPTION_OVERLAP` | overlap rewire | D6i |
+| Identical TCP flags on overlapping denies → `POLICY_EXCEPTION_OVERLAP` | `IntersectFlags` | D6f |
 | Disjoint hosts, different UUID still compose | D6 | D6d |
 | Flags/IPsec equality (omit-vs-constrained) | D5 flags/ipsec | D5 |
 | Unparseable exception-path object → `POLICY_COMPOSE_SELECTOR_UNRESOLVED` | catalog builder | UR |
+| Unparseable exception-path service ports → `POLICY_COMPOSE_SELECTOR_UNRESOLVED` | catalog builder | URs |
 | Compose invokes algebra only for exceptions | L4 | M2-07 stub objects still compose |
 | `PREDICATE_*` trailer FailedPrecondition, retryable=false | `GrpcApplicationErrorMapper` | O1p |
 | Hash preimage format unchanged; Desktop OUT; no new RPC | existing | D15 / C1 / C3 |
 
-**Residuals (documented, non-blocking):** Flag/IPsec exception subset stays equality (not flag-implication). Cube subtract omits ICMP/flags/IPsec residuals that cannot be represented. M2-10 analysis engine OUT. Desktop does not call compose.
+**Residuals (documented, non-blocking):** Flag/IPsec exception subset stays equality (not flag-implication). Cube subtract omits ICMP/flags/IPsec residuals that cannot be represented. `PredicateAlgebra.IsSubset` is fail-closed single-cube cover (union of cubes is not a cover); `Relate` therefore never returns INDETERMINATE and must not be treated as exact packet-space truth in M2-10. Compose uses interval algebra only on the exception path (L4); other active rules stay M2-07 UUID/catalog validation. `PolicyObjectJsonReader` is a second parser beside `PolicyDocumentReader` (hash preimage unchanged). Desktop does not call compose.
 
 Filter:
 ```bash

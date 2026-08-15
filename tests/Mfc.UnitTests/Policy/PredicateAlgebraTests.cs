@@ -58,6 +58,24 @@ public sealed class PredicateAlgebraTests
     }
 
     [Fact]
+    public void IdenticalTcpFlagsIntersectIsIdempotentAndOverlaps()
+    {
+        TcpFlagConstraint syn = TcpFlagConstraint.Create([TcpHeaderBit.Syn], []);
+        AtomicTrafficCube cube = AtomicTrafficCube.Create(
+            IpAddressFamily.IPv4,
+            PolicyFilterChain.Forward,
+            Universe(),
+            Universe(),
+            tcpFlags: syn);
+        AtomicTrafficCube? inter = AtomicTrafficCube.Intersect(cube, cube);
+        Assert.NotNull(inter);
+        Assert.False(inter!.IsEmpty);
+        Assert.True(AtomicTrafficCube.Overlaps(cube, cube));
+        Assert.Equal([TcpHeaderBit.Syn], inter.TcpFlags!.RequiredPresent);
+        Assert.Empty(inter.TcpFlags.RequiredAbsent);
+    }
+
+    [Fact]
     public void ProtocolSpecificPortsAreDisjoint()
     {
         NormalizedPredicate tcp = Cube(src: Universe(), protocol: IpProtocol.Tcp, destPort: 80);

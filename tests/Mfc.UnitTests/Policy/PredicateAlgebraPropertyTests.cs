@@ -48,12 +48,19 @@ public sealed class PredicateAlgebraPropertyTests
         uint start = (uint)rng.Next(0, 40);
         uint width = (uint)rng.Next(0, 20);
         AddressInterval interval = new(IpAddressFamily.IPv4, start, start + width);
+        TcpFlagConstraint? flags = rng.Next(3) switch
+        {
+            0 => null,
+            1 => TcpFlagConstraint.Create([TcpHeaderBit.Syn], []),
+            _ => TcpFlagConstraint.Create([TcpHeaderBit.Ack], []),
+        };
         AtomicTrafficCube cube = AtomicTrafficCube.Create(
             IpAddressFamily.IPv4,
             PolicyFilterChain.Forward,
             [interval],
             [AddressInterval.Universe(IpAddressFamily.IPv4)],
-            protocols: rng.Next(2) == 0 ? ProtocolBitSet.Universe : ProtocolBitSet.Singleton((byte)rng.Next(1, 20)));
+            protocols: rng.Next(2) == 0 ? ProtocolBitSet.Universe : ProtocolBitSet.Singleton((byte)rng.Next(1, 20)),
+            tcpFlags: flags);
         return NormalizedPredicate.Create([cube]).Value!;
     }
 }

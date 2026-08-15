@@ -88,7 +88,7 @@ public static class PolicyObjectJsonReader
                 intervals);
             return true;
         }
-        catch (Exception ex) when (ex is DomainInvariantException or JsonException or FormatException or InvalidOperationException)
+        catch (Exception ex) when (ex is DomainInvariantException or JsonException or FormatException or InvalidOperationException or KeyNotFoundException)
         {
             error = ex.Message;
             value = null;
@@ -162,7 +162,7 @@ public static class PolicyObjectJsonReader
                 terms);
             return true;
         }
-        catch (Exception ex) when (ex is DomainInvariantException or JsonException or FormatException or InvalidOperationException)
+        catch (Exception ex) when (ex is DomainInvariantException or JsonException or FormatException or InvalidOperationException or KeyNotFoundException)
         {
             error = ex.Message;
             value = null;
@@ -263,13 +263,17 @@ public static class PolicyObjectJsonReader
                 return false;
             }
 
-            PortSet? source = TryReadPorts(element, "source_ports");
-            PortSet? destination = TryReadPorts(element, "destination_ports");
-            IcmpSelectorSet? icmp = TryReadIcmp(element, "icmp_selectors");
+            if (!TryReadPorts(element, "source_ports", out PortSet? source, out error)
+                || !TryReadPorts(element, "destination_ports", out PortSet? destination, out error)
+                || !TryReadIcmp(element, "icmp_selectors", out IcmpSelectorSet? icmp, out error))
+            {
+                return false;
+            }
+
             term = ServiceTerm.Create(protocol, source, destination, icmp);
             return true;
         }
-        catch (Exception ex) when (ex is DomainInvariantException or InvalidOperationException or FormatException)
+        catch (Exception ex) when (ex is DomainInvariantException or InvalidOperationException or FormatException or KeyNotFoundException)
         {
             error = ex.Message;
             return false;
@@ -309,11 +313,20 @@ public static class PolicyObjectJsonReader
         return false;
     }
 
-    private static PortSet? TryReadPorts(JsonElement parent, string name)
+    private static bool TryReadPorts(JsonElement parent, string name, out PortSet? ports, out string? error)
     {
-        if (!parent.TryGetProperty(name, out JsonElement element) || element.ValueKind != JsonValueKind.Array)
+        ports = null;
+        error = null;
+        if (!parent.TryGetProperty(name, out JsonElement element)
+            || element.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
         {
-            return null;
+            return true;
+        }
+
+        if (element.ValueKind != JsonValueKind.Array)
+        {
+            error = $"{name} must be a JSON array.";
+            return false;
         }
 
         List<PortInterval> intervals = [];
@@ -324,14 +337,24 @@ public static class PolicyObjectJsonReader
             intervals.Add(new PortInterval(start, end));
         }
 
-        return intervals.Count == 0 ? null : PortSet.Create(intervals);
+        ports = intervals.Count == 0 ? null : PortSet.Create(intervals);
+        return true;
     }
 
-    private static IcmpSelectorSet? TryReadIcmp(JsonElement parent, string name)
+    private static bool TryReadIcmp(JsonElement parent, string name, out IcmpSelectorSet? icmp, out string? error)
     {
-        if (!parent.TryGetProperty(name, out JsonElement element) || element.ValueKind != JsonValueKind.Array)
+        icmp = null;
+        error = null;
+        if (!parent.TryGetProperty(name, out JsonElement element)
+            || element.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
         {
-            return null;
+            return true;
+        }
+
+        if (element.ValueKind != JsonValueKind.Array)
+        {
+            error = $"{name} must be a JSON array.";
+            return false;
         }
 
         List<IcmpSelector> items = [];
@@ -347,7 +370,8 @@ public static class PolicyObjectJsonReader
             items.Add(new IcmpSelector(type, code));
         }
 
-        return items.Count == 0 ? null : IcmpSelectorSet.Create(items);
+        icmp = items.Count == 0 ? null : IcmpSelectorSet.Create(items);
+        return true;
     }
 
     private static IPAddress ReadIp(JsonElement parent, string name, IpAddressFamily family)

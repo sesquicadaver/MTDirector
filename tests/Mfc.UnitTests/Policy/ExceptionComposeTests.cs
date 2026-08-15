@@ -372,6 +372,46 @@ public sealed class ExceptionComposeTests
     }
 
     [Fact]
+    public void D6IdenticalTcpFlagsOnOverlappingDeniesIsOverlap()
+    {
+        TcpFlagConstraint syn = TcpFlagConstraint.Create([TcpHeaderBit.Syn], []);
+        PolicyRule target = PolicyRule.Create(
+            IpAddressFamily.IPv4,
+            PolicyFilterChain.Forward,
+            PolicyPipelineStage.CompanyDeny,
+            0,
+            TrafficPredicate.Create(
+                sourceAddresses: AddressSelector.Create([new AddressObjectId(AddrTarget)]),
+                tcpFlags: syn),
+            RuleEffectSpec.Create(PolicyRuleEffect.Drop),
+            exceptionEligible: true);
+        PolicyRule other = PolicyRule.Create(
+            IpAddressFamily.IPv4,
+            PolicyFilterChain.Forward,
+            PolicyPipelineStage.CompanyDeny,
+            1,
+            TrafficPredicate.Create(
+                sourceAddresses: AddressSelector.Create([new AddressObjectId(AddrTarget)]),
+                tcpFlags: syn),
+            RuleEffectSpec.Create(PolicyRuleEffect.Drop),
+            exceptionEligible: true);
+        PolicyLayer company = CompanyWithDeny(target, extraDeny: other);
+        PolicyRule exempt = PolicyRule.Create(
+            IpAddressFamily.IPv4,
+            PolicyFilterChain.Forward,
+            PolicyPipelineStage.CompanyDenyExemptions,
+            0,
+            TrafficPredicate.Create(
+                sourceAddresses: AddressSelector.Create([new AddressObjectId(AddrSubset)]),
+                tcpFlags: syn),
+            RuleEffectSpec.Create(PolicyRuleEffect.ExemptDenyStage));
+        PolicyLayer exception = ExceptionLayer(company, Guid.NewGuid(), target.Id, exempt);
+        PolicyComposeResult result = Compose(company, exception);
+        Assert.True(result.IsFailure);
+        Assert.Equal(PolicyExceptionCodes.Overlap, result.Code);
+    }
+
+    [Fact]
     public void D5IntervalHostInsidePrefixDifferentUuidSucceeds()
     {
         Guid hostId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc");
@@ -411,6 +451,45 @@ public sealed class ExceptionComposeTests
             rules: [deny]);
         PolicyLayer company = CompanyLayer(document);
         PolicyLayer exception = ExceptionLayer(company, Guid.NewGuid(), deny.Id, ExemptRule(AddrSubset));
+        PolicyComposeResult result = Compose(company, exception);
+        Assert.True(result.IsFailure);
+        Assert.Equal(PolicyComposeCodes.SelectorUnresolved, result.Code);
+    }
+
+    [Fact]
+    public void UnparseableExceptionPathServicePortsIsSelectorUnresolved()
+    {
+        Guid svc = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd");
+        PolicyRule deny = PolicyRule.Create(
+            IpAddressFamily.IPv4,
+            PolicyFilterChain.Forward,
+            PolicyPipelineStage.CompanyDeny,
+            0,
+            TrafficPredicate.Create(
+                sourceAddresses: AddressSelector.Create([new AddressObjectId(AddrTarget)]),
+                services: ServiceSelector.Create([new ServiceObjectId(svc)])),
+            RuleEffectSpec.Create(PolicyRuleEffect.Drop),
+            exceptionEligible: true);
+        JsonElement brokenService = JsonDocument.Parse(
+            "{\"id\":\"" + svc +
+            "\",\"name\":\"http\",\"terms\":[{\"protocol\":{\"number\":6},\"destination_ports\":[{}]}]}").RootElement.Clone();
+        PolicyDocument document = new(
+            PolicyKind.CompanyBaseline,
+            PolicyOwnerScope.Company,
+            addressObjects: [AddressJson(AddrTarget), AddressJson(AddrOther)],
+            serviceObjects: [brokenService],
+            rules: [deny]);
+        PolicyLayer company = CompanyLayer(document);
+        PolicyRule exempt = PolicyRule.Create(
+            IpAddressFamily.IPv4,
+            PolicyFilterChain.Forward,
+            PolicyPipelineStage.CompanyDenyExemptions,
+            0,
+            TrafficPredicate.Create(
+                sourceAddresses: AddressSelector.Create([new AddressObjectId(AddrSubset)]),
+                services: ServiceSelector.Create([new ServiceObjectId(svc)])),
+            RuleEffectSpec.Create(PolicyRuleEffect.ExemptDenyStage));
+        PolicyLayer exception = ExceptionLayer(company, Guid.NewGuid(), deny.Id, exempt);
         PolicyComposeResult result = Compose(company, exception);
         Assert.True(result.IsFailure);
         Assert.Equal(PolicyComposeCodes.SelectorUnresolved, result.Code);
