@@ -179,8 +179,24 @@ internal static class ViewMapper
             OwnerScope = document.OwnerScope,
             Rules = rules,
             Warnings = Policies.PolicyRevisionSupport.MergeWarnings(rules),
+            ExceptionMetadata = document.ExceptionMetadata is null
+                ? null
+                : ToView(document.ExceptionMetadata),
         };
     }
+
+    private static ExceptionMetadataView ToView(ExceptionMetadata metadata) => new()
+    {
+        TargetScope = metadata.TargetScope,
+        TargetScopeId = metadata.TargetScopeId,
+        TargetStage = metadata.TargetStage,
+        WaivedRuleId = metadata.WaivedRuleId.Value,
+        ValidFrom = metadata.ValidFrom,
+        ValidUntil = metadata.ValidUntil,
+        Reason = metadata.Reason,
+        TicketReference = metadata.TicketReference,
+        SupersedesExceptionId = metadata.SupersedesExceptionId,
+    };
 
     private static TrafficPredicateView ToView(TrafficPredicate predicate) => new()
     {

@@ -155,6 +155,22 @@ public sealed class ArchitectureBoundaryTests
     }
 
     [Fact]
+    public void C14NoExceptionExpireWriterOrDesktopCompose()
+    {
+        Assert.DoesNotContain(
+            Domain.GetTypes(),
+            static t => t.Name.Contains("Expire", StringComparison.OrdinalIgnoreCase)
+                        && t.Name.Contains("Exception", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(
+            Application.GetTypes(),
+            static t => t.Name.Contains("Expire", StringComparison.OrdinalIgnoreCase)
+                        && t.Name.Contains("Exception", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(
+            Desktop.GetExportedTypes().Select(static t => t.Name),
+            static name => name.Contains("ComposeEffective", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void ApplicationMustNotUseIServiceProvider()
     {
         AssertDoesNotReference(

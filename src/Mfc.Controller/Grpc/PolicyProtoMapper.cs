@@ -1,5 +1,6 @@
 using Google.Protobuf;
 using Mfc.Application.Models;
+using Mfc.Application.Policies;
 using Mfc.Contracts.Mfc.V1;
 using DomainAddressType = Mfc.Domain.Policy.AddressType;
 using DomainConnectionNatState = Mfc.Domain.Policy.ConnectionNatState;
@@ -74,6 +75,11 @@ internal static class PolicyProtoMapper
 
         message.Rules.AddRange(view.Rules.Select(ToProto));
         message.Warnings.AddRange(view.Warnings.Select(ToProto));
+        if (view.ExceptionMetadata is not null)
+        {
+            message.ExceptionMetadata = ToProto(view.ExceptionMetadata);
+        }
+
         return message;
     }
 
@@ -338,6 +344,47 @@ internal static class PolicyProtoMapper
         {
             Kind = ToDomain(effect.Kind),
             RejectMode = effect.HasRejectMode ? ToDomain(effect.RejectMode) : null,
+        };
+    }
+
+    public static global::Mfc.Contracts.Mfc.V1.ExceptionMetadata ToProto(ExceptionMetadataView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        global::Mfc.Contracts.Mfc.V1.ExceptionMetadata message = new()
+        {
+            TargetScope = ToProto(view.TargetScope),
+            TargetScopeId = ProtoUuid.FromGuid(view.TargetScopeId),
+            TargetStage = ToProto(view.TargetStage),
+            WaivedRuleId = ProtoUuid.FromGuid(view.WaivedRuleId),
+            ValidFrom = Domain.Policy.ExceptionMetadata.FormatTimestamp(view.ValidFrom),
+            ValidUntil = Domain.Policy.ExceptionMetadata.FormatTimestamp(view.ValidUntil),
+            Reason = view.Reason,
+            TicketReference = view.TicketReference,
+        };
+        if (view.SupersedesExceptionId is Guid supersedes)
+        {
+            message.SupersedesExceptionId = ProtoUuid.FromGuid(supersedes);
+        }
+
+        return message;
+    }
+
+    public static ExceptionMetadataInput ToInput(global::Mfc.Contracts.Mfc.V1.ExceptionMetadata metadata)
+    {
+        ArgumentNullException.ThrowIfNull(metadata);
+        return new ExceptionMetadataInput
+        {
+            TargetScope = ToDomain(metadata.TargetScope),
+            TargetScopeId = ProtoUuid.ToGuid(metadata.TargetScopeId),
+            TargetStage = ToDomain(metadata.TargetStage),
+            WaivedRuleId = ProtoUuid.ToGuid(metadata.WaivedRuleId),
+            ValidFrom = Domain.Policy.ExceptionMetadata.ParseTimestamp(metadata.ValidFrom, "valid_from"),
+            ValidUntil = Domain.Policy.ExceptionMetadata.ParseTimestamp(metadata.ValidUntil, "valid_until"),
+            Reason = metadata.Reason,
+            TicketReference = metadata.TicketReference,
+            SupersedesExceptionId = metadata.SupersedesExceptionId is null
+                ? null
+                : ProtoUuid.ToGuid(metadata.SupersedesExceptionId),
         };
     }
 

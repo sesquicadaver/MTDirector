@@ -28,7 +28,7 @@ public static class PolicyCanonicalWriter
             ("service_objects", w => WriteElementArray(w, document.ServiceObjects)),
             ("rules", w => WriteRules(w, document.Rules)),
             ("tests", w => WriteElementArray(w, document.Tests)),
-            ("exception_metadata", w => w.WriteSortedObject(document.ExceptionMetadata)),
+            ("exception_metadata", w => WriteExceptionMetadata(w, document.ExceptionMetadata)),
         ]);
         return writer.ToUtf8Bytes();
     }
@@ -333,6 +333,33 @@ public static class PolicyCanonicalWriter
         }
 
         writer.WriteArrayEnd();
+    }
+
+    private static void WriteExceptionMetadata(CanonicalJsonWriter writer, ExceptionMetadata? metadata)
+    {
+        if (metadata is null)
+        {
+            writer.WriteSortedObject(new Dictionary<string, string>(StringComparer.Ordinal));
+            return;
+        }
+
+        List<(string Key, Action<CanonicalJsonWriter> WriteValue)> properties =
+        [
+            ("target_scope", w => w.WriteString(FormatOwnerScope(metadata.TargetScope))),
+            ("target_scope_id", w => w.WriteString(metadata.TargetScopeId.ToString("D"))),
+            ("target_stage", w => w.WriteString(PolicyPipelineV1.FormatStage(metadata.TargetStage))),
+            ("waived_rule_id", w => w.WriteString(metadata.WaivedRuleId.ToString())),
+            ("valid_from", w => w.WriteString(ExceptionMetadata.FormatTimestamp(metadata.ValidFrom))),
+            ("valid_until", w => w.WriteString(ExceptionMetadata.FormatTimestamp(metadata.ValidUntil))),
+            ("reason", w => w.WriteString(metadata.Reason)),
+            ("ticket_reference", w => w.WriteString(metadata.TicketReference)),
+        ];
+        if (metadata.SupersedesExceptionId is Guid supersedes)
+        {
+            properties.Add(("supersedes_exception_id", w => w.WriteString(supersedes.ToString("D"))));
+        }
+
+        writer.WriteObject(properties);
     }
 
     internal static string FormatConnectionState(ConnectionState state)

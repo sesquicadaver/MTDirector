@@ -10,6 +10,7 @@ public sealed class PolicyProtoContractTests
     public void PolicyServiceDescriptorExposesDraftAndRuleRpcs()
     {
         string[] methods = PolicyService.Descriptor.Methods.Select(m => m.Name).OrderBy(n => n).ToArray();
+        Assert.Contains("UpdateExceptionMetadata", methods);
         Assert.Contains("ComposeEffectivePolicy", methods);
         Assert.Contains("CreateDraftPolicy", methods);
         Assert.Contains("GetPolicyRevision", methods);
@@ -79,5 +80,31 @@ public sealed class PolicyProtoContractTests
         Assert.NotNull(PolicyRevisionRef.Descriptor.FindFieldByName("revision_id"));
         Assert.NotNull(PolicyRevisionRef.Descriptor.FindFieldByName("revision_number"));
         Assert.NotNull(PolicyRevisionRef.Descriptor.FindFieldByName("content_hash"));
+    }
+
+    [Fact]
+    public void C1ExceptionMetadataAndUpdateRpcSurface()
+    {
+        Google.Protobuf.Reflection.MessageDescriptor metadata = ExceptionMetadata.Descriptor;
+        string[] fields = metadata.Fields.InDeclarationOrder().Select(static f => f.Name).ToArray();
+        Assert.Equal(
+            [
+                "target_scope",
+                "target_scope_id",
+                "target_stage",
+                "waived_rule_id",
+                "valid_from",
+                "valid_until",
+                "reason",
+                "ticket_reference",
+                "supersedes_exception_id",
+            ],
+            fields);
+        Assert.Equal("exception_metadata", PolicyRevision.Descriptor.FindFieldByNumber(12)!.Name);
+        Google.Protobuf.Reflection.MessageDescriptor request = UpdateExceptionMetadataRequest.Descriptor;
+        Assert.Equal("idempotency_key", request.Fields.InDeclarationOrder()[0].Name);
+        Assert.Equal("revision_id", request.Fields.InDeclarationOrder()[1].Name);
+        Assert.Equal("expected_content_hash", request.Fields.InDeclarationOrder()[2].Name);
+        Assert.Equal("metadata", request.Fields.InDeclarationOrder()[3].Name);
     }
 }

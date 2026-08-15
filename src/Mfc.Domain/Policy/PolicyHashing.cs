@@ -69,13 +69,14 @@ public static class PolicyHashing
     /// SHA-256 of the logical-effective preimage (Policy Model §34.1 / LOCK-10 IncrementalHash).
     /// Absent site/node overlays omit their 32-byte slots (no zero padding) unless
     /// <paramref name="padAbsentSiteWithZeros"/> is set for anti-B1 tests.
+    /// Exception slot is uint32 BE count followed by N×32-byte exception content hashes.
     /// </summary>
     public static Hash256 HashLogicalEffective(
         uint schemaVersion,
         Hash256 companyContentHash,
         Hash256? siteContentHash,
         Hash256? nodeContentHash,
-        uint exceptionCount,
+        IReadOnlyList<Hash256> exceptionContentHashes,
         IReadOnlyList<byte[]> canonicalMergedObjects,
         IReadOnlyList<byte[]> canonicalActiveRules,
         byte[] chainContractBytes,
@@ -87,7 +88,7 @@ public static class PolicyHashing
             companyContentHash,
             siteContentHash,
             nodeContentHash,
-            exceptionCount,
+            exceptionContentHashes,
             canonicalMergedObjects,
             canonicalActiveRules,
             chainContractBytes,
@@ -107,7 +108,7 @@ public static class PolicyHashing
         Hash256 companyContentHash,
         Hash256? siteContentHash,
         Hash256? nodeContentHash,
-        uint exceptionCount,
+        IReadOnlyList<Hash256> exceptionContentHashes,
         IReadOnlyList<byte[]> canonicalMergedObjects,
         IReadOnlyList<byte[]> canonicalActiveRules,
         byte[] chainContractBytes,
@@ -115,6 +116,7 @@ public static class PolicyHashing
         bool includeExceptionCountSlot = true)
     {
         ArgumentNullException.ThrowIfNull(companyContentHash);
+        ArgumentNullException.ThrowIfNull(exceptionContentHashes);
         ArgumentNullException.ThrowIfNull(canonicalMergedObjects);
         ArgumentNullException.ThrowIfNull(canonicalActiveRules);
         ArgumentNullException.ThrowIfNull(chainContractBytes);
@@ -144,7 +146,12 @@ public static class PolicyHashing
 
         if (includeExceptionCountSlot)
         {
-            WriteUInt32Be(stream, exceptionCount);
+            WriteUInt32Be(stream, (uint)exceptionContentHashes.Count);
+            foreach (Hash256 digest in exceptionContentHashes)
+            {
+                ArgumentNullException.ThrowIfNull(digest);
+                stream.Write(digest.Bytes);
+            }
         }
 
         foreach (byte[] objectBytes in canonicalMergedObjects)

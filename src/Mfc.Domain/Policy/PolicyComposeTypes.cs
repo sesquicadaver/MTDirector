@@ -27,6 +27,10 @@ public static class PolicyComposeCodes
 /// <summary>One loaded policy revision layer for logical compose (company / site / node).</summary>
 public sealed class PolicyLayer
 {
+    public required Guid PolicyId { get; init; }
+
+    public required Guid RevisionId { get; init; }
+
     public required PolicyKind Kind { get; init; }
 
     public required PolicyOwnerScope OwnerScope { get; init; }

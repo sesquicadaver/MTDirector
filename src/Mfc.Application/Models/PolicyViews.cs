@@ -145,6 +145,30 @@ public sealed class PolicyRevisionView
     public required IReadOnlyList<PolicyRuleView> Rules { get; init; }
 
     public required IReadOnlyList<PolicyWarningView> Warnings { get; init; }
+
+    public ExceptionMetadataView? ExceptionMetadata { get; init; }
+}
+
+/// <summary>Application view of typed exception metadata (M2-08).</summary>
+public sealed class ExceptionMetadataView
+{
+    public required PolicyOwnerScope TargetScope { get; init; }
+
+    public required Guid TargetScopeId { get; init; }
+
+    public required PolicyPipelineStage TargetStage { get; init; }
+
+    public required Guid WaivedRuleId { get; init; }
+
+    public required DateTimeOffset ValidFrom { get; init; }
+
+    public required DateTimeOffset ValidUntil { get; init; }
+
+    public required string Reason { get; init; }
+
+    public required string TicketReference { get; init; }
+
+    public Guid? SupersedesExceptionId { get; init; }
 }
 
 /// <summary>Result of creating a policy + first draft revision.</summary>

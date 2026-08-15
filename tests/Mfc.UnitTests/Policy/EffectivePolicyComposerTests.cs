@@ -54,6 +54,8 @@ public sealed class EffectivePolicyComposerTests
         PolicyDocument siteDoc = new(PolicyKind.SiteOverlay, PolicyOwnerScope.Site);
         PolicyLayer site = new()
         {
+            PolicyId = Guid.NewGuid(),
+            RevisionId = Guid.NewGuid(),
             Kind = PolicyKind.SiteOverlay,
             OwnerScope = PolicyOwnerScope.Site,
             OwnerId = Guid.NewGuid(),
@@ -124,7 +126,7 @@ public sealed class EffectivePolicyComposerTests
             company.ContentHash,
             siteContentHash: null,
             nodeContentHash: null,
-            exceptionCount: 0,
+            exceptionContentHashes: [],
             canonicalMergedObjects: [],
             canonicalActiveRules: result.Value.ActiveRules.Select(PolicyCanonicalWriter.WriteRuleBytes).ToArray(),
             chainContractBytes: PolicyCanonicalWriter.WriteChainContractSetBytes(company.PolicyDocument.ChainContracts));
@@ -222,6 +224,8 @@ public sealed class EffectivePolicyComposerTests
             rules: [r2, r1]);
         PolicyLayer shuffledLayer = new()
         {
+            PolicyId = Guid.NewGuid(),
+            RevisionId = Guid.NewGuid(),
             Kind = PolicyKind.CompanyBaseline,
             OwnerScope = PolicyOwnerScope.Company,
             ContentHash = canonical.ContentHash,
@@ -332,7 +336,7 @@ public sealed class EffectivePolicyComposerTests
             company.ContentHash,
             siteContentHash: null,
             nodeContentHash: null,
-            exceptionCount: 0,
+            exceptionContentHashes: [],
             canonicalMergedObjects: [],
             canonicalActiveRules: [],
             chainContractBytes: contracts,
@@ -350,7 +354,7 @@ public sealed class EffectivePolicyComposerTests
             company.ContentHash,
             siteContentHash: null,
             nodeContentHash: null,
-            exceptionCount: 0,
+            exceptionContentHashes: [],
             canonicalMergedObjects: [],
             canonicalActiveRules: [],
             chainContractBytes: contracts);
@@ -359,7 +363,7 @@ public sealed class EffectivePolicyComposerTests
             company.ContentHash,
             siteContentHash: null,
             nodeContentHash: null,
-            exceptionCount: 0,
+            exceptionContentHashes: [],
             canonicalMergedObjects: [],
             canonicalActiveRules: [],
             chainContractBytes: contracts,
@@ -374,7 +378,7 @@ public sealed class EffectivePolicyComposerTests
             company.ContentHash,
             null,
             null,
-            exceptionCount: 0,
+            [],
             [],
             [],
             contracts);
@@ -383,7 +387,7 @@ public sealed class EffectivePolicyComposerTests
             company.ContentHash,
             null,
             null,
-            exceptionCount: 1,
+            [Hash256.Create(new byte[32])],
             [],
             [],
             contracts);
@@ -509,6 +513,8 @@ public sealed class EffectivePolicyComposerTests
     private static PolicyLayer CompanyLayer(PolicyDocument document)
         => new()
         {
+            PolicyId = Guid.NewGuid(),
+            RevisionId = Guid.NewGuid(),
             Kind = PolicyKind.CompanyBaseline,
             OwnerScope = PolicyOwnerScope.Company,
             ContentHash = PolicyHashing.HashContent(document),
@@ -523,6 +529,8 @@ public sealed class EffectivePolicyComposerTests
         Hash256 parentContextHash)
         => new()
         {
+            PolicyId = Guid.NewGuid(),
+            RevisionId = Guid.NewGuid(),
             Kind = kind,
             OwnerScope = scope,
             OwnerId = ownerId,

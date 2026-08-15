@@ -31,8 +31,8 @@ public sealed class PolicyDocument
 
     public IReadOnlyList<JsonElement> Tests { get; }
 
-    /// <summary>Exception metadata object; empty for non-exception kinds.</summary>
-    public IReadOnlyDictionary<string, string> ExceptionMetadata { get; }
+    /// <summary>Typed exception metadata; null when the object is empty (non-exception or empty draft).</summary>
+    public ExceptionMetadata? ExceptionMetadata { get; }
 
     public PolicyDocument(
         PolicyKind kind,
@@ -44,7 +44,7 @@ public sealed class PolicyDocument
         IReadOnlyList<JsonElement>? serviceObjects = null,
         IReadOnlyList<PolicyRule>? rules = null,
         IReadOnlyList<JsonElement>? tests = null,
-        IReadOnlyDictionary<string, string>? exceptionMetadata = null)
+        ExceptionMetadata? exceptionMetadata = null)
     {
         if (schemaVersion == 0)
         {
@@ -72,7 +72,7 @@ public sealed class PolicyDocument
         ServiceObjects = serviceObjects ?? [];
         Rules = typedRules;
         Tests = tests ?? [];
-        ExceptionMetadata = exceptionMetadata ?? new Dictionary<string, string>(StringComparer.Ordinal);
+        ExceptionMetadata = exceptionMetadata;
     }
 
     /// <summary>Empty document for a new draft of the given kind/scope.</summary>
@@ -131,4 +131,18 @@ public sealed class PolicyDocument
             Tests,
             ExceptionMetadata);
     }
+
+    /// <summary>Returns a copy with replacement exception metadata (EXCEPTION drafts).</summary>
+    public PolicyDocument WithExceptionMetadata(ExceptionMetadata? exceptionMetadata)
+        => new(
+            Kind,
+            OwnerScope,
+            SchemaVersion,
+            ChainContracts,
+            ZoneDefinitions,
+            AddressObjects,
+            ServiceObjects,
+            Rules,
+            Tests,
+            exceptionMetadata);
 }

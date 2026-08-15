@@ -414,12 +414,54 @@ Policy Model §§29–34.1 + Issue Set M2-07 AC#1–14 → Domain composer + App
 | `POLICY_COMPOSE_*` trailer FailedPrecondition, retryable=false | `GrpcApplicationErrorMapper` | O1 |
 | Architecture boundary Domain/App ↛ RouterOs | existing | C3 |
 
-**Residuals (documented, non-blocking):** Exception insert / `EXEMPT_DENY_STAGE` and non-zero exception-count hash slot are M2-08. Desktop does not call compose.
+**Residuals (documented, non-blocking):** Desktop does not call compose. Interval/port algebra for exception overlap is M2-09.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~EffectivePolicy|FullyQualifiedName~ComposeEffective|FullyQualifiedName~LogicalEffective|FullyQualifiedName~PolicyHashing|FullyQualifiedName~ArchitectureBoundary"
+dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~PolicyGrpc|FullyQualifiedName~PolicyProto"
+```
+
+## Living Specification — scoped deny-stage exceptions (M2-08)
+
+Policy Model §28 + Issue Set M2-08 AC#1–14 → Domain proofs + Application load/clock + `UpdateExceptionMetadata` (Desktop OUT):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| One target deny; exactly one enabled EXEMPT | `ExceptionComposeProof` | D1 / D_RULE_COUNT |
+| Enabled + exception_eligible DROP\|REJECT | composer proofs | D2 |
+| `target_stage` = waived rule; rule stage = twin | `PolicyPipelineV1.TryExemptionTwin` | D3 |
+| Family/chain match | `ExceptionComposeProof` | D4 |
+| Fail-closed structural subset (all dimensions) | `ExceptionPredicateProof` | D5 |
+| UUID-disjoint overlap residual | `StructurallyOverlaps` | D6 |
+| Mandatory deny forbidden | composer | D7 |
+| Effect EXEMPT only; EXEMPT not on deny stages | `EnsureAllowedEffect` | D8 / D14 |
+| Company-wide EXCEPTION forbidden | `Policy.ValidateOwner` / CreateDraft | D9 / A9 |
+| Finite `valid_until` + reason + ticket | `ExceptionMetadata` | D10 |
+| Universe target forbidden | L5 | D11 |
+| Target rule change invalidates parent | parent_context | D12 / A_META |
+| Expired skipped via `IClock` | `ComposeEffectivePolicyUseCase` | A13 |
+| Hash slot = count + N×32 digests; order waived then policy | `PolicyHashing` | D13 / D15 |
+| Hash ≠ synthetic document | LOCK-10 | D16 |
+| Site may waive COMPANY_DENY; Node cannot waive SITE_DENY | `POLICY_EXCEPTION_STAGE_OWNERSHIP` | D17 |
+| `target_scope` = policy owner | LOCK-18 | D18 |
+| Exception objects forbidden | LOCK-1′ | D19 |
+| Site parent omits node overlay hash | LOCK-4′ | D_PARENT_SITE |
+| Exemption-stage active order: revision, ordinal, UUID | LOCK-15 | D_SORT |
+| Two exceptions same owner; no overlay uniqueness | LOCK-11 | A_LOAD / A1 |
+| `UpdateExceptionMetadata` CAS + draft-only + parent rewrite | App | A_META / C_META |
+| Host compose inserts exemption; hash ≠ no-exception | gRPC | C2 |
+| Compose request still `node_id` only | proto | C1 |
+| `POLICY_EXCEPTION_*` trailer FailedPrecondition, retryable=false | `GrpcApplicationErrorMapper` | O1 |
+| No expire ROS writer; Desktop OUT | ArchitectureBoundary | C3 / C14 |
+
+**Residuals (documented, non-blocking):** UUID-disjoint overlap is unsound in interval space until M2-09. Domain composer does not expire (Application `IClock` filter only). Desktop does not call compose.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ExceptionMetadata|FullyQualifiedName~EffectivePolicy|FullyQualifiedName~ComposeEffective|FullyQualifiedName~PolicyHashing|FullyQualifiedName~UpdateException|FullyQualifiedName~ArchitectureBoundary"
 dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~PolicyGrpc|FullyQualifiedName~PolicyProto"
 ```
 
