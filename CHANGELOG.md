@@ -20,10 +20,11 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- ROADMAP operating plan reset (2026-08-15): counters 57/109 MVP done (52 remaining); linear waves M2-10→M6-09; stale §4 «19 CLOSED / 116 open» removed; duplicate M2-10 queue row dropped.
+- ROADMAP: M2-10 closed in the operating plan; NEXT = M2-11 (#58); counters 58/109 MVP done (51 remaining).
 
 ### Added
 
+- Structural and satisfiability analysis (M2-10): Domain `PolicyAnalysisEngine` emits frozen `RULE_*` blockers (empty selectors, zone direction, TCP flags vs non-TCP, ICMP family, IPsec vs chain, conntrack contradictions, unsupported matchers) on **all** rules including disabled; compose-on-read fails closed and does not invoke sequence analysis. `RULE_*` → FailedPrecondition `retryable=false`. Desktop OUT; no new RPC. Satisfiability does not treat `PredicateAlgebra.Relate` as exact packet space.
 - Bounded packet predicate algebra (M2-09): `NormalizedPredicate` / `AtomicTrafficCube` with Spec §37.1 representations (zones as UUID sets), deterministic union/intersect/subtract, hard 128/4096 limits → `PREDICATE_COMPLEXITY_LIMIT`. Exception compose subset/overlap is interval-true; tcp_flags/ipsec stay equality on the subset gate. Desktop OUT; compose RPC unchanged.
 - Scoped deny-stage exceptions (M2-08): typed `ExceptionMetadata`, fail-closed structural subset proofs, composer insert of `EXEMPT_DENY_STAGE` into exemption twins, Application `IClock` expiry skip, `UpdateExceptionMetadata` RPC, `POLICY_EXCEPTION_*` → FailedPrecondition. Logical hash slot is uint32 count + N×32 exception content hashes.
 - Deterministic logical policy composition (M2-07): Domain `EffectivePolicyComposer` + `PolicyHashing.HashLogicalEffective` (prefix `mfc.policy.logical_effective.v1`, omit-absent overlay digests, exception count 0), Application load/select of unique ACTIVE company + optional overlays, `ComposeEffectivePolicy` RPC with `POLICY_COMPOSE_*` → FailedPrecondition.

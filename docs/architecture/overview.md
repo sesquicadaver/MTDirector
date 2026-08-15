@@ -64,7 +64,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Deterministic policy composition | Done (M2-07) | `EffectivePolicyComposer`; `ComposeEffectivePolicy`; logical IncrementalHash |
 | Scoped deny-stage exceptions | Done (M2-08) | `ExceptionMetadata`; `UpdateExceptionMetadata`; exemption-stage insert; exception hash slot |
 | Bounded packet predicate algebra | Done (M2-09) | Domain cubes + exception interval subset/overlap; conservative subset/subtract; `PREDICATE_COMPLEXITY_LIMIT` |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-10 (#57) |
+| Structural + satisfiability analysis | Done (M2-10) | `PolicyAnalysisEngine`; `RULE_*` compose blockers before sequence; disabled rules included |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-11 (#58) |
 
 ## ADRs
 
