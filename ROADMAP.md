@@ -34,7 +34,10 @@
 
 ---
 
-## 2. Аудит реалізації (2026-08-08)
+## 2. Аудит реалізації (2026-08-15)
+
+Базовий коміт: `579bdfd` (M2-09 algebra + TCP-flag intersect hotfix).  
+Готовність **за кодом / ROADMAP §2.2**, не за застарілим GitHub CLOSED.
 
 ### 2.1 Прогрес
 
@@ -42,13 +45,18 @@
 |---------|-------:|-----:|--:|
 | M0 Bootstrap | 10 | 0 | 100% |
 | M1 Read-only slice | 34 | 0 | 100% |
-| N1 Packet-path weave | 3 | 4 | 43% |
-| M2–M6 (решта MVP) | 0 | 58 | 0% |
+| N1 Packet-path weave | 4 | 3 | 57% |
+| M2 Policy core | 9 | 9 | 50% |
+| M3 Compiler | 0 | 8 | 0% |
+| M5 Onboarding | 0 | 10 | 0% |
+| M4 Safe deploy | 0 | 13 | 0% |
+| M6 E2E / drift | 0 | 9 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **47** | **89** | **~35% issues** |
+| **Разом** | **57** | **79** | **42% issues** |
 
-MVP issues (109) = 47 done + **62 remaining** до MVP CLOSED.  
-Post-MVP M7 = **27** після MVP.
+MVP issues (109) = **57 done + 52 remaining** до MVP CLOSED (**52%**).  
+N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
+Операційно: read-only зріз **готовий**; compile/onboard/apply/drift = **0%**.
 
 ### 2.2 DONE (не в черзі)
 
@@ -116,6 +124,37 @@ Post-MVP M7 = **27** після MVP.
 | `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) |
 
 **NEXT = M2-10:** [M2-10](https://github.com/sesquicadaver/MTDirector/issues/57) structural and satisfiability analysis (після M2-09 #56 DONE). Не брати `PredicateAlgebra.Relate`/`Subtract` за точний packet-space evaluator: subset — fail-closed single-cube cover; subtract under-approximates ICMP/flags/IPsec.
+
+### 2.4 Операційний план до MVP CLOSED (2026-08-15)
+
+Горизонт: **увесь залишок до MVP CLOSED**. Порядок **строго лінійний** (§3); паралель фаз заборонена. Один issue = один PR; anti-stub; тести лише в ізольованому середовищі.
+
+**Хвиля 0 — гігієна трекера (DONE 2026-08-15):** CLOSED #52 M2-05, #53 M2-06, #56 M2-09, #67 N1-05. Не відкривати M3, доки черга A6 не закрита.
+
+**Хвиля 1 — M2 analysis (черга #44–#47):**
+
+| # | ID | GitHub | Результат | Жорсткі lock-и з аудиту |
+|--:|----|-------:|-----------|-------------------------|
+| 44 | M2-10 | #57 | Structural + satisfiability blockers **до** sequence analysis | Не трактувати `PredicateAlgebra.Relate`/`Subtract` як точний packet-space; INDETERMINATE на недовизначеному safety — blocker, не «equal». Compose L4: алгебра зараз лише на EXCEPTION path. |
+| 45 | M2-11 | #58 | Duplicate / shadow / overlap + bounded residual + witness | Залежить від чесного empty/disjoint; split-cover subset fail-closed. |
+| 46 | M2-12 | #59 | Actual RouterOS filter-context (anchors, jumps, unmanaged) | risk:high; CFG limits; implicit accept ≠ managed default. |
+| 47 | N1-04 | #66 | `PACKET_PATH_BYPASSES_IP_FIREWALL` / `PACKET_PATH_NOT_PROVEN` | Після M2-12; live projector residual N1-05 не розгортати тут. |
+
+**Хвиля 2 — M2 safety (черга #48–#51):** M2-13 management-path (#60) → M2-14 VRRP/multi-WAN/RAW/NAT deps (#61) → M2-15 FastTrack (#62) → M2-16 tests/diff/risk (#63). Усі risk:high, крім M2-16.
+
+**Хвиля 3 — M2 CLOSED (черга #52–#53):** M2-17 approval + desired-binding (#64) → M2-18 Desktop authoring/review (#65). Desktop лишається Contracts-only (ADR 0005).
+
+**Хвиля 4 — M3 Compiler (черга #54–#61, #68–#75):** артефакт → namespace → address-lists → zones/services → matchers → FastTrack/terminal → per-Device orchestration → **M3 CLOSED**. Заборона: compile без актуального analysis (§6).
+
+**Хвиля 5 — M5 Onboarding перед M4 (черга #62–#71, #76–#85):** domain → prerequisites → guard → anchor plan → write adapter → scheduler/watchdog → execute → rollback → API/Desktop → **M5 CLOSED**. Не стартувати M4 до #85.
+
+**Хвиля 6 — M4 Safe deploy + N1-06 (черга #72–#85, #86–#99):** N1-06 блокує deploy при packet-path blockers. Далі plan/writer/staging/watchdog/VRRP/rollback/API → **M4 CLOSED**. Заборона: Safe Mode замість watchdog; partial VRRP.
+
+**Хвиля 7 — M6 E2E + N1-07 → MVP CLOSED (черга #86–#95, #100–#109):** desired/committed/actual → drift → jobs → Desktop → CHR suites (standalone, multi-WAN, VRRP/CRS) → security/backup → **M6-09 MVP CLOSED**. Live CHR matrix увімкнути лише на isolated runner (зараз OFF).
+
+**Поза планом до MVP CLOSED:** M7.* (#110–#136). Не виносити вперед.
+
+**DoD кожного PR:** AC issue set; Living Spec рядок; CHANGELOG; CI Linux validate + Windows Desktop; без `pass`/`NotImplemented`; Domain/App ↛ RouterOs.
 
 ---
 
@@ -199,7 +238,6 @@ Post-MVP M7 = **27** після MVP.
 | ~~41~~ | ~~M2-07~~ | ~~#54~~ | ~~Implement deterministic policy composition~~ → DONE (logical compose + `ComposeEffectivePolicy` + IncrementalHash) |
 | ~~42~~ | ~~M2-08~~ | ~~#55~~ | ~~Implement temporary deny-stage exceptions~~ → DONE (typed metadata + compose insert + exception hash slot) |
 | ~~43~~ | ~~M2-09~~ | ~~#56~~ | ~~Implement normalized predicate algebra~~ → DONE (bounded cubes + exception interval proofs) |
-| 44 | M2-10 | #57 | Implement structural and satisfiability analysis |
 | 44 | M2-10 | #57 | Implement structural and satisfiability analysis |
 | 45 | M2-11 | #58 | Implement duplicate, shadow and overlap analysis |
 | 46 | M2-12 | #59 | Implement actual RouterOS filter-context analysis |
@@ -324,7 +362,7 @@ Post-MVP M7 = **27** після MVP.
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 116 відкритих атомарних задач (#6…#122; #1–#5 → §2.2 DONE; M1-24 → §2.2 DONE).
+**Кінець черги:** 79 відкритих атомарних задач (52 до MVP CLOSED + 27 M7). Start here: #57 M2-10.
 
 ---
 
@@ -332,10 +370,12 @@ Post-MVP M7 = **27** після MVP.
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 89 | M1 залишок + N1 + M2–M6 |
+| До MVP CLOSED | 52 | M2-10…M6-09 + N1-04/06/07 |
 | Post-MVP M7 | 27 | лише після M6-09 |
-| **Нереалізовано разом** | **116** | GitHub OPEN (локальний прогрес M1-24) |
-| Вже CLOSED | 19 | M0 + M1-01…09 — поза чергою |
+| **Нереалізовано разом** | **79** | 52 MVP + 27 M7 |
+| DONE у коді (§2.2) | 57 | M0+M1+N1-01…03/05+M2-01…09 |
+
+GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
 ---
 
@@ -377,7 +417,7 @@ Post-MVP M7 = **27** після MVP.
 | Semantic snapshot diff | M1-24 | `SemanticDiffEngine` unit AC#1–13; CompareSnapshotsUseCase | **DONE** |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | M1-25…29 DONE |
 | M1 acceptance gate | M1-30…34 | CHR suites + acceptance package | **M1 CLOSED** |
-| Policy compose + analysis | M2 | analysis unit; SoD | TODO |
+| Policy compose + analysis | M2 | compose DONE (M2-07…09); analysis unit M2-10…16 | TODO (з M2-10) |
 | Deterministic filter artifact | M3 | golden artifacts | TODO |
 | Anchor bootstrap | M5 | equivalence; crash recovery | TODO |
 | Watchdog deploy / rollback | M4 | fault-injection; VRRP | TODO |
@@ -405,11 +445,12 @@ Post-MVP M7 = **27** після MVP.
 
 ## 7. Операційний старт
 
-1. Відкрити **M2-10** → [issue #57](https://github.com/sesquicadaver/MTDirector/issues/57) (M2-09 #56 DONE).
-2. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.
-3. Не стартувати M2, доки не закрито **M1-34** (черга #33) — **DONE**; M2-01…M2-09 + N1-05 — **DONE**.
-4. Не стартувати M4, доки не закрито **M5-10** (черга #71).
-5. Не стартувати M7, доки не закрито **M6-09** (черга #95).
+1. Хвиля 0: stale OPEN на DONE-коді (#52, #53, #56, #67) — **DONE** 2026-08-15.
+2. Відкрити **M2-10** → [issue #57](https://github.com/sesquicadaver/MTDirector/issues/57).
+3. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.
+4. Не стартувати M3, доки не закрито **M2-18** (черга #53).
+5. Не стартувати M4, доки не закрито **M5-10** (черга #71).
+6. Не стартувати M7, доки не закрито **M6-09** (черга #95).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones

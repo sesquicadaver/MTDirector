@@ -18,6 +18,10 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Desktop inventory cancel race: await shared refresh before surfacing cancellation so `IsRefreshing` clears consistently.
 - Unit tests: explicit non-UTC offsets; zone/snapshot/policy coverage to meet Domain/Application CI thresholds.
 
+### Changed
+
+- ROADMAP operating plan reset (2026-08-15): counters 57/109 MVP done (52 remaining); linear waves M2-10→M6-09; stale §4 «19 CLOSED / 116 open» removed; duplicate M2-10 queue row dropped.
+
 ### Added
 
 - Bounded packet predicate algebra (M2-09): `NormalizedPredicate` / `AtomicTrafficCube` with Spec §37.1 representations (zones as UUID sets), deterministic union/intersect/subtract, hard 128/4096 limits → `PREDICATE_COMPLEXITY_LIMIT`. Exception compose subset/overlap is interval-true; tcp_flags/ipsec stay equality on the subset gate. Desktop OUT; compose RPC unchanged.
