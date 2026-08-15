@@ -62,14 +62,8 @@ public static class EffectivePolicyComposer
             }
         }
 
-        List<PolicyRule> active = [];
         foreach ((PolicyLayer layer, PolicyRule rule) in allRules)
         {
-            if (!rule.Enabled)
-            {
-                continue;
-            }
-
             if (!PolicyPipelineV1.IsOwnerEffectAllowed(rule.Stage, layer.Kind, layer.OwnerScope, rule.Effect.Kind))
             {
                 return PolicyComposeResult.Fail(
@@ -90,8 +84,25 @@ public static class EffectivePolicyComposer
             {
                 return selectorError;
             }
+        }
 
-            active.Add(rule);
+        PolicyComposeResult? analysisError = AnalyzeRules(
+            allRules.Select(static t => t.Rule).ToArray(),
+            addresses,
+            services,
+            knownZoneIds);
+        if (analysisError is not null)
+        {
+            return analysisError;
+        }
+
+        List<PolicyRule> active = [];
+        foreach ((_, PolicyRule rule) in allRules)
+        {
+            if (rule.Enabled)
+            {
+                active.Add(rule);
+            }
         }
 
         List<ActiveEntry> entries = active
@@ -126,6 +137,16 @@ public static class EffectivePolicyComposer
             if (selectorError is not null)
             {
                 return selectorError;
+            }
+
+            PolicyComposeResult? exemptAnalysis = AnalyzeRules(
+                [exemptRule!],
+                addresses,
+                services,
+                knownZoneIds);
+            if (exemptAnalysis is not null)
+            {
+                return exemptAnalysis;
             }
 
             if (!ruleIds.Add(exemptRule!.Id.Value))
@@ -171,6 +192,37 @@ public static class EffectivePolicyComposer
             MergedServiceObjects = mergedServices,
             Findings = findings,
         });
+    }
+
+    private static PolicyComposeResult? AnalyzeRules(
+        PolicyRule[] rules,
+        Dictionary<Guid, ComposedPolicyObject> addresses,
+        Dictionary<Guid, ComposedPolicyObject> services,
+        IReadOnlySet<Guid> knownZoneIds)
+    {
+        if (rules.Length == 0)
+        {
+            return null;
+        }
+
+        string? catalogError = PredicateCatalogBuilder.TryBuild(
+            rules.Select(static r => r.Predicate),
+            addresses,
+            services,
+            out Dictionary<AddressObjectId, AddressObject> typedAddresses,
+            out Dictionary<ServiceObjectId, ServiceObject> typedServices);
+        if (catalogError is not null)
+        {
+            return PolicyComposeResult.Fail(PolicyComposeCodes.SelectorUnresolved, catalogError);
+        }
+
+        PolicyAnalysisResult analysis = PolicyAnalysisEngine.Analyze(
+            rules,
+            typedAddresses,
+            typedServices,
+            knownZoneIds);
+        PolicyAnalysisFinding? blocker = analysis.FirstBlocker;
+        return blocker is null ? null : PolicyComposeResult.Fail(blocker.Code, blocker.Message);
     }
 
     private static PolicyComposeResult? VerifyParentContext(

@@ -70,7 +70,11 @@ public sealed class ComposedEffectivePolicy
     public required IReadOnlyList<PolicyComposeFinding> Findings { get; init; }
 }
 
-/// <summary>Domain compose outcome. Failures use <see cref="Code"/> (<c>POLICY_COMPOSE_*</c>), not <see cref="DomainInvariantException"/>.</summary>
+/// <summary>
+/// Domain compose outcome. Failures use <see cref="Code"/>
+/// (<c>POLICY_COMPOSE_*</c>, <c>RULE_*</c>, <c>PREDICATE_*</c>, <c>POLICY_EXCEPTION_*</c>),
+/// not <see cref="DomainInvariantException"/>.
+/// </summary>
 public sealed class PolicyComposeResult
 {
     private PolicyComposeResult(bool isSuccess, string? code, string? message, ComposedEffectivePolicy? value)

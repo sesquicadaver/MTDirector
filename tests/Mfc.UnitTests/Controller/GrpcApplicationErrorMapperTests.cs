@@ -21,4 +21,17 @@ public sealed class GrpcApplicationErrorMapperTests
         Assert.Equal(PredicateAlgebraCodes.ComplexityLimit, detail.Code);
         Assert.False(detail.Retryable);
     }
+
+    [Fact]
+    public void RuleUnsatisfiableIsFailedPreconditionNotRetryable()
+    {
+        RpcException ex = GrpcApplicationErrorMapper.ToRpcException(
+            new ApplicationError(PolicyAnalysisCodes.Unsatisfiable, "empty selector"));
+        Assert.Equal(StatusCode.FailedPrecondition, ex.StatusCode);
+        byte[]? trailer = ex.Trailers.GetValueBytes(GrpcApplicationErrorMapper.ErrorDetailMetadataKey);
+        Assert.NotNull(trailer);
+        ErrorDetail detail = ErrorDetail.Parser.ParseFrom(trailer);
+        Assert.Equal(PolicyAnalysisCodes.Unsatisfiable, detail.Code);
+        Assert.False(detail.Retryable);
+    }
 }

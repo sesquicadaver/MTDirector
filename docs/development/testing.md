@@ -495,13 +495,46 @@ Policy Model §37 + Issue Set M2-09 AC#1–11 → Domain algebra library + excep
 | `PREDICATE_*` trailer FailedPrecondition, retryable=false | `GrpcApplicationErrorMapper` | O1p |
 | Hash preimage format unchanged; Desktop OUT; no new RPC | existing | D15 / C1 / C3 |
 
-**Residuals (documented, non-blocking):** Flag/IPsec exception subset stays equality (not flag-implication). Cube subtract omits ICMP/flags/IPsec residuals that cannot be represented. `PredicateAlgebra.IsSubset` is fail-closed single-cube cover (union of cubes is not a cover); `Relate` therefore never returns INDETERMINATE and must not be treated as exact packet-space truth in M2-10. Compose uses interval algebra only on the exception path (L4); other active rules stay M2-07 UUID/catalog validation. `PolicyObjectJsonReader` is a second parser beside `PolicyDocumentReader` (hash preimage unchanged). Desktop does not call compose.
+**Residuals (documented, non-blocking):** Flag/IPsec exception subset stays equality (not flag-implication). Cube subtract omits ICMP/flags/IPsec residuals that cannot be represented. `PredicateAlgebra.IsSubset` is fail-closed single-cube cover (union of cubes is not a cover); `Relate` is not used as packet-space truth in M2-10. Compose uses interval algebra on the exception path (L4) and interval/zone/service emptiness on all rules (M2-10); UUID/catalog validation remains. `PolicyObjectJsonReader` is a second parser beside `PolicyDocumentReader` (hash preimage unchanged). Desktop does not call compose.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
-dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PredicateAlgebra|FullyQualifiedName~PortSetAlgebra|FullyQualifiedName~PolicyObjectJson|FullyQualifiedName~ExceptionCompose|FullyQualifiedName~ComposeEffective|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PredicateAlgebra|FullyQualifiedName~PortSetAlgebra|FullyQualifiedName~PolicyObjectJson|FullyQualifiedName~ExceptionCompose|FullyQualifiedName~ComposeEffective|FullyQualifiedName~PolicyAnalysis|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
 dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~PolicyGrpc|FullyQualifiedName~PolicyProto"
+```
+
+## Living Specification — structural and satisfiability analysis (M2-10)
+
+Policy Model §22 / §25 / §38–§39 + Issue Set M2-10 AC#1–12 → Domain `PolicyAnalysisEngine` + compose-on-read gate (Desktop OUT, no new RPC):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Schema/family/chain/stage/object constraints | `PolicyRule` + compose selectors + analysis | `Ac1ValidRuleHasNoBlockersAndInvokesSequence` |
+| Wrong zone direction | `PolicyAnalysisEngine.TryZoneDirection` | `Ac2WrongZoneDirectionIsBlocker` |
+| Empty selector | include−exclude / universe minus all | `Ac3EmptySelectorIsUnsatisfiableBlocker` |
+| TCP flags with non-TCP service | `RULE_TCP_FLAGS_PROTOCOL` | `Ac4TcpFlagsWithUdpServiceAreBlocked` |
+| TCP flags + any-protocol remain satisfiable | flags without service selector | `Ac4TcpFlagsWithAnyProtocolRemainSatisfiable` |
+| ICMP family mismatch | `RULE_ICMP_FAMILY` | `Ac5IcmpFamilyMismatchIsBlocked` |
+| IPsec direction vs INPUT/OUTPUT | `RULE_IPSEC_DIRECTION` | `Ac6IpsecDirectionIsChecked` |
+| Connection-state contradictions | INVALID/UNTRACKED vs tracked | `Ac7ConnectionStateContradictionIsBlocked` |
+| Unsupported matcher | `RULE_UNSUPPORTED_MATCHER` | `Ac8UnsupportedMatcherBlocksRule` + reader D12 |
+| Disabled rule still validated | analysis + compose | `Ac9DisabledRuleStillGetsStructuralValidation` / `DisabledUnsatisfiableRuleFailsCompose` |
+| Structured findings + stable codes | `PolicyAnalysisFinding` | `Ac10Ac11FindingsAreStructuredWithStableCodes` |
+| Invalid rule not passed to sequence | `SequenceAnalyzerInvoked=false` | `Ac12InvalidRuleIsNotPassedToSequenceAnalyzer` |
+| IPv6 + broadcast type empty | `RULE_UNSATISFIABLE` | `Ipv6BroadcastAddressTypeIsUnsatisfiable` |
+| Empty zone include−exclude | `RULE_UNSATISFIABLE` | `EmptyZoneIncludeMinusExcludeIsUnsatisfiable` |
+| TCP_RESET without TCP (reconstitute) | `RULE_TCP_FLAGS_PROTOCOL` | `TcpResetWithoutTcpServiceIsBlockedOnReconstitute` |
+| Disabled dangling UUID | compose `POLICY_COMPOSE_SELECTOR_UNRESOLVED` | `DisabledDanglingSelectorFailsCompose` |
+| Compose gate for flags/IPsec | `EffectivePolicyComposer` | `TcpFlagsWithUdpServiceFailsCompose` / `IpsecInputOutFailsCompose` |
+| `RULE_*` trailer FailedPrecondition, retryable=false | `GrpcApplicationErrorMapper` | `RuleUnsatisfiableIsFailedPreconditionNotRetryable` |
+
+**Residuals:** Sequence/shadow/overlap is M2-11 (`sequenceAnalyzer: null` on compose). Algebra `Relate`/`Subtract` is not the satisfiability oracle; emptiness uses interval resolve + cube drop. Unsupported matchers on typed `TrafficPredicate` cannot appear after `PolicyDocumentReader` (`POLICY_RULES_UNSUPPORTED_SHAPE`); analysis accepts explicit extra-matcher keys for the AC gate.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PolicyAnalysis|FullyQualifiedName~ComposeEffective|FullyQualifiedName~ExceptionCompose|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

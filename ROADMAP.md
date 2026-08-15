@@ -3,7 +3,7 @@
 **Дата оновлення:** 15 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M2-09 — M1 CLOSED; черга зсунута на M2-10
+**Базовий коміт аудиту:** M2-10 — M1 CLOSED; черга зсунута на M2-11
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -46,15 +46,15 @@
 | M0 Bootstrap | 10 | 0 | 100% |
 | M1 Read-only slice | 34 | 0 | 100% |
 | N1 Packet-path weave | 4 | 3 | 57% |
-| M2 Policy core | 9 | 9 | 50% |
+| M2 Policy core | 10 | 8 | 56% |
 | M3 Compiler | 0 | 8 | 0% |
 | M5 Onboarding | 0 | 10 | 0% |
 | M4 Safe deploy | 0 | 13 | 0% |
 | M6 E2E / drift | 0 | 9 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **57** | **79** | **42% issues** |
+| **Разом** | **58** | **78** | **43% issues** |
 
-MVP issues (109) = **57 done + 52 remaining** до MVP CLOSED (**52%**).  
+MVP issues (109) = **58 done + 51 remaining** до MVP CLOSED (**53%**).  
 N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
 Операційно: read-only зріз **готовий**; compile/onboard/apply/drift = **0%**.
 
@@ -110,6 +110,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | M2-07 | #54 | Deterministic logical policy composition; `ComposeEffectivePolicy`; IncrementalHash `logical_effective.v1` |
 | M2-08 | #55 | Scoped deny-stage exceptions; `UpdateExceptionMetadata`; `EXEMPT_DENY_STAGE` insert; exception hash slot |
 | M2-09 | #56 | Bounded packet predicate algebra; exception subset/overlap rewired to intervals |
+| M2-10 | #57 | Structural + satisfiability analysis; `RULE_*` compose blockers before sequence |
 
 ### 2.3 Поточні прогалини (код)
 
@@ -121,9 +122,9 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | `Mfc.Controller` | health + `InventoryService` + `SnapshotService` + `ZoneService` + `PolicyService` (compose + `UpdateExceptionMetadata`) gRPC |
 | `Mfc.Desktop` | connection shell + inventory tree + snapshot/diff viewers + Zones + thin Policies panel |
 | Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings |
-| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) |
+| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability analysis (M2-10) |
 
-**NEXT = M2-10:** [M2-10](https://github.com/sesquicadaver/MTDirector/issues/57) structural and satisfiability analysis (після M2-09 #56 DONE). Не брати `PredicateAlgebra.Relate`/`Subtract` за точний packet-space evaluator: subset — fail-closed single-cube cover; subtract under-approximates ICMP/flags/IPsec.
+**NEXT = M2-11:** [M2-11](https://github.com/sesquicadaver/MTDirector/issues/58) duplicate / shadow / overlap analysis (після M2-10 #57 DONE). Satisfiability emptiness is interval/zone/service resolve + cube drop — не `PredicateAlgebra.Relate` as EQUAL.
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -135,7 +136,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 
 | # | ID | GitHub | Результат | Жорсткі lock-и з аудиту |
 |--:|----|-------:|-----------|-------------------------|
-| 44 | M2-10 | #57 | Structural + satisfiability blockers **до** sequence analysis | Не трактувати `PredicateAlgebra.Relate`/`Subtract` як точний packet-space; INDETERMINATE на недовизначеному safety — blocker, не «equal». Compose L4: алгебра зараз лише на EXCEPTION path. |
+| ~~44~~ | ~~M2-10~~ | ~~#57~~ | ~~Structural + satisfiability blockers **до** sequence analysis~~ → DONE (`PolicyAnalysisEngine`; `RULE_*` compose gate; sequence not invoked on blockers) |
 | 45 | M2-11 | #58 | Duplicate / shadow / overlap + bounded residual + witness | Залежить від чесного empty/disjoint; split-cover subset fail-closed. |
 | 46 | M2-12 | #59 | Actual RouterOS filter-context (anchors, jumps, unmanaged) | risk:high; CFG limits; implicit accept ≠ managed default. |
 | 47 | N1-04 | #66 | `PACKET_PATH_BYPASSES_IP_FIREWALL` / `PACKET_PATH_NOT_PROVEN` | Після M2-12; live projector residual N1-05 не розгортати тут. |
@@ -238,7 +239,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | ~~41~~ | ~~M2-07~~ | ~~#54~~ | ~~Implement deterministic policy composition~~ → DONE (logical compose + `ComposeEffectivePolicy` + IncrementalHash) |
 | ~~42~~ | ~~M2-08~~ | ~~#55~~ | ~~Implement temporary deny-stage exceptions~~ → DONE (typed metadata + compose insert + exception hash slot) |
 | ~~43~~ | ~~M2-09~~ | ~~#56~~ | ~~Implement normalized predicate algebra~~ → DONE (bounded cubes + exception interval proofs) |
-| 44 | M2-10 | #57 | Implement structural and satisfiability analysis |
+| ~~44~~ | ~~M2-10~~ | ~~#57~~ | ~~Implement structural and satisfiability analysis~~ → §2.2 DONE |
 | 45 | M2-11 | #58 | Implement duplicate, shadow and overlap analysis |
 | 46 | M2-12 | #59 | Implement actual RouterOS filter-context analysis |
 | 47 | N1-04 | #66 | Emit `PACKET_PATH_BYPASSES_IP_FIREWALL` / `PACKET_PATH_NOT_PROVEN` blockers |
@@ -362,7 +363,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 79 відкритих атомарних задач (52 до MVP CLOSED + 27 M7). Start here: #57 M2-10.
+**Кінець черги:** 78 відкритих атомарних задач (51 до MVP CLOSED + 27 M7). Start here: #58 M2-11.
 
 ---
 
@@ -370,10 +371,10 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 52 | M2-10…M6-09 + N1-04/06/07 |
+| До MVP CLOSED | 51 | M2-11…M6-09 + N1-04/06/07 |
 | Post-MVP M7 | 27 | лише після M6-09 |
-| **Нереалізовано разом** | **79** | 52 MVP + 27 M7 |
-| DONE у коді (§2.2) | 57 | M0+M1+N1-01…03/05+M2-01…09 |
+| **Нереалізовано разом** | **78** | 51 MVP + 27 M7 |
+| DONE у коді (§2.2) | 58 | M0+M1+N1-01…03/05+M2-01…10 |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
@@ -413,11 +414,13 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | Typed policy rules | M2-06 | typed rules; content-hash CAS; PolicyService; soft `POLICY_SELECTOR_CATALOG_SOFT`; thin Desktop | **DONE** |
 | Deterministic policy composition | M2-07 | logical compose; UUID resolve; `POLICY_COMPOSE_*`; `ComposeEffectivePolicy`; IncrementalHash ≠ synthetic document | **DONE** |
 | Scoped deny-stage exceptions | M2-08 | `EXEMPT_DENY_STAGE`; fail-closed subset; `UpdateExceptionMetadata`; `POLICY_EXCEPTION_*`; exception hash slot | **DONE** |
+| Bounded predicate algebra | M2-09 | cubes; exception interval subset/overlap; `PREDICATE_COMPLEXITY_LIMIT` | **DONE** |
+| Structural + satisfiability analysis | M2-10 | `PolicyAnalysisEngine`; `RULE_*`; disabled rules; no sequence on blockers | **DONE** |
 | Persist canonical snapshots | M1-23 | PG sections; payload dedupe; pagination; immutability | **DONE** |
 | Semantic snapshot diff | M1-24 | `SemanticDiffEngine` unit AC#1–13; CompareSnapshotsUseCase | **DONE** |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | M1-25…29 DONE |
 | M1 acceptance gate | M1-30…34 | CHR suites + acceptance package | **M1 CLOSED** |
-| Policy compose + analysis | M2 | compose DONE (M2-07…09); analysis unit M2-10…16 | TODO (з M2-10) |
+| Policy compose + analysis | M2 | compose DONE (M2-07…09); structural/satisfiability DONE (M2-10); sequence unit M2-11…16 | TODO (з M2-11) |
 | Deterministic filter artifact | M3 | golden artifacts | TODO |
 | Anchor bootstrap | M5 | equivalence; crash recovery | TODO |
 | Watchdog deploy / rollback | M4 | fault-injection; VRRP | TODO |
@@ -446,7 +449,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 ## 7. Операційний старт
 
 1. Хвиля 0: stale OPEN на DONE-коді (#52, #53, #56, #67) — **DONE** 2026-08-15.
-2. Відкрити **M2-10** → [issue #57](https://github.com/sesquicadaver/MTDirector/issues/57).
+2. Відкрити **M2-11** → [issue #58](https://github.com/sesquicadaver/MTDirector/issues/58).
 3. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.
 4. Не стартувати M3, доки не закрито **M2-18** (черга #53).
 5. Не стартувати M4, доки не закрито **M5-10** (черга #71).
