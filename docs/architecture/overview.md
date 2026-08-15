@@ -63,7 +63,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Typed policy rules | Done (M2-06) | Typed rules/predicates; App CAS CRUD; `PolicyService`; thin Desktop list |
 | Deterministic policy composition | Done (M2-07) | `EffectivePolicyComposer`; `ComposeEffectivePolicy`; logical IncrementalHash |
 | Scoped deny-stage exceptions | Done (M2-08) | `ExceptionMetadata`; `UpdateExceptionMetadata`; exemption-stage insert; exception hash slot |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-09 (#56) |
+| Bounded packet predicate algebra | Done (M2-09) | Domain cubes + exception interval subset/overlap; `PREDICATE_COMPLEXITY_LIMIT` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-10 (#57) |
 
 ## ADRs
 

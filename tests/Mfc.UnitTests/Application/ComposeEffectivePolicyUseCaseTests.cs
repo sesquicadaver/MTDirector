@@ -457,7 +457,32 @@ public sealed class ComposeEffectivePolicyUseCaseTests
             exceptionEligible: true);
 
     private static JsonElement ObjectJson(Guid id)
-        => JsonDocument.Parse("{\"id\":\"" + id + "\"}").RootElement.Clone();
+        => AddressJson(id);
+
+    private static JsonElement AddressJson(Guid id)
+    {
+        if (id == Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"))
+        {
+            return AddressPrefix(id, "10.0.0.0", 24);
+        }
+
+        if (id == Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"))
+        {
+            return AddressHost(id, "10.0.1.1");
+        }
+
+        return AddressHost(id, "10.0.0.1");
+    }
+
+    private static JsonElement AddressPrefix(Guid id, string address, int prefixLength)
+        => JsonDocument.Parse(
+            "{\"id\":\"" + id + "\",\"name\":\"addr\",\"family\":\"IPv4\",\"entries\":[{\"kind\":\"PREFIX\",\"address\":\"" +
+            address + "\",\"prefix_length\":" + prefixLength + "}]}").RootElement.Clone();
+
+    private static JsonElement AddressHost(Guid id, string address)
+        => JsonDocument.Parse(
+            "{\"id\":\"" + id + "\",\"name\":\"addr\",\"family\":\"IPv4\",\"entries\":[{\"kind\":\"HOST\",\"address\":\"" +
+            address + "\"}]}").RootElement.Clone();
 
     private static PolicyRule AcceptRule()
         => PolicyRule.Create(

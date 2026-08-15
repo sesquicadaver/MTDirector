@@ -16,7 +16,8 @@ public static class GrpcApplicationErrorMapper
         StatusCode statusCode;
         bool retryable;
         if (error.Code.StartsWith("POLICY_COMPOSE_", StringComparison.Ordinal)
-            || error.Code.StartsWith("POLICY_EXCEPTION_", StringComparison.Ordinal))
+            || error.Code.StartsWith("POLICY_EXCEPTION_", StringComparison.Ordinal)
+            || error.Code.StartsWith("PREDICATE_", StringComparison.Ordinal))
         {
             statusCode = StatusCode.FailedPrecondition;
             retryable = false;

@@ -3,7 +3,7 @@ using Mfc.Domain.Policy.Primitives;
 
 namespace Mfc.Domain.Policy;
 
-/// <summary>Compose-time proofs for one EXCEPTION layer (M2-08). Returns typed codes, never throws.</summary>
+/// <summary>Compose-time proofs for one EXCEPTION layer (M2-08 + M2-09 interval subset/overlap).</summary>
 public static class ExceptionComposeProof
 {
     /// <summary>
@@ -19,12 +19,16 @@ public static class ExceptionComposeProof
         PolicyLayer? node,
         IReadOnlyList<PolicyRule> overlayRules,
         IReadOnlyList<PolicyRule> overlayActive,
+        IReadOnlyDictionary<Guid, ComposedPolicyObject> addresses,
+        IReadOnlyDictionary<Guid, ComposedPolicyObject> services,
         out PolicyRule? exemptRule)
     {
         ArgumentNullException.ThrowIfNull(exception);
         ArgumentNullException.ThrowIfNull(company);
         ArgumentNullException.ThrowIfNull(overlayRules);
         ArgumentNullException.ThrowIfNull(overlayActive);
+        ArgumentNullException.ThrowIfNull(addresses);
+        ArgumentNullException.ThrowIfNull(services);
         exemptRule = null;
 
         if (exception.Kind != PolicyKind.Exception)
@@ -132,10 +136,46 @@ public static class ExceptionComposeProof
                 "EXCEPTION family and chain must match the waived rule.");
         }
 
-        string? subset = ExceptionPredicateProof.CheckSubset(rule.Predicate, target.Predicate);
+        List<TrafficPredicate> needed = [rule.Predicate, target.Predicate];
+        foreach (PolicyRule other in overlayActive)
+        {
+            if (other.Id == target.Id
+                || other.Family != target.Family
+                || other.Chain != target.Chain
+                || other.Stage != target.Stage
+                || other.Effect.Kind is not (PolicyRuleEffect.Drop or PolicyRuleEffect.Reject))
+            {
+                continue;
+            }
+
+            needed.Add(other.Predicate);
+        }
+
+        string? catalogError = PredicateCatalogBuilder.TryBuild(
+            needed,
+            addresses,
+            services,
+            out Dictionary<AddressObjectId, AddressObject> addressCatalog,
+            out Dictionary<ServiceObjectId, ServiceObject> serviceCatalog);
+        if (catalogError is not null)
+        {
+            return Fail(PolicyComposeCodes.SelectorUnresolved, catalogError);
+        }
+
+        string? subset = ExceptionPredicateProof.CheckSubset(
+            rule.Predicate,
+            target.Predicate,
+            rule.Family,
+            rule.Chain,
+            addressCatalog,
+            serviceCatalog);
         if (subset is not null)
         {
-            return Fail(subset, "EXCEPTION predicate is not a fail-closed structural subset of the waived rule.");
+            return Fail(
+                subset,
+                subset == PredicateAlgebraCodes.ComplexityLimit
+                    ? "EXCEPTION predicate expansion exceeded the bounded algebra limit."
+                    : "EXCEPTION predicate is not a fail-closed subset of the waived rule.");
         }
 
         foreach (PolicyRule other in overlayActive)
@@ -157,11 +197,20 @@ public static class ExceptionComposeProof
                 continue;
             }
 
-            if (ExceptionPredicateProof.StructurallyOverlaps(rule.Predicate, other.Predicate))
+            string? overlapError = ExceptionPredicateProof.CheckOverlap(
+                rule.Predicate,
+                other.Predicate,
+                rule.Family,
+                rule.Chain,
+                addressCatalog,
+                serviceCatalog);
+            if (overlapError is not null)
             {
                 return Fail(
-                    PolicyExceptionCodes.Overlap,
-                    $"EXCEPTION overlaps non-target deny '{other.Id}' in the same stage.");
+                    overlapError,
+                    overlapError == PredicateAlgebraCodes.ComplexityLimit
+                        ? "EXCEPTION overlap proof exceeded the bounded algebra limit."
+                        : $"EXCEPTION overlaps non-target deny '{other.Id}' in the same stage.");
             }
         }
 
