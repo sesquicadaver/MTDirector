@@ -3,7 +3,7 @@
 **Дата оновлення:** 15 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M2-12 — M1 CLOSED; черга зсунута на N1-04
+**Базовий коміт аудиту:** N1-04 — M1 CLOSED; черга зсунута на M2-13
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -45,16 +45,16 @@
 |---------|-------:|-----:|--:|
 | M0 Bootstrap | 10 | 0 | 100% |
 | M1 Read-only slice | 34 | 0 | 100% |
-| N1 Packet-path weave | 4 | 3 | 57% |
+| N1 Packet-path weave | 5 | 2 | 71% |
 | M2 Policy core | 12 | 6 | 67% |
 | M3 Compiler | 0 | 8 | 0% |
 | M5 Onboarding | 0 | 10 | 0% |
 | M4 Safe deploy | 0 | 13 | 0% |
 | M6 E2E / drift | 0 | 9 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **60** | **76** | **44% issues** |
+| **Разом** | **61** | **75** | **45% issues** |
 
-MVP issues (109) = **60 done + 49 remaining** до MVP CLOSED (**55%**).  
+MVP issues (109) = **61 done + 48 remaining** до MVP CLOSED (**56%**).  
 N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
 Операційно: read-only зріз **готовий**; compile/onboard/apply/drift = **0%**.
 
@@ -113,20 +113,21 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | M2-10 | #57 | Structural + satisfiability analysis; `RULE_*` compose blockers before sequence |
 | M2-11 | #58 | Duplicate / shadow / overlap; fail-closed subset equal; witness packets; sequence BLOCKERs on compose |
 | M2-12 | #59 | Actual filter CFG + pre/post-anchor findings; implicit accept ≠ managed default; actual context hash |
+| N1-04 | #66 | Packet-path analysis BLOCKERs `PACKET_PATH_BYPASSES_IP_FIREWALL` / `PACKET_PATH_NOT_PROVEN` |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
-| `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors; default `ProbeOnlyRouterOsReadPort` + `NotConfiguredSnapshotCapturePort`; actual-filter discovery mapper |
+| `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors; default `ProbeOnlyRouterOsReadPort` + `NotConfiguredSnapshotCapturePort`; actual-filter discovery mapper; packet-path blocker mapper |
 | `Mfc.Contracts` | `mfc.v1` inventory + snapshot/diff + `ZoneService` + `PolicyService` |
-| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper |
+| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper + packet-path canonical mapper |
 | `Mfc.Controller` | health + `InventoryService` + `SnapshotService` + `ZoneService` + `PolicyService` (compose + `UpdateExceptionMetadata`) gRPC |
 | `Mfc.Desktop` | connection shell + inventory tree + snapshot/diff viewers + Zones + thin Policies panel |
 | Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings |
-| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) |
+| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) |
 
-**NEXT = N1-04:** [N1-04](https://github.com/sesquicadaver/MTDirector/issues/66) `PACKET_PATH_BYPASSES_IP_FIREWALL` / `PACKET_PATH_NOT_PROVEN` (після M2-12 #59 DONE). Actual-filter CFG is bounded; RouterOS implicit accept is never the managed default.
+**NEXT = M2-13:** [M2-13](https://github.com/sesquicadaver/MTDirector/issues/60) management-path safety validation (після N1-04 #66 DONE). Packet-path HW-offload / INDETERMINATE emit FORWARD analysis BLOCKERs; Controller never disables offload.
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -141,7 +142,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | ~~44~~ | ~~M2-10~~ | ~~#57~~ | ~~Structural + satisfiability blockers **до** sequence analysis~~ → DONE (`PolicyAnalysisEngine`; `RULE_*` compose gate; sequence not invoked on blockers) |
 | ~~45~~ | ~~M2-11~~ | ~~#58~~ | ~~Duplicate / shadow / overlap + bounded residual + witness~~ → DONE (`PolicySequenceAnalysis`; fail-closed equal; INDETERMINATE ≠ FULLY_SHADOWED) |
 | ~~46~~ | ~~M2-12~~ | ~~#59~~ | ~~Actual RouterOS filter-context (anchors, jumps, unmanaged)~~ → DONE (`ActualFilterAnalysis`; CFG limits; implicit accept ≠ managed default) |
-| 47 | N1-04 | #66 | `PACKET_PATH_BYPASSES_IP_FIREWALL` / `PACKET_PATH_NOT_PROVEN` | Після M2-12; live projector residual N1-05 не розгортати тут. |
+| ~~47~~ | ~~N1-04~~ | ~~#66~~ | ~~`PACKET_PATH_BYPASSES_IP_FIREWALL` / `PACKET_PATH_NOT_PROVEN`~~ → DONE (`PacketPathAnalysis`; HW/INDETERMINATE BLOCKERs; MIXED not those codes) |
 
 **Хвиля 2 — M2 safety (черга #48–#51):** M2-13 management-path (#60) → M2-14 VRRP/multi-WAN/RAW/NAT deps (#61) → M2-15 FastTrack (#62) → M2-16 tests/diff/risk (#63). Усі risk:high, крім M2-16.
 
@@ -244,7 +245,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | ~~44~~ | ~~M2-10~~ | ~~#57~~ | ~~Implement structural and satisfiability analysis~~ → §2.2 DONE |
 | ~~45~~ | ~~M2-11~~ | ~~#58~~ | ~~Implement duplicate, shadow and overlap analysis~~ → §2.2 DONE |
 | ~~46~~ | ~~M2-12~~ | ~~#59~~ | ~~Implement actual RouterOS filter-context analysis~~ → §2.2 DONE |
-| 47 | N1-04 | #66 | Emit `PACKET_PATH_BYPASSES_IP_FIREWALL` / `PACKET_PATH_NOT_PROVEN` blockers |
+| ~~47~~ | ~~N1-04~~ | ~~#66~~ | ~~Emit `PACKET_PATH_BYPASSES_IP_FIREWALL` / `PACKET_PATH_NOT_PROVEN` blockers~~ → §2.2 DONE |
 | 48 | M2-13 | #60 | Implement management-path safety validation |
 | 49 | M2-14 | #61 | Implement topology and dependency safety validation |
 | 50 | M2-15 | #62 | Implement FastTrack policy validation |
@@ -365,7 +366,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 76 відкритих атомарних задач (49 до MVP CLOSED + 27 M7). Start here: #66 N1-04.
+**Кінець черги:** 75 відкритих атомарних задач (48 до MVP CLOSED + 27 M7). Start here: #60 M2-13.
 
 ---
 
@@ -373,10 +374,10 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 49 | N1-04 + M2-13…M6-09 + N1-06/07 |
+| До MVP CLOSED | 48 | M2-13…M6-09 + N1-06/07 |
 | Post-MVP M7 | 27 | лише після M6-09 |
-| **Нереалізовано разом** | **76** | 49 MVP + 27 M7 |
-| DONE у коді (§2.2) | 60 | M0+M1+N1-01…03/05+M2-01…12 |
+| **Нереалізовано разом** | **75** | 48 MVP + 27 M7 |
+| DONE у коді (§2.2) | 61 | M0+M1+N1-01…05+M2-01…12 |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
@@ -410,7 +411,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | Raw snapshot assembly | M1-20 | versioned redacted raw; size limit; secret scan | **DONE** |
 | Canonicalization primitives | M1-21 | IP/set/JSON normalize; config≠obs hashes | **DONE** |
 | Menu canonical snapshots | M1-22 | section registry; config≠obs; unknown→compat obs | **DONE** |
-| Packet-path blockers | N1-04 | analysis blockers from path class | TODO |
+| Packet-path blockers | N1-04 | `PacketPathAnalysis`; HW → BYPASSES; INDETERMINATE → NOT_PROVEN; MIXED not those codes | **DONE** |
 | Logical zones + Node bindings | M2-05 | catalog SoT; per-Device resolve; ZoneService; Desktop CRUD; AC#10–11 deferred | **DONE** |
 | Zone VETH/VLAN/bridge resolve | N1-05 | topology.container-veth/shared-veth; container:/app: markers; typed blockers; hash v1; live projector←PacketPath wiring residual (M1-22 seam) | **DONE** (library+resolve) |
 | Typed policy rules | M2-06 | typed rules; content-hash CAS; PolicyService; soft `POLICY_SELECTOR_CATALOG_SOFT`; thin Desktop | **DONE** |
@@ -424,7 +425,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | Semantic snapshot diff | M1-24 | `SemanticDiffEngine` unit AC#1–13; CompareSnapshotsUseCase | **DONE** |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | M1-25…29 DONE |
 | M1 acceptance gate | M1-30…34 | CHR suites + acceptance package | **M1 CLOSED** |
-| Policy compose + analysis | M2 | compose DONE (M2-07…09); structural DONE (M2-10); sequence DONE (M2-11); actual-filter DONE (M2-12); safety M2-13…16 | TODO (з N1-04 / M2-13) |
+| Policy compose + analysis | M2 | compose DONE (M2-07…09); structural DONE (M2-10); sequence DONE (M2-11); actual-filter DONE (M2-12); packet-path BLOCKERs DONE (N1-04); safety M2-13…16 | TODO (з M2-13) |
 | Deterministic filter artifact | M3 | golden artifacts | TODO |
 | Anchor bootstrap | M5 | equivalence; crash recovery | TODO |
 | Watchdog deploy / rollback | M4 | fault-injection; VRRP | TODO |
@@ -453,7 +454,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 ## 7. Операційний старт
 
 1. Хвиля 0: stale OPEN на DONE-коді (#52, #53, #56, #67) — **DONE** 2026-08-15.
-2. Відкрити **N1-04** → [issue #66](https://github.com/sesquicadaver/MTDirector/issues/66).
+2. Відкрити **M2-13** → [issue #60](https://github.com/sesquicadaver/MTDirector/issues/60).
 3. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.
 4. Не стартувати M3, доки не закрито **M2-18** (черга #53).
 5. Не стартувати M4, доки не закрито **M5-10** (черга #71).

@@ -3,7 +3,7 @@ namespace Mfc.RouterOs.Discovery;
 /// <summary>
 /// Classifies ingress/egress pairs into CPU / HW-offload / MIXED / INDETERMINATE (N1-03 / next-1).
 /// Never assumes hardware-switched traffic traverses the IP firewall.
-/// Blocker emission for analysis is N1-04; this surface only attaches hints.
+/// Analysis BLOCKERs for managed FORWARD are Domain <c>PacketPathAnalysis</c> (N1-04); this surface only attaches hints.
 /// </summary>
 public static class PacketPathClassifier
 {
