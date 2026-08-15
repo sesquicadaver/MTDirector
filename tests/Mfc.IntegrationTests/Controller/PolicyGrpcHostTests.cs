@@ -752,7 +752,10 @@ public sealed class PolicyGrpcHostTests
             DomainPolicy.PolicyOwnerScope.Company,
             addressObjects:
             [
-                System.Text.Json.JsonDocument.Parse("{\"id\":\"" + addressId + "\"}").RootElement.Clone(),
+                System.Text.Json.JsonDocument.Parse(
+                    "{\"id\":\"" + addressId +
+                    "\",\"name\":\"deny-src\",\"family\":\"IPv4\",\"entries\":[{\"kind\":\"PREFIX\",\"address\":\"10.0.0.0\",\"prefix_length\":24}]}")
+                    .RootElement.Clone(),
             ],
             rules: [deny]);
         revision!.ReplaceDocument(document, parentContextHash: null);
