@@ -170,6 +170,16 @@ public static class EffectivePolicyComposer
             .ToArray();
 
         List<PolicyComposeFinding> findings = CollectUnused(addresses, services, orderedActive);
+        PolicyComposeResult? sequenceError = AppendSequenceFindings(
+            orderedActive,
+            addresses,
+            services,
+            findings);
+        if (sequenceError is not null)
+        {
+            return sequenceError;
+        }
+
         Hash256[] exceptionHashes = exceptionLayers
             .OrderBy(static e => e.PolicyDocument.ExceptionMetadata!.WaivedRuleId.Value)
             .ThenBy(static e => e.PolicyId)
@@ -223,6 +233,52 @@ public static class EffectivePolicyComposer
             knownZoneIds);
         PolicyAnalysisFinding? blocker = analysis.FirstBlocker;
         return blocker is null ? null : PolicyComposeResult.Fail(blocker.Code, blocker.Message);
+    }
+
+    private static PolicyComposeResult? AppendSequenceFindings(
+        PolicyRule[] orderedActive,
+        Dictionary<Guid, ComposedPolicyObject> addresses,
+        Dictionary<Guid, ComposedPolicyObject> services,
+        List<PolicyComposeFinding> findings)
+    {
+        if (orderedActive.Length == 0)
+        {
+            return null;
+        }
+
+        string? catalogError = PredicateCatalogBuilder.TryBuild(
+            orderedActive.Select(static r => r.Predicate),
+            addresses,
+            services,
+            out Dictionary<AddressObjectId, AddressObject> typedAddresses,
+            out Dictionary<ServiceObjectId, ServiceObject> typedServices);
+        if (catalogError is not null)
+        {
+            return PolicyComposeResult.Fail(PolicyComposeCodes.SelectorUnresolved, catalogError);
+        }
+
+        IReadOnlyList<PolicyAnalysisFinding> sequence = PolicySequenceAnalysis.Analyze(
+            orderedActive,
+            typedAddresses,
+            typedServices);
+        PolicyAnalysisFinding? blocker = sequence.FirstOrDefault(
+            static f => f.Severity == PolicyAnalysisCodes.SeverityBlocker);
+        if (blocker is not null)
+        {
+            return PolicyComposeResult.Fail(blocker.Code, blocker.Message);
+        }
+
+        foreach (PolicyAnalysisFinding finding in sequence)
+        {
+            findings.Add(new PolicyComposeFinding
+            {
+                Code = finding.Code,
+                Message = finding.Message,
+                Subject = finding.RuleId.ToString("D"),
+            });
+        }
+
+        return null;
     }
 
     private static PolicyComposeResult? VerifyParentContext(

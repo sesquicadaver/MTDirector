@@ -12,8 +12,9 @@ namespace Mfc.Domain.Policy;
 public static class PolicyAnalysisEngine
 {
     /// <summary>
-    /// Analyzes every rule, including disabled ones. Sequence analysis runs only when
-    /// there are no blockers.
+    /// Analyzes every rule, including disabled ones. <paramref name="sequenceAnalyzer"/>
+    /// is a test seam invoked only when structural blockers are absent; compose uses
+    /// <see cref="PolicySequenceAnalysis"/> after <c>OrderActive</c>, not this parameter.
     /// </summary>
     public static PolicyAnalysisResult Analyze(
         IReadOnlyList<PolicyRule> rules,

@@ -46,7 +46,7 @@ public sealed class PolicyLayer
     public required PolicyDocument PolicyDocument { get; init; }
 }
 
-/// <summary>INFO finding produced by a successful compose (unused objects).</summary>
+/// <summary>Successful-compose finding (unused objects INFO or sequence WARNING).</summary>
 public sealed class PolicyComposeFinding
 {
     public required string Code { get; init; }
@@ -72,7 +72,8 @@ public sealed class ComposedEffectivePolicy
 
 /// <summary>
 /// Domain compose outcome. Failures use <see cref="Code"/>
-/// (<c>POLICY_COMPOSE_*</c>, <c>RULE_*</c>, <c>PREDICATE_*</c>, <c>POLICY_EXCEPTION_*</c>),
+/// (<c>POLICY_COMPOSE_*</c>, <c>RULE_*</c>, <c>PREDICATE_*</c>, <c>POLICY_EXCEPTION_*</c>,
+/// plus sequence <see cref="PolicyAnalysisCodes.IsSequenceComposeFailure"/>),
 /// not <see cref="DomainInvariantException"/>.
 /// </summary>
 public sealed class PolicyComposeResult
