@@ -1,6 +1,6 @@
 namespace Mfc.Domain.Policy;
 
-/// <summary>One structural or satisfiability finding with a frozen code (M2-10).</summary>
+/// <summary>One structural, satisfiability, or sequence finding with a frozen code.</summary>
 public sealed class PolicyAnalysisFinding
 {
     public required string Code { get; init; }
@@ -10,11 +10,17 @@ public sealed class PolicyAnalysisFinding
     public required Guid RuleId { get; init; }
 
     public required string Message { get; init; }
+
+    /// <summary>Earlier rule that proves duplicate, shadow, or overlap; null for unary findings.</summary>
+    public Guid? RelatedRuleId { get; init; }
+
+    /// <summary>Concrete representative packet when the finding is proven (Policy Model §43).</summary>
+    public PolicyWitnessPacket? Witness { get; init; }
 }
 
 /// <summary>
-/// Sequence-level analyzer hook (M2-11). Invoked only after structural/satisfiability blockers
-/// are absent so invalid rules never reach shadow/overlap analysis.
+/// Optional M2-10 test seam. Production compose does not use this hook: it calls
+/// <see cref="PolicySequenceAnalysis"/> after pipeline order and exception insertion.
 /// </summary>
 public delegate IReadOnlyList<PolicyAnalysisFinding> PolicySequenceAnalyzer(
     IReadOnlyList<PolicyRule> structurallyValidRules);

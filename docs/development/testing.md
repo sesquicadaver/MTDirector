@@ -529,12 +529,44 @@ Policy Model §22 / §25 / §38–§39 + Issue Set M2-10 AC#1–12 → Domain `P
 | Compose gate for flags/IPsec | `EffectivePolicyComposer` | `TcpFlagsWithUdpServiceFailsCompose` / `IpsecInputOutFailsCompose` |
 | `RULE_*` trailer FailedPrecondition, retryable=false | `GrpcApplicationErrorMapper` | `RuleUnsatisfiableIsFailedPreconditionNotRetryable` |
 
-**Residuals:** Sequence/shadow/overlap is M2-11 (`sequenceAnalyzer: null` on compose). Algebra `Relate`/`Subtract` is not the satisfiability oracle; emptiness uses interval resolve + cube drop. Unsupported matchers on typed `TrafficPredicate` cannot appear after `PolicyDocumentReader` (`POLICY_RULES_UNSUPPORTED_SHAPE`); analysis accepts explicit extra-matcher keys for the AC gate.
+**Residuals:** Sequence/shadow/overlap is M2-11. Algebra `Relate`/`Subtract` is not the satisfiability oracle; emptiness uses interval resolve + cube drop. Unsupported matchers on typed `TrafficPredicate` cannot appear after `PolicyDocumentReader` (`POLICY_RULES_UNSUPPORTED_SHAPE`); analysis accepts explicit extra-matcher keys for the AC gate.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
-dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PolicyAnalysis|FullyQualifiedName~ComposeEffective|FullyQualifiedName~ExceptionCompose|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PolicyAnalysis|FullyQualifiedName~PolicySequence|FullyQualifiedName~ComposeEffective|FullyQualifiedName~ExceptionCompose|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — duplicate, shadow and overlap analysis (M2-11)
+
+Policy Model §40–§43 + Issue Set M2-11 AC#1–12 → Domain `PolicySequenceAnalysis` after M2-10 blockers, on pipeline-ordered enabled rules (Desktop OUT, no new RPC):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Exact duplicates | `RULE_EXACT_DUPLICATE` WARNING | `Ac1ExactDuplicatesAreWarningsAndKeepBothRules` |
+| Same predicate, different effect | `RULE_CONFLICTING_DUPLICATE` BLOCKER | `Ac2SamePredicateDifferentEffectIsBlocker` |
+| Fully shadowed enabled rule | `RULE_FULLY_SHADOWED` BLOCKER | `Ac3FullyShadowedEnabledRuleIsBlocker` |
+| Partial shadowing | `RULE_PARTIALLY_SHADOWED` WARNING | `Ac4PartialShadowingIsWarning` |
+| Allow-before-deny overlap | `EARLIER_ALLOW_BYPASSES_DENY` | `Ac5AllowBeforeDenyOverlapIsDetected` |
+| Deny-before-allow overlap | `ORDER_DEPENDENT_OVERLAP` | `Ac6DenyBeforeAllowOverlapIsDetected` |
+| FASTTRACK overlap distinct | `FASTTRACK_OVERLAP`; vs deny = BLOCKER | `Ac7FasttrackOverlapIsDistinct` |
+| Bounded residual fragments | subtract limit / split-cover | `Ac8Ac9SplitCoverEmptyResidualIsIndeterminateBlocker` |
+| Indeterminate safety is blocker | `SHADOW_ANALYSIS_INDETERMINATE` | `Ac8Ac9SplitCoverEmptyResidualIsIndeterminateBlocker` |
+| Witness packet on proven findings | `PolicyWitnessPacket` | `Ac10ProvenFindingsHaveWitnessPackets` |
+| Duplicate not auto-removed | compose keeps both active rules | `Ac11DuplicateIsNotRemovedFromCompose` |
+| Deterministic vs thread scheduling | stable sort by rule/code/related | `Ac12FindingsAreIndependentOfRepeatedInvocation` |
+| Family/chain isolation | no cross-surface shadow | `DifferentFamiliesDoNotShadowEachOther` |
+| Disabled ignored at sequence | M2-10 still validates | `DisabledRulesAreIgnoredBySequenceAnalysis` |
+| Exempt skip (M2-08 proofs) | no duplicate/shadow/overlap vs `EXEMPT_DENY_STAGE` | `ExemptDenyStageIsSkippedForDuplicateShadowAndOverlap` |
+| Same effect, different logging | not `RULE_CONFLICTING_DUPLICATE` | `SameEffectDifferentLoggingIsFullyShadowedNotConflictingDuplicate` |
+| Sequence BLOCKER gRPC trailer | FailedPrecondition, retryable=false | `SequenceComposeBlockersAreFailedPreconditionNotRetryable` |
+
+**Residuals:** Equal uses fail-closed single-cube `IsSubset` both ways, not `Relate` as packet-space EQUAL. Empty residual without fail-closed cover is INDETERMINATE, not FULLY_SHADOWED. Exception `EXEMPT_DENY_STAGE` is non-terminal and skipped for overlap. Compose fails closed on sequence BLOCKERs; WARNINGs attach to `ComposedEffectivePolicy.Findings`. FASTTRACK vs ACCEPT stays WARNING (`FASTTRACK_OVERLAP`); vs DROP/REJECT is BLOCKER. Witness stays on Domain findings (Desktop OUT; `PolicyComposeFinding` has no witness slot). `PolicySequenceAnalyzer` on `PolicyAnalysisEngine` is a test seam, not the compose path.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PolicySequence|FullyQualifiedName~ComposeEffective|FullyQualifiedName~ExceptionCompose|FullyQualifiedName~PolicyAnalysis|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

@@ -2,6 +2,7 @@ using Google.Protobuf;
 using Grpc.Core;
 using Mfc.Application.Common;
 using Mfc.Contracts.Mfc.V1;
+using Mfc.Domain.Policy;
 
 namespace Mfc.Controller.Grpc;
 
@@ -18,7 +19,8 @@ public static class GrpcApplicationErrorMapper
         if (error.Code.StartsWith("POLICY_COMPOSE_", StringComparison.Ordinal)
             || error.Code.StartsWith("POLICY_EXCEPTION_", StringComparison.Ordinal)
             || error.Code.StartsWith("PREDICATE_", StringComparison.Ordinal)
-            || error.Code.StartsWith("RULE_", StringComparison.Ordinal))
+            || error.Code.StartsWith("RULE_", StringComparison.Ordinal)
+            || PolicyAnalysisCodes.IsSequenceComposeFailure(error.Code))
         {
             statusCode = StatusCode.FailedPrecondition;
             retryable = false;

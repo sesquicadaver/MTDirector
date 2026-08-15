@@ -34,4 +34,20 @@ public sealed class GrpcApplicationErrorMapperTests
         Assert.Equal(PolicyAnalysisCodes.Unsatisfiable, detail.Code);
         Assert.False(detail.Retryable);
     }
+
+    [Theory]
+    [InlineData(PolicyAnalysisCodes.ShadowIndeterminate)]
+    [InlineData(PolicyAnalysisCodes.EarlierAllowBypassesDeny)]
+    [InlineData(PolicyAnalysisCodes.FasttrackOverlap)]
+    public void SequenceComposeBlockersAreFailedPreconditionNotRetryable(string code)
+    {
+        RpcException ex = GrpcApplicationErrorMapper.ToRpcException(
+            new ApplicationError(code, "sequence blocker"));
+        Assert.Equal(StatusCode.FailedPrecondition, ex.StatusCode);
+        byte[]? trailer = ex.Trailers.GetValueBytes(GrpcApplicationErrorMapper.ErrorDetailMetadataKey);
+        Assert.NotNull(trailer);
+        ErrorDetail detail = ErrorDetail.Parser.ParseFrom(trailer);
+        Assert.Equal(code, detail.Code);
+        Assert.False(detail.Retryable);
+    }
 }

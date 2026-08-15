@@ -23,7 +23,9 @@ public sealed class ComposeEffectivePolicyQuery
 /// <summary>
 /// Loads inventory + unique ACTIVE company + optional overlays + zone catalog,
 /// then runs <see cref="EffectivePolicyComposer"/>. Compose blockers keep typed
-/// <c>POLICY_COMPOSE_*</c> / <c>RULE_*</c> / <c>PREDICATE_*</c> / <c>POLICY_EXCEPTION_*</c> codes.
+/// <c>POLICY_COMPOSE_*</c> / <c>RULE_*</c> / <c>PREDICATE_*</c> / <c>POLICY_EXCEPTION_*</c>
+/// plus sequence <c>SHADOW_ANALYSIS_INDETERMINATE</c> / <c>EARLIER_ALLOW_BYPASSES_DENY</c> /
+/// <c>FASTTRACK_OVERLAP</c> codes.
 /// </summary>
 public sealed class ComposeEffectivePolicyUseCase
 {
