@@ -569,6 +569,41 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PolicySequence|FullyQualifiedName~ComposeEffective|FullyQualifiedName~ExceptionCompose|FullyQualifiedName~PolicyAnalysis|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
 ```
 
+## Living Specification — actual RouterOS filter-context (M2-12)
+
+Policy Model §44–§45 + Issue Set M2-12 AC#1–12 → Domain `ActualFilterAnalysis` + Application canonical mapper + RouterOs discovery mapper (Desktop OUT, no new RPC; compose unchanged):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Bounded filter CFG | `ActualFilterAnalysis` graph | `Ac1BoundedFilterControlFlowGraphIsBuilt` |
+| Jump + return | CFG edges | `Ac2JumpAndReturnAreSupported` |
+| Jump cycles | `ACTUAL_FILTER_JUMP_CYCLE` | `Ac3JumpCyclesAreDetected` / `SelfJumpIsCycle` |
+| Depth / node / chain limits | 16 / 50 000 / 1024 | `Ac4DepthAndNodeLimitsAreApplied` |
+| Pre-anchor ACCEPT bypass | `PRE_ANCHOR_ACCEPT_BYPASSES_POLICY` | `Ac5PreAnchorAcceptBypassIsDetected` |
+| Pre-anchor DROP/REJECT shadow | `PRE_ANCHOR_DROP_SHADOWS_POLICY` | `Ac6PreAnchorDropShadowIsDetected` / `PreAnchorRejectShadowsPolicy` |
+| Pre-anchor FastTrack bypass | `PRE_ANCHOR_FASTTRACK_BYPASSES_POLICY` | `Ac7PreAnchorFastTrackBypassIsDetected` |
+| Dynamic pre-anchor | `PRE_ANCHOR_DYNAMIC_RULE_PRESENT` | `Ac8DynamicPreAnchorRuleIsMarked` |
+| Unsupported matcher/action | `ACTUAL_FILTER_UNKNOWN_*` + pre-anchor indeterminate | `Ac9UnsupportedMatcherOrActionIsIndeterminate` |
+| Post-anchor only if `RETURN_TO_UNMANAGED` | `PostAnchorAnalyzed` | `Ac10PostAnchorContextIsAnalyzedOnlyForReturnToUnmanaged` |
+| Implicit accept ≠ managed default | `UsesRouterOsImplicitAcceptAsManagedDefault=false` | `Ac11RouterOsImplicitAcceptIsNotManagedDefault` |
+| Actual context hash in analysis context | `mfc.policy.actual_filter_context.v1` | `Ac12ActualContextHashEntersAnalysisContext` |
+| Disabled / controller-owned skip bypass | marker + disabled | `DisabledPreAnchorAcceptIsIgnored` / `ControllerOwnedPreAnchorIsNotUnmanagedBypass` |
+| Miss-path after guard/terminals | §44 layout | `GuardDoesNotHideLaterUnmanagedPreAnchorBypass` |
+| Jump → empty builtin implicit accept | pre-anchor bypass | `JumpToEmptyBuiltinIsPreAnchorAcceptBypass` |
+| Return edge to jump successor | CFG | `ReturnEdgeTargetsSuccessorAfterJump` |
+| Unmanaged jump into `fwc.*` | INDETERMINATE | `UnmanagedJumpIntoManagedIsIndeterminate` |
+| Canonical mapper | `ActualFilterContextMapper` | `CanonicalFilterRecordsMapToDomainRulesAndDetectPreAnchorAccept` |
+| Discovery mapper (dynamic + unknown) | `ActualFilterRuleMapper` | `DiscoveryMapsDynamicJumpAndUnknownMatchers` |
+| `ACTUAL_FILTER_*` / `PRE_ANCHOR_*` trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
+
+**Residuals:** Desktop OUT; no new RPC; compose-on-read stays logical (actual CFG is analysis level 6, not wired into `ComposeEffectivePolicy`). Witness packets N/A for actual CFG. Management-path safety is M2-13. Canonical filter sections still omit dynamics; RouterOs discovery mapper is the dynamic path. Jump into managed `fwc.*`/`mfc.*` from controller-owned comments is an opaque `ManagedPipeline` node (candidate policy remains M2-11). Walk continues miss-path after terminals so later unmanaged pre-anchor rules stay visible; the anchor itself still stops post-anchor unless `RETURN_TO_UNMANAGED`. M2-13 must not treat `Graph.Edges` as the only reachability oracle — findings come from the walk.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ActualFilter|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
+```
+
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
 Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):

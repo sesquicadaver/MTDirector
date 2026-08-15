@@ -20,10 +20,11 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- ROADMAP: M2-11 closed in the operating plan; NEXT = M2-12 (#59); counters 59/109 MVP done (50 remaining).
+- ROADMAP: M2-12 closed in the operating plan; NEXT = N1-04 (#66); counters 60/109 MVP done (49 remaining).
 
 ### Added
 
+- Actual RouterOS filter-context analysis (M2-12): Domain `ActualFilterAnalysis` builds a bounded filter CFG (jump/return/cycle, depth 16, 50 000 nodes, 1024 chains); unmanaged pre-anchor ACCEPT/DROP/REJECT/FastTrack/dynamic/indeterminate are BLOCKERs; post-anchor is walked only for `RETURN_TO_UNMANAGED`; RouterOS implicit accept is never the managed default. Actual context hash (`mfc.policy.actual_filter_context.v1`) enters analysis context. Application canonical mapper + RouterOs discovery mapper (dynamic rows + unknown matchers). `ACTUAL_FILTER_*` / `PRE_ANCHOR_*` → FailedPrecondition `retryable=false`. Desktop OUT; no new RPC; compose unchanged.
 - Duplicate / shadow / overlap analysis (M2-11): Domain `PolicySequenceAnalysis` on pipeline-ordered enabled rules after M2-10; exact duplicates stay in the active list (WARNING); conflicting duplicates, full shadows, split-cover indeterminate, earlier-allow-bypasses-deny, and FASTTRACK-vs-deny are compose BLOCKERs with witness packets. `SHADOW_ANALYSIS_INDETERMINATE` / `EARLIER_ALLOW_BYPASSES_DENY` / `FASTTRACK_OVERLAP` → FailedPrecondition `retryable=false`. Equal uses fail-closed `IsSubset`, not `Relate`. Desktop OUT; no new RPC.
 - Structural and satisfiability analysis (M2-10): Domain `PolicyAnalysisEngine` emits frozen `RULE_*` blockers (empty selectors, zone direction, TCP flags vs non-TCP, ICMP family, IPsec vs chain, conntrack contradictions, unsupported matchers) on **all** rules including disabled; compose-on-read fails closed and does not invoke sequence analysis. `RULE_*` → FailedPrecondition `retryable=false`. Desktop OUT; no new RPC. Satisfiability does not treat `PredicateAlgebra.Relate` as exact packet space.
 - Bounded packet predicate algebra (M2-09): `NormalizedPredicate` / `AtomicTrafficCube` with Spec §37.1 representations (zones as UUID sets), deterministic union/intersect/subtract, hard 128/4096 limits → `PREDICATE_COMPLEXITY_LIMIT`. Exception compose subset/overlap is interval-true; tcp_flags/ipsec stay equality on the subset gate. Desktop OUT; compose RPC unchanged.

@@ -66,7 +66,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Bounded packet predicate algebra | Done (M2-09) | Domain cubes + exception interval subset/overlap; conservative subset/subtract; `PREDICATE_COMPLEXITY_LIMIT` |
 | Structural + satisfiability analysis | Done (M2-10) | `PolicyAnalysisEngine`; `RULE_*` compose blockers before sequence; disabled rules included |
 | Duplicate / shadow / overlap analysis | Done (M2-11) | `PolicySequenceAnalysis`; fail-closed equal; witness packets; sequence BLOCKERs on compose map to FailedPrecondition |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-12 (#59) |
+| Actual filter CFG / pre-anchor | Done (M2-12) | `ActualFilterAnalysis`; bounded CFG; pre-anchor BLOCKERs; implicit accept ≠ managed default; actual context hash |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at N1-04 (#66) |
 
 ## ADRs
 

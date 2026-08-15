@@ -20,7 +20,8 @@ public static class GrpcApplicationErrorMapper
             || error.Code.StartsWith("POLICY_EXCEPTION_", StringComparison.Ordinal)
             || error.Code.StartsWith("PREDICATE_", StringComparison.Ordinal)
             || error.Code.StartsWith("RULE_", StringComparison.Ordinal)
-            || PolicyAnalysisCodes.IsSequenceComposeFailure(error.Code))
+            || PolicyAnalysisCodes.IsSequenceComposeFailure(error.Code)
+            || ActualFilterAnalysisCodes.IsFailedPrecondition(error.Code))
         {
             statusCode = StatusCode.FailedPrecondition;
             retryable = false;
