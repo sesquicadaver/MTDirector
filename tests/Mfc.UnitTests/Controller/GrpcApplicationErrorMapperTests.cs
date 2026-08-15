@@ -39,7 +39,11 @@ public sealed class GrpcApplicationErrorMapperTests
     [InlineData(PolicyAnalysisCodes.ShadowIndeterminate)]
     [InlineData(PolicyAnalysisCodes.EarlierAllowBypassesDeny)]
     [InlineData(PolicyAnalysisCodes.FasttrackOverlap)]
-    public void SequenceComposeBlockersAreFailedPreconditionNotRetryable(string code)
+    [InlineData(ActualFilterAnalysisCodes.PreAnchorAcceptBypasses)]
+    [InlineData(ActualFilterAnalysisCodes.JumpCycle)]
+    [InlineData(ActualFilterAnalysisCodes.AnalysisIndeterminate)]
+    [InlineData(ActualFilterAnalysisCodes.PreAnchorIndeterminate)]
+    public void SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable(string code)
     {
         RpcException ex = GrpcApplicationErrorMapper.ToRpcException(
             new ApplicationError(code, "sequence blocker"));
