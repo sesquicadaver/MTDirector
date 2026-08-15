@@ -139,8 +139,8 @@ public static class ActualFilterAnalysis
     }
 
     /// <summary>
-    /// analysis_context_hash slot that currently holds the actual filter context hash
-    /// (Policy Model §34.3). Management-path / topology slots belong to later issues.
+    /// analysis_context_hash of the actual-filter slot only (Policy Model §34.3).
+    /// Packet-path and management-path use separate combiners and do not change this preimage.
     /// </summary>
     public static Hash256 HashAnalysisContext(Hash256 actualFilterContextHash)
     {

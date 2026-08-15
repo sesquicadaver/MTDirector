@@ -14,6 +14,10 @@ public static class ActualFilterMarker
 
     public const string MfcAnchorPrefix = "mfc:anchor:";
 
+    public const string FwcGuardPrefix = "fwc:guard:";
+
+    public const string MfcGuardPrefix = "mfc:guard:";
+
     /// <summary>True when the comment contains a controller ownership or layout marker.</summary>
     public static bool IsControllerOwned(string? comment)
         => TryReadMarker(comment, out _);
@@ -24,6 +28,37 @@ public static class ActualFilterMarker
            && marker is not null
            && (marker.StartsWith(FwcAnchorPrefix, StringComparison.Ordinal)
                || marker.StartsWith(MfcAnchorPrefix, StringComparison.Ordinal));
+
+    /// <summary>Management-path guard (Onboarding §15; <c>fwc:guard:</c> or <c>mfc:guard:</c>).</summary>
+    public static bool IsGuard(string? comment)
+        => TryReadMarker(comment, out string? marker)
+           && marker is not null
+           && (marker.StartsWith(FwcGuardPrefix, StringComparison.Ordinal)
+               || marker.StartsWith(MfcGuardPrefix, StringComparison.Ordinal));
+
+    /// <summary>
+    /// Guard marker has a non-empty remainder. Strict <c>mfc:guard:v1:</c> form is also accepted;
+    /// malformed empty <c>fwc:guard:</c>/<c>mfc:guard:</c> is not valid (Policy Model §46.1 #6).
+    /// </summary>
+    public static bool IsValidGuardMarker(string? comment)
+    {
+        if (!TryReadMarker(comment, out string? marker) || marker is null)
+        {
+            return false;
+        }
+
+        if (marker.StartsWith(FwcGuardPrefix, StringComparison.Ordinal))
+        {
+            return marker.Length > FwcGuardPrefix.Length;
+        }
+
+        if (marker.StartsWith(MfcGuardPrefix, StringComparison.Ordinal))
+        {
+            return marker.Length > MfcGuardPrefix.Length;
+        }
+
+        return false;
+    }
 
     /// <summary>Unmanaged means no valid <c>fwc:</c>/<c>mfc:</c> marker (MVP §12.2).</summary>
     public static bool IsUnmanaged(string? comment)

@@ -53,6 +53,57 @@ public sealed class AddressPrefix : IEquatable<AddressPrefix>
         return Create(address, prefix);
     }
 
+    /// <summary>
+    /// True when <paramref name="other"/> is the same family and every address in
+    /// <paramref name="other"/> is also in this prefix (longer-or-equal prefix length).
+    /// </summary>
+    public bool Contains(AddressPrefix other)
+    {
+        ArgumentNullException.ThrowIfNull(other);
+        if (Family != other.Family || other.PrefixLength < PrefixLength)
+        {
+            return false;
+        }
+
+        byte[] a = Address.GetAddressBytes();
+        byte[] b = other.Address.GetAddressBytes();
+        int bits = PrefixLength;
+        int i = 0;
+        while (bits >= 8)
+        {
+            if (a[i] != b[i])
+            {
+                return false;
+            }
+
+            i++;
+            bits -= 8;
+        }
+
+        if (bits == 0)
+        {
+            return true;
+        }
+
+        int mask = 0xFF << (8 - bits);
+        return (a[i] & mask) == (b[i] & mask);
+    }
+
+    /// <summary>Host containment: the address treated as /32 or /128.</summary>
+    public bool Contains(IPAddress address)
+    {
+        ArgumentNullException.ThrowIfNull(address);
+        IpAddressFamily family = address.AddressFamily switch
+        {
+            AddressFamily.InterNetwork => IpAddressFamily.IPv4,
+            AddressFamily.InterNetworkV6 => IpAddressFamily.IPv6,
+            _ => throw new DomainInvariantException("AddressPrefix supports only IPv4/IPv6."),
+        };
+
+        byte hostBits = family == IpAddressFamily.IPv4 ? (byte)32 : (byte)128;
+        return Contains(Create(address, hostBits));
+    }
+
     public bool Equals(AddressPrefix? other)
         => other is not null
            && Address.Equals(other.Address)

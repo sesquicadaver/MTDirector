@@ -141,6 +141,7 @@ public static class DiscoveryCanonicalProjector
             Props(
                 ("api-ssl.disabled", system.ApiSsl.Found ? (system.ApiSsl.Disabled ? "true" : "false") : null),
                 ("api-ssl.port", system.ApiSsl.Port),
+                ("api-ssl.address", system.ApiSsl.AddressPrefixes),
                 ("api-ssl.certificate", system.ApiSsl.Certificate),
                 ("api-ssl.tls-version", system.ApiSsl.TlsVersion))));
 

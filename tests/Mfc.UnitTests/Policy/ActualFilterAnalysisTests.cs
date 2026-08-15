@@ -353,6 +353,8 @@ public sealed class ActualFilterAnalysisTests
     public void MarkerAndRuleInvariantsHold()
     {
         Assert.True(ActualFilterMarker.IsAnchor("note fwc:anchor:ipv4:forward"));
+        Assert.True(ActualFilterMarker.IsGuard("fwc:guard:api-ssl"));
+        Assert.True(ActualFilterMarker.IsValidGuardMarker("mfc:guard:v1:0123456789abcdef:4:o:1"));
         Assert.True(ActualFilterMarker.IsUnmanaged(null));
         Assert.True(ActualFilterMarker.IsManagedChainName("mfc.input.rev1"));
         Assert.False(ActualFilterAnalysisCodes.IsFailedPrecondition(string.Empty));

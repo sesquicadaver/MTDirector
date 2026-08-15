@@ -596,7 +596,7 @@ Policy Model §44–§45 + Issue Set M2-12 AC#1–12 → Domain `ActualFilterAna
 | Discovery mapper (dynamic + unknown) | `ActualFilterRuleMapper` | `DiscoveryMapsDynamicJumpAndUnknownMatchers` |
 | `ACTUAL_FILTER_*` / `PRE_ANCHOR_*` trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
 
-**Residuals:** Desktop OUT; no new RPC; compose-on-read stays logical (actual CFG is analysis level 6, not wired into `ComposeEffectivePolicy`). Witness packets N/A for actual CFG. Management-path safety is M2-13. Canonical filter sections still omit dynamics; RouterOs discovery mapper is the dynamic path. Jump into managed `fwc.*`/`mfc.*` from controller-owned comments is an opaque `ManagedPipeline` node (candidate policy remains M2-11). Walk continues miss-path after terminals so later unmanaged pre-anchor rules stay visible; the anchor itself still stops post-anchor unless `RETURN_TO_UNMANAGED`. M2-13 must not treat `Graph.Edges` as the only reachability oracle — findings come from the walk.
+**Residuals:** Desktop OUT; no new RPC; compose-on-read stays logical (actual CFG is analysis level 6, not wired into `ComposeEffectivePolicy`). Witness packets N/A for actual CFG. Management-path safety is M2-13 (DONE). Canonical filter sections still omit dynamics; RouterOs discovery mapper is the dynamic path. Jump into managed `fwc.*`/`mfc.*` from controller-owned comments is an opaque `ManagedPipeline` node (candidate policy remains M2-11). Walk continues miss-path after terminals so later unmanaged pre-anchor rules stay visible; the anchor itself still stops post-anchor unless `RETURN_TO_UNMANAGED`. M2-13 must not treat `Graph.Edges` as the only reachability oracle — findings come from the walk.
 
 Filter:
 ```bash
@@ -626,6 +626,42 @@ Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PacketPath|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — management-path safety (M2-13)
+
+Policy Model §46–§46.1 + Onboarding §15–§16 + Issue Set M2-13 AC#1–12 → Domain `ManagementPathAnalysis` + Application canonical mapper + RouterOs discovery mapper (Desktop OUT, no new RPC; compose unchanged; guards never auto-created):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| API-SSL service enabled + port matches | `MANAGEMENT_SERVICE_DISABLED` | `Ac1ApiSslDisabledIsServiceDisabled` / `Ac1ApiSslMissingIsServiceDisabled` / `Ac1PortMismatchIsServiceDisabled` |
+| Source restrictions | `MANAGEMENT_SOURCE_NOT_ALLOWED` | `Ac2SourceRestrictionBlocksDisallowedPrefix` |
+| Unparseable IP-service allowlist | `MANAGEMENT_PATH_INDETERMINATE` | `UnparseableSourceRestrictionIsIndeterminate` |
+| Guard exists and precedes anchor | `MANAGEMENT_GUARD_MISSING` / `MANAGEMENT_GUARD_MOVED` | `Ac3GuardMustExistAndPrecedeAnchor` |
+| Guard ownership marker valid | `MANAGEMENT_PATH_INDETERMINATE` | `Ac4InvalidGuardMarkerIsIndeterminate` |
+| TCP NEW to API-SSL | `MANAGEMENT_INPUT_BLOCKED` | `Ac5TcpNewMustBeAllowedOnInput` |
+| OUTPUT ESTABLISHED reply | `MANAGEMENT_OUTPUT_BLOCKED` | `Ac6OutputEstablishedReplyMustBeAllowed` |
+| Each VRRP member by physical address | `Analyze` + `WithDestination` on that member's snapshot | `Ac7EachVrrpMemberIsCheckedByPhysicalAddress` |
+| VIP is not the only management endpoint | `MANAGEMENT_PATH_INDETERMINATE` | `Ac8VirtualIpIsNotTheOnlyManagementEndpoint` |
+| Unknown matcher on management path | `MANAGEMENT_PATH_INDETERMINATE` | `Ac9UnknownMatcherOnManagementPathIsBlocker` |
+| Candidate cannot change guard | `MANAGEMENT_GUARD_MOVED` | `Ac10CandidateMustNotChangeGuard` |
+| SYSTEM tests generated | INPUT NEW + OUTPUT ESTABLISHED | `Ac11ManagementSystemTestsAreGenerated` |
+| Witness when a concrete packet exists | `PolicyWitnessPacket` | `Ac12SafetyFindingHasWitnessWhenPossible` |
+| Unmanaged FastTrack/unknown action before guard | `MANAGEMENT_PATH_INDETERMINATE` | `UnmanagedPreGuardFastTrackIsIndeterminate` |
+| Proven path has no blockers | empty findings | `ProvenPathHasNoBlockersAndDoesNotUseImplicitAccept` |
+| OOB does not skip in-band | still `MANAGEMENT_SERVICE_DISABLED` | `OutOfBandFlagDoesNotSkipInBandApiSslChecks` |
+| DNS dest cannot prove VIP vs physical | INDETERMINATE; no SYSTEM tests | `DnsDestinationIsIndeterminate` |
+| Management hash enters analysis context | `mfc.policy.management_path_context.v1` | `ManagementPathHashEntersAnalysisContextWithoutChangingPriorPreimages` |
+| Canonical mapper (no RouterOS) | `ManagementPathContextMapper` | `CanonicalIpServicesAndFilterMapToDomainBlockersWithoutRewritingGuards` |
+| Discovery mapper (address + dynamics) | `ManagementPathBlockerMapper` | `DiscoveryMapsApiSslAddressAndFilterWithoutCreatingGuards` |
+| `MANAGEMENT_*` trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
+
+**Residuals:** Desktop OUT; no new RPC; compose unchanged (management-path is analysis, not a company document). Production entry is `Analyze()` on **one** physical-device snapshot; caller iterates members with `WithDestination` and that member's filter/API-SSL facts. VIP-only fail-closed requires the profile's physical/virtual address lists (VRRP discovery wiring is M2-14). Independent OOB-path proof and over-broad `0.0.0.0/0` guard rejection are M5-03 / watchdog. Strict `mfc:guard:v1:` grammar is onboarding write (M5). VRRP protocol-112 advertisement/sync flows are M2-14. Deploy gating of these blockers is N1-06. Guards are never auto-created. M2-12 one-argument and N1-04 two-argument analysis-context preimages are unchanged. Controller never disables L2/L3 hardware offload.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ManagementPath|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
