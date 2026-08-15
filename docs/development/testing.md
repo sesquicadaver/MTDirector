@@ -604,6 +604,30 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ActualFilter|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
 ```
 
+## Living Specification — packet-path FORWARD blockers (N1-04)
+
+next-1 hardware offload + ROADMAP N1-04 → Domain `PacketPathAnalysis` (Desktop OUT, no new RPC; compose unchanged; live N1-05 projector residual untouched):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| HW offload → `PACKET_PATH_BYPASSES_IP_FIREWALL` BLOCKER | `PacketPathAnalysis` | `HardwareOffloadedPathEmitsBypassesBlocker` |
+| INDETERMINATE → `PACKET_PATH_NOT_PROVEN` BLOCKER | `PacketPathAnalysis` | `IndeterminatePathEmitsNotProvenBlocker` |
+| CPU path does not block FORWARD | no findings | `CpuFirewallPathDoesNotBlockManagedForward` |
+| MIXED does not emit those two codes | next-1 mapping | `MixedPathDoesNotEmitNext1ForwardBlockers` |
+| Packet-path hash enters analysis context | `mfc.policy.packet_path_context.v1` | `PacketPathHashEntersAnalysisContext` |
+| Deterministic vs input order | sort by pair/code | `FindingsAreIndependentOfInputOrder` |
+| Canonical mapper (no re-classify) | `PacketPathContextMapper` | `CanonicalPairRecordsMapToDomainBlockersWithoutReclassification` |
+| Discovery classification mapper | `PacketPathBlockerMapper` | `ClassificationMapsToDomainBlockersWithoutDisablingOffload` |
+| `PACKET_PATH_*` trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
+
+**Residuals:** Desktop OUT; no new RPC; logical compose unchanged (device packet-path is not a company document). N1-03 still attaches discovery hints; Domain is the analysis BLOCKER authority. MIXED is not `PACKET_PATH_NOT_PROVEN` (next-1 names only HW + INDETERMINATE). Controller never disables L2/L3 hardware offload. Live capture still omits N1-05 projector membership (M1-22 seam). Deploy gating of these blockers is N1-06.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PacketPath|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
+```
+
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
 Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):

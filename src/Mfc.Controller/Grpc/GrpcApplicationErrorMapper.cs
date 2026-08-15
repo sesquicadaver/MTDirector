@@ -21,7 +21,8 @@ public static class GrpcApplicationErrorMapper
             || error.Code.StartsWith("PREDICATE_", StringComparison.Ordinal)
             || error.Code.StartsWith("RULE_", StringComparison.Ordinal)
             || PolicyAnalysisCodes.IsSequenceComposeFailure(error.Code)
-            || ActualFilterAnalysisCodes.IsFailedPrecondition(error.Code))
+            || ActualFilterAnalysisCodes.IsFailedPrecondition(error.Code)
+            || PacketPathAnalysisCodes.IsFailedPrecondition(error.Code))
         {
             statusCode = StatusCode.FailedPrecondition;
             retryable = false;
