@@ -229,6 +229,10 @@ public sealed class ManagementEndpointTests
         Assert.Equal(IpAddressFamily.IPv4, prefix.Family);
         Assert.Equal("10.0.0.1/24", prefix.ToString());
         Assert.True(prefix.Equals(AddressPrefix.Create(IPAddress.Parse("10.0.0.1"), 24)));
+        Assert.True(prefix.Contains(AddressPrefix.Parse("10.0.0.50/32")));
+        Assert.True(prefix.Contains(IPAddress.Parse("10.0.0.50")));
+        Assert.False(prefix.Contains(AddressPrefix.Parse("10.0.1.0/32")));
+        Assert.False(AddressPrefix.Parse("10.0.0.0/16").Contains(AddressPrefix.Parse("10.0.0.0/8")));
         Assert.Throws<DomainInvariantException>(() => AddressPrefix.Parse("nope"));
         Assert.Throws<DomainInvariantException>(() => AddressPrefix.Create(IPAddress.Parse("10.0.0.1"), 40));
 

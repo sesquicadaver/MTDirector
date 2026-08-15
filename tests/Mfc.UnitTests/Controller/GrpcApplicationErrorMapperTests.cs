@@ -45,6 +45,9 @@ public sealed class GrpcApplicationErrorMapperTests
     [InlineData(ActualFilterAnalysisCodes.PreAnchorIndeterminate)]
     [InlineData(PacketPathAnalysisCodes.BypassesIpFirewall)]
     [InlineData(PacketPathAnalysisCodes.NotProven)]
+    [InlineData(ManagementPathAnalysisCodes.GuardMissing)]
+    [InlineData(ManagementPathAnalysisCodes.PathIndeterminate)]
+    [InlineData(ManagementPathAnalysisCodes.InputBlocked)]
     public void SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable(string code)
     {
         RpcException ex = GrpcApplicationErrorMapper.ToRpcException(

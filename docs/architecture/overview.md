@@ -68,7 +68,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Duplicate / shadow / overlap analysis | Done (M2-11) | `PolicySequenceAnalysis`; fail-closed equal; witness packets; sequence BLOCKERs on compose map to FailedPrecondition |
 | Actual filter CFG / pre-anchor | Done (M2-12) | `ActualFilterAnalysis`; bounded CFG; pre-anchor BLOCKERs; implicit accept ≠ managed default; actual context hash |
 | Packet-path FORWARD blockers | Done (N1-04) | `PacketPathAnalysis`; HW/INDETERMINATE BLOCKERs; MIXED not those codes; packet-path context hash |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-13 (#60) |
+| Management-path safety | Done (M2-13) | `ManagementPathAnalysis`; API-SSL + source + guard-before-anchor; VIP-only/unknown INDETERMINATE; SYSTEM tests + witnesses |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-14 (#61) |
 
 ## ADRs
 
