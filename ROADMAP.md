@@ -115,7 +115,7 @@ Post-MVP M7 = **27** після MVP.
 | Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings |
 | `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) |
 
-**NEXT = M2-10:** [M2-10](https://github.com/sesquicadaver/MTDirector/issues/57) structural and satisfiability analysis (після M2-09 #56 DONE).
+**NEXT = M2-10:** [M2-10](https://github.com/sesquicadaver/MTDirector/issues/57) structural and satisfiability analysis (після M2-09 #56 DONE). Не брати `PredicateAlgebra.Relate`/`Subtract` за точний packet-space evaluator: subset — fail-closed single-cube cover; subtract under-approximates ICMP/flags/IPsec.
 
 ---
 

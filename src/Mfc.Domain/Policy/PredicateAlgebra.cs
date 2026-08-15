@@ -2,7 +2,9 @@ namespace Mfc.Domain.Policy;
 
 /// <summary>
 /// Bounded symbolic evaluator of managed packet space (Policy Model §37).
-/// Never returns indeterminate. Overflow is <see cref="PredicateAlgebraCodes.ComplexityLimit"/>.
+/// Overflow is <see cref="PredicateAlgebraCodes.ComplexityLimit"/>. Relations never return
+/// INDETERMINATE: subset is fail-closed (each cube must sit inside one cover cube), and
+/// subtract under-approximates ICMP/flags/IPsec residuals that cannot be represented.
 /// </summary>
 public static class PredicateAlgebra
 {

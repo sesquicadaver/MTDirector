@@ -13,6 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- TCP flag intersection: identical `required_present`/`required_absent` is a set-union, not a duplicate-throw empty cube, so exception overlap stays fail-closed.
+- Exception-path service JSON: missing port bounds or a non-array ports/ICMP field maps to `POLICY_COMPOSE_SELECTOR_UNRESOLVED` instead of throwing or treating the field as unconstrained.
 - Desktop inventory cancel race: await shared refresh before surfacing cancellation so `IsRefreshing` clears consistently.
 - Unit tests: explicit non-UTC offsets; zone/snapshot/policy coverage to meet Domain/Application CI thresholds.
 
