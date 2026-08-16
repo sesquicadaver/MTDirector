@@ -80,6 +80,15 @@ public sealed class VrrpInstanceDiscovery
 
     public required string? Disabled { get; init; }
 
+    /// <summary>Typed <c>sync-connection-tracking</c> (M2-14 AC#3). Configuration, not role.</summary>
+    public string? SyncConnectionTracking { get; init; }
+
+    public string? ConnectionTrackingMode { get; init; }
+
+    public string? ConnectionTrackingPort { get; init; }
+
+    public string? RemoteAddress { get; init; }
+
     public required string? Comment { get; init; }
 
     public required IReadOnlyList<string> VirtualAddresses { get; init; }
@@ -137,6 +146,10 @@ public sealed class VrrpDiscoveryResult
                 Put(material, $"{prefix}.preemption-mode", instance.PreemptionMode);
                 Put(material, $"{prefix}.authentication", instance.AuthenticationMode);
                 Put(material, $"{prefix}.disabled", instance.Disabled);
+                Put(material, $"{prefix}.sync-connection-tracking", instance.SyncConnectionTracking);
+                Put(material, $"{prefix}.connection-tracking-mode", instance.ConnectionTrackingMode);
+                Put(material, $"{prefix}.connection-tracking-port", instance.ConnectionTrackingPort);
+                Put(material, $"{prefix}.remote-address", instance.RemoteAddress);
                 Put(
                     material,
                     $"{prefix}.addresses",

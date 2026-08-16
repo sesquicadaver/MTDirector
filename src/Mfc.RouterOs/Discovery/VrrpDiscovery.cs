@@ -105,6 +105,10 @@ public static class VrrpDiscovery
                 PreemptionMode = Get(known, "preemption-mode"),
                 AuthenticationMode = Get(known, "authentication"),
                 Disabled = Get(known, "disabled"),
+                SyncConnectionTracking = Get(known, "sync-connection-tracking"),
+                ConnectionTrackingMode = Get(known, "connection-tracking-mode"),
+                ConnectionTrackingPort = Get(known, "connection-tracking-port"),
+                RemoteAddress = Get(known, "remote-address"),
                 Comment = Get(known, "comment"),
                 VirtualAddresses = virtualAddresses
                     .OrderBy(a => a, StringComparer.Ordinal)

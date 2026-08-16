@@ -451,7 +451,19 @@ public static class DiscoveryCanonicalProjector
                 ("action", rule.Action),
                 ("disabled", rule.Disabled),
                 ("routing-mark", rule.RoutingMark),
-                ("new-routing-mark", rule.NewRoutingMark))));
+                ("new-routing-mark", rule.NewRoutingMark),
+                ("connection-mark", rule.ConnectionMark),
+                ("packet-mark", rule.PacketMark),
+                ("per-connection-classifier", KnownFacility(rule, "per-connection-classifier")),
+                ("connection-state", KnownFacility(rule, "connection-state")),
+                ("connection-nat-state", KnownFacility(rule, "connection-nat-state")),
+                ("new-connection-mark", KnownFacility(rule, "new-connection-mark")),
+                ("new-packet-mark", KnownFacility(rule, "new-packet-mark")),
+                ("to-addresses", KnownFacility(rule, "to-addresses")),
+                ("to-ports", KnownFacility(rule, "to-ports")),
+                ("unsupported-matchers", rule.UnsupportedMatchers.Count == 0
+                    ? null
+                    : string.Join(',', rule.UnsupportedMatchers)))));
             CollectUnknown(unknown, sectionId, rule.RawProperties);
         }
 
@@ -472,11 +484,17 @@ public static class DiscoveryCanonicalProjector
             configRecords.Add(Record(Props(
                 ("group", instance.GroupKey.ToString()),
                 ("name", instance.Name),
+                ("interface", instance.ParentInterface),
+                ("vrid", instance.Vrid.ToString(CultureInfo.InvariantCulture)),
+                ("family", instance.Family.ToString()),
                 ("priority", instance.Priority?.ToString(CultureInfo.InvariantCulture)),
                 ("version", instance.Version),
                 ("interval", instance.Interval),
                 ("preemption-mode", instance.PreemptionMode),
                 ("disabled", instance.Disabled),
+                ("sync-connection-tracking", instance.SyncConnectionTracking),
+                ("connection-tracking-port", instance.ConnectionTrackingPort),
+                ("remote-address", instance.RemoteAddress),
                 ("addresses", string.Join(',', instance.VirtualAddresses.OrderBy(a => a, StringComparer.Ordinal))))));
             // Role separated from configuration (AC#3).
             obsRecords.Add(Record(Props(
@@ -585,7 +603,8 @@ public static class DiscoveryCanonicalProjector
                 .Select(s => Record(Props(
                     ("name", s.Name),
                     ("type", s.Type),
-                    ("l3-hw-offloading", s.L3HwOffloading))))
+                    ("l3-hw-offloading", s.L3HwOffloading),
+                    ("known-chip", s.HasKnownChipProfile ? "true" : "false"))))
                 .ToArray()));
 
         configuration.Add(Section(
@@ -769,6 +788,9 @@ public static class DiscoveryCanonicalProjector
 
     private static CanonicalRecordInput Record(IReadOnlyDictionary<string, string> properties)
         => new() { Properties = properties };
+
+    private static string? KnownFacility(OrderedFirewallFacilityRuleDiscovery rule, string key)
+        => rule.KnownProperties.TryGetValue(key, out string? value) ? value : null;
 
     private static Dictionary<string, string> Props(params (string Key, string? Value)[] pairs)
     {

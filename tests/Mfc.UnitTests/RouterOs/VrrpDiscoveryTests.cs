@@ -101,6 +101,41 @@ public sealed class VrrpDiscoveryTests
         Assert.Equal(VrrpDerivedRole.Backup, backup.Instances[0].ObservedRole);
     }
 
+    [Fact]
+    public void SyncConnectionTrackingEntersConfigurationHashNotObservation()
+    {
+        VrrpDiscoveryResult withoutSync = VrrpDiscovery.BuildResult(
+            Ok(Row(
+                ("name", "vrrp1"),
+                ("interface", "ether1"),
+                ("vrid", "1"),
+                ("priority", "150"),
+                ("sync-connection-tracking", "no"),
+                ("master", "true"),
+                ("backup", "false"),
+                ("running", "true"))));
+        VrrpDiscoveryResult withSync = VrrpDiscovery.BuildResult(
+            Ok(Row(
+                ("name", "vrrp1"),
+                ("interface", "ether1"),
+                ("vrid", "1"),
+                ("priority", "150"),
+                ("sync-connection-tracking", "yes"),
+                ("connection-tracking-port", "9000"),
+                ("remote-address", "192.0.2.20"),
+                ("master", "true"),
+                ("backup", "false"),
+                ("running", "true"))));
+
+        Assert.Equal("yes", withSync.Instances[0].SyncConnectionTracking);
+        Assert.Equal("9000", withSync.Instances[0].ConnectionTrackingPort);
+        Assert.Equal("192.0.2.20", withSync.Instances[0].RemoteAddress);
+        Assert.NotEqual(withoutSync.ConfigurationHashMaterial, withSync.ConfigurationHashMaterial);
+        Assert.Equal(withoutSync.ObservationHashMaterial, withSync.ObservationHashMaterial);
+        Assert.Contains(withSync.ConfigurationHashMaterial.Keys, k => k.Contains("sync-connection-tracking", StringComparison.Ordinal));
+        Assert.DoesNotContain(withSync.ObservationHashMaterial.Keys, k => k.Contains("sync", StringComparison.Ordinal));
+    }
+
     [Theory]
     [InlineData("true", "false", "false", "false", "false", VrrpDerivedRole.Failure)]
     [InlineData("false", "false", "false", "true", "false", VrrpDerivedRole.Invalid)]

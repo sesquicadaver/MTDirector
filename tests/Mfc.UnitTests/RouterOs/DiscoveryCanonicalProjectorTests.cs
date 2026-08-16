@@ -105,6 +105,8 @@ public sealed class DiscoveryCanonicalProjectorTests
             s => s.SectionId == CanonicalSectionIds.HaVrrp);
         Assert.False(config.Records[0].Properties.ContainsKey("role"));
         Assert.Equal("100", config.Records[0].Properties["priority"]);
+        Assert.Equal("ether1", config.Records[0].Properties["interface"]);
+        Assert.Equal("1", config.Records[0].Properties["vrid"]);
 
         CanonicalSection obs = Assert.Single(
             snapshot.ObservationSections,

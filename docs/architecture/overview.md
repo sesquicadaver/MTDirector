@@ -69,7 +69,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Actual filter CFG / pre-anchor | Done (M2-12) | `ActualFilterAnalysis`; bounded CFG; pre-anchor BLOCKERs; implicit accept ≠ managed default; actual context hash |
 | Packet-path FORWARD blockers | Done (N1-04) | `PacketPathAnalysis`; HW/INDETERMINATE BLOCKERs; MIXED not those codes; packet-path context hash |
 | Management-path safety | Done (M2-13) | `ManagementPathAnalysis`; API-SSL + source + guard-before-anchor; VIP-only/unknown INDETERMINATE; SYSTEM tests + witnesses |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-14 (#61) |
+| Topology / dependency safety | Done (M2-14) | `TopologyDependencyAnalysis`; VRRP proto-112 + sync; missing member; split-master vector; STRICT_RPF_*; RAW/NAT/Mangle; SWITCH FORWARD; observation hash excluded from policy context |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-15 (#62) |
 
 ## ADRs
 
