@@ -26,7 +26,38 @@ public sealed class PolicyProtoContractTests
         Assert.Contains("UpdateRule", methods);
         Assert.Contains("DeleteRule", methods);
         Assert.Contains("ReorderRules", methods);
+        Assert.Contains("ValidateRevision", methods);
+        Assert.Contains("UpsertAddressObject", methods);
+        Assert.Contains("UpsertServiceObject", methods);
+        Assert.Contains("ReplaceChainContracts", methods);
+        Assert.Contains("ReplacePolicyTests", methods);
+        Assert.Contains("DiffPolicyRevisions", methods);
         Assert.Equal("mfc.v1.PolicyService", PolicyService.Descriptor.FullName);
+    }
+
+    [Theory]
+    [InlineData("ValidateRevision")]
+    [InlineData("UpsertAddressObject")]
+    [InlineData("UpsertServiceObject")]
+    [InlineData("ReplaceChainContracts")]
+    [InlineData("ReplacePolicyTests")]
+    [InlineData("DiffPolicyRevisions")]
+    public void M218AuthoringReviewRpcsArePresent(string rpcName)
+    {
+        Assert.Contains(PolicyService.Descriptor.Methods, m => m.Name == rpcName);
+    }
+
+    [Fact]
+    public void PolicyRevisionExposesCatalogFields()
+    {
+        Assert.Equal("address_objects", PolicyRevision.Descriptor.FindFieldByNumber(13)!.Name);
+        Assert.Equal("service_objects", PolicyRevision.Descriptor.FindFieldByNumber(14)!.Name);
+        Assert.Equal("chain_contracts", PolicyRevision.Descriptor.FindFieldByNumber(15)!.Name);
+        Assert.Equal("tests_json", PolicyRevision.Descriptor.FindFieldByNumber(16)!.Name);
+        Assert.NotNull(AddressObject.Descriptor.FindFieldByName("entries"));
+        Assert.NotNull(ServiceObject.Descriptor.FindFieldByName("terms"));
+        Assert.NotNull(ChainContract.Descriptor.FindFieldByName("default_disposition"));
+        Assert.NotNull(PolicyRevisionDiff.Descriptor.FindFieldByName("risk_level"));
     }
 
     [Fact]

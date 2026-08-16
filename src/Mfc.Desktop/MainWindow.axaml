@@ -389,28 +389,223 @@
         </TabItem>
 
         <TabItem Header="Policies">
-          <DockPanel Margin="8" LastChildFill="True">
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
-              <TextBox PlaceholderText="revision UUID"
-                       Text="{Binding Policies.RevisionIdText}"
-                       MinWidth="280" />
-              <Button Content="List rules" Command="{Binding Policies.RefreshCommand}" MinWidth="100" />
+          <ScrollViewer Margin="0,8,0,0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="10">
+              <StackPanel Spacing="2">
+                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Policy authoring &amp; review" />
+                <TextBlock Text="{Binding Policies.ReadOnlyBannerText}"
+                           Foreground="#8A5A00"
+                           TextWrapping="Wrap"
+                           IsVisible="{Binding Policies.IsReadOnlyBannerVisible}" />
+                <TextBlock Text="{Binding Policies.ErrorText}"
+                           Foreground="#B00020"
+                           TextWrapping="Wrap"
+                           IsVisible="{Binding Policies.HasError}" />
+              </StackPanel>
+
+              <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+                <StackPanel Spacing="6">
+                  <TextBlock FontWeight="SemiBold" Text="Revision" />
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBox PlaceholderText="revision UUID"
+                             Text="{Binding Policies.RevisionIdText}"
+                             MinWidth="280" />
+                    <Button Content="Load" Command="{Binding Policies.LoadCommand}" MinWidth="80" />
+                  </StackPanel>
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBox PlaceholderText="draft name (CompanyBaseline)"
+                             Text="{Binding Policies.DraftNameText}"
+                             MinWidth="280" />
+                    <Button Content="Create draft" Command="{Binding Policies.CreateDraftCommand}" MinWidth="110" />
+                  </StackPanel>
+                  <TextBlock Text="{Binding Policies.StateText, StringFormat=State: {0}}" />
+                  <TextBlock Text="{Binding Policies.ContentHashText, StringFormat=Content hash: {0}}"
+                             FontFamily="Consolas,Menlo,monospace"
+                             TextWrapping="Wrap" />
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Content="Validate" Command="{Binding Policies.ValidateCommand}" MinWidth="90" />
+                    <Button Content="Submit for review" Command="{Binding Policies.SubmitCommand}" MinWidth="130" />
+                    <Button Content="Approve" Command="{Binding Policies.ApproveCommand}" MinWidth="90" />
+                    <Button Content="Bind" Command="{Binding Policies.BindCommand}" MinWidth="80" />
+                    <Button Content="Deploy" Command="{Binding Policies.DeployCommand}" MinWidth="90"
+                            ToolTip.Tip="N1-06: deploy gated; not available from authoring (no Save and Deploy)." />
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+
+              <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+                <StackPanel Spacing="6">
+                  <TextBlock FontWeight="SemiBold" Text="Rules" />
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ComboBox ItemsSource="{Binding Policies.Families}"
+                              SelectedItem="{Binding Policies.SelectedFamily, Mode=TwoWay}"
+                              MinWidth="100" />
+                    <ComboBox ItemsSource="{Binding Policies.Chains}"
+                              SelectedItem="{Binding Policies.SelectedChain, Mode=TwoWay}"
+                              MinWidth="120" />
+                    <ComboBox ItemsSource="{Binding Policies.Stages}"
+                              SelectedItem="{Binding Policies.SelectedStage, Mode=TwoWay}"
+                              MinWidth="180" />
+                    <ComboBox ItemsSource="{Binding Policies.Effects}"
+                              SelectedItem="{Binding Policies.SelectedEffect, Mode=TwoWay}"
+                              MinWidth="140" />
+                  </StackPanel>
+                  <TextBox PlaceholderText="description" Text="{Binding Policies.RuleDescriptionText}" />
+                  <TextBox PlaceholderText="TrafficPredicate source address UUIDs (optional, comma)"
+                           Text="{Binding Policies.PredicateSourceAddressIdsText}" />
+                  <TextBox PlaceholderText="TrafficPredicate destination address UUIDs (optional, comma)"
+                           Text="{Binding Policies.PredicateDestinationAddressIdsText}" />
+                  <TextBox PlaceholderText="TrafficPredicate service UUIDs (optional, comma)"
+                           Text="{Binding Policies.PredicateServiceIdsText}" />
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Content="Add rule" Command="{Binding Policies.AddRuleCommand}" MinWidth="100" />
+                  </StackPanel>
+                  <TextBox PlaceholderText="reorder within stage: comma rule UUIDs"
+                           Text="{Binding Policies.ReorderRuleIdsText}" />
+                  <Button Content="Reorder within stage" Command="{Binding Policies.ReorderRulesCommand}"
+                          MinWidth="160" HorizontalAlignment="Left" />
+                  <ListBox ItemsSource="{Binding Policies.Rules}" MaxHeight="180">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate DataType="svc:PolicyRuleListItem">
+                        <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
+                                   FontFamily="Consolas,Menlo,monospace" />
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                </StackPanel>
+              </Border>
+
+              <Grid ColumnDefinitions="*,12,*">
+                <Border Grid.Column="0" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+                  <StackPanel Spacing="6">
+                    <TextBlock FontWeight="SemiBold" Text="Address objects" />
+                    <TextBox PlaceholderText="name" Text="{Binding Policies.AddressNameText}" />
+                    <ComboBox ItemsSource="{Binding Policies.Families}"
+                              SelectedItem="{Binding Policies.AddressFamily, Mode=TwoWay}"
+                              MinWidth="120" />
+                    <TextBox PlaceholderText="entries (host / CIDR / range, one per line)"
+                             Text="{Binding Policies.AddressEntriesText}"
+                             AcceptsReturn="True"
+                             MinHeight="72"
+                             TextWrapping="Wrap" />
+                    <Button Content="Upsert address" Command="{Binding Policies.UpsertAddressCommand}"
+                            MinWidth="120" HorizontalAlignment="Left" />
+                    <ListBox ItemsSource="{Binding Policies.AddressObjects}" MaxHeight="140">
+                      <ListBox.ItemTemplate>
+                        <DataTemplate DataType="svc:PolicyAddressObjectListItem">
+                          <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
+                        </DataTemplate>
+                      </ListBox.ItemTemplate>
+                    </ListBox>
+                  </StackPanel>
+                </Border>
+                <Border Grid.Column="2" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+                  <StackPanel Spacing="6">
+                    <TextBlock FontWeight="SemiBold" Text="Service objects" />
+                    <TextBox PlaceholderText="name" Text="{Binding Policies.ServiceNameText}" />
+                    <TextBox PlaceholderText="TCP port" Text="{Binding Policies.ServiceTcpPortText}" />
+                    <Button Content="Upsert service" Command="{Binding Policies.UpsertServiceCommand}"
+                            MinWidth="120" HorizontalAlignment="Left" />
+                    <ListBox ItemsSource="{Binding Policies.ServiceObjects}" MaxHeight="140">
+                      <ListBox.ItemTemplate>
+                        <DataTemplate DataType="svc:PolicyServiceObjectListItem">
+                          <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
+                        </DataTemplate>
+                      </ListBox.ItemTemplate>
+                    </ListBox>
+                  </StackPanel>
+                </Border>
+              </Grid>
+
+              <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+                <StackPanel Spacing="6">
+                  <TextBlock FontWeight="SemiBold" Text="Chain contracts (company baseline)" />
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ComboBox ItemsSource="{Binding Policies.Families}"
+                              SelectedItem="{Binding Policies.ContractFamily, Mode=TwoWay}"
+                              MinWidth="100" />
+                    <ComboBox ItemsSource="{Binding Policies.Chains}"
+                              SelectedItem="{Binding Policies.ContractChain, Mode=TwoWay}"
+                              MinWidth="120" />
+                    <TextBox PlaceholderText="disposition" Text="{Binding Policies.ContractDisposition}"
+                             MinWidth="180" />
+                    <ComboBox ItemsSource="{Binding Policies.RejectModes}"
+                              SelectedItem="{Binding Policies.ContractRejectMode, Mode=TwoWay}"
+                              MinWidth="160"
+                              ToolTip.Tip="Required when disposition is REJECT" />
+                    <Button Content="Replace contracts" Command="{Binding Policies.ReplaceContractsCommand}"
+                            MinWidth="140" />
+                  </StackPanel>
+                  <ListBox ItemsSource="{Binding Policies.ChainContracts}" MaxHeight="100">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate DataType="svc:PolicyChainContractListItem">
+                        <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                </StackPanel>
+              </Border>
+
+              <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+                <StackPanel Spacing="6">
+                  <TextBlock FontWeight="SemiBold" Text="Tests (opaque JSON residual)" />
+                  <TextBox Text="{Binding Policies.TestsJsonText}"
+                           AcceptsReturn="True"
+                           MinHeight="80"
+                           TextWrapping="Wrap"
+                           FontFamily="Consolas,Menlo,monospace" />
+                  <Button Content="Replace tests" Command="{Binding Policies.ReplaceTestsCommand}"
+                          MinWidth="120" HorizontalAlignment="Left" />
+                </StackPanel>
+              </Border>
+
+              <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+                <StackPanel Spacing="6">
+                  <TextBlock FontWeight="SemiBold" Text="Review: compose / diff / analysis risk" />
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBox PlaceholderText="compose node UUID (optional device residual)"
+                             Text="{Binding Policies.ComposeNodeIdText}"
+                             MinWidth="280" />
+                    <Button Content="Compose findings" Command="{Binding Policies.ComposeCommand}" MinWidth="130" />
+                  </StackPanel>
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBox PlaceholderText="baseline revision UUID"
+                             Text="{Binding Policies.DiffBaselineRevisionIdText}"
+                             MinWidth="280" />
+                    <Button Content="Semantic diff" Command="{Binding Policies.DiffCommand}" MinWidth="120" />
+                  </StackPanel>
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBox PlaceholderText="risk level for RecordAnalysisRun"
+                             Text="{Binding Policies.AnalysisRiskLevelText}"
+                             MinWidth="160" />
+                    <Button Content="Record analysis run" Command="{Binding Policies.RecordAnalysisCommand}"
+                            MinWidth="150" />
+                  </StackPanel>
+                  <TextBlock Text="{Binding Policies.AnalysisRunIdText, StringFormat=Analysis run: {0}}" />
+                  <TextBlock Text="{Binding Policies.RiskLevelText, StringFormat=Risk: {0}}" />
+                  <TextBlock Text="{Binding Policies.EffectiveRiskLevelText, StringFormat=Effective risk: {0}}" />
+                  <TextBlock FontWeight="SemiBold" Text="Findings / witnesses" />
+                  <ListBox ItemsSource="{Binding Policies.Findings}" MaxHeight="120">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate DataType="svc:PolicyFindingListItem">
+                        <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
+                                   FontFamily="Consolas,Menlo,monospace" />
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                  <TextBlock FontWeight="SemiBold" Text="Diff lines" />
+                  <ListBox ItemsSource="{Binding Policies.DiffLines}" MaxHeight="120">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate DataType="svc:PolicyFindingListItem">
+                        <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
+                                   FontFamily="Consolas,Menlo,monospace" />
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                </StackPanel>
+              </Border>
             </StackPanel>
-            <TextBlock DockPanel.Dock="Top"
-                       Text="{Binding Policies.ErrorText}"
-                       Foreground="IndianRed"
-                       TextWrapping="Wrap"
-                       Margin="0,0,0,8"
-                       IsVisible="{Binding Policies.HasError}" />
-            <ListBox ItemsSource="{Binding Policies.Rules}">
-              <ListBox.ItemTemplate>
-                <DataTemplate DataType="svc:PolicyRuleListItem">
-                  <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="4"
-                             FontFamily="Consolas,Menlo,monospace" />
-                </DataTemplate>
-              </ListBox.ItemTemplate>
-            </ListBox>
-          </DockPanel>
+          </ScrollViewer>
         </TabItem>
       </TabControl>
     </Grid>

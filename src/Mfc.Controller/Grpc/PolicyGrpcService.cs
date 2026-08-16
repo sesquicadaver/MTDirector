@@ -7,7 +7,7 @@ using Mfc.Domain;
 
 namespace Mfc.Controller.Grpc;
 
-/// <summary>gRPC surface for PolicyService (draft/rule CRUD + compose + exception metadata + approval/binding).</summary>
+/// <summary>gRPC surface for PolicyService (draft/rule CRUD + compose + catalogs + approval/binding + review).</summary>
 public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
 {
     public const string ActorMetadataKey = InventoryGrpcService.ActorMetadataKey;
@@ -28,6 +28,12 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
     private readonly ApproveRevisionUseCase _approveRevision;
     private readonly ActivateDesiredBindingUseCase _activateBinding;
     private readonly ExpireExceptionBindingUseCase _expireException;
+    private readonly ValidateRevisionUseCase _validateRevision;
+    private readonly UpsertAddressObjectUseCase _upsertAddress;
+    private readonly UpsertServiceObjectUseCase _upsertService;
+    private readonly ReplaceChainContractsUseCase _replaceContracts;
+    private readonly ReplacePolicyTestsUseCase _replaceTests;
+    private readonly DiffPolicyRevisionsUseCase _diffRevisions;
     private readonly IHostEnvironment _environment;
 
     public PolicyGrpcService(
@@ -47,6 +53,12 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         ApproveRevisionUseCase approveRevision,
         ActivateDesiredBindingUseCase activateBinding,
         ExpireExceptionBindingUseCase expireException,
+        ValidateRevisionUseCase validateRevision,
+        UpsertAddressObjectUseCase upsertAddress,
+        UpsertServiceObjectUseCase upsertService,
+        ReplaceChainContractsUseCase replaceContracts,
+        ReplacePolicyTestsUseCase replaceTests,
+        DiffPolicyRevisionsUseCase diffRevisions,
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(createDraft);
@@ -65,6 +77,12 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         ArgumentNullException.ThrowIfNull(approveRevision);
         ArgumentNullException.ThrowIfNull(activateBinding);
         ArgumentNullException.ThrowIfNull(expireException);
+        ArgumentNullException.ThrowIfNull(validateRevision);
+        ArgumentNullException.ThrowIfNull(upsertAddress);
+        ArgumentNullException.ThrowIfNull(upsertService);
+        ArgumentNullException.ThrowIfNull(replaceContracts);
+        ArgumentNullException.ThrowIfNull(replaceTests);
+        ArgumentNullException.ThrowIfNull(diffRevisions);
         ArgumentNullException.ThrowIfNull(environment);
         _createDraft = createDraft;
         _getRevision = getRevision;
@@ -82,6 +100,12 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         _approveRevision = approveRevision;
         _activateBinding = activateBinding;
         _expireException = expireException;
+        _validateRevision = validateRevision;
+        _upsertAddress = upsertAddress;
+        _upsertService = upsertService;
+        _replaceContracts = replaceContracts;
+        _replaceTests = replaceTests;
+        _diffRevisions = diffRevisions;
         _environment = environment;
     }
 
@@ -411,6 +435,121 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
                 IdempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey),
                 BindingId = ProtoUuid.ToGuid(request.BindingId),
                 ExpectedRowVersion = request.ExpectedRowVersion,
+            },
+            context.CancellationToken).ConfigureAwait(false);
+        return PolicyProtoMapper.ToProto(Unwrap(result));
+    }
+
+    public override async Task<global::Mfc.Contracts.Mfc.V1.PolicyRevision> ValidateRevision(
+        ValidateRevisionRequest request,
+        ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ApplicationResult<PolicyRevisionView> result = await _validateRevision.ExecuteAsync(
+            new ValidateRevisionCommand
+            {
+                Actor = ResolveActor(context),
+                IdempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey),
+                RevisionId = ProtoUuid.ToGuid(request.RevisionId),
+                ExpectedContentHash = PolicyProtoMapper.ToHashBytes(request.ExpectedContentHash),
+            },
+            context.CancellationToken).ConfigureAwait(false);
+        return PolicyProtoMapper.ToProto(Unwrap(result));
+    }
+
+    public override async Task<global::Mfc.Contracts.Mfc.V1.PolicyRevision> UpsertAddressObject(
+        UpsertAddressObjectRequest request,
+        ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ApplicationResult<PolicyRevisionView> result = await _upsertAddress.ExecuteAsync(
+            new UpsertAddressObjectCommand
+            {
+                Actor = ResolveActor(context),
+                IdempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey),
+                RevisionId = ProtoUuid.ToGuid(request.RevisionId),
+                ExpectedContentHash = PolicyProtoMapper.ToHashBytes(request.ExpectedContentHash),
+                ObjectId = request.ObjectId is null ? null : ProtoUuid.ToGuid(request.ObjectId),
+                Name = request.Name,
+                Family = PolicyProtoMapper.ToDomain(request.Family),
+                Entries = request.Entries.Select(PolicyProtoMapper.ToInput).ToArray(),
+                Description = request.HasDescription ? request.Description : null,
+            },
+            context.CancellationToken).ConfigureAwait(false);
+        return PolicyProtoMapper.ToProto(Unwrap(result));
+    }
+
+    public override async Task<global::Mfc.Contracts.Mfc.V1.PolicyRevision> UpsertServiceObject(
+        UpsertServiceObjectRequest request,
+        ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ApplicationResult<PolicyRevisionView> result = await _upsertService.ExecuteAsync(
+            new UpsertServiceObjectCommand
+            {
+                Actor = ResolveActor(context),
+                IdempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey),
+                RevisionId = ProtoUuid.ToGuid(request.RevisionId),
+                ExpectedContentHash = PolicyProtoMapper.ToHashBytes(request.ExpectedContentHash),
+                ObjectId = request.ObjectId is null ? null : ProtoUuid.ToGuid(request.ObjectId),
+                Name = request.Name,
+                Terms = request.Terms.Select(PolicyProtoMapper.ToInput).ToArray(),
+                Description = request.HasDescription ? request.Description : null,
+            },
+            context.CancellationToken).ConfigureAwait(false);
+        return PolicyProtoMapper.ToProto(Unwrap(result));
+    }
+
+    public override async Task<global::Mfc.Contracts.Mfc.V1.PolicyRevision> ReplaceChainContracts(
+        ReplaceChainContractsRequest request,
+        ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ApplicationResult<PolicyRevisionView> result = await _replaceContracts.ExecuteAsync(
+            new ReplaceChainContractsCommand
+            {
+                Actor = ResolveActor(context),
+                IdempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey),
+                RevisionId = ProtoUuid.ToGuid(request.RevisionId),
+                ExpectedContentHash = PolicyProtoMapper.ToHashBytes(request.ExpectedContentHash),
+                Contracts = request.Contracts.Select(PolicyProtoMapper.ToInput).ToArray(),
+            },
+            context.CancellationToken).ConfigureAwait(false);
+        return PolicyProtoMapper.ToProto(Unwrap(result));
+    }
+
+    public override async Task<global::Mfc.Contracts.Mfc.V1.PolicyRevision> ReplacePolicyTests(
+        ReplacePolicyTestsRequest request,
+        ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ApplicationResult<PolicyRevisionView> result = await _replaceTests.ExecuteAsync(
+            new ReplacePolicyTestsCommand
+            {
+                Actor = ResolveActor(context),
+                IdempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey),
+                RevisionId = ProtoUuid.ToGuid(request.RevisionId),
+                ExpectedContentHash = PolicyProtoMapper.ToHashBytes(request.ExpectedContentHash),
+                TestsJson = request.HasTestsJson ? request.TestsJson : null,
+                TestJsonElements = request.TestJsonElements.Count == 0
+                    ? null
+                    : request.TestJsonElements.ToArray(),
+            },
+            context.CancellationToken).ConfigureAwait(false);
+        return PolicyProtoMapper.ToProto(Unwrap(result));
+    }
+
+    public override async Task<PolicyRevisionDiff> DiffPolicyRevisions(
+        DiffPolicyRevisionsRequest request,
+        ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ApplicationResult<PolicyRevisionDiffView> result = await _diffRevisions.ExecuteAsync(
+            new DiffPolicyRevisionsQuery
+            {
+                Actor = ResolveActor(context),
+                BeforeRevisionId = ProtoUuid.ToGuid(request.BeforeRevisionId),
+                AfterRevisionId = ProtoUuid.ToGuid(request.AfterRevisionId),
             },
             context.CancellationToken).ConfigureAwait(false);
         return PolicyProtoMapper.ToProto(Unwrap(result));

@@ -218,6 +218,12 @@ public static class Program
         services.AddScoped<ApproveRevisionUseCase>();
         services.AddScoped<ActivateDesiredBindingUseCase>();
         services.AddScoped<ExpireExceptionBindingUseCase>();
+        services.AddScoped<ValidateRevisionUseCase>();
+        services.AddScoped<UpsertAddressObjectUseCase>();
+        services.AddScoped<UpsertServiceObjectUseCase>();
+        services.AddScoped<ReplaceChainContractsUseCase>();
+        services.AddScoped<ReplacePolicyTestsUseCase>();
+        services.AddScoped<DiffPolicyRevisionsUseCase>();
     }
 
     public static bool ContainsMigrateOnly(IEnumerable<string> args)

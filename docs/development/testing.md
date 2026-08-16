@@ -781,13 +781,49 @@ Policy Model §9–§10 / §34.4 / §63–§67 + Issue Set M2-17 AC#1–13 + E2E
 | Frozen codes trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
 | RPC surface | `policy.proto` | `ApprovalAndBindingRpcsExposeIdempotencyAndCas` |
 
-**Residuals:** Desktop authoring/review is M2-18. Dedicated `policy_findings` / `policy_test_results` tables deferred (payload JSON on the immutable run). Mandatory test *generation* remains out of scope. Compiler writes are M3. Deploy gating is N1-06. Emergency approval bypass is out of scope. Compose RPC and `PolicyDocument.Tests` opaque JSON are unchanged. M2-12…M2-16 analysis-context combiners are unchanged. Controller never writes RouterOS.
+**Residuals:** Dedicated `policy_findings` / `policy_test_results` tables deferred (payload JSON on the immutable run). Mandatory test *generation* remains out of scope. Compiler writes are M3. Deploy gating is N1-06. Emergency approval bypass is out of scope. Compose RPC and `PolicyDocument.Tests` opaque JSON are unchanged. M2-12…M2-16 analysis-context combiners are unchanged. Controller never writes RouterOS. Desktop authoring/review delivered in M2-18.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PolicyApproval|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~PolicyProtoContract"
 dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~PolicyApprovalPersist|FullyQualifiedName~ApprovalAndDesiredBinding"
+```
+
+## Living Specification — policy authoring and review (M2-18)
+
+Policy Model §16 / §18 / §9 / §60–§61 + Issue Set M2-18 → Domain writer + Application validate/catalog/diff + `PolicyService` RPCs + Desktop authoring/review (Contracts-only ADR 0005; no RouterOS):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Address/Service JSON writer ↔ reader | `PolicyObjectJsonWriter` | `AddressRoundTripsHostPrefixAndRange`; `Ipv6PrefixRoundTrips`; `ServiceRoundTripsTcpTerm` |
+| Document catalog helpers | `PolicyDocument.WithAddressObjects/WithServiceObjects/WithTests` | `WithCatalogHelpersReplaceCollections` |
+| DRAFT→VALIDATED + CAS + idempotency + audit | `ValidateRevisionUseCase` | `ValidateRevisionDraftToValidatedWithCasAndIdempotency` |
+| Upsert address/service by id | `UpsertAddressObjectUseCase` / `UpsertServiceObjectUseCase` | `UpsertAddressObjectAddsAndReplacesById`; `UpsertServiceObjectAndReplaceTests` |
+| COMPANY_BASELINE chain contracts | `ReplaceChainContractsUseCase` | `ReplaceChainContractsCompanyBaselineOnly` |
+| Opaque tests replace | `ReplacePolicyTestsUseCase` | `UpsertServiceObjectAndReplaceTests` |
+| Semantic diff + risk (signals none) | `DiffPolicyRevisionsUseCase` | `DiffPolicyRevisionsReportsRuleChangeAndRisk` |
+| GetPolicyRevision catalogs on wire | `policy.proto` fields 13–16 | `PolicyRevisionExposesCatalogFields` |
+| New RPC surface | `PolicyService` | `M218AuthoringReviewRpcsArePresent` |
+| AC#1 Desktop editors (address/service/rules/contracts/tests) | `PolicyPanelService` / `PoliciesViewModel` | `Ac1EditorsUpsertAddressServiceContractsAndTests` |
+| AC#2 Fixed stages cannot cross-reorder | `PolicyPanelService.ReorderRulesInStageAsync` | `Ac2Ac3ReorderRejectsCrossStageAndAcceptsSameStagePermutation` |
+| AC#3 Contiguous ordinal via ReorderRules | same + family/chain/stage | `Ac2Ac3ReorderRejectsCrossStageAndAcceptsSameStagePermutation` |
+| AC#4 No raw matcher string (proto TrafficPredicate only) | `ParseAddressEntries` + AddRule selectors | `Ac4ParseAddressEntriesRejectsRawMatcherAndAcceptsHostCidrRange` |
+| AC#5 Server validation via RpcException detail | `PoliciesViewModel.RunBusyAsync` | (UI surfaces `RpcException.Status.Detail`; panel uses server RPCs) |
+| AC#6 Findings + compose / residual NODE_EFFECTIVE | `ComposeAsync` + RecordAnalysisRun | `Ac6Ac7Ac8ComposeDiffAndAnalysisRiskSurfaces` |
+| AC#7 Semantic diff before approval | `DiffAsync` | `Ac6Ac7Ac8ComposeDiffAndAnalysisRiskSurfaces` |
+| AC#8 Risk level from analysis run | `RecordAnalysisRunAsync` | `Ac6Ac7Ac8ComposeDiffAndAnalysisRiskSurfaces` |
+| AC#9 Separate Save/Validate/Submit/Approve/Bind/Deploy | `PoliciesViewModel` commands | `Ac9Ac10SeparateActionsAndNoSaveAndDeploySurface` |
+| AC#10 No Save and Deploy | command surface | `Ac9Ac10SeparateActionsAndNoSaveAndDeploySurface` |
+| AC#11 Approved/InReview read-only | `PolicyRevisionPanelState.IsReadOnly` | `Ac11ApprovedRevisionIsReadOnly` |
+| Desktop RPC wiring (Contracts-only) | `IPolicyServiceClient` | `DesktopClientsCoverInventorySnapshotCompareZoneAndPolicyRpcs` |
+
+**Residuals:** Typed `PolicyDocument.Tests` still opaque JSON text box. Full NODE_EFFECTIVE / per-device analysis hashes need device context — Desktop reuses logical-effective/content hash slots for `RecordAnalysisRun` wiring. Deploy button present with `CanExecute=false` (N1-06). Composer/RouterOS writes remain out of scope (M3/M4).
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PolicyObjectJsonWriter|FullyQualifiedName~PolicyAuthoringReview|FullyQualifiedName~PolicyProtoContract|FullyQualifiedName~PolicyDesktop|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
