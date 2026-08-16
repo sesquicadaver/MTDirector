@@ -12,6 +12,9 @@ public sealed class IpProtocol : IEquatable<IpProtocol>, IComparable<IpProtocol>
 
     public const byte Udp = 17;
 
+    /// <summary>VRRP advertisement protocol number (Policy Model §47.1).</summary>
+    public const byte Vrrp = 112;
+
     public const byte Sctp = 132;
 
     public const byte Icmp = 1;

@@ -656,12 +656,44 @@ Policy Model §46–§46.1 + Onboarding §15–§16 + Issue Set M2-13 AC#1–12 
 | Discovery mapper (address + dynamics) | `ManagementPathBlockerMapper` | `DiscoveryMapsApiSslAddressAndFilterWithoutCreatingGuards` |
 | `MANAGEMENT_*` trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
 
-**Residuals:** Desktop OUT; no new RPC; compose unchanged (management-path is analysis, not a company document). Production entry is `Analyze()` on **one** physical-device snapshot; caller iterates members with `WithDestination` and that member's filter/API-SSL facts. VIP-only fail-closed requires the profile's physical/virtual address lists (VRRP discovery wiring is M2-14). Independent OOB-path proof and over-broad `0.0.0.0/0` guard rejection are M5-03 / watchdog. Strict `mfc:guard:v1:` grammar is onboarding write (M5). VRRP protocol-112 advertisement/sync flows are M2-14. Deploy gating of these blockers is N1-06. Guards are never auto-created. M2-12 one-argument and N1-04 two-argument analysis-context preimages are unchanged. Controller never disables L2/L3 hardware offload.
+**Residuals:** Desktop OUT; no new RPC; compose unchanged (management-path is analysis, not a company document). Production entry is `Analyze()` on **one** physical-device snapshot; caller iterates members with `WithDestination` and that member's filter/API-SSL facts. VIP-only fail-closed requires the profile's physical/virtual address lists (VRRP discovery is available to callers after M2-14; this mapper still does not auto-fill them). Independent OOB-path proof and over-broad `0.0.0.0/0` guard rejection are M5-03 / watchdog. Strict `mfc:guard:v1:` grammar is onboarding write (M5). VRRP protocol-112 advertisement/sync flows are M2-14 (DONE). Deploy gating of these blockers is N1-06. Guards are never auto-created. M2-12 one-argument and N1-04 two-argument analysis-context preimages are unchanged. Controller never disables L2/L3 hardware offload.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ManagementPath|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — topology and dependency safety (M2-14)
+
+Policy Model §47–§53 + Issue Set M2-14 AC#1–14 → Domain `TopologyDependencyAnalysis` + Application canonical mapper + RouterOs discovery mapper (Desktop OUT, no new RPC; compose unchanged; NAT/RAW/Mangle/VRRP never written; primary WAN never disabled):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| VRRP protocol 112 flows | `ProtectedVrrpFlow` advertisement | `Ac1VrrpProtocol112AdvertisementFlowsAreGenerated` |
+| IPv4/IPv6 multicast destinations | `224.0.0.18` / `ff02::12`, TTL/HL 255 | `Ac2Ipv4AndIpv6MulticastDestinationsAreChecked` |
+| VRRP conntrack sync | UDP 8275 INPUT/OUTPUT | `Ac3VrrpConnectionTrackingSyncFlowsUseConfiguredUdpPort` |
+| Missing VRRP member | `VRRP_MEMBER_MISSING` | `Ac4MissingVrrpMemberIsBlocker` |
+| Split-master role vector preserved | `RoleVector` + `HasCollapsedGlobalMaster=false` | `Ac5SplitMasterRoleVectorIsPreserved` |
+| All uplinks have zone coverage | `UPLINK_ZONE_COVERAGE_MISSING` | `Ac6AllUplinksMustHaveZoneCoverage` |
+| Routing tables/rules in context | `mfc.policy.topology_dependency_context.v1` | `Ac7RoutingTablesAndRulesEnterContextHash` |
+| PCC and routing marks detected | `MANGLE_PCC_PRESENT` / `MANGLE_ROUTING_MARK_PRESENT` WARNING | `Ac8PccAndRoutingMarksAreDetectedAsWarnings` |
+| Strict rp-filter + VRRP/asymmetry | `STRICT_RPF_*` | `Ac9StrictRpFilterWithVrrpAndAsymmetryIsBlocked` |
+| RAW notrack intersection | `RAW_NOTRACK_*` / `RAW_DEPENDENCY_INDETERMINATE` | `Ac10RawNotrackIntersectionIsAnalyzed` |
+| DSTNAT dependencies | `DSTNAT_MATCH_WITHOUT_NAT_EVIDENCE` WARNING / `NAT_DEPENDENCY_INDETERMINATE` | `Ac11DstNatDependenciesAreAnalyzed` |
+| Mangle dependency hash in analysis context | 4-arg combiner ≠ 3-arg | `Ac12MangleDependencyHashEntersAnalysisContext` |
+| Switch FORWARD blocked | `SWITCH_FORWARD_POLICY_UNSUPPORTED` always when `NodeKind.Switch`; chip/transit fail-closed | `Ac13SwitchForwardPolicyIsBlocked` |
+| Operational route or VRRP role ≠ policy/context hash | observation hash only | `Ac14OperationalRouteOrVrrpRoleDoesNotChangeContextHash` |
+| Canonical mapper (no RouterOS) | `TopologyDependencyContextMapper` | `CanonicalSectionsMapToDomainBlockersWithoutWritingNatOrVrrp` |
+| Discovery mapper (sync + RAW + rp-filter) | `TopologyDependencyBlockerMapper` | `DiscoveryMapsVrrpSyncRawNatAndRpFilterWithoutWritingFacilities` |
+| Topology BLOCKERs trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
+
+**Residuals:** Desktop OUT; no new RPC; compose unchanged (topology-dependency is analysis, not a company document). Proto-112 **write**/guard placement is M5/M3. FastTrack PCC/balanced block is M2-15. Deploy gating is N1-06. M1-18 remains topology SoT for version/cardinality/`VRRP_SPLIT_MASTER` inventory findings; this slice emits `VRRP_MEMBER_MISSING` and preserves the per-VRID role vector without collapsing it. Explicit approved infrastructure exception for strict RPF is not modeled — fail-closed BLOCKER. Cube-level RAW notrack vs stateful disjoint proof is fail-closed intersection when both exist. `NAT_DEPENDENCY_CHANGED` / `MANGLE_DEPENDENCY_CHANGED` are reserved FailedPrecondition codes; single-shot `Analyze()` has no prior snapshot, so identity changes are proven by topology context hash (AC#12) rather than a CHANGED finding. M2-12/N1-04/M2-13 analysis-context preimages are unchanged. Controller never writes NAT/RAW/Mangle/VRRP and never disables primary WAN or L2/L3 hardware offload.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~TopologyDependency|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
