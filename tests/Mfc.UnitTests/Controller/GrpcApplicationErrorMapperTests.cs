@@ -55,6 +55,9 @@ public sealed class GrpcApplicationErrorMapperTests
     [InlineData(FastTrackAnalysisCodes.ContextUnsupported)]
     [InlineData(FastTrackAnalysisCodes.LoggingUnsupported)]
     [InlineData(FastTrackAnalysisCodes.CapabilityUnsupported)]
+    [InlineData(PolicyEvidenceAnalysisCodes.SafetyTestFailed)]
+    [InlineData(PolicyEvidenceAnalysisCodes.SystemTestDisabled)]
+    [InlineData(PolicyEvidenceAnalysisCodes.NodeEffectiveIndeterminate)]
     public void SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable(string code)
     {
         RpcException ex = GrpcApplicationErrorMapper.ToRpcException(

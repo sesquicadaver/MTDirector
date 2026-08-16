@@ -726,6 +726,37 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~FastTrack|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
 ```
 
+## Living Specification — policy tests, semantic diff and risk (M2-16)
+
+Policy Model §54–§61 + Issue Set M2-16 AC#1–12 → Domain `PolicyEvidenceAnalysis` + Application canonical mapper + RouterOs discovery mapper (Desktop OUT, no new RPC; compose unchanged; `PolicyDocument.Tests` stays opaque JSON; tests evaluated, not generated):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| MANAGED_ONLY and NODE_EFFECTIVE | missing actual filter → INDETERMINATE; anchor-only NODE_EFFECTIVE walks managed | `Ac1ManagedOnlyAndNodeEffectiveModesAreSupported` |
+| SYSTEM tests cannot be disabled | `Create(..., enabled: false)` throws; evaluator BLOCKER | `Ac2SystemTestsCannotBeDisabled` |
+| Failed safety test is a blocker | SYSTEM expected mismatch → `POLICY_TEST_SAFETY_FAILED` | `Ac3FailedSafetyTestIsBlocker` |
+| Matched rule and path returned | `MatchedRuleId` / `MatchedPath` / stage | `Ac4MatchedRuleAndPathAreReturned` |
+| Managed rule UUID for diff | no fuzzy match; reconstituted identical predicate ≠ MODIFIED | `Ac5ManagedRuleUuidIsUsedForDiff` |
+| Added/removed/modified/moved/enabled/disabled | UUID change classes | `Ac6AddedRemovedModifiedMovedEnabledDisabledAreDetermined` |
+| Object changes have impact set | address UUID + dependent rule ids | `Ac7ObjectChangesHaveImpactSet` |
+| Newly accepted / newly denied packet spaces | `Relate` on union of enabled ACCEPT/FastTrack | `Ac8NewlyAcceptedAndNewlyDeniedPacketSpacesAreClassified` |
+| Risk from normative mapping | add-allow HIGH; identical NONE/LOW | `Ac9RiskUsesNormativeMapping` |
+| Management / FastTrack / exception / default minimums | signals + FastTrack UUID change | `Ac10ManagementFastTrackExceptionAndDefaultHaveMinimumRisk` |
+| Diff and risk deterministic | same inputs → same evidence hash | `Ac11DiffAndRiskAreDeterministic` |
+| Tests/diff/risk enter analysis hash | 6-arg combiner ≠ 5-arg; M2-15 preimage unchanged | `Ac12TestsDiffAndRiskEnterAnalysisContextHash` |
+| Canonical mapper (no RouterOS) | `PolicyEvidenceContextMapper` | `CanonicalFilterEnablesNodeEffectiveWithoutWritingPolicy` |
+| Discovery mapper (pre-anchor unmanaged) | `PolicyEvidenceBlockerMapper` | `DiscoveryPreAnchorAcceptFailsNodeEffectiveSafetyWithoutWritingFilters` |
+| Unevaluated actual matchers fail closed | CIDR / extra known / unknown action → INDETERMINATE | `NodeEffectiveUnevaluatedActualMatchersAreIndeterminate` |
+| Safety BLOCKERs trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
+
+**Residuals:** Desktop OUT; no new RPC; compose unchanged. Typed `PolicyDocument.Tests` deferred (opaque JSON so canonical hashes stay stable). Mandatory *generation* of missing user tests for every ACCEPT/FastTrack/exception (§55) is out of scope — this slice evaluates caller-supplied tests. Approval/binding is M2-17. Compiler writes are M3. Deploy gating is N1-06. Exception/management/default/zone-binding minimum risk is caller-supplied `PolicyEvidenceSignals` except FastTrack inferred from rule-effect + UUID changes; M2-17 must treat a missing signals vector as unknown CRITICAL, not silent `None`. NODE_EFFECTIVE actual-filter match is coarse: only exact-host `protocol`/`src-address`/`dst-address`/`connection-state` may Hit or Miss; CIDR/range/list, extra known matchers (`src-port`, interface, …), unknown matchers, and actions outside accept/drop/reject/fasttrack-connection/return are INDETERMINATE. Packet-space classes union enabled ACCEPT/FastTrack cubes and do not replay M2-11 sequence. M2-12…M2-15 analysis-context preimages are unchanged. Controller never writes tests, policy, or filter rules.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PolicyEvidence|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
+```
+
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
 Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):
