@@ -71,7 +71,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Management-path safety | Done (M2-13) | `ManagementPathAnalysis`; API-SSL + source + guard-before-anchor; VIP-only/unknown INDETERMINATE; SYSTEM tests + witnesses |
 | Topology / dependency safety | Done (M2-14) | `TopologyDependencyAnalysis`; VRRP proto-112 + sync; missing member; split-master vector; STRICT_RPF_*; RAW/NAT/Mangle; SWITCH FORWARD; observation hash excluded from policy context |
 | FastTrack policy validation | Done (M2-15) | `FastTrackAnalysis`; IPv4 FORWARD STATE_PRELUDE TCP/UDP; PCC/balanced/marks/VRF/IPsec/pre-anchor fail-closed; fallback flag; risk HIGH; 5-arg hash isolation |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-16 (#63) |
+| Policy tests / semantic diff / risk | Done (M2-16) | `PolicyEvidenceAnalysis`; MANAGED_ONLY/NODE_EFFECTIVE; UUID diff + object impact; packet-space classes; risk floor; 6-arg hash isolation |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-17 (#64) |
 
 ## ADRs
 

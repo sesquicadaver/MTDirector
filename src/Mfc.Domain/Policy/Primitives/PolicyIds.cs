@@ -57,3 +57,11 @@ public readonly record struct RuleId(Guid Value)
 
     public override string ToString() => Value.ToString("D");
 }
+
+/// <summary>Stable identity for a policy test case (Policy Model §54 / M2-16).</summary>
+public readonly record struct PolicyTestId(Guid Value)
+{
+    public static PolicyTestId New() => new(Guid.NewGuid());
+
+    public override string ToString() => Value.ToString("D");
+}
