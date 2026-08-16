@@ -82,7 +82,215 @@ internal static class PolicyProtoMapper
             message.ExceptionMetadata = ToProto(view.ExceptionMetadata);
         }
 
+        message.AddressObjects.AddRange(view.AddressObjects.Select(ToProto));
+        message.ServiceObjects.AddRange(view.ServiceObjects.Select(ToProto));
+        message.ChainContracts.AddRange(view.ChainContracts.Select(ToProto));
+        message.TestsJson = view.TestsJson ?? "[]";
         return message;
+    }
+
+    public static AddressObject ToProto(AddressObjectView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        AddressObject message = new()
+        {
+            Id = ProtoUuid.FromGuid(view.Id),
+            Name = view.Name,
+            Family = ToProto(view.Family),
+        };
+        message.Entries.AddRange(view.Entries.Select(ToProto));
+        if (!string.IsNullOrWhiteSpace(view.Description))
+        {
+            message.Description = view.Description;
+        }
+
+        return message;
+    }
+
+    public static AddressObjectEntry ToProto(AddressObjectEntryView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        AddressObjectEntry message = new() { Kind = view.Kind };
+        if (view.Address is not null)
+        {
+            message.Address = view.Address;
+        }
+
+        if (view.PrefixLength is byte prefix)
+        {
+            message.PrefixLength = prefix;
+        }
+
+        if (view.Start is not null)
+        {
+            message.Start = view.Start;
+        }
+
+        if (view.End is not null)
+        {
+            message.End = view.End;
+        }
+
+        return message;
+    }
+
+    public static ServiceObject ToProto(ServiceObjectView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        ServiceObject message = new()
+        {
+            Id = ProtoUuid.FromGuid(view.Id),
+            Name = view.Name,
+        };
+        message.Terms.AddRange(view.Terms.Select(ToProto));
+        if (!string.IsNullOrWhiteSpace(view.Description))
+        {
+            message.Description = view.Description;
+        }
+
+        return message;
+    }
+
+    public static ServiceTerm ToProto(ServiceTermView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        ServiceTerm message = new()
+        {
+            Protocol = new IpProtocolSpec
+            {
+                Any = view.Protocol.Any,
+            },
+        };
+        if (view.Protocol.Number is byte number)
+        {
+            message.Protocol.Number = number;
+        }
+
+        if (!string.IsNullOrWhiteSpace(view.Protocol.CanonicalName))
+        {
+            message.Protocol.CanonicalName = view.Protocol.CanonicalName;
+        }
+
+        message.SourcePorts.AddRange(view.SourcePorts.Select(static p => new PortInterval
+        {
+            Start = p.Start,
+            End = p.End,
+        }));
+        message.DestinationPorts.AddRange(view.DestinationPorts.Select(static p => new PortInterval
+        {
+            Start = p.Start,
+            End = p.End,
+        }));
+        message.IcmpSelectors.AddRange(view.IcmpSelectors.Select(static i =>
+        {
+            IcmpSelector selector = new() { Type = i.Type };
+            if (i.Code is byte code)
+            {
+                selector.Code = code;
+            }
+
+            return selector;
+        }));
+        return message;
+    }
+
+    public static ChainContract ToProto(ChainContractView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        ChainContract message = new()
+        {
+            Family = ToProto(view.Family),
+            Chain = ToProto(view.Chain),
+            DefaultDisposition = view.DefaultDisposition,
+        };
+        if (view.RejectMode is DomainRejectMode mode)
+        {
+            message.RejectMode = ToProto(mode);
+        }
+
+        return message;
+    }
+
+    public static PolicyRevisionDiff ToProto(PolicyRevisionDiffView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        PolicyRevisionDiff message = new()
+        {
+            BeforeRevisionId = ProtoUuid.FromGuid(view.BeforeRevisionId),
+            AfterRevisionId = ProtoUuid.FromGuid(view.AfterRevisionId),
+            RiskLevel = view.RiskLevel,
+        };
+        message.RuleChanges.AddRange(view.RuleChanges.Select(static line =>
+        {
+            PolicyRuleDiffLine proto = new() { RuleId = ProtoUuid.FromGuid(line.RuleId) };
+            proto.Changes.AddRange(line.Changes);
+            return proto;
+        }));
+        message.SemanticClasses.AddRange(view.SemanticClasses);
+        message.PacketSpaceClasses.AddRange(view.PacketSpaceClasses);
+        message.RiskDrivers.AddRange(view.RiskDrivers);
+        message.FindingSummaries.AddRange(view.FindingSummaries.Select(static f => new PolicyAnalysisFinding
+        {
+            Code = f.Code,
+            Severity = f.Severity,
+            Message = f.Message,
+        }));
+        return message;
+    }
+
+    public static AddressObjectEntryView ToInput(AddressObjectEntry entry)
+    {
+        ArgumentNullException.ThrowIfNull(entry);
+        return new AddressObjectEntryView
+        {
+            Kind = entry.Kind,
+            Address = entry.HasAddress ? entry.Address : null,
+            PrefixLength = entry.HasPrefixLength ? (byte)entry.PrefixLength : null,
+            Start = entry.HasStart ? entry.Start : null,
+            End = entry.HasEnd ? entry.End : null,
+        };
+    }
+
+    public static ServiceTermView ToInput(ServiceTerm term)
+    {
+        ArgumentNullException.ThrowIfNull(term);
+        ArgumentNullException.ThrowIfNull(term.Protocol);
+        return new ServiceTermView
+        {
+            Protocol = new IpProtocolView
+            {
+                Any = term.Protocol.Any,
+                Number = term.Protocol.HasNumber ? (byte)term.Protocol.Number : null,
+                CanonicalName = term.Protocol.HasCanonicalName ? term.Protocol.CanonicalName : null,
+            },
+            SourcePorts = term.SourcePorts.Select(static p => new PortIntervalView
+            {
+                Start = (ushort)p.Start,
+                End = (ushort)p.End,
+            }).ToArray(),
+            DestinationPorts = term.DestinationPorts.Select(static p => new PortIntervalView
+            {
+                Start = (ushort)p.Start,
+                End = (ushort)p.End,
+            }).ToArray(),
+            IcmpSelectors = term.IcmpSelectors.Select(static i => new IcmpSelectorView
+            {
+                Type = (byte)i.Type,
+                Code = i.HasCode ? (byte)i.Code : null,
+            }).ToArray(),
+        };
+    }
+
+    public static ChainContractView ToInput(ChainContract contract)
+    {
+        ArgumentNullException.ThrowIfNull(contract);
+        return new ChainContractView
+        {
+            Family = ToDomain(contract.Family),
+            Chain = ToDomain(contract.Chain),
+            DefaultDisposition = contract.DefaultDisposition,
+            RejectMode = contract.HasRejectMode ? ToDomain(contract.RejectMode) : null,
+        };
     }
 
     public static global::Mfc.Contracts.Mfc.V1.PolicyRule ToProto(PolicyRuleView view)

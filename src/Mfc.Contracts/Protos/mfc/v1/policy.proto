@@ -7,7 +7,7 @@ option csharp_namespace = "Mfc.Contracts.Mfc.V1";
 import "mfc/v1/common.proto";
 import "mfc/v1/zones.proto";
 
-// PolicyService — Policy Model §§7–9 / §§22–27 / M2-06 typed rules + draft CRUD.
+// PolicyService — Policy Model §§7–9 / §§22–27 / M2-06 typed rules + draft CRUD + M2-18 catalogs/review.
 service PolicyService {
   rpc CreateDraftPolicy(CreateDraftPolicyRequest) returns (PolicyDraft);
   rpc GetPolicyRevision(GetPolicyRevisionRequest) returns (PolicyRevision);
@@ -25,6 +25,12 @@ service PolicyService {
   rpc ApproveRevision(ApproveRevisionRequest) returns (PolicyApprovalVote);
   rpc ActivateDesiredBinding(ActivateDesiredBindingRequest) returns (PolicyBinding);
   rpc ExpireExceptionBinding(ExpireExceptionBindingRequest) returns (PolicyBinding);
+  rpc ValidateRevision(ValidateRevisionRequest) returns (PolicyRevision);
+  rpc UpsertAddressObject(UpsertAddressObjectRequest) returns (PolicyRevision);
+  rpc UpsertServiceObject(UpsertServiceObjectRequest) returns (PolicyRevision);
+  rpc ReplaceChainContracts(ReplaceChainContractsRequest) returns (PolicyRevision);
+  rpc ReplacePolicyTests(ReplacePolicyTestsRequest) returns (PolicyRevision);
+  rpc DiffPolicyRevisions(DiffPolicyRevisionsRequest) returns (PolicyRevisionDiff);
 }
 
 enum PolicyKind {
@@ -225,6 +231,11 @@ message PolicyRevision {
   repeated PolicyRule rules = 10;
   repeated PolicyWarning warnings = 11;
   optional ExceptionMetadata exception_metadata = 12;
+  repeated AddressObject address_objects = 13;
+  repeated ServiceObject service_objects = 14;
+  repeated ChainContract chain_contracts = 15;
+  // Opaque residual tests array serialized as a single JSON string.
+  string tests_json = 16;
 }
 
 message PolicyDraft {
@@ -478,4 +489,120 @@ message PolicyBinding {
   uint64 row_version = 7;
   optional string valid_until = 8;
   bool deployment_started = 9;
+}
+
+message AddressObjectEntry {
+  string kind = 1;
+  optional string address = 2;
+  optional uint32 prefix_length = 3;
+  optional string start = 4;
+  optional string end = 5;
+}
+
+message AddressObject {
+  Uuid id = 1;
+  string name = 2;
+  IpAddressFamily family = 3;
+  repeated AddressObjectEntry entries = 4;
+  optional string description = 5;
+}
+
+message PortInterval {
+  uint32 start = 1;
+  uint32 end = 2;
+}
+
+message IpProtocolSpec {
+  bool any = 1;
+  optional uint32 number = 2;
+  optional string canonical_name = 3;
+}
+
+message IcmpSelector {
+  uint32 type = 1;
+  optional uint32 code = 2;
+}
+
+message ServiceTerm {
+  IpProtocolSpec protocol = 1;
+  repeated PortInterval source_ports = 2;
+  repeated PortInterval destination_ports = 3;
+  repeated IcmpSelector icmp_selectors = 4;
+}
+
+message ServiceObject {
+  Uuid id = 1;
+  string name = 2;
+  repeated ServiceTerm terms = 3;
+  optional string description = 4;
+}
+
+message ChainContract {
+  IpAddressFamily family = 1;
+  PolicyFilterChain chain = 2;
+  string default_disposition = 3;
+  optional RejectMode reject_mode = 4;
+}
+
+message ValidateRevisionRequest {
+  Uuid idempotency_key = 1;
+  Uuid revision_id = 2;
+  Sha256 expected_content_hash = 3;
+}
+
+message UpsertAddressObjectRequest {
+  Uuid idempotency_key = 1;
+  Uuid revision_id = 2;
+  Sha256 expected_content_hash = 3;
+  optional Uuid object_id = 4;
+  string name = 5;
+  IpAddressFamily family = 6;
+  repeated AddressObjectEntry entries = 7;
+  optional string description = 8;
+}
+
+message UpsertServiceObjectRequest {
+  Uuid idempotency_key = 1;
+  Uuid revision_id = 2;
+  Sha256 expected_content_hash = 3;
+  optional Uuid object_id = 4;
+  string name = 5;
+  repeated ServiceTerm terms = 6;
+  optional string description = 7;
+}
+
+message ReplaceChainContractsRequest {
+  Uuid idempotency_key = 1;
+  Uuid revision_id = 2;
+  Sha256 expected_content_hash = 3;
+  repeated ChainContract contracts = 4;
+}
+
+message ReplacePolicyTestsRequest {
+  Uuid idempotency_key = 1;
+  Uuid revision_id = 2;
+  Sha256 expected_content_hash = 3;
+  optional string tests_json = 4;
+  repeated string test_json_elements = 5;
+}
+
+message DiffPolicyRevisionsRequest {
+  Uuid before_revision_id = 1;
+  Uuid after_revision_id = 2;
+}
+
+message PolicyRuleDiffLine {
+  Uuid rule_id = 1;
+  repeated string changes = 2;
+}
+
+message PolicyRevisionDiff {
+  Uuid before_revision_id = 1;
+  Uuid after_revision_id = 2;
+  repeated PolicyRuleDiffLine rule_changes = 3;
+  repeated string semantic_classes = 4;
+  repeated string packet_space_classes = 5;
+  string risk_level = 6;
+  repeated string risk_drivers = 7;
+  repeated PolicyAnalysisFinding finding_summaries = 8;
 }

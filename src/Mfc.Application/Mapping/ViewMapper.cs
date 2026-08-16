@@ -182,6 +182,10 @@ internal static class ViewMapper
             ExceptionMetadata = document.ExceptionMetadata is null
                 ? null
                 : ToView(document.ExceptionMetadata),
+            AddressObjects = Policies.PolicyCatalogViewMapper.MapAddresses(document.AddressObjects),
+            ServiceObjects = Policies.PolicyCatalogViewMapper.MapServices(document.ServiceObjects),
+            ChainContracts = Policies.PolicyCatalogViewMapper.MapChainContracts(document.ChainContracts),
+            TestsJson = Policies.PolicyCatalogViewMapper.SerializeTests(document.Tests),
         };
     }
 

@@ -132,6 +132,57 @@ public sealed class PolicyDocument
             ExceptionMetadata);
     }
 
+    /// <summary>Returns a copy with replacement opaque address-object catalog JSON.</summary>
+    public PolicyDocument WithAddressObjects(IReadOnlyList<JsonElement> addressObjects)
+    {
+        ArgumentNullException.ThrowIfNull(addressObjects);
+        return new PolicyDocument(
+            Kind,
+            OwnerScope,
+            SchemaVersion,
+            ChainContracts,
+            ZoneDefinitions,
+            addressObjects,
+            ServiceObjects,
+            Rules,
+            Tests,
+            ExceptionMetadata);
+    }
+
+    /// <summary>Returns a copy with replacement opaque service-object catalog JSON.</summary>
+    public PolicyDocument WithServiceObjects(IReadOnlyList<JsonElement> serviceObjects)
+    {
+        ArgumentNullException.ThrowIfNull(serviceObjects);
+        return new PolicyDocument(
+            Kind,
+            OwnerScope,
+            SchemaVersion,
+            ChainContracts,
+            ZoneDefinitions,
+            AddressObjects,
+            serviceObjects,
+            Rules,
+            Tests,
+            ExceptionMetadata);
+    }
+
+    /// <summary>Returns a copy with replacement opaque policy-test JSON elements.</summary>
+    public PolicyDocument WithTests(IReadOnlyList<JsonElement> tests)
+    {
+        ArgumentNullException.ThrowIfNull(tests);
+        return new PolicyDocument(
+            Kind,
+            OwnerScope,
+            SchemaVersion,
+            ChainContracts,
+            ZoneDefinitions,
+            AddressObjects,
+            ServiceObjects,
+            Rules,
+            tests,
+            ExceptionMetadata);
+    }
+
     /// <summary>Returns a copy with replacement exception metadata (EXCEPTION drafts).</summary>
     public PolicyDocument WithExceptionMetadata(ExceptionMetadata? exceptionMetadata)
         => new(

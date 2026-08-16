@@ -147,6 +147,143 @@ public sealed class PolicyRevisionView
     public required IReadOnlyList<PolicyWarningView> Warnings { get; init; }
 
     public ExceptionMetadataView? ExceptionMetadata { get; init; }
+
+    public IReadOnlyList<AddressObjectView> AddressObjects { get; init; } = [];
+
+    public IReadOnlyList<ServiceObjectView> ServiceObjects { get; init; } = [];
+
+    public IReadOnlyList<ChainContractView> ChainContracts { get; init; } = [];
+
+    /// <summary>Opaque residual tests array as a single JSON string (M2-18).</summary>
+    public string TestsJson { get; init; } = "[]";
+}
+
+/// <summary>Wire/application view of one address catalog entry.</summary>
+public sealed class AddressObjectEntryView
+{
+    public required string Kind { get; init; }
+
+    public string? Address { get; init; }
+
+    public byte? PrefixLength { get; init; }
+
+    public string? Start { get; init; }
+
+    public string? End { get; init; }
+}
+
+/// <summary>Wire/application view of an address object (M2-18).</summary>
+public sealed class AddressObjectView
+{
+    public required Guid Id { get; init; }
+
+    public required string Name { get; init; }
+
+    public required IpAddressFamily Family { get; init; }
+
+    public required IReadOnlyList<AddressObjectEntryView> Entries { get; init; }
+
+    public string? Description { get; init; }
+}
+
+/// <summary>Wire/application view of a port interval.</summary>
+public sealed class PortIntervalView
+{
+    public required ushort Start { get; init; }
+
+    public required ushort End { get; init; }
+}
+
+/// <summary>Wire/application view of an IP protocol matcher.</summary>
+public sealed class IpProtocolView
+{
+    public required bool Any { get; init; }
+
+    public byte? Number { get; init; }
+
+    public string? CanonicalName { get; init; }
+}
+
+/// <summary>Wire/application view of an ICMP selector.</summary>
+public sealed class IcmpSelectorView
+{
+    public required byte Type { get; init; }
+
+    public byte? Code { get; init; }
+}
+
+/// <summary>Wire/application view of a service term.</summary>
+public sealed class ServiceTermView
+{
+    public required IpProtocolView Protocol { get; init; }
+
+    public IReadOnlyList<PortIntervalView> SourcePorts { get; init; } = [];
+
+    public IReadOnlyList<PortIntervalView> DestinationPorts { get; init; } = [];
+
+    public IReadOnlyList<IcmpSelectorView> IcmpSelectors { get; init; } = [];
+}
+
+/// <summary>Wire/application view of a service object (M2-18).</summary>
+public sealed class ServiceObjectView
+{
+    public required Guid Id { get; init; }
+
+    public required string Name { get; init; }
+
+    public required IReadOnlyList<ServiceTermView> Terms { get; init; }
+
+    public string? Description { get; init; }
+}
+
+/// <summary>Wire/application view of a chain contract (M2-18).</summary>
+public sealed class ChainContractView
+{
+    public required IpAddressFamily Family { get; init; }
+
+    public required PolicyFilterChain Chain { get; init; }
+
+    public required string DefaultDisposition { get; init; }
+
+    public RejectMode? RejectMode { get; init; }
+}
+
+/// <summary>Semantic revision diff + risk summary (M2-18 review).</summary>
+public sealed class PolicyRevisionDiffView
+{
+    public required Guid BeforeRevisionId { get; init; }
+
+    public required Guid AfterRevisionId { get; init; }
+
+    public required IReadOnlyList<PolicyRuleDiffLineView> RuleChanges { get; init; }
+
+    public required IReadOnlyList<string> SemanticClasses { get; init; }
+
+    public required IReadOnlyList<string> PacketSpaceClasses { get; init; }
+
+    public required string RiskLevel { get; init; }
+
+    public required IReadOnlyList<string> RiskDrivers { get; init; }
+
+    public required IReadOnlyList<PolicyFindingSummaryView> FindingSummaries { get; init; }
+}
+
+/// <summary>One UUID-keyed rule change line.</summary>
+public sealed class PolicyRuleDiffLineView
+{
+    public required Guid RuleId { get; init; }
+
+    public required IReadOnlyList<string> Changes { get; init; }
+}
+
+/// <summary>Compact finding summary for review surfaces.</summary>
+public sealed class PolicyFindingSummaryView
+{
+    public required string Code { get; init; }
+
+    public required string Severity { get; init; }
+
+    public required string Message { get; init; }
 }
 
 /// <summary>Application view of typed exception metadata (M2-08).</summary>

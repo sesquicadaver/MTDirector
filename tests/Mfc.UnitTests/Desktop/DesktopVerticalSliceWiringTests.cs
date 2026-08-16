@@ -45,5 +45,19 @@ public sealed class DesktopVerticalSliceWiringTests
         Type policies = typeof(IPolicyServiceClient);
         Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ListRulesAsync)));
         Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.GetPolicyRevisionAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.CreateDraftPolicyAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ValidateRevisionAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.UpsertAddressObjectAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.UpsertServiceObjectAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ReplaceChainContractsAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ReplacePolicyTestsAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.DiffPolicyRevisionsAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ComposeEffectivePolicyAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.SubmitRevisionForReviewAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.RecordAnalysisRunAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ApproveRevisionAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ActivateDesiredBindingAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ReorderRulesAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.AddRuleAsync)));
     }
 }
