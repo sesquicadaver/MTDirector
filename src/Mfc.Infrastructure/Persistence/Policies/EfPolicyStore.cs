@@ -83,6 +83,8 @@ public sealed class EfPolicyStore : IPolicyStore
             CreatedBy = revision.CreatedBy.Value,
             CreatedAtUtc = revision.CreatedAtUtc,
             ApprovedAtUtc = revision.ApprovedAtUtc,
+            ApprovedAnalysisRunId = revision.ApprovedAnalysisRunId?.Value,
+            ApprovedBundleHash = revision.ApprovedBundleHash?.Bytes.ToArray(),
             Compression = (short)encoded.Compression,
             UncompressedSize = encoded.UncompressedSize,
             CompressedPayload = encoded.CompressedPayload,
@@ -126,6 +128,8 @@ public sealed class EfPolicyStore : IPolicyStore
         entity.ParentContextHash = revision.ParentContextHash?.Bytes.ToArray();
         entity.State = (short)revision.State;
         entity.ApprovedAtUtc = revision.ApprovedAtUtc;
+        entity.ApprovedAnalysisRunId = revision.ApprovedAnalysisRunId?.Value;
+        entity.ApprovedBundleHash = revision.ApprovedBundleHash?.Bytes.ToArray();
         entity.Compression = (short)encoded.Compression;
         entity.UncompressedSize = encoded.UncompressedSize;
         entity.CompressedPayload = encoded.CompressedPayload;
@@ -223,6 +227,8 @@ public sealed class EfPolicyStore : IPolicyStore
             new UserId(entity.CreatedBy),
             entity.CreatedAtUtc,
             entity.ApprovedAtUtc,
-            uncompressed);
+            uncompressed,
+            entity.ApprovedAnalysisRunId is null ? null : new PolicyAnalysisRunId(entity.ApprovedAnalysisRunId.Value),
+            entity.ApprovedBundleHash is null ? null : Hash256.Create(entity.ApprovedBundleHash));
     }
 }

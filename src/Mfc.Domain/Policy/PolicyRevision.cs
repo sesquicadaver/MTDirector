@@ -28,6 +28,12 @@ public sealed class PolicyRevision
 
     public DateTimeOffset? ApprovedAtUtc { get; private set; }
 
+    /// <summary>Analysis run that completed approval; required for desired binding (M2-17).</summary>
+    public PolicyAnalysisRunId? ApprovedAnalysisRunId { get; private set; }
+
+    /// <summary>Bundle hash frozen with <see cref="ApprovedAnalysisRunId"/>.</summary>
+    public Hash256? ApprovedBundleHash { get; private set; }
+
     /// <summary>Exact uncompressed MFC-CJ1 bytes; hash is computed over these bytes before compression.</summary>
     public byte[] CanonicalBytes { get; private set; }
 
@@ -42,7 +48,9 @@ public sealed class PolicyRevision
         UserId createdBy,
         DateTimeOffset createdAtUtc,
         DateTimeOffset? approvedAtUtc,
-        byte[] canonicalBytes)
+        byte[] canonicalBytes,
+        PolicyAnalysisRunId? approvedAnalysisRunId = null,
+        Hash256? approvedBundleHash = null)
     {
         Id = id;
         PolicyId = policyId;
@@ -55,6 +63,8 @@ public sealed class PolicyRevision
         CreatedAtUtc = createdAtUtc;
         ApprovedAtUtc = approvedAtUtc;
         CanonicalBytes = canonicalBytes;
+        ApprovedAnalysisRunId = approvedAnalysisRunId;
+        ApprovedBundleHash = approvedBundleHash;
     }
 
     public static PolicyRevision CreateDraft(
@@ -106,7 +116,9 @@ public sealed class PolicyRevision
         UserId createdBy,
         DateTimeOffset createdAtUtc,
         DateTimeOffset? approvedAtUtc,
-        byte[] canonicalBytes)
+        byte[] canonicalBytes,
+        PolicyAnalysisRunId? approvedAnalysisRunId = null,
+        Hash256? approvedBundleHash = null)
     {
         ArgumentNullException.ThrowIfNull(contentHash);
         ArgumentNullException.ThrowIfNull(canonicalBytes);
@@ -131,6 +143,11 @@ public sealed class PolicyRevision
             throw new DomainInvariantException("APPROVED revision requires approved_at.");
         }
 
+        if ((approvedAnalysisRunId is null) != (approvedBundleHash is null))
+        {
+            throw new DomainInvariantException("Approved analysis run id and bundle hash must be set together.");
+        }
+
         return new PolicyRevision(
             id,
             policyId,
@@ -142,7 +159,9 @@ public sealed class PolicyRevision
             createdBy,
             NormalizeUtc(createdAtUtc),
             approvedAtUtc is null ? null : NormalizeUtc(approvedAtUtc.Value),
-            canonicalBytes.ToArray());
+            canonicalBytes.ToArray(),
+            approvedAnalysisRunId,
+            approvedBundleHash);
     }
 
     /// <summary>
@@ -167,6 +186,8 @@ public sealed class PolicyRevision
         ParentContextHash = parentContextHash;
         State = PolicyRevisionState.Draft;
         ApprovedAtUtc = null;
+        ApprovedAnalysisRunId = null;
+        ApprovedBundleHash = null;
     }
 
     public void MarkValidated()
@@ -182,10 +203,25 @@ public sealed class PolicyRevision
     }
 
     public void Approve(DateTimeOffset approvedAtUtc)
+        => ApproveCore(approvedAtUtc, analysisRunId: null, bundleHash: null);
+
+    /// <summary>IN_REVIEW → APPROVED, freezing the analysis run that completed review.</summary>
+    public void Approve(DateTimeOffset approvedAtUtc, PolicyAnalysisRunId analysisRunId, Hash256 bundleHash)
+    {
+        ArgumentNullException.ThrowIfNull(bundleHash);
+        ApproveCore(approvedAtUtc, analysisRunId, bundleHash);
+    }
+
+    private void ApproveCore(
+        DateTimeOffset approvedAtUtc,
+        PolicyAnalysisRunId? analysisRunId,
+        Hash256? bundleHash)
     {
         EnsureTransition(PolicyRevisionState.InReview, PolicyRevisionState.Approved);
         State = PolicyRevisionState.Approved;
         ApprovedAtUtc = NormalizeUtc(approvedAtUtc);
+        ApprovedAnalysisRunId = analysisRunId;
+        ApprovedBundleHash = bundleHash;
     }
 
     public void Reject()

@@ -749,12 +749,45 @@ Policy Model §54–§61 + Issue Set M2-16 AC#1–12 → Domain `PolicyEvidenceA
 | Unevaluated actual matchers fail closed | CIDR / extra known / unknown action → INDETERMINATE | `NodeEffectiveUnevaluatedActualMatchersAreIndeterminate` |
 | Safety BLOCKERs trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
 
-**Residuals:** Desktop OUT; no new RPC; compose unchanged. Typed `PolicyDocument.Tests` deferred (opaque JSON so canonical hashes stay stable). Mandatory *generation* of missing user tests for every ACCEPT/FastTrack/exception (§55) is out of scope — this slice evaluates caller-supplied tests. Approval/binding is M2-17. Compiler writes are M3. Deploy gating is N1-06. Exception/management/default/zone-binding minimum risk is caller-supplied `PolicyEvidenceSignals` except FastTrack inferred from rule-effect + UUID changes; M2-17 must treat a missing signals vector as unknown CRITICAL, not silent `None`. NODE_EFFECTIVE actual-filter match is coarse: only exact-host `protocol`/`src-address`/`dst-address`/`connection-state` may Hit or Miss; CIDR/range/list, extra known matchers (`src-port`, interface, …), unknown matchers, and actions outside accept/drop/reject/fasttrack-connection/return are INDETERMINATE. Packet-space classes union enabled ACCEPT/FastTrack cubes and do not replay M2-11 sequence. M2-12…M2-15 analysis-context preimages are unchanged. Controller never writes tests, policy, or filter rules.
+**Residuals:** Desktop OUT; compose unchanged. Typed `PolicyDocument.Tests` deferred (opaque JSON so canonical hashes stay stable). Mandatory *generation* of missing user tests for every ACCEPT/FastTrack/exception (§55) is out of scope — this slice evaluates caller-supplied tests. Approval/binding is M2-17 (missing `PolicyEvidenceSignals` is unknown CRITICAL there). Compiler writes are M3. Deploy gating is N1-06. Exception/management/default/zone-binding minimum risk is caller-supplied `PolicyEvidenceSignals` except FastTrack inferred from rule-effect + UUID changes. NODE_EFFECTIVE actual-filter match is coarse: only exact-host `protocol`/`src-address`/`dst-address`/`connection-state` may Hit or Miss; CIDR/range/list, extra known matchers (`src-port`, interface, …), unknown matchers, and actions outside accept/drop/reject/fasttrack-connection/return are INDETERMINATE. Packet-space classes union enabled ACCEPT/FastTrack cubes and do not replay M2-11 sequence. M2-12…M2-15 analysis-context preimages are unchanged. Controller never writes tests, policy, or filter rules.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PolicyEvidence|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — approval and desired binding (M2-17)
+
+Policy Model §9–§10 / §34.4 / §63–§67 + Issue Set M2-17 AC#1–13 + E2E §23–§24 → Domain gate + Application use cases + Persistence + `PolicyService` RPCs (Desktop OUT; compose unchanged; no compiler/RouterOS writes):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Analysis run immutable | `PolicyAnalysisRun` + DbContext append-only | `Ac1AnalysisRunIsImmutableAndBundleHashIsContentAddressed`; persist `AnalysisRunAndApprovalAreAppendOnlyBindingStateCanChange` |
+| Approval bound to exact bundle hash | `PolicyApprovalGate` / `PolicyApprovalHasher` | `Ac2ApprovalIsBoundToExactAnalysisBundleHash` |
+| Blocker forbids approval | findings BLOCKER | `Ac3BlockerForbidsApproval`; `Ac3BlockerForbidsApprovalUseCase` |
+| Warning needs exact-hash ack | `PolicyWarningAcknowledgment` | `Ac4WarningRequiresAcknowledgmentOfExactHash`; `Ac4WarningAckAndAc11StaleFingerprint` |
+| High/Critical SoD | HIGH ≠ author; CRITICAL two + security | `Ac5HighAndCriticalSeparationOfDutiesApplies` |
+| Missing signals = CRITICAL | `EffectiveRiskLevel` | `Ac5MissingEvidenceSignalsIsUnknownCriticalNotSilentNone` |
+| Approval does not activate binding | vote `BindingIds` empty | `Ac6ApprovalDoesNotActivateBinding`; `Ac6AndAc13ApproveDoesNotBindAndIsAudited` |
+| Binding only APPROVED / not REVOKED | `PolicyBindingGate` | `Ac7BindingAllowedOnlyForApprovedRevision` |
+| Binding pinned to approved analysis run | `PolicyRevision.ApprovedAnalysisRunId` | `Ac2BindingRejectsAnalysisRunThatDidNotCompleteApproval`; `BindingRejectsAnalysisRunThatDidNotCompleteApproval` |
+| Completing vote + APPROVED are atomic | `IUnitOfWork` | `CompletingVoteRecoversWhenRevisionStillInReview` |
+| Binding / expiry do not deploy | `DeploymentStarted = false` | `Ac8AndAc10BindingAndExpiryDoNotDeploy`; host `ApprovalAndDesiredBindingAreSeparateAndDoNotDeploy` |
+| Company/Site/Node cardinality | replacement leaves one ACTIVE; EXCEPTION cap 256 | `Ac9CompanySiteNodeCardinalityReplacementLeavesOneActive`; `Ac9ExceptionCapIsTwoHundredFiftySix` |
+| Dependency change stale; runtime obs excluded | fingerprint vs analyzer bump | `Ac11DependencyChangeMarksApprovalStaleAndRuntimeObservationIsExcluded` |
+| Idempotency + CAS | use cases | `Ac12IdempotencyReplayAndCasConflict`; `Ac12RowVersionOptimisticConcurrencyIncrementsOnBindingMutation`; `RecordAnalysisRunIdempotencyConflictsWhenTestsDiffer` |
+| Transitions audited | `IAuditEventWriter` | `Ac6AndAc13ApproveDoesNotBindAndIsAudited` |
+| Frozen codes trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
+| RPC surface | `policy.proto` | `ApprovalAndBindingRpcsExposeIdempotencyAndCas` |
+
+**Residuals:** Desktop authoring/review is M2-18. Dedicated `policy_findings` / `policy_test_results` tables deferred (payload JSON on the immutable run). Mandatory test *generation* remains out of scope. Compiler writes are M3. Deploy gating is N1-06. Emergency approval bypass is out of scope. Compose RPC and `PolicyDocument.Tests` opaque JSON are unchanged. M2-12…M2-16 analysis-context combiners are unchanged. Controller never writes RouterOS.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PolicyApproval|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~PolicyProtoContract"
+dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~PolicyApprovalPersist|FullyQualifiedName~ApprovalAndDesiredBinding"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

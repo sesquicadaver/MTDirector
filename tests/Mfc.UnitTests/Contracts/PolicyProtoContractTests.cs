@@ -11,6 +11,12 @@ public sealed class PolicyProtoContractTests
     {
         string[] methods = PolicyService.Descriptor.Methods.Select(m => m.Name).OrderBy(n => n).ToArray();
         Assert.Contains("UpdateExceptionMetadata", methods);
+        Assert.Contains("RecordAnalysisRun", methods);
+        Assert.Contains("AcknowledgeWarning", methods);
+        Assert.Contains("SubmitRevisionForReview", methods);
+        Assert.Contains("ApproveRevision", methods);
+        Assert.Contains("ActivateDesiredBinding", methods);
+        Assert.Contains("ExpireExceptionBinding", methods);
         Assert.Contains("ComposeEffectivePolicy", methods);
         Assert.Contains("CreateDraftPolicy", methods);
         Assert.Contains("GetPolicyRevision", methods);
@@ -106,5 +112,17 @@ public sealed class PolicyProtoContractTests
         Assert.Equal("revision_id", request.Fields.InDeclarationOrder()[1].Name);
         Assert.Equal("expected_content_hash", request.Fields.InDeclarationOrder()[2].Name);
         Assert.Equal("metadata", request.Fields.InDeclarationOrder()[3].Name);
+    }
+
+    [Fact]
+    public void ApprovalAndBindingRpcsExposeIdempotencyAndCas()
+    {
+        Assert.Equal("idempotency_key", RecordAnalysisRunRequest.Descriptor.Fields.InDeclarationOrder()[0].Name);
+        Assert.Equal("expected_content_hash", RecordAnalysisRunRequest.Descriptor.FindFieldByName("expected_content_hash")!.Name);
+        Assert.Equal("expected_bundle_hash", ApproveRevisionRequest.Descriptor.FindFieldByName("expected_bundle_hash")!.Name);
+        Assert.Equal("current_dependency_fingerprint", ApproveRevisionRequest.Descriptor.FindFieldByName("current_dependency_fingerprint")!.Name);
+        Assert.Equal("expected_row_version", ExpireExceptionBindingRequest.Descriptor.FindFieldByName("expected_row_version")!.Name);
+        Assert.NotNull(PolicyBinding.Descriptor.FindFieldByName("deployment_started"));
+        Assert.Equal("completes_approval", PolicyApprovalVote.Descriptor.FindFieldByName("completes_approval")!.Name);
     }
 }

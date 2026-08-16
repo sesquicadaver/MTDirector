@@ -58,6 +58,9 @@ public sealed class GrpcApplicationErrorMapperTests
     [InlineData(PolicyEvidenceAnalysisCodes.SafetyTestFailed)]
     [InlineData(PolicyEvidenceAnalysisCodes.SystemTestDisabled)]
     [InlineData(PolicyEvidenceAnalysisCodes.NodeEffectiveIndeterminate)]
+    [InlineData(PolicyApprovalCodes.Blocker)]
+    [InlineData(PolicyApprovalCodes.BindingNotApproved)]
+    [InlineData(PolicyApprovalCodes.Stale)]
     public void SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable(string code)
     {
         RpcException ex = GrpcApplicationErrorMapper.ToRpcException(

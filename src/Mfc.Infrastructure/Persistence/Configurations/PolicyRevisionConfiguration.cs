@@ -23,6 +23,9 @@ internal sealed class PolicyRevisionConfiguration : IEntityTypeConfiguration<Pol
             table.HasCheckConstraint(
                 "ck_policy_revisions_approved_at",
                 "(\"State\" = 3 AND \"ApprovedAtUtc\" IS NOT NULL) OR (\"State\" <> 3)");
+            table.HasCheckConstraint(
+                "ck_policy_revisions_approved_analysis",
+                "(\"ApprovedAnalysisRunId\" IS NULL AND \"ApprovedBundleHash\" IS NULL) OR (\"ApprovedAnalysisRunId\" IS NOT NULL AND octet_length(\"ApprovedBundleHash\") = 32)");
         });
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id).ValueGeneratedNever();
@@ -35,6 +38,8 @@ internal sealed class PolicyRevisionConfiguration : IEntityTypeConfiguration<Pol
         builder.Property(e => e.CreatedBy).IsRequired();
         builder.Property(e => e.CreatedAtUtc).IsRequired();
         builder.Property(e => e.ApprovedAtUtc);
+        builder.Property(e => e.ApprovedAnalysisRunId);
+        builder.Property(e => e.ApprovedBundleHash).HasColumnType("bytea");
         builder.Property(e => e.Compression).IsRequired();
         builder.Property(e => e.UncompressedSize).IsRequired();
         builder.Property(e => e.CompressedPayload).HasColumnType("bytea").IsRequired();
@@ -46,6 +51,10 @@ internal sealed class PolicyRevisionConfiguration : IEntityTypeConfiguration<Pol
         builder.HasOne<PolicyEntity>()
             .WithMany()
             .HasForeignKey(e => e.PolicyId)
+            .OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne<PolicyAnalysisRunEntity>()
+            .WithMany()
+            .HasForeignKey(e => e.ApprovedAnalysisRunId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

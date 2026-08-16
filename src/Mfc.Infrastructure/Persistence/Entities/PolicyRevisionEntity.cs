@@ -32,6 +32,10 @@ public sealed class PolicyRevisionEntity
 
     public DateTimeOffset? ApprovedAtUtc { get; set; }
 
+    public Guid? ApprovedAnalysisRunId { get; set; }
+
+    public byte[]? ApprovedBundleHash { get; set; }
+
     public short Compression { get; set; }
 
     public long UncompressedSize { get; set; }

@@ -40,6 +40,8 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IIdempotencyStore, EfIdempotencyStore>();
         services.AddScoped<ISnapshotStore, EfSnapshotStore>();
         services.AddScoped<IPolicyStore, EfPolicyStore>();
+        services.AddScoped<IPolicyApprovalStore, EfPolicyApprovalStore>();
+        services.AddScoped<IUnitOfWork, EfUnitOfWork>();
         services.AddScoped<IZoneDefinitionStore, EfZoneDefinitionStore>();
         services.AddScoped<INodeZoneBindingStore, EfNodeZoneBindingStore>();
         services.AddHostedService<DatabaseSchemaGuardHostedService>();
