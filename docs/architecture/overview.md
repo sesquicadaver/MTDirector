@@ -70,7 +70,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Packet-path FORWARD blockers | Done (N1-04) | `PacketPathAnalysis`; HW/INDETERMINATE BLOCKERs; MIXED not those codes; packet-path context hash |
 | Management-path safety | Done (M2-13) | `ManagementPathAnalysis`; API-SSL + source + guard-before-anchor; VIP-only/unknown INDETERMINATE; SYSTEM tests + witnesses |
 | Topology / dependency safety | Done (M2-14) | `TopologyDependencyAnalysis`; VRRP proto-112 + sync; missing member; split-master vector; STRICT_RPF_*; RAW/NAT/Mangle; SWITCH FORWARD; observation hash excluded from policy context |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-15 (#62) |
+| FastTrack policy validation | Done (M2-15) | `FastTrackAnalysis`; IPv4 FORWARD STATE_PRELUDE TCP/UDP; PCC/balanced/marks/VRF/IPsec/pre-anchor fail-closed; fallback flag; risk HIGH; 5-arg hash isolation |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M2-16 (#63) |
 
 ## ADRs
 
