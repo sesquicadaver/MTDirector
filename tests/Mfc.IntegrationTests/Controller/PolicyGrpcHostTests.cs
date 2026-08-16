@@ -763,6 +763,129 @@ public sealed class PolicyGrpcHostTests
         return deny.Id.Value;
     }
 
+    [Fact]
+    public async Task ApprovalAndDesiredBindingAreSeparateAndDoNotDeploy()
+    {
+        string connectionString = await _postgres.CreateFreshDatabaseAsync();
+        string url = $"http://127.0.0.1:{GetFreeTcpPort()}";
+        await using var app = Program.BuildHost(DevArgs(url, connectionString));
+        await app.Services.MigrateAsync();
+        await app.StartAsync();
+        try
+        {
+            await WaitForPortAsync(url, TimeSpan.FromSeconds(10));
+            using GrpcChannel channel = GrpcChannel.ForAddress(url);
+            PolicyService.PolicyServiceClient client = new(channel);
+            Metadata headers = ActorHeaders("tester");
+            PolicyDraft draft = await client.CreateDraftPolicyAsync(
+                new CreateDraftPolicyRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    Name = "company-baseline",
+                    Kind = PolicyKind.CompanyBaseline,
+                    OwnerScope = PolicyOwnerScope.Company,
+                },
+                headers,
+                deadline: Deadline());
+            await MarkValidatedAsync(app, ProtoUuid.ToGuid(draft.RevisionId));
+
+            Sha256 fingerprint = Utf8Sha256("deps");
+            PolicyAnalysisRun run = await client.RecordAnalysisRunAsync(
+                new RecordAnalysisRunRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    RevisionId = draft.RevisionId,
+                    ExpectedContentHash = draft.ContentHash,
+                    LogicalEffectiveHash = Utf8Sha256("logical"),
+                    AnalysisContextHash = Utf8Sha256("analysis"),
+                    EvidenceContextHash = Utf8Sha256("evidence"),
+                    TopologyProjectionHash = Utf8Sha256("topology"),
+                    ImpactSetHash = Utf8Sha256("impact"),
+                    PerDeviceAnalysisHashes = { Utf8Sha256("device") },
+                    DependencyFingerprint = fingerprint,
+                    RiskLevel = "LOW",
+                    EvidenceSignalsPresent = true,
+                    AnalyzerVersion = "mfc.policy-approval.v1",
+                    PolicySchemaVersion = "mfc.policy.v1",
+                    PipelineVersion = "v1",
+                    TestResults =
+                    {
+                        new PolicyAnalysisTestResult
+                        {
+                            TestId = ProtoUuid.FromGuid(Guid.NewGuid()),
+                            Origin = "SYSTEM",
+                            Outcome = "PASS",
+                            Proof = "PROVEN",
+                        },
+                    },
+                },
+                headers,
+                deadline: Deadline());
+            Assert.Equal(32, run.BundleHash.Value.Length);
+
+            global::Mfc.Contracts.Mfc.V1.PolicyRevision reviewed = await client.SubmitRevisionForReviewAsync(
+                new SubmitRevisionForReviewRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    RevisionId = draft.RevisionId,
+                    ExpectedContentHash = draft.ContentHash,
+                },
+                headers,
+                deadline: Deadline());
+            Assert.Equal(PolicyRevisionState.InReview, reviewed.State);
+
+            PolicyApprovalVote vote = await client.ApproveRevisionAsync(
+                new ApproveRevisionRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    RevisionId = draft.RevisionId,
+                    AnalysisRunId = run.Id,
+                    ExpectedContentHash = draft.ContentHash,
+                    ExpectedBundleHash = run.BundleHash,
+                    CurrentDependencyFingerprint = fingerprint,
+                },
+                headers,
+                deadline: Deadline());
+            Assert.True(vote.CompletesApproval);
+            Assert.Equal(PolicyRevisionState.Approved, vote.RevisionState);
+            Assert.Empty(vote.BindingIds);
+
+            global::Mfc.Contracts.Mfc.V1.PolicyBinding bound = await client.ActivateDesiredBindingAsync(
+                new ActivateDesiredBindingRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    RevisionId = draft.RevisionId,
+                    AnalysisRunId = run.Id,
+                    ExpectedContentHash = draft.ContentHash,
+                    CurrentDependencyFingerprint = fingerprint,
+                },
+                headers,
+                deadline: Deadline());
+            Assert.False(bound.DeploymentStarted);
+            Assert.Equal(PolicyBindingState.Active, bound.State);
+        }
+        finally
+        {
+            await app.StopAsync();
+        }
+    }
+
+    private static async Task MarkValidatedAsync(WebApplication app, Guid revisionId)
+    {
+        await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
+        IPolicyStore store = scope.ServiceProvider.GetRequiredService<IPolicyStore>();
+        DomainPolicy.PolicyRevision? revision = await store.GetRevisionAsync(new PolicyRevisionId(revisionId));
+        Assert.NotNull(revision);
+        revision!.MarkValidated();
+        await store.SaveRevisionAsync(revision);
+    }
+
+    private static Sha256 Utf8Sha256(string value)
+        => new()
+        {
+            Value = ByteString.CopyFrom(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(value))),
+        };
+
     private static async Task ApproveRevisionAsync(WebApplication app, Guid revisionId)
     {
         await using AsyncServiceScope scope = app.Services.CreateAsyncScope();

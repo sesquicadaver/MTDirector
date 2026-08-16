@@ -35,3 +35,20 @@ public enum PolicyRevisionState : byte
     Superseded = 5,
     Revoked = 6,
 }
+
+/// <summary>Desired-binding scope (Policy Model §10).</summary>
+public enum PolicyBindingScope : byte
+{
+    Company = 0,
+    Site = 1,
+    Node = 2,
+    Exception = 3,
+}
+
+/// <summary>Desired-binding state (Policy Model §10). Expiry never deploys.</summary>
+public enum PolicyBindingState : byte
+{
+    Active = 0,
+    Disabled = 1,
+    ExpiredPendingReconciliation = 2,
+}

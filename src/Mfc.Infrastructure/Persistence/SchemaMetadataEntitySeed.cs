@@ -22,6 +22,9 @@ public static class SchemaMetadataEntitySeed
     public const string ZoneBindingsSchemaKey = "policy.zone_bindings.schema";
     public const string ZoneBindingsSchemaValue = "m2-05";
 
+    public const string PolicyApprovalSchemaKey = "policy.approval.schema";
+    public const string PolicyApprovalSchemaValue = "m2-17";
+
     public static void EnsureBootstrapMetadata(MfcDbContext db)
     {
         EnsureKey(db, BootstrapSchemaKey, BootstrapSchemaValue);
@@ -29,6 +32,7 @@ public static class SchemaMetadataEntitySeed
         EnsureKey(db, SnapshotPersistSchemaKey, SnapshotPersistSchemaValue);
         EnsureKey(db, PolicyLifecycleSchemaKey, PolicyLifecycleSchemaValue);
         EnsureKey(db, ZoneBindingsSchemaKey, ZoneBindingsSchemaValue);
+        EnsureKey(db, PolicyApprovalSchemaKey, PolicyApprovalSchemaValue);
     }
 
     private static void EnsureKey(MfcDbContext db, string key, string value)

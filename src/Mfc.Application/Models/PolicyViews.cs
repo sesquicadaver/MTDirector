@@ -248,3 +248,59 @@ public sealed class EffectivePolicyView
 
     public required IReadOnlyList<PolicyWarningView> Findings { get; init; }
 }
+
+/// <summary>Captured analysis run used for approval (M2-17).</summary>
+public sealed class PolicyAnalysisRunView
+{
+    public required Guid Id { get; init; }
+
+    public required Guid RevisionId { get; init; }
+
+    public required string BundleHashHex { get; init; }
+
+    public required string DependencyFingerprintHex { get; init; }
+
+    public required string RiskLevel { get; init; }
+
+    public required string EffectiveRiskLevel { get; init; }
+
+    public required bool EvidenceSignalsPresent { get; init; }
+}
+
+/// <summary>Result of recording a reviewer vote (M2-17). Binding is never created here.</summary>
+public sealed class PolicyApprovalVoteView
+{
+    public required Guid ApprovalId { get; init; }
+
+    public required Guid RevisionId { get; init; }
+
+    public required PolicyRevisionState RevisionState { get; init; }
+
+    public required bool CompletesApproval { get; init; }
+
+    public required string BundleHashHex { get; init; }
+
+    public required IReadOnlyList<Guid> BindingIds { get; init; }
+}
+
+/// <summary>Desired binding view. Activation does not start deployment (M2-17).</summary>
+public sealed class PolicyBindingView
+{
+    public required Guid Id { get; init; }
+
+    public required PolicyBindingScope Scope { get; init; }
+
+    public Guid? ScopeId { get; init; }
+
+    public required Guid PolicyId { get; init; }
+
+    public required Guid DesiredRevisionId { get; init; }
+
+    public required PolicyBindingState State { get; init; }
+
+    public required ulong RowVersion { get; init; }
+
+    public DateTimeOffset? ValidUntilUtc { get; init; }
+
+    public required bool DeploymentStarted { get; init; }
+}

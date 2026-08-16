@@ -47,6 +47,14 @@ public sealed class MfcDbContext : DbContext
 
     public DbSet<NodeZoneBindingEntity> NodeZoneBindings => Set<NodeZoneBindingEntity>();
 
+    public DbSet<PolicyAnalysisRunEntity> PolicyAnalysisRuns => Set<PolicyAnalysisRunEntity>();
+
+    public DbSet<PolicyWarningAcknowledgmentEntity> WarningAcknowledgments => Set<PolicyWarningAcknowledgmentEntity>();
+
+    public DbSet<PolicyApprovalEntity> PolicyApprovals => Set<PolicyApprovalEntity>();
+
+    public DbSet<PolicyBindingEntity> PolicyBindings => Set<PolicyBindingEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MfcDbContext).Assembly);
@@ -165,6 +173,65 @@ public sealed class MfcDbContext : DbContext
             {
                 throw new InvalidOperationException(
                     "APPROVED policy_revision may only transition to SUPERSEDED or REVOKED through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<PolicyAnalysisRunEntity> entry
+                 in ChangeTracker.Entries<PolicyAnalysisRunEntity>())
+        {
+            if (entry.State is EntityState.Modified or EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "policy_analysis_runs is append-only: update and delete are not allowed through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<PolicyWarningAcknowledgmentEntity> entry
+                 in ChangeTracker.Entries<PolicyWarningAcknowledgmentEntity>())
+        {
+            if (entry.State is EntityState.Modified or EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "warning_acknowledgments is append-only: update and delete are not allowed through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<PolicyApprovalEntity> entry
+                 in ChangeTracker.Entries<PolicyApprovalEntity>())
+        {
+            if (entry.State is EntityState.Modified or EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "policy_approvals is append-only: update and delete are not allowed through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<PolicyBindingEntity> entry
+                 in ChangeTracker.Entries<PolicyBindingEntity>())
+        {
+            if (entry.State is EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "policy_bindings cannot be deleted through the application DbContext.");
+            }
+
+            if (entry.State is not EntityState.Modified)
+            {
+                continue;
+            }
+
+            if (entry.Property(e => e.Scope).IsModified
+                || entry.Property(e => e.ScopeId).IsModified
+                || entry.Property(e => e.PolicyId).IsModified
+                || entry.Property(e => e.DesiredRevisionId).IsModified
+                || entry.Property(e => e.AnalysisRunId).IsModified
+                || entry.Property(e => e.BundleHash).IsModified
+                || entry.Property(e => e.ValidFromUtc).IsModified
+                || entry.Property(e => e.ValidUntilUtc).IsModified
+                || entry.Property(e => e.CreatedAtUtc).IsModified)
+            {
+                throw new InvalidOperationException(
+                    "Desired-binding identity and validity window cannot be updated through the application DbContext.");
             }
         }
     }

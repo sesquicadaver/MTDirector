@@ -33,4 +33,13 @@ public static class ApplicationPermissions
 
     /// <summary>Create drafts and mutate policy rules (M2-06).</summary>
     public const string PolicyWrite = "policy.write";
+
+    /// <summary>Record approval votes (M2-17). Does not activate desired binding.</summary>
+    public const string PolicyApprove = "policy.approve";
+
+    /// <summary>Security/network-owner stamp required for CRITICAL approval (M2-17).</summary>
+    public const string PolicyApproveSecurity = "policy.approve.security";
+
+    /// <summary>Activate or expire desired bindings without deploying (M2-17).</summary>
+    public const string PolicyBind = "policy.bind";
 }

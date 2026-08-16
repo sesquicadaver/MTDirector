@@ -3,7 +3,7 @@
 **Дата оновлення:** 16 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M2-16 — M1 CLOSED; черга зсунута на M2-17
+**Базовий коміт аудиту:** M2-17 — M1 CLOSED; черга зсунута на M2-18
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -46,15 +46,15 @@
 | M0 Bootstrap | 10 | 0 | 100% |
 | M1 Read-only slice | 34 | 0 | 100% |
 | N1 Packet-path weave | 5 | 2 | 71% |
-| M2 Policy core | 16 | 2 | 89% |
+| M2 Policy core | 17 | 1 | 94% |
 | M3 Compiler | 0 | 8 | 0% |
 | M5 Onboarding | 0 | 10 | 0% |
 | M4 Safe deploy | 0 | 13 | 0% |
 | M6 E2E / drift | 0 | 9 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **65** | **71** | **48% issues** |
+| **Разом** | **66** | **70** | **49% issues** |
 
-MVP issues (109) = **65 done + 44 remaining** до MVP CLOSED (**60%**).  
+MVP issues (109) = **66 done + 43 remaining** до MVP CLOSED (**61%**).  
 N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
 Операційно: read-only зріз **готовий**; compile/onboard/apply/drift = **0%**.
 
@@ -118,20 +118,21 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | M2-14 | #61 | Topology/dependency safety: VRRP proto-112 + sync flows; missing member; split-master vector; uplink zones; STRICT_RPF_*; RAW notrack; DSTNAT; mangle hash; SWITCH FORWARD; observations excluded from context hash |
 | M2-15 | #62 | FastTrack policy validation: IPv4 FORWARD STATE_PRELUDE TCP/UDP ESTABLISHED,RELATED only; PCC/balanced/marks/VRF/IPsec/pre-anchor fail-closed; fallback flag; risk HIGH; 5-arg hash isolation |
 | M2-16 | #63 | Policy tests + semantic UUID diff + risk: MANAGED_ONLY/NODE_EFFECTIVE; SYSTEM cannot disable; safety FAIL/INDETERMINATE BLOCKER; object impact; packet-space classes; 6-arg hash isolation |
+| M2-17 | #64 | Approval + desired binding: immutable analysis run; bundle-hash + SoD; binding ≠ deploy; exception expiry → EXPIRED_PENDING_RECONCILIATION |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
 | `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors; default `ProbeOnlyRouterOsReadPort` + `NotConfiguredSnapshotCapturePort`; actual-filter discovery mapper; packet-path blocker mapper; management-path discovery mapper (`api-ssl.address` in canonical projector); topology-dependency discovery mapper (VRRP sync fields, RAW/NAT/Mangle, rp-filter, switch chip); FastTrack discovery mapper (pre-anchor + VRF); policy-evidence discovery mapper (NODE_EFFECTIVE actual filter) |
-| `Mfc.Contracts` | `mfc.v1` inventory + snapshot/diff + `ZoneService` + `PolicyService` |
-| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper + packet-path canonical mapper + management-path canonical mapper + topology-dependency canonical mapper + FastTrack canonical mapper + policy-evidence canonical mapper |
-| `Mfc.Controller` | health + `InventoryService` + `SnapshotService` + `ZoneService` + `PolicyService` (compose + `UpdateExceptionMetadata`) gRPC |
+| `Mfc.Contracts` | `mfc.v1` inventory + snapshot/diff + `ZoneService` + `PolicyService` (approval/binding RPCs) |
+| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper + packet-path canonical mapper + management-path canonical mapper + topology-dependency canonical mapper + FastTrack canonical mapper + policy-evidence canonical mapper + analysis-run/approval/desired-binding use cases |
+| `Mfc.Controller` | health + `InventoryService` + `SnapshotService` + `ZoneService` + `PolicyService` (compose + exception metadata + approval/binding) gRPC |
 | `Mfc.Desktop` | connection shell + inventory tree + snapshot/diff viewers + Zones + thin Policies panel |
-| Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings |
-| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) + management-path safety (M2-13) + topology/dependency safety (M2-14) + FastTrack policy validation (M2-15) + policy tests/diff/risk (M2-16) |
+| Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings + policy_analysis_runs/policy_approvals/warning_acknowledgments/policy_bindings |
+| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) + management-path safety (M2-13) + topology/dependency safety (M2-14) + FastTrack policy validation (M2-15) + policy tests/diff/risk (M2-16) + approval/desired-binding (M2-17) |
 
-**NEXT = M2-17:** [M2-17](https://github.com/sesquicadaver/MTDirector/issues/64) Approval and desired-binding workflow (після M2-16 #63 DONE). Revisions now have evidentiary tests, UUID semantic diff, packet-space classes, and a deterministic risk floor; safety-test failures fail closed. Compose RPC, Desktop, and `PolicyDocument.Tests` JSON are unchanged.
+**NEXT = M2-18:** [M2-18](https://github.com/sesquicadaver/MTDirector/issues/65) Policy authoring and review desktop workflow (після M2-17 #64 DONE). Approval is bound to an immutable analysis-bundle hash with blockers, warning acks, and SoD; desired binding is a separate audited activation that never deploys. Compose RPC shape is unchanged; Desktop stays Contracts-only (ADR 0005).
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -150,7 +151,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 
 **Хвиля 2 — M2 safety (черга #48–#51):** ~~M2-13 management-path (#60)~~ → ~~M2-14 VRRP/multi-WAN/RAW/NAT deps (#61)~~ → ~~M2-15 FastTrack (#62)~~ → ~~M2-16 tests/diff/risk (#63)~~. Усі risk:high, крім M2-16.
 
-**Хвиля 3 — M2 CLOSED (черга #52–#53):** M2-17 approval + desired-binding (#64) → M2-18 Desktop authoring/review (#65). Desktop лишається Contracts-only (ADR 0005).
+**Хвиля 3 — M2 CLOSED (черга #52–#53):** ~~M2-17 approval + desired-binding (#64)~~ → M2-18 Desktop authoring/review (#65). Desktop лишається Contracts-only (ADR 0005).
 
 **Хвиля 4 — M3 Compiler (черга #54–#61, #68–#75):** артефакт → namespace → address-lists → zones/services → matchers → FastTrack/terminal → per-Device orchestration → **M3 CLOSED**. Заборона: compile без актуального analysis (§6).
 
@@ -254,7 +255,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | ~~49~~ | ~~M2-14~~ | ~~#61~~ | ~~Implement topology and dependency safety validation~~ → §2.2 DONE (`TopologyDependencyAnalysis`; VRRP/multi-WAN/RAW/NAT/Mangle/SWITCH) |
 | ~~50~~ | ~~M2-15~~ | ~~#62~~ | ~~Implement FastTrack policy validation~~ → §2.2 DONE (`FastTrackAnalysis`; IPv4 FORWARD STATE_PRELUDE TCP/UDP; topology fail-closed; fallback flag; risk HIGH) |
 | ~~51~~ | ~~M2-16~~ | ~~#63~~ | ~~Implement policy tests, semantic diff and risk classification~~ → §2.2 DONE (`PolicyEvidenceAnalysis`; MANAGED_ONLY/NODE_EFFECTIVE; UUID diff; risk floor; 6-arg hash isolation) |
-| 52 | M2-17 | #64 | Implement approval and desired-binding workflow |
+| ~~52~~ | ~~M2-17~~ | ~~#64~~ | ~~Implement approval and desired-binding workflow~~ → §2.2 DONE (`PolicyApprovalGate`; immutable analysis run; binding ≠ deploy) |
 | 53 | M2-18 | #65 | Add policy authoring and review desktop workflow (**M2 CLOSED**) |
 
 #### Блок A7 — M3 Compiler
@@ -370,7 +371,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 71 відкритих атомарних задач (44 до MVP CLOSED + 27 M7). Start here: #64 M2-17.
+**Кінець черги:** 70 відкритих атомарних задач (43 до MVP CLOSED + 27 M7). Start here: #65 M2-18.
 
 ---
 
@@ -378,10 +379,10 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 44 | M2-17…M6-09 + N1-06/07 |
+| До MVP CLOSED | 43 | M2-18…M6-09 + N1-06/07 |
 | Post-MVP M7 | 27 | лише після M6-09 |
-| **Нереалізовано разом** | **71** | 44 MVP + 27 M7 |
-| DONE у коді (§2.2) | 65 | M0+M1+N1-01…05+M2-01…16 |
+| **Нереалізовано разом** | **70** | 43 MVP + 27 M7 |
+| DONE у коді (§2.2) | 66 | M0+M1+N1-01…05+M2-01…17 |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
@@ -433,7 +434,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | Semantic snapshot diff | M1-24 | `SemanticDiffEngine` unit AC#1–13; CompareSnapshotsUseCase | **DONE** |
 | gRPC + Desktop read-only UI | M1-25…29 | contract + UI smoke | M1-25…29 DONE |
 | M1 acceptance gate | M1-30…34 | CHR suites + acceptance package | **M1 CLOSED** |
-| Policy compose + analysis | M2 | compose DONE (M2-07…09); structural DONE (M2-10); sequence DONE (M2-11); actual-filter DONE (M2-12); packet-path BLOCKERs DONE (N1-04); management-path DONE (M2-13); topology/deps DONE (M2-14); FastTrack DONE (M2-15); tests/diff/risk DONE (M2-16); approval M2-17 | TODO (з M2-17) |
+| Policy compose + analysis | M2 | compose DONE (M2-07…09); structural DONE (M2-10); sequence DONE (M2-11); actual-filter DONE (M2-12); packet-path BLOCKERs DONE (N1-04); management-path DONE (M2-13); topology/deps DONE (M2-14); FastTrack DONE (M2-15); tests/diff/risk DONE (M2-16); approval/binding DONE (M2-17); Desktop authoring M2-18 | TODO (з M2-18) |
 | Deterministic filter artifact | M3 | golden artifacts | TODO |
 | Anchor bootstrap | M5 | equivalence; crash recovery | TODO |
 | Watchdog deploy / rollback | M4 | fault-injection; VRRP | TODO |
@@ -462,7 +463,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 ## 7. Операційний старт
 
 1. Хвиля 0: stale OPEN на DONE-коді (#52, #53, #56, #67) — **DONE** 2026-08-15.
-2. Відкрити **M2-17** → [issue #64](https://github.com/sesquicadaver/MTDirector/issues/64).
+2. Відкрити **M2-18** → [issue #65](https://github.com/sesquicadaver/MTDirector/issues/65).
 3. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.
 4. Не стартувати M3, доки не закрито **M2-18** (черга #53).
 5. Не стартувати M4, доки не закрито **M5-10** (черга #71).

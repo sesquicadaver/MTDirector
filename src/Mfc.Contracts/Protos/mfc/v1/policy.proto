@@ -19,6 +19,12 @@ service PolicyService {
   rpc ReorderRules(ReorderRulesRequest) returns (PolicyRuleMutation);
   rpc ComposeEffectivePolicy(ComposeEffectivePolicyRequest) returns (EffectivePolicy);
   rpc UpdateExceptionMetadata(UpdateExceptionMetadataRequest) returns (PolicyRevision);
+  rpc RecordAnalysisRun(RecordAnalysisRunRequest) returns (PolicyAnalysisRun);
+  rpc AcknowledgeWarning(AcknowledgeWarningRequest) returns (PolicyAnalysisRun);
+  rpc SubmitRevisionForReview(SubmitRevisionForReviewRequest) returns (PolicyRevision);
+  rpc ApproveRevision(ApproveRevisionRequest) returns (PolicyApprovalVote);
+  rpc ActivateDesiredBinding(ActivateDesiredBindingRequest) returns (PolicyBinding);
+  rpc ExpireExceptionBinding(ExpireExceptionBindingRequest) returns (PolicyBinding);
 }
 
 enum PolicyKind {
@@ -357,4 +363,119 @@ message UpdateExceptionMetadataRequest {
   Uuid revision_id = 2;
   Sha256 expected_content_hash = 3;
   ExceptionMetadata metadata = 4;
+}
+
+enum PolicyBindingScope {
+  POLICY_BINDING_SCOPE_UNSPECIFIED = 0;
+  POLICY_BINDING_SCOPE_COMPANY = 1;
+  POLICY_BINDING_SCOPE_SITE = 2;
+  POLICY_BINDING_SCOPE_NODE = 3;
+  POLICY_BINDING_SCOPE_EXCEPTION = 4;
+}
+
+enum PolicyBindingState {
+  POLICY_BINDING_STATE_UNSPECIFIED = 0;
+  POLICY_BINDING_STATE_ACTIVE = 1;
+  POLICY_BINDING_STATE_DISABLED = 2;
+  POLICY_BINDING_STATE_EXPIRED_PENDING_RECONCILIATION = 3;
+}
+
+message PolicyAnalysisFinding {
+  string code = 1;
+  string severity = 2;
+  string message = 3;
+  string target = 4;
+}
+
+message PolicyAnalysisTestResult {
+  Uuid test_id = 1;
+  string origin = 2;
+  string outcome = 3;
+  string proof = 4;
+}
+
+message RecordAnalysisRunRequest {
+  Uuid idempotency_key = 1;
+  Uuid revision_id = 2;
+  Sha256 expected_content_hash = 3;
+  Sha256 logical_effective_hash = 4;
+  Sha256 analysis_context_hash = 5;
+  Sha256 evidence_context_hash = 6;
+  Sha256 topology_projection_hash = 7;
+  Sha256 impact_set_hash = 8;
+  repeated Sha256 per_device_analysis_hashes = 9;
+  Sha256 dependency_fingerprint = 10;
+  string risk_level = 11;
+  bool evidence_signals_present = 12;
+  string analyzer_version = 13;
+  string policy_schema_version = 14;
+  string pipeline_version = 15;
+  repeated PolicyAnalysisFinding findings = 16;
+  repeated PolicyAnalysisTestResult test_results = 17;
+}
+
+message PolicyAnalysisRun {
+  Uuid id = 1;
+  Uuid revision_id = 2;
+  Sha256 bundle_hash = 3;
+  Sha256 dependency_fingerprint = 4;
+  string risk_level = 5;
+  string effective_risk_level = 6;
+  bool evidence_signals_present = 7;
+}
+
+message AcknowledgeWarningRequest {
+  Uuid idempotency_key = 1;
+  Uuid analysis_run_id = 2;
+  Sha256 warning_hash = 3;
+}
+
+message SubmitRevisionForReviewRequest {
+  Uuid idempotency_key = 1;
+  Uuid revision_id = 2;
+  Sha256 expected_content_hash = 3;
+}
+
+message ApproveRevisionRequest {
+  Uuid idempotency_key = 1;
+  Uuid revision_id = 2;
+  Uuid analysis_run_id = 3;
+  Sha256 expected_content_hash = 4;
+  Sha256 expected_bundle_hash = 5;
+  Sha256 current_dependency_fingerprint = 6;
+}
+
+message PolicyApprovalVote {
+  Uuid approval_id = 1;
+  Uuid revision_id = 2;
+  PolicyRevisionState revision_state = 3;
+  bool completes_approval = 4;
+  Sha256 bundle_hash = 5;
+  repeated Uuid binding_ids = 6;
+}
+
+message ActivateDesiredBindingRequest {
+  Uuid idempotency_key = 1;
+  Uuid revision_id = 2;
+  Uuid analysis_run_id = 3;
+  Sha256 expected_content_hash = 4;
+  Sha256 current_dependency_fingerprint = 5;
+}
+
+message ExpireExceptionBindingRequest {
+  Uuid idempotency_key = 1;
+  Uuid binding_id = 2;
+  uint64 expected_row_version = 3;
+}
+
+message PolicyBinding {
+  Uuid id = 1;
+  PolicyBindingScope scope = 2;
+  optional Uuid scope_id = 3;
+  Uuid policy_id = 4;
+  Uuid desired_revision_id = 5;
+  PolicyBindingState state = 6;
+  uint64 row_version = 7;
+  optional string valid_until = 8;
+  bool deployment_started = 9;
 }

@@ -817,10 +817,143 @@ internal sealed class FakePolicyStore : IPolicyStore
             revision.CreatedBy,
             revision.CreatedAtUtc,
             revision.ApprovedAtUtc,
-            revision.CanonicalBytes.ToArray());
+            revision.CanonicalBytes.ToArray(),
+            revision.ApprovedAnalysisRunId,
+            revision.ApprovedBundleHash);
 }
 
 internal sealed class FakeClock : Mfc.Application.Abstractions.Time.IClock
 {
     public DateTimeOffset UtcNow { get; set; } = new(2026, 8, 15, 0, 0, 0, TimeSpan.Zero);
+}
+
+internal sealed class FakeUnitOfWork : IUnitOfWork
+{
+    public Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        return action(cancellationToken);
+    }
+}
+
+internal sealed class FakePolicyApprovalStore : IPolicyApprovalStore
+{
+    private readonly Dictionary<Guid, PolicyAnalysisRun> _runs = [];
+    private readonly Dictionary<Guid, PolicyWarningAcknowledgment> _acks = [];
+    private readonly Dictionary<Guid, PolicyApproval> _votes = [];
+    private readonly Dictionary<Guid, PolicyDesiredBinding> _bindings = [];
+
+    public Task AddAnalysisRunAsync(PolicyAnalysisRun run, CancellationToken cancellationToken = default)
+    {
+        _runs[run.Id.Value] = CloneRun(run);
+        return Task.CompletedTask;
+    }
+
+    public Task<PolicyAnalysisRun?> GetAnalysisRunAsync(
+        PolicyAnalysisRunId id,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(_runs.TryGetValue(id.Value, out PolicyAnalysisRun? run) ? CloneRun(run) : null);
+
+    public Task<IReadOnlyList<PolicyAnalysisRun>> ListAnalysisRunsForRevisionAsync(
+        PolicyRevisionId revisionId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<PolicyAnalysisRun>>(
+            _runs.Values.Where(r => r.RevisionId == revisionId).Select(CloneRun).ToArray());
+
+    public Task AddWarningAcknowledgmentAsync(
+        PolicyWarningAcknowledgment acknowledgment,
+        CancellationToken cancellationToken = default)
+    {
+        _acks[acknowledgment.Id.Value] = acknowledgment;
+        return Task.CompletedTask;
+    }
+
+    public Task<IReadOnlyList<PolicyWarningAcknowledgment>> ListAcknowledgmentsAsync(
+        PolicyAnalysisRunId analysisRunId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<PolicyWarningAcknowledgment>>(
+            _acks.Values.Where(a => a.AnalysisRunId == analysisRunId).ToArray());
+
+    public Task AddApprovalAsync(PolicyApproval approval, CancellationToken cancellationToken = default)
+    {
+        _votes[approval.Id.Value] = approval;
+        return Task.CompletedTask;
+    }
+
+    public Task<PolicyApproval?> GetApprovalAsync(
+        PolicyApprovalId id,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(_votes.TryGetValue(id.Value, out PolicyApproval? vote) ? vote : null);
+
+    public Task<IReadOnlyList<PolicyApproval>> ListApprovalsAsync(
+        PolicyRevisionId revisionId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<PolicyApproval>>(
+            _votes.Values.Where(v => v.RevisionId == revisionId).ToArray());
+
+    public Task AddBindingAsync(PolicyDesiredBinding binding, CancellationToken cancellationToken = default)
+    {
+        _bindings[binding.Id.Value] = CloneBinding(binding);
+        return Task.CompletedTask;
+    }
+
+    public Task SaveBindingAsync(PolicyDesiredBinding binding, CancellationToken cancellationToken = default)
+    {
+        _bindings[binding.Id.Value] = CloneBinding(binding);
+        return Task.CompletedTask;
+    }
+
+    public Task<PolicyDesiredBinding?> GetBindingAsync(
+        PolicyBindingId id,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(_bindings.TryGetValue(id.Value, out PolicyDesiredBinding? binding) ? CloneBinding(binding) : null);
+
+    public Task<IReadOnlyList<PolicyDesiredBinding>> ListActiveBindingsAsync(
+        PolicyBindingScope scope,
+        Guid? scopeId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<PolicyDesiredBinding>>(
+            _bindings.Values
+                .Where(b => b.Scope == scope && b.ScopeId == scopeId)
+                .Select(CloneBinding)
+                .ToArray());
+
+    private static PolicyAnalysisRun CloneRun(PolicyAnalysisRun run)
+        => PolicyAnalysisRun.Reconstitute(
+            run.Id,
+            run.RevisionId,
+            run.RevisionContentHash,
+            run.LogicalEffectiveHash,
+            run.AnalysisContextHash,
+            run.EvidenceContextHash,
+            run.TopologyProjectionHash,
+            run.ImpactSetHash,
+            run.PerDeviceAnalysisHashes,
+            run.BundleHash,
+            run.DependencyFingerprint,
+            run.RiskLevel,
+            run.EvidenceSignalsPresent,
+            run.AnalyzerVersion,
+            run.PolicySchemaVersion,
+            run.PipelineVersion,
+            run.Findings,
+            run.TestResults,
+            run.CreatedBy,
+            run.CreatedAtUtc);
+
+    private static PolicyDesiredBinding CloneBinding(PolicyDesiredBinding binding)
+        => PolicyDesiredBinding.Reconstitute(
+            binding.Id,
+            binding.Scope,
+            binding.ScopeId,
+            binding.PolicyId,
+            binding.DesiredRevisionId,
+            binding.AnalysisRunId,
+            binding.BundleHash,
+            binding.State,
+            binding.ValidFromUtc,
+            binding.ValidUntilUtc,
+            binding.RowVersion,
+            binding.CreatedAtUtc,
+            binding.UpdatedAtUtc);
 }

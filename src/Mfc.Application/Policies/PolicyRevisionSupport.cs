@@ -32,6 +32,19 @@ internal static class PolicyRevisionSupport
         return null;
     }
 
+    public static ApplicationError? TryHash(byte[] bytes, string fieldName, out Hash256? hash)
+    {
+        hash = null;
+        ArgumentException.ThrowIfNullOrWhiteSpace(fieldName);
+        if (bytes is null || bytes.Length != Hash256.Size)
+        {
+            return ApplicationError.Validation($"{fieldName} must be exactly {Hash256.Size} bytes (SHA-256).");
+        }
+
+        hash = Hash256.Create(bytes);
+        return null;
+    }
+
     public static ApplicationError? EnsureEditable(PolicyRevision revision)
     {
         if (revision.State is not (PolicyRevisionState.Draft or PolicyRevisionState.Validated))

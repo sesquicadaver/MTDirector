@@ -17,6 +17,8 @@ using DomainRuleEffect = Mfc.Domain.Policy.PolicyRuleEffect;
 using DomainStage = Mfc.Domain.Policy.PolicyPipelineStage;
 using DomainTcpHeaderBit = Mfc.Domain.Policy.TcpHeaderBit;
 using ProtoAddressType = Mfc.Contracts.Mfc.V1.AddressType;
+using ProtoBindingScope = Mfc.Contracts.Mfc.V1.PolicyBindingScope;
+using ProtoBindingState = Mfc.Contracts.Mfc.V1.PolicyBindingState;
 using ProtoConnectionNatState = Mfc.Contracts.Mfc.V1.ConnectionNatState;
 using ProtoConnectionState = Mfc.Contracts.Mfc.V1.ConnectionState;
 using ProtoFamily = Mfc.Contracts.Mfc.V1.IpAddressFamily;
@@ -730,4 +732,96 @@ internal static class PolicyProtoMapper
         byte[] bytes = Convert.FromHexString(hex);
         return ToSha256(bytes);
     }
+
+    public static PolicyApprovalFindingInput ToInput(PolicyAnalysisFinding finding)
+    {
+        ArgumentNullException.ThrowIfNull(finding);
+        return new PolicyApprovalFindingInput
+        {
+            Code = finding.Code,
+            Severity = finding.Severity,
+            Message = finding.Message,
+            Target = finding.Target,
+        };
+    }
+
+    public static PolicyApprovalTestInput ToInput(PolicyAnalysisTestResult test)
+    {
+        ArgumentNullException.ThrowIfNull(test);
+        return new PolicyApprovalTestInput
+        {
+            TestId = ProtoUuid.ToGuid(test.TestId),
+            Origin = test.Origin,
+            Outcome = test.Outcome,
+            Proof = test.Proof,
+        };
+    }
+
+    public static global::Mfc.Contracts.Mfc.V1.PolicyAnalysisRun ToProto(PolicyAnalysisRunView view)
+        => new()
+        {
+            Id = ProtoUuid.FromGuid(view.Id),
+            RevisionId = ProtoUuid.FromGuid(view.RevisionId),
+            BundleHash = HexToSha256(view.BundleHashHex),
+            DependencyFingerprint = HexToSha256(view.DependencyFingerprintHex),
+            RiskLevel = view.RiskLevel,
+            EffectiveRiskLevel = view.EffectiveRiskLevel,
+            EvidenceSignalsPresent = view.EvidenceSignalsPresent,
+        };
+
+    public static PolicyApprovalVote ToProto(PolicyApprovalVoteView view)
+    {
+        PolicyApprovalVote message = new()
+        {
+            ApprovalId = ProtoUuid.FromGuid(view.ApprovalId),
+            RevisionId = ProtoUuid.FromGuid(view.RevisionId),
+            RevisionState = ToProto(view.RevisionState),
+            CompletesApproval = view.CompletesApproval,
+            BundleHash = HexToSha256(view.BundleHashHex),
+        };
+        message.BindingIds.AddRange(view.BindingIds.Select(ProtoUuid.FromGuid));
+        return message;
+    }
+
+    public static global::Mfc.Contracts.Mfc.V1.PolicyBinding ToProto(PolicyBindingView view)
+    {
+        global::Mfc.Contracts.Mfc.V1.PolicyBinding message = new()
+        {
+            Id = ProtoUuid.FromGuid(view.Id),
+            Scope = ToProto(view.Scope),
+            PolicyId = ProtoUuid.FromGuid(view.PolicyId),
+            DesiredRevisionId = ProtoUuid.FromGuid(view.DesiredRevisionId),
+            State = ToProto(view.State),
+            RowVersion = view.RowVersion,
+            DeploymentStarted = view.DeploymentStarted,
+        };
+        if (view.ScopeId is Guid scopeId)
+        {
+            message.ScopeId = ProtoUuid.FromGuid(scopeId);
+        }
+
+        if (view.ValidUntilUtc is DateTimeOffset until)
+        {
+            message.ValidUntil = Mfc.Domain.Policy.ExceptionMetadata.FormatTimestamp(until);
+        }
+
+        return message;
+    }
+
+    public static ProtoBindingScope ToProto(Mfc.Domain.Policy.PolicyBindingScope scope) => scope switch
+    {
+        Mfc.Domain.Policy.PolicyBindingScope.Company => ProtoBindingScope.Company,
+        Mfc.Domain.Policy.PolicyBindingScope.Site => ProtoBindingScope.Site,
+        Mfc.Domain.Policy.PolicyBindingScope.Node => ProtoBindingScope.Node,
+        Mfc.Domain.Policy.PolicyBindingScope.Exception => ProtoBindingScope.Exception,
+        _ => throw new ArgumentOutOfRangeException(nameof(scope), scope, "Unsupported binding scope."),
+    };
+
+    public static ProtoBindingState ToProto(Mfc.Domain.Policy.PolicyBindingState state) => state switch
+    {
+        Mfc.Domain.Policy.PolicyBindingState.Active => ProtoBindingState.Active,
+        Mfc.Domain.Policy.PolicyBindingState.Disabled => ProtoBindingState.Disabled,
+        Mfc.Domain.Policy.PolicyBindingState.ExpiredPendingReconciliation => ProtoBindingState.ExpiredPendingReconciliation,
+        _ => throw new ArgumentOutOfRangeException(nameof(state), state, "Unsupported binding state."),
+    };
 }

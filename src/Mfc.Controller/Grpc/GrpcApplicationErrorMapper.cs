@@ -26,7 +26,8 @@ public static class GrpcApplicationErrorMapper
             || ManagementPathAnalysisCodes.IsFailedPrecondition(error.Code)
             || TopologyDependencyAnalysisCodes.IsFailedPrecondition(error.Code)
             || FastTrackAnalysisCodes.IsFailedPrecondition(error.Code)
-            || PolicyEvidenceAnalysisCodes.IsFailedPrecondition(error.Code))
+            || PolicyEvidenceAnalysisCodes.IsFailedPrecondition(error.Code)
+            || PolicyApprovalCodes.IsFailedPrecondition(error.Code))
         {
             statusCode = StatusCode.FailedPrecondition;
             retryable = false;

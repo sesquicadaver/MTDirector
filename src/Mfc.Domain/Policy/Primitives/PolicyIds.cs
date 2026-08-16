@@ -65,3 +65,35 @@ public readonly record struct PolicyTestId(Guid Value)
 
     public override string ToString() => Value.ToString("D");
 }
+
+/// <summary>Immutable analysis-run identity (Policy Model §66 / M2-17).</summary>
+public readonly record struct PolicyAnalysisRunId(Guid Value)
+{
+    public static PolicyAnalysisRunId New() => new(Guid.NewGuid());
+
+    public override string ToString() => Value.ToString("D");
+}
+
+/// <summary>Append-only approval vote identity (Policy Model §67 / M2-17).</summary>
+public readonly record struct PolicyApprovalId(Guid Value)
+{
+    public static PolicyApprovalId New() => new(Guid.NewGuid());
+
+    public override string ToString() => Value.ToString("D");
+}
+
+/// <summary>Desired policy binding identity (Policy Model §10 / M2-17).</summary>
+public readonly record struct PolicyBindingId(Guid Value)
+{
+    public static PolicyBindingId New() => new(Guid.NewGuid());
+
+    public override string ToString() => Value.ToString("D");
+}
+
+/// <summary>Warning-acknowledgment identity (Policy Model §66 / M2-17).</summary>
+public readonly record struct PolicyWarningAcknowledgmentId(Guid Value)
+{
+    public static PolicyWarningAcknowledgmentId New() => new(Guid.NewGuid());
+
+    public override string ToString() => Value.ToString("D");
+}
