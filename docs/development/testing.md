@@ -688,12 +688,42 @@ Policy Model §47–§53 + Issue Set M2-14 AC#1–14 → Domain `TopologyDepende
 | Discovery mapper (sync + RAW + rp-filter) | `TopologyDependencyBlockerMapper` | `DiscoveryMapsVrrpSyncRawNatAndRpFilterWithoutWritingFacilities` |
 | Topology BLOCKERs trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
 
-**Residuals:** Desktop OUT; no new RPC; compose unchanged (topology-dependency is analysis, not a company document). Proto-112 **write**/guard placement is M5/M3. FastTrack PCC/balanced block is M2-15. Deploy gating is N1-06. M1-18 remains topology SoT for version/cardinality/`VRRP_SPLIT_MASTER` inventory findings; this slice emits `VRRP_MEMBER_MISSING` and preserves the per-VRID role vector without collapsing it. Explicit approved infrastructure exception for strict RPF is not modeled — fail-closed BLOCKER. Cube-level RAW notrack vs stateful disjoint proof is fail-closed intersection when both exist. `NAT_DEPENDENCY_CHANGED` / `MANGLE_DEPENDENCY_CHANGED` are reserved FailedPrecondition codes; single-shot `Analyze()` has no prior snapshot, so identity changes are proven by topology context hash (AC#12) rather than a CHANGED finding. M2-12/N1-04/M2-13 analysis-context preimages are unchanged. Controller never writes NAT/RAW/Mangle/VRRP and never disables primary WAN or L2/L3 hardware offload.
+**Residuals:** Desktop OUT; no new RPC; compose unchanged (topology-dependency is analysis, not a company document). Proto-112 **write**/guard placement is M5/M3. FastTrack PCC/balanced block is M2-15 (DONE). Deploy gating is N1-06. M1-18 remains topology SoT for version/cardinality/`VRRP_SPLIT_MASTER` inventory findings; this slice emits `VRRP_MEMBER_MISSING` and preserves the per-VRID role vector without collapsing it. Explicit approved infrastructure exception for strict RPF is not modeled — fail-closed BLOCKER. Cube-level RAW notrack vs stateful disjoint proof is fail-closed intersection when both exist. `NAT_DEPENDENCY_CHANGED` / `MANGLE_DEPENDENCY_CHANGED` are reserved FailedPrecondition codes; single-shot `Analyze()` has no prior snapshot, so identity changes are proven by topology context hash (AC#12) rather than a CHANGED finding. M2-12/N1-04/M2-13 analysis-context preimages are unchanged. Controller never writes NAT/RAW/Mangle/VRRP and never disables primary WAN or L2/L3 hardware offload.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~TopologyDependency|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — FastTrack policy validation (M2-15)
+
+Policy Model §52–§52.3 + Compiler §21 + Issue Set M2-15 AC#1–12 → Domain `FastTrackAnalysis` + Application canonical mapper + RouterOs discovery mapper (Desktop OUT, no new RPC; compose unchanged; FastTrack/ACCEPT pair never compiled or written):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| IPv4 FORWARD only | `FASTTRACK_CONTEXT_UNSUPPORTED` on IPv6/INPUT/OUTPUT | `Ac1AllowedOnlyOnIpv4Forward` |
+| Company STATE_PRELUDE only | stage allowlist (`RequiredOwner` = Company) | `Ac2AllowedOnlyOnCompanyStatePrelude` |
+| ESTABLISHED,RELATED subset | unconstrained / NEW / UNTRACKED blocked | `Ac3ConnectionStateMustBeEstablishedRelatedSubset` |
+| TCP/UDP protocol subset | any-protocol / ICMP / missing catalog blocked | `Ac4ProtocolMustBeTcpOrUdpSubset` |
+| IPv6 FastTrack blocked | CONTEXT BLOCKER | `Ac5Ipv6FastTrackIsBlocked` |
+| PCC and balanced/mixed WAN blocked | CONTEXT; FAILOVER+main allowed | `Ac6PccAndBalancedMixedMultiWanBlockFastTrack` |
+| Routing marks and non-main tables blocked | CONTEXT; unknown uplink mode blocked | `Ac7RoutingMarksAndNonMainTablesBlockFastTrack` |
+| IPsec, VRF, unknown Mangle blocked | CONTEXT | `Ac8IpsecVrfAndUnknownMangleBlockFastTrack` |
+| Pre-anchor unmanaged FastTrack accounted | `PRE_ANCHOR_FASTTRACK_BYPASSES_POLICY` | `Ac9PreAnchorUnmanagedFastTrackIsAccounted` |
+| ACCEPT fallback compiler contract | `RequiresAcceptFallback` + WARNING, not FailedPrecondition | `Ac10FallbackAcceptIsMandatoryCompilerContract` |
+| Risk not below HIGH | `RiskFloor=HIGH`; logging/capability BLOCKERs | `Ac11FastTrackRiskIsNotBelowHigh` |
+| Allowed and forbidden topologies + hash isolation | 5-arg combiner ≠ 4-arg; M2-14 preimage unchanged | `Ac12HashSlotIsIsolatedFromPriorCombiners` |
+| Canonical mapper (no RouterOS) | `FastTrackContextMapper` | `CanonicalSingleWanMapsToSafeFastTrackWithoutCompilingFallback` |
+| Discovery mapper (pre-anchor + VRF; FT-active observation-only) | `FastTrackBlockerMapper` | `DiscoveryPccPreAnchorAndVrfBlockFastTrackAndFasttrackActiveIsObservationOnly` |
+| FastTrack BLOCKERs trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
+
+**Residuals:** Desktop OUT; no new RPC; compose unchanged (FastTrack analysis is not a company document). Compiler FastTrack+ACCEPT pair write is M3-06. Deploy gating is N1-06. `PolicyRule` has no owner field — AC#2 is STATE_PRELUDE ⇒ Company via `PolicyPipelineV1.RequiredOwner`. HotSpot / global queue-tree are caller-supplied topology flags (discovery does not currently prove absence). `ipv4-fasttrack-active` is observation-only and does not enter the FastTrack context hash. Pre-anchor FastTrack without a candidate FastTrack rule remains M2-12 `ActualFilterAnalysis`. `FASTTRACK_OVERLAP` stays M2-11 sequence analysis. M2-12/N1-04/M2-13/M2-14 analysis-context preimages are unchanged. Controller never writes FastTrack or the ACCEPT fallback pair.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~FastTrack|FullyQualifiedName~GrpcApplicationErrorMapper|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

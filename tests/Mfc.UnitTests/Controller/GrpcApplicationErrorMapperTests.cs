@@ -52,6 +52,9 @@ public sealed class GrpcApplicationErrorMapperTests
     [InlineData(TopologyDependencyAnalysisCodes.StrictRpfWithVrrp)]
     [InlineData(TopologyDependencyAnalysisCodes.RawNotrackIntersectsStateful)]
     [InlineData(TopologyDependencyAnalysisCodes.SwitchForwardPolicyUnsupported)]
+    [InlineData(FastTrackAnalysisCodes.ContextUnsupported)]
+    [InlineData(FastTrackAnalysisCodes.LoggingUnsupported)]
+    [InlineData(FastTrackAnalysisCodes.CapabilityUnsupported)]
     public void SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable(string code)
     {
         RpcException ex = GrpcApplicationErrorMapper.ToRpcException(
