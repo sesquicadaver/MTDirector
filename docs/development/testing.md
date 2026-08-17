@@ -844,12 +844,37 @@ Compiler Spec §6–§7 / §24 + Issue Set M3-01 → Domain immutable artifact (
 | AC#10 canonical test vectors | fixed digests + JSON shape | `Ac10CanonicalTestVectorsAreFixed` |
 | Deterministic sort order | Create sorting | `SortingIsDeterministicRegardlessOfInputOrder` |
 
-**Residuals:** Managed chain namespace/layout (M3-02), address-list compilation (M3-03), matcher mapping (M3-05), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current PASS analysis (§6) — gate lands with orchestration.
+**Residuals:** Address-list compilation (M3-03), matcher mapping (M3-05), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current PASS analysis (§6) — gate lands with orchestration.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~RouterOsFilterArtifact"
+```
+
+## Living Specification — managed chain namespace and layout (M3-02)
+
+Compiler Spec §8 / §11 + Issue Set M3-02 → Domain layout builder on M3-01 artifact types (no Application orchestration; no RouterOS writes):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 mfc4 / mfc6 namespaces | `ManagedChainNamespace` | `Ac1NamespacesAreMfc4AndMfc6` |
+| AC#2 one root per family/chain | `ManagedChainLayoutBuilder` | `Ac2OneRootPerFamilyChain` |
+| AC#3 max three deny chains | layout roles dc/ds/dn | `Ac3Ac4MaxThreeDenyChainsAndEmptyDenyOmitsChainAndJump` |
+| AC#4 empty deny → no chain / no jump | omit empty deny bodies | `Ac3Ac4…` |
+| AC#5 root order = Pipeline v1 | stage/jump/terminal order | `Ac5RootStageOrderMatchesPipelineV1` |
+| AC#6 deny ends with unconditional return | structural return rule | `Ac6DenyChainEndsWithUnconditionalReturn` |
+| AC#7 root explicit terminal | `mfc:s:terminal` | `Ac7Ac8RootHasExplicitTerminalAndAcceptImpossible` |
+| AC#8 default accept impossible | `ChainDefaultDisposition` + terminal map | `Ac7Ac8…` |
+| AC#9 management guard not in artifact | guard comment reject | `Ac9ManagementGuardRejectedFromArtifact` |
+| AC#10 no physical anchor creation | desired targets only; reject anchor-marked bodies | `Ac10CompilerEmitsDesiredTargetNotPhysicalAnchorRules` |
+
+**Residuals:** Address-list compilation (M3-03), matcher mapping (M3-05), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), deny-stage exception-before-deny ordering at full compile, and any RouterOS write path remain out of scope.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ManagedChainLayout"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
