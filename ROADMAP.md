@@ -47,16 +47,16 @@
 | M1 Read-only slice | 34 | 0 | 100% |
 | N1 Packet-path weave | 5 | 2 | 71% |
 | M2 Policy core | 18 | 0 | 100% |
-| M3 Compiler | 1 | 7 | 12% |
+| M3 Compiler | 2 | 6 | 25% |
 | M5 Onboarding | 0 | 10 | 0% |
 | M4 Safe deploy | 0 | 13 | 0% |
 | M6 E2E / drift | 0 | 9 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **68** | **68** | **50% issues** |
+| **Разом** | **69** | **67** | **51% issues** |
 
-MVP issues (109) = **68 done + 41 remaining** до MVP CLOSED (**62%**).  
+MVP issues (109) = **69 done + 40 remaining** до MVP CLOSED (**63%**).  
 N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
-Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; filter artifact model **готовий**; compile layout/onboard/apply/drift = далі по черзі.
+Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; filter artifact model + managed chain layout **готові**; address-list compile / onboard / apply / drift = далі по черзі (NEXT M3-03; hygiene H-01 marker alignment перед compile circulation).
 
 ### 2.2 DONE (не в черзі)
 

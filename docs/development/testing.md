@@ -591,12 +591,12 @@ Policy Model §44–§45 + Issue Set M2-12 AC#1–12 → Domain `ActualFilterAna
 | Miss-path after guard/terminals | §44 layout | `GuardDoesNotHideLaterUnmanagedPreAnchorBypass` |
 | Jump → empty builtin implicit accept | pre-anchor bypass | `JumpToEmptyBuiltinIsPreAnchorAcceptBypass` |
 | Return edge to jump successor | CFG | `ReturnEdgeTargetsSuccessorAfterJump` |
-| Unmanaged jump into `fwc.*` | INDETERMINATE | `UnmanagedJumpIntoManagedIsIndeterminate` |
+| Unmanaged jump into `fwc.*` / `mfc4.*` / `mfc6.*` / legacy `mfc.*` | INDETERMINATE via `IsManagedChainName` | `UnmanagedJumpIntoManagedIsIndeterminate`; `MarkerAndRuleInvariantsHold` |
 | Canonical mapper | `ActualFilterContextMapper` | `CanonicalFilterRecordsMapToDomainRulesAndDetectPreAnchorAccept` |
 | Discovery mapper (dynamic + unknown) | `ActualFilterRuleMapper` | `DiscoveryMapsDynamicJumpAndUnknownMatchers` |
 | `ACTUAL_FILTER_*` / `PRE_ANCHOR_*` trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
 
-**Residuals:** Desktop OUT; no new RPC; compose-on-read stays logical (actual CFG is analysis level 6, not wired into `ComposeEffectivePolicy`). Witness packets N/A for actual CFG. Management-path safety is M2-13 (DONE). Canonical filter sections still omit dynamics; RouterOs discovery mapper is the dynamic path. Jump into managed `fwc.*`/`mfc.*` from controller-owned comments is an opaque `ManagedPipeline` node (candidate policy remains M2-11). Walk continues miss-path after terminals so later unmanaged pre-anchor rules stay visible; the anchor itself still stops post-anchor unless `RETURN_TO_UNMANAGED`. M2-13 must not treat `Graph.Edges` as the only reachability oracle — findings come from the walk.
+**Residuals:** Desktop OUT; no new RPC; compose-on-read stays logical (actual CFG is analysis level 6, not wired into `ComposeEffectivePolicy`). Witness packets N/A for actual CFG. Management-path safety is M2-13 (DONE). Canonical filter sections still omit dynamics; RouterOs discovery mapper is the dynamic path. Jump into managed `fwc.*` / `mfc4.*` / `mfc6.*` / legacy `mfc.*` from controller-owned comments is an opaque `ManagedPipeline` node (candidate policy remains M2-11). Walk continues miss-path after terminals so later unmanaged pre-anchor rules stay visible; the anchor itself still stops post-anchor unless `RETURN_TO_UNMANAGED`. M2-13 must not treat `Graph.Edges` as the only reachability oracle — findings come from the walk.
 
 Filter:
 ```bash

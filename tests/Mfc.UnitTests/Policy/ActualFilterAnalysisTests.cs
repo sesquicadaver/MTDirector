@@ -254,23 +254,57 @@ public sealed class ActualFilterAnalysisTests
     [Fact]
     public void ControllerOwnedJumpIntoManagedIsOpaquePipeline()
     {
-        ActualFilterAnalysisResult result = Analyze(
+        ActualFilterAnalysisResult legacy = Analyze(
             Rule("forward", 0, "jump", jumpTarget: "fwc.forward.rev1", comment: "fwc:rule:owned"),
             Anchor(1));
         Assert.Contains(
-            result.Graph.Nodes,
+            legacy.Graph.Nodes,
             n => n.Kind == ActualFilterGraphNodeKind.ManagedPipeline && n.Ordinal == 0);
-        Assert.DoesNotContain(result.Findings, f => f.Code == ActualFilterAnalysisCodes.AnalysisIndeterminate);
+        Assert.DoesNotContain(legacy.Findings, f => f.Code == ActualFilterAnalysisCodes.AnalysisIndeterminate);
+
+        string mfc4Root = ManagedChainNamespace.ChainName(
+            IpAddressFamily.IPv4,
+            FilterBuiltInContext.Forward,
+            FilterChainArtifactRole.Root,
+            "0123456789abcdef");
+        ActualFilterAnalysisResult modern = Analyze(
+            Rule("forward", 0, "jump", jumpTarget: mfc4Root, comment: "mfc:r:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa:0"),
+            Rule(
+                "forward",
+                1,
+                "jump",
+                jumpTarget: mfc4Root,
+                comment: "mfc:anchor:v1:4:f"));
+        Assert.Contains(
+            modern.Graph.Nodes,
+            n => n.Kind == ActualFilterGraphNodeKind.ManagedPipeline && n.Ordinal == 0);
+        Assert.DoesNotContain(modern.Findings, f => f.Code == ActualFilterAnalysisCodes.AnalysisIndeterminate);
     }
 
     [Fact]
     public void UnmanagedJumpIntoManagedIsIndeterminate()
     {
-        ActualFilterAnalysisResult result = Analyze(
+        ActualFilterAnalysisResult legacy = Analyze(
             Jump("forward", 0, "fwc.forward.rev1"),
             Anchor(1));
-        Assert.Contains(result.Findings, f => f.Code == ActualFilterAnalysisCodes.AnalysisIndeterminate);
-        Assert.Contains(result.Findings, f => f.Code == ActualFilterAnalysisCodes.PreAnchorIndeterminate);
+        Assert.Contains(legacy.Findings, f => f.Code == ActualFilterAnalysisCodes.AnalysisIndeterminate);
+        Assert.Contains(legacy.Findings, f => f.Code == ActualFilterAnalysisCodes.PreAnchorIndeterminate);
+
+        string mfc4Root = ManagedChainNamespace.ChainName(
+            IpAddressFamily.IPv4,
+            FilterBuiltInContext.Forward,
+            FilterChainArtifactRole.Root,
+            "0123456789abcdef");
+        ActualFilterAnalysisResult modern = Analyze(
+            Jump("forward", 0, mfc4Root),
+            Rule(
+                "forward",
+                1,
+                "jump",
+                jumpTarget: mfc4Root,
+                comment: "mfc:anchor:v1:4:f"));
+        Assert.Contains(modern.Findings, f => f.Code == ActualFilterAnalysisCodes.AnalysisIndeterminate);
+        Assert.Contains(modern.Findings, f => f.Code == ActualFilterAnalysisCodes.PreAnchorIndeterminate);
     }
 
     [Fact]
@@ -357,6 +391,26 @@ public sealed class ActualFilterAnalysisTests
         Assert.True(ActualFilterMarker.IsValidGuardMarker("mfc:guard:v1:0123456789abcdef:4:o:1"));
         Assert.True(ActualFilterMarker.IsUnmanaged(null));
         Assert.True(ActualFilterMarker.IsManagedChainName("mfc.input.rev1"));
+        Assert.True(ActualFilterMarker.IsManagedChainName("fwc.forward.owned"));
+        Assert.True(ActualFilterMarker.IsManagedChainName(
+            ManagedChainNamespace.ChainName(
+                IpAddressFamily.IPv4,
+                FilterBuiltInContext.Forward,
+                FilterChainArtifactRole.Root,
+                "0123456789abcdef")));
+        Assert.True(ActualFilterMarker.IsManagedChainName(
+            ManagedChainNamespace.ChainName(
+                IpAddressFamily.IPv6,
+                FilterBuiltInContext.Input,
+                FilterChainArtifactRole.CompanyDeny,
+                "fedcba9876543210")));
+        Assert.False(ActualFilterMarker.IsManagedChainName("forward"));
+        Assert.False(ActualFilterMarker.IsManagedChainName("mfc4"));
+        Assert.False(ActualFilterMarker.IsManagedChainName("mfc40.spoof"));
+        Assert.False(ActualFilterMarker.IsManagedChainName("mfc4.a.deadbeefdeadbeef"));
+        Assert.False(ActualFilterMarker.IsManagedChainName("mfc4.i.x.0123456789abcdef"));
+        Assert.False(ActualFilterMarker.IsManagedChainName("mfc4.f.r.not-hex-token!!!!"));
+        Assert.False(ActualFilterMarker.IsManagedChainName("mfc4.f.r.0123456789abcde"));
         Assert.False(ActualFilterAnalysisCodes.IsFailedPrecondition(string.Empty));
         Assert.True(ActualFilterAnalysisCodes.IsFailedPrecondition(ActualFilterAnalysisCodes.UnknownMatcher));
         Assert.Throws<DomainInvariantException>(() =>

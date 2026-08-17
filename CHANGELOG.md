@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Actual-filter managed-chain detection now recognizes Compiler Spec §8 namespaces `mfc4.` / `mfc6.` (plus legacy `mfc.` / `fwc.`) so analysis does not treat layout roots as unmanaged jumps.
 - TCP flag intersection: identical `required_present`/`required_absent` is a set-union, not a duplicate-throw empty cube, so exception overlap stays fail-closed.
 - Exception-path service JSON: missing port bounds or a non-array ports/ICMP field maps to `POLICY_COMPOSE_SELECTOR_UNRESOLVED` instead of throwing or treating the field as unconstrained.
 - Desktop inventory cancel race: await shared refresh before surfacing cancellation so `IsRefreshing` clears consistently.
@@ -20,6 +21,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP §2.1 progress table synced after M3-02 (69/136 closed; M3 compiler 2/8); NEXT remains M3-03 (#70).
 - ROADMAP: M3-02 managed chain layout DONE; NEXT = M3-03 (#70); counters 69/109 MVP done (40 remaining).
 
 ### Added
