@@ -826,6 +826,32 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PolicyObjectJsonWriter|FullyQualifiedName~PolicyAuthoringReview|FullyQualifiedName~PolicyProtoContract|FullyQualifiedName~PolicyDesktop|FullyQualifiedName~ArchitectureBoundary"
 ```
 
+## Living Specification — RouterOS filter artifact model (M3-01)
+
+Compiler Spec §6–§7 / §24 + Issue Set M3-01 → Domain immutable artifact (no Application compile orchestration yet; no RouterOS writes):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 address lists + chains + anchor targets | `RouterOsFilterArtifact.Create` | `Ac1Ac9CreateSealsImmutableAddressListsChainsAndAnchors` |
+| AC#2 no API commands | `FilterRuleArtifact` / identity guards | `Ac2Ac3RejectApiCommandsAndRouterOsId` |
+| AC#3 no RouterOS `.id` | matcher/key guards | `Ac2Ac3RejectApiCommandsAndRouterOsId` |
+| AC#4 deterministic physical semantics hash | `HashPhysicalSemantics` | `Ac4Ac5Ac6Ac7IdentityHashesAreDeterministicAndExcludeTimestamps` |
+| AC#5 artifact_id = first 16 hex of seed | `ComputeArtifactId` | `Ac4Ac5Ac6Ac7…`; `Ac10CanonicalTestVectorsAreFixed` |
+| AC#6 resource_hash = SHA256(MFC-CJ1 bytes) | `HashResourceDocument` | `Ac4Ac5Ac6Ac7…`; `Ac10…` |
+| AC#7 timestamps not in hash preimage | `PhysicalSemanticsMaterial` fields | `Ac4Ac5Ac6Ac7…` |
+| AC#8 description-only does not change artifact | semantics exclude descriptions | `Ac8DescriptionOnlyChangeDoesNotAlterPhysicalSemanticsOrArtifact` |
+| AC#9 payload immutable | frozen lists + sealed bytes | `Ac1Ac9CreateSealsImmutableAddressListsChainsAndAnchors` |
+| AC#10 canonical test vectors | fixed digests + JSON shape | `Ac10CanonicalTestVectorsAreFixed` |
+| Deterministic sort order | Create sorting | `SortingIsDeterministicRegardlessOfInputOrder` |
+
+**Residuals:** Managed chain namespace/layout (M3-02), address-list compilation (M3-03), matcher mapping (M3-05), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current PASS analysis (§6) — gate lands with orchestration.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~RouterOsFilterArtifact"
+```
+
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
 Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):

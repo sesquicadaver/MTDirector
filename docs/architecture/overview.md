@@ -73,7 +73,9 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | FastTrack policy validation | Done (M2-15) | `FastTrackAnalysis`; IPv4 FORWARD STATE_PRELUDE TCP/UDP; PCC/balanced/marks/VRF/IPsec/pre-anchor fail-closed; fallback flag; risk HIGH; 5-arg hash isolation |
 | Policy tests / semantic diff / risk | Done (M2-16) | `PolicyEvidenceAnalysis`; MANAGED_ONLY/NODE_EFFECTIVE; UUID diff + object impact; packet-space classes; risk floor; 6-arg hash isolation |
 | Approval / desired binding | Done (M2-17) | `PolicyApprovalGate` / `PolicyBindingGate`; immutable analysis run; bundle hash + SoD; binding ≠ deploy; exception expiry without deploy |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M3-01 (#68) |
+| Policy authoring / review Desktop | Done (M2-18) | Contracts-only catalog editors + Validate/Submit/Approve/Bind; Deploy residual N1-06; **M2 CLOSED** |
+| RouterOS filter artifact model | Done (M3-01) | `RouterOsFilterArtifact` + MFC-CJ1 canonical writer; physical_semantics/artifact_id/resource_hash; no `.id`/API commands |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M3-02 (#69) |
 
 ## ADRs
 
