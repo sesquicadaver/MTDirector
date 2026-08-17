@@ -64,11 +64,67 @@ public static class ActualFilterMarker
     public static bool IsUnmanaged(string? comment)
         => !IsControllerOwned(comment);
 
-    /// <summary>Managed pipeline jump target (compiler namespace), not an unmanaged chain.</summary>
+    /// <summary>
+    /// Managed pipeline jump target (compiler namespace), not an unmanaged chain.
+    /// Compiler Spec §8.3: <c>mfc{4|6}.{i|f|o}.{r|dc|ds|dn}.&lt;artifact-id&gt;</c>;
+    /// also accepts legacy <c>mfc.*</c> / <c>fwc.*</c>. Address-list names (<c>mfc4.a.*</c>) are not chains.
+    /// </summary>
     public static bool IsManagedChainName(string? chain)
-        => !string.IsNullOrWhiteSpace(chain)
-           && (chain.StartsWith("fwc.", StringComparison.Ordinal)
-               || chain.StartsWith("mfc.", StringComparison.Ordinal));
+    {
+        if (string.IsNullOrWhiteSpace(chain))
+        {
+            return false;
+        }
+
+        if (chain.StartsWith("fwc.", StringComparison.Ordinal)
+            || chain.StartsWith("mfc.", StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        string[] parts = chain.Split('.');
+        if (parts.Length != 4)
+        {
+            return false;
+        }
+
+        if (parts[0] is not (ManagedChainNamespace.Ipv4Prefix or ManagedChainNamespace.Ipv6Prefix))
+        {
+            return false;
+        }
+
+        if (parts[1] is not ("i" or "f" or "o"))
+        {
+            return false;
+        }
+
+        if (parts[2] is not ("r" or "dc" or "ds" or "dn"))
+        {
+            return false;
+        }
+
+        return IsCompilerArtifactIdToken(parts[3]);
+    }
+
+    private static bool IsCompilerArtifactIdToken(string token)
+    {
+        if (token.Length != RouterOsFilterArtifactIdentity.ArtifactIdHexLength)
+        {
+            return false;
+        }
+
+        foreach (char c in token)
+        {
+            if (c is (>= '0' and <= '9') or (>= 'a' and <= 'f'))
+            {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
 
     public static bool TryReadMarker(string? comment, out string? marker)
     {
