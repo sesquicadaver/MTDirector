@@ -198,6 +198,23 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
     }
 
     [Fact]
+    public async Task SwitchNodeWithForwardContractsIsForbidden()
+    {
+        CompileFixture fx = await SeedApprovedCompanyWithNodeDeviceAsync(
+            withCapabilitySnapshot: true,
+            withChainContracts: true,
+            nodeKind: NodeKind.Switch);
+        ApplicationResult<CompileNodeFilterArtifactsView> result = await fx.UseCase.ExecuteAsync(Command(
+            nodeId: fx.NodeId,
+            analysisRunId: fx.RunId,
+            fingerprint: fx.Fingerprint,
+            capability: CapabilityHashBytes));
+        Assert.True(result.IsFailure);
+        Assert.Equal(PolicyCompilerCodes.SwitchForwardCompilationForbidden, result.Error!.Code);
+        Assert.Empty(fx.Artifacts.Puts);
+    }
+
+    [Fact]
     public async Task InvalidCompilerProfileHashIsValidationError()
     {
         CompileNodeFilterArtifactsUseCase useCase = CreateUseCase(out _, out _, out _, out _);
@@ -439,7 +456,8 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
         bool skipBind = false,
         bool addDevice = true,
         bool enableDevice = true,
-        bool orphanCaptureId = false)
+        bool orphanCaptureId = false,
+        NodeKind nodeKind = NodeKind.Router)
     {
         FakeAuthorizationBoundary auth = new();
         FakePolicyStore policies = new();
@@ -567,7 +585,7 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
             })).IsSuccess);
         }
 
-        Node node = Node.Create(SiteId.New(), NonEmptyName.Create("edge"), NodeKind.Router, DeclaredUplinkMode.One);
+        Node node = Node.Create(SiteId.New(), NonEmptyName.Create("edge"), nodeKind, DeclaredUplinkMode.One);
         await nodes.AddAsync(node);
         if (addDevice)
         {

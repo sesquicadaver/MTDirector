@@ -998,12 +998,39 @@ Compiler Spec §4–§7 / §28 / §33.4–§33.5 + Issue Set M3-07 → Domain `D
 | AC#10 stale analysis/capability blocks | gate codes | `Ac10StaleAnalysisOrCapabilityBlocksCompilation` |
 | Zone bindings must fully resolve | `TryCaptureResolvedZones` | `UnresolvedZoneBindingBlocksCompilation` |
 
-**Residuals:** Full topology acceptance matrix is M3-08. RouterOS write path remains out of scope.
+**Residuals:** Full topology acceptance matrix is M3-08 (DONE). RouterOS write path remains out of scope.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeviceFilterCompiler"
+```
+
+## Living Specification — compiler acceptance / M3 CLOSED (M3-08)
+
+Compiler Spec §32–§33 + Issue Set M3-08 → Domain `DeviceFilterCompiler` acceptance vectors (no RouterOS writes):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Standalone IPv4 INPUT allow | Spec §33.1 | `Ac1StandaloneIpv4InputAllow` |
+| AC#2 Dual-stack | `mfc4`/`mfc6` roots | `Ac2DualStackCompilation` |
+| AC#3 Multi-WAN ≠ active route | WAN variants | `Ac3MultiWanIndependentOfActiveRoute` |
+| AC#4 VRRP shared logical hash | `CompileNode` | `Ac4VrrpMembersShareLogicalHash` |
+| AC#5 Split-master not an input | request shape | `Ac5SplitMasterRoleIsNotAnInput` |
+| AC#6 Switch FORWARD forbidden | `SWITCH_FORWARD_COMPILATION_FORBIDDEN` | `Ac6SwitchForwardCompilationIsForbidden` |
+| AC#7 Address content dedup | address-list intern | `Ac7SameAddressContentIsDeduplicated` |
+| AC#8 Exception deny layout | company-deny body | `Ac8ExceptionChainLayoutIsCorrect` |
+| AC#9 FastTrack pair | final artifact | `Ac9FastTrackPairIsCorrect` |
+| AC#10 Root + deny terminals | layout terminals | `Ac10RootAndDenyTerminalsPresent` |
+| AC#11 Description-only ≠ resource hash | physical semantics | `Ac11DescriptionOnlyChangeDoesNotAlterResourceHash` |
+| AC#12 Deterministic compile | resource_hash / canonical | `Ac12CompileIsDeterministic` |
+
+**Residuals:** RouterOS write / deploy path is M4+. Onboarding starts at M5-01.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeviceFilterCompilerAcceptanceTests"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
