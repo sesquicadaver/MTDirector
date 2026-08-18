@@ -21,6 +21,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP §2.1 progress table synced after M3-04 (71/136 closed; M3 compiler 4/8); NEXT = M3-05 (#72).
+- ROADMAP: M3-04 zone/service variants DONE; NEXT = M3-05 (#72); counters 71/109 MVP done (38 remaining).
 - ROADMAP §2.1 progress table synced after M3-03 (70/136 closed; M3 compiler 3/8); NEXT = M3-04 (#71).
 - ROADMAP: M3-03 content-addressed address lists DONE; NEXT = M3-04 (#71); counters 70/109 MVP done (39 remaining).
 - ROADMAP §2.1 progress table synced after M3-02 (69/136 closed; M3 compiler 2/8); NEXT remains M3-03 (#70).
@@ -28,6 +30,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Zone and service variants (M3-04): Domain `ZoneServiceVariantCompiler` + `PortMatcherEncoder`; exact `INTERFACE_LIST` bindings emit `in/out-interface-list` without cloning the list; other selectors expand to a bounded finite interface set and ingress×egress Cartesian product; service terms canonicalize; each ICMP type/code is its own variant; oversized port matchers fail `SERVICE_TERM_TOO_LARGE` without auto-split; compilation ignores interface running state and current active WAN; empty/stale/dynamic/missing zones fail closed. Living Spec AC rows in `ZoneServiceVariantCompilerTests`. No Application orchestration and no RouterOS writes (M3-05+).
 - Content-addressed address lists (M3-03): Domain `AddressListCompileSession` + `AddressPrefixEncoder` + `PolicyCompilerCodes`; include/exclude exact resolve; positive one-matcher lists; universe-minus-exclusions as exclude-union + negated `src|dst-address-list`; content-hash intern; sorted entries without timeout; names `mfc{4|6}.a.<16-hex>`; layout v1 limits (4096 lists / 250 000 entries per family). Living Spec AC rows in `AddressListCompilerTests`. No Application orchestration and no RouterOS writes (M3-04+).
 - Managed chain namespace and layout (M3-02): Domain `ManagedChainNamespace` (`mfc4`/`mfc6` chain and address-list names) + `ManagedChainLayoutBuilder` assembling root + up to three deny chains in Pipeline v1 order with structural jumps/returns/terminals; empty deny stages omit chain and jump; default ACCEPT impossible; management-guard comments and physical anchors rejected (desired anchor targets only). Living Spec AC rows in `ManagedChainLayoutBuilderTests`. No Application orchestration and no RouterOS writes (M3-03+).
 - RouterOS filter artifact model (M3-01): Domain `RouterOsFilterArtifact` with address lists, chains, and desired anchor targets; MFC-CJ1 canonical writer (`mfc.routeros-filter-artifact/1`); `physical_semantics_hash` / `artifact_id` (16-hex seed) / `resource_hash`; rejects RouterOS `.id` and API command tokens; description/timestamps excluded from identity preimages; golden vectors in `RouterOsFilterArtifactTests`. No Application compile orchestration and no RouterOS writes (M3-02+).
