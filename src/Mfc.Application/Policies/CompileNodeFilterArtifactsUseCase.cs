@@ -322,6 +322,7 @@ public sealed class CompileNodeFilterArtifactsUseCase
                 AnalysisContextCurrent = analysisCurrent,
                 CapabilityCurrent = capabilityCurrent,
                 CompilerProfileSupported = profileSupported,
+                NodeKind = node.DeclaredKind,
                 ActiveRules = composed.ActiveRules,
                 ChainContracts = contracts,
                 Addresses = addresses,

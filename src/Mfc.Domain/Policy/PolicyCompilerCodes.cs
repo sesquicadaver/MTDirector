@@ -47,6 +47,9 @@ public static class PolicyCompilerCodes
 
     public const string ArtifactSizeLimit = "ARTIFACT_SIZE_LIMIT";
 
+    /// <summary>Switch nodes must not compile FORWARD (Compiler Spec §32).</summary>
+    public const string SwitchForwardCompilationForbidden = "SWITCH_FORWARD_COMPILATION_FORBIDDEN";
+
     /// <summary>Compile blockers that must map to FailedPrecondition when orchestration exists.</summary>
     public static bool IsFailedPrecondition(string code)
         => code is AddressSelectorEmpty
@@ -70,5 +73,6 @@ public static class PolicyCompilerCodes
             or CompilerInputNotApproved
             or CompilerCapabilityStale
             or CompilerProfileUnsupported
-            or ArtifactSizeLimit;
+            or ArtifactSizeLimit
+            or SwitchForwardCompilationForbidden;
 }

@@ -107,6 +107,9 @@ public sealed class DeviceFilterCompileRequest
     /// <summary>True when compiler_profile_hash is supported by this Controller build.</summary>
     public required bool CompilerProfileSupported { get; init; }
 
+    /// <summary>Inventory Node kind; Switch FORWARD is fail-closed (Compiler Spec §32).</summary>
+    public required NodeKind NodeKind { get; init; }
+
     public required IReadOnlyList<PolicyRule> ActiveRules { get; init; }
 
     public required ChainContractSet ChainContracts { get; init; }
@@ -262,6 +265,15 @@ public sealed class DeviceFilterCompiler
             return DeviceFilterCompileResult.Fail(
                 PolicyCompilerCodes.CompilerInputNotApproved,
                 "Chain contracts are required before filter compilation.");
+        }
+
+        if (request.NodeKind == NodeKind.Switch
+            && (request.ChainContracts.Items.Any(static c => c.Chain == PolicyFilterChain.Forward)
+                || request.ActiveRules.Any(static r => r.Chain == PolicyFilterChain.Forward)))
+        {
+            return DeviceFilterCompileResult.Fail(
+                PolicyCompilerCodes.SwitchForwardCompilationForbidden,
+                "Switch nodes forbid FORWARD filter compilation.");
         }
 
         ZoneServiceCompileContext zones = new()

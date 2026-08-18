@@ -22,6 +22,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP §2.1 progress table synced after M3-08 (74/136 closed; M3 compiler 8/8 CLOSED); NEXT = M5-01 (#76).
+- ROADMAP: M3-08 compiler acceptance DONE (**M3 CLOSED**); NEXT = M5-01 (#76); counters 74/109 MVP done (35 remaining).
 - ROADMAP §2.1 progress table synced after M3-07 (74/136 closed; M3 compiler 7/8); NEXT = M3-08 (#75).
 - ROADMAP: M3-07 per-device compile + artifact storage DONE; NEXT = M3-08 (#75); counters 74/109 MVP done (35 remaining).
 - ROADMAP §2.1 progress table synced after M3-06 (73/136 closed; M3 compiler 6/8); NEXT = M3-07 (#74).
@@ -37,6 +39,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Compiler acceptance / M3 CLOSED (M3-08): Living Spec `DeviceFilterCompilerAcceptanceTests` for Spec §32–§33 topology vectors (standalone IPv4, dual-stack, multi-WAN, VRRP logical hash, Switch FORWARD forbidden, address dedup, exception layout, FastTrack pair, terminals, description-stable resource hash, deterministic compile); Domain gate `SWITCH_FORWARD_COMPILATION_FORBIDDEN` via `DeviceFilterCompileRequest.NodeKind`; Application passes `node.DeclaredKind`. No RouterOS writes (M4+).
 - Per-device compiler orchestration and artifact storage (M3-07): Domain `DeviceFilterCompiler` / `DeviceResolvedPolicyHasher` with approved-PASS / stale-analysis / stale-capability / unsupported-profile gates; shared logical effective hash across Node Devices; active WAN forced off; no VRRP role input; content-addressed `filter_artifacts` via `IFilterArtifactStore` / `EfFilterArtifactStore`; Application `CompileNodeFilterArtifactsUseCase`; gRPC `CompileNodeFilterArtifacts` returns semantic summary only (no RouterOS commands); fail-closed Node compile. Living Spec AC rows in `DeviceFilterCompilerTests`. No RouterOS writes (M3-08+ / M4).
 - FastTrack pairs and terminal rules (M3-06): Domain FastTrack emit in `FilterMatcherEffectCompiler` (adjacent `fasttrack-connection` + `accept`, identical matchers, `hw-offload=no`, `:ft`/`:ac`, logging forbidden) gated by `FastTrackAnalysis` topology/context; `ChainTerminalCompiler` maps DROP/REJECT/RETURN_TO_UNMANAGED for layout root terminals. Living Spec AC rows in `FastTrackTerminalCompilerTests`. No Application orchestration and no RouterOS writes (M3-07+).
 - Filter matchers and regular effects (M3-05): Domain `FilterMatcherEffectCompiler` + `RouterOsCompilerProfile` + `CompilerComments`; exact §15 matcher tokens (protocol numeric; conntrack/NAT/address-type/tcp-flags/ipsec); ACCEPT/DROP/REJECT (`reject-with` never substituted with DROP); `EXEMPT_DENY_STAGE` → `return` + `:ex`; structural comments shared with layout builder; input-list order preserved; duplicates kept; comments exclude user metadata; FastTrack fails `FASTTRACK_CONTEXT_UNSUPPORTED` (pair is M3-06); `FILTER_RULE_LIMIT` 20 000/family+chain. Living Spec AC rows in `FilterMatcherEffectCompilerTests`. No Application orchestration and no RouterOS writes (M3-06+).
