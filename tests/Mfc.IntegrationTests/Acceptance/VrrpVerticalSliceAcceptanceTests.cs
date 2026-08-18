@@ -351,6 +351,7 @@ public sealed class VrrpVerticalSliceAcceptanceTests
             DomainNodeKind.Vrrp,
             DomainDeclaredUplinkMode.Failover,
             DomainNodeStatus.Active,
+            ManagementState.Unmanaged,
             rowVersion: 1);
         domain.AttachDevice(DomainDevice.Reconstitute(
             new DeviceId(ProtoUuid.ToGuid(primary.Id)),
@@ -360,6 +361,7 @@ public sealed class VrrpVerticalSliceAcceptanceTests
             DomainDeviceRole.Router,
             enabled: true,
             lastSupportState: null,
+            ManagementState.Unmanaged,
             rowVersion: 1));
         domain.AttachDevice(DomainDevice.Reconstitute(
             new DeviceId(ProtoUuid.ToGuid(secondary.Id)),
@@ -369,6 +371,7 @@ public sealed class VrrpVerticalSliceAcceptanceTests
             DomainDeviceRole.Router,
             enabled: true,
             lastSupportState: null,
+            ManagementState.Unmanaged,
             rowVersion: 1));
         return domain;
     }

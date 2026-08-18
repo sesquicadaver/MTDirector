@@ -13,6 +13,7 @@ PostgreSQL is the only supported production database. SQLite is forbidden.
 | `policy.zone_bindings.schema` | `m2-05` | `ZoneBindingsSchemaM205` |
 | `policy.approval.schema` | `m2-17` | `PolicyApprovalBindingSchemaM217` |
 | `compiler.filter_artifacts.schema` | `m3-07` | `FilterArtifactsSchemaM307` |
+| `onboarding.schema` | `m5-01` | `OnboardingSchemaM501` |
 
 M1 inventory/snapshot tables follow Vertical Slice §8 (`sites`, `nodes`, `devices`, `device_connection_profiles`, `capture_operations`, `snapshot_captures`, `snapshot_payloads`) plus Canonical Spec §28.2 `snapshot_capture_sections` (M1-23). Topology tables from the early issue draft are **not** persisted in M1.
 
@@ -23,6 +24,8 @@ M2-05 adds desired catalog tables `zone_definitions` / `node_zone_bindings` (Pol
 M2-17 adds append-only `policy_analysis_runs`, `warning_acknowledgments`, `policy_approvals` and mutable `policy_bindings` (Policy Model §§10, §66–§67). Findings and test outcomes live in the immutable run JSON payload (dedicated `policy_findings` / `policy_test_results` tables deferred). DbContext blocks UPDATE/DELETE of runs, acknowledgments, and approval votes; binding identity/hashes stay frozen while state/row_version may change. Completing approval freezes `ApprovedAnalysisRunId` / `ApprovedBundleHash` on `policy_revisions`. Filtered unique indexes enforce at most one ACTIVE company baseline, one ACTIVE site/node overlay, and one ACTIVE binding per EXCEPTION policy. A PostgreSQL trigger (`mfc_enforce_exception_binding_cap`) enforces the 256 ACTIVE EXCEPTION cap per `ScopeId`. Completing approval votes and COMPANY/SITE/NODE binding replacement persist in one transaction.
 
 M3-07 adds append-only content-addressed `filter_artifacts` keyed by `resource_hash` (Compiler Spec §6): Brotli-compressed MFC-CJ1 filter artifact body, provenance columns (logical/device-resolved/analysis/capability/profile hashes), DbContext blocks UPDATE/DELETE.
+
+M5-01 adds `ManagementState` on `nodes`/`devices` (default UNMANAGED) and append-only `onboarding_plans` / `onboarding_device_plans` / `onboarding_anchor_placements`, mutable `onboarding_operations` (filtered unique nonterminal per `NodeId`) and write-ahead `onboarding_steps`. DbContext blocks plan mutation, terminal-operation identity changes, and verified/failed step identity changes.
 
 ## Local PostgreSQL
 

@@ -57,6 +57,16 @@ public sealed class MfcDbContext : DbContext
 
     public DbSet<FilterArtifactEntity> FilterArtifacts => Set<FilterArtifactEntity>();
 
+    public DbSet<OnboardingPlanEntity> OnboardingPlans => Set<OnboardingPlanEntity>();
+
+    public DbSet<OnboardingDevicePlanEntity> OnboardingDevicePlans => Set<OnboardingDevicePlanEntity>();
+
+    public DbSet<OnboardingAnchorPlacementEntity> OnboardingAnchorPlacements => Set<OnboardingAnchorPlacementEntity>();
+
+    public DbSet<OnboardingOperationEntity> OnboardingOperations => Set<OnboardingOperationEntity>();
+
+    public DbSet<OnboardingStepEntity> OnboardingSteps => Set<OnboardingStepEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MfcDbContext).Assembly);
@@ -244,6 +254,99 @@ public sealed class MfcDbContext : DbContext
             {
                 throw new InvalidOperationException(
                     "filter_artifacts is append-only: update and delete are not allowed through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<OnboardingPlanEntity> entry
+                 in ChangeTracker.Entries<OnboardingPlanEntity>())
+        {
+            if (entry.State is EntityState.Modified or EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "onboarding_plans is append-only: update and delete are not allowed through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<OnboardingDevicePlanEntity> entry
+                 in ChangeTracker.Entries<OnboardingDevicePlanEntity>())
+        {
+            if (entry.State is EntityState.Modified or EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "onboarding_device_plans is append-only: update and delete are not allowed through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<OnboardingAnchorPlacementEntity> entry
+                 in ChangeTracker.Entries<OnboardingAnchorPlacementEntity>())
+        {
+            if (entry.State is EntityState.Modified or EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "onboarding_anchor_placements is append-only: update and delete are not allowed through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<OnboardingOperationEntity> entry
+                 in ChangeTracker.Entries<OnboardingOperationEntity>())
+        {
+            if (entry.State is EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "onboarding_operations cannot be deleted through the application DbContext.");
+            }
+
+            if (entry.State is not EntityState.Modified)
+            {
+                continue;
+            }
+
+            if (OnboardingOperationEntity.IsTerminal(entry.Property(e => e.State).OriginalValue))
+            {
+                throw new InvalidOperationException(
+                    "Terminal onboarding_operations are immutable and cannot be updated through the application DbContext.");
+            }
+
+            if (entry.Property(e => e.NodeId).IsModified
+                || entry.Property(e => e.PlanId).IsModified
+                || entry.Property(e => e.CreatedBy).IsModified
+                || entry.Property(e => e.CreatedAtUtc).IsModified)
+            {
+                throw new InvalidOperationException(
+                    "Onboarding operation identity cannot be updated through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<OnboardingStepEntity> entry
+                 in ChangeTracker.Entries<OnboardingStepEntity>())
+        {
+            if (entry.State is EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "onboarding_steps cannot be deleted through the application DbContext.");
+            }
+
+            if (entry.State is not EntityState.Modified)
+            {
+                continue;
+            }
+
+            if (OnboardingStepEntity.IsTerminal(entry.Property(e => e.State).OriginalValue))
+            {
+                throw new InvalidOperationException(
+                    "Verified/failed onboarding_steps are frozen and cannot be updated through the application DbContext.");
+            }
+
+            if (entry.Property(e => e.OperationId).IsModified
+                || entry.Property(e => e.DeviceId).IsModified
+                || entry.Property(e => e.Sequence).IsModified
+                || entry.Property(e => e.Kind).IsModified
+                || entry.Property(e => e.ExpectedBeforeHash).IsModified
+                || entry.Property(e => e.DesiredAfterHash).IsModified
+                || entry.Property(e => e.CreatedAtUtc).IsModified)
+            {
+                throw new InvalidOperationException(
+                    "Onboarding step identity and hashes cannot be updated through the application DbContext.");
             }
         }
     }

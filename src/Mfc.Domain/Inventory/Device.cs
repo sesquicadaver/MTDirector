@@ -4,6 +4,7 @@ namespace Mfc.Domain.Inventory;
 
 /// <summary>
 /// Device belonging to a Node. Management endpoint is typed (<see cref="ManagementEndpoint"/>).
+/// <see cref="ManagementState"/> is independent of <see cref="NodeStatus"/> (Onboarding Spec §4.2).
 /// </summary>
 public sealed class Device
 {
@@ -21,6 +22,8 @@ public sealed class Device
 
     public SupportState? LastSupportState { get; private set; }
 
+    public ManagementState ManagementState { get; private set; }
+
     /// <summary>Last successfully persisted capture for this device, if any.</summary>
     public Guid? LastCompletedCaptureId { get; private set; }
 
@@ -34,6 +37,7 @@ public sealed class Device
         DeviceRole role,
         bool enabled,
         SupportState? lastSupportState,
+        ManagementState managementState,
         Guid? lastCompletedCaptureId,
         ulong rowVersion)
     {
@@ -44,6 +48,7 @@ public sealed class Device
         Role = role;
         Enabled = enabled;
         LastSupportState = lastSupportState;
+        ManagementState = managementState;
         LastCompletedCaptureId = lastCompletedCaptureId;
         RowVersion = rowVersion;
     }
@@ -64,6 +69,7 @@ public sealed class Device
             role,
             enabled: true,
             lastSupportState: null,
+            ManagementState.Unmanaged,
             lastCompletedCaptureId: null,
             rowVersion: 1);
     }
@@ -77,6 +83,7 @@ public sealed class Device
         DeviceRole role,
         bool enabled,
         SupportState? lastSupportState,
+        ManagementState managementState,
         ulong rowVersion,
         Guid? lastCompletedCaptureId = null)
     {
@@ -87,6 +94,11 @@ public sealed class Device
             throw new DomainInvariantException("row_version must be greater than zero.");
         }
 
+        if (!Enum.IsDefined(managementState))
+        {
+            throw new DomainInvariantException($"Unknown management state '{managementState}'.");
+        }
+
         return new Device(
             id,
             nodeId,
@@ -95,6 +107,7 @@ public sealed class Device
             role,
             enabled,
             lastSupportState,
+            managementState,
             lastCompletedCaptureId,
             rowVersion);
     }
@@ -128,6 +141,18 @@ public sealed class Device
     public void RecordSupportState(SupportState state)
     {
         LastSupportState = state;
+        Touch();
+    }
+
+    /// <summary>Sets Device management state. Node-level MANAGED invariant is enforced on the Node aggregate.</summary>
+    public void SetManagementState(ManagementState state)
+    {
+        if (!Enum.IsDefined(state))
+        {
+            throw new DomainInvariantException($"Unknown management state '{state}'.");
+        }
+
+        ManagementState = state;
         Touch();
     }
 
