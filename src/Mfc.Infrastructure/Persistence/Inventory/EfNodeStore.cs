@@ -36,6 +36,7 @@ public sealed class EfNodeStore : INodeStore
             DeclaredKind = (short)node.DeclaredKind,
             DeclaredUplinkMode = (short)node.DeclaredUplinkMode,
             Status = (short)node.Status,
+            ManagementState = (short)node.ManagementState,
             RowVersion = (long)node.RowVersion,
             CreatedAtUtc = now,
             UpdatedAtUtc = now,
@@ -83,6 +84,7 @@ public sealed class EfNodeStore : INodeStore
         entity.DeclaredKind = (short)node.DeclaredKind;
         entity.DeclaredUplinkMode = (short)node.DeclaredUplinkMode;
         entity.Status = (short)node.Status;
+        entity.ManagementState = (short)node.ManagementState;
         entity.RowVersion = (long)node.RowVersion;
         entity.UpdatedAtUtc = DateTimeOffset.UtcNow;
         await _db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -107,6 +109,7 @@ public sealed class EfNodeStore : INodeStore
             (NodeKind)entity.DeclaredKind,
             (DeclaredUplinkMode)entity.DeclaredUplinkMode,
             (NodeStatus)entity.Status,
+            (ManagementState)entity.ManagementState,
             (ulong)entity.RowVersion);
 
     private static Device ToDeviceDomain(DeviceEntity entity)
@@ -118,6 +121,7 @@ public sealed class EfNodeStore : INodeStore
             (DeviceRole)entity.Role,
             entity.Enabled,
             entity.LastSupportState is null ? null : (SupportState)entity.LastSupportState.Value,
+            (ManagementState)entity.ManagementState,
             (ulong)entity.RowVersion,
             entity.LastCompletedCaptureId);
 }

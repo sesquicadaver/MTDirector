@@ -15,6 +15,9 @@ public sealed class NodeEntity
 
     public short Status { get; set; }
 
+    /// <summary>Persisted <see cref="Mfc.Domain.Inventory.ManagementState"/> (M5-01).</summary>
+    public short ManagementState { get; set; }
+
     public long RowVersion { get; set; }
 
     public DateTimeOffset CreatedAtUtc { get; set; }

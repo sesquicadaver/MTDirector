@@ -99,6 +99,7 @@ public sealed class NodeTopologyValidatorTests
             NodeKind.Router,
             DeclaredUplinkMode.One,
             NodeStatus.Draft,
+            ManagementState.Unmanaged,
             rowVersion: 1);
 
         Device a = Device.Reconstitute(
@@ -109,6 +110,7 @@ public sealed class NodeTopologyValidatorTests
             DeviceRole.Router,
             enabled: true,
             lastSupportState: null,
+            ManagementState.Unmanaged,
             rowVersion: 1);
         Device b = Device.Reconstitute(
             DeviceId.New(),
@@ -118,6 +120,7 @@ public sealed class NodeTopologyValidatorTests
             DeviceRole.Router,
             enabled: true,
             lastSupportState: null,
+            ManagementState.Unmanaged,
             rowVersion: 1);
         node.AttachDevice(a);
         node.AttachDevice(b);

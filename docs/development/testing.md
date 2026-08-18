@@ -1025,12 +1025,40 @@ Compiler Spec §32–§33 + Issue Set M3-08 → Domain `DeviceFilterCompiler` ac
 | AC#11 Description-only ≠ resource hash | physical semantics | `Ac11DescriptionOnlyChangeDoesNotAlterResourceHash` |
 | AC#12 Deterministic compile | resource_hash / canonical | `Ac12CompileIsDeterministic` |
 
-**Residuals:** RouterOS write / deploy path is M4+. Onboarding starts at M5-01.
+**Residuals:** RouterOS write / deploy path is M4+. Onboarding domain/persistence is M5-01 (DONE); prerequisites start at M5-02.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeviceFilterCompilerAcceptanceTests"
+```
+
+## Living Specification — onboarding domain model and persistence (M5-01)
+
+Onboarding Spec §4–§5 / §18 / §23 / §25–§26 / §48 / §52 / §54 + Issue Set M5-01 → Domain + EF:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 All 14 operation states + happy path | `OnboardingOperation` | `Ac1AllOnboardingStatesAreImplementedAndHappyPathTransitions` |
+| AC#2 Node/Device UNMANAGED\|MANAGED\|RECOVERY_REQUIRED | `ManagementState` | `Ac2NodeAndDeviceHaveIndependentManagementStates` |
+| AC#3 VRRP targets whole Node | `OnboardingPlan` | `Ac3VrrpOnboardingTargetsTheWholeNode` |
+| AC#4 Plan immutable + 30 min lifetime | `OnboardingPlan` / `OnboardingCodes.DefaultPlanLifetime` | `Ac4PlanIsImmutableWithBoundedLifetime` |
+| AC#5 Plan hash covers Spec §25 deps | `OnboardingPlanHasher` | `Ac5PlanHashCoversSpec25DependenciesAndExcludesVrrpRoleAndActiveWan` |
+| AC#6 One nonterminal per Node | unique index + gate | `Ac6OneNonterminalOnboardingPerNode` |
+| AC#7 Write-ahead step journal | `OnboardingStep` | `Ac7WriteAheadStepJournalIsImplemented` |
+| AC#8 Completed operation immutable | terminal freeze | `Ac8CompletedOperationIsImmutable` |
+| AC#9 Transitions row-versioned / transactional store | `RowVersion` + EF | `Ac9StateTransitionsAreRowVersioned` / `OnboardingPersistTests` |
+| AC#10 Invalid transition rejected | `OnboardingOperationGate` | `Ac10InvalidTransitionIsRejected` |
+| Bootstrap §23 seed hash | `BootstrapArtifact` | `BootstrapArtifactMatchesSpec23SeedHashAndChainNames` |
+| Persistence schema `m5-01` | migration `OnboardingSchemaM501` | `MigrateCreatesOnboardingTablesAndSchemaMetadata` |
+
+**Residuals:** Prerequisite validation / RouterOS reads are M5-02+. No RouterOS writes, gRPC, or Desktop in M5-01.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~Onboarding|FullyQualifiedName~InventoryDomain"
+dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~OnboardingPersistTests"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

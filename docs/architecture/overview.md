@@ -81,7 +81,9 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Filter matchers and regular effects | Done (M3-05) | `FilterMatcherEffectCompiler` + `RouterOsCompilerProfile`; exact tokens; REJECT≠DROP; exceptions=`return`; input order |
 | FastTrack pairs and terminal rules | Done (M3-06) | FastTrack adjacent pair + `hw-offload=no`; `ChainTerminalCompiler`; context fail-closed |
 | Per-device compile + artifact storage | Done (M3-07) | `DeviceFilterCompiler` + `filter_artifacts`; semantic summary RPC; fail-closed Node compile |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M5-01 (#76) |
+| Compiler acceptance / M3 CLOSED | Done (M3-08) | Living Spec topology vectors; Switch FORWARD forbidden; deterministic compile |
+| Onboarding domain + persistence | Done (M5-01) | Immutable plans, operation SM, write-ahead journal, `ManagementState`, EF `OnboardingSchemaM501` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M5-02 (#77) |
 
 ## ADRs
 

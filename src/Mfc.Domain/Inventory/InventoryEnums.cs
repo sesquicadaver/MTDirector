@@ -21,6 +21,16 @@ public enum NodeStatus : byte
     Disabled = 2,
 }
 
+/// <summary>
+/// Managed-device lifecycle on Node and Device (Onboarding Spec §4). Distinct from <see cref="NodeStatus"/>.
+/// </summary>
+public enum ManagementState : byte
+{
+    Unmanaged = 0,
+    Managed = 1,
+    RecoveryRequired = 2,
+}
+
 /// <summary>Operator-declared uplink mode on a Node (Vertical Slice §6.2).</summary>
 public enum DeclaredUplinkMode : byte
 {

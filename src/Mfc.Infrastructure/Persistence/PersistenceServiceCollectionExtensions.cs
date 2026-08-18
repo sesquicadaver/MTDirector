@@ -1,6 +1,7 @@
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Infrastructure.Persistence.Hosting;
 using Mfc.Infrastructure.Persistence.Inventory;
+using Mfc.Infrastructure.Persistence.Onboarding;
 using Mfc.Infrastructure.Persistence.Policies;
 using Mfc.Infrastructure.Persistence.Snapshots;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +43,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IPolicyStore, EfPolicyStore>();
         services.AddScoped<IPolicyApprovalStore, EfPolicyApprovalStore>();
         services.AddScoped<IFilterArtifactStore, EfFilterArtifactStore>();
+        services.AddScoped<IOnboardingStore, EfOnboardingStore>();
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
         services.AddScoped<IZoneDefinitionStore, EfZoneDefinitionStore>();
         services.AddScoped<INodeZoneBindingStore, EfNodeZoneBindingStore>();

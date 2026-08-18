@@ -3,7 +3,7 @@
 **Дата оновлення:** 18 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M3-08 — compiler acceptance DONE (**M3 CLOSED**); черга зсунута на M5-01
+**Базовий коміт аудиту:** M5-01 — onboarding domain + persistence DONE; черга зсунута на M5-02
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -48,15 +48,15 @@
 | N1 Packet-path weave | 5 | 2 | 71% |
 | M2 Policy core | 18 | 0 | 100% |
 | M3 Compiler | 8 | 0 | 100% |
-| M5 Onboarding | 0 | 10 | 0% |
+| M5 Onboarding | 1 | 9 | 10% |
 | M4 Safe deploy | 0 | 13 | 0% |
 | M6 E2E / drift | 0 | 9 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **74** | **62** | **54% issues** |
+| **Разом** | **75** | **61** | **55% issues** |
 
-MVP issues (109) = **74 done + 35 remaining** до MVP CLOSED (**68%**).  
+MVP issues (109) = **75 done + 34 remaining** до MVP CLOSED (**69%**).  
 N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
-Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; onboard / apply / drift = далі по черзі (NEXT M5-01).
+Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; onboarding domain/persistence **готовий**; prerequisites / apply / drift = далі по черзі (NEXT M5-02).
 
 ### 2.2 DONE (не в черзі)
 
@@ -128,6 +128,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | M3-06 | #73 | FastTrack pairs + terminals: adjacent `fasttrack-connection`/`accept` with `hw-offload=no`; `:ft`/`:ac`; `ChainTerminalCompiler`; context fail-closed |
 | M3-07 | #74 | Per-Device compile orchestration + content-addressed `filter_artifacts`; semantic summary RPC; fail-closed Node compile |
 | M3-08 | #75 | **M3 CLOSED** — compiler acceptance matrix (Spec §32–§33); Switch FORWARD forbidden; deterministic topology vectors |
+| M5-01 | #76 | Immutable onboarding plans, operation SM, write-ahead journal, Node/Device `ManagementState`, EF `OnboardingSchemaM501` |
 
 ### 2.3 Поточні прогалини (код)
 
@@ -135,13 +136,14 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 |--------|------|
 | `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors; default `ProbeOnlyRouterOsReadPort` + `NotConfiguredSnapshotCapturePort`; actual-filter discovery mapper; packet-path blocker mapper; management-path discovery mapper (`api-ssl.address` in canonical projector); topology-dependency discovery mapper (VRRP sync fields, RAW/NAT/Mangle, rp-filter, switch chip); FastTrack discovery mapper (pre-anchor + VRF); policy-evidence discovery mapper (NODE_EFFECTIVE actual filter) |
 | `Mfc.Contracts` | `mfc.v1` inventory + snapshot/diff + `ZoneService` + `PolicyService` (authoring/review + approval/binding + compile summary RPCs) |
-| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper + packet-path canonical mapper + management-path canonical mapper + topology-dependency canonical mapper + FastTrack canonical mapper + policy-evidence canonical mapper + analysis-run/approval/desired-binding use cases + validate/catalog/diff authoring use cases + compile-and-store filter artifacts |
+| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper + packet-path canonical mapper + management-path canonical mapper + topology-dependency canonical mapper + FastTrack canonical mapper + policy-evidence canonical mapper + analysis-run/approval/desired-binding use cases + validate/catalog/diff authoring use cases + compile-and-store filter artifacts + `IOnboardingStore` |
 | `Mfc.Controller` | health + `InventoryService` + `SnapshotService` + `ZoneService` + `PolicyService` (compose + authoring/review + approval/binding + compile) gRPC |
 | `Mfc.Desktop` | connection shell + inventory tree + snapshot/diff viewers + Zones + Policies authoring/review workflow |
-| Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings + policy_analysis_runs/policy_approvals/warning_acknowledgments/policy_bindings + filter_artifacts |
+| Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings + policy_analysis_runs/policy_approvals/warning_acknowledgments/policy_bindings + filter_artifacts + onboarding_plans/operations/steps |
 | `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) + management-path safety (M2-13) + topology/dependency safety (M2-14) + FastTrack policy validation (M2-15) + policy tests/diff/risk (M2-16) + approval/desired-binding (M2-17) + object JSON writer (M2-18) + RouterOS filter artifact model (M3-01) + managed chain namespace/layout (M3-02) + content-addressed address lists (M3-03) + zone/service variants (M3-04) + matcher/effect compile (M3-05) + FastTrack pairs + terminals (M3-06) + per-device compile orchestration (M3-07) + compiler acceptance / Switch FORWARD gate (M3-08) |
+| `Mfc.Domain.Onboarding` | immutable plans + plan hasher + operation SM + write-ahead steps + bootstrap artifact + `ManagementState` on Node/Device (M5-01) |
 
-**NEXT = M5-01:** [M5-01](https://github.com/sesquicadaver/MTDirector/issues/76) Implement onboarding domain model and persistence (після M3 CLOSED #75). Desktop stays Contracts-only (ADR 0005).
+**NEXT = M5-02:** [M5-02](https://github.com/sesquicadaver/MTDirector/issues/77) Implement onboarding prerequisite validation (після M5-01 #76). Desktop stays Contracts-only (ADR 0005).
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -284,7 +286,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 
 | # | ID | GitHub | Задача |
 |--:|----|-------:|--------|
-| 62 | M5-01 | #76 | Implement onboarding domain model and persistence |
+| ~~62~~ | ~~M5-01~~ | ~~#76~~ | ~~Implement onboarding domain model and persistence~~ → DONE (plans/ops/steps + `ManagementState` + `OnboardingSchemaM501`) |
 | 63 | M5-02 | #77 | Implement onboarding prerequisite validation |
 | 64 | M5-03 | #78 | Implement management guard verification |
 | 65 | M5-04 | #79 | Implement explicit anchor placement planning |
@@ -380,7 +382,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 62 відкритих атомарних задач (35 до MVP CLOSED + 27 M7). Start here: #76 M5-01.
+**Кінець черги:** 61 відкритих атомарних задач (34 до MVP CLOSED + 27 M7). Start here: #77 M5-02.
 
 ---
 
@@ -388,10 +390,10 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 35 | M5-01…M6-09 + N1-06/07 |
+| До MVP CLOSED | 34 | M5-02…M6-09 + N1-06/07 |
 | Post-MVP M7 | 27 | лише після M6-09 |
-| **Нереалізовано разом** | **62** | 35 MVP + 27 M7 |
-| DONE у коді (§2.2) | 74 | M0+M1+N1-01…05+M2-01…18+M3-01…08 |
+| **Нереалізовано разом** | **61** | 34 MVP + 27 M7 |
+| DONE у коді (§2.2) | 75 | M0+M1+N1-01…05+M2-01…18+M3-01…08+M5-01 |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
@@ -452,6 +454,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | FastTrack pairs and terminal rules | M3-06 | FastTrack adjacent pair + `hw-offload=no`; `ChainTerminalCompiler`; context fail-closed | **DONE** |
 | Per-device compile + artifact storage | M3-07 | `DeviceFilterCompiler` + content-addressed `filter_artifacts`; semantic summary RPC | **DONE** |
 | Compiler acceptance / M3 CLOSED | M3-08 | Spec §32–§33 topology vectors + `SWITCH_FORWARD_COMPILATION_FORBIDDEN`; Living Spec `DeviceFilterCompilerAcceptanceTests` | **DONE** |
+| Onboarding domain + persistence | M5-01 | Living Spec `OnboardingLivingSpecTests` AC#1–10 + `OnboardingPersistTests`; `ManagementState`; `OnboardingSchemaM501` | **DONE** |
 | Anchor bootstrap | M5 | equivalence; crash recovery | TODO |
 | Watchdog deploy / rollback | M4 | fault-injection; VRRP | TODO |
 | Drift + E2E DoD | M6 | E2E §E2E | TODO |
@@ -488,10 +491,11 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 8. ~~Відкрити **M3-06** → [issue #73](https://github.com/sesquicadaver/MTDirector/issues/73).~~ → **DONE**.
 9. ~~Відкрити **M3-07** → [issue #74](https://github.com/sesquicadaver/MTDirector/issues/74).~~ → **DONE**.
 10. ~~Відкрити **M3-08** → [issue #75](https://github.com/sesquicadaver/MTDirector/issues/75).~~ → **DONE / M3 CLOSED**.
-11. Відкрити **M5-01** → [issue #76](https://github.com/sesquicadaver/MTDirector/issues/76).
-12. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.
-13. Не стартувати M4, доки не закрито **M5-10** (issue #85).
-14. Не стартувати M7, доки не закрито **M6-09** (черга #95).
+11. ~~Відкрити **M5-01** → [issue #76](https://github.com/sesquicadaver/MTDirector/issues/76).~~ → **DONE**.
+12. Відкрити **M5-02** → [issue #77](https://github.com/sesquicadaver/MTDirector/issues/77).
+13. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.
+14. Не стартувати M4, доки не закрито **M5-10** (issue #85).
+15. Не стартувати M7, доки не закрито **M6-09** (черга #95).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones

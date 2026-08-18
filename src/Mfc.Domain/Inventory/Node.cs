@@ -4,6 +4,7 @@ namespace Mfc.Domain.Inventory;
 
 /// <summary>
 /// Node aggregate owning devices. Enforces ROUTER/SWITCH cardinality and VRRP minimum for Active.
+/// <see cref="ManagementState"/> is independent of <see cref="NodeStatus"/> (Onboarding Spec §4.1).
 /// </summary>
 public sealed class Node
 {
@@ -21,6 +22,8 @@ public sealed class Node
 
     public NodeStatus Status { get; private set; }
 
+    public ManagementState ManagementState { get; private set; }
+
     public ulong RowVersion { get; private set; }
 
     public IReadOnlyList<Device> Devices => _devices;
@@ -32,6 +35,7 @@ public sealed class Node
         NodeKind declaredKind,
         DeclaredUplinkMode declaredUplinkMode,
         NodeStatus status,
+        ManagementState managementState,
         ulong rowVersion)
     {
         Id = id;
@@ -40,6 +44,7 @@ public sealed class Node
         DeclaredKind = declaredKind;
         DeclaredUplinkMode = declaredUplinkMode;
         Status = status;
+        ManagementState = managementState;
         RowVersion = rowVersion;
     }
 
@@ -57,6 +62,7 @@ public sealed class Node
             declaredKind,
             declaredUplinkMode,
             NodeStatus.Draft,
+            ManagementState.Unmanaged,
             rowVersion: 1);
     }
 
@@ -68,6 +74,7 @@ public sealed class Node
         NodeKind declaredKind,
         DeclaredUplinkMode declaredUplinkMode,
         NodeStatus status,
+        ManagementState managementState,
         ulong rowVersion)
     {
         ArgumentNullException.ThrowIfNull(name);
@@ -76,7 +83,20 @@ public sealed class Node
             throw new DomainInvariantException("row_version must be greater than zero.");
         }
 
-        return new Node(id, siteId, name, declaredKind, declaredUplinkMode, status, rowVersion);
+        if (!Enum.IsDefined(managementState))
+        {
+            throw new DomainInvariantException($"Unknown management state '{managementState}'.");
+        }
+
+        return new Node(
+            id,
+            siteId,
+            name,
+            declaredKind,
+            declaredUplinkMode,
+            status,
+            managementState,
+            rowVersion);
     }
 
     /// <summary>Attaches a reconstituted device during load (no cardinality bump of row version).</summary>
@@ -89,6 +109,7 @@ public sealed class Node
         }
 
         _devices.Add(device);
+        EnsureManagementInvariant();
     }
 
     public void Rename(NonEmptyName name)
@@ -115,6 +136,22 @@ public sealed class Node
         Touch();
     }
 
+    /// <summary>
+    /// Sets Node management state. MANAGED requires every enabled Device to already be MANAGED
+    /// (Onboarding Spec §4.2 / §43). Partial MANAGED is forbidden.
+    /// </summary>
+    public void SetManagementState(ManagementState state)
+    {
+        if (!Enum.IsDefined(state))
+        {
+            throw new DomainInvariantException($"Unknown management state '{state}'.");
+        }
+
+        ManagementState = state;
+        EnsureManagementInvariant();
+        Touch();
+    }
+
     public Device AddDevice(
         NonEmptyName displayName,
         ManagementEndpoint managementEndpoint,
@@ -122,6 +159,10 @@ public sealed class Node
     {
         int nextCount = _devices.Count + 1;
         EnsureCanAcceptAnotherDevice(DeclaredKind, nextCount);
+        if (ManagementState == ManagementState.Managed)
+        {
+            throw new DomainInvariantException("Cannot add a device to a MANAGED node.");
+        }
 
         Device device = Device.Create(Id, displayName, managementEndpoint, role);
         _devices.Add(device);
@@ -143,6 +184,7 @@ public sealed class Node
         }
 
         _devices.RemoveAt(index);
+        EnsureManagementInvariant();
         Touch();
     }
 
@@ -167,6 +209,25 @@ public sealed class Node
     /// <summary>True when current device count satisfies Active invariants for <see cref="DeclaredKind"/>.</summary>
     public bool SatisfiesActiveDeviceCardinality()
         => TryDescribeCardinalityViolation(DeclaredKind, _devices.Count) is null;
+
+    /// <summary>
+    /// Node MANAGED only when every enabled Device is MANAGED (Onboarding Spec §4.2).
+    /// RECOVERY_REQUIRED may mix Device states during crash diagnosis.
+    /// </summary>
+    public void EnsureManagementInvariant()
+    {
+        if (ManagementState != ManagementState.Managed)
+        {
+            return;
+        }
+
+        Device[] enabled = [.. _devices.Where(static d => d.Enabled)];
+        if (enabled.Length == 0 || enabled.Any(static d => d.ManagementState != ManagementState.Managed))
+        {
+            throw new DomainInvariantException(
+                "Node can be MANAGED only when every enabled Device is MANAGED.");
+        }
+    }
 
     private static void EnsureCanAcceptAnotherDevice(NodeKind kind, int nextCount)
     {

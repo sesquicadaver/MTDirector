@@ -182,6 +182,8 @@ public sealed class NodeDeviceInvariantTests
 
         node.SetDeclaredKind(NodeKind.Router);
         Assert.Equal(NodeKind.Router, node.DeclaredKind);
+        Assert.Equal(ManagementState.Unmanaged, node.ManagementState);
+        Assert.Equal(ManagementState.Unmanaged, device.ManagementState);
     }
 }
 
@@ -366,6 +368,7 @@ public sealed class InventoryEnumSurfaceTests
     public void ClosedEnumsExposeExpectedMembers()
     {
         Assert.Equal(3, Enum.GetValues<NodeKind>().Length);
+        Assert.Equal(3, Enum.GetValues<ManagementState>().Length);
         Assert.Equal(5, Enum.GetValues<DeclaredUplinkMode>().Length);
         Assert.Equal(4, Enum.GetValues<DeviceRole>().Length);
         Assert.NotNull(typeof(AssemblyMarker).Assembly);
@@ -376,5 +379,54 @@ public sealed class InventoryEnumSurfaceTests
         Assert.False(string.IsNullOrWhiteSpace(UplinkId.New().ToString()));
         Assert.False(string.IsNullOrWhiteSpace(VrrpGroupId.New().ToString()));
         Assert.False(string.IsNullOrWhiteSpace(ZoneBindingId.New().ToString()));
+    }
+}
+
+/// <summary>Inventory domain surface including M5-01 <see cref="ManagementState"/> (filter: InventoryDomain).</summary>
+public sealed class InventoryDomainTests
+{
+    [Fact]
+    public void ManagementStateDefaultsUnmanagedAndRejectsUnknownOnReconstitute()
+    {
+        Node node = Node.Create(SiteId.New(), NonEmptyName.Create("r1"), NodeKind.Router, DeclaredUplinkMode.One);
+        Device device = node.AddDevice(
+            NonEmptyName.Create("r1-dev"),
+            ManagementEndpoint.Create("10.0.0.1"),
+            DeviceRole.Router);
+        Assert.Equal(ManagementState.Unmanaged, node.ManagementState);
+        Assert.Equal(ManagementState.Unmanaged, device.ManagementState);
+        Assert.Equal(NodeStatus.Draft, node.Status);
+
+        Node recovered = Node.Reconstitute(
+            node.Id,
+            node.SiteId,
+            node.Name,
+            node.DeclaredKind,
+            node.DeclaredUplinkMode,
+            node.Status,
+            ManagementState.RecoveryRequired,
+            node.RowVersion);
+        Assert.Equal(ManagementState.RecoveryRequired, recovered.ManagementState);
+        Assert.Throws<DomainInvariantException>(() =>
+            Node.Reconstitute(
+                node.Id,
+                node.SiteId,
+                node.Name,
+                node.DeclaredKind,
+                node.DeclaredUplinkMode,
+                node.Status,
+                (ManagementState)9,
+                node.RowVersion));
+        Assert.Throws<DomainInvariantException>(() =>
+            Device.Reconstitute(
+                device.Id,
+                device.NodeId,
+                device.DisplayName,
+                device.ManagementEndpoint,
+                device.Role,
+                device.Enabled,
+                device.LastSupportState,
+                (ManagementState)9,
+                device.RowVersion));
     }
 }

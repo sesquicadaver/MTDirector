@@ -12,6 +12,7 @@ internal sealed class NodeConfiguration : IEntityTypeConfiguration<NodeEntity>
         {
             table.HasCheckConstraint("ck_nodes_name", "length(btrim(\"Name\")) BETWEEN 1 AND 128");
             table.HasCheckConstraint("ck_nodes_row_version", "\"RowVersion\" > 0");
+            table.HasCheckConstraint("ck_nodes_management_state", "\"ManagementState\" BETWEEN 0 AND 2");
         });
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id).ValueGeneratedNever();
@@ -19,6 +20,7 @@ internal sealed class NodeConfiguration : IEntityTypeConfiguration<NodeEntity>
         builder.Property(e => e.DeclaredKind).IsRequired();
         builder.Property(e => e.DeclaredUplinkMode).IsRequired();
         builder.Property(e => e.Status).IsRequired();
+        builder.Property(e => e.ManagementState).IsRequired().HasDefaultValue((short)0);
         builder.Property(e => e.RowVersion).IsRequired().HasDefaultValue(1L);
         builder.Property(e => e.CreatedAtUtc).IsRequired();
         builder.Property(e => e.UpdatedAtUtc).IsRequired();

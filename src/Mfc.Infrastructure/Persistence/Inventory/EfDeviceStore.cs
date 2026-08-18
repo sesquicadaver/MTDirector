@@ -50,6 +50,7 @@ public sealed class EfDeviceStore : IDeviceStore
         entity.ManagementPort = device.ManagementEndpoint.Port;
         entity.Enabled = device.Enabled;
         entity.Role = (short)device.Role;
+        entity.ManagementState = (short)device.ManagementState;
         entity.LastSupportState = device.LastSupportState is null ? null : (short)device.LastSupportState.Value;
         entity.LastCompletedCaptureId = device.LastCompletedCaptureId;
         entity.RowVersion = (long)device.RowVersion;
@@ -78,6 +79,7 @@ public sealed class EfDeviceStore : IDeviceStore
         ManagementPort = device.ManagementEndpoint.Port,
         Enabled = device.Enabled,
         Role = (short)device.Role,
+        ManagementState = (short)device.ManagementState,
         LastSupportState = device.LastSupportState is null ? null : (short)device.LastSupportState.Value,
         LastCompletedCaptureId = device.LastCompletedCaptureId,
         RowVersion = (long)device.RowVersion,
@@ -94,6 +96,7 @@ public sealed class EfDeviceStore : IDeviceStore
             (DeviceRole)entity.Role,
             entity.Enabled,
             entity.LastSupportState is null ? null : (SupportState)entity.LastSupportState.Value,
+            (ManagementState)entity.ManagementState,
             (ulong)entity.RowVersion,
             entity.LastCompletedCaptureId);
 }
