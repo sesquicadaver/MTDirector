@@ -148,7 +148,7 @@ public sealed class ZoneServiceVariantCompilerTests
 
         Assert.True(result.IsSuccess);
         CompiledPhysicalVariant variant = Assert.Single(result.Variants);
-        Assert.Equal("tcp", variant.Matchers.Single(m => m.Key == "protocol").Value);
+        Assert.Equal("6", variant.Matchers.Single(m => m.Key == "protocol").Value);
         Assert.Equal("80,443", variant.Matchers.Single(m => m.Key == "dst-port").Value);
 
         ServiceObject gre = Service(
@@ -163,8 +163,8 @@ public sealed class ZoneServiceVariantCompilerTests
             Context(catalog: catalog));
         Assert.True(numericOrder.IsSuccess);
         Assert.Equal(2, numericOrder.Variants.Count);
-        Assert.Equal("tcp", numericOrder.Variants[0].Matchers.Single(m => m.Key == "protocol").Value);
-        Assert.Equal("gre", numericOrder.Variants[1].Matchers.Single(m => m.Key == "protocol").Value);
+        Assert.Equal("6", numericOrder.Variants[0].Matchers.Single(m => m.Key == "protocol").Value);
+        Assert.Equal("47", numericOrder.Variants[1].Matchers.Single(m => m.Key == "protocol").Value);
     }
 
     [Fact]
@@ -190,7 +190,7 @@ public sealed class ZoneServiceVariantCompilerTests
         Assert.Equal("8", result.Variants[1].Matchers.Single(m => m.Key == "icmp-options").Value);
         Assert.Equal(0, result.Variants[0].IcmpSelectorIndex);
         Assert.Equal(1, result.Variants[1].IcmpSelectorIndex);
-        Assert.All(result.Variants, v => Assert.Equal("icmp", v.Matchers.Single(m => m.Key == "protocol").Value));
+        Assert.All(result.Variants, v => Assert.Equal("1", v.Matchers.Single(m => m.Key == "protocol").Value));
     }
 
     [Fact]
@@ -262,10 +262,10 @@ public sealed class ZoneServiceVariantCompilerTests
             a.Variants.Select(FormatVariant).ToArray(),
             b.Variants.Select(FormatVariant).ToArray());
         Assert.Equal(0, a.Variants[0].ServiceAtomIndex);
-        Assert.Equal("tcp", a.Variants[0].Matchers.Single(m => m.Key == "protocol").Value);
+        Assert.Equal("6", a.Variants[0].Matchers.Single(m => m.Key == "protocol").Value);
         Assert.Equal("ether1", a.Variants[0].Matchers.Single(m => m.Key == "in-interface").Value);
         Assert.Equal("ether2", a.Variants[1].Matchers.Single(m => m.Key == "in-interface").Value);
-        Assert.Equal("udp", a.Variants[2].Matchers.Single(m => m.Key == "protocol").Value);
+        Assert.Equal("17", a.Variants[2].Matchers.Single(m => m.Key == "protocol").Value);
         Assert.Equal(Enumerable.Range(0, 4), a.Variants.Select(v => v.VariantIndex));
     }
 

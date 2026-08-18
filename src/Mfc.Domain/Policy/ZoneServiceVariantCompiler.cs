@@ -138,7 +138,7 @@ public sealed class ZoneServiceCompileResult
 
 /// <summary>
 /// Expands logical zone and service unions into bounded physical variants (M3-04).
-/// Pure Domain: no RouterOS writes, no connection-state/effect mapping (M3-05), no FastTrack (M3-06).
+/// Pure Domain: no RouterOS writes, no connection-state/effect mapping (FilterMatcherEffectCompiler / M3-05), no FastTrack (M3-06).
 /// </summary>
 public sealed class ZoneServiceVariantCompiler
 {
@@ -537,9 +537,8 @@ public sealed class ZoneServiceVariantCompiler
             return null;
         }
 
-        return protocol.CanonicalName is { Length: > 0 } name
-            ? name.Trim().ToLowerInvariant()
-            : protocol.Number.ToString(CultureInfo.InvariantCulture);
+        // Semantics are numeric (Policy Model §18); CanonicalName is display-only.
+        return protocol.Number.ToString(CultureInfo.InvariantCulture);
     }
 
     private static string FormatIcmp(IcmpSelector selector)

@@ -27,6 +27,14 @@ public static class PolicyCompilerCodes
 
     public const string CompilerAnalysisStale = "COMPILER_ANALYSIS_STALE";
 
+    public const string UnsupportedMatcher = "UNSUPPORTED_MATCHER";
+
+    public const string RejectModeUnsupported = "REJECT_MODE_UNSUPPORTED";
+
+    public const string FasttrackContextUnsupported = "FASTTRACK_CONTEXT_UNSUPPORTED";
+
+    public const string FilterRuleLimit = "FILTER_RULE_LIMIT";
+
     /// <summary>Compile blockers that must map to FailedPrecondition when orchestration exists.</summary>
     public static bool IsFailedPrecondition(string code)
         => code is AddressSelectorEmpty
@@ -40,5 +48,9 @@ public static class PolicyCompilerCodes
             or ZoneExpansionLimit
             or ServiceTermTooLarge
             or RuleVariantLimit
-            or CompilerAnalysisStale;
+            or CompilerAnalysisStale
+            or UnsupportedMatcher
+            or RejectModeUnsupported
+            or FasttrackContextUnsupported
+            or FilterRuleLimit;
 }

@@ -844,7 +844,7 @@ Compiler Spec §6–§7 / §24 + Issue Set M3-01 → Domain immutable artifact (
 | AC#10 canonical test vectors | fixed digests + JSON shape | `Ac10CanonicalTestVectorsAreFixed` |
 | Deterministic sort order | Create sorting | `SortingIsDeterministicRegardlessOfInputOrder` |
 
-**Residuals:** Matcher mapping (M3-05), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current PASS analysis (§6) — gate lands with orchestration. Address-list compilation is M3-03.
+**Residuals:** Matcher mapping (M3-05 DONE), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current PASS analysis (§6) — gate lands with orchestration. Address-list compilation is M3-03.
 
 Filter:
 ```bash
@@ -869,7 +869,7 @@ Compiler Spec §8 / §11 + Issue Set M3-02 → Domain layout builder on M3-01 ar
 | AC#9 management guard not in artifact | guard comment reject | `Ac9ManagementGuardRejectedFromArtifact` |
 | AC#10 no physical anchor creation | desired targets only; reject anchor-marked bodies | `Ac10CompilerEmitsDesiredTargetNotPhysicalAnchorRules` |
 
-**Residuals:** Matcher mapping (M3-05), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), deny-stage exception-before-deny ordering at full compile, and any RouterOS write path remain out of scope. Address-list compilation is M3-03.
+**Residuals:** Matcher mapping (M3-05 DONE), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), deny-stage exception-before-deny ordering at full compile, and any RouterOS write path remain out of scope. Address-list compilation is M3-03.
 
 Filter:
 ```bash
@@ -896,7 +896,7 @@ Compiler Spec §8.4 / §16 / §17 / §27 + Issue Set M3-03 → Domain `AddressLi
 | Truncated-name collision | `RESOURCE_NAME_COLLISION` | intern key remains full SHA-256; truncated RouterOS name fail-closed |
 | Prefix encode hosts / universe | `AddressPrefixEncoder` | `AddressPrefixEncoderOmitsHostSlashAndEncodesUniverse` |
 
-**Residuals:** Matcher mapping (M3-05), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current analysis (§6). Zone/service variants are M3-04.
+**Residuals:** Matcher mapping (M3-05 DONE), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current analysis (§6). Zone/service variants are M3-04.
 
 Filter:
 ```bash
@@ -921,12 +921,39 @@ Compiler Spec §14 / §18 / §19 / §27 + Issue Set M3-04 → Domain `ZoneServic
 | AC#9 current active WAN unused | `ActiveWanName` ignored | `Ac9CurrentActiveWanDoesNotChangeVariants` |
 | AC#10 empty/stale zone blocks | `ZONE_*` / `COMPILER_ANALYSIS_STALE` | `Ac10EmptyOrStaleZoneBlocksCompilation` |
 
-**Residuals:** Matcher mapping beyond zone/service (M3-05), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current analysis (§6).
+**Residuals:** Matcher/effect compile is M3-05. FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current analysis (§6).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ZoneServiceVariantCompiler"
+```
+
+## Living Specification — filter matchers and regular effects (M3-05)
+
+Compiler Spec §15 / §20 / §23 / §27 + Issue Set M3-05 → Domain `FilterMatcherEffectCompiler` + `RouterOsCompilerProfile` (no Application orchestration; no RouterOS writes; no FastTrack pair):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 exact matcher mapping | `RouterOsCompilerProfile` + address/zone compilers | `Ac1NormativeMatchersHaveExactMapping` |
+| AC#2 unsupported token → compile error | `TryNormalizeMatcher` / `UNSUPPORTED_MATCHER` | `Ac2UnsupportedTokenIsCompileError` |
+| AC#3 ACCEPT/DROP/REJECT exact | effect map | `Ac3AcceptDropRejectCompileExactly` |
+| AC#4 REJECT never becomes DROP | `reject` + `reject-with` | `Ac4RejectIsNeverReplacedWithDrop` |
+| AC#5 exception → `action=return` | `EXEMPT_DENY_STAGE` + `:ex` | `Ac5ExceptionCompilesAsReturn` |
+| AC#6 structural comments deterministic | `CompilerComments` ≡ layout builder | `Ac6StructuralJumpsHaveDeterministicComments` |
+| AC#7 variants adjacent | one logical rule, then next | `Ac7LogicalRuleVariantsAreAdjacent` |
+| AC#8 no logical-rule reorder | input-list order, not ordinal | `Ac8CompilerDoesNotReorderLogicalRules` |
+| AC#9 duplicates not deleted | two identical ACCEPT rules | `Ac9CompilerDoesNotDeleteDuplicates` |
+| AC#10 comments have no user metadata | `mfc:r:<uuid>:<index>` | `Ac10GeneratedCommentsContainNoUserMetadata` |
+| FastTrack out of scope | `FASTTRACK_CONTEXT_UNSUPPORTED` | `FastTrackFailsClosedWithoutEmittingAPair` |
+| 20 000 physical rules / family+chain | `FILTER_RULE_LIMIT` | `FilterRuleLimitIsEnforcedPerFamilyChain` |
+
+**Residuals:** FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current analysis (§6).
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~FilterMatcherEffectCompiler"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
