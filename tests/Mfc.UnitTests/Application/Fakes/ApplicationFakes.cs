@@ -763,6 +763,12 @@ internal sealed class FakePolicyStore : IPolicyStore
         return Task.CompletedTask;
     }
 
+    /// <summary>Test helper: drops a revision so compile can exercise missing-revision paths.</summary>
+    public void RemoveRevision(PolicyRevisionId id) => _revisions.Remove(id.Value);
+
+    /// <summary>Test helper: drops a policy container for compose fail-path coverage.</summary>
+    public void RemovePolicy(PolicyId id) => _policies.Remove(id.Value);
+
     public Task<PolicyRevision?> GetRevisionAsync(PolicyRevisionId id, CancellationToken cancellationToken = default)
         => Task.FromResult(_revisions.TryGetValue(id.Value, out PolicyRevision? revision) ? Clone(revision) : null);
 
@@ -956,4 +962,70 @@ internal sealed class FakePolicyApprovalStore : IPolicyApprovalStore
             binding.RowVersion,
             binding.CreatedAtUtc,
             binding.UpdatedAtUtc);
+}
+
+internal sealed class FakeFilterArtifactStore : IFilterArtifactStore
+{
+    public Dictionary<string, StoredFilterArtifact> ByHash { get; } = new(StringComparer.Ordinal);
+    public List<(RouterOsFilterArtifact Artifact, CompilationProvenance Provenance)> Puts { get; } = [];
+
+    public Task<StoredFilterArtifact?> GetByResourceHashAsync(
+        Hash256 resourceHash,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(resourceHash);
+        return Task.FromResult(
+            ByHash.TryGetValue(resourceHash.ToString(), out StoredFilterArtifact? stored) ? stored : null);
+    }
+
+    public Task<StoredFilterArtifact> PutIfAbsentAsync(
+        RouterOsFilterArtifact artifact,
+        CompilationProvenance provenance,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(artifact);
+        ArgumentNullException.ThrowIfNull(provenance);
+        Puts.Add((artifact, provenance));
+        string key = artifact.ResourceHash.ToString();
+        if (ByHash.TryGetValue(key, out StoredFilterArtifact? existing))
+        {
+            return Task.FromResult(new StoredFilterArtifact
+            {
+                ResourceHash = existing.ResourceHash,
+                ArtifactId = existing.ArtifactId,
+                DeviceId = existing.DeviceId,
+                PhysicalSemanticsHash = existing.PhysicalSemanticsHash,
+                CompilerProfileHash = existing.CompilerProfileHash,
+                LogicalEffectivePolicyHash = existing.LogicalEffectivePolicyHash,
+                DeviceResolvedPolicyHash = existing.DeviceResolvedPolicyHash,
+                AnalysisBundleHash = existing.AnalysisBundleHash,
+                CapabilityHash = existing.CapabilityHash,
+                CompilerVersion = existing.CompilerVersion,
+                CompiledAtUtc = existing.CompiledAtUtc,
+                CreatedAtUtc = existing.CreatedAtUtc,
+                UncompressedSize = existing.UncompressedSize,
+                Inserted = false,
+            });
+        }
+
+        StoredFilterArtifact stored = new()
+        {
+            ResourceHash = artifact.ResourceHash,
+            ArtifactId = artifact.ArtifactId,
+            DeviceId = artifact.DeviceId,
+            PhysicalSemanticsHash = artifact.PhysicalSemanticsHash,
+            CompilerProfileHash = artifact.CompilerProfileHash,
+            LogicalEffectivePolicyHash = provenance.LogicalEffectivePolicyHash,
+            DeviceResolvedPolicyHash = provenance.DeviceResolvedPolicyHash,
+            AnalysisBundleHash = provenance.AnalysisBundleHash,
+            CapabilityHash = provenance.CapabilityHash,
+            CompilerVersion = provenance.CompilerVersion,
+            CompiledAtUtc = provenance.CompiledAtUtc,
+            CreatedAtUtc = DateTimeOffset.UtcNow,
+            UncompressedSize = artifact.CanonicalBytes.Length,
+            Inserted = true,
+        };
+        ByHash[key] = stored;
+        return Task.FromResult(stored);
+    }
 }
