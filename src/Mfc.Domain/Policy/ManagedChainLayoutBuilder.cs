@@ -65,19 +65,19 @@ public sealed class ManagedChainLayoutRequest
 /// </summary>
 public static class ManagedChainLayoutBuilder
 {
-    public const string JumpCompanyDenyComment = "mfc:s:jump:company-deny";
+    public const string JumpCompanyDenyComment = CompilerComments.JumpCompanyDeny;
 
-    public const string JumpSiteDenyComment = "mfc:s:jump:site-deny";
+    public const string JumpSiteDenyComment = CompilerComments.JumpSiteDeny;
 
-    public const string JumpNodeDenyComment = "mfc:s:jump:node-deny";
+    public const string JumpNodeDenyComment = CompilerComments.JumpNodeDeny;
 
-    public const string ReturnCompanyDenyComment = "mfc:s:return:company-deny";
+    public const string ReturnCompanyDenyComment = CompilerComments.ReturnCompanyDeny;
 
-    public const string ReturnSiteDenyComment = "mfc:s:return:site-deny";
+    public const string ReturnSiteDenyComment = CompilerComments.ReturnSiteDeny;
 
-    public const string ReturnNodeDenyComment = "mfc:s:return:node-deny";
+    public const string ReturnNodeDenyComment = CompilerComments.ReturnNodeDeny;
 
-    public const string TerminalComment = "mfc:s:terminal";
+    public const string TerminalComment = CompilerComments.Terminal;
 
     /// <summary>Assembles a sealed <see cref="RouterOsFilterArtifact"/> from surface plans.</summary>
     public static RouterOsFilterArtifact Build(ManagedChainLayoutRequest request)
@@ -359,13 +359,7 @@ public static class ManagedChainLayoutBuilder
     }
 
     private static string FormatRejectWith(RejectMode mode)
-        => mode switch
-        {
-            RejectMode.TcpReset => "tcp-reset",
-            RejectMode.AdminProhibited => "icmp-admin-prohibited",
-            RejectMode.PortUnreachable => "icmp-port-unreachable",
-            _ => throw new DomainInvariantException($"Unsupported reject_mode '{mode}'."),
-        };
+        => RouterOsCompilerProfile.FormatRejectWith(mode);
 
     private static void AppendRelocated(List<FilterRuleArtifact> target, IReadOnlyList<FilterRuleArtifact> source)
     {

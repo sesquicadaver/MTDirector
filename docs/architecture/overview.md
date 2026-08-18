@@ -78,7 +78,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Managed chain namespace / layout | Done (M3-02) | `ManagedChainNamespace` + `ManagedChainLayoutBuilder`; mfc4/mfc6 root+deny layout; Pipeline v1 order; no guard/physical anchors |
 | Content-addressed address lists | Done (M3-03) | `AddressListCompileSession` + `AddressPrefixEncoder`; intern by content hash; `mfc{4\|6}.a.<16-hex>`; negated universe-minus-exclusions; layout v1 limits |
 | Zone and service variants | Done (M3-04) | `ZoneServiceVariantCompiler` + `PortMatcherEncoder`; direct interface-list or finite expansion; ICMP variants; WAN/running ignored |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M3-05 (#72) |
+| Filter matchers and regular effects | Done (M3-05) | `FilterMatcherEffectCompiler` + `RouterOsCompilerProfile`; exact tokens; REJECT≠DROP; exceptions=`return`; input order |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M3-06 (#73) |
 
 ## ADRs
 
