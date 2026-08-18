@@ -33,6 +33,10 @@ public static class PolicyCompilerCodes
 
     public const string FasttrackContextUnsupported = "FASTTRACK_CONTEXT_UNSUPPORTED";
 
+    public const string FasttrackLoggingUnsupported = "FASTTRACK_LOGGING_UNSUPPORTED";
+
+    public const string FasttrackCapabilityUnsupported = "FASTTRACK_CAPABILITY_UNSUPPORTED";
+
     public const string FilterRuleLimit = "FILTER_RULE_LIMIT";
 
     /// <summary>Compile blockers that must map to FailedPrecondition when orchestration exists.</summary>
@@ -52,5 +56,7 @@ public static class PolicyCompilerCodes
             or UnsupportedMatcher
             or RejectModeUnsupported
             or FasttrackContextUnsupported
+            or FasttrackLoggingUnsupported
+            or FasttrackCapabilityUnsupported
             or FilterRuleLimit;
 }

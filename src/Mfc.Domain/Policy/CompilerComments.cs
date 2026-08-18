@@ -31,11 +31,11 @@ public static class CompilerComments
     public static string Exception(Guid ruleId, int variantIndex)
         => EnsureFits(LogicalRule(ruleId, variantIndex) + ":ex");
 
-    /// <summary>FastTrack connection half <c>…:ft</c> (Compiler Spec §23.1; emitted in M3-06).</summary>
+    /// <summary>FastTrack connection half <c>…:ft</c> (Compiler Spec §23.1).</summary>
     public static string FastTrack(Guid ruleId, int variantIndex)
         => EnsureFits(LogicalRule(ruleId, variantIndex) + ":ft");
 
-    /// <summary>FastTrack accept half <c>…:ac</c> (Compiler Spec §23.1; emitted in M3-06).</summary>
+    /// <summary>FastTrack accept half <c>…:ac</c> (Compiler Spec §23.1).</summary>
     public static string FastTrackAccept(Guid ruleId, int variantIndex)
         => EnsureFits(LogicalRule(ruleId, variantIndex) + ":ac");
 

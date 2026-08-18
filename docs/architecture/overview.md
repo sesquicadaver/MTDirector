@@ -79,7 +79,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Content-addressed address lists | Done (M3-03) | `AddressListCompileSession` + `AddressPrefixEncoder`; intern by content hash; `mfc{4\|6}.a.<16-hex>`; negated universe-minus-exclusions; layout v1 limits |
 | Zone and service variants | Done (M3-04) | `ZoneServiceVariantCompiler` + `PortMatcherEncoder`; direct interface-list or finite expansion; ICMP variants; WAN/running ignored |
 | Filter matchers and regular effects | Done (M3-05) | `FilterMatcherEffectCompiler` + `RouterOsCompilerProfile`; exact tokens; REJECT≠DROP; exceptions=`return`; input order |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M3-06 (#73) |
+| FastTrack pairs and terminal rules | Done (M3-06) | FastTrack adjacent pair + `hw-offload=no`; `ChainTerminalCompiler`; context fail-closed |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M3-07 (#74) |
 
 ## ADRs
 

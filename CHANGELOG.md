@@ -21,6 +21,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP §2.1 progress table synced after M3-06 (73/136 closed; M3 compiler 6/8); NEXT = M3-07 (#74).
+- ROADMAP: M3-06 FastTrack pairs and terminal rules DONE; NEXT = M3-07 (#74); counters 73/109 MVP done (36 remaining).
 - ROADMAP §2.1 progress table synced after M3-05 (72/136 closed; M3 compiler 5/8); NEXT = M3-06 (#73).
 - ROADMAP: M3-05 filter matchers and regular effects DONE; NEXT = M3-06 (#73); counters 72/109 MVP done (37 remaining).
 - ROADMAP §2.1 progress table synced after M3-04 (71/136 closed; M3 compiler 4/8); NEXT = M3-05 (#72).
@@ -32,6 +34,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- FastTrack pairs and terminal rules (M3-06): Domain FastTrack emit in `FilterMatcherEffectCompiler` (adjacent `fasttrack-connection` + `accept`, identical matchers, `hw-offload=no`, `:ft`/`:ac`, logging forbidden) gated by `FastTrackAnalysis` topology/context; `ChainTerminalCompiler` maps DROP/REJECT/RETURN_TO_UNMANAGED for layout root terminals. Living Spec AC rows in `FastTrackTerminalCompilerTests`. No Application orchestration and no RouterOS writes (M3-07+).
 - Filter matchers and regular effects (M3-05): Domain `FilterMatcherEffectCompiler` + `RouterOsCompilerProfile` + `CompilerComments`; exact §15 matcher tokens (protocol numeric; conntrack/NAT/address-type/tcp-flags/ipsec); ACCEPT/DROP/REJECT (`reject-with` never substituted with DROP); `EXEMPT_DENY_STAGE` → `return` + `:ex`; structural comments shared with layout builder; input-list order preserved; duplicates kept; comments exclude user metadata; FastTrack fails `FASTTRACK_CONTEXT_UNSUPPORTED` (pair is M3-06); `FILTER_RULE_LIMIT` 20 000/family+chain. Living Spec AC rows in `FilterMatcherEffectCompilerTests`. No Application orchestration and no RouterOS writes (M3-06+).
 - Zone and service variants (M3-04): Domain `ZoneServiceVariantCompiler` + `PortMatcherEncoder`; exact `INTERFACE_LIST` bindings emit `in/out-interface-list` without cloning the list; other selectors expand to a bounded finite interface set and ingress×egress Cartesian product; service terms canonicalize; each ICMP type/code is its own variant; oversized port matchers fail `SERVICE_TERM_TOO_LARGE` without auto-split; compilation ignores interface running state and current active WAN; empty/stale/dynamic/missing zones fail closed. Living Spec AC rows in `ZoneServiceVariantCompilerTests`. No Application orchestration and no RouterOS writes (M3-05+).
 - Content-addressed address lists (M3-03): Domain `AddressListCompileSession` + `AddressPrefixEncoder` + `PolicyCompilerCodes`; include/exclude exact resolve; positive one-matcher lists; universe-minus-exclusions as exclude-union + negated `src|dst-address-list`; content-hash intern; sorted entries without timeout; names `mfc{4|6}.a.<16-hex>`; layout v1 limits (4096 lists / 250 000 entries per family). Living Spec AC rows in `AddressListCompilerTests`. No Application orchestration and no RouterOS writes (M3-04+).
