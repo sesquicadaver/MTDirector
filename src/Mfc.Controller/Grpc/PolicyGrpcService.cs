@@ -34,6 +34,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
     private readonly ReplaceChainContractsUseCase _replaceContracts;
     private readonly ReplacePolicyTestsUseCase _replaceTests;
     private readonly DiffPolicyRevisionsUseCase _diffRevisions;
+    private readonly CompileNodeFilterArtifactsUseCase _compileNodeArtifacts;
     private readonly IHostEnvironment _environment;
 
     public PolicyGrpcService(
@@ -59,6 +60,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         ReplaceChainContractsUseCase replaceContracts,
         ReplacePolicyTestsUseCase replaceTests,
         DiffPolicyRevisionsUseCase diffRevisions,
+        CompileNodeFilterArtifactsUseCase compileNodeArtifacts,
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(createDraft);
@@ -83,6 +85,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         ArgumentNullException.ThrowIfNull(replaceContracts);
         ArgumentNullException.ThrowIfNull(replaceTests);
         ArgumentNullException.ThrowIfNull(diffRevisions);
+        ArgumentNullException.ThrowIfNull(compileNodeArtifacts);
         ArgumentNullException.ThrowIfNull(environment);
         _createDraft = createDraft;
         _getRevision = getRevision;
@@ -106,6 +109,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         _replaceContracts = replaceContracts;
         _replaceTests = replaceTests;
         _diffRevisions = diffRevisions;
+        _compileNodeArtifacts = compileNodeArtifacts;
         _environment = environment;
     }
 
@@ -550,6 +554,25 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
                 Actor = ResolveActor(context),
                 BeforeRevisionId = ProtoUuid.ToGuid(request.BeforeRevisionId),
                 AfterRevisionId = ProtoUuid.ToGuid(request.AfterRevisionId),
+            },
+            context.CancellationToken).ConfigureAwait(false);
+        return PolicyProtoMapper.ToProto(Unwrap(result));
+    }
+
+    public override async Task<CompileNodeFilterArtifactsResponse> CompileNodeFilterArtifacts(
+        CompileNodeFilterArtifactsRequest request,
+        ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ApplicationResult<CompileNodeFilterArtifactsView> result = await _compileNodeArtifacts.ExecuteAsync(
+            new CompileNodeFilterArtifactsCommand
+            {
+                Actor = ResolveActor(context),
+                NodeId = ProtoUuid.ToGuid(request.NodeId),
+                AnalysisRunId = ProtoUuid.ToGuid(request.AnalysisRunId),
+                CurrentDependencyFingerprint = PolicyProtoMapper.ToHashBytes(request.CurrentDependencyFingerprint),
+                CurrentCapabilityHash = PolicyProtoMapper.ToHashBytes(request.CurrentCapabilityHash),
+                CompilerProfileHash = PolicyProtoMapper.ToOptionalHashBytes(request.CompilerProfileHash),
             },
             context.CancellationToken).ConfigureAwait(false);
         return PolicyProtoMapper.ToProto(Unwrap(result));

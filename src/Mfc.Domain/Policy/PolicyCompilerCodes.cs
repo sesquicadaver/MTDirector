@@ -39,6 +39,14 @@ public static class PolicyCompilerCodes
 
     public const string FilterRuleLimit = "FILTER_RULE_LIMIT";
 
+    public const string CompilerInputNotApproved = "COMPILER_INPUT_NOT_APPROVED";
+
+    public const string CompilerCapabilityStale = "COMPILER_CAPABILITY_STALE";
+
+    public const string CompilerProfileUnsupported = "COMPILER_PROFILE_UNSUPPORTED";
+
+    public const string ArtifactSizeLimit = "ARTIFACT_SIZE_LIMIT";
+
     /// <summary>Compile blockers that must map to FailedPrecondition when orchestration exists.</summary>
     public static bool IsFailedPrecondition(string code)
         => code is AddressSelectorEmpty
@@ -58,5 +66,9 @@ public static class PolicyCompilerCodes
             or FasttrackContextUnsupported
             or FasttrackLoggingUnsupported
             or FasttrackCapabilityUnsupported
-            or FilterRuleLimit;
+            or FilterRuleLimit
+            or CompilerInputNotApproved
+            or CompilerCapabilityStale
+            or CompilerProfileUnsupported
+            or ArtifactSizeLimit;
 }

@@ -80,7 +80,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Zone and service variants | Done (M3-04) | `ZoneServiceVariantCompiler` + `PortMatcherEncoder`; direct interface-list or finite expansion; ICMP variants; WAN/running ignored |
 | Filter matchers and regular effects | Done (M3-05) | `FilterMatcherEffectCompiler` + `RouterOsCompilerProfile`; exact tokens; REJECT≠DROP; exceptions=`return`; input order |
 | FastTrack pairs and terminal rules | Done (M3-06) | FastTrack adjacent pair + `hw-offload=no`; `ChainTerminalCompiler`; context fail-closed |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M3-07 (#74) |
+| Per-device compile + artifact storage | Done (M3-07) | `DeviceFilterCompiler` + `filter_artifacts`; semantic summary RPC; fail-closed Node compile |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M3-08 (#75) |
 
 ## ADRs
 

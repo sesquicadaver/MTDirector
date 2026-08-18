@@ -41,6 +41,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<ISnapshotStore, EfSnapshotStore>();
         services.AddScoped<IPolicyStore, EfPolicyStore>();
         services.AddScoped<IPolicyApprovalStore, EfPolicyApprovalStore>();
+        services.AddScoped<IFilterArtifactStore, EfFilterArtifactStore>();
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
         services.AddScoped<IZoneDefinitionStore, EfZoneDefinitionStore>();
         services.AddScoped<INodeZoneBindingStore, EfNodeZoneBindingStore>();

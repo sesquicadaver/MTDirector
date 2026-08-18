@@ -274,4 +274,29 @@ public sealed class PolicyAnalysisRun
     /// </summary>
     public string EffectiveRiskLevel()
         => EvidenceSignalsPresent ? RiskLevel : PolicyEvidenceAnalysisCodes.RiskCritical;
+
+    /// <summary>
+    /// True when the run has no BLOCKER findings and every test is a proven PASS
+    /// (same gate as approval / compiler <c>AnalysisPassed</c>).
+    /// </summary>
+    public bool IsPass()
+    {
+        if (Findings.Any(static f => f.Severity == PolicyEvidenceAnalysisCodes.SeverityBlocker))
+        {
+            return false;
+        }
+
+        foreach (PolicyApprovalTestOutcome test in TestResults)
+        {
+            bool system = test.Origin == PolicyEvidenceAnalysisCodes.OriginSystem;
+            if (test.Outcome != PolicyEvidenceAnalysisCodes.OutcomePass
+                || (system && test.Proof != PolicyEvidenceAnalysisCodes.ProofProven)
+                || test.Proof == PolicyEvidenceAnalysisCodes.ProofIndeterminate)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

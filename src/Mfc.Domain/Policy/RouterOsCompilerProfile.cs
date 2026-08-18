@@ -1,6 +1,8 @@
 using System.Collections.Frozen;
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
+using Mfc.Domain.Inventory.Primitives;
 
 namespace Mfc.Domain.Policy;
 
@@ -10,6 +12,13 @@ namespace Mfc.Domain.Policy;
 /// </summary>
 public static class RouterOsCompilerProfile
 {
+    /// <summary>Stable profile identity token for layout v1 Controllers.</summary>
+    public const string LayoutV1ProfileId = "mfc.compiler.profile.layout.v1";
+
+    /// <summary>SHA-256 of <see cref="LayoutV1ProfileId"/> (UTF-8). Used as <c>compiler_profile_hash</c>.</summary>
+    public static Hash256 LayoutV1Hash { get; } =
+        Hash256.Create(SHA256.HashData(Encoding.UTF8.GetBytes(LayoutV1ProfileId)));
+
     private static readonly FrozenSet<string> SupportedMatcherKeys = new HashSet<string>(StringComparer.Ordinal)
     {
         "src-address-list",

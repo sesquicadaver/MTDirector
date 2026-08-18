@@ -973,12 +973,37 @@ Compiler Spec §21 / §22 / §23 + Issue Set M3-06 → Domain `FilterMatcherEffe
 | AC#9 exactly one root terminal | layout + terminal | `Ac9RootChainHasExactlyOneTerminalRule` |
 | AC#10 unsupported FastTrack context blocks | topology / allowlist gate | `Ac10UnsupportedFastTrackContextBlocksCompilation` |
 
-**Residuals:** Per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current analysis (§6).
+**Residuals:** Per-device compile orchestration is M3-07. Any RouterOS write path remains out of scope. Compiler still must not run without current analysis (§6).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~FastTrackTerminalCompiler"
+```
+
+## Living Specification — per-device compile + artifact storage (M3-07)
+
+Compiler Spec §4–§7 / §28 / §33.4–§33.5 + Issue Set M3-07 → Domain `DeviceFilterCompiler` + Application store/RPC (no RouterOS writes):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 approved PASS analysis only | compile gates | `Ac1CompilerRequiresApprovedPassAnalysis` |
+| AC#2 shared logical effective hash | `CompileNode` | `Ac2LogicalEffectiveHashSharedAcrossVrrpMembers` |
+| AC#3 device-resolved includes zones | `DeviceResolvedPolicyHasher` | `Ac3DeviceResolvedHashIncludesPhysicalZoneResolution` |
+| AC#4 VRRP role excluded | request shape | `Ac4VrrpRoleIsNotAnInput` |
+| AC#5 active WAN ignored | `ActiveWanName=null` | `Ac5ActiveWanDoesNotAffectArtifact` |
+| AC#6–7 content-addressed / stable | `resource_hash` | `Ac6Ac7ResourceHashIsContentAddressedAndStable` |
+| AC#8 partial Node ≠ success | `CompileNode` fail-closed | `Ac8PartialNodeCompileIsNotSuccess` |
+| AC#9 semantic summary only | `FilterArtifactSemanticSummary` | `Ac9SummaryHasNoRouterOsCommands` |
+| AC#10 stale analysis/capability blocks | gate codes | `Ac10StaleAnalysisOrCapabilityBlocksCompilation` |
+| Zone bindings must fully resolve | `TryCaptureResolvedZones` | `UnresolvedZoneBindingBlocksCompilation` |
+
+**Residuals:** Full topology acceptance matrix is M3-08. RouterOS write path remains out of scope.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeviceFilterCompiler"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

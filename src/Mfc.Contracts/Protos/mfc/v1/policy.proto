@@ -31,6 +31,7 @@ service PolicyService {
   rpc ReplaceChainContracts(ReplaceChainContractsRequest) returns (PolicyRevision);
   rpc ReplacePolicyTests(ReplacePolicyTestsRequest) returns (PolicyRevision);
   rpc DiffPolicyRevisions(DiffPolicyRevisionsRequest) returns (PolicyRevisionDiff);
+  rpc CompileNodeFilterArtifacts(CompileNodeFilterArtifactsRequest) returns (CompileNodeFilterArtifactsResponse);
 }
 
 enum PolicyKind {
@@ -605,4 +606,32 @@ message PolicyRevisionDiff {
   string risk_level = 6;
   repeated string risk_drivers = 7;
   repeated PolicyAnalysisFinding finding_summaries = 8;
+}
+
+message CompileNodeFilterArtifactsRequest {
+  Uuid node_id = 1;
+  Uuid analysis_run_id = 2;
+  Sha256 current_dependency_fingerprint = 3;
+  Sha256 current_capability_hash = 4;
+  optional Sha256 compiler_profile_hash = 5;
+}
+
+message FilterArtifactSummary {
+  Uuid device_id = 1;
+  string artifact_id = 2;
+  Sha256 resource_hash = 3;
+  Sha256 physical_semantics_hash = 4;
+  Sha256 device_resolved_policy_hash = 5;
+  Sha256 analysis_bundle_hash = 6;
+  uint32 address_list_count = 7;
+  uint32 chain_count = 8;
+  uint32 rule_count = 9;
+  uint32 anchor_target_count = 10;
+  bool stored_as_new = 11;
+}
+
+message CompileNodeFilterArtifactsResponse {
+  Uuid node_id = 1;
+  Sha256 logical_effective_policy_hash = 2;
+  repeated FilterArtifactSummary artifacts = 3;
 }
