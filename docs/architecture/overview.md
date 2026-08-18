@@ -83,7 +83,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Per-device compile + artifact storage | Done (M3-07) | `DeviceFilterCompiler` + `filter_artifacts`; semantic summary RPC; fail-closed Node compile |
 | Compiler acceptance / M3 CLOSED | Done (M3-08) | Living Spec topology vectors; Switch FORWARD forbidden; deterministic compile |
 | Onboarding domain + persistence | Done (M5-01) | Immutable plans, operation SM, write-ahead journal, `ManagementState`, EF `OnboardingSchemaM501` |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M5-02 (#77) |
+| Onboarding prerequisite validation | Done (M5-02) | Typed facts + `OnboardingPrerequisiteValidator`; Spec §58 codes; no user/service/device-mode writes |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M5-03 (#78) |
 
 ## ADRs
 

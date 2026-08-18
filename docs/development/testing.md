@@ -1061,6 +1061,33 @@ dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~Onboardi
 dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~OnboardingPersistTests"
 ```
 
+## Living Specification — onboarding prerequisite validation (M5-02)
+
+Onboarding Spec §7–§11 / §58 + Issue Set M5-02 → Domain validator (no RouterOS writes):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Exact supported build | `OnboardingPrerequisiteValidator` | `Ac1ExactSupportedBuildIsRequired` |
+| AC#2 Plain API 8728 disabled | plain `api` service | `Ac2PlainApi8728MustBeDisabled` |
+| AC#3 API-SSL certificate | `api-ssl` + capability flag | `Ac3ApiSslCertificateIsMandatory` |
+| AC#4 Separate read/deploy accounts | account names | `Ac4ReadAndDeploymentAccountsMustBeSeparated` |
+| AC#5 Default groups rejected | Spec §10.2 | `Ac5DefaultRouterOsGroupsAreRejected` |
+| AC#6 Required/forbidden policies | Spec §10.1–§10.2 | `Ac6RequiredAndForbiddenPoliciesAreChecked` |
+| AC#7 Source address restrictions | Spec §10.3 | `Ac7SourceAddressRestrictionsAreChecked` |
+| AC#8 scheduler=yes | Spec §11 | `Ac8SchedulerYesIsRequired` |
+| AC#9 flagged=no | Spec §11 | `Ac9FlaggedNoIsRequired` |
+| AC#10 No mutate users/services/device-mode | validator shape + no `Mfc.RouterOs.Write` | `Ac10ControllerDoesNotExposeMutatorsForUsersServicesOrDeviceMode` |
+| AC#11 All VRRP members | Node members | `Ac11AllVrrpMembersMustPassPrerequisites` |
+| AC#12 Stable Spec §58 codes | `OnboardingCodes` | `Ac12FindingsUseStableSpec58Codes` |
+
+**Residuals:** Management guard verification is M5-03. Live RouterOS fact adapters / credential probes remain later M5 steps. No gRPC/Desktop in M5-02.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingPrerequisite"
+```
+
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
 Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):

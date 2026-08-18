@@ -22,6 +22,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP §2.1 progress table synced after M5-02 (76/136 closed; M5 onboarding 2/10); NEXT = M5-03 (#78).
+- ROADMAP: M5-02 prerequisite validation DONE; NEXT = M5-03 (#78); counters 76/109 MVP done (33 remaining).
 - ROADMAP §2.1 progress table synced after M5-01 (75/136 closed; M5 onboarding 1/10); NEXT = M5-02 (#77).
 - ROADMAP: M5-01 onboarding domain + persistence DONE; NEXT = M5-02 (#77); counters 75/109 MVP done (34 remaining).
 - ROADMAP §2.1 progress table synced after M3-08 (74/136 closed; M3 compiler 8/8 CLOSED); NEXT = M5-01 (#76).
@@ -41,6 +43,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Onboarding prerequisite validation (M5-02): Domain `OnboardingPrerequisiteValidator` over typed read-only facts (build, plain API 8728, API-SSL certificate, separated read/deploy accounts + policy/source checks, device-mode scheduler/flagged); Application `ValidateOnboardingPrerequisitesUseCase`; Spec §58 stable codes. Living Spec AC 1–12 in `OnboardingPrerequisiteLivingSpecTests`. No RouterOS writes / gRPC / Desktop; guard verification is M5-03.
 - Onboarding domain model and persistence (M5-01): Domain `OnboardingPlan` / `OnboardingOperation` / `OnboardingStep` with closed transition tables, Spec §23 `BootstrapArtifact`, plan hasher `mfc.onboarding.plan.v1`, Node/Device `ManagementState`; Application `IOnboardingStore`; EF tables + filtered unique nonterminal index; migration `OnboardingSchemaM501`. Living Spec AC rows in `OnboardingLivingSpecTests` + `OnboardingPersistTests`. No RouterOS writes / gRPC / Desktop (M5-02+).
 - Compiler acceptance / M3 CLOSED (M3-08): Living Spec `DeviceFilterCompilerAcceptanceTests` for Spec §32–§33 topology vectors (standalone IPv4, dual-stack, multi-WAN, VRRP logical hash, Switch FORWARD forbidden, address dedup, exception layout, FastTrack pair, terminals, description-stable resource hash, deterministic compile); Domain gate `SWITCH_FORWARD_COMPILATION_FORBIDDEN` via `DeviceFilterCompileRequest.NodeKind`; Application passes `node.DeclaredKind`. No RouterOS writes (M4+).
 - Per-device compiler orchestration and artifact storage (M3-07): Domain `DeviceFilterCompiler` / `DeviceResolvedPolicyHasher` with approved-PASS / stale-analysis / stale-capability / unsupported-profile gates; shared logical effective hash across Node Devices; active WAN forced off; no VRRP role input; content-addressed `filter_artifacts` via `IFilterArtifactStore` / `EfFilterArtifactStore`; Application `CompileNodeFilterArtifactsUseCase`; gRPC `CompileNodeFilterArtifacts` returns semantic summary only (no RouterOS commands); fail-closed Node compile. Living Spec AC rows in `DeviceFilterCompilerTests`. No RouterOS writes (M3-08+ / M4).
