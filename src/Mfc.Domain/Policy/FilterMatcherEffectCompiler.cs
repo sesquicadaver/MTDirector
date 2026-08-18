@@ -31,6 +31,12 @@ public sealed class FilterMatcherCompileContext
     public required ZoneServiceCompileContext Zones { get; init; }
 
     public required IReadOnlyDictionary<AddressObjectId, AddressObject> Addresses { get; init; }
+
+    /// <summary>
+    /// Required when any enabled <c>FASTTRACK_ACCEPT</c> rule is compiled (Compiler Spec §21).
+    /// Normally taken from the analysis that set <see cref="FastTrackAnalysisResult.AllowsSafeFastTrack"/>.
+    /// </summary>
+    public FastTrackTopologyContext? FastTrackTopology { get; init; }
 }
 
 /// <summary>Outcome of compiling logical rules into physical filter artifacts (no partial payload on failure).</summary>
@@ -78,12 +84,14 @@ public sealed class FilterRuleCompileResult
 }
 
 /// <summary>
-/// Compiles supported matchers and regular effects (M3-05, Compiler Spec §15 / §20 / §23).
-/// Pure Domain: preserves input-list order, does not delete duplicate logical rules,
-/// does not emit FastTrack pairs (M3-06), and never writes RouterOS.
+/// Compiles supported matchers, regular effects, FastTrack pairs, and feeds layout terminals (M3-05/M3-06).
+/// Pure Domain: preserves input-list order, does not delete duplicate logical rules, never writes RouterOS.
 /// </summary>
 public sealed class FilterMatcherEffectCompiler
 {
+    private static readonly IReadOnlyDictionary<string, string> FastTrackActionParameters =
+        new Dictionary<string, string>(StringComparer.Ordinal) { ["hw-offload"] = "no" };
+
     private readonly AddressListCompileLimits _addressListLimits;
 
     private readonly ZoneServiceCompileLimits _zoneServiceLimits;
@@ -104,6 +112,7 @@ public sealed class FilterMatcherEffectCompiler
     /// <summary>
     /// Compiles <paramref name="rules"/> in input-list order. Disabled rules are omitted;
     /// identical enabled rules both emit. Fail-closed: no rules and no interned lists on error.
+    /// Each FastTrack logical variant emits adjacent <c>fasttrack-connection</c> + <c>accept</c>.
     /// </summary>
     public FilterRuleCompileResult Compile(
         IReadOnlyList<PolicyRule> rules,
@@ -127,13 +136,25 @@ public sealed class FilterMatcherEffectCompiler
                 continue;
             }
 
-            FilterRuleCompileResult? mapped = TryMapEffect(
-                rule,
-                out string action,
-                out IReadOnlyDictionary<string, string>? actionParameters);
-            if (mapped is not null)
+            bool fastTrack = rule.Effect.Kind == PolicyRuleEffect.FasttrackAccept;
+            if (fastTrack)
             {
-                return mapped;
+                FilterRuleCompileResult? gated = TryValidateFastTrack(rule, context);
+                if (gated is not null)
+                {
+                    return gated;
+                }
+            }
+
+            string action = string.Empty;
+            IReadOnlyDictionary<string, string>? actionParameters = null;
+            if (!fastTrack)
+            {
+                FilterRuleCompileResult? mapped = TryMapEffect(rule, out action, out actionParameters);
+                if (mapped is not null)
+                {
+                    return mapped;
+                }
             }
 
             AddressListCompileResult address = lists.Compile(
@@ -163,9 +184,11 @@ public sealed class FilterMatcherEffectCompiler
                 return extras;
             }
 
+            int physicalPerVariant = fastTrack ? 2 : 1;
+            int physicalCount = variants.Variants.Count * physicalPerVariant;
             (IpAddressFamily Family, PolicyFilterChain Chain) surface = (rule.Family, rule.Chain);
             int surfaceCount = counts.GetValueOrDefault(surface);
-            if (surfaceCount + variants.Variants.Count > Limits.MaxPhysicalRulesPerFamilyChain)
+            if (surfaceCount + physicalCount > Limits.MaxPhysicalRulesPerFamilyChain)
             {
                 return FilterRuleCompileResult.Fail(
                     PolicyCompilerCodes.FilterRuleLimit,
@@ -174,27 +197,108 @@ public sealed class FilterMatcherEffectCompiler
 
             foreach (CompiledPhysicalVariant variant in variants.Variants)
             {
-                FilterRuleCompileResult? built = TryBuildRule(
-                    rule,
-                    variant,
+                FilterRuleCompileResult? matchersBuilt = TryBuildMatchers(
                     address,
+                    variant,
                     extraMatchers,
-                    action,
-                    actionParameters,
-                    (uint)emitted.Count,
-                    out FilterRuleArtifact artifact);
-                if (built is not null)
+                    out IReadOnlyDictionary<string, string> matchers);
+                if (matchersBuilt is not null)
                 {
-                    return built;
+                    return matchersBuilt;
                 }
 
-                emitted.Add(artifact);
+                if (fastTrack)
+                {
+                    emitted.Add(FilterRuleArtifact.Create(
+                        (uint)emitted.Count,
+                        "fasttrack-connection",
+                        CompilerComments.FastTrack(rule.Id.Value, variant.VariantIndex),
+                        matchers: matchers,
+                        actionParameters: FastTrackActionParameters,
+                        logicalRuleId: rule.Id.Value,
+                        variantIndex: (uint)variant.VariantIndex,
+                        log: false,
+                        logPrefix: null));
+                    emitted.Add(FilterRuleArtifact.Create(
+                        (uint)emitted.Count,
+                        "accept",
+                        CompilerComments.FastTrackAccept(rule.Id.Value, variant.VariantIndex),
+                        matchers: matchers,
+                        logicalRuleId: rule.Id.Value,
+                        variantIndex: (uint)variant.VariantIndex,
+                        log: false,
+                        logPrefix: null));
+                }
+                else
+                {
+                    bool exception = rule.Effect.Kind == PolicyRuleEffect.ExemptDenyStage;
+                    string comment = exception
+                        ? CompilerComments.Exception(rule.Id.Value, variant.VariantIndex)
+                        : CompilerComments.LogicalRule(rule.Id.Value, variant.VariantIndex);
+                    emitted.Add(FilterRuleArtifact.Create(
+                        (uint)emitted.Count,
+                        action,
+                        comment,
+                        matchers: matchers,
+                        actionParameters: actionParameters,
+                        logicalRuleId: rule.Id.Value,
+                        variantIndex: (uint)variant.VariantIndex,
+                        log: rule.Logging.Enabled,
+                        logPrefix: rule.Logging.Prefix));
+                }
             }
 
-            counts[surface] = surfaceCount + variants.Variants.Count;
+            counts[surface] = surfaceCount + physicalCount;
         }
 
         return FilterRuleCompileResult.Ok(emitted, lists.InternedLists);
+    }
+
+    private static FilterRuleCompileResult? TryValidateFastTrack(
+        PolicyRule rule,
+        FilterMatcherCompileContext context)
+    {
+        if (rule.Logging.Enabled)
+        {
+            return FilterRuleCompileResult.Fail(
+                PolicyCompilerCodes.FasttrackLoggingUnsupported,
+                $"FASTTRACK_ACCEPT rule {rule.Id} enables logging; Compiler Spec §21 forbids it.");
+        }
+
+        if (context.FastTrackTopology is null)
+        {
+            return FilterRuleCompileResult.Fail(
+                PolicyCompilerCodes.FasttrackContextUnsupported,
+                "FASTTRACK_ACCEPT compile requires FastTrack topology context from analysis.");
+        }
+
+        FastTrackAnalysisResult analysis = FastTrackAnalysis.Analyze(
+            [rule],
+            context.FastTrackTopology,
+            context.Zones.Services);
+        FastTrackFinding? blocker = analysis.Findings
+            .FirstOrDefault(static f => f.Severity == FastTrackAnalysisCodes.SeverityBlocker);
+        if (blocker is null)
+        {
+            return null;
+        }
+
+        return FilterRuleCompileResult.Fail(MapFastTrackCode(blocker.Code), blocker.Message);
+    }
+
+    private static string MapFastTrackCode(string code)
+    {
+        if (string.Equals(code, FastTrackAnalysisCodes.LoggingUnsupported, StringComparison.Ordinal))
+        {
+            return PolicyCompilerCodes.FasttrackLoggingUnsupported;
+        }
+
+        if (string.Equals(code, FastTrackAnalysisCodes.CapabilityUnsupported, StringComparison.Ordinal))
+        {
+            return PolicyCompilerCodes.FasttrackCapabilityUnsupported;
+        }
+
+        return PolicyCompilerCodes.FasttrackContextUnsupported;
     }
 
     private static FilterRuleCompileResult? TryMapEffect(
@@ -239,7 +343,7 @@ public sealed class FilterMatcherEffectCompiler
                 action = string.Empty;
                 return FilterRuleCompileResult.Fail(
                     PolicyCompilerCodes.FasttrackContextUnsupported,
-                    "FASTTRACK_ACCEPT pair emission is not part of matcher/effect compile; it is M3-06.");
+                    "FASTTRACK_ACCEPT must be emitted as an adjacent pair.");
 
             default:
                 action = string.Empty;
@@ -352,31 +456,27 @@ public sealed class FilterMatcherEffectCompiler
         return null;
     }
 
-    private static FilterRuleCompileResult? TryBuildRule(
-        PolicyRule rule,
-        CompiledPhysicalVariant variant,
+    private static FilterRuleCompileResult? TryBuildMatchers(
         AddressListCompileResult address,
+        CompiledPhysicalVariant variant,
         IReadOnlyList<CompiledMatcher> extras,
-        string action,
-        IReadOnlyDictionary<string, string>? actionParameters,
-        uint ordinal,
-        out FilterRuleArtifact artifact)
+        out IReadOnlyDictionary<string, string> matchers)
     {
-        artifact = null!;
-        Dictionary<string, string> matchers = new(StringComparer.Ordinal);
+        matchers = null!;
+        Dictionary<string, string> raw = new(StringComparer.Ordinal);
         if (address.Source is { EmitsMatcher: true, MatcherKey: not null, MatcherValue: not null })
         {
-            matchers[address.Source.MatcherKey] = address.Source.MatcherValue;
+            raw[address.Source.MatcherKey] = address.Source.MatcherValue;
         }
 
         if (address.Destination is { EmitsMatcher: true, MatcherKey: not null, MatcherValue: not null })
         {
-            matchers[address.Destination.MatcherKey] = address.Destination.MatcherValue;
+            raw[address.Destination.MatcherKey] = address.Destination.MatcherValue;
         }
 
         foreach (CompiledMatcher matcher in variant.Matchers.Concat(extras))
         {
-            if (matchers.TryGetValue(matcher.Key, out string? existing)
+            if (raw.TryGetValue(matcher.Key, out string? existing)
                 && !string.Equals(existing, matcher.Value, StringComparison.Ordinal))
             {
                 return FilterRuleCompileResult.Fail(
@@ -384,11 +484,11 @@ public sealed class FilterMatcherEffectCompiler
                     $"Conflicting values for matcher '{matcher.Key}'.");
             }
 
-            matchers[matcher.Key] = matcher.Value;
+            raw[matcher.Key] = matcher.Value;
         }
 
         Dictionary<string, string> normalized = new(StringComparer.Ordinal);
-        foreach ((string key, string value) in matchers)
+        foreach ((string key, string value) in raw)
         {
             if (!RouterOsCompilerProfile.TryNormalizeMatcher(
                     key,
@@ -405,21 +505,7 @@ public sealed class FilterMatcherEffectCompiler
             normalized[normalizedKey] = normalizedValue;
         }
 
-        bool exception = rule.Effect.Kind == PolicyRuleEffect.ExemptDenyStage;
-        string comment = exception
-            ? CompilerComments.Exception(rule.Id.Value, variant.VariantIndex)
-            : CompilerComments.LogicalRule(rule.Id.Value, variant.VariantIndex);
-
-        artifact = FilterRuleArtifact.Create(
-            ordinal,
-            action,
-            comment,
-            matchers: normalized,
-            actionParameters: actionParameters,
-            logicalRuleId: rule.Id.Value,
-            variantIndex: (uint)variant.VariantIndex,
-            log: rule.Logging.Enabled,
-            logPrefix: rule.Logging.Prefix);
+        matchers = normalized;
         return null;
     }
 }

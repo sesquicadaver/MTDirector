@@ -948,12 +948,37 @@ Compiler Spec §15 / §20 / §23 / §27 + Issue Set M3-05 → Domain `FilterMatc
 | FastTrack out of scope | `FASTTRACK_CONTEXT_UNSUPPORTED` | `FastTrackFailsClosedWithoutEmittingAPair` |
 | 20 000 physical rules / family+chain | `FILTER_RULE_LIMIT` | `FilterRuleLimitIsEnforcedPerFamilyChain` |
 
-**Residuals:** FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current analysis (§6).
+**Residuals:** FastTrack pair emission is M3-06. Per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current analysis (§6).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~FilterMatcherEffectCompiler"
+```
+
+## Living Specification — FastTrack pairs and terminal rules (M3-06)
+
+Compiler Spec §21 / §22 / §23 + Issue Set M3-06 → Domain `FilterMatcherEffectCompiler` FastTrack pair + `ChainTerminalCompiler` (no Application orchestration; no RouterOS writes):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 one variant → exactly two rules | FastTrack pair emit | `Ac1OneLogicalVariantCreatesExactlyTwoRules` |
+| AC#2 fasttrack-connection + accept adjacent | pair order | `Ac2FastTrackAndAcceptAreAdjacent` |
+| AC#3 pair matchers identical | shared matcher map | `Ac3PairMatchersAreIdentical` |
+| AC#4 `hw-offload=no` | action parameter | `Ac4HwOffloadIsNo` |
+| AC#5 FastTrack logging forbidden | `FASTTRACK_LOGGING_UNSUPPORTED` | `Ac5FastTrackLoggingIsForbidden` |
+| AC#6 comments `:ft` / `:ac` | `CompilerComments` | `Ac6PairCommentsHaveFtAndAcSuffixes` |
+| AC#7 terminal matches contract | `ChainTerminalCompiler` | `Ac7ChainTerminalMatchesContract` |
+| AC#8 RETURN_TO_UNMANAGED → explicit return | terminal map | `Ac8ReturnToUnmanagedCompilesAsExplicitReturn` |
+| AC#9 exactly one root terminal | layout + terminal | `Ac9RootChainHasExactlyOneTerminalRule` |
+| AC#10 unsupported FastTrack context blocks | topology / allowlist gate | `Ac10UnsupportedFastTrackContextBlocksCompilation` |
+
+**Residuals:** Per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current analysis (§6).
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~FastTrackTerminalCompiler"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

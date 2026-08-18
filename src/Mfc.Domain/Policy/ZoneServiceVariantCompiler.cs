@@ -138,7 +138,7 @@ public sealed class ZoneServiceCompileResult
 
 /// <summary>
 /// Expands logical zone and service unions into bounded physical variants (M3-04).
-/// Pure Domain: no RouterOS writes, no connection-state/effect mapping (FilterMatcherEffectCompiler / M3-05), no FastTrack (M3-06).
+/// Pure Domain: no RouterOS writes; FastTrack pairs are compiled by FilterMatcherEffectCompiler (M3-06).
 /// </summary>
 public sealed class ZoneServiceVariantCompiler
 {

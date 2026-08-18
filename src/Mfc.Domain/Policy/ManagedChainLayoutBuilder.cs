@@ -324,42 +324,10 @@ public static class ManagedChainLayoutBuilder
     }
 
     private static void AppendTerminal(List<FilterRuleArtifact> rules, ManagedChainSurfacePlan surface)
-    {
-        string action;
-        Dictionary<string, string>? parameters = null;
-        switch (surface.DefaultDisposition)
-        {
-            case ChainDefaultDisposition.Drop:
-                action = "drop";
-                break;
-
-            case ChainDefaultDisposition.Reject:
-                action = "reject";
-                parameters = new Dictionary<string, string>(StringComparer.Ordinal)
-                {
-                    ["reject-with"] = FormatRejectWith(surface.RejectModeValue!.Value),
-                };
-                break;
-
-            case ChainDefaultDisposition.ReturnToUnmanaged:
-                action = "return";
-                break;
-
-            default:
-                throw new DomainInvariantException(
-                    "Default accept is impossible; terminal must be DROP, REJECT, or RETURN_TO_UNMANAGED.");
-        }
-
-        rules.Add(FilterRuleArtifact.Create(
-            ordinal: (uint)rules.Count,
-            action: action,
-            comment: TerminalComment,
-            structuralRole: "terminal",
-            actionParameters: parameters));
-    }
-
-    private static string FormatRejectWith(RejectMode mode)
-        => RouterOsCompilerProfile.FormatRejectWith(mode);
+        => rules.Add(ChainTerminalCompiler.Compile(
+            surface.DefaultDisposition,
+            surface.RejectModeValue,
+            ordinal: (uint)rules.Count));
 
     private static void AppendRelocated(List<FilterRuleArtifact> target, IReadOnlyList<FilterRuleArtifact> source)
     {
