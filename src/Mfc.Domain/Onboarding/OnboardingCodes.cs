@@ -1,6 +1,6 @@
 namespace Mfc.Domain.Onboarding;
 
-/// <summary>Stable onboarding domain codes and bounds (Onboarding Spec §56 / Issue Set M5-01).</summary>
+/// <summary>Stable onboarding codes (Onboarding Spec §56 / §58 / Issue Sets M5-01–M5-02).</summary>
 public static class OnboardingCodes
 {
     public const string PlanHashPrefix = "mfc.onboarding.plan.v1";
@@ -33,9 +33,33 @@ public static class OnboardingCodes
 
     public const string NamespaceCollision = "ONBOARDING_NAMESPACE_COLLISION";
 
-    public const string ApiSslInvalid = "ONBOARDING_API_SSL_INVALID";
-
     public const string UnexpectedAnchorTarget = "ONBOARDING_UNEXPECTED_ANCHOR_TARGET";
 
     public const string RollbackFailed = "ONBOARDING_ROLLBACK_FAILED";
+
+    /// <summary>Spec §58 / M5-02 AC#1.</summary>
+    public const string RouterOsUnsupported = "ONBOARDING_ROUTEROS_UNSUPPORTED";
+
+    /// <summary>Spec §58 / M5-02 AC#3.</summary>
+    public const string ApiSslInvalid = "ONBOARDING_API_SSL_INVALID";
+
+    /// <summary>Spec §58 / M5-02 AC#2.</summary>
+    public const string PlainApiEnabled = "ONBOARDING_PLAIN_API_ENABLED";
+
+    /// <summary>Spec §58 / M5-02 AC#4–#6.</summary>
+    public const string ReadAccountInvalid = "ONBOARDING_READ_ACCOUNT_INVALID";
+
+    /// <summary>Spec §58 / M5-02 AC#4–#6.</summary>
+    public const string DeployAccountInvalid = "ONBOARDING_DEPLOY_ACCOUNT_INVALID";
+
+    /// <summary>Spec §58 / M5-02 AC#7.</summary>
+    public const string AccountSourceInvalid = "ONBOARDING_ACCOUNT_SOURCE_INVALID";
+
+    /// <summary>Spec §58 / M5-02 AC#8.</summary>
+    public const string DeviceModeSchedulerDisabled = "DEVICE_MODE_SCHEDULER_DISABLED";
+
+    /// <summary>Spec §58 / M5-02 AC#9.</summary>
+    public const string DeviceFlagged = "DEVICE_FLAGGED";
+
+    public const string SeverityBlocker = "BLOCKER";
 }
