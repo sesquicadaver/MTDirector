@@ -61,5 +61,17 @@ public static class OnboardingCodes
     /// <summary>Spec §58 / M5-02 AC#9.</summary>
     public const string DeviceFlagged = "DEVICE_FLAGGED";
 
+    /// <summary>Spec §58 / M5-03 — no matching enabled input/output guard.</summary>
+    public const string ManagementGuardMissing = "MANAGEMENT_GUARD_MISSING";
+
+    /// <summary>Spec §17 / M5-03 AC#4–#5 — guard predicate wider than GuardProfile (incl. default routes).</summary>
+    public const string ManagementGuardTooBroad = "MANAGEMENT_GUARD_TOO_BROAD";
+
+    /// <summary>Spec §58 / M5-03 — marker, static/enabled, matcher, or hash invalid.</summary>
+    public const string ManagementGuardInvalid = "MANAGEMENT_GUARD_INVALID";
+
+    /// <summary>Spec §58 / M5-03 — unprovable management path (unknown matcher / indeterminate).</summary>
+    public const string ManagementPathIndeterminate = "MANAGEMENT_PATH_INDETERMINATE";
+
     public const string SeverityBlocker = "BLOCKER";
 }
