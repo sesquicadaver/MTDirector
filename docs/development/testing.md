@@ -844,7 +844,7 @@ Compiler Spec §6–§7 / §24 + Issue Set M3-01 → Domain immutable artifact (
 | AC#10 canonical test vectors | fixed digests + JSON shape | `Ac10CanonicalTestVectorsAreFixed` |
 | Deterministic sort order | Create sorting | `SortingIsDeterministicRegardlessOfInputOrder` |
 
-**Residuals:** Address-list compilation (M3-03), matcher mapping (M3-05), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current PASS analysis (§6) — gate lands with orchestration.
+**Residuals:** Matcher mapping (M3-05), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current PASS analysis (§6) — gate lands with orchestration. Address-list compilation is M3-03.
 
 Filter:
 ```bash
@@ -869,12 +869,39 @@ Compiler Spec §8 / §11 + Issue Set M3-02 → Domain layout builder on M3-01 ar
 | AC#9 management guard not in artifact | guard comment reject | `Ac9ManagementGuardRejectedFromArtifact` |
 | AC#10 no physical anchor creation | desired targets only; reject anchor-marked bodies | `Ac10CompilerEmitsDesiredTargetNotPhysicalAnchorRules` |
 
-**Residuals:** Address-list compilation (M3-03), matcher mapping (M3-05), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), deny-stage exception-before-deny ordering at full compile, and any RouterOS write path remain out of scope.
+**Residuals:** Matcher mapping (M3-05), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), deny-stage exception-before-deny ordering at full compile, and any RouterOS write path remain out of scope. Address-list compilation is M3-03.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ManagedChainLayout"
+```
+
+## Living Specification — content-addressed address lists (M3-03)
+
+Compiler Spec §8.4 / §16 / §17 / §27 + Issue Set M3-03 → Domain `AddressListCompileSession` (no Application orchestration; no RouterOS writes):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 include/exclude exact | `AddressSelectorResolver` + `AddressPrefixEncoder` + compile | `Ac1IncludeExcludeResolveIsExactAgainstResolverAndEncoder` |
+| AC#2 positive → one list matcher | `AddressListCompileSession` | `Ac2PositiveSelectorUsesOneListMatcher` |
+| AC#3 universe-minus-exclusions → negated matcher; list = exclude union | compile + `!mfc{4\|6}.a.*` | `Ac3UniverseMinusExclusionsUsesNegatedMatcherAndExcludeUnionContent` |
+| AC#4 empty selector → `ADDRESS_SELECTOR_EMPTY`; no partial lists | `PolicyCompilerCodes` | `Ac4EmptySelectorBlocksCompilationWithoutPartialLists`; `Ac4FailedSecondSelectorDoesNotInternFirstDraft` |
+| AC#5 same content interned | content-hash intern; `ReferencedLists` ≠ `InternedLists` | `Ac5IdenticalContentReusesSameList`; `Ac8…` |
+| AC#6 entries deterministic + sorted | encode + ordinal sort | `Ac6EntriesAreDeterministicAndSortedRegardlessOfInputOrder` |
+| AC#7 no timeout | `AddressListEntryArtifact` address-only | `Ac7TimeoutIsNotUsedOnEntries` |
+| AC#8 bounded names `mfc{4\|6}.a.<16-hex>` | `ManagedChainNamespace.AddressListName` | `Ac8GeneratedNamesAreBoundedMfcFamilyAContentHash` |
+| AC#9 ≤1 src and ≤1 dst matcher | matcher keys | `Ac9SourceAndDestinationUseAtMostOneMatcherEach` |
+| AC#10 list/entry limits | `AddressListCompileLimits` clamp to layout v1 | `Ac10ListAndEntryLimitsAreEnforced`; `LayoutV1LimitsRejectOutOfRangeCaps` |
+| Truncated-name collision | `RESOURCE_NAME_COLLISION` | intern key remains full SHA-256; truncated RouterOS name fail-closed |
+| Prefix encode hosts / universe | `AddressPrefixEncoder` | `AddressPrefixEncoderOmitsHostSlashAndEncodesUniverse` |
+
+**Residuals:** Zone/service variants (M3-04), matcher mapping (M3-05), FastTrack pair emission (M3-06), per-device compile orchestration (M3-07), and any RouterOS write path remain out of scope. Compiler still must not run without current analysis (§6).
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~AddressListCompiler"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

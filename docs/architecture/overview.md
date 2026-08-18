@@ -76,7 +76,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Policy authoring / review Desktop | Done (M2-18) | Contracts-only catalog editors + Validate/Submit/Approve/Bind; Deploy residual N1-06; **M2 CLOSED** |
 | RouterOS filter artifact model | Done (M3-01) | `RouterOsFilterArtifact` + MFC-CJ1 canonical writer; physical_semantics/artifact_id/resource_hash; no `.id`/API commands |
 | Managed chain namespace / layout | Done (M3-02) | `ManagedChainNamespace` + `ManagedChainLayoutBuilder`; mfc4/mfc6 root+deny layout; Pipeline v1 order; no guard/physical anchors |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M3-03 (#70) |
+| Content-addressed address lists | Done (M3-03) | `AddressListCompileSession` + `AddressPrefixEncoder`; intern by content hash; `mfc{4\|6}.a.<16-hex>`; negated universe-minus-exclusions; layout v1 limits |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M3-04 (#71) |
 
 ## ADRs
 

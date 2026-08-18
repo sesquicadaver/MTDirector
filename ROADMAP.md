@@ -1,9 +1,9 @@
 # MTDirector — ROADMAP реалізації v0.2
 
-**Дата оновлення:** 17 серпня 2026
+**Дата оновлення:** 18 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M3-02 — managed chain layout DONE; черга зсунута на M3-03
+**Базовий коміт аудиту:** M3-03 — content-addressed address lists DONE; черга зсунута на M3-04
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -47,16 +47,16 @@
 | M1 Read-only slice | 34 | 0 | 100% |
 | N1 Packet-path weave | 5 | 2 | 71% |
 | M2 Policy core | 18 | 0 | 100% |
-| M3 Compiler | 2 | 6 | 25% |
+| M3 Compiler | 3 | 5 | 38% |
 | M5 Onboarding | 0 | 10 | 0% |
 | M4 Safe deploy | 0 | 13 | 0% |
 | M6 E2E / drift | 0 | 9 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **69** | **67** | **51% issues** |
+| **Разом** | **70** | **66** | **51% issues** |
 
-MVP issues (109) = **69 done + 40 remaining** до MVP CLOSED (**63%**).  
+MVP issues (109) = **70 done + 39 remaining** до MVP CLOSED (**64%**).  
 N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
-Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; filter artifact model + managed chain layout **готові**; address-list compile / onboard / apply / drift = далі по черзі (NEXT M3-03; hygiene H-01 marker alignment перед compile circulation).
+Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; filter artifact + managed chain layout + content-addressed address lists **готові**; zone/service compile / onboard / apply / drift = далі по черзі (NEXT M3-04).
 
 ### 2.2 DONE (не в черзі)
 
@@ -120,6 +120,9 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | M2-16 | #63 | Policy tests + semantic UUID diff + risk: MANAGED_ONLY/NODE_EFFECTIVE; SYSTEM cannot disable; safety FAIL/INDETERMINATE BLOCKER; object impact; packet-space classes; 6-arg hash isolation |
 | M2-17 | #64 | Approval + desired binding: immutable analysis run; bundle-hash + SoD; binding ≠ deploy; exception expiry → EXPIRED_PENDING_RECONCILIATION |
 | M2-18 | #65 | **M2 CLOSED** — Desktop policy authoring/review (Contracts-only editors, validate/submit/approve/bind, semantic diff, risk; Deploy disabled N1-06) |
+| M3-01 | #68 | RouterOS filter artifact model: `RouterOsFilterArtifact` + MFC-CJ1; physical_semantics/artifact_id/resource_hash; golden vectors |
+| M3-02 | #69 | Managed chain namespace/layout: `ManagedChainNamespace` + `ManagedChainLayoutBuilder`; mfc4/mfc6; Pipeline v1 root/deny |
+| M3-03 | #70 | Content-addressed address lists: `AddressListCompileSession` + `AddressPrefixEncoder`; intern; limits; negated universe-minus-exclusions |
 
 ### 2.3 Поточні прогалини (код)
 
@@ -131,9 +134,9 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | `Mfc.Controller` | health + `InventoryService` + `SnapshotService` + `ZoneService` + `PolicyService` (compose + authoring/review + approval/binding) gRPC |
 | `Mfc.Desktop` | connection shell + inventory tree + snapshot/diff viewers + Zones + Policies authoring/review workflow |
 | Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings + policy_analysis_runs/policy_approvals/warning_acknowledgments/policy_bindings |
-| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) + management-path safety (M2-13) + topology/dependency safety (M2-14) + FastTrack policy validation (M2-15) + policy tests/diff/risk (M2-16) + approval/desired-binding (M2-17) + object JSON writer (M2-18) + RouterOS filter artifact model (M3-01) + managed chain namespace/layout (M3-02) |
+| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) + management-path safety (M2-13) + topology/dependency safety (M2-14) + FastTrack policy validation (M2-15) + policy tests/diff/risk (M2-16) + approval/desired-binding (M2-17) + object JSON writer (M2-18) + RouterOS filter artifact model (M3-01) + managed chain namespace/layout (M3-02) + content-addressed address lists (M3-03) |
 
-**NEXT = M3-03:** [M3-03](https://github.com/sesquicadaver/MTDirector/issues/70) Compile content-addressed address lists (після M3-02 #69 DONE). Desktop stays Contracts-only (ADR 0005). Compiler must not write without current analysis (§6).
+**NEXT = M3-04:** [M3-04](https://github.com/sesquicadaver/MTDirector/issues/71) Compile zones and service variants (після M3-03 #70 DONE). Desktop stays Contracts-only (ADR 0005). Compiler must not write without current analysis (§6).
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -265,7 +268,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 |--:|----|-------:|--------|
 | ~~54~~ | ~~M3-01~~ | ~~#68~~ | ~~Implement RouterOS filter artifact model~~ → DONE (`RouterOsFilterArtifact`; MFC-CJ1; golden vectors) |
 | ~~55~~ | ~~M3-02~~ | ~~#69~~ | ~~Implement managed chain namespace and layout~~ → DONE (`ManagedChainNamespace` + `ManagedChainLayoutBuilder`) |
-| 56 | M3-03 | #70 | Compile content-addressed address lists |
+| ~~56~~ | ~~M3-03~~ | ~~#70~~ | ~~Compile content-addressed address lists~~ → DONE (`AddressListCompileSession` + `AddressPrefixEncoder`; intern; limits) |
 | 57 | M3-04 | #71 | Compile zones and service variants |
 | 58 | M3-05 | #72 | Compile supported matchers and regular effects |
 | 59 | M3-06 | #73 | Compile FastTrack and terminal rules |
@@ -372,7 +375,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 67 відкритих атомарних задач (40 до MVP CLOSED + 27 M7). Start here: #70 M3-03.
+**Кінець черги:** 66 відкритих атомарних задач (39 до MVP CLOSED + 27 M7). Start here: #71 M3-04.
 
 ---
 
@@ -380,10 +383,10 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 40 | M3-03…M6-09 + N1-06/07 |
+| До MVP CLOSED | 39 | M3-04…M6-09 + N1-06/07 |
 | Post-MVP M7 | 27 | лише після M6-09 |
-| **Нереалізовано разом** | **67** | 40 MVP + 27 M7 |
-| DONE у коді (§2.2) | 69 | M0+M1+N1-01…05+M2-01…18+M3-01…02 |
+| **Нереалізовано разом** | **66** | 39 MVP + 27 M7 |
+| DONE у коді (§2.2) | 70 | M0+M1+N1-01…05+M2-01…18+M3-01…03 |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
@@ -438,6 +441,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | Policy compose + analysis | M2 | compose DONE (M2-07…09); structural DONE (M2-10); sequence DONE (M2-11); actual-filter DONE (M2-12); packet-path BLOCKERs DONE (N1-04); management-path DONE (M2-13); topology/deps DONE (M2-14); FastTrack DONE (M2-15); tests/diff/risk DONE (M2-16); approval/binding DONE (M2-17); Desktop authoring/review DONE (M2-18) | **M2 CLOSED** |
 | Deterministic filter artifact | M3-01 | `RouterOsFilterArtifact` + MFC-CJ1 writer; physical_semantics/artifact_id/resource_hash; golden vectors | **DONE** |
 | Managed chain namespace / layout | M3-02 | `ManagedChainNamespace` + `ManagedChainLayoutBuilder`; mfc4/mfc6; Pipeline v1 root/deny layout | **DONE** |
+| Content-addressed address lists | M3-03 | `AddressListCompileSession` + `AddressPrefixEncoder`; content-hash intern; negated universe-minus-exclusions; layout v1 limits | **DONE** |
 | Anchor bootstrap | M5 | equivalence; crash recovery | TODO |
 | Watchdog deploy / rollback | M4 | fault-injection; VRRP | TODO |
 | Drift + E2E DoD | M6 | E2E §E2E | TODO |
@@ -468,10 +472,11 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 2. ~~Відкрити **M2-18** → [issue #65](https://github.com/sesquicadaver/MTDirector/issues/65).~~ → **DONE / M2 CLOSED**.
 3. ~~Відкрити **M3-01** → [issue #68](https://github.com/sesquicadaver/MTDirector/issues/68).~~ → **DONE**.
 4. ~~Відкрити **M3-02** → [issue #69](https://github.com/sesquicadaver/MTDirector/issues/69).~~ → **DONE**.
-5. Відкрити **M3-03** → [issue #70](https://github.com/sesquicadaver/MTDirector/issues/70).
-6. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.
-7. Не стартувати M4, доки не закрито **M5-10** (черга #71).
-8. Не стартувати M7, доки не закрито **M6-09** (черга #95).
+5. ~~Відкрити **M3-03** → [issue #70](https://github.com/sesquicadaver/MTDirector/issues/70).~~ → **DONE**.
+6. Відкрити **M3-04** → [issue #71](https://github.com/sesquicadaver/MTDirector/issues/71).
+7. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.
+8. Не стартувати M4, доки не закрито **M5-10** (черга #71).
+9. Не стартувати M7, доки не закрито **M6-09** (черга #95).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones

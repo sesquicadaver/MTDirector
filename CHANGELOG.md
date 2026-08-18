@@ -21,11 +21,14 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP §2.1 progress table synced after M3-03 (70/136 closed; M3 compiler 3/8); NEXT = M3-04 (#71).
+- ROADMAP: M3-03 content-addressed address lists DONE; NEXT = M3-04 (#71); counters 70/109 MVP done (39 remaining).
 - ROADMAP §2.1 progress table synced after M3-02 (69/136 closed; M3 compiler 2/8); NEXT remains M3-03 (#70).
 - ROADMAP: M3-02 managed chain layout DONE; NEXT = M3-03 (#70); counters 69/109 MVP done (40 remaining).
 
 ### Added
 
+- Content-addressed address lists (M3-03): Domain `AddressListCompileSession` + `AddressPrefixEncoder` + `PolicyCompilerCodes`; include/exclude exact resolve; positive one-matcher lists; universe-minus-exclusions as exclude-union + negated `src|dst-address-list`; content-hash intern; sorted entries without timeout; names `mfc{4|6}.a.<16-hex>`; layout v1 limits (4096 lists / 250 000 entries per family). Living Spec AC rows in `AddressListCompilerTests`. No Application orchestration and no RouterOS writes (M3-04+).
 - Managed chain namespace and layout (M3-02): Domain `ManagedChainNamespace` (`mfc4`/`mfc6` chain and address-list names) + `ManagedChainLayoutBuilder` assembling root + up to three deny chains in Pipeline v1 order with structural jumps/returns/terminals; empty deny stages omit chain and jump; default ACCEPT impossible; management-guard comments and physical anchors rejected (desired anchor targets only). Living Spec AC rows in `ManagedChainLayoutBuilderTests`. No Application orchestration and no RouterOS writes (M3-03+).
 - RouterOS filter artifact model (M3-01): Domain `RouterOsFilterArtifact` with address lists, chains, and desired anchor targets; MFC-CJ1 canonical writer (`mfc.routeros-filter-artifact/1`); `physical_semantics_hash` / `artifact_id` (16-hex seed) / `resource_hash`; rejects RouterOS `.id` and API command tokens; description/timestamps excluded from identity preimages; golden vectors in `RouterOsFilterArtifactTests`. No Application compile orchestration and no RouterOS writes (M3-02+).
 - Policy authoring and review Desktop workflow (M2-18): Contracts-only `IPolicyServiceClient` / `GrpcPolicyServiceClient` cover CreateDraft, catalog upserts, Validate, ReorderRules (stage-scoped), Diff, Compose, RecordAnalysisRun, Submit, Approve, Bind. `PolicyPanelService` DTOs for addresses/services/contracts/rules/findings/diff; `PoliciesViewModel` separate Save/Validate/Submit/Approve/Bind/Deploy (Deploy always disabled, N1-06 residual; no Save and Deploy); read-only when not Draft/Validated; MainWindow Policies tab editors + review panel. Living Spec Desktop AC rows; ArchitectureBoundary unchanged (Desktop ↛ Domain).
