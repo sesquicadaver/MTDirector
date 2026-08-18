@@ -18,6 +18,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Exception-path service JSON: missing port bounds or a non-array ports/ICMP field maps to `POLICY_COMPOSE_SELECTOR_UNRESOLVED` instead of throwing or treating the field as unconstrained.
 - Desktop inventory cancel race: await shared refresh before surfacing cancellation so `IsRefreshing` clears consistently.
 - Unit tests: explicit non-UTC offsets; zone/snapshot/policy coverage to meet Domain/Application CI thresholds.
+- M3-07 Application/Domain branch coverage: expand `CompileNodeFilterArtifactsUseCase` and `DeviceFilterCompiler` tests (gates, bindings, disabled devices, orphan capture) so CI thresholds stay ≥75% branch.
 
 ### Changed
 

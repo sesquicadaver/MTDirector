@@ -169,7 +169,6 @@ public sealed class DeviceFilterCompilerTests
     public void UnresolvedZoneBindingBlocksCompilation()
     {
         ZoneId lan = ZoneId.New();
-        // Expected hash deliberately mismatches resolved observation → AnalysisStale.
         NodeZoneBinding stale = NodeZoneBinding.Create(
             new NodeId(Guid.NewGuid()),
             lan,
@@ -181,6 +180,209 @@ public sealed class DeviceFilterCompilerTests
             observation: Observation(["ether1"], List("LAN"), Member("LAN", "ether1"))));
         Assert.False(result.IsSuccess);
         Assert.Equal(PolicyCompilerCodes.CompilerAnalysisStale, result.Code);
+    }
+
+    [Fact]
+    public void EmptyChainContractsFailClosed()
+    {
+        DeviceFilterCompileRequest request = Request();
+        DeviceFilterCompileRequest emptyContracts = new()
+        {
+            DeviceId = request.DeviceId,
+            LogicalEffectivePolicyHash = request.LogicalEffectivePolicyHash,
+            AnalysisBundleHash = request.AnalysisBundleHash,
+            CapabilityHash = request.CapabilityHash,
+            CompilerProfileHash = request.CompilerProfileHash,
+            AnalysisPassed = true,
+            InputApproved = true,
+            AnalysisContextCurrent = true,
+            CapabilityCurrent = true,
+            CompilerProfileSupported = true,
+            ActiveRules = request.ActiveRules,
+            ChainContracts = ChainContractSet.Empty,
+            Addresses = request.Addresses,
+            Services = request.Services,
+            Zones = request.Zones,
+            CompiledAtUtc = request.CompiledAtUtc,
+        };
+        DeviceFilterCompileResult result = new DeviceFilterCompiler().Compile(emptyContracts);
+        Assert.False(result.IsSuccess);
+        Assert.Equal(PolicyCompilerCodes.CompilerInputNotApproved, result.Code);
+    }
+
+    [Fact]
+    public void CompileNodeRejectsMismatchedLogicalHashes()
+    {
+        Hash256 other = Hash256.ParseHex(
+            "4444444444444444444444444444444444444444444444444444444444444444");
+        DeviceFilterCompileRequest second = Request(deviceId: DeviceB);
+        DeviceFilterCompileRequest mismatched = new()
+        {
+            DeviceId = second.DeviceId,
+            LogicalEffectivePolicyHash = other,
+            AnalysisBundleHash = second.AnalysisBundleHash,
+            CapabilityHash = second.CapabilityHash,
+            CompilerProfileHash = second.CompilerProfileHash,
+            AnalysisPassed = true,
+            InputApproved = true,
+            AnalysisContextCurrent = true,
+            CapabilityCurrent = true,
+            CompilerProfileSupported = true,
+            ActiveRules = second.ActiveRules,
+            ChainContracts = second.ChainContracts,
+            Addresses = second.Addresses,
+            Services = second.Services,
+            Zones = second.Zones,
+            CompiledAtUtc = second.CompiledAtUtc,
+        };
+        NodeFilterCompileResult node = new DeviceFilterCompiler().CompileNode([Request(deviceId: DeviceA), mismatched]);
+        Assert.False(node.IsSuccess);
+        Assert.Equal(PolicyCompilerCodes.CompilerInputNotApproved, node.Code);
+    }
+
+    [Fact]
+    public void DeviceResolvedHasherIsDeterministic()
+    {
+        ZoneId lan = ZoneId.New();
+        Dictionary<ZoneId, IReadOnlyList<string>> zones = new()
+        {
+            [lan] = ["ether1", "ether2"],
+        };
+        Hash256 first = DeviceResolvedPolicyHasher.Hash(Logical, DeviceA, zones, Capability);
+        Hash256 second = DeviceResolvedPolicyHasher.Hash(Logical, DeviceA, zones, Capability);
+        Assert.Equal(first.ToString(), second.ToString());
+        Hash256 otherDevice = DeviceResolvedPolicyHasher.Hash(Logical, DeviceB, zones, Capability);
+        Assert.NotEqual(first.ToString(), otherDevice.ToString());
+    }
+
+    [Fact]
+    public void CaptureResolvedZonesThrowsWhenUnresolved()
+    {
+        ZoneId lan = ZoneId.New();
+        NodeZoneBinding stale = NodeZoneBinding.Create(
+            new NodeId(Guid.NewGuid()),
+            lan,
+            NodeZoneBindingKind.InterfaceList,
+            ["LAN"],
+            Hash256.ParseHex("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+        ZoneServiceCompileContext zones = new()
+        {
+            DeviceId = DeviceA,
+            Bindings = new Dictionary<ZoneId, NodeZoneBinding> { [lan] = stale },
+            Observation = Observation(["ether1"], List("LAN"), Member("LAN", "ether1")),
+            Services = new Dictionary<ServiceObjectId, ServiceObject>(),
+            ActiveWanName = null,
+        };
+        Assert.Throws<DomainInvariantException>(() => DeviceResolvedPolicyHasher.CaptureResolvedZones(zones));
+    }
+
+    [Fact]
+    public void CaptureResolvedZonesSucceedsForValidBinding()
+    {
+        ZoneId lan = ZoneId.New();
+        NodeZoneBinding binding = Binding(lan, NodeZoneBindingKind.InterfaceList, ["LAN"], ["ether1"]);
+        ZoneServiceCompileContext zones = new()
+        {
+            DeviceId = DeviceA,
+            Bindings = new Dictionary<ZoneId, NodeZoneBinding> { [lan] = binding },
+            Observation = Observation(["ether1"], List("LAN"), Member("LAN", "ether1")),
+            Services = new Dictionary<ServiceObjectId, ServiceObject>(),
+            ActiveWanName = null,
+        };
+        IReadOnlyDictionary<ZoneId, IReadOnlyList<string>> captured =
+            DeviceResolvedPolicyHasher.CaptureResolvedZones(zones);
+        Assert.Equal(["ether1"], captured[lan]);
+    }
+
+    [Fact]
+    public void MissingInterfaceZoneMapsCompilerCode()
+    {
+        ZoneId lan = ZoneId.New();
+        NodeZoneBinding binding = Binding(lan, NodeZoneBindingKind.SingleInterface, ["ghost"], ["ghost"]);
+        DeviceFilterCompileResult result = new DeviceFilterCompiler().Compile(Request(
+            binding: binding,
+            observation: Observation([])));
+        Assert.False(result.IsSuccess);
+        Assert.Equal(PolicyCompilerCodes.ZoneInterfaceMissing, result.Code);
+    }
+
+    [Fact]
+    public void DynamicInterfaceZoneMapsCompilerCode()
+    {
+        ZoneId lan = ZoneId.New();
+        NodeZoneBinding binding = Binding(lan, NodeZoneBindingKind.SingleInterface, ["pppoe-out1"], ["pppoe-out1"]);
+        ZoneResolveDeviceObservation observation = new()
+        {
+            DeviceId = DeviceA,
+            ObservationAvailable = true,
+            Interfaces =
+            [
+                new ZoneResolveInterfaceObservation { Name = "pppoe-out1", Dynamic = true },
+            ],
+            InterfaceLists = [],
+            InterfaceListMembers = [],
+        };
+        DeviceFilterCompileResult result = new DeviceFilterCompiler().Compile(Request(
+            binding: binding,
+            observation: observation));
+        Assert.False(result.IsSuccess);
+        Assert.Equal(PolicyCompilerCodes.ZoneDynamicInterface, result.Code);
+    }
+
+    [Fact]
+    public void EmptyInterfaceListZoneMapsCompilerCode()
+    {
+        ZoneId lan = ZoneId.New();
+        NodeZoneBinding binding = Binding(lan, NodeZoneBindingKind.InterfaceList, ["EMPTY"], []);
+        DeviceFilterCompileResult result = new DeviceFilterCompiler().Compile(Request(
+            binding: binding,
+            observation: Observation(["ether1"], List("EMPTY"))));
+        Assert.False(result.IsSuccess);
+        Assert.Equal(PolicyCompilerCodes.ZoneEmpty, result.Code);
+    }
+
+    [Fact]
+    public void InputAndOutputContractsCompile()
+    {
+        DeviceFilterCompileRequest baseRequest = Request();
+        ChainContractSet contracts = ChainContractSet.CreateForCompanyBaseline(
+            [
+                ChainContract.Create(
+                    IpAddressFamily.IPv4,
+                    PolicyFilterChain.Input,
+                    ChainDefaultDisposition.Drop,
+                    rejectMode: null,
+                    PolicyRuntimeMode.ManagedOnly),
+                ChainContract.Create(
+                    IpAddressFamily.IPv4,
+                    PolicyFilterChain.Output,
+                    ChainDefaultDisposition.Drop,
+                    rejectMode: null,
+                    PolicyRuntimeMode.ManagedOnly),
+            ],
+            PolicyRuntimeMode.ManagedOnly);
+        DeviceFilterCompileRequest request = new()
+        {
+            DeviceId = baseRequest.DeviceId,
+            LogicalEffectivePolicyHash = baseRequest.LogicalEffectivePolicyHash,
+            AnalysisBundleHash = baseRequest.AnalysisBundleHash,
+            CapabilityHash = baseRequest.CapabilityHash,
+            CompilerProfileHash = baseRequest.CompilerProfileHash,
+            AnalysisPassed = true,
+            InputApproved = true,
+            AnalysisContextCurrent = true,
+            CapabilityCurrent = true,
+            CompilerProfileSupported = true,
+            ActiveRules = [],
+            ChainContracts = contracts,
+            Addresses = baseRequest.Addresses,
+            Services = baseRequest.Services,
+            Zones = baseRequest.Zones,
+            CompiledAtUtc = baseRequest.CompiledAtUtc,
+        };
+        DeviceFilterCompileResult result = new DeviceFilterCompiler().Compile(request);
+        Assert.True(result.IsSuccess, result.Message);
+        Assert.True(result.Summary!.ChainCount >= 2);
     }
 
     private static DeviceFilterCompileRequest Request(
