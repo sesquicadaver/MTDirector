@@ -238,6 +238,31 @@ internal static class PolicyProtoMapper
         return message;
     }
 
+    public static CompileNodeFilterArtifactsResponse ToProto(CompileNodeFilterArtifactsView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        CompileNodeFilterArtifactsResponse message = new()
+        {
+            NodeId = ProtoUuid.FromGuid(view.NodeId),
+            LogicalEffectivePolicyHash = ToSha256(view.LogicalEffectivePolicyHash),
+        };
+        message.Artifacts.AddRange(view.Artifacts.Select(static a => new FilterArtifactSummary
+        {
+            DeviceId = ProtoUuid.FromGuid(a.DeviceId),
+            ArtifactId = a.ArtifactId,
+            ResourceHash = ToSha256(a.ResourceHash),
+            PhysicalSemanticsHash = ToSha256(a.PhysicalSemanticsHash),
+            DeviceResolvedPolicyHash = ToSha256(a.DeviceResolvedPolicyHash),
+            AnalysisBundleHash = ToSha256(a.AnalysisBundleHash),
+            AddressListCount = checked((uint)a.AddressListCount),
+            ChainCount = checked((uint)a.ChainCount),
+            RuleCount = checked((uint)a.RuleCount),
+            AnchorTargetCount = checked((uint)a.AnchorTargetCount),
+            StoredAsNew = a.StoredAsNew,
+        }));
+        return message;
+    }
+
     public static AddressObjectEntryView ToInput(AddressObjectEntry entry)
     {
         ArgumentNullException.ThrowIfNull(entry);

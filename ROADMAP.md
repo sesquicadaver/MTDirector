@@ -3,7 +3,7 @@
 **Дата оновлення:** 18 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M3-06 — FastTrack pairs and terminal rules DONE; черга зсунута на M3-07
+**Базовий коміт аудиту:** M3-07 — per-Device compile + artifact storage DONE; черга зсунута на M3-08
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -56,7 +56,7 @@
 
 MVP issues (109) = **73 done + 36 remaining** до MVP CLOSED (**67%**).  
 N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
-Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; filter artifact + layout + address lists + zone/service + matcher/effect + FastTrack/terminal compile **готові**; per-device orchestration / onboard / apply / drift = далі по черзі (NEXT M3-07).
+Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; filter artifact + layout + address lists + zone/service + matcher/effect + FastTrack/terminal + per-device orchestration/storage **готові**; compiler integration / onboard / apply / drift = далі по черзі (NEXT M3-08).
 
 ### 2.2 DONE (не в черзі)
 
@@ -126,20 +126,21 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | M3-04 | #71 | Zone/service variants: `ZoneServiceVariantCompiler` + `PortMatcherEncoder`; direct interface-list or finite expansion; ICMP variants; WAN/running ignored |
 | M3-05 | #72 | Filter matchers and regular effects: `FilterMatcherEffectCompiler` + `RouterOsCompilerProfile`; exact tokens; REJECT≠DROP; exceptions=`return`; input order; no duplicate deletion |
 | M3-06 | #73 | FastTrack pairs + terminals: adjacent `fasttrack-connection`/`accept` with `hw-offload=no`; `:ft`/`:ac`; `ChainTerminalCompiler`; context fail-closed |
+| M3-07 | #74 | Per-Device compile orchestration + content-addressed `filter_artifacts`; semantic summary RPC; fail-closed Node compile |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
 | `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors; default `ProbeOnlyRouterOsReadPort` + `NotConfiguredSnapshotCapturePort`; actual-filter discovery mapper; packet-path blocker mapper; management-path discovery mapper (`api-ssl.address` in canonical projector); topology-dependency discovery mapper (VRRP sync fields, RAW/NAT/Mangle, rp-filter, switch chip); FastTrack discovery mapper (pre-anchor + VRF); policy-evidence discovery mapper (NODE_EFFECTIVE actual filter) |
-| `Mfc.Contracts` | `mfc.v1` inventory + snapshot/diff + `ZoneService` + `PolicyService` (authoring/review + approval/binding RPCs) |
-| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper + packet-path canonical mapper + management-path canonical mapper + topology-dependency canonical mapper + FastTrack canonical mapper + policy-evidence canonical mapper + analysis-run/approval/desired-binding use cases + validate/catalog/diff authoring use cases |
-| `Mfc.Controller` | health + `InventoryService` + `SnapshotService` + `ZoneService` + `PolicyService` (compose + authoring/review + approval/binding) gRPC |
+| `Mfc.Contracts` | `mfc.v1` inventory + snapshot/diff + `ZoneService` + `PolicyService` (authoring/review + approval/binding + compile summary RPCs) |
+| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper + packet-path canonical mapper + management-path canonical mapper + topology-dependency canonical mapper + FastTrack canonical mapper + policy-evidence canonical mapper + analysis-run/approval/desired-binding use cases + validate/catalog/diff authoring use cases + compile-and-store filter artifacts |
+| `Mfc.Controller` | health + `InventoryService` + `SnapshotService` + `ZoneService` + `PolicyService` (compose + authoring/review + approval/binding + compile) gRPC |
 | `Mfc.Desktop` | connection shell + inventory tree + snapshot/diff viewers + Zones + Policies authoring/review workflow |
-| Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings + policy_analysis_runs/policy_approvals/warning_acknowledgments/policy_bindings |
-| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) + management-path safety (M2-13) + topology/dependency safety (M2-14) + FastTrack policy validation (M2-15) + policy tests/diff/risk (M2-16) + approval/desired-binding (M2-17) + object JSON writer (M2-18) + RouterOS filter artifact model (M3-01) + managed chain namespace/layout (M3-02) + content-addressed address lists (M3-03) + zone/service variants (M3-04) + matcher/effect compile (M3-05) + FastTrack pairs + terminals (M3-06) |
+| Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings + policy_analysis_runs/policy_approvals/warning_acknowledgments/policy_bindings + filter_artifacts |
+| `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) + management-path safety (M2-13) + topology/dependency safety (M2-14) + FastTrack policy validation (M2-15) + policy tests/diff/risk (M2-16) + approval/desired-binding (M2-17) + object JSON writer (M2-18) + RouterOS filter artifact model (M3-01) + managed chain namespace/layout (M3-02) + content-addressed address lists (M3-03) + zone/service variants (M3-04) + matcher/effect compile (M3-05) + FastTrack pairs + terminals (M3-06) + per-device compile orchestration (M3-07) |
 
-**NEXT = M3-07:** [M3-07](https://github.com/sesquicadaver/MTDirector/issues/74) Implement per-Device compiler orchestration and artifact storage (після M3-06 #73 DONE). Desktop stays Contracts-only (ADR 0005). Compiler must not write without current analysis (§6).
+**NEXT = M3-08:** [M3-08](https://github.com/sesquicadaver/MTDirector/issues/75) Complete compiler integration and acceptance (після M3-07 #74 DONE). Desktop stays Contracts-only (ADR 0005). No RouterOS writes in M3.
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -275,7 +276,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | ~~57~~ | ~~M3-04~~ | ~~#71~~ | ~~Compile zones and service variants~~ → DONE (`ZoneServiceVariantCompiler` + `PortMatcherEncoder`) |
 | ~~58~~ | ~~M3-05~~ | ~~#72~~ | ~~Compile supported matchers and regular effects~~ → DONE (`FilterMatcherEffectCompiler` + `RouterOsCompilerProfile`) |
 | ~~59~~ | ~~M3-06~~ | ~~#73~~ | ~~Compile FastTrack and terminal rules~~ → DONE (FastTrack pair + `ChainTerminalCompiler`) |
-| 60 | M3-07 | #74 | Implement per-Device compiler orchestration and artifact storage |
+| ~~60~~ | ~~M3-07~~ | ~~#74~~ | ~~Implement per-Device compiler orchestration and artifact storage~~ → DONE (`DeviceFilterCompiler` + `filter_artifacts`) |
 | 61 | M3-08 | #75 | Complete compiler integration and acceptance (**M3 CLOSED**) |
 
 #### Блок A8 — M5 Onboarding (перед M4)
@@ -378,7 +379,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 63 відкритих атомарних задач (36 до MVP CLOSED + 27 M7). Start here: #74 M3-07.
+**Кінець черги:** 62 відкритих атомарних задач (35 до MVP CLOSED + 27 M7). Start here: #75 M3-08.
 
 ---
 
@@ -386,7 +387,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 36 | M3-07…M6-09 + N1-06/07 |
+| До MVP CLOSED | 35 | M3-08…M6-09 + N1-06/07 |
 | Post-MVP M7 | 27 | лише після M6-09 |
 | **Нереалізовано разом** | **63** | 36 MVP + 27 M7 |
 | DONE у коді (§2.2) | 73 | M0+M1+N1-01…05+M2-01…18+M3-01…06 |
@@ -448,6 +449,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | Zone and service variants | M3-04 | `ZoneServiceVariantCompiler` + `PortMatcherEncoder`; direct interface-list or finite expansion; ICMP variants; WAN/running ignored | **DONE** |
 | Filter matchers and regular effects | M3-05 | `FilterMatcherEffectCompiler` + `RouterOsCompilerProfile`; exact tokens; REJECT≠DROP; exceptions=`return`; input order | **DONE** |
 | FastTrack pairs and terminal rules | M3-06 | FastTrack adjacent pair + `hw-offload=no`; `ChainTerminalCompiler`; context fail-closed | **DONE** |
+| Per-device compile + artifact storage | M3-07 | `DeviceFilterCompiler` + content-addressed `filter_artifacts`; semantic summary RPC | **DONE** |
 | Anchor bootstrap | M5 | equivalence; crash recovery | TODO |
 | Watchdog deploy / rollback | M4 | fault-injection; VRRP | TODO |
 | Drift + E2E DoD | M6 | E2E §E2E | TODO |
@@ -482,7 +484,8 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 6. ~~Відкрити **M3-04** → [issue #71](https://github.com/sesquicadaver/MTDirector/issues/71).~~ → **DONE**.
 7. ~~Відкрити **M3-05** → [issue #72](https://github.com/sesquicadaver/MTDirector/issues/72).~~ → **DONE**.
 8. ~~Відкрити **M3-06** → [issue #73](https://github.com/sesquicadaver/MTDirector/issues/73).~~ → **DONE**.
-9. Відкрити **M3-07** → [issue #74](https://github.com/sesquicadaver/MTDirector/issues/74).
+9. ~~Відкрити **M3-07** → [issue #74](https://github.com/sesquicadaver/MTDirector/issues/74).~~ → **DONE**.
+10. Відкрити **M3-08** → [issue #75](https://github.com/sesquicadaver/MTDirector/issues/75).
 10. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.
 11. Не стартувати M4, доки не закрито **M5-10** (issue #85).
 12. Не стартувати M7, доки не закрито **M6-09** (черга #95).

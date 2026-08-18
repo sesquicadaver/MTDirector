@@ -224,6 +224,7 @@ public static class Program
         services.AddScoped<ReplaceChainContractsUseCase>();
         services.AddScoped<ReplacePolicyTestsUseCase>();
         services.AddScoped<DiffPolicyRevisionsUseCase>();
+        services.AddScoped<CompileNodeFilterArtifactsUseCase>();
     }
 
     public static bool ContainsMigrateOnly(IEnumerable<string> args)

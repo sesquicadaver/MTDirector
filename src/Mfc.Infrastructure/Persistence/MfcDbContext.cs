@@ -55,6 +55,8 @@ public sealed class MfcDbContext : DbContext
 
     public DbSet<PolicyBindingEntity> PolicyBindings => Set<PolicyBindingEntity>();
 
+    public DbSet<FilterArtifactEntity> FilterArtifacts => Set<FilterArtifactEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MfcDbContext).Assembly);
@@ -232,6 +234,16 @@ public sealed class MfcDbContext : DbContext
             {
                 throw new InvalidOperationException(
                     "Desired-binding identity and validity window cannot be updated through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<FilterArtifactEntity> entry
+                 in ChangeTracker.Entries<FilterArtifactEntity>())
+        {
+            if (entry.State is EntityState.Modified or EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "filter_artifacts is append-only: update and delete are not allowed through the application DbContext.");
             }
         }
     }
