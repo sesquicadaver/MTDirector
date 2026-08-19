@@ -9,6 +9,8 @@ using Mfc.Domain.Canonicalization;
 using Mfc.Domain.Capabilities;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
+using Mfc.Domain.Onboarding;
+using Mfc.Domain.Onboarding.Primitives;
 using Mfc.Domain.Policy;
 using Mfc.Domain.Policy.Primitives;
 using Mfc.Domain.Snapshots;
@@ -131,6 +133,65 @@ internal sealed class FakeDeviceStore : IDeviceStore
                 .OrderBy(d => d.DisplayName.Value, StringComparer.Ordinal)
                 .ThenBy(d => d.Id.Value)
                 .ToArray());
+}
+
+internal sealed class FakeOnboardingStore : IOnboardingStore
+{
+    private readonly Dictionary<Guid, OnboardingPlan> _plans = [];
+    private readonly Dictionary<Guid, OnboardingOperation> _operations = [];
+    private readonly Dictionary<Guid, OnboardingStep> _steps = [];
+
+    public IReadOnlyCollection<OnboardingOperation> Operations => _operations.Values;
+
+    public Task AddPlanAsync(OnboardingPlan plan, CancellationToken cancellationToken = default)
+    {
+        _plans[plan.Id.Value] = plan;
+        return Task.CompletedTask;
+    }
+
+    public Task<OnboardingPlan?> GetPlanAsync(OnboardingPlanId id, CancellationToken cancellationToken = default)
+        => Task.FromResult(_plans.TryGetValue(id.Value, out OnboardingPlan? plan) ? plan : null);
+
+    public Task AddOperationAsync(OnboardingOperation operation, CancellationToken cancellationToken = default)
+    {
+        _operations[operation.Id.Value] = operation;
+        return Task.CompletedTask;
+    }
+
+    public Task SaveOperationAsync(OnboardingOperation operation, CancellationToken cancellationToken = default)
+    {
+        _operations[operation.Id.Value] = operation;
+        return Task.CompletedTask;
+    }
+
+    public Task<OnboardingOperation?> GetOperationAsync(
+        OnboardingOperationId id,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(_operations.TryGetValue(id.Value, out OnboardingOperation? operation) ? operation : null);
+
+    public Task<IReadOnlyList<OnboardingOperation>> ListNonterminalByNodeAsync(
+        NodeId nodeId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<OnboardingOperation>>(
+            _operations.Values.Where(o => o.NodeId == nodeId && o.IsNonterminal).ToArray());
+
+    public Task AddStepAsync(OnboardingStep onboardingStep, CancellationToken cancellationToken = default)
+    {
+        _steps[onboardingStep.Id.Value] = onboardingStep;
+        return Task.CompletedTask;
+    }
+
+    public Task SaveStepAsync(OnboardingStep onboardingStep, CancellationToken cancellationToken = default)
+    {
+        _steps[onboardingStep.Id.Value] = onboardingStep;
+        return Task.CompletedTask;
+    }
+
+    public Task<IReadOnlyList<OnboardingStep>> ListStepsAsync(
+        OnboardingOperationId operationId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<OnboardingStep>>(
+            _steps.Values.Where(s => s.OperationId == operationId).ToArray());
 }
 
 internal sealed class FakeIdempotencyStore : IIdempotencyStore

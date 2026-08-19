@@ -6,7 +6,7 @@ using Mfc.Desktop.Services;
 
 namespace Mfc.Desktop.ViewModels;
 
-/// <summary>Shell view-model: connection, inventory, snapshot viewer, semantic diff, zones, and policies.</summary>
+/// <summary>Shell view-model: connection, inventory, snapshot, diff, zones, policies, and onboarding.</summary>
 public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
 {
     private readonly IControllerConnectionService _connection;
@@ -19,7 +19,8 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
         SnapshotViewerViewModel snapshot,
         SnapshotDiffViewModel diff,
         ZonesViewModel zones,
-        PoliciesViewModel policies)
+        PoliciesViewModel policies,
+        OnboardingViewModel onboarding)
     {
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _options = options ?? throw new ArgumentNullException(nameof(options));
@@ -28,6 +29,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
         Diff = diff ?? throw new ArgumentNullException(nameof(diff));
         Zones = zones ?? throw new ArgumentNullException(nameof(zones));
         Policies = policies ?? throw new ArgumentNullException(nameof(policies));
+        Onboarding = onboarding ?? throw new ArgumentNullException(nameof(onboarding));
         _connection.StateChanged += OnConnectionStateChanged;
         SyncFromService();
     }
@@ -41,6 +43,8 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
     public ZonesViewModel Zones { get; }
 
     public PoliciesViewModel Policies { get; }
+
+    public OnboardingViewModel Onboarding { get; }
 
     public string ControllerEndpoint => _options.ControllerEndpoint;
 
@@ -139,6 +143,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
     {
         _connection.StateChanged -= OnConnectionStateChanged;
         Policies.Dispose();
+        Onboarding.Dispose();
         Zones.Dispose();
         Diff.Dispose();
         Snapshot.Dispose();

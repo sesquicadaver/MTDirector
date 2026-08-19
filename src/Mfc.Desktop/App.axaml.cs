@@ -37,7 +37,9 @@ public sealed class App : Application, IAsyncDisposable
         GrpcPolicyServiceClient policyClient = new(connection, options);
         PolicyPanelService policyPanel = new(policyClient);
         PoliciesViewModel policiesVm = new(policyPanel, connection);
-        _shell = new ShellViewModel(connection, options, inventoryVm, snapshotVm, diffVm, zonesVm, policiesVm);
+        GrpcOnboardingServiceClient onboardingClient = new(connection, options);
+        OnboardingViewModel onboardingVm = new(onboardingClient, connection, inventoryVm);
+        _shell = new ShellViewModel(connection, options, inventoryVm, snapshotVm, diffVm, zonesVm, policiesVm, onboardingVm);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

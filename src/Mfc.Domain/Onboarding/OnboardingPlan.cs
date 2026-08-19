@@ -65,8 +65,8 @@ public sealed class OnboardingPlan
         ArgumentNullException.ThrowIfNull(nodeMembershipHash);
         ArgumentNullException.ThrowIfNull(topologyProjectionHash);
         ArgumentNullException.ThrowIfNull(devicePlans);
-        DateTimeOffset created = createdAtUtc.ToUniversalTime();
-        DateTimeOffset expires = (expiresAtUtc ?? created + OnboardingCodes.DefaultPlanLifetime).ToUniversalTime();
+        DateTimeOffset created = TruncateToUtcMicroseconds(createdAtUtc);
+        DateTimeOffset expires = TruncateToUtcMicroseconds(expiresAtUtc ?? created + OnboardingCodes.DefaultPlanLifetime);
         if (expires <= created)
         {
             throw new DomainInvariantException("expires_at must be greater than created_at.");
@@ -109,8 +109,8 @@ public sealed class OnboardingPlan
         ArgumentNullException.ThrowIfNull(topologyProjectionHash);
         ArgumentNullException.ThrowIfNull(devicePlans);
         ArgumentNullException.ThrowIfNull(planHash);
-        DateTimeOffset created = createdAtUtc.ToUniversalTime();
-        DateTimeOffset expires = expiresAtUtc.ToUniversalTime();
+        DateTimeOffset created = TruncateToUtcMicroseconds(createdAtUtc);
+        DateTimeOffset expires = TruncateToUtcMicroseconds(expiresAtUtc);
         if (expires <= created)
         {
             throw new DomainInvariantException("expires_at must be greater than created_at.");
@@ -217,5 +217,15 @@ public sealed class OnboardingPlan
         }
 
         return devicePlans.OrderBy(static p => p.DeviceId.Value).ToArray();
+    }
+
+    /// <summary>
+    /// PostgreSQL timestamptz stores microsecond precision; hashing must use the same grid.
+    /// </summary>
+    private static DateTimeOffset TruncateToUtcMicroseconds(DateTimeOffset value)
+    {
+        DateTimeOffset utc = value.ToUniversalTime();
+        long ticks = utc.UtcTicks - (utc.UtcTicks % TimeSpan.TicksPerMicrosecond);
+        return new DateTimeOffset(ticks, TimeSpan.Zero);
     }
 }

@@ -28,7 +28,14 @@ public static class GrpcApplicationErrorMapper
             || FastTrackAnalysisCodes.IsFailedPrecondition(error.Code)
             || PolicyEvidenceAnalysisCodes.IsFailedPrecondition(error.Code)
             || PolicyApprovalCodes.IsFailedPrecondition(error.Code)
-            || PolicyCompilerCodes.IsFailedPrecondition(error.Code))
+            || PolicyCompilerCodes.IsFailedPrecondition(error.Code)
+            || error.Code.StartsWith("ONBOARDING_", StringComparison.Ordinal)
+            || error.Code.StartsWith("BOOTSTRAP_", StringComparison.Ordinal)
+            || error.Code.StartsWith("ANCHOR_", StringComparison.Ordinal)
+            || error.Code.StartsWith("MANAGEMENT_", StringComparison.Ordinal)
+            || error.Code.StartsWith("MFC_", StringComparison.Ordinal)
+            || error.Code.StartsWith("DEVICE_", StringComparison.Ordinal)
+            || error.Code.StartsWith("SCHEDULER_", StringComparison.Ordinal))
         {
             statusCode = StatusCode.FailedPrecondition;
             retryable = false;

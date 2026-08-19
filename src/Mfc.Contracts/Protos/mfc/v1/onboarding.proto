@@ -1,0 +1,220 @@
+syntax = "proto3";
+
+package mfc.v1;
+
+option csharp_namespace = "Mfc.Contracts.Mfc.V1";
+
+import "google/protobuf/timestamp.proto";
+import "mfc/v1/common.proto";
+
+// OnboardingService — Issue Set M5-09. Desktop stays Contracts-only (ADR 0005).
+// Mutation RPCs require idempotency_key. There is no free-form write RPC and no script source.
+service OnboardingService {
+  rpc ValidatePrerequisites(ValidateOnboardingPrerequisitesRequest) returns (OnboardingPrerequisiteReport);
+  rpc CreatePlan(CreateOnboardingPlanRequest) returns (OnboardingPlanSummary);
+  rpc Start(StartOnboardingRequest) returns (OnboardingOperationSummary);
+  rpc Watch(WatchOnboardingRequest) returns (stream OnboardingProgress);
+  rpc Rollback(RollbackOnboardingRequest) returns (OnboardingOperationSummary);
+  rpc GetRecoveryStatus(GetOnboardingRecoveryStatusRequest) returns (OnboardingRecoveryStatus);
+}
+
+enum OnboardingOperationState {
+  ONBOARDING_OPERATION_STATE_UNSPECIFIED = 0;
+  ONBOARDING_OPERATION_STATE_CREATED = 1;
+  ONBOARDING_OPERATION_STATE_PRECHECKING = 2;
+  ONBOARDING_OPERATION_STATE_STAGING_BOOTSTRAP_ROOTS = 3;
+  ONBOARDING_OPERATION_STATE_STAGING_DISABLED_ANCHORS = 4;
+  ONBOARDING_OPERATION_STATE_ARMING_WATCHDOGS = 5;
+  ONBOARDING_OPERATION_STATE_ENABLING_ANCHORS = 6;
+  ONBOARDING_OPERATION_STATE_VERIFYING = 7;
+  ONBOARDING_OPERATION_STATE_DISARMING_WATCHDOGS = 8;
+  ONBOARDING_OPERATION_STATE_COMMITTED = 9;
+  ONBOARDING_OPERATION_STATE_ROLLBACK_PENDING = 10;
+  ONBOARDING_OPERATION_STATE_ROLLING_BACK = 11;
+  ONBOARDING_OPERATION_STATE_ROLLED_BACK = 12;
+  ONBOARDING_OPERATION_STATE_BLOCKED = 13;
+  ONBOARDING_OPERATION_STATE_RECOVERY_REQUIRED = 14;
+}
+
+enum OnboardingRecoveryAction {
+  ONBOARDING_RECOVERY_ACTION_UNSPECIFIED = 0;
+  ONBOARDING_RECOVERY_ACTION_CLEANUP_ROLLED_BACK = 1;
+  ONBOARDING_RECOVERY_ACTION_CONTROLLER_ROLLBACK = 2;
+  ONBOARDING_RECOVERY_ACTION_RECOVERY_REQUIRED = 3;
+  ONBOARDING_RECOVERY_ACTION_KEEP_MANAGED = 4;
+  ONBOARDING_RECOVERY_ACTION_CRITICAL_DRIFT = 5;
+}
+
+enum OnboardingFindingSeverity {
+  ONBOARDING_FINDING_SEVERITY_UNSPECIFIED = 0;
+  ONBOARDING_FINDING_SEVERITY_INFO = 1;
+  ONBOARDING_FINDING_SEVERITY_WARNING = 2;
+  ONBOARDING_FINDING_SEVERITY_BLOCKER = 3;
+}
+
+enum OnboardingAnchorPlacementMode {
+  ONBOARDING_ANCHOR_PLACEMENT_MODE_UNSPECIFIED = 0;
+  ONBOARDING_ANCHOR_PLACEMENT_MODE_BEFORE_STATIC_RULE = 1;
+  ONBOARDING_ANCHOR_PLACEMENT_MODE_APPEND = 2;
+}
+
+message OnboardingFinding {
+  string code = 1;
+  OnboardingFindingSeverity severity = 2;
+  string message = 3;
+  optional Uuid device_id = 4;
+  optional string target = 5;
+}
+
+message OnboardingIpServiceFacts {
+  bool found = 1;
+  bool disabled = 2;
+  optional uint32 port = 3;
+  optional string certificate = 4;
+  optional string address_prefixes = 5;
+  optional int32 max_sessions = 6;
+}
+
+message OnboardingServiceAccountFacts {
+  string name = 1;
+  string group_name = 2;
+  bool is_default_group = 3;
+  repeated string policies = 4;
+  repeated string address_prefixes = 5;
+}
+
+message OnboardingDeviceModeFacts {
+  bool scheduler_enabled = 1;
+  bool flagged = 2;
+}
+
+message OnboardingDevicePrerequisiteFacts {
+  Uuid device_id = 1;
+  bool exact_supported_build = 2;
+  uint32 version_major = 3;
+  uint32 version_minor = 4;
+  uint32 version_patch = 5;
+  string version_channel = 6;
+  uint32 support_state = 7;
+  OnboardingIpServiceFacts plain_api = 8;
+  OnboardingIpServiceFacts api_ssl = 9;
+  OnboardingServiceAccountFacts read_account = 10;
+  OnboardingServiceAccountFacts deployment_account = 11;
+  OnboardingDeviceModeFacts device_mode = 12;
+  uint32 expected_api_ssl_port = 13;
+}
+
+message ValidateOnboardingPrerequisitesRequest {
+  Uuid node_id = 1;
+  repeated OnboardingDevicePrerequisiteFacts devices = 2;
+}
+
+message OnboardingPrerequisiteReport {
+  Uuid node_id = 1;
+  bool passed = 2;
+  repeated OnboardingFinding findings = 3;
+}
+
+message OnboardingDevicePlanInput {
+  Uuid device_id = 1;
+  string expected_routeros_version = 2;
+  Sha256 expected_capability_hash = 3;
+  Sha256 expected_configuration_hash = 4;
+  Sha256 expected_compatibility_hash = 5;
+  Sha256 expected_api_service_hash = 6;
+  Sha256 expected_read_account_hash = 7;
+  Sha256 expected_deployment_account_hash = 8;
+  Sha256 expected_device_mode_hash = 9;
+  Sha256 expected_guard_hash = 10;
+  bool include_ipv6 = 11;
+  uint32 watchdog_ttl_seconds = 12;
+}
+
+message CreateOnboardingPlanRequest {
+  Uuid idempotency_key = 1;
+  Uuid node_id = 2;
+  Sha256 node_membership_hash = 3;
+  Sha256 topology_projection_hash = 4;
+  repeated OnboardingDevicePlanInput devices = 5;
+}
+
+message OnboardingAnchorPlacementView {
+  string marker = 1;
+  string chain = 2;
+  string family = 3;
+  OnboardingAnchorPlacementMode mode = 4;
+  uint32 expected_ordinal = 5;
+  string before_label = 6;
+  string after_label = 7;
+}
+
+message OnboardingPlanSummary {
+  Uuid plan_id = 1;
+  Uuid node_id = 2;
+  Sha256 plan_hash = 3;
+  google.protobuf.Timestamp expires_at = 4;
+  repeated OnboardingAnchorPlacementView placements = 5;
+}
+
+message StartOnboardingRequest {
+  Uuid idempotency_key = 1;
+  Uuid plan_id = 2;
+  Sha256 plan_hash = 3;
+}
+
+message RollbackOnboardingRequest {
+  Uuid idempotency_key = 1;
+  Uuid operation_id = 2;
+}
+
+message OnboardingOperationSummary {
+  Uuid operation_id = 1;
+  Uuid plan_id = 2;
+  Uuid node_id = 3;
+  OnboardingOperationState state = 4;
+  optional string error_code = 5;
+  repeated string timeline = 6;
+  bool node_managed = 7;
+}
+
+message WatchOnboardingRequest {
+  Uuid operation_id = 1;
+}
+
+message OnboardingProgress {
+  Uuid operation_id = 1;
+  OnboardingOperationState state = 2;
+  optional string error_code = 3;
+  optional string timeline_entry = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+}
+
+message OnboardingLiveAnchorFact {
+  string marker = 1;
+  string chain = 2;
+  string action = 3;
+  optional string jump_target = 4;
+  bool disabled = 5;
+}
+
+message OnboardingLiveWatchdogFact {
+  string name = 1;
+  bool disabled = 2;
+}
+
+message GetOnboardingRecoveryStatusRequest {
+  Uuid node_id = 1;
+  optional Uuid operation_id = 2;
+  repeated OnboardingLiveAnchorFact anchors = 3;
+  repeated OnboardingLiveWatchdogFact watchdog_schedulers = 4;
+}
+
+message OnboardingRecoveryStatus {
+  Uuid node_id = 1;
+  optional Uuid operation_id = 2;
+  OnboardingOperationState operation_state = 3;
+  optional string error_code = 4;
+  string node_management_state = 5;
+  OnboardingRecoveryAction action = 6;
+  repeated string device_management_states = 7;
+}
