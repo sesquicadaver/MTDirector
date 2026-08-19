@@ -3,7 +3,6 @@ using Mfc.Domain.Deployment;
 using Mfc.Domain.Deployment.Primitives;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
-using Mfc.Domain.Onboarding;
 using Mfc.Domain.Policy.Primitives;
 using Xunit;
 
