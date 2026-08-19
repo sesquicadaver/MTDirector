@@ -3,7 +3,7 @@
 **Дата оновлення:** 19 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M4-01 — deployment plan/states/persistence DONE; черга зсунута на N1-06
+**Базовий коміт аудиту:** N1-06 — packet-path deploy gate DONE; черга зсунута на M4-02
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -45,18 +45,18 @@
 |---------|-------:|-----:|--:|
 | M0 Bootstrap | 10 | 0 | 100% |
 | M1 Read-only slice | 34 | 0 | 100% |
-| N1 Packet-path weave | 5 | 2 | 71% |
+| N1 Packet-path weave | 6 | 1 | 86% |
 | M2 Policy core | 18 | 0 | 100% |
 | M3 Compiler | 8 | 0 | 100% |
 | M5 Onboarding | 10 | 0 | 100% |
 | M4 Safe deploy | 1 | 12 | 8% |
 | M6 E2E / drift | 0 | 9 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **85** | **51** | **62% issues** |
+| **Разом** | **86** | **50** | **63% issues** |
 
-MVP issues (109) = **85 done + 24 remaining** до MVP CLOSED (**78%**).  
-N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
-Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; NEXT = N1-06 (#99).
+MVP issues (109) = **86 done + 23 remaining** до MVP CLOSED (**79%**).  
+N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
+Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; NEXT = M4-02 (#87).
 
 ### 2.2 DONE (не в черзі)
 
@@ -119,7 +119,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | M2-15 | #62 | FastTrack policy validation: IPv4 FORWARD STATE_PRELUDE TCP/UDP ESTABLISHED,RELATED only; PCC/balanced/marks/VRF/IPsec/pre-anchor fail-closed; fallback flag; risk HIGH; 5-arg hash isolation |
 | M2-16 | #63 | Policy tests + semantic UUID diff + risk: MANAGED_ONLY/NODE_EFFECTIVE; SYSTEM cannot disable; safety FAIL/INDETERMINATE BLOCKER; object impact; packet-space classes; 6-arg hash isolation |
 | M2-17 | #64 | Approval + desired binding: immutable analysis run; bundle-hash + SoD; binding ≠ deploy; exception expiry → EXPIRED_PENDING_RECONCILIATION |
-| M2-18 | #65 | **M2 CLOSED** — Desktop policy authoring/review (Contracts-only editors, validate/submit/approve/bind, semantic diff, risk; Deploy disabled N1-06) |
+| M2-18 | #65 | **M2 CLOSED** — Desktop policy authoring/review (Contracts-only editors, validate/submit/approve/bind, semantic diff, risk; Deploy residual M4-12) |
 | M3-01 | #68 | RouterOS filter artifact model: `RouterOsFilterArtifact` + MFC-CJ1; physical_semantics/artifact_id/resource_hash; golden vectors |
 | M3-02 | #69 | Managed chain namespace/layout: `ManagedChainNamespace` + `ManagedChainLayoutBuilder`; mfc4/mfc6; Pipeline v1 root/deny |
 | M3-03 | #70 | Content-addressed address lists: `AddressListCompileSession` + `AddressPrefixEncoder`; intern; limits; negated universe-minus-exclusions |
@@ -139,6 +139,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | M5-09 | #84 | Onboarding API + Desktop workflow: Validate/CreatePlan/Start/Watch/Rollback/GetRecoveryStatus; plan_hash gate; no script source |
 | M5-10 | #85 | **M5 CLOSED** — onboarding integration acceptance on every MVP topology; crash/watchdog/guard vectors; no partial managed Node |
 | M4-01 | #86 | Immutable `DeploymentPlan` / Node+device SM / lock / write-ahead journal; `IDeploymentStore`; `DeploymentSchemaM401` |
+| N1-06 | #99 | Packet-path deploy gate: `PACKET_PATH_*` → PRECHECKING BLOCKED; CPU/MIXED allowed; Switch no FORWARD proof |
 
 ### 2.3 Поточні прогалини (код)
 
@@ -146,15 +147,15 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 |--------|------|
 | `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors; default `ProbeOnlyRouterOsReadPort` + `NotConfiguredSnapshotCapturePort`; actual-filter discovery mapper; packet-path blocker mapper; management-path discovery mapper (`api-ssl.address` in canonical projector); topology-dependency discovery mapper (VRRP sync fields, RAW/NAT/Mangle, rp-filter, switch chip); FastTrack discovery mapper (pre-anchor + VRF); policy-evidence discovery mapper (NODE_EFFECTIVE actual filter); closed `OnboardingBootstrapWriter` (M5-05) + `OnboardingWatchdogWriter` arm/disarm/cleanup (M5-06–M5-08; generic `Write` namespace still absent) |
 | `Mfc.Contracts` | `mfc.v1` inventory + snapshot/diff + `ZoneService` + `PolicyService` (authoring/review + approval/binding + compile summary RPCs) + `OnboardingService` |
-| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper + packet-path canonical mapper + management-path canonical mapper + topology-dependency canonical mapper + FastTrack canonical mapper + policy-evidence canonical mapper + analysis-run/approval/desired-binding use cases + validate/catalog/diff authoring use cases + compile-and-store filter artifacts + `IOnboardingStore` + `ValidateOnboardingPrerequisitesUseCase` + `VerifyManagementGuardUseCase` + `PlanAnchorPlacementUseCase` + `PlanOnboardingBootstrapWritesUseCase` / `IOnboardingBootstrapWritePort` + `PlanOnboardingWatchdogUseCase` / `IOnboardingWatchdogPort` + `ExecuteOnboardingBootstrapUseCase` + `RollbackOnboardingBootstrapUseCase` + `RecoverOnboardingUseCase` + onboarding workflow use cases / `IOnboardingRuntime` + `IDeploymentStore` |
+| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper + packet-path canonical mapper + management-path canonical mapper + topology-dependency canonical mapper + FastTrack canonical mapper + policy-evidence canonical mapper + analysis-run/approval/desired-binding use cases + validate/catalog/diff authoring use cases + compile-and-store filter artifacts + `IOnboardingStore` + `ValidateOnboardingPrerequisitesUseCase` + `VerifyManagementGuardUseCase` + `PlanAnchorPlacementUseCase` + `PlanOnboardingBootstrapWritesUseCase` / `IOnboardingBootstrapWritePort` + `PlanOnboardingWatchdogUseCase` / `IOnboardingWatchdogPort` + `ExecuteOnboardingBootstrapUseCase` + `RollbackOnboardingBootstrapUseCase` + `RecoverOnboardingUseCase` + onboarding workflow use cases / `IOnboardingRuntime` + `IDeploymentStore` + `DeploymentPacketPathPrecheck` |
 | `Mfc.Controller` | health + `InventoryService` + `SnapshotService` + `ZoneService` + `PolicyService` (compose + authoring/review + approval/binding + compile) + `OnboardingService` gRPC |
 | `Mfc.Desktop` | connection shell + inventory tree + snapshot/diff viewers + Zones + Policies authoring/review workflow + Onboarding checklist/placement/recovery |
 | Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings + policy_analysis_runs/policy_approvals/warning_acknowledgments/policy_bindings + filter_artifacts + onboarding_plans/operations/steps + deployment_plans/operations/locks/steps |
 | `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) + management-path safety (M2-13) + topology/dependency safety (M2-14) + FastTrack policy validation (M2-15) + policy tests/diff/risk (M2-16) + approval/desired-binding (M2-17) + object JSON writer (M2-18) + RouterOS filter artifact model (M3-01) + managed chain namespace/layout (M3-02) + content-addressed address lists (M3-03) + zone/service variants (M3-04) + matcher/effect compile (M3-05) + FastTrack pairs + terminals (M3-06) + per-device compile orchestration (M3-07) + compiler acceptance / Switch FORWARD gate (M3-08) |
 | `Mfc.Domain.Onboarding` | immutable plans + plan hasher + operation SM + write-ahead steps + bootstrap artifact + `ManagementState` (M5-01) + prerequisite validator (M5-02) + `GuardProfile` / guard verifier (M5-03) + `AnchorPlacementPlanner` (M5-04) + `OnboardingBootstrapWritePlanner` (M5-05) + `OnboardingWatchdogPlanner` (M5-06) + pass-through equivalence / enable order (M5-07) + Spec §46 recovery decision table (M5-08) |
-| `Mfc.Domain.Deployment` | immutable `DeploymentPlan` + plan hasher `mfc.deployment.plan.v1` + Node/device SM + exclusive lock + write-ahead steps (M4-01); no campaign; no RouterOS writer |
+| `Mfc.Domain.Deployment` | immutable `DeploymentPlan` + plan hasher `mfc.deployment.plan.v1` + Node/device SM + exclusive lock + write-ahead steps (M4-01) + packet-path deploy gate (N1-06); no campaign; no RouterOS writer |
 
-**NEXT = N1-06:** [N1-06](https://github.com/sesquicadaver/MTDirector/issues/99) Block deploy when packet-path blockers present.
+**NEXT = M4-02:** [M4-02](https://github.com/sesquicadaver/MTDirector/issues/87) Implement restricted deployment writer and managed-state reader.
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -313,7 +314,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | # | ID | GitHub | Задача |
 |--:|----|-------:|--------|
 | ~~72~~ | ~~M4-01~~ | ~~#86~~ | ~~Implement deployment plan, states and persistence~~ → DONE (`DeploymentPlan` + SM + lock + journal + `DeploymentSchemaM401`) |
-| 73 | N1-06 | #99 | Block deploy when packet-path blockers present |
+| ~~73~~ | ~~N1-06~~ | ~~#99~~ | ~~Block deploy when packet-path blockers present~~ → DONE (`DeploymentPacketPathGate` + PRECHECKING → BLOCKED) |
 | 74 | M4-02 | #87 | Implement restricted deployment writer and managed-state reader |
 | 75 | M4-03 | #88 | Implement address-list create-or-verify staging |
 | 76 | M4-04 | #89 | Implement detached chain staging and verification |
@@ -393,7 +394,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 51 відкритих атомарних задач (24 до MVP CLOSED + 27 M7). Start here: #99 N1-06.
+**Кінець черги:** 50 відкритих атомарних задач (23 до MVP CLOSED + 27 M7). Start here: #87 M4-02.
 
 ---
 
@@ -401,10 +402,10 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 24 | N1-06 + M4-02…M6-09 + N1-07 |
+| До MVP CLOSED | 23 | M4-02…M6-09 + N1-07 |
 | Post-MVP M7 | 27 | лише після M6-09 |
-| **Нереалізовано разом** | **51** | 24 MVP + 27 M7 |
-| DONE у коді (§2.2) | 85 | M0+M1+N1-01…05+M2-01…18+M3-01…08+M5-01…10+M4-01 |
+| **Нереалізовано разом** | **50** | 23 MVP + 27 M7 |
+| DONE у коді (§2.2) | 86 | M0+M1+N1-01…06+M2-01…18+M3-01…08+M5-01…10+M4-01 |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
@@ -472,6 +473,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | Onboarding API + Desktop workflow | M5-09 | Living Spec `OnboardingWorkflowLivingSpecTests` AC#1–10; `OnboardingService` + Desktop panel | **DONE** |
 | Onboarding integration acceptance / M5 CLOSED | M5-10 | Living Spec `OnboardingIntegrationAcceptanceLivingSpecTests` AC#1–12; `OnboardingTopologyAcceptanceTests` | **DONE** |
 | Deployment plan + persistence | M4-01 | Living Spec `DeploymentLivingSpecTests` AC#1–12 + `DeploymentPersistTests`; `DeploymentSchemaM401` | **DONE** |
+| Packet-path deploy gate | N1-06 | Living Spec `DeploymentPacketPathGateLivingSpecTests` AC#1–10; `DeploymentPacketPathPrecheck` | **DONE** |
 | Watchdog deploy / rollback | M4 | fault-injection; VRRP | TODO |
 | Drift + E2E DoD | M6 | E2E §E2E | TODO |
 | Routing assurance | M7.1 | RouteResolutionTrace fixtures | TODO post-MVP |
@@ -518,8 +520,9 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 19. ~~Відкрити **M5-09** → [issue #84](https://github.com/sesquicadaver/MTDirector/issues/84).~~ → **DONE**.
 20. ~~Відкрити **M5-10** → [issue #85](https://github.com/sesquicadaver/MTDirector/issues/85).~~ → **DONE / M5 CLOSED**.
 21. ~~Відкрити **M4-01** → [issue #86](https://github.com/sesquicadaver/MTDirector/issues/86).~~ → **DONE**.
-22. Відкрити **N1-06** → [issue #99](https://github.com/sesquicadaver/MTDirector/issues/99).
-23. Не стартувати M7, доки не закрито **M6-09** (черга #95).
+22. ~~Відкрити **N1-06** → [issue #99](https://github.com/sesquicadaver/MTDirector/issues/99).~~ → **DONE**.
+23. Відкрити **M4-02** → [issue #87](https://github.com/sesquicadaver/MTDirector/issues/87).
+24. Не стартувати M7, доки не закрито **M6-09** (черга #95).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones

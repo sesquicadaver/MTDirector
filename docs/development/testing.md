@@ -620,7 +620,7 @@ next-1 hardware offload + ROADMAP N1-04 → Domain `PacketPathAnalysis` (Desktop
 | Discovery classification mapper | `PacketPathBlockerMapper` | `ClassificationMapsToDomainBlockersWithoutDisablingOffload` |
 | `PACKET_PATH_*` trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
 
-**Residuals:** Desktop OUT; no new RPC; logical compose unchanged (device packet-path is not a company document). N1-03 still attaches discovery hints; Domain is the analysis BLOCKER authority. MIXED is not `PACKET_PATH_NOT_PROVEN` (next-1 names only HW + INDETERMINATE). Controller never disables L2/L3 hardware offload. Live capture still omits N1-05 projector membership (M1-22 seam). Deploy gating of these blockers is N1-06.
+**Residuals:** Desktop OUT; no new RPC; logical compose unchanged (device packet-path is not a company document). N1-03 still attaches discovery hints; Domain is the analysis BLOCKER authority. MIXED is not `PACKET_PATH_NOT_PROVEN` (next-1 names only HW + INDETERMINATE). Controller never disables L2/L3 hardware offload. Live capture still omits N1-05 projector membership (M1-22 seam). Deploy gating of these blockers is N1-06 (DONE).
 
 Filter:
 ```bash
@@ -818,7 +818,7 @@ Policy Model §16 / §18 / §9 / §60–§61 + Issue Set M2-18 → Domain writer
 | AC#11 Approved/InReview read-only | `PolicyRevisionPanelState.IsReadOnly` | `Ac11ApprovedRevisionIsReadOnly` |
 | Desktop RPC wiring (Contracts-only) | `IPolicyServiceClient` | `DesktopClientsCoverInventorySnapshotCompareZoneAndPolicyRpcs` |
 
-**Residuals:** Typed `PolicyDocument.Tests` still opaque JSON text box. Full NODE_EFFECTIVE / per-device analysis hashes need device context — Desktop reuses logical-effective/content hash slots for `RecordAnalysisRun` wiring. Deploy button present with `CanExecute=false` (N1-06). Composer/RouterOS writes remain out of scope (M3/M4).
+**Residuals:** Typed `PolicyDocument.Tests` still opaque JSON text box. Full NODE_EFFECTIVE / per-device analysis hashes need device context — Desktop reuses logical-effective/content hash slots for `RecordAnalysisRun` wiring. Deploy button present with `CanExecute=false` (M4-12; packet-path Domain gate is N1-06 DONE). Composer/RouterOS writes remain out of scope (M3/M4).
 
 Filter:
 ```bash
@@ -1320,13 +1320,39 @@ Safe Deployment Spec §9–§16 + Issue Set M4-01 → Domain + EF (no RouterOS w
 | AC#12 Plan hash preconditions | `DeploymentPlanHasher` | `Ac12PlanHashIncludesNormativePreconditions` |
 | Persistence schema `m4-01` | migration `DeploymentSchemaM401` | `MigrateCreatesDeploymentTablesAndSchemaMetadata` |
 
-**Residuals:** Restricted deployment writer / staging / watchdog / activate are M4-02+. Packet-path deploy gate is N1-06.
+**Residuals:** Restricted deployment writer / staging / watchdog / activate are M4-02+. Packet-path deploy gate is N1-06 (DONE).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentLivingSpecTests"
 dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~DeploymentPersistTests"
+```
+
+## Living Specification — packet-path deploy gate (N1-06)
+
+next-1 + Safe Deployment PRECHECKING → BLOCKED + ROADMAP N1-06 → Domain gate (no RouterOS writer, no new RPC, no offload writes):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 HW offload blocks deploy | `PACKET_PATH_BYPASSES_IP_FIREWALL` | `Ac1HardwareOffloadBlocksDeployWithBypassesCode` |
+| AC#2 INDETERMINATE blocks deploy | `PACKET_PATH_NOT_PROVEN` | `Ac2IndeterminateBlocksDeployWithNotProvenCode` |
+| AC#3 CPU path allows start | no blocker | `Ac3CpuFirewallPathAllowsDeployStart` |
+| AC#4 MIXED does not block | next-1 mapping | `Ac4MixedPathDoesNotBlockDeploy` |
+| AC#5 Empty pairs on Router | fail-closed NOT_PROVEN | `Ac5EmptyPairsOnRouterAreNotProven` |
+| AC#6 Switch no FORWARD proof | ignore HW pairs | `Ac6SwitchDoesNotRequireForwardPacketPathProof` |
+| AC#7 VRRP is whole Node | any HW pair | `Ac7VrrpHardwareOffloadBlocksTheWholeNode` |
+| AC#8 PRECHECKING → BLOCKED | no STAGING | `Ac8PacketPathBlockersFinishPrecheckAsBlockedWithoutStaging` |
+| AC#9 Proven path does not auto-stage | stay CREATED | `Ac9ProvenPathAllowsPrecheckWithoutEnteringStaging` |
+| AC#10 No offload writes / FailedPrecondition codes | Domain ↛ RouterOs | `Ac10GateDoesNotReferenceRouterOsOrOffloadWrites` |
+| Canonical mapper path | `DeploymentPacketPathPrecheck` | `CanonicalHardwareOffloadBlocksDeployWithoutReclassification` |
+
+**Residuals:** Restricted writer / staging / watchdog / activate / gRPC Deploy are M4-02+. Desktop Deploy command stays `CanExecute=false` (no Save and Deploy). Controller never disables L2/L3 hardware offload.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentPacketPath|FullyQualifiedName~DeploymentLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
