@@ -67,6 +67,18 @@ public sealed class MfcDbContext : DbContext
 
     public DbSet<OnboardingStepEntity> OnboardingSteps => Set<OnboardingStepEntity>();
 
+    public DbSet<DeploymentPlanEntity> DeploymentPlans => Set<DeploymentPlanEntity>();
+
+    public DbSet<DeploymentDevicePlanEntity> DeploymentDevicePlans => Set<DeploymentDevicePlanEntity>();
+
+    public DbSet<DeploymentOperationEntity> DeploymentOperations => Set<DeploymentOperationEntity>();
+
+    public DbSet<DeploymentDeviceStateEntity> DeploymentDeviceStates => Set<DeploymentDeviceStateEntity>();
+
+    public DbSet<DeploymentLockEntity> DeploymentLocks => Set<DeploymentLockEntity>();
+
+    public DbSet<DeploymentStepEntity> DeploymentSteps => Set<DeploymentStepEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MfcDbContext).Assembly);
@@ -347,6 +359,140 @@ public sealed class MfcDbContext : DbContext
             {
                 throw new InvalidOperationException(
                     "Onboarding step identity and hashes cannot be updated through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<DeploymentPlanEntity> entry
+                 in ChangeTracker.Entries<DeploymentPlanEntity>())
+        {
+            if (entry.State is EntityState.Modified or EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "deployment_plans is append-only: update and delete are not allowed through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<DeploymentDevicePlanEntity> entry
+                 in ChangeTracker.Entries<DeploymentDevicePlanEntity>())
+        {
+            if (entry.State is EntityState.Modified or EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "deployment_device_plans is append-only: update and delete are not allowed through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<DeploymentOperationEntity> entry
+                 in ChangeTracker.Entries<DeploymentOperationEntity>())
+        {
+            if (entry.State is EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "deployment_operations cannot be deleted through the application DbContext.");
+            }
+
+            if (entry.State is not EntityState.Modified)
+            {
+                continue;
+            }
+
+            if (DeploymentOperationEntity.IsTerminal(entry.Property(e => e.State).OriginalValue))
+            {
+                throw new InvalidOperationException(
+                    "Terminal deployment_operations are immutable and cannot be updated through the application DbContext.");
+            }
+
+            if (entry.Property(e => e.NodeId).IsModified
+                || entry.Property(e => e.PlanId).IsModified
+                || entry.Property(e => e.CreatedBy).IsModified
+                || entry.Property(e => e.CreatedAtUtc).IsModified)
+            {
+                throw new InvalidOperationException(
+                    "Deployment operation identity cannot be updated through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<DeploymentDeviceStateEntity> entry
+                 in ChangeTracker.Entries<DeploymentDeviceStateEntity>())
+        {
+            if (entry.State is EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "deployment_device_states cannot be deleted through the application DbContext.");
+            }
+
+            if (entry.State is not EntityState.Modified)
+            {
+                continue;
+            }
+
+            if (DeploymentDeviceStateEntity.IsTerminal(entry.Property(e => e.State).OriginalValue))
+            {
+                throw new InvalidOperationException(
+                    "Terminal deployment_device_states are immutable and cannot be updated through the application DbContext.");
+            }
+
+            if (entry.Property(e => e.OperationId).IsModified || entry.Property(e => e.DeviceId).IsModified)
+            {
+                throw new InvalidOperationException(
+                    "Deployment device-state identity cannot be updated through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<DeploymentLockEntity> entry
+                 in ChangeTracker.Entries<DeploymentLockEntity>())
+        {
+            if (entry.State is EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "deployment_locks cannot be deleted through the application DbContext.");
+            }
+
+            if (entry.State is not EntityState.Modified)
+            {
+                continue;
+            }
+
+            if (entry.Property(e => e.NodeId).IsModified
+                || entry.Property(e => e.DeploymentId).IsModified
+                || entry.Property(e => e.OwnerInstanceId).IsModified
+                || entry.Property(e => e.AcquiredAtUtc).IsModified)
+            {
+                throw new InvalidOperationException(
+                    "Deployment lock identity cannot be updated through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<DeploymentStepEntity> entry
+                 in ChangeTracker.Entries<DeploymentStepEntity>())
+        {
+            if (entry.State is EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "deployment_steps cannot be deleted through the application DbContext.");
+            }
+
+            if (entry.State is not EntityState.Modified)
+            {
+                continue;
+            }
+
+            if (DeploymentStepEntity.IsTerminal(entry.Property(e => e.State).OriginalValue))
+            {
+                throw new InvalidOperationException(
+                    "Verified/failed deployment_steps are frozen and cannot be updated through the application DbContext.");
+            }
+
+            if (entry.Property(e => e.OperationId).IsModified
+                || entry.Property(e => e.DeviceId).IsModified
+                || entry.Property(e => e.Sequence).IsModified
+                || entry.Property(e => e.Kind).IsModified
+                || entry.Property(e => e.ExpectedBeforeHash).IsModified
+                || entry.Property(e => e.DesiredAfterHash).IsModified
+                || entry.Property(e => e.CreatedAtUtc).IsModified)
+            {
+                throw new InvalidOperationException(
+                    "Deployment step identity and hashes cannot be updated through the application DbContext.");
             }
         }
     }

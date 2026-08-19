@@ -14,6 +14,7 @@ PostgreSQL is the only supported production database. SQLite is forbidden.
 | `policy.approval.schema` | `m2-17` | `PolicyApprovalBindingSchemaM217` |
 | `compiler.filter_artifacts.schema` | `m3-07` | `FilterArtifactsSchemaM307` |
 | `onboarding.schema` | `m5-01` | `OnboardingSchemaM501` |
+| `deployment.schema` | `m4-01` | `DeploymentSchemaM401` |
 
 M1 inventory/snapshot tables follow Vertical Slice §8 (`sites`, `nodes`, `devices`, `device_connection_profiles`, `capture_operations`, `snapshot_captures`, `snapshot_payloads`) plus Canonical Spec §28.2 `snapshot_capture_sections` (M1-23). Topology tables from the early issue draft are **not** persisted in M1.
 
@@ -26,6 +27,8 @@ M2-17 adds append-only `policy_analysis_runs`, `warning_acknowledgments`, `polic
 M3-07 adds append-only content-addressed `filter_artifacts` keyed by `resource_hash` (Compiler Spec §6): Brotli-compressed MFC-CJ1 filter artifact body, provenance columns (logical/device-resolved/analysis/capability/profile hashes), DbContext blocks UPDATE/DELETE.
 
 M5-01 adds `ManagementState` on `nodes`/`devices` (default UNMANAGED) and append-only `onboarding_plans` / `onboarding_device_plans` / `onboarding_anchor_placements`, mutable `onboarding_operations` (filtered unique nonterminal per `NodeId`) and write-ahead `onboarding_steps`. DbContext blocks plan mutation, terminal-operation identity changes, and verified/failed step identity changes.
+
+M4-01 adds append-only `deployment_plans` / `deployment_device_plans`, mutable `deployment_operations` (filtered unique nonterminal per `NodeId`; terminal includes `NO_CHANGES`), `deployment_device_states`, unique `deployment_locks` (expired rows are not deleted), and write-ahead `deployment_steps`. DbContext blocks plan mutation, terminal-operation/device-state/step identity changes, and lock identity mutation (heartbeat/expiry may change).
 
 ## Local PostgreSQL
 
