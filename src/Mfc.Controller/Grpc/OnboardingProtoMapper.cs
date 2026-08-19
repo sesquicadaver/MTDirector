@@ -6,18 +6,18 @@ using Mfc.Domain.Capabilities;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
 using Mfc.Domain.Policy;
-using DomainNodeKind = Mfc.Domain.Inventory.NodeKind;
-using DomainSupport = Mfc.Domain.Inventory.SupportState;
-using DomainFamily = Mfc.Domain.Inventory.IpAddressFamily;
-using DomainFacts = Mfc.Domain.Onboarding.OnboardingDevicePrerequisiteFacts;
-using ProtoFacts = Mfc.Contracts.Mfc.V1.OnboardingDevicePrerequisiteFacts;
-using DomainIpFacts = Mfc.Domain.Onboarding.OnboardingIpServiceFacts;
 using DomainAccountFacts = Mfc.Domain.Onboarding.OnboardingServiceAccountFacts;
-using DomainModeFacts = Mfc.Domain.Onboarding.OnboardingDeviceModeFacts;
-using DomainState = Mfc.Domain.Onboarding.OnboardingOperationState;
 using DomainAction = Mfc.Domain.Onboarding.OnboardingRecoveryAction;
-using ProtoState = Mfc.Contracts.Mfc.V1.OnboardingOperationState;
+using DomainFacts = Mfc.Domain.Onboarding.OnboardingDevicePrerequisiteFacts;
+using DomainFamily = Mfc.Domain.Inventory.IpAddressFamily;
+using DomainIpFacts = Mfc.Domain.Onboarding.OnboardingIpServiceFacts;
+using DomainModeFacts = Mfc.Domain.Onboarding.OnboardingDeviceModeFacts;
+using DomainNodeKind = Mfc.Domain.Inventory.NodeKind;
+using DomainState = Mfc.Domain.Onboarding.OnboardingOperationState;
+using DomainSupport = Mfc.Domain.Inventory.SupportState;
 using ProtoAction = Mfc.Contracts.Mfc.V1.OnboardingRecoveryAction;
+using ProtoFacts = Mfc.Contracts.Mfc.V1.OnboardingDevicePrerequisiteFacts;
+using ProtoState = Mfc.Contracts.Mfc.V1.OnboardingOperationState;
 
 namespace Mfc.Controller.Grpc;
 

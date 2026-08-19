@@ -8,14 +8,14 @@ using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
 using Mfc.UnitTests.Application.Fakes;
 using Xunit;
-using DomainNode = Mfc.Domain.Inventory.Node;
-using DomainManagement = Mfc.Domain.Inventory.ManagementState;
-using DomainSupport = Mfc.Domain.Inventory.SupportState;
 using DomainFacts = Mfc.Domain.Onboarding.OnboardingDevicePrerequisiteFacts;
+using DomainManagement = Mfc.Domain.Inventory.ManagementState;
+using DomainNode = Mfc.Domain.Inventory.Node;
 using DomainState = Mfc.Domain.Onboarding.OnboardingOperationState;
-using ProtoState = Mfc.Contracts.Mfc.V1.OnboardingOperationState;
+using DomainSupport = Mfc.Domain.Inventory.SupportState;
 using OnboardingProgress = Mfc.Contracts.Mfc.V1.OnboardingProgress;
 using OnboardingService = Mfc.Contracts.Mfc.V1.OnboardingService;
+using ProtoState = Mfc.Contracts.Mfc.V1.OnboardingOperationState;
 
 namespace Mfc.UnitTests.Onboarding;
 

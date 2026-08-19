@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Security.Cryptography;
+using System.Text;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -6,8 +8,6 @@ using Google.Protobuf;
 using Grpc.Core;
 using Mfc.Contracts.Mfc.V1;
 using Mfc.Desktop.Services;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Mfc.Desktop.ViewModels;
 

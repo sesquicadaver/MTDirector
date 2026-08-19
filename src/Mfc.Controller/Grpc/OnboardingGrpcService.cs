@@ -4,9 +4,9 @@ using Mfc.Application.Common;
 using Mfc.Application.Onboarding;
 using Mfc.Contracts.Mfc.V1;
 using Mfc.Domain;
-using DomainNode = Mfc.Domain.Inventory.Node;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
+using DomainNode = Mfc.Domain.Inventory.Node;
 
 namespace Mfc.Controller.Grpc;
 
