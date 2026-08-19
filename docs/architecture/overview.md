@@ -91,7 +91,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Onboarding execution + verification | Done (M5-07) | Stage/arm/enable/verify/disarm/commit; pass-through equivalence; Node MANAGED only fully |
 | Onboarding rollback + crash recovery | Done (M5-08) | Disable-first exact rollback; Spec §46 decision table; no automatic adoption |
 | Onboarding API + Desktop workflow | Done (M5-09) | `OnboardingService` RPCs + Desktop checklist/placement/recovery; plan_hash; no script source |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M5-10 (#85) |
+| Onboarding integration acceptance / M5 CLOSED | Done (M5-10) | Topology Living Spec + testlab dual-stack/CRS; crash/watchdog/guard; no partial managed Node |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-01 (#86) |
 
 ## ADRs
 

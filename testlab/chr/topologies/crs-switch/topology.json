@@ -1,0 +1,37 @@
+{
+  "id": "crs-switch",
+  "description": "CRS-class switch management topology for INPUT/OUTPUT onboarding (no FORWARD anchors) (M5-10).",
+  "management": {
+    "network": "10.255.60.0/24",
+    "gateway": "10.255.60.1",
+    "deviceAddress": "10.255.60.10",
+    "apiSslPort": 8729,
+    "boardClass": "crs"
+  },
+  "wanSimulators": [],
+  "credentials": {
+    "strategy": "ephemeral-per-run",
+    "reuseForbidden": true
+  },
+  "fixture": "fixtures/crs-switch-minimal.rsc.example",
+  "reset": {
+    "snapshotName": "clean-crs-switch",
+    "steps": [
+      "Power off VM",
+      "Restore clean-crs-switch snapshot",
+      "Regenerate ephemeral API credentials",
+      "Apply fixtures/crs-switch-minimal.rsc.example"
+    ]
+  },
+  "cleanup": {
+    "steps": [
+      "Export redacted diagnostics if the job failed",
+      "Delete ephemeral credentials",
+      "Restore clean-crs-switch snapshot",
+      "Remove temporary disks"
+    ]
+  },
+  "expectedSnapshotHashes": {
+    "afterReset": "REPLACE_AFTER_FIRST_GOLDEN_CAPTURE"
+  }
+}

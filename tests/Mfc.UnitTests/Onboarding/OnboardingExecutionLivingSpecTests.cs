@@ -492,6 +492,9 @@ public sealed class OnboardingExecutionLivingSpecTests
         public void SeedWatchdog(OnboardingOperationId operationId, DeviceId deviceId, bool disabled)
             => _channel.SeedWatchdog(operationId, deviceId, disabled);
 
+        /// <summary>Applies the exact-disable semantics of <see cref="OnboardingWatchdogScript"/>.</summary>
+        public void SimulateWatchdogFire() => _channel.SimulateWatchdogFire();
+
         public Task<IReadOnlyList<ActualFilterRule>> PrintFilterAsync(CancellationToken cancellationToken = default)
             => Task.FromResult<IReadOnlyList<ActualFilterRule>>(_channel.ToFilterRules());
 
@@ -673,6 +676,42 @@ public sealed class OnboardingExecutionLivingSpecTests
                 ["comment"] = BootstrapArtifact.ReturnComment,
             };
             _filters.Add(row);
+        }
+
+        public void SimulateWatchdogFire()
+        {
+            foreach (Dictionary<string, string> row in _filters)
+            {
+                string? comment = row.GetValueOrDefault("comment");
+                if (comment is null || !comment.StartsWith("mfc:anchor:v1:", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                IpAddressFamily family = comment.Contains(":v1:6:", StringComparison.Ordinal)
+                    ? IpAddressFamily.IPv6
+                    : IpAddressFamily.IPv4;
+                string chain = row.GetValueOrDefault("chain") ?? string.Empty;
+                FilterBuiltInContext context = chain.ToLowerInvariant() switch
+                {
+                    "input" => FilterBuiltInContext.Input,
+                    "forward" => FilterBuiltInContext.Forward,
+                    "output" => FilterBuiltInContext.Output,
+                    _ => FilterBuiltInContext.Input,
+                };
+                bool disabled = row.GetValueOrDefault("disabled") is "yes" or "true" or "1";
+                if (OnboardingWatchdogScript.ShouldDisable(
+                        matchCount: 1,
+                        chain,
+                        row.GetValueOrDefault("action"),
+                        row.GetValueOrDefault("jump-target"),
+                        chain,
+                        BootstrapArtifact.RootChainName(family, context),
+                        disabled))
+                {
+                    row["disabled"] = "yes";
+                }
+            }
         }
 
         public void SeedWatchdog(OnboardingOperationId operationId, DeviceId deviceId, bool disabled)

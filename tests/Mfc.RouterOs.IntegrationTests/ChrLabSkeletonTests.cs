@@ -15,6 +15,8 @@ public sealed class ChrLabSkeletonTests
         "multi-wan-balanced",
         "vrrp-active-passive",
         "vrrp-split-master",
+        "standalone-dual-stack",
+        "crs-switch",
     ];
 
     private static string RepoRoot
@@ -164,5 +166,16 @@ public sealed class ChrLabSkeletonTests
         Assert.Contains("OUTSIDE Mfc.RouterOs", text, StringComparison.Ordinal);
         Assert.Contains("active-passive", text, StringComparison.Ordinal);
         Assert.Contains("split-master", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void OnboardingExtraTopologiesHaveProvisionScriptOutsideProductAdapter()
+    {
+        string script = Path.Combine(RepoRoot, "testlab", "chr", "scripts", "provision-onboarding-extra.sh");
+        Assert.True(File.Exists(script), "M5-10 requires extra topology provisioning outside Mfc.RouterOs.");
+        string text = File.ReadAllText(script);
+        Assert.Contains("OUTSIDE Mfc.RouterOs", text, StringComparison.Ordinal);
+        Assert.Contains("standalone-dual-stack", text, StringComparison.Ordinal);
+        Assert.Contains("crs-switch", text, StringComparison.Ordinal);
     }
 }

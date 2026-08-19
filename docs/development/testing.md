@@ -19,7 +19,7 @@ Working tree must stay clean after build/test.
 | Project | Role |
 |---------|------|
 | `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28, Desktop semantic diff viewer M1-29, fault-injection matrix M1-33) |
-| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN/VRRP vertical-slice acceptance M1-30/M1-31/M1-32, fault-injection acceptance M1-33 |
+| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN/VRRP vertical-slice acceptance M1-30/M1-31/M1-32, fault-injection acceptance M1-33, onboarding topology acceptance M5-10 |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts + optional live CHR TLS gate (`MFC_CHR_STANDALONE_HOST`) |
 
 ## Living Specification — semantic diff (M1-24)
@@ -1263,12 +1263,41 @@ Issue Set M5-09 → separate RPCs, plan_hash at start, streaming progress, Deskt
 | AC#9 Mutation idempotency | CreatePlan/Start/Rollback | `Ac9MutationRpcsAreIdempotent` |
 | AC#10 All operations audited | workflow use cases | `Ac10EveryWorkflowOperationIsAudited` |
 
-**Residuals:** Live topology acceptance is M5-10. Default `NotConfiguredOnboardingRuntime` does not fake RouterOS commits.
+**Residuals:** Topology acceptance is M5-10 (DONE). Default `NotConfiguredOnboardingRuntime` does not fake RouterOS commits.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingWorkflow"
+```
+
+## Living Specification — onboarding integration acceptance (M5-10)
+
+Issue Set M5-10 + Onboarding Spec §61–§64 → exact bootstrap/rollback on every MVP topology (isolated sessions; live CHR optional):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Standalone IPv4 | `ExecuteOnboardingBootstrapUseCase` | `Ac1StandaloneIpv4OnboardingCommitsFully` |
+| AC#2 Dual-stack | IPv6 required set | `Ac2DualStackOnboardingCommitsIpv4AndIpv6Anchors` |
+| AC#3 Multi-WAN states | Failover/Balanced/One | `Ac3MultiWanOperationalStatesDoNotMutateAuxiliary` |
+| AC#4 VRRP active/passive | whole Node | `Ac4VrrpActivePassiveOnboardsEveryMember` |
+| AC#5 VRRP split-master | role not an input | `Ac5VrrpSplitMasterRoleIsNotAnOnboardingInput` |
+| AC#6 CRS INPUT/OUTPUT | Switch plan | `Ac6CrsInputOutputOnboardingOmitsForward` |
+| AC#7 Switch FORWARD absent | dual-stack switch | `Ac7SwitchForwardAnchorIsAbsentIncludingDualStack` |
+| AC#8 Scheduler-disabled / flagged | `OnboardingPrerequisiteValidator` | `Ac8SchedulerDisabledAndFlaggedDevicesAreBlocked` |
+| AC#9 Deadline/startup rollback | watchdog fire + `RecoverOnboardingUseCase` | `Ac9DeadlineAndStartupWatchdogRollbackLeaveNodeUnmanaged` |
+| AC#10 Crash after effectful phases | Spec §46 recover | `Ac10CrashAfterEachEffectfulPhaseLeavesNoPartialManagedNode` |
+| AC#11 Guard + namespace collision | verifier + blocked staging | `Ac11GuardAndNamespaceCollisionsBlockWithoutManagedResidue` |
+| AC#12 No partial managed Node | VRRP member reconnect fail | `Ac12FailedMemberLeavesWholeNodeUnmanaged` |
+| Topology contracts + gRPC | testlab + `OnboardingService` | `OnboardingTopologyAcceptanceTests` |
+
+**Residuals:** Live CHR matrix stays optional (`MFC_CHR_*`). Safe deploy is M4-01. Default `NotConfiguredOnboardingRuntime` does not fake RouterOS commits.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingIntegrationAcceptance"
+dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~OnboardingTopologyAcceptance"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
