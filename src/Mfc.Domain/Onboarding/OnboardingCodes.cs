@@ -130,6 +130,9 @@ public static class OnboardingCodes
     /// <summary>Spec §39 / M5-07 — new API-SSL session after management anchors failed.</summary>
     public const string OnboardingManagementReconnectFailed = "ONBOARDING_MANAGEMENT_RECONNECT_FAILED";
 
+    /// <summary>Spec §46 / M5-08 — committed onboarding drifted (missing or disabled anchor).</summary>
+    public const string OnboardingCriticalDrift = "ONBOARDING_CRITICAL_DRIFT";
+
     public static readonly TimeSpan MinCommitMargin = TimeSpan.FromSeconds(30);
 
     public static readonly TimeSpan SchedulerProofTimeout = TimeSpan.FromSeconds(15);

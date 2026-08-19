@@ -12,8 +12,10 @@ public sealed class OnboardingOperation
         new()
         {
             (OnboardingOperationState.Created, OnboardingOperationState.Prechecking),
+            (OnboardingOperationState.Created, OnboardingOperationState.RecoveryRequired),
             (OnboardingOperationState.Prechecking, OnboardingOperationState.StagingBootstrapRoots),
             (OnboardingOperationState.Prechecking, OnboardingOperationState.Blocked),
+            (OnboardingOperationState.Prechecking, OnboardingOperationState.RecoveryRequired),
             (OnboardingOperationState.StagingBootstrapRoots, OnboardingOperationState.StagingDisabledAnchors),
             (OnboardingOperationState.StagingDisabledAnchors, OnboardingOperationState.ArmingWatchdogs),
             (OnboardingOperationState.ArmingWatchdogs, OnboardingOperationState.EnablingAnchors),
@@ -33,6 +35,7 @@ public sealed class OnboardingOperation
             (OnboardingOperationState.Verifying, OnboardingOperationState.RecoveryRequired),
             (OnboardingOperationState.DisarmingWatchdogs, OnboardingOperationState.RecoveryRequired),
             (OnboardingOperationState.RollbackPending, OnboardingOperationState.RollingBack),
+            (OnboardingOperationState.RollbackPending, OnboardingOperationState.RecoveryRequired),
             (OnboardingOperationState.RollingBack, OnboardingOperationState.RolledBack),
             (OnboardingOperationState.RollingBack, OnboardingOperationState.RecoveryRequired),
         };
