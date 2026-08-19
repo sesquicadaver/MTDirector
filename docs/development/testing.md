@@ -1125,18 +1125,44 @@ Onboarding Spec §20–§21 / §58 + Issue Set M5-04 → Domain planner (no Rout
 | AC#4 Predecessor/successor context | freeze + revalidate | `Ac4PredecessorAndSuccessorContextAreChecked` |
 | AC#5 Placement before guard forbidden | `ANCHOR_BEFORE_GUARD` | `Ac5PlacementBeforeGuardIsForbidden` |
 | AC#6 After unconditional terminal blocked | `ANCHOR_UNREACHABLE` | `Ac6PlacementAfterUnconditionalTerminalIsBlocked` |
-
 | AC#7 No automatic best-position | no Suggest/Auto | `Ac7AutomaticBestPositionSelectionIsAbsent` |
 | AC#8 RouterOS `.id` not stored | fingerprint preimage | `Ac8RouterOsIdIsNotStored` |
 | AC#9 Filter order change invalidates | `ANCHOR_PLACEMENT_STALE` | `Ac9FilterOrderChangeInvalidatesPlan` |
 | AC#10 Exact before/after position | `AnchorPlacementPreview` | `Ac10DesktopPreviewExposesExactBeforeAfterPosition` |
 
-**Residuals:** WinUI onboarding workflow / gRPC is M5-09. Bootstrap writer is M5-05. No RouterOS writes in M5-04.
+**Residuals:** WinUI onboarding workflow / gRPC is M5-09. Bootstrap writer is M5-05 (DONE). No RouterOS writes in M5-04.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingAnchorPlacement"
+```
+
+## Living Specification — onboarding bootstrap writer (M5-05)
+
+Onboarding Spec §23 / §27 + Issue Set M5-05 → closed writer (no generic `Mfc.RouterOs.Write`):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Compile-time allowlisted paths | `OnboardingWritePath` | `Ac1WritePathsAreCompileTimeAllowlisted` |
+| AC#2 Single unconditional return | `OnboardingBootstrapWrite` | `Ac2BootstrapRootContainsExactlyOneUnconditionalReturn` |
+| AC#3 Artifact ID matches Spec §23 | `BootstrapArtifact` | `Ac3BootstrapArtifactIdMatchesSpec` |
+| AC#4 Anchor created disabled | writer add | `Ac4PermanentAnchorIsCreatedDisabled` |
+| AC#5 Jump-target = bootstrap root | add attributes | `Ac5AnchorTargetIsBootstrapRoot` |
+| AC#6 place-before or append | no `/move` | `Ac6PlaceBeforeOrAppendIsUsed` |
+| AC#7 move unused | path enum | `Ac7MoveIsNotUsed` |
+| AC#8 set only disabled | `/set` attributes | `Ac8SetAllowsOnlyAnchorDisabled` |
+| AC#9 remove exact onboarding resources | remove + read-back | `Ac9RemoveAllowsOnlyExactOnboardingResources` |
+| AC#10 Read-back after each write | `ApplyAsync` | `Ac10EachWriteHasActualStateReadBack` |
+| AC#11 No generic command method | writer shape | `Ac11GenericCommandMethodIsAbsent` |
+| AC#12 Namespace collision blocks | planner | `Ac12NamespaceCollisionBlocksOperation` |
+
+**Residuals:** Scheduler proof / watchdog is M5-06. Live session adapter over `RosSession` can wrap `IOnboardingWriteChannel`. No gRPC/Desktop in M5-05.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingBootstrapWriter"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
