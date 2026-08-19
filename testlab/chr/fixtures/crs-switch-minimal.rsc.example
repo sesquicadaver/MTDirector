@@ -1,0 +1,9 @@
+# Minimal CRS switch fixture (synthetic) — M5-10
+# Addresses match topologies/crs-switch/topology.json
+# Applied ONLY via testlab/chr/scripts/provision-onboarding-extra.sh (outside product adapter).
+#
+# INPUT/OUTPUT management filter only. Do not add FORWARD anchors.
+# /ip address add address=10.255.60.10/24 interface=ether1
+# /ip service set api-ssl certificate=lab-api-ssl disabled=no port=8729
+# /system identity set name=chr-crs-switch
+# No secrets. Expand when CHR runner automation lands.

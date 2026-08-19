@@ -1,0 +1,38 @@
+{
+  "id": "standalone-dual-stack",
+  "description": "Single CHR with IPv4 and IPv6 management profiles for onboarding acceptance (M5-10).",
+  "management": {
+    "network": "10.255.11.0/24",
+    "gateway": "10.255.11.1",
+    "deviceAddress": "10.255.11.10",
+    "apiSslPort": 8729,
+    "ipv6Network": "fd00:11::/64",
+    "ipv6DeviceAddress": "fd00:11::10"
+  },
+  "wanSimulators": [],
+  "credentials": {
+    "strategy": "ephemeral-per-run",
+    "reuseForbidden": true
+  },
+  "fixture": "fixtures/standalone-dual-stack-minimal.rsc.example",
+  "reset": {
+    "snapshotName": "clean-standalone-dual-stack",
+    "steps": [
+      "Power off VM",
+      "Restore clean-standalone-dual-stack snapshot",
+      "Regenerate ephemeral API credentials",
+      "Apply fixtures/standalone-dual-stack-minimal.rsc.example"
+    ]
+  },
+  "cleanup": {
+    "steps": [
+      "Export redacted diagnostics if the job failed",
+      "Delete ephemeral credentials",
+      "Restore clean-standalone-dual-stack snapshot",
+      "Remove temporary disks"
+    ]
+  },
+  "expectedSnapshotHashes": {
+    "afterReset": "REPLACE_AFTER_FIRST_GOLDEN_CAPTURE"
+  }
+}

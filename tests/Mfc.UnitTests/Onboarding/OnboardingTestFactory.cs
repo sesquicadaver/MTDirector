@@ -19,6 +19,13 @@ internal static class OnboardingTestFactory
         return node;
     }
 
+    public static Node RouterWithUplink(DeclaredUplinkMode mode, out Device device)
+    {
+        Node node = Node.Create(SiteId.New(), NonEmptyName.Create("mw1"), NodeKind.Router, mode);
+        device = node.AddDevice(NonEmptyName.Create("mw1-dev"), ManagementEndpoint.Create("10.0.0.8"), DeviceRole.Router);
+        return node;
+    }
+
     public static Node SwitchWithDevice(out Device device)
     {
         Node node = Node.Create(SiteId.New(), NonEmptyName.Create("sw1"), NodeKind.Switch, DeclaredUplinkMode.None);
@@ -72,13 +79,17 @@ internal static class OnboardingTestFactory
             watchdogTtl);
     }
 
-    public static OnboardingPlan PlanFor(Node node, DateTimeOffset? created = null, DateTimeOffset? expires = null)
+    public static OnboardingPlan PlanFor(
+        Node node,
+        DateTimeOffset? created = null,
+        DateTimeOffset? expires = null,
+        bool includeIpv6 = false)
     {
         DateTimeOffset now = created ?? new DateTimeOffset(2026, 8, 18, 12, 0, 0, TimeSpan.Zero);
         List<DeviceOnboardingPlan> devicePlans = [];
         foreach (Device device in node.Devices.OrderBy(static d => d.Id.Value))
         {
-            devicePlans.Add(DevicePlan(device.Id, node.DeclaredKind));
+            devicePlans.Add(DevicePlan(device.Id, node.DeclaredKind, ipv6: includeIpv6));
         }
 
         return OnboardingPlan.Create(

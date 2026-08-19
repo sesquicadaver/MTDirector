@@ -7,6 +7,10 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Onboarding integration acceptance (M5-10): standalone IPv4, dual-stack, multi-WAN, VRRP active/passive and split-master, CRS INPUT/OUTPUT without FORWARD; scheduler/flagged blockers; deadline/startup and crash recovery; guard/namespace collisions; Node never partially managed. Living Spec `OnboardingIntegrationAcceptanceLivingSpecTests` + `OnboardingTopologyAcceptanceTests`. **M5 CLOSED**.
+
 ### Security
 
 - Pin transitive `SSH.NET` to 2026.0.0 (CPM) so NuGet audit no longer fails restore on GHSA-q939-rpr3-3284 from Testcontainers 4.13.
@@ -22,6 +26,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP §2.1 progress table synced after M5-10 (84/136 closed; M5 onboarding 10/10 CLOSED); NEXT = M4-01 (#86).
+- ROADMAP: M5-10 onboarding integration acceptance DONE (**M5 CLOSED**); NEXT = M4-01 (#86); counters 84/109 MVP done (25 remaining).
 - Onboarding plan timestamps are truncated to UTC microseconds so PostgreSQL timestamptz round-trip keeps `plan_hash` stable (M5-09 start/get).
 - ROADMAP §2.1 progress table synced after M5-09 (83/136 closed; M5 onboarding 9/10); NEXT = M5-10 (#85).
 - ROADMAP: M5-09 onboarding API + Desktop workflow DONE; NEXT = M5-10 (#85); counters 83/109 MVP done (26 remaining).

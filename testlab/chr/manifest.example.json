@@ -8,7 +8,9 @@
     "multi-wan-failover",
     "multi-wan-balanced",
     "vrrp-active-passive",
-    "vrrp-split-master"
+    "vrrp-split-master",
+    "standalone-dual-stack",
+    "crs-switch"
   ],
   "isolation": {
     "forbidProductionRoutes": true,

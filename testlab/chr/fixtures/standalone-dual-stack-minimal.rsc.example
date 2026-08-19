@@ -1,0 +1,9 @@
+# Minimal standalone dual-stack fixture (synthetic) — M5-10
+# Addresses match topologies/standalone-dual-stack/topology.json
+# Applied ONLY via testlab/chr/scripts/provision-onboarding-extra.sh (outside product adapter).
+#
+# /ip address add address=10.255.11.10/24 interface=ether1
+# /ipv6 address add address=fd00:11::10/64 interface=ether1
+# /ip service set api-ssl certificate=lab-api-ssl disabled=no port=8729
+# /system identity set name=chr-standalone-dual-stack
+# No FORWARD onboarding writes. No secrets.

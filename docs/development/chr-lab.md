@@ -51,6 +51,12 @@ RouterOS integration workflow (when enabled) must target only an isolated self-h
 2. Optional live hosts: `MFC_CHR_VRRP_ACTIVE_PASSIVE_HOST` / `MFC_CHR_VRRP_SPLIT_MASTER_HOST`.
 3. Always-on path: `dotnet test tests/Mfc.IntegrationTests --filter FullyQualifiedName~VrrpVerticalSlice`.
 
+## Onboarding topology acceptance (M5-10)
+
+1. Always-on path (no CHR image): `dotnet test tests/Mfc.UnitTests --filter FullyQualifiedName~OnboardingIntegrationAcceptance` and `dotnet test tests/Mfc.IntegrationTests --filter FullyQualifiedName~OnboardingTopologyAcceptance`.
+2. Optional live provision (outside `Mfc.RouterOs`): `testlab/chr/scripts/provision-onboarding-extra.sh standalone-dual-stack|crs-switch` plus existing standalone/multi-WAN/VRRP scripts.
+3. Contracts: `standalone-dual-stack` and `crs-switch` under `testlab/chr/topologies/` (INPUT/OUTPUT only on CRS; no product FORWARD writes).
+
 ## Adding a synthetic CHR device (operator procedure)
 
 1. Obtain a legal CHR image offline; place under `testlab/chr/private/` (gitignored).

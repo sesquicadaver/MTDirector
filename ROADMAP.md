@@ -3,7 +3,7 @@
 **Дата оновлення:** 19 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M5-09 — onboarding API + Desktop workflow DONE; черга зсунута на M5-10
+**Базовий коміт аудиту:** M5-10 — onboarding integration acceptance DONE (**M5 CLOSED**); черга зсунута на M4-01
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -48,15 +48,15 @@
 | N1 Packet-path weave | 5 | 2 | 71% |
 | M2 Policy core | 18 | 0 | 100% |
 | M3 Compiler | 8 | 0 | 100% |
-| M5 Onboarding | 9 | 1 | 90% |
+| M5 Onboarding | 10 | 0 | 100% |
 | M4 Safe deploy | 0 | 13 | 0% |
 | M6 E2E / drift | 0 | 9 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **83** | **53** | **61% issues** |
+| **Разом** | **84** | **52** | **62% issues** |
 
-MVP issues (109) = **83 done + 26 remaining** до MVP CLOSED (**76%**).  
+MVP issues (109) = **84 done + 25 remaining** до MVP CLOSED (**77%**).  
 N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
-Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; onboarding domain/persistence **готовий**; prerequisites **готові**; management guard verification **готовий**; explicit anchor placement **готовий**; restricted bootstrap writer **готовий**; scheduler proof / watchdog **готовий**; onboarding execute/verify **готовий**; rollback/crash recovery **готовий**; onboarding API/Desktop **готовий**; drift = далі по черзі (NEXT M5-10).
+Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; NEXT M4-01 **на паузі оператора**.
 
 ### 2.2 DONE (не в черзі)
 
@@ -137,6 +137,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | M5-07 | #82 | Onboarding execution: stage roots then disabled anchors, arm watchdogs, enable order, pass-through verify, disarm, MANAGED |
 | M5-08 | #83 | Deterministic rollback + crash recovery: disable-first, exact-resource remove, Spec §46 decision table, no automatic adoption |
 | M5-09 | #84 | Onboarding API + Desktop workflow: Validate/CreatePlan/Start/Watch/Rollback/GetRecoveryStatus; plan_hash gate; no script source |
+| M5-10 | #85 | **M5 CLOSED** — onboarding integration acceptance on every MVP topology; crash/watchdog/guard vectors; no partial managed Node |
 
 ### 2.3 Поточні прогалини (код)
 
@@ -151,7 +152,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) + management-path safety (M2-13) + topology/dependency safety (M2-14) + FastTrack policy validation (M2-15) + policy tests/diff/risk (M2-16) + approval/desired-binding (M2-17) + object JSON writer (M2-18) + RouterOS filter artifact model (M3-01) + managed chain namespace/layout (M3-02) + content-addressed address lists (M3-03) + zone/service variants (M3-04) + matcher/effect compile (M3-05) + FastTrack pairs + terminals (M3-06) + per-device compile orchestration (M3-07) + compiler acceptance / Switch FORWARD gate (M3-08) |
 | `Mfc.Domain.Onboarding` | immutable plans + plan hasher + operation SM + write-ahead steps + bootstrap artifact + `ManagementState` (M5-01) + prerequisite validator (M5-02) + `GuardProfile` / guard verifier (M5-03) + `AnchorPlacementPlanner` (M5-04) + `OnboardingBootstrapWritePlanner` (M5-05) + `OnboardingWatchdogPlanner` (M5-06) + pass-through equivalence / enable order (M5-07) + Spec §46 recovery decision table (M5-08) |
 
-**NEXT = M5-10:** [M5-10](https://github.com/sesquicadaver/MTDirector/issues/85) Complete onboarding integration acceptance (**M5 CLOSED**) (після M5-09 #84).
+**NEXT = M4-01 (пауза оператора):** [M4-01](https://github.com/sesquicadaver/MTDirector/issues/86) Implement deployment plan, states and persistence — не стартувати, доки паузу не знято.
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -174,7 +175,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 
 **Хвиля 4 — M3 Compiler (черга #54–#61, #68–#75):** артефакт → namespace → address-lists → zones/services → matchers → FastTrack/terminal → per-Device orchestration → **M3 CLOSED**. Заборона: compile без актуального analysis (§6).
 
-**Хвиля 5 — M5 Onboarding перед M4 (черга #62–#71, #76–#85):** domain → prerequisites → guard → anchor plan → write adapter → scheduler/watchdog → execute → rollback → API/Desktop → **M5 CLOSED**. Не стартувати M4 до #85.
+**Хвиля 5 — M5 Onboarding перед M4 (черга #62–#71, #76–#85):** domain → prerequisites → guard → anchor plan → write adapter → scheduler/watchdog → execute → rollback → API/Desktop → **M5 CLOSED**.
 
 **Хвиля 6 — M4 Safe deploy + N1-06 (черга #72–#85, #86–#99):** N1-06 блокує deploy при packet-path blockers. Далі plan/writer/staging/watchdog/VRRP/rollback/API → **M4 CLOSED**. Заборона: Safe Mode замість watchdog; partial VRRP.
 
@@ -303,7 +304,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | ~~68~~ | ~~M5-07~~ | ~~#82~~ | ~~Implement onboarding execution and verification~~ → DONE (`ExecuteOnboardingBootstrapUseCase` + Living Spec AC 1–13) |
 | ~~69~~ | ~~M5-08~~ | ~~#83~~ | ~~Implement onboarding rollback and crash recovery~~ → DONE (`RollbackOnboardingBootstrapUseCase` + `RecoverOnboardingUseCase` + Spec §46 table) |
 | ~~70~~ | ~~M5-09~~ | ~~#84~~ | ~~Expose onboarding API and desktop workflow~~ → DONE (`OnboardingService` + Desktop panel; plan_hash; no script source) |
-| 71 | M5-10 | #85 | Complete onboarding integration acceptance (**M5 CLOSED**) |
+| ~~71~~ | ~~M5-10~~ | ~~#85~~ | ~~Complete onboarding integration acceptance (**M5 CLOSED**)~~ → DONE (Living Spec AC 1–12 + testlab dual-stack/CRS + gRPC topology host) |
 
 #### Блок A9 — M4 Safe deployment (+ N1-06)
 
@@ -390,7 +391,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 53 відкритих атомарних задач (26 до MVP CLOSED + 27 M7). Start here: #85 M5-10.
+**Кінець черги:** 52 відкритих атомарних задач (25 до MVP CLOSED + 27 M7). Start here: #86 M4-01.
 
 ---
 
@@ -398,10 +399,10 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 26 | M5-10…M6-09 + N1-06/07 |
+| До MVP CLOSED | 25 | M4-01…M6-09 + N1-06/07 |
 | Post-MVP M7 | 27 | лише після M6-09 |
-| **Нереалізовано разом** | **53** | 26 MVP + 27 M7 |
-| DONE у коді (§2.2) | 83 | M0+M1+N1-01…05+M2-01…18+M3-01…08+M5-01…09 |
+| **Нереалізовано разом** | **52** | 25 MVP + 27 M7 |
+| DONE у коді (§2.2) | 84 | M0+M1+N1-01…05+M2-01…18+M3-01…08+M5-01…10 |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
@@ -467,7 +468,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | Onboarding execution + verification | M5-07 | Living Spec `OnboardingExecutionLivingSpecTests` AC#1–13; `ExecuteOnboardingBootstrapUseCase` | **DONE** |
 | Onboarding rollback + crash recovery | M5-08 | Living Spec `OnboardingRollbackLivingSpecTests` AC#1–11; Spec §46 `OnboardingRecoveryDecision` | **DONE** |
 | Onboarding API + Desktop workflow | M5-09 | Living Spec `OnboardingWorkflowLivingSpecTests` AC#1–10; `OnboardingService` + Desktop panel | **DONE** |
-| Anchor bootstrap | M5 | equivalence; crash recovery | TODO |
+| Onboarding integration acceptance / M5 CLOSED | M5-10 | Living Spec `OnboardingIntegrationAcceptanceLivingSpecTests` AC#1–12; `OnboardingTopologyAcceptanceTests` | **DONE** |
 | Watchdog deploy / rollback | M4 | fault-injection; VRRP | TODO |
 | Drift + E2E DoD | M6 | E2E §E2E | TODO |
 | Routing assurance | M7.1 | RouteResolutionTrace fixtures | TODO post-MVP |
@@ -512,8 +513,8 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 17. ~~Відкрити **M5-07** → [issue #82](https://github.com/sesquicadaver/MTDirector/issues/82).~~ → **DONE**.
 18. ~~Відкрити **M5-08** → [issue #83](https://github.com/sesquicadaver/MTDirector/issues/83).~~ → **DONE**.
 19. ~~Відкрити **M5-09** → [issue #84](https://github.com/sesquicadaver/MTDirector/issues/84).~~ → **DONE**.
-20. Відкрити **M5-10** → [issue #85](https://github.com/sesquicadaver/MTDirector/issues/85).
-21. Не стартувати M4, доки не закрито **M5-10** (issue #85).
+20. ~~Відкрити **M5-10** → [issue #85](https://github.com/sesquicadaver/MTDirector/issues/85).~~ → **DONE / M5 CLOSED**.
+21. **Пауза:** не стартувати M4-01 (#86), доки оператор не зніме паузу.
 22. Не стартувати M7, доки не закрито **M6-09** (черга #95).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
