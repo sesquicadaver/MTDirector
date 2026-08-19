@@ -11,6 +11,12 @@ public static class ManagementPathAnalysisCodes
     /// <summary>Guard is at or after the managed anchor, or the candidate would rewrite it.</summary>
     public const string GuardMoved = "MANAGEMENT_GUARD_MOVED";
 
+    /// <summary>Guard predicate is wider than GuardProfile (Onboarding §17 / M5-03).</summary>
+    public const string GuardTooBroad = "MANAGEMENT_GUARD_TOO_BROAD";
+
+    /// <summary>Guard marker, static/enabled state, or matcher set is invalid (Onboarding §58 / M5-03).</summary>
+    public const string GuardInvalid = "MANAGEMENT_GUARD_INVALID";
+
     /// <summary>API-SSL is missing, disabled, or the live port does not match the profile.</summary>
     public const string ServiceDisabled = "MANAGEMENT_SERVICE_DISABLED";
 

@@ -656,7 +656,7 @@ Policy Model §46–§46.1 + Onboarding §15–§16 + Issue Set M2-13 AC#1–12 
 | Discovery mapper (address + dynamics) | `ManagementPathBlockerMapper` | `DiscoveryMapsApiSslAddressAndFilterWithoutCreatingGuards` |
 | `MANAGEMENT_*` trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
 
-**Residuals:** Desktop OUT; no new RPC; compose unchanged (management-path is analysis, not a company document). Production entry is `Analyze()` on **one** physical-device snapshot; caller iterates members with `WithDestination` and that member's filter/API-SSL facts. VIP-only fail-closed requires the profile's physical/virtual address lists (VRRP discovery is available to callers after M2-14; this mapper still does not auto-fill them). Independent OOB-path proof and over-broad `0.0.0.0/0` guard rejection are M5-03 / watchdog. Strict `mfc:guard:v1:` grammar is onboarding write (M5). VRRP protocol-112 advertisement/sync flows are M2-14 (DONE). Deploy gating of these blockers is N1-06. Guards are never auto-created. M2-12 one-argument and N1-04 two-argument analysis-context preimages are unchanged. Controller never disables L2/L3 hardware offload.
+**Residuals:** Desktop OUT; no new RPC; compose unchanged (management-path is analysis, not a company document). Production entry is `Analyze()` on **one** physical-device snapshot; caller iterates members with `WithDestination` and that member's filter/API-SSL facts. VIP-only fail-closed requires the profile's physical/virtual address lists (VRRP discovery is available to callers after M2-14; this mapper still does not auto-fill them). Over-broad `0.0.0.0/0` / `::/0` and strict `mfc:guard:v1:` onboarding verification are M5-03 (DONE). VRRP protocol-112 advertisement/sync flows are M2-14 (DONE). Deploy gating of these blockers is N1-06. Guards are never auto-created. M2-12 one-argument and N1-04 two-argument analysis-context preimages are unchanged. Controller never disables L2/L3 hardware offload.
 
 Filter:
 ```bash
@@ -1080,12 +1080,37 @@ Onboarding Spec §7–§11 / §58 + Issue Set M5-02 → Domain validator (no Rou
 | AC#11 All VRRP members | Node members | `Ac11AllVrrpMembersMustPassPrerequisites` |
 | AC#12 Stable Spec §58 codes | `OnboardingCodes` | `Ac12FindingsUseStableSpec58Codes` |
 
-**Residuals:** Management guard verification is M5-03. Live RouterOS fact adapters / credential probes remain later M5 steps. No gRPC/Desktop in M5-02.
+**Residuals:** Management guard verification is M5-03 (DONE). Live RouterOS fact adapters / credential probes remain later M5 steps. No gRPC/Desktop in M5-02.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingPrerequisite"
+```
+
+## Living Specification — management guard verification (M5-03)
+
+Onboarding Spec §13–§17 / §58 + Issue Set M5-03 → Domain verifier (no RouterOS writes):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Typed GuardProfile | `GuardProfile` / `GuardProfileId` | `Ac1GuardProfileIsTyped` |
+| AC#2 Input/output markers | `GuardMarker` + verifier | `Ac2InputAndOutputGuardMarkersAreChecked` |
+| AC#3 Static/valid/enabled | `OnboardingGuardVerifier` | `Ac3GuardRulesMustBeStaticValidAndEnabled` |
+| AC#4 Predicate ≤ profile | breadth check | `Ac4PredicateMustNotBeWiderThanProfile` |
+| AC#5 Reject `0.0.0.0/0` / `::/0` | profile + rule | `Ac5DefaultRoutesAreRejected` |
+| AC#6 Before planned anchors | placements + live anchors | `Ac6GuardMustPrecedePlannedAnchors` |
+| AC#7 Dynamic list / unsupported | Spec §16.3 | `Ac7DynamicListAndUnsupportedMatchersAreRejected` |
+| AC#8 NEW API-SSL through guard | input connection-state | `Ac8NewApiSslConnectionThroughGuardPasses` |
+| AC#9 Guard hash in plan | `GuardProfileHasher` / `ExpectedGuardHash` | `Ac9GuardHashEntersPlan` |
+| AC#10 Controller does not create/modify | shape + candidate comments | `Ac10ControllerDoesNotCreateOrModifyGuard` |
+
+**Residuals:** Explicit anchor placement planning is M5-04. Live RouterOS discovery adapters remain later M5 steps. No gRPC/Desktop in M5-03.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingGuard"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
