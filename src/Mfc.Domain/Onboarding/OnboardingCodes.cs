@@ -91,5 +91,14 @@ public static class OnboardingCodes
     /// <summary>Spec §58 / M5-04 — unknown matcher or unprovable jump context around the insertion point.</summary>
     public const string AnchorContextIndeterminate = "ANCHOR_CONTEXT_INDETERMINATE";
 
+    /// <summary>Spec §58 staging / M5-05 AC#12 — existing MFC namespace resource blocks bootstrap writes.</summary>
+    public const string MfcNamespaceCollision = "MFC_NAMESPACE_COLLISION";
+
+    /// <summary>Spec §58 staging / M5-05 — bootstrap root chain name already present.</summary>
+    public const string BootstrapRootCollision = "BOOTSTRAP_ROOT_COLLISION";
+
+    /// <summary>Spec §58 staging / M5-05 — permanent anchor marker already present.</summary>
+    public const string AnchorMarkerCollision = "ANCHOR_MARKER_COLLISION";
+
     public const string SeverityBlocker = "BLOCKER";
 }

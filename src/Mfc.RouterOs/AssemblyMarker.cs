@@ -2,7 +2,7 @@ namespace Mfc.RouterOs;
 
 /// <summary>
 /// Assembly marker. Read adapter through discovery, capability, topology, and path class (M1-06…M1-17, N1-01…03).
-/// Write namespace is intentionally absent.
+/// Generic <c>Mfc.RouterOs.Write</c> is absent; onboarding uses closed <see cref="Onboarding.OnboardingBootstrapWriter"/>.
 /// </summary>
 public static class AssemblyMarker
 {
@@ -55,4 +55,7 @@ public static class AssemblyMarker
 
     /// <summary>Roots packet-path classification for architecture scans.</summary>
     public static Type PacketPathClassifierAnchor { get; } = typeof(Discovery.PacketPathClassifier);
+
+    /// <summary>Roots the closed onboarding bootstrap writer (M5-05).</summary>
+    public static Type OnboardingBootstrapWriterAnchor { get; } = typeof(Onboarding.OnboardingBootstrapWriter);
 }

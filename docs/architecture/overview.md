@@ -86,7 +86,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Onboarding prerequisite validation | Done (M5-02) | Typed facts + `OnboardingPrerequisiteValidator`; Spec §58 codes; no user/service/device-mode writes |
 | Management guard verification | Done (M5-03) | Typed `GuardProfile` + `OnboardingGuardVerifier`; breadth/default-route; plan hash; no guard writes |
 | Explicit anchor placement | Done (M5-04) | Operator intent + `AnchorPlacementPlanner`; fingerprint/rank; no `.id`; preview before/after |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M5-05 (#80) |
+| Restricted bootstrap writer | Done (M5-05) | Allowlisted filter add/set/remove; disabled anchors; Spec §23 ID; no generic Write namespace |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M5-06 (#81) |
 
 ## ADRs
 
