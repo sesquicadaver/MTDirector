@@ -22,6 +22,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP §2.1 progress table synced after M5-06 (80/136 closed; M5 onboarding 6/10); NEXT = M5-07 (#82).
+- ROADMAP: M5-06 scheduler proof + watchdog DONE; NEXT = M5-07 (#82); counters 80/109 MVP done (29 remaining).
 - ROADMAP §2.1 progress table synced after M5-05 (79/136 closed; M5 onboarding 5/10); NEXT = M5-06 (#81).
 - ROADMAP: M5-05 restricted bootstrap writer DONE; NEXT = M5-06 (#81); counters 79/109 MVP done (30 remaining).
 - ROADMAP §2.1 progress table synced after M5-04 (78/136 closed; M5 onboarding 4/10); NEXT = M5-05 (#80).
@@ -50,6 +52,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ### Added
 
 - Restricted onboarding bootstrap writer (M5-05): Domain `OnboardingBootstrapWrite` / `OnboardingBootstrapWritePlanner`; Application `IOnboardingBootstrapWritePort`; RouterOS `OnboardingBootstrapWriter` with compile-time `OnboardingWritePath` (add/set/remove only, no `/move`, no generic `Write` namespace). Disabled anchors, Spec §23 artifact ID, place-before or append, per-write read-back, exact-resource remove, namespace collision fail-closed. Living Spec AC 1–12 in `OnboardingBootstrapWriterLivingSpecTests`. Scheduler/watchdog is M5-06.
+- Scheduler proof and onboarding rollback watchdog (M5-06): Domain `OnboardingWatchdogPlanner` / fixed no-op proof + watchdog template; Application `IOnboardingWatchdogPort`; RouterOS `OnboardingWatchdogWriter` on Spec §27.2 script/scheduler paths (no `/move`, no `Mfc.RouterOs.Write`). `run-count==1`, source-hash read-back, deadline+startup arm, TTL 60–600s / 30s commit margin, collision fail-closed. Living Spec AC 1–12 in `OnboardingWatchdogLivingSpecTests`. Execution/enable is M5-07.
 - Explicit permanent-anchor placement (M5-04): Domain `AnchorPlacementIntent` / `FilterRuleFingerprint` / `AnchorPlacementPlanner` (operator-chosen BEFORE_STATIC_RULE|APPEND only; fingerprint+occurrence rank; predecessor/successor freeze; guard-before-anchor; unreachable after unconditional terminal; order drift → `ANCHOR_PLACEMENT_STALE`); Application `PlanAnchorPlacementUseCase`; `AnchorPlacementPreview` before/after labels for Desktop bind. Living Spec AC 1–10 in `OnboardingAnchorPlacementLivingSpecTests`. No RouterOS writes / gRPC; WinUI workflow remains M5-09.
 - Management guard verification (M5-03): Domain typed `GuardProfile` / `GuardMarker` / `GuardProfileHasher` / `OnboardingGuardVerifier` (strict `mfc:guard:v1`, static/enabled, predicate breadth, default-route reject, planned+live anchor order, Spec §58 codes); Application `VerifyManagementGuardUseCase`. Living Spec AC 1–10 in `OnboardingGuardLivingSpecTests`. No RouterOS writes / gRPC / Desktop; anchor placement is M5-04.
 - Onboarding prerequisite validation (M5-02): Domain `OnboardingPrerequisiteValidator` over typed read-only facts (build, plain API 8728, API-SSL certificate, separated read/deploy accounts + policy/source checks, device-mode scheduler/flagged); Application `ValidateOnboardingPrerequisitesUseCase`; Spec §58 stable codes. Living Spec AC 1–12 in `OnboardingPrerequisiteLivingSpecTests`. No RouterOS writes / gRPC / Desktop; guard verification is M5-03.

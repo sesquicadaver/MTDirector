@@ -22,7 +22,10 @@ public sealed class OnboardingBootstrapWriterLivingSpecTests
         Assert.Equal("/ipv6/firewall/filter/add", OnboardingWritePaths.Fixed(OnboardingWritePath.Ipv6FilterAdd));
         Assert.Equal("/ip/firewall/filter/set", OnboardingWritePaths.Fixed(OnboardingWritePath.Ipv4FilterSet));
         Assert.Equal("/ip/firewall/filter/remove", OnboardingWritePaths.Fixed(OnboardingWritePath.Ipv4FilterRemove));
-        Assert.Equal(6, Enum.GetValues<OnboardingWritePath>().Length);
+        Assert.Equal(
+            6,
+            Enum.GetValues<OnboardingWritePath>().Count(static p =>
+                OnboardingWritePaths.Fixed(p).Contains("/firewall/filter", StringComparison.Ordinal)));
         Assert.DoesNotContain(
             Enum.GetValues<OnboardingWritePath>(),
             static p => OnboardingWritePaths.Fixed(p).Contains("/move", StringComparison.Ordinal));

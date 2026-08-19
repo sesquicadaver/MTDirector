@@ -100,5 +100,30 @@ public static class OnboardingCodes
     /// <summary>Spec §58 staging / M5-05 — permanent anchor marker already present.</summary>
     public const string AnchorMarkerCollision = "ANCHOR_MARKER_COLLISION";
 
+    /// <summary>Spec §58 / M5-02 leftover — one-shot scheduler proof failed.</summary>
+    public const string SchedulerCapabilityTestFailed = "SCHEDULER_CAPABILITY_TEST_FAILED";
+
+    /// <summary>Spec §58 / M5-06 — watchdog name already occupied.</summary>
+    public const string OnboardingWatchdogCollision = "ONBOARDING_WATCHDOG_COLLISION";
+
+    /// <summary>Spec §58 / M5-06 — watchdog source, policy, or permissions invalid.</summary>
+    public const string OnboardingWatchdogInvalid = "ONBOARDING_WATCHDOG_INVALID";
+
+    /// <summary>Spec §58 / M5-06 — remaining TTL below commit margin.</summary>
+    public const string OnboardingWatchdogDeadlineTooClose = "ONBOARDING_WATCHDOG_DEADLINE_TOO_CLOSE";
+
+    /// <summary>Spec §58 / M5-06 — watchdog script or scheduler create/verify failed.</summary>
+    public const string OnboardingWatchdogArmFailed = "ONBOARDING_WATCHDOG_ARM_FAILED";
+
+    /// <summary>Spec §58 / M5-06 — watchdog could not disable an exact bootstrap anchor.</summary>
+    public const string OnboardingWatchdogDisableFailed = "ONBOARDING_WATCHDOG_DISABLE_FAILED";
+
+    /// <summary>Spec §58 / M5-06 — proof or watchdog resources remained after cleanup.</summary>
+    public const string OnboardingWatchdogCleanupIncomplete = "ONBOARDING_WATCHDOG_CLEANUP_INCOMPLETE";
+
+    public static readonly TimeSpan MinCommitMargin = TimeSpan.FromSeconds(30);
+
+    public static readonly TimeSpan SchedulerProofTimeout = TimeSpan.FromSeconds(15);
+
     public const string SeverityBlocker = "BLOCKER";
 }

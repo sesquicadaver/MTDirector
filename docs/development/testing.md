@@ -1157,12 +1157,39 @@ Onboarding Spec §23 / §27 + Issue Set M5-05 → closed writer (no generic `Mfc
 | AC#11 No generic command method | writer shape | `Ac11GenericCommandMethodIsAbsent` |
 | AC#12 Namespace collision blocks | planner | `Ac12NamespaceCollisionBlocksOperation` |
 
-**Residuals:** Scheduler proof / watchdog is M5-06. Live session adapter over `RosSession` can wrap `IOnboardingWriteChannel`. No gRPC/Desktop in M5-05.
+**Residuals:** Live session adapter over `RosSession` can wrap `IOnboardingWriteChannel`. No gRPC/Desktop in M5-05. Scheduler proof / watchdog is M5-06 (DONE).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingBootstrapWriter"
+```
+
+## Living Specification — onboarding watchdog (M5-06)
+
+Onboarding Spec §12 / §27.2 / §32–§36 + Issue Set M5-06 → closed proof + watchdog (no generic `Mfc.RouterOs.Write`):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Fixed no-op proof script | `SchedulerCapabilityProof` | `Ac1OneShotProofUsesFixedNoOpScript` |
+| AC#2 run-count==1 | `OnboardingWatchdogWriter` | `Ac2RunCountMustEqualOne` |
+| AC#3 Proof resources removed | writer remove + print | `Ac3ProofResourcesAreRemoved` |
+| AC#4 Deadline + startup schedulers | `OnboardingWatchdogBundle` | `Ac4WatchdogHasDeadlineAndStartupSchedulers` |
+| AC#5 Fixed watchdog template | `OnboardingWatchdogScript` | `Ac5ScriptSourceUsesFixedTemplate` |
+| AC#6 dont-require-permissions=no | planner attributes | `Ac6DontRequirePermissionsIsNo` |
+| AC#7 Disable exact bootstrap anchors only | `ShouldDisable` | `Ac7ScriptMayOnlyDisableExactBootstrapAnchors` |
+| AC#8 No user input in script | literals / charset | `Ac8UserInputDoesNotEnterScript` |
+| AC#9 Stale watchdog no-op | jump-target ≠ bootstrap | `Ac9StaleWatchdogIsNoOpForNonBootstrapTarget` |
+| AC#10 Source hash after add | read-back hash | `Ac10SourceHashIsCheckedAfterAdd` |
+| AC#11 TTL + commit margin | 60–600s / 30s | `Ac11TtlAndCommitMarginAreBounded` |
+| AC#12 Collision blocks | `ONBOARDING_WATCHDOG_COLLISION` | `Ac12CollisionBlocksOperation` |
+
+**Residuals:** Onboarding execution/enable is M5-07. Live `RosSession` wrapper for script/scheduler print can implement `PrintSystemAsync`. No gRPC/Desktop in M5-06.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingWatchdog"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

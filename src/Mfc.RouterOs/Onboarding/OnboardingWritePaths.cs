@@ -3,7 +3,7 @@ using Mfc.Domain.Inventory;
 namespace Mfc.RouterOs.Onboarding;
 
 /// <summary>
-/// Compile-time allowlist of onboarding filter write paths (Onboarding Spec §27.1).
+/// Compile-time allowlist of onboarding write paths (Onboarding Spec §27.1–§27.2).
 /// Print/read-back stays on the existing read adapter; <c>/move</c> is not a member.
 /// </summary>
 public enum OnboardingWritePath : byte
@@ -14,6 +14,18 @@ public enum OnboardingWritePath : byte
     Ipv6FilterSet = 3,
     Ipv4FilterRemove = 4,
     Ipv6FilterRemove = 5,
+    SystemScriptAdd = 6,
+    SystemScriptRemove = 7,
+    SystemSchedulerAdd = 8,
+    SystemSchedulerSet = 9,
+    SystemSchedulerRemove = 10,
+}
+
+/// <summary>Print surface for onboarding script/scheduler read-back (Spec §27.2).</summary>
+public enum OnboardingSystemSurface : byte
+{
+    Script = 0,
+    Scheduler = 1,
 }
 
 /// <summary>Maps <see cref="OnboardingWritePath"/> to fixed RouterOS API sentences.</summary>
@@ -28,6 +40,11 @@ public static class OnboardingWritePaths
             OnboardingWritePath.Ipv6FilterSet => "/ipv6/firewall/filter/set",
             OnboardingWritePath.Ipv4FilterRemove => "/ip/firewall/filter/remove",
             OnboardingWritePath.Ipv6FilterRemove => "/ipv6/firewall/filter/remove",
+            OnboardingWritePath.SystemScriptAdd => "/system/script/add",
+            OnboardingWritePath.SystemScriptRemove => "/system/script/remove",
+            OnboardingWritePath.SystemSchedulerAdd => "/system/scheduler/add",
+            OnboardingWritePath.SystemSchedulerSet => "/system/scheduler/set",
+            OnboardingWritePath.SystemSchedulerRemove => "/system/scheduler/remove",
             _ => throw new InvalidOperationException($"Unsupported onboarding write path '{path}'."),
         };
 
@@ -41,7 +58,7 @@ public static class OnboardingWritePaths
         => family == IpAddressFamily.IPv4 ? OnboardingWritePath.Ipv4FilterRemove : OnboardingWritePath.Ipv6FilterRemove;
 }
 
-/// <summary>Transport used by <see cref="OnboardingBootstrapWriter"/>; tests substitute a recorder.</summary>
+/// <summary>Transport used by onboarding writers; tests substitute a recorder.</summary>
 public interface IOnboardingWriteChannel
 {
     Task<IReadOnlyDictionary<string, string>> SendAsync(
@@ -52,4 +69,9 @@ public interface IOnboardingWriteChannel
     Task<IReadOnlyList<IReadOnlyDictionary<string, string>>> PrintAsync(
         IpAddressFamily family,
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<IReadOnlyDictionary<string, string>>> PrintSystemAsync(
+        OnboardingSystemSurface surface,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<IReadOnlyDictionary<string, string>>>([]);
 }
