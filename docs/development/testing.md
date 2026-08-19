@@ -1184,12 +1184,40 @@ Onboarding Spec §12 / §27.2 / §32–§36 + Issue Set M5-06 → closed proof +
 | AC#11 TTL + commit margin | 60–600s / 30s | `Ac11TtlAndCommitMarginAreBounded` |
 | AC#12 Collision blocks | `ONBOARDING_WATCHDOG_COLLISION` | `Ac12CollisionBlocksOperation` |
 
-**Residuals:** Onboarding execution/enable is M5-07. Live `RosSession` wrapper for script/scheduler print can implement `PrintSystemAsync`. No gRPC/Desktop in M5-06.
+**Residuals:** Resource rollback / crash recovery is M5-08. Live `RosSession` wrapper for script/scheduler print can implement `PrintSystemAsync`. No gRPC/Desktop in M5-06.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingWatchdog"
+```
+
+## Living Specification — onboarding execution (M5-07)
+
+Onboarding Spec §37–§43 + Issue Set M5-07 → stage / arm / enable / verify / disarm / commit:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Roots staged before anchors | `ExecuteOnboardingBootstrapUseCase` | `Ac1RootsAreStagedBeforeAnchors` |
+| AC#2 Anchors staged disabled | writer + timeline | `Ac2AllAnchorsAreStagedDisabled` |
+| AC#3 VRRP watchdogs armed first | timeline arm vs enable | `Ac3VrrpWatchdogsAreArmedBeforeFirstEnable` |
+| AC#4 Normative enable order | `OnboardingEnableOrder` | `Ac4AnchorEnableOrderIsNormative` |
+| AC#5 Enable read-back | `SetAnchorDisabled` | `Ac5EachEnableHasReadBack` |
+| AC#6 Reconnect after management anchors | session reconnect | `Ac6NewApiConnectionOpensAfterManagementAnchors` |
+| AC#7 Stable post-bootstrap capture | `CaptureStableAsync` | `Ac7StablePostBootstrapCaptureRuns` |
+| AC#8 Unmanaged order unchanged | `OnboardingPassThroughEquivalence` | `Ac8UnmanagedRulesAndRelativeOrderAreUnchanged` |
+| AC#9 NAT/RAW/Mangle/routing/VRRP frozen | `OnboardingAuxiliarySnapshot` | `Ac9NatRawMangleRoutingVrrpAreUnchanged` |
+| AC#10 Pass-through equivalence | jump→return | `Ac10SemanticEquivalencePassThroughIsProven` |
+| AC#11 Indeterminate → rollback pending | `BOOTSTRAP_SEMANTIC_EQUIVALENCE_NOT_PROVEN` | `Ac11IndeterminateEquivalenceStartsRollback` |
+| AC#12 Watchdogs disabled before commit | `DisarmWatchdogAsync` | `Ac12WatchdogsAreDisabledBeforeDurableCommit` |
+| AC#13 Node MANAGED only fully | Device then Node | `Ac13NodeBecomesManagedOnlyFully` |
+
+**Residuals:** Deterministic resource rollback / crash recovery is M5-08. No gRPC/Desktop in M5-07.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingExecution"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

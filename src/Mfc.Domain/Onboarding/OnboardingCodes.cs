@@ -121,6 +121,15 @@ public static class OnboardingCodes
     /// <summary>Spec §58 / M5-06 — proof or watchdog resources remained after cleanup.</summary>
     public const string OnboardingWatchdogCleanupIncomplete = "ONBOARDING_WATCHDOG_CLEANUP_INCOMPLETE";
 
+    /// <summary>Spec §41 / M5-07 — pass-through semantic equivalence was not proven.</summary>
+    public const string BootstrapSemanticEquivalenceNotProven = "BOOTSTRAP_SEMANTIC_EQUIVALENCE_NOT_PROVEN";
+
+    /// <summary>Spec §40 / M5-07 — NAT/RAW/Mangle/routing/VRRP/interface-list changed during onboarding.</summary>
+    public const string OnboardingAuxiliaryMutated = "ONBOARDING_AUXILIARY_MUTATED";
+
+    /// <summary>Spec §39 / M5-07 — new API-SSL session after management anchors failed.</summary>
+    public const string OnboardingManagementReconnectFailed = "ONBOARDING_MANAGEMENT_RECONNECT_FAILED";
+
     public static readonly TimeSpan MinCommitMargin = TimeSpan.FromSeconds(30);
 
     public static readonly TimeSpan SchedulerProofTimeout = TimeSpan.FromSeconds(15);
