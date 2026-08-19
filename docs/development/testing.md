@@ -1246,6 +1246,31 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingRollback"
 ```
 
+## Living Specification — onboarding workflow (M5-09)
+
+Issue Set M5-09 → separate RPCs, plan_hash at start, streaming progress, Desktop checklist/placement, no script source, exact recovery facts, mutation idempotency, audit:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Separate RPCs | `onboarding.proto` / `OnboardingGrpcService` | `Ac1SeparateRpcsExistOnTheContract` |
+| AC#2 plan_hash required | `StartOnboardingUseCase` | `Ac2StartRequiresExactPlanHash` |
+| AC#3 Server-streaming progress | `OnboardingProgressHub` | `Ac3WatchReplaysServerStreamingProgressUntilTerminal` |
+| AC#4 Prerequisite checklist | Desktop `Findings` | `Ac4To7DesktopChecklistPlacementAndNoWriteSurface` |
+| AC#5 Anchor placement | Desktop `Placements` | `Ac4To7DesktopChecklistPlacementAndNoWriteSurface` |
+| AC#6 No script source | proto + `HasScriptSource` | `ContractHasNoScriptSourceOrArbitraryWriteSurface` |
+| AC#7 No arbitrary writes | proto + `HasArbitraryWriteControls` | `Ac4To7DesktopFlagsAreCompileTimeFalse` |
+| AC#8 Recovery facts exact | `GetOnboardingRecoveryStatusUseCase` | `Ac8RecoveryFactsMatchStoredOperation` |
+| AC#9 Mutation idempotency | CreatePlan/Start/Rollback | `Ac9MutationRpcsAreIdempotent` |
+| AC#10 All operations audited | workflow use cases | `Ac10EveryWorkflowOperationIsAudited` |
+
+**Residuals:** Live topology acceptance is M5-10. Default `NotConfiguredOnboardingRuntime` does not fake RouterOS commits.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingWorkflow"
+```
+
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
 Vertical Slice §9.3 + Canonical Spec §30 / Initial Issue Set M1-26 AC → module → tests (Issue Spec = Vertical Slice wire names; Issue Set `CaptureSnapshot`/`WatchSnapshotCapture`/`ListSnapshots` are aliases):

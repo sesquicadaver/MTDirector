@@ -42,4 +42,10 @@ public static class ApplicationPermissions
 
     /// <summary>Activate or expire desired bindings without deploying (M2-17).</summary>
     public const string PolicyBind = "policy.bind";
+
+    /// <summary>Read onboarding plans, operations, and recovery status (M5-09).</summary>
+    public const string OnboardingRead = "onboarding.read";
+
+    /// <summary>Create plans and start/rollback onboarding (M5-09).</summary>
+    public const string OnboardingWrite = "onboarding.write";
 }

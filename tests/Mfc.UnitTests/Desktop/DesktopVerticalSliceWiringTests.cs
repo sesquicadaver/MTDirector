@@ -8,7 +8,7 @@ namespace Mfc.UnitTests.Desktop;
 public sealed class DesktopVerticalSliceWiringTests
 {
     [Fact]
-    public void ShellExposesInventorySnapshotDiffZonesAndPoliciesViewModels()
+    public void ShellExposesInventorySnapshotDiffZonesPoliciesAndOnboardingViewModels()
     {
         System.Reflection.PropertyInfo[] properties = typeof(ShellViewModel).GetProperties();
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Inventory)
@@ -21,6 +21,8 @@ public sealed class DesktopVerticalSliceWiringTests
                                          && p.PropertyType == typeof(ZonesViewModel));
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Policies)
                                          && p.PropertyType == typeof(PoliciesViewModel));
+        Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Onboarding)
+                                         && p.PropertyType == typeof(OnboardingViewModel));
     }
 
     [Fact]
@@ -59,5 +61,13 @@ public sealed class DesktopVerticalSliceWiringTests
         Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ActivateDesiredBindingAsync)));
         Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ReorderRulesAsync)));
         Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.AddRuleAsync)));
+
+        Type onboarding = typeof(IOnboardingServiceClient);
+        Assert.NotNull(onboarding.GetMethod(nameof(IOnboardingServiceClient.ValidatePrerequisitesAsync)));
+        Assert.NotNull(onboarding.GetMethod(nameof(IOnboardingServiceClient.CreatePlanAsync)));
+        Assert.NotNull(onboarding.GetMethod(nameof(IOnboardingServiceClient.StartAsync)));
+        Assert.NotNull(onboarding.GetMethod(nameof(IOnboardingServiceClient.WatchAsync)));
+        Assert.NotNull(onboarding.GetMethod(nameof(IOnboardingServiceClient.RollbackAsync)));
+        Assert.NotNull(onboarding.GetMethod(nameof(IOnboardingServiceClient.GetRecoveryStatusAsync)));
     }
 }

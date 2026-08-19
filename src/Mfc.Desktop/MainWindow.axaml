@@ -12,7 +12,7 @@
   <DockPanel Margin="16">
     <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,12">
       <TextBlock FontSize="22" FontWeight="SemiBold" Text="MTDirector" />
-      <TextBlock Opacity="0.8" Text="Controller · inventory · snapshot · semantic diff · zones · policies" />
+      <TextBlock Opacity="0.8" Text="Controller · inventory · snapshot · semantic diff · zones · policies · onboarding" />
       <TextBlock Text="{Binding ControllerEndpoint, StringFormat=Endpoint: {0}}" />
       <TextBlock FontSize="16" Text="{Binding StatusText, StringFormat=Status: {0}}" FontWeight="Bold" />
       <TextBlock Text="{Binding ErrorText}"
@@ -604,6 +604,52 @@
                   </ListBox>
                 </StackPanel>
               </Border>
+            </StackPanel>
+          </ScrollViewer>
+        </TabItem>
+
+        <TabItem Header="Onboarding">
+          <ScrollViewer Margin="0,8,0,0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="10">
+              <StackPanel Spacing="2">
+                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Managed-device onboarding" />
+                <TextBlock Text="{Binding Onboarding.StatusText}" Opacity="0.85" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding Onboarding.ErrorText}"
+                           Foreground="#B00020"
+                           TextWrapping="Wrap"
+                           IsVisible="{Binding Onboarding.HasError}" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Content="Validate prerequisites" Command="{Binding Onboarding.ValidateCommand}" MinWidth="160" />
+                <Button Content="Create plan" Command="{Binding Onboarding.CreatePlanCommand}" MinWidth="110" />
+                <Button Content="Start" Command="{Binding Onboarding.StartCommand}" MinWidth="80" />
+                <Button Content="Rollback" Command="{Binding Onboarding.RollbackCommand}" MinWidth="90" />
+                <Button Content="Recovery status" Command="{Binding Onboarding.RecoveryCommand}" MinWidth="130" />
+              </StackPanel>
+              <TextBlock FontWeight="SemiBold" Text="Prerequisite checklist" />
+              <ListBox ItemsSource="{Binding Onboarding.Findings}" MaxHeight="140">
+                <ListBox.ItemTemplate>
+                  <DataTemplate DataType="svc:OnboardingFindingListItem">
+                    <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
+                               FontFamily="Consolas,Menlo,monospace" />
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+              <TextBlock FontWeight="SemiBold" Text="Anchor placement" />
+              <ListBox ItemsSource="{Binding Onboarding.Placements}" MaxHeight="140">
+                <ListBox.ItemTemplate>
+                  <DataTemplate DataType="svc:OnboardingPlacementListItem">
+                    <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
+                               FontFamily="Consolas,Menlo,monospace" />
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+              <TextBlock FontWeight="SemiBold" Text="Recovery facts" />
+              <TextBlock Text="{Binding Onboarding.RecoveryFactsText}"
+                         TextWrapping="Wrap"
+                         FontFamily="Consolas,Menlo,monospace" />
+              <TextBlock FontWeight="SemiBold" Text="Progress" />
+              <ListBox ItemsSource="{Binding Onboarding.ProgressLines}" MaxHeight="120" />
             </StackPanel>
           </ScrollViewer>
         </TabItem>
