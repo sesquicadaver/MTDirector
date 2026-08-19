@@ -85,7 +85,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Onboarding domain + persistence | Done (M5-01) | Immutable plans, operation SM, write-ahead journal, `ManagementState`, EF `OnboardingSchemaM501` |
 | Onboarding prerequisite validation | Done (M5-02) | Typed facts + `OnboardingPrerequisiteValidator`; Spec §58 codes; no user/service/device-mode writes |
 | Management guard verification | Done (M5-03) | Typed `GuardProfile` + `OnboardingGuardVerifier`; breadth/default-route; plan hash; no guard writes |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M5-04 (#79) |
+| Explicit anchor placement | Done (M5-04) | Operator intent + `AnchorPlacementPlanner`; fingerprint/rank; no `.id`; preview before/after |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M5-05 (#80) |
 
 ## ADRs
 
