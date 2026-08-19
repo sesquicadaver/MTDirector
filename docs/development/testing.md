@@ -1291,13 +1291,42 @@ Issue Set M5-10 + Onboarding Spec §61–§64 → exact bootstrap/rollback on ev
 | AC#12 No partial managed Node | VRRP member reconnect fail | `Ac12FailedMemberLeavesWholeNodeUnmanaged` |
 | Topology contracts + gRPC | testlab + `OnboardingService` | `OnboardingTopologyAcceptanceTests` |
 
-**Residuals:** Live CHR matrix stays optional (`MFC_CHR_*`). Safe deploy is M4-01. Default `NotConfiguredOnboardingRuntime` does not fake RouterOS commits.
+**Residuals:** Live CHR matrix stays optional (`MFC_CHR_*`). Safe deploy plan/persistence is M4-01 (DONE). Default `NotConfiguredOnboardingRuntime` does not fake RouterOS commits.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingIntegrationAcceptance"
 dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~OnboardingTopologyAcceptance"
+```
+
+## Living Specification — deployment plan, states and persistence (M4-01)
+
+Safe Deployment Spec §9–§16 + Issue Set M4-01 → Domain + EF (no RouterOS writer, no campaign, no gRPC/Desktop):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Target is one Node | `DeploymentPlan` / `DeploymentOperation` | `Ac1DeploymentTargetIsASingleNode` |
+| AC#2 No campaign state | Domain types | `Ac2CampaignStateIsAbsent` |
+| AC#3 Old/new artifacts + anchors | `DeviceDeploymentPlan` | `Ac3PlanContainsOldNewArtifactsAndAnchorTargets` |
+| AC#4 Immutable plan + expiry | `DeploymentPlan` | `Ac4PlanIsImmutableAndBoundedByExpiry` |
+| AC#5 Device plans cover members | VRRP cardinality | `Ac5DevicePlansCoverEveryMember` |
+| AC#6 Activation/rollback order | reverse DeviceId order | `Ac6ActivationAndRollbackOrderAreFixed` |
+| AC#7 Durable exclusive Node lock | `DeploymentLock` | `Ac7DurableNodeLockIsExclusive` |
+| AC#8 Write-ahead step journal | `DeploymentStep` | `Ac8WriteAheadStepJournalIsOrdered` |
+| AC#9 Invalid transition rejected | `DeploymentOperation` | `Ac9InvalidStateTransitionIsRejected` |
+| AC#10 Completed deployment immutable | terminal freeze | `Ac10CompletedDeploymentIsImmutable` |
+| AC#11 `NO_CHANGES` is terminal | PRECHECKING → NO_CHANGES | `Ac11NoChangesIsTerminalWithoutMutationPath` |
+| AC#12 Plan hash preconditions | `DeploymentPlanHasher` | `Ac12PlanHashIncludesNormativePreconditions` |
+| Persistence schema `m4-01` | migration `DeploymentSchemaM401` | `MigrateCreatesDeploymentTablesAndSchemaMetadata` |
+
+**Residuals:** Restricted deployment writer / staging / watchdog / activate are M4-02+. Packet-path deploy gate is N1-06.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentLivingSpecTests"
+dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~DeploymentPersistTests"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

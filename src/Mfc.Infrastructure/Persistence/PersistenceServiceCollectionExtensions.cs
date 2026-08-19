@@ -1,4 +1,5 @@
 using Mfc.Application.Abstractions.Persistence;
+using Mfc.Infrastructure.Persistence.Deployment;
 using Mfc.Infrastructure.Persistence.Hosting;
 using Mfc.Infrastructure.Persistence.Inventory;
 using Mfc.Infrastructure.Persistence.Onboarding;
@@ -44,6 +45,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IPolicyApprovalStore, EfPolicyApprovalStore>();
         services.AddScoped<IFilterArtifactStore, EfFilterArtifactStore>();
         services.AddScoped<IOnboardingStore, EfOnboardingStore>();
+        services.AddScoped<IDeploymentStore, EfDeploymentStore>();
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
         services.AddScoped<IZoneDefinitionStore, EfZoneDefinitionStore>();
         services.AddScoped<INodeZoneBindingStore, EfNodeZoneBindingStore>();

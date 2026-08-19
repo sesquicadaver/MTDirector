@@ -92,7 +92,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Onboarding rollback + crash recovery | Done (M5-08) | Disable-first exact rollback; Spec §46 decision table; no automatic adoption |
 | Onboarding API + Desktop workflow | Done (M5-09) | `OnboardingService` RPCs + Desktop checklist/placement/recovery; plan_hash; no script source |
 | Onboarding integration acceptance / M5 CLOSED | Done (M5-10) | Topology Living Spec + testlab dual-stack/CRS; crash/watchdog/guard; no partial managed Node |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-01 (#86) |
+| Deployment plan + persistence | Done (M4-01) | Immutable plan + Node/device SM + lock + journal; EF `DeploymentSchemaM401`; no campaign / writer |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at N1-06 (#99) |
 
 ## ADRs
 

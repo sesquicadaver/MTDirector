@@ -10,6 +10,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ### Added
 
 - Onboarding integration acceptance (M5-10): standalone IPv4, dual-stack, multi-WAN, VRRP active/passive and split-master, CRS INPUT/OUTPUT without FORWARD; scheduler/flagged blockers; deadline/startup and crash recovery; guard/namespace collisions; Node never partially managed. Living Spec `OnboardingIntegrationAcceptanceLivingSpecTests` + `OnboardingTopologyAcceptanceTests`. **M5 CLOSED**.
+- Deployment plan, states and persistence (M4-01): immutable `DeploymentPlan` (old/new artifact hashes + anchor targets, expiry, `plan_hash`), Node/device closed SMs, exclusive Node lock (expired rows retained), write-ahead journal; Application `IDeploymentStore`; EF `DeploymentSchemaM401`. No campaign, no RouterOS writer. Living Spec `DeploymentLivingSpecTests` AC 1–12 + `DeploymentPersistTests`.
 
 ### Security
 
@@ -26,6 +27,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP §2.1 progress table synced after M4-01 (85/136 closed; M4 safe deploy 1/13); NEXT = N1-06 (#99).
+- ROADMAP: M4-01 deployment plan/states/persistence DONE; NEXT = N1-06 (#99); counters 85/109 MVP done (24 remaining).
 - ROADMAP §2.1 progress table synced after M5-10 (84/136 closed; M5 onboarding 10/10 CLOSED); NEXT = M4-01 (#86).
 - ROADMAP: M5-10 onboarding integration acceptance DONE (**M5 CLOSED**); NEXT = M4-01 (#86); counters 84/109 MVP done (25 remaining).
 - Onboarding plan timestamps are truncated to UTC microseconds so PostgreSQL timestamptz round-trip keeps `plan_hash` stable (M5-09 start/get).
