@@ -73,5 +73,23 @@ public static class OnboardingCodes
     /// <summary>Spec §58 / M5-03 — unprovable management path (unknown matcher / indeterminate).</summary>
     public const string ManagementPathIndeterminate = "MANAGEMENT_PATH_INDETERMINATE";
 
+    /// <summary>Spec §58 / M5-04 — snapshot order or neighbor fingerprints no longer match the plan.</summary>
+    public const string AnchorPlacementStale = "ANCHOR_PLACEMENT_STALE";
+
+    /// <summary>Spec §58 / M5-04 — BEFORE_STATIC_RULE reference not found at the recorded rank.</summary>
+    public const string AnchorReferenceMissing = "ANCHOR_REFERENCE_MISSING";
+
+    /// <summary>Spec §58 / M5-04 — placement reference is a dynamic rule.</summary>
+    public const string AnchorReferenceDynamic = "ANCHOR_REFERENCE_DYNAMIC";
+
+    /// <summary>Spec §58 / M5-04 — planned ordinal is at or before a management guard.</summary>
+    public const string AnchorBeforeGuard = "ANCHOR_BEFORE_GUARD";
+
+    /// <summary>Spec §58 / M5-04 — insertion is after an unconditional terminal rule.</summary>
+    public const string AnchorUnreachable = "ANCHOR_UNREACHABLE";
+
+    /// <summary>Spec §58 / M5-04 — unknown matcher or unprovable jump context around the insertion point.</summary>
+    public const string AnchorContextIndeterminate = "ANCHOR_CONTEXT_INDETERMINATE";
+
     public const string SeverityBlocker = "BLOCKER";
 }

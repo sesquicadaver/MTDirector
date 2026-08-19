@@ -1105,12 +1105,38 @@ Onboarding Spec §13–§17 / §58 + Issue Set M5-03 → Domain verifier (no Rou
 | AC#9 Guard hash in plan | `GuardProfileHasher` / `ExpectedGuardHash` | `Ac9GuardHashEntersPlan` |
 | AC#10 Controller does not create/modify | shape + candidate comments | `Ac10ControllerDoesNotCreateOrModifyGuard` |
 
-**Residuals:** Explicit anchor placement planning is M5-04. Live RouterOS discovery adapters remain later M5 steps. No gRPC/Desktop in M5-03.
+**Residuals:** Explicit anchor placement planning is M5-04 (DONE). Live RouterOS discovery adapters remain later M5 steps. No gRPC/Desktop in M5-03.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingGuard"
+```
+
+## Living Specification — explicit anchor placement (M5-04)
+
+Onboarding Spec §20–§21 / §58 + Issue Set M5-04 → Domain planner (no RouterOS writes, no auto-position):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Only BEFORE_STATIC_RULE and APPEND | `AnchorPlacementIntent` / `AnchorPlacementMode` | `Ac1OnlyBeforeStaticRuleAndAppendAreSupported` |
+| AC#2 Dynamic cannot be reference | planner | `Ac2DynamicRuleCannotBeReference` |
+| AC#3 Fingerprint + occurrence rank | `FilterRuleFingerprint` | `Ac3FingerprintAndOccurrenceRankAreFixed` |
+| AC#4 Predecessor/successor context | freeze + revalidate | `Ac4PredecessorAndSuccessorContextAreChecked` |
+| AC#5 Placement before guard forbidden | `ANCHOR_BEFORE_GUARD` | `Ac5PlacementBeforeGuardIsForbidden` |
+| AC#6 After unconditional terminal blocked | `ANCHOR_UNREACHABLE` | `Ac6PlacementAfterUnconditionalTerminalIsBlocked` |
+
+| AC#7 No automatic best-position | no Suggest/Auto | `Ac7AutomaticBestPositionSelectionIsAbsent` |
+| AC#8 RouterOS `.id` not stored | fingerprint preimage | `Ac8RouterOsIdIsNotStored` |
+| AC#9 Filter order change invalidates | `ANCHOR_PLACEMENT_STALE` | `Ac9FilterOrderChangeInvalidatesPlan` |
+| AC#10 Exact before/after position | `AnchorPlacementPreview` | `Ac10DesktopPreviewExposesExactBeforeAfterPosition` |
+
+**Residuals:** WinUI onboarding workflow / gRPC is M5-09. Bootstrap writer is M5-05. No RouterOS writes in M5-04.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingAnchorPlacement"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
