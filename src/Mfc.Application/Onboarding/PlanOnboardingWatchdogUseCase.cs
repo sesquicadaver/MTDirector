@@ -36,6 +36,11 @@ public interface IOnboardingWatchdogPort
         DateTimeOffset routerClock,
         TimeSpan? remainingTtl = null,
         CancellationToken cancellationToken = default);
+
+    Task<OnboardingWatchdogExecutionResult> DisarmWatchdogAsync(
+        OnboardingWatchdogBundle bundle,
+        TimeSpan? remainingTtl = null,
+        CancellationToken cancellationToken = default);
 }
 
 /// <summary>Result of scheduler proof or watchdog arm plus actual-state read-back.</summary>

@@ -187,6 +187,65 @@ public sealed class OnboardingWatchdogWriter : IOnboardingWatchdogPort
         }
     }
 
+    public async Task<OnboardingWatchdogExecutionResult> DisarmWatchdogAsync(
+        OnboardingWatchdogBundle bundle,
+        TimeSpan? remainingTtl = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(bundle);
+        List<KeyValuePair<string, string>> sent = [];
+        List<string> paths = [];
+        try
+        {
+            TimeSpan remaining = remainingTtl ?? bundle.Ttl;
+            if (remaining < OnboardingCodes.MinCommitMargin)
+            {
+                return Fail(
+                    OnboardingCodes.OnboardingWatchdogDeadlineTooClose,
+                    "Remaining watchdog TTL is below the 30s commit margin.",
+                    paths,
+                    sent);
+            }
+
+            foreach (string name in new[] { bundle.DeadlineSchedulerName, bundle.StartupSchedulerName })
+            {
+                IReadOnlyDictionary<string, string>? row = await FindAsync(OnboardingSystemSurface.Scheduler, name, cancellationToken)
+                    .ConfigureAwait(false);
+                if (row is null || !row.TryGetValue(".id", out string? itemId) || string.IsNullOrWhiteSpace(itemId))
+                {
+                    return Fail(
+                        OnboardingCodes.OnboardingWatchdogDisableFailed,
+                        $"Watchdog scheduler '{name}' was not found for disarm.",
+                        paths,
+                        sent);
+                }
+
+                await SendTrackedAsync(
+                    OnboardingWritePath.SystemSchedulerSet,
+                    [new(".id", itemId), new("disabled", "yes")],
+                    paths,
+                    sent,
+                    cancellationToken).ConfigureAwait(false);
+                IReadOnlyDictionary<string, string>? after = await FindAsync(OnboardingSystemSurface.Scheduler, name, cancellationToken)
+                    .ConfigureAwait(false);
+                if (after is null || !DisabledYes(after.GetValueOrDefault("disabled")))
+                {
+                    return Fail(
+                        OnboardingCodes.OnboardingWatchdogDisableFailed,
+                        $"Watchdog scheduler '{name}' was not disabled.",
+                        paths,
+                        sent);
+                }
+            }
+
+            return Ok(paths, sent, bundle.ScriptSourceHash);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Fail(OnboardingCodes.OnboardingWatchdogDisableFailed, ex.Message, paths, sent);
+        }
+    }
+
     private async Task<OnboardingWatchdogExecutionResult?> CollisionAsync(
         IReadOnlyList<string> planned,
         CancellationToken cancellationToken)
