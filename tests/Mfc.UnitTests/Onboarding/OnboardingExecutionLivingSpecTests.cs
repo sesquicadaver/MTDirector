@@ -1,5 +1,6 @@
 using System.Globalization;
 using Mfc.Application.Onboarding;
+using Mfc.Domain;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
@@ -211,6 +212,198 @@ public sealed class OnboardingExecutionLivingSpecTests
         Assert.True(result.NodeManaged);
     }
 
+    [Fact]
+    public async Task NamespaceCollisionBlocksBeforeStaging()
+    {
+        Node node = OnboardingTestFactory.RouterWithDevice(out Device device);
+        OnboardingPlan plan = OnboardingTestFactory.PlanFor(node, T0);
+        OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
+        FakeOnboardingDeviceSession session = FakeOnboardingDeviceSession.Router(device.Id);
+        session.SeedBootstrapRootCollision();
+        OnboardingExecutionResult result = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
+            node, plan, operation, [session], T0, T0);
+        Assert.False(result.Succeeded);
+        Assert.Equal(OnboardingOperationState.Blocked, result.State);
+        Assert.False(string.IsNullOrEmpty(result.ErrorCode));
+        Assert.Contains(result.Timeline, static t => t.StartsWith("blocked:", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task WatchdogNameCollisionRollsBackWhileArming()
+    {
+        Node node = OnboardingTestFactory.RouterWithDevice(out Device device);
+        OnboardingPlan plan = OnboardingTestFactory.PlanFor(node, T0);
+        OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
+        FakeOnboardingDeviceSession session = FakeOnboardingDeviceSession.Router(device.Id);
+        session.SeedWatchdogResidue();
+        OnboardingExecutionResult result = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
+            node, plan, operation, [session], T0, T0);
+        Assert.False(result.Succeeded);
+        Assert.Equal(OnboardingOperationState.RollbackPending, result.State);
+        Assert.True(
+            result.ErrorCode == OnboardingCodes.OnboardingWatchdogCollision
+            || result.ErrorCode == OnboardingCodes.MfcNamespaceCollision,
+            result.ErrorCode);
+    }
+
+    [Fact]
+    public async Task FailedArmRollsBack()
+    {
+        Node node = OnboardingTestFactory.RouterWithDevice(out Device device);
+        OnboardingPlan plan = OnboardingTestFactory.PlanFor(node, T0);
+        OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
+        FakeOnboardingDeviceSession session = FakeOnboardingDeviceSession.Router(device.Id);
+        session.Watchdog = new ScriptedWatchdog(session.Watchdog, failArm: true);
+        OnboardingExecutionResult result = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
+            node, plan, operation, [session], T0, T0);
+        Assert.False(result.Succeeded);
+        Assert.Equal(OnboardingCodes.OnboardingWatchdogArmFailed, result.ErrorCode);
+        Assert.Equal(OnboardingOperationState.RollbackPending, result.State);
+    }
+
+    [Fact]
+    public async Task FailedEnableReadBackRollsBack()
+    {
+        Node node = OnboardingTestFactory.RouterWithDevice(out Device device);
+        OnboardingPlan plan = OnboardingTestFactory.PlanFor(node, T0);
+        OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
+        FakeOnboardingDeviceSession session = FakeOnboardingDeviceSession.Router(device.Id);
+        session.Bootstrap = new ScriptedBootstrap(session.Bootstrap, failEnable: true);
+        OnboardingExecutionResult result = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
+            node, plan, operation, [session], T0, T0);
+        Assert.False(result.Succeeded);
+        Assert.Equal(OnboardingCodes.RollbackFailed, result.ErrorCode);
+        Assert.Equal(OnboardingOperationState.RollbackPending, result.State);
+    }
+
+    [Fact]
+    public async Task FailedReconnectRollsBack()
+    {
+        Node node = OnboardingTestFactory.RouterWithDevice(out Device device);
+        OnboardingPlan plan = OnboardingTestFactory.PlanFor(node, T0);
+        OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
+        FakeOnboardingDeviceSession session = FakeOnboardingDeviceSession.Router(device.Id);
+        session.FailReconnect = true;
+        OnboardingExecutionResult result = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
+            node, plan, operation, [session], T0, T0);
+        Assert.False(result.Succeeded);
+        Assert.Equal(OnboardingCodes.OnboardingManagementReconnectFailed, result.ErrorCode);
+        Assert.Equal(OnboardingOperationState.RollbackPending, result.State);
+    }
+
+    [Fact]
+    public async Task FailedDisarmRollsBackAfterCapture()
+    {
+        Node node = OnboardingTestFactory.RouterWithDevice(out Device device);
+        OnboardingPlan plan = OnboardingTestFactory.PlanFor(node, T0);
+        OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
+        FakeOnboardingDeviceSession session = FakeOnboardingDeviceSession.Router(device.Id);
+        session.Watchdog = new ScriptedWatchdog(session.Watchdog, failDisarm: true);
+        OnboardingExecutionResult result = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
+            node, plan, operation, [session], T0, T0);
+        Assert.False(result.Succeeded);
+        Assert.True(result.CapturePerformed);
+        Assert.Equal(OnboardingCodes.OnboardingWatchdogDisableFailed, result.ErrorCode);
+        Assert.Equal(OnboardingOperationState.RollbackPending, result.State);
+    }
+
+    [Fact]
+    public async Task FailedStagingWriteRollsBackWithError()
+    {
+        Node node = OnboardingTestFactory.RouterWithDevice(out Device device);
+        OnboardingPlan plan = OnboardingTestFactory.PlanFor(node, T0);
+        OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
+        FakeOnboardingDeviceSession session = FakeOnboardingDeviceSession.Router(device.Id);
+        session.Bootstrap = new ScriptedBootstrap(session.Bootstrap, failAdd: true);
+        OnboardingExecutionResult result = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
+            node, plan, operation, [session], T0, T0);
+        Assert.False(result.Succeeded);
+        Assert.Equal(OnboardingCodes.RollbackFailed, result.ErrorCode);
+        Assert.Contains(result.Timeline, static t => t.StartsWith("error:", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task RejectsNullArgumentsAndMissingSession()
+    {
+        Node node = OnboardingTestFactory.RouterWithDevice(out Device device);
+        OnboardingPlan plan = OnboardingTestFactory.PlanFor(node, T0);
+        OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            ExecuteOnboardingBootstrapUseCase.ExecuteAsync(null!, plan, operation, [], T0, T0));
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            ExecuteOnboardingBootstrapUseCase.ExecuteAsync(node, null!, operation, [], T0, T0));
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            ExecuteOnboardingBootstrapUseCase.ExecuteAsync(node, plan, null!, [], T0, T0));
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            ExecuteOnboardingBootstrapUseCase.ExecuteAsync(node, plan, operation, null!, T0, T0));
+        await Assert.ThrowsAsync<DomainInvariantException>(() =>
+            ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
+                node,
+                plan,
+                operation,
+                [FakeOnboardingDeviceSession.Router(DeviceId.New())],
+                T0,
+                T0));
+    }
+
+    [Fact]
+    public async Task SkipsAdvanceWhenAlreadyInRequestedState()
+    {
+        Node node = OnboardingTestFactory.RouterWithDevice(out Device device);
+        OnboardingPlan plan = OnboardingTestFactory.PlanFor(node, T0);
+        OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
+        operation.EnsureTransition(OnboardingOperationState.Prechecking, T0);
+        FakeOnboardingDeviceSession session = FakeOnboardingDeviceSession.Router(device.Id);
+        OnboardingExecutionResult result = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
+            node, plan, operation, [session], T0, T0);
+        Assert.True(result.Succeeded, result.ErrorCode);
+        Assert.Equal(OnboardingOperationState.Committed, result.State);
+    }
+
+    [Fact]
+    public void AuxiliarySnapshotEqualityIsFieldWise()
+    {
+        OnboardingAuxiliarySnapshot a = new()
+        {
+            NatHash = OnboardingTestFactory.H("nat"),
+            RawHash = OnboardingTestFactory.H("raw"),
+            MangleHash = OnboardingTestFactory.H("mangle"),
+            RoutingHash = OnboardingTestFactory.H("routing"),
+            VrrpHash = OnboardingTestFactory.H("vrrp"),
+            InterfaceListHash = OnboardingTestFactory.H("iflist"),
+        };
+        Assert.True(a.EqualsSnapshot(a));
+        Assert.Throws<ArgumentNullException>(() => a.EqualsSnapshot(null!));
+    }
+
+    [Fact]
+    public void PassThroughEquivalenceRejectsMutatedReturnAndUnmanagedJump()
+    {
+        ActualFilterRule accept = ActualFilterRule.Create(IpAddressFamily.IPv4, "input", 0, "accept", comment: "user-input");
+        string root = BootstrapArtifact.RootChainName(IpAddressFamily.IPv4, FilterBuiltInContext.Input);
+        ActualFilterRule badReturn = ActualFilterRule.Create(
+            IpAddressFamily.IPv4,
+            root,
+            0,
+            "return",
+            comment: BootstrapArtifact.ReturnComment,
+            knownMatchers: new Dictionary<string, string>(StringComparer.Ordinal) { ["src-address"] = "1.1.1.1" });
+        OnboardingEquivalenceResult notProven = OnboardingPassThroughEquivalence.Evaluate([accept], [accept, badReturn]);
+        Assert.Equal(OnboardingEquivalenceVerdict.NotProven, notProven.Verdict);
+
+        ActualFilterRule unmanagedJump = ActualFilterRule.Create(
+            IpAddressFamily.IPv4,
+            "input",
+            1,
+            "jump",
+            jumpTarget: root,
+            comment: "foreign");
+        OnboardingEquivalenceResult indeterminate = OnboardingPassThroughEquivalence.Evaluate(
+            [accept],
+            [accept, unmanagedJump]);
+        Assert.Equal(OnboardingEquivalenceVerdict.Indeterminate, indeterminate.Verdict);
+    }
+
     private static Task<OnboardingExecutionResult> RunRouterAsync()
         => RunRouterDetailedAsync().ContinueWith(static t => t.Result.Result);
 
@@ -260,13 +453,15 @@ public sealed class OnboardingExecutionLivingSpecTests
 
         public DeviceId DeviceId { get; }
 
-        public IOnboardingBootstrapWritePort Bootstrap { get; }
+        public IOnboardingBootstrapWritePort Bootstrap { get; set; }
 
-        public IOnboardingWatchdogPort Watchdog { get; }
+        public IOnboardingWatchdogPort Watchdog { get; set; }
 
         public bool MutateAuxiliaryAfterCapture { get; set; }
 
         public bool InjectUnknownMatcherOnCapture { get; set; }
+
+        public bool FailReconnect { get; set; }
 
         public bool WatchdogsDisabled => _channel.SchedulersDisabled;
 
@@ -276,6 +471,10 @@ public sealed class OnboardingExecutionLivingSpecTests
 
         public static FakeOnboardingDeviceSession Router(DeviceId deviceId)
             => new(deviceId, CombinedChannel.WithUnmanagedBuiltins());
+
+        public void SeedBootstrapRootCollision() => _channel.SeedBootstrapRootCollision();
+
+        public void SeedWatchdogResidue() => _channel.SeedWatchdogResidue();
 
         public Task<IReadOnlyList<ActualFilterRule>> PrintFilterAsync(CancellationToken cancellationToken = default)
             => Task.FromResult<IReadOnlyList<ActualFilterRule>>(_channel.ToFilterRules());
@@ -306,7 +505,7 @@ public sealed class OnboardingExecutionLivingSpecTests
         }
 
         public Task<bool> ReconnectManagementAsync(CancellationToken cancellationToken = default)
-            => Task.FromResult(true);
+            => Task.FromResult(!FailReconnect);
 
         public Task<IReadOnlyList<ActualFilterRule>> CaptureStableAsync(CancellationToken cancellationToken = default)
         {
@@ -372,6 +571,30 @@ public sealed class OnboardingExecutionLivingSpecTests
             channel.SeedUnmanaged("forward");
             channel.SeedUnmanaged("output");
             return channel;
+        }
+
+        public void SeedBootstrapRootCollision()
+        {
+            Dictionary<string, string> row = new(StringComparer.Ordinal)
+            {
+                [".id"] = NextId(),
+                ["chain"] = BootstrapArtifact.RootChainName(IpAddressFamily.IPv4, FilterBuiltInContext.Input),
+                ["action"] = "return",
+                ["disabled"] = "no",
+                ["comment"] = BootstrapArtifact.ReturnComment,
+            };
+            _filters.Add(row);
+            _initial.Add(ToRule(row, 0));
+        }
+
+        public void SeedWatchdogResidue()
+        {
+            _scripts.Add(new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                [".id"] = NextId(),
+                ["name"] = "mfc-ob-s-deadbeefdeadbeef",
+                ["source"] = "# leftover",
+            });
         }
 
         public List<ActualFilterRule> ToFilterRules()
@@ -487,5 +710,111 @@ public sealed class OnboardingExecutionLivingSpecTests
         }
 
         private string NextId() => string.Create(CultureInfo.InvariantCulture, $"*{_nextId++}");
+    }
+
+    private sealed class ScriptedBootstrap : IOnboardingBootstrapWritePort
+    {
+        private readonly IOnboardingBootstrapWritePort _inner;
+
+        public ScriptedBootstrap(IOnboardingBootstrapWritePort inner, bool failAdd = false, bool failEnable = false)
+        {
+            _inner = inner;
+            FailAdd = failAdd;
+            FailEnable = failEnable;
+        }
+
+        public bool FailAdd { get; }
+
+        public bool FailEnable { get; }
+
+        public Task<OnboardingBootstrapWriteExecutionResult> ApplyAsync(
+            OnboardingBootstrapWrite write,
+            IReadOnlyList<ActualFilterRule> liveSnapshot,
+            CancellationToken cancellationToken = default)
+        {
+            if (FailAdd && write.Kind == OnboardingBootstrapWriteKind.AddBootstrapReturn)
+            {
+                return Task.FromResult(new OnboardingBootstrapWriteExecutionResult
+                {
+                    Succeeded = false,
+                    Path = "/ip/firewall/filter/add",
+                    SentAttributes = write.Attributes,
+                    ReadBack = new Dictionary<string, string>(StringComparer.Ordinal),
+                    Error = "forced add failure",
+                });
+            }
+
+            if (FailEnable && write.Kind == OnboardingBootstrapWriteKind.SetAnchorDisabled)
+            {
+                return Task.FromResult(new OnboardingBootstrapWriteExecutionResult
+                {
+                    Succeeded = true,
+                    Path = "/ip/firewall/filter/set",
+                    SentAttributes = write.Attributes,
+                    ReadBack = new Dictionary<string, string>(StringComparer.Ordinal) { ["disabled"] = "yes" },
+                });
+            }
+
+            return _inner.ApplyAsync(write, liveSnapshot, cancellationToken);
+        }
+    }
+
+    private sealed class ScriptedWatchdog : IOnboardingWatchdogPort
+    {
+        private readonly IOnboardingWatchdogPort _inner;
+
+        public ScriptedWatchdog(IOnboardingWatchdogPort inner, bool failArm = false, bool failDisarm = false)
+        {
+            _inner = inner;
+            FailArm = failArm;
+            FailDisarm = failDisarm;
+        }
+
+        public bool FailArm { get; }
+
+        public bool FailDisarm { get; }
+
+        public Task<OnboardingWatchdogExecutionResult> ProveSchedulerAsync(
+            SchedulerProofPlan plan,
+            DateTimeOffset routerClock,
+            CancellationToken cancellationToken = default)
+            => _inner.ProveSchedulerAsync(plan, routerClock, cancellationToken);
+
+        public Task<OnboardingWatchdogExecutionResult> ArmWatchdogAsync(
+            OnboardingWatchdogBundle bundle,
+            DateTimeOffset routerClock,
+            TimeSpan? remainingTtl = null,
+            CancellationToken cancellationToken = default)
+        {
+            if (FailArm)
+            {
+                return Task.FromResult(Fail(OnboardingCodes.OnboardingWatchdogArmFailed));
+            }
+
+            return _inner.ArmWatchdogAsync(bundle, routerClock, remainingTtl, cancellationToken);
+        }
+
+        public Task<OnboardingWatchdogExecutionResult> DisarmWatchdogAsync(
+            OnboardingWatchdogBundle bundle,
+            TimeSpan? remainingTtl = null,
+            CancellationToken cancellationToken = default)
+        {
+            if (FailDisarm)
+            {
+                return Task.FromResult(Fail(OnboardingCodes.OnboardingWatchdogDisableFailed));
+            }
+
+            return _inner.DisarmWatchdogAsync(bundle, remainingTtl, cancellationToken);
+        }
+
+        private static OnboardingWatchdogExecutionResult Fail(string code)
+            => new()
+            {
+                Succeeded = false,
+                Code = code,
+                Paths = [],
+                SentAttributes = [],
+                Error = code,
+            };
     }
 }
