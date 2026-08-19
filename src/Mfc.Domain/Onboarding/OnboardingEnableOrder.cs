@@ -19,6 +19,10 @@ public static class OnboardingEnableOrder
             .ToArray();
     }
 
+    /// <summary>Disable/remove order is the reverse of <see cref="Sort"/> (Onboarding Spec §44.1).</summary>
+    public static IReadOnlyList<AnchorKey> Reverse(IEnumerable<AnchorKey> keys)
+        => Sort(keys).Reverse().ToArray();
+
     private static int Rank(FilterBuiltInContext chain)
         => chain switch
         {

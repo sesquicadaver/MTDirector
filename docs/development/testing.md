@@ -1184,7 +1184,7 @@ Onboarding Spec §12 / §27.2 / §32–§36 + Issue Set M5-06 → closed proof +
 | AC#11 TTL + commit margin | 60–600s / 30s | `Ac11TtlAndCommitMarginAreBounded` |
 | AC#12 Collision blocks | `ONBOARDING_WATCHDOG_COLLISION` | `Ac12CollisionBlocksOperation` |
 
-**Residuals:** Resource rollback / crash recovery is M5-08. Live `RosSession` wrapper for script/scheduler print can implement `PrintSystemAsync`. No gRPC/Desktop in M5-06.
+**Residuals:** Live `RosSession` wrapper for script/scheduler print can implement `PrintSystemAsync`. No gRPC/Desktop in M5-06.
 
 Filter:
 ```bash
@@ -1212,12 +1212,38 @@ Onboarding Spec §37–§43 + Issue Set M5-07 → stage / arm / enable / verify 
 | AC#12 Watchdogs disabled before commit | `DisarmWatchdogAsync` | `Ac12WatchdogsAreDisabledBeforeDurableCommit` |
 | AC#13 Node MANAGED only fully | Device then Node | `Ac13NodeBecomesManagedOnlyFully` |
 
-**Residuals:** Deterministic resource rollback / crash recovery is M5-08. No gRPC/Desktop in M5-07.
+**Residuals:** Onboarding API / Desktop workflow is M5-09. No gRPC/Desktop in M5-07.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingExecution"
+```
+
+## Living Specification — onboarding rollback (M5-08)
+
+Onboarding Spec §44–§46 + Issue Set M5-08 → disable-first rollback, exact-resource remove, crash recovery:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Enabled anchors disabled first | `RollbackOnboardingBootstrapUseCase` | `Ac1EnabledAnchorsAreDisabledFirst` |
+| AC#2 Reconnect after disable | session reconnect | `Ac2ManagementAccessIsCheckedAfterDisabling` |
+| AC#3 Exact operation resources only | writer remove | `Ac3OnlyExactOperationResourcesAreRemoved` |
+| AC#4 Roots after references | timeline | `Ac4BootstrapRootsAreRemovedAfterAnchorReferences` |
+| AC#5 Watchdog cleanup idempotent | `CleanupWatchdogAsync` | `Ac5WatchdogResidueCleanupIsIdempotent` |
+| AC#6 Nonterminal after restart | `RecoverOnboardingUseCase` | `Ac6NonterminalOperationIsRolledBackAfterRestart` |
+| AC#7 Unexpected target | `ONBOARDING_UNEXPECTED_ANCHOR_TARGET` | `Ac7UnexpectedAnchorTargetRequiresRecovery` |
+| AC#8 No automatic adoption | `OnboardingRecoveryDecision` | `Ac8AutomaticAdoptionIsAbsent` |
+| AC#9 VRRP all members | dual sessions | `Ac9PartialVrrpOnboardingRollsBackAllMembers` |
+| AC#10 No leftover enabled anchors | post-rollback print | `Ac10FailedOnboardingLeavesNoEnabledAnchors` |
+| AC#11 Recovery decision table | Spec §46 | `Ac11RecoveryDecisionTableIsComplete` |
+
+**Residuals:** Onboarding API / Desktop is M5-09. No gRPC/Desktop in M5-08.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~OnboardingRollback"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

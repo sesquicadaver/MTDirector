@@ -3,7 +3,7 @@
 **Дата оновлення:** 19 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M5-07 — onboarding execution + verification DONE; черга зсунута на M5-08
+**Базовий коміт аудиту:** M5-08 — onboarding rollback + crash recovery DONE; черга зсунута на M5-09
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -48,15 +48,15 @@
 | N1 Packet-path weave | 5 | 2 | 71% |
 | M2 Policy core | 18 | 0 | 100% |
 | M3 Compiler | 8 | 0 | 100% |
-| M5 Onboarding | 7 | 3 | 70% |
+| M5 Onboarding | 8 | 2 | 80% |
 | M4 Safe deploy | 0 | 13 | 0% |
 | M6 E2E / drift | 0 | 9 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **81** | **55** | **60% issues** |
+| **Разом** | **82** | **54** | **60% issues** |
 
-MVP issues (109) = **81 done + 28 remaining** до MVP CLOSED (**74%**).  
+MVP issues (109) = **82 done + 27 remaining** до MVP CLOSED (**75%**).  
 N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
-Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; onboarding domain/persistence **готовий**; prerequisites **готові**; management guard verification **готовий**; explicit anchor placement **готовий**; restricted bootstrap writer **готовий**; scheduler proof / watchdog **готовий**; onboarding execute/verify **готовий**; rollback / API / drift = далі по черзі (NEXT M5-08).
+Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; onboarding domain/persistence **готовий**; prerequisites **готові**; management guard verification **готовий**; explicit anchor placement **готовий**; restricted bootstrap writer **готовий**; scheduler proof / watchdog **готовий**; onboarding execute/verify **готовий**; rollback/crash recovery **готовий**; API / drift = далі по черзі (NEXT M5-09).
 
 ### 2.2 DONE (не в черзі)
 
@@ -135,21 +135,22 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | M5-05 | #80 | Restricted bootstrap writer: allowlisted filter add/set/remove, disabled anchors, Spec §23 artifact ID |
 | M5-06 | #81 | Scheduler proof + onboarding watchdog: fixed no-op proof, deadline+startup, source hash, TTL/commit margin |
 | M5-07 | #82 | Onboarding execution: stage roots then disabled anchors, arm watchdogs, enable order, pass-through verify, disarm, MANAGED |
+| M5-08 | #83 | Deterministic rollback + crash recovery: disable-first, exact-resource remove, Spec §46 decision table, no automatic adoption |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
-| `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors; default `ProbeOnlyRouterOsReadPort` + `NotConfiguredSnapshotCapturePort`; actual-filter discovery mapper; packet-path blocker mapper; management-path discovery mapper (`api-ssl.address` in canonical projector); topology-dependency discovery mapper (VRRP sync fields, RAW/NAT/Mangle, rp-filter, switch chip); FastTrack discovery mapper (pre-anchor + VRF); policy-evidence discovery mapper (NODE_EFFECTIVE actual filter); closed `OnboardingBootstrapWriter` (M5-05) + `OnboardingWatchdogWriter` arm/disarm (M5-06/M5-07; generic `Write` namespace still absent) |
+| `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors; default `ProbeOnlyRouterOsReadPort` + `NotConfiguredSnapshotCapturePort`; actual-filter discovery mapper; packet-path blocker mapper; management-path discovery mapper (`api-ssl.address` in canonical projector); topology-dependency discovery mapper (VRRP sync fields, RAW/NAT/Mangle, rp-filter, switch chip); FastTrack discovery mapper (pre-anchor + VRF); policy-evidence discovery mapper (NODE_EFFECTIVE actual filter); closed `OnboardingBootstrapWriter` (M5-05) + `OnboardingWatchdogWriter` arm/disarm/cleanup (M5-06–M5-08; generic `Write` namespace still absent) |
 | `Mfc.Contracts` | `mfc.v1` inventory + snapshot/diff + `ZoneService` + `PolicyService` (authoring/review + approval/binding + compile summary RPCs) |
-| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper + packet-path canonical mapper + management-path canonical mapper + topology-dependency canonical mapper + FastTrack canonical mapper + policy-evidence canonical mapper + analysis-run/approval/desired-binding use cases + validate/catalog/diff authoring use cases + compile-and-store filter artifacts + `IOnboardingStore` + `ValidateOnboardingPrerequisitesUseCase` + `VerifyManagementGuardUseCase` + `PlanAnchorPlacementUseCase` + `PlanOnboardingBootstrapWritesUseCase` / `IOnboardingBootstrapWritePort` + `PlanOnboardingWatchdogUseCase` / `IOnboardingWatchdogPort` + `ExecuteOnboardingBootstrapUseCase` |
+| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper + packet-path canonical mapper + management-path canonical mapper + topology-dependency canonical mapper + FastTrack canonical mapper + policy-evidence canonical mapper + analysis-run/approval/desired-binding use cases + validate/catalog/diff authoring use cases + compile-and-store filter artifacts + `IOnboardingStore` + `ValidateOnboardingPrerequisitesUseCase` + `VerifyManagementGuardUseCase` + `PlanAnchorPlacementUseCase` + `PlanOnboardingBootstrapWritesUseCase` / `IOnboardingBootstrapWritePort` + `PlanOnboardingWatchdogUseCase` / `IOnboardingWatchdogPort` + `ExecuteOnboardingBootstrapUseCase` + `RollbackOnboardingBootstrapUseCase` + `RecoverOnboardingUseCase` |
 | `Mfc.Controller` | health + `InventoryService` + `SnapshotService` + `ZoneService` + `PolicyService` (compose + authoring/review + approval/binding + compile) gRPC |
 | `Mfc.Desktop` | connection shell + inventory tree + snapshot/diff viewers + Zones + Policies authoring/review workflow |
 | Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings + policy_analysis_runs/policy_approvals/warning_acknowledgments/policy_bindings + filter_artifacts + onboarding_plans/operations/steps |
 | `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) + management-path safety (M2-13) + topology/dependency safety (M2-14) + FastTrack policy validation (M2-15) + policy tests/diff/risk (M2-16) + approval/desired-binding (M2-17) + object JSON writer (M2-18) + RouterOS filter artifact model (M3-01) + managed chain namespace/layout (M3-02) + content-addressed address lists (M3-03) + zone/service variants (M3-04) + matcher/effect compile (M3-05) + FastTrack pairs + terminals (M3-06) + per-device compile orchestration (M3-07) + compiler acceptance / Switch FORWARD gate (M3-08) |
-| `Mfc.Domain.Onboarding` | immutable plans + plan hasher + operation SM + write-ahead steps + bootstrap artifact + `ManagementState` (M5-01) + prerequisite validator (M5-02) + `GuardProfile` / guard verifier (M5-03) + `AnchorPlacementPlanner` (M5-04) + `OnboardingBootstrapWritePlanner` (M5-05) + `OnboardingWatchdogPlanner` (M5-06) + pass-through equivalence / enable order (M5-07) |
+| `Mfc.Domain.Onboarding` | immutable plans + plan hasher + operation SM + write-ahead steps + bootstrap artifact + `ManagementState` (M5-01) + prerequisite validator (M5-02) + `GuardProfile` / guard verifier (M5-03) + `AnchorPlacementPlanner` (M5-04) + `OnboardingBootstrapWritePlanner` (M5-05) + `OnboardingWatchdogPlanner` (M5-06) + pass-through equivalence / enable order (M5-07) + Spec §46 recovery decision table (M5-08) |
 
-**NEXT = M5-08:** [M5-08](https://github.com/sesquicadaver/MTDirector/issues/83) Implement onboarding rollback and crash recovery (після M5-07 #82). Desktop stays Contracts-only (ADR 0005).
+**NEXT = M5-09:** [M5-09](https://github.com/sesquicadaver/MTDirector/issues/84) Expose onboarding API and desktop workflow (після M5-08 #83). Desktop stays Contracts-only until that issue (ADR 0005).
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -299,7 +300,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | ~~66~~ | ~~M5-05~~ | ~~#80~~ | ~~Implement onboarding write adapter and bootstrap artifact~~ → DONE (`OnboardingBootstrapWriter` + Living Spec AC 1–12) |
 | ~~67~~ | ~~M5-06~~ | ~~#81~~ | ~~Implement scheduler proof and onboarding watchdog~~ → DONE (`OnboardingWatchdogWriter` + Living Spec AC 1–12) |
 | ~~68~~ | ~~M5-07~~ | ~~#82~~ | ~~Implement onboarding execution and verification~~ → DONE (`ExecuteOnboardingBootstrapUseCase` + Living Spec AC 1–13) |
-| 69 | M5-08 | #83 | Implement onboarding rollback and crash recovery |
+| ~~69~~ | ~~M5-08~~ | ~~#83~~ | ~~Implement onboarding rollback and crash recovery~~ → DONE (`RollbackOnboardingBootstrapUseCase` + `RecoverOnboardingUseCase` + Spec §46 table) |
 | 70 | M5-09 | #84 | Expose onboarding API and desktop workflow |
 | 71 | M5-10 | #85 | Complete onboarding integration acceptance (**M5 CLOSED**) |
 
@@ -388,7 +389,7 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 55 відкритих атомарних задач (28 до MVP CLOSED + 27 M7). Start here: #83 M5-08.
+**Кінець черги:** 54 відкритих атомарних задач (27 до MVP CLOSED + 27 M7). Start here: #84 M5-09.
 
 ---
 
@@ -396,10 +397,10 @@ N1-06/N1-07 входять у N1 Open, не в M4/M6. Post-MVP M7 = **27** ли�
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 28 | M5-08…M6-09 + N1-06/07 |
+| До MVP CLOSED | 27 | M5-09…M6-09 + N1-06/07 |
 | Post-MVP M7 | 27 | лише після M6-09 |
-| **Нереалізовано разом** | **55** | 28 MVP + 27 M7 |
-| DONE у коді (§2.2) | 81 | M0+M1+N1-01…05+M2-01…18+M3-01…08+M5-01…07 |
+| **Нереалізовано разом** | **54** | 27 MVP + 27 M7 |
+| DONE у коді (§2.2) | 82 | M0+M1+N1-01…05+M2-01…18+M3-01…08+M5-01…08 |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
@@ -463,6 +464,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | Onboarding domain + persistence | M5-01 | Living Spec `OnboardingLivingSpecTests` AC#1–10 + `OnboardingPersistTests`; `ManagementState`; `OnboardingSchemaM501` | **DONE** |
 | Scheduler proof + onboarding watchdog | M5-06 | Living Spec `OnboardingWatchdogLivingSpecTests` AC#1–12; `OnboardingWatchdogWriter` | **DONE** |
 | Onboarding execution + verification | M5-07 | Living Spec `OnboardingExecutionLivingSpecTests` AC#1–13; `ExecuteOnboardingBootstrapUseCase` | **DONE** |
+| Onboarding rollback + crash recovery | M5-08 | Living Spec `OnboardingRollbackLivingSpecTests` AC#1–11; Spec §46 `OnboardingRecoveryDecision` | **DONE** |
 | Anchor bootstrap | M5 | equivalence; crash recovery | TODO |
 | Watchdog deploy / rollback | M4 | fault-injection; VRRP | TODO |
 | Drift + E2E DoD | M6 | E2E §E2E | TODO |
@@ -506,10 +508,11 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 15. ~~Відкрити **M5-05** → [issue #80](https://github.com/sesquicadaver/MTDirector/issues/80).~~ → **DONE**.
 16. ~~Відкрити **M5-06** → [issue #81](https://github.com/sesquicadaver/MTDirector/issues/81).~~ → **DONE**.
 17. ~~Відкрити **M5-07** → [issue #82](https://github.com/sesquicadaver/MTDirector/issues/82).~~ → **DONE**.
-18. Відкрити **M5-08** → [issue #83](https://github.com/sesquicadaver/MTDirector/issues/83).
-19. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.
-20. Не стартувати M4, доки не закрито **M5-10** (issue #85).
-21. Не стартувати M7, доки не закрито **M6-09** (черга #95).
+18. ~~Відкрити **M5-08** → [issue #83](https://github.com/sesquicadaver/MTDirector/issues/83).~~ → **DONE**.
+19. Відкрити **M5-09** → [issue #84](https://github.com/sesquicadaver/MTDirector/issues/84).
+20. Після merge — закреслити рядок у §3 (або перенести в §2.2 DONE) і взяти наступний `#`.
+21. Не стартувати M4, доки не закрито **M5-10** (issue #85).
+22. Не стартувати M7, доки не закрито **M6-09** (черга #95).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones

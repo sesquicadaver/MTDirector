@@ -41,6 +41,11 @@ public interface IOnboardingWatchdogPort
         OnboardingWatchdogBundle bundle,
         TimeSpan? remainingTtl = null,
         CancellationToken cancellationToken = default);
+
+    Task<OnboardingWatchdogExecutionResult> CleanupWatchdogAsync(
+        OnboardingOperationId operationId,
+        DeviceId deviceId,
+        CancellationToken cancellationToken = default);
 }
 
 /// <summary>Result of scheduler proof or watchdog arm plus actual-state read-back.</summary>

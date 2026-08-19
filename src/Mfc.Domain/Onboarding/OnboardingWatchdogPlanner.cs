@@ -9,6 +9,10 @@ public sealed class OnboardingSystemNameFacts
     public required IReadOnlyList<string> ScriptNames { get; init; }
 
     public required IReadOnlyList<string> SchedulerNames { get; init; }
+
+    /// <summary>Scheduler name → disabled. Missing keys are treated as enabled (fail-closed for recovery).</summary>
+    public IReadOnlyDictionary<string, bool> SchedulerDisabled { get; init; } =
+        new Dictionary<string, bool>(StringComparer.Ordinal);
 }
 
 /// <summary>One scheduler-proof or watchdog planning finding.</summary>

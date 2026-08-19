@@ -47,7 +47,7 @@ public sealed class OnboardingExecutionResult
 
 /// <summary>
 /// Executes staging, watchdog arming, normative enable, verification, disarm, and commit (M5-07).
-/// Indeterminate/failed equivalence records ROLLBACK_PENDING; resource rollback is M5-08.
+/// Indeterminate/failed equivalence records ROLLBACK_PENDING; <see cref="RollbackOnboardingBootstrapUseCase"/> performs resource rollback.
 /// </summary>
 public static class ExecuteOnboardingBootstrapUseCase
 {

@@ -89,7 +89,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Restricted bootstrap writer | Done (M5-05) | Allowlisted filter add/set/remove; disabled anchors; Spec §23 ID; no generic Write namespace |
 | Scheduler proof + watchdog | Done (M5-06) | Fixed no-op proof; deadline+startup; source hash; TTL/commit margin; collision fail-closed |
 | Onboarding execution + verification | Done (M5-07) | Stage/arm/enable/verify/disarm/commit; pass-through equivalence; Node MANAGED only fully |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M5-08 (#83) |
+| Onboarding rollback + crash recovery | Done (M5-08) | Disable-first exact rollback; Spec §46 decision table; no automatic adoption |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M5-09 (#84) |
 
 ## ADRs
 

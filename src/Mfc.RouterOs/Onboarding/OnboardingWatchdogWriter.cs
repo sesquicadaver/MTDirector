@@ -2,6 +2,7 @@ using System.Globalization;
 using Mfc.Application.Onboarding;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
+using Mfc.Domain.Onboarding.Primitives;
 
 namespace Mfc.RouterOs.Onboarding;
 
@@ -243,6 +244,135 @@ public sealed class OnboardingWatchdogWriter : IOnboardingWatchdogPort
         catch (InvalidOperationException ex)
         {
             return Fail(OnboardingCodes.OnboardingWatchdogDisableFailed, ex.Message, paths, sent);
+        }
+    }
+
+    public async Task<OnboardingWatchdogExecutionResult> CleanupWatchdogAsync(
+        OnboardingOperationId operationId,
+        DeviceId deviceId,
+        CancellationToken cancellationToken = default)
+    {
+        string token = OnboardingWatchdogNames.Token(operationId, deviceId);
+        string[] names =
+        [
+            OnboardingWatchdogNames.DeadlineScheduler(token),
+            OnboardingWatchdogNames.StartupScheduler(token),
+            OnboardingWatchdogNames.CapabilityScheduler(token),
+        ];
+        string[] scripts =
+        [
+            OnboardingWatchdogNames.RollbackScript(token),
+            OnboardingWatchdogNames.CapabilityScript(token),
+        ];
+        List<KeyValuePair<string, string>> sent = [];
+        List<string> paths = [];
+        try
+        {
+            foreach (string name in names)
+            {
+                IReadOnlyDictionary<string, string>? row = await FindAsync(OnboardingSystemSurface.Scheduler, name, cancellationToken)
+                    .ConfigureAwait(false);
+                if (row is null)
+                {
+                    continue;
+                }
+
+                if (!row.TryGetValue(".id", out string? itemId) || string.IsNullOrWhiteSpace(itemId))
+                {
+                    return Fail(
+                        OnboardingCodes.OnboardingWatchdogCleanupIncomplete,
+                        $"Watchdog scheduler '{name}' is missing .id.",
+                        paths,
+                        sent);
+                }
+
+                if (!DisabledYes(row.GetValueOrDefault("disabled")))
+                {
+                    await SendTrackedAsync(
+                        OnboardingWritePath.SystemSchedulerSet,
+                        [new(".id", itemId), new("disabled", "yes")],
+                        paths,
+                        sent,
+                        cancellationToken).ConfigureAwait(false);
+                    IReadOnlyDictionary<string, string>? afterDisable = await FindAsync(
+                        OnboardingSystemSurface.Scheduler,
+                        name,
+                        cancellationToken).ConfigureAwait(false);
+                    if (afterDisable is null || !DisabledYes(afterDisable.GetValueOrDefault("disabled")))
+                    {
+                        return Fail(
+                            OnboardingCodes.OnboardingWatchdogDisableFailed,
+                            $"Watchdog scheduler '{name}' was not disabled before cleanup.",
+                            paths,
+                            sent);
+                    }
+
+                    itemId = afterDisable.GetValueOrDefault(".id") ?? itemId;
+                }
+
+                await SendTrackedAsync(
+                    OnboardingWritePath.SystemSchedulerRemove,
+                    [new(".id", itemId)],
+                    paths,
+                    sent,
+                    cancellationToken).ConfigureAwait(false);
+            }
+
+            foreach (string name in scripts)
+            {
+                IReadOnlyDictionary<string, string>? row = await FindAsync(OnboardingSystemSurface.Script, name, cancellationToken)
+                    .ConfigureAwait(false);
+                if (row is null)
+                {
+                    continue;
+                }
+
+                if (!row.TryGetValue(".id", out string? itemId) || string.IsNullOrWhiteSpace(itemId))
+                {
+                    return Fail(
+                        OnboardingCodes.OnboardingWatchdogCleanupIncomplete,
+                        $"Watchdog script '{name}' is missing .id.",
+                        paths,
+                        sent);
+                }
+
+                await SendTrackedAsync(
+                    OnboardingWritePath.SystemScriptRemove,
+                    [new(".id", itemId)],
+                    paths,
+                    sent,
+                    cancellationToken).ConfigureAwait(false);
+            }
+
+            foreach (string name in names)
+            {
+                if (await ExistsAsync(OnboardingSystemSurface.Scheduler, name, cancellationToken).ConfigureAwait(false))
+                {
+                    return Fail(
+                        OnboardingCodes.OnboardingWatchdogCleanupIncomplete,
+                        $"Watchdog scheduler '{name}' remained after cleanup.",
+                        paths,
+                        sent);
+                }
+            }
+
+            foreach (string name in scripts)
+            {
+                if (await ExistsAsync(OnboardingSystemSurface.Script, name, cancellationToken).ConfigureAwait(false))
+                {
+                    return Fail(
+                        OnboardingCodes.OnboardingWatchdogCleanupIncomplete,
+                        $"Watchdog script '{name}' remained after cleanup.",
+                        paths,
+                        sent);
+                }
+            }
+
+            return Ok(paths, sent, hash: null);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Fail(OnboardingCodes.OnboardingWatchdogCleanupIncomplete, ex.Message, paths, sent);
         }
     }
 

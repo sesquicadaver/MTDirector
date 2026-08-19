@@ -465,6 +465,14 @@ public sealed class OnboardingExecutionLivingSpecTests
 
         public bool WatchdogsDisabled => _channel.SchedulersDisabled;
 
+        public bool HasWatchdogResidue => _channel.HasWatchdogResidue;
+
+        public bool HasEnabledBootstrapAnchors => _channel.HasEnabledBootstrapAnchors;
+
+        public bool HasBootstrapRoots => _channel.HasBootstrapRoots;
+
+        public IReadOnlyList<string> UserComments => _channel.UserComments;
+
         public IReadOnlyList<string> StagedDisabledMarkers => _channel.StagedDisabledMarkers;
 
         public IReadOnlyList<ActualFilterRule> InitialFilter => _channel.InitialFilter;
@@ -476,6 +484,14 @@ public sealed class OnboardingExecutionLivingSpecTests
 
         public void SeedWatchdogResidue() => _channel.SeedWatchdogResidue();
 
+        public void SeedExactAnchor(AnchorKey key, bool disabled, string? jumpTarget = null)
+            => _channel.SeedExactAnchor(key, disabled, jumpTarget);
+
+        public void SeedBootstrapReturn(AnchorKey key) => _channel.SeedBootstrapReturn(key);
+
+        public void SeedWatchdog(OnboardingOperationId operationId, DeviceId deviceId, bool disabled)
+            => _channel.SeedWatchdog(operationId, deviceId, disabled);
+
         public Task<IReadOnlyList<ActualFilterRule>> PrintFilterAsync(CancellationToken cancellationToken = default)
             => Task.FromResult<IReadOnlyList<ActualFilterRule>>(_channel.ToFilterRules());
 
@@ -484,6 +500,7 @@ public sealed class OnboardingExecutionLivingSpecTests
             {
                 ScriptNames = _channel.ScriptNames(),
                 SchedulerNames = _channel.SchedulerNames(),
+                SchedulerDisabled = _channel.SchedulerDisabledMap(),
             });
 
         public Task<OnboardingAuxiliarySnapshot> PrintAuxiliaryAsync(CancellationToken cancellationToken = default)
@@ -554,6 +571,28 @@ public sealed class OnboardingExecutionLivingSpecTests
         public bool SchedulersDisabled
             => _schedulers.Count > 0 && _schedulers.All(static r => r.GetValueOrDefault("disabled") is "yes" or "true");
 
+        public bool HasWatchdogResidue
+            => _scripts.Any(static r => OnboardingWatchdogNames.IsOnboardingWatchdogName(r.GetValueOrDefault("name"))
+                                        || OnboardingWatchdogNames.IsCapabilityProofName(r.GetValueOrDefault("name")))
+               || _schedulers.Any(static r => OnboardingWatchdogNames.IsOnboardingWatchdogName(r.GetValueOrDefault("name"))
+                                              || OnboardingWatchdogNames.IsCapabilityProofName(r.GetValueOrDefault("name")));
+
+        public bool HasEnabledBootstrapAnchors
+            => _filters.Any(static r =>
+                r.GetValueOrDefault("comment")?.StartsWith("mfc:anchor:v1:", StringComparison.Ordinal) == true
+                && r.GetValueOrDefault("disabled") is not ("yes" or "true" or "1"));
+
+        public bool HasBootstrapRoots
+            => _filters.Any(static r =>
+                string.Equals(r.GetValueOrDefault("comment"), BootstrapArtifact.ReturnComment, StringComparison.Ordinal));
+
+        public IReadOnlyList<string> UserComments
+            => _filters
+                .Select(static r => r.GetValueOrDefault("comment"))
+                .Where(static c => c is not null && c.StartsWith("user-", StringComparison.Ordinal))
+                .Select(static c => c!)
+                .ToArray();
+
         public IReadOnlyList<string> StagedDisabledMarkers
             => _filters
                 .Where(static r => r.GetValueOrDefault("comment")?.StartsWith("mfc:anchor:v1:", StringComparison.Ordinal) == true)
@@ -563,6 +602,12 @@ public sealed class OnboardingExecutionLivingSpecTests
         public string[] ScriptNames() => _scripts.Select(static r => r["name"]).ToArray();
 
         public string[] SchedulerNames() => _schedulers.Select(static r => r["name"]).ToArray();
+
+        public Dictionary<string, bool> SchedulerDisabledMap()
+            => _schedulers.ToDictionary(
+                static r => r["name"],
+                static r => r.GetValueOrDefault("disabled") is "yes" or "true" or "1",
+                StringComparer.Ordinal);
 
         public static CombinedChannel WithUnmanagedBuiltins()
         {
@@ -595,6 +640,64 @@ public sealed class OnboardingExecutionLivingSpecTests
                 ["name"] = "mfc-ob-s-deadbeefdeadbeef",
                 ["source"] = "# leftover",
             });
+        }
+
+        public void SeedExactAnchor(AnchorKey key, bool disabled, string? jumpTarget = null)
+        {
+            Dictionary<string, string> row = new(StringComparer.Ordinal)
+            {
+                [".id"] = NextId(),
+                ["chain"] = key.Chain switch
+                {
+                    FilterBuiltInContext.Input => "input",
+                    FilterBuiltInContext.Forward => "forward",
+                    FilterBuiltInContext.Output => "output",
+                    _ => throw new InvalidOperationException(key.Chain.ToString()),
+                },
+                ["action"] = "jump",
+                ["jump-target"] = jumpTarget ?? BootstrapArtifact.RootChainName(key.Family, key.Chain),
+                ["disabled"] = disabled ? "yes" : "no",
+                ["comment"] = key.Marker,
+            };
+            _filters.Add(row);
+        }
+
+        public void SeedBootstrapReturn(AnchorKey key)
+        {
+            Dictionary<string, string> row = new(StringComparer.Ordinal)
+            {
+                [".id"] = NextId(),
+                ["chain"] = BootstrapArtifact.RootChainName(key.Family, key.Chain),
+                ["action"] = "return",
+                ["disabled"] = "no",
+                ["comment"] = BootstrapArtifact.ReturnComment,
+            };
+            _filters.Add(row);
+        }
+
+        public void SeedWatchdog(OnboardingOperationId operationId, DeviceId deviceId, bool disabled)
+        {
+            string token = OnboardingWatchdogNames.Token(operationId, deviceId);
+            _scripts.Add(new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                [".id"] = NextId(),
+                ["name"] = OnboardingWatchdogNames.RollbackScript(token),
+                ["source"] = "# watchdog",
+            });
+            foreach (string name in new[]
+                     {
+                         OnboardingWatchdogNames.DeadlineScheduler(token),
+                         OnboardingWatchdogNames.StartupScheduler(token),
+                     })
+            {
+                _schedulers.Add(new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    [".id"] = NextId(),
+                    ["name"] = name,
+                    ["disabled"] = disabled ? "yes" : "no",
+                    ["on-event"] = OnboardingWatchdogNames.RollbackScript(token),
+                });
+            }
         }
 
         public List<ActualFilterRule> ToFilterRules()
@@ -634,6 +737,11 @@ public sealed class OnboardingExecutionLivingSpecTests
                     row[pair.Key] = pair.Value;
                 }
             }
+            else if (fixedPath.Contains("/firewall/filter/remove", StringComparison.Ordinal))
+            {
+                string id = attributes.Single(static a => a.Key == ".id").Value;
+                _filters.RemoveAll(r => r[".id"] == id);
+            }
             else if (fixedPath == "/system/script/add")
             {
                 Dictionary<string, string> row = attributes.ToDictionary(static a => a.Key, static a => a.Value, StringComparer.Ordinal);
@@ -655,6 +763,16 @@ public sealed class OnboardingExecutionLivingSpecTests
                 {
                     row[pair.Key] = pair.Value;
                 }
+            }
+            else if (fixedPath == "/system/script/remove")
+            {
+                string id = attributes.Single(static a => a.Key == ".id").Value;
+                _scripts.RemoveAll(r => r[".id"] == id);
+            }
+            else if (fixedPath == "/system/scheduler/remove")
+            {
+                string id = attributes.Single(static a => a.Key == ".id").Value;
+                _schedulers.RemoveAll(r => r[".id"] == id);
             }
 
             return Task.FromResult<IReadOnlyDictionary<string, string>>(
@@ -806,6 +924,12 @@ public sealed class OnboardingExecutionLivingSpecTests
 
             return _inner.DisarmWatchdogAsync(bundle, remainingTtl, cancellationToken);
         }
+
+        public Task<OnboardingWatchdogExecutionResult> CleanupWatchdogAsync(
+            OnboardingOperationId operationId,
+            DeviceId deviceId,
+            CancellationToken cancellationToken = default)
+            => _inner.CleanupWatchdogAsync(operationId, deviceId, cancellationToken);
 
         private static OnboardingWatchdogExecutionResult Fail(string code)
             => new()
