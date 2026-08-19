@@ -6,6 +6,7 @@ using Mfc.Controller.Grpc;
 using Mfc.Domain.Capabilities;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
+using Mfc.Domain.Policy;
 using Mfc.UnitTests.Application.Fakes;
 using Xunit;
 using DomainFacts = Mfc.Domain.Onboarding.OnboardingDevicePrerequisiteFacts;
@@ -235,6 +236,147 @@ public sealed class OnboardingWorkflowLivingSpecTests
             });
         Assert.True(missing.IsFailure);
         Assert.Equal("not_found", missing.Error!.Code);
+    }
+
+    [Fact]
+    public async Task CreateStartRollbackAndRecoveryCoverAuthKeysAndMissingRows()
+    {
+        WorkflowHarness harness = WorkflowHarness.Create(commit: true);
+        harness.Auth.DeniedPermissions.Add(
+            global::Mfc.Application.Abstractions.Authorization.ApplicationPermissions.OnboardingWrite);
+        ApplicationResult<OnboardingPlanSummaryView> forbidden = await harness.CreatePlanAsync();
+        Assert.True(forbidden.IsFailure);
+        Assert.Equal("forbidden", forbidden.Error!.Code);
+        harness.Auth.DeniedPermissions.Clear();
+
+        ApplicationResult<OnboardingPlanSummaryView> emptyKey = await harness.Plans.ExecuteAsync(
+            harness.PlanCommand(Guid.Empty));
+        Assert.True(emptyKey.IsFailure);
+        Assert.Equal("validation", emptyKey.Error!.Code);
+
+        CreateOnboardingPlanCommand template = harness.PlanCommand(Guid.NewGuid());
+        ApplicationResult<OnboardingPlanSummaryView> missingNode = await harness.Plans.ExecuteAsync(
+            new CreateOnboardingPlanCommand
+            {
+                Actor = template.Actor,
+                IdempotencyKey = Guid.NewGuid(),
+                NodeId = Guid.NewGuid(),
+                NodeMembershipHash = template.NodeMembershipHash,
+                TopologyProjectionHash = template.TopologyProjectionHash,
+                DevicePlans = template.DevicePlans,
+            });
+        Assert.True(missingNode.IsFailure);
+        Assert.Equal("not_found", missingNode.Error!.Code);
+
+        ApplicationResult<OnboardingPlanSummaryView> invalidHash = await harness.Plans.ExecuteAsync(
+            new CreateOnboardingPlanCommand
+            {
+                Actor = template.Actor,
+                IdempotencyKey = Guid.NewGuid(),
+                NodeId = template.NodeId,
+                NodeMembershipHash = new byte[16],
+                TopologyProjectionHash = template.TopologyProjectionHash,
+                DevicePlans = template.DevicePlans,
+            });
+        Assert.True(invalidHash.IsFailure);
+        Assert.Equal("validation", invalidHash.Error!.Code);
+
+        Guid conflictKey = Guid.NewGuid();
+        Assert.True((await harness.Plans.ExecuteAsync(harness.PlanCommand(conflictKey))).IsSuccess);
+        ApplicationResult<OnboardingPlanSummaryView> conflict = await harness.Plans.ExecuteAsync(
+            new CreateOnboardingPlanCommand
+            {
+                Actor = template.Actor,
+                IdempotencyKey = conflictKey,
+                NodeId = template.NodeId,
+                NodeMembershipHash = template.NodeMembershipHash,
+                TopologyProjectionHash = OnboardingTestFactory.H("other-topology").Bytes.ToArray(),
+                DevicePlans = template.DevicePlans,
+            });
+        Assert.True(conflict.IsFailure);
+        Assert.Equal("conflict", conflict.Error!.Code);
+
+        ApplicationResult<OnboardingOperationSummaryView> startEmpty = await harness.Start.ExecuteAsync(
+            new StartOnboardingCommand
+            {
+                Actor = "tester",
+                IdempotencyKey = Guid.Empty,
+                PlanId = Guid.NewGuid(),
+                PlanHash = new byte[32],
+            });
+        Assert.Equal("validation", startEmpty.Error!.Code);
+
+        ApplicationResult<OnboardingOperationSummaryView> startMissing = await harness.Start.ExecuteAsync(
+            new StartOnboardingCommand
+            {
+                Actor = "tester",
+                IdempotencyKey = Guid.NewGuid(),
+                PlanId = Guid.NewGuid(),
+                PlanHash = new byte[32],
+            });
+        Assert.Equal("not_found", startMissing.Error!.Code);
+
+        ApplicationResult<OnboardingOperationSummaryView> rollbackMissing = await harness.Rollback.ExecuteAsync(
+            new RollbackOnboardingCommand
+            {
+                Actor = "tester",
+                IdempotencyKey = Guid.NewGuid(),
+                OperationId = Guid.NewGuid(),
+            });
+        Assert.Equal("not_found", rollbackMissing.Error!.Code);
+
+        ApplicationResult<OnboardingRecoveryStatusView> recoveryMissing = await harness.Recovery.ExecuteAsync(
+            new GetOnboardingRecoveryStatusQuery
+            {
+                Actor = "tester",
+                NodeId = Guid.NewGuid(),
+            });
+        Assert.Equal("not_found", recoveryMissing.Error!.Code);
+    }
+
+    [Fact]
+    public async Task RecoveryUsesLiveAnchorFactsAndCommittedKeepManaged()
+    {
+        WorkflowHarness harness = WorkflowHarness.Create(commit: true);
+        ApplicationResult<OnboardingPlanSummaryView> plan = await harness.CreatePlanAsync();
+        ApplicationResult<OnboardingOperationSummaryView> started = await harness.Start.ExecuteAsync(
+            new StartOnboardingCommand
+            {
+                Actor = "tester",
+                IdempotencyKey = Guid.NewGuid(),
+                PlanId = plan.Value!.PlanId,
+                PlanHash = plan.Value.PlanHash,
+            });
+        Assert.True(started.IsSuccess);
+        ApplicationResult<OnboardingRecoveryStatusView> withAnchors = await harness.Recovery.ExecuteAsync(
+            new GetOnboardingRecoveryStatusQuery
+            {
+                Actor = "tester",
+                NodeId = harness.Node.Id.Value,
+                OperationId = started.Value!.OperationId,
+                LiveAnchors =
+                [
+                    ActualFilterRule.Create(
+                        Mfc.Domain.Inventory.IpAddressFamily.IPv4,
+                        "input",
+                        0,
+                        "jump",
+                        disabled: false,
+                        jumpTarget: "mfc4.in",
+                        comment: "mfc:anchor"),
+                ],
+            });
+        Assert.True(withAnchors.IsSuccess);
+        Assert.Equal(OnboardingRecoveryAction.CriticalDrift, withAnchors.Value!.Action);
+
+        ApplicationResult<OnboardingRecoveryStatusView> listed = await harness.Recovery.ExecuteAsync(
+            new GetOnboardingRecoveryStatusQuery
+            {
+                Actor = "tester",
+                NodeId = harness.Node.Id.Value,
+            });
+        Assert.True(listed.IsSuccess);
+        Assert.Null(listed.Value!.OperationId);
     }
 
     private sealed class WorkflowHarness
