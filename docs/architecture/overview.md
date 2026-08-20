@@ -109,7 +109,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Desired / committed / actual projection | Done (M6-01) | `DeviceHashState` + classifier + `NodeWorkflowStatusProjector`; EF `device_hash_states`; `GetNodeWorkflow`; Desktop desired/committed/actual hashes |
 | Managed drift detection | Done (M6-02) | `ManagedDriftDetector` + `DriftEvent` (immutable); EF `drift_events`; deploy gate blocks Critical; no auto-repair; Living Spec AC 1–12 |
 | Bounded operational jobs | Done (M6-03) | `OperationalJobSchedulerHostedService` + bounded priority bag; recovery > drift; expired-exception DB-only; restricted watchdog cleanup; no broker; Living Spec AC 1–10 |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M6-03 (#102) |
+| Desktop MVP workflows | Done (M6-04) | Seven modules + `DriftService`/`AuditService` read paths; Shell nav; no auto-fix; Living Spec AC 1–12 |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M6-05 (#104) |
 
 ## ADRs
 

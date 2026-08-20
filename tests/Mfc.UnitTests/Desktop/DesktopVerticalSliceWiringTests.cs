@@ -8,11 +8,13 @@ namespace Mfc.UnitTests.Desktop;
 public sealed class DesktopVerticalSliceWiringTests
 {
     [Fact]
-    public void ShellExposesInventorySnapshotDiffZonesPoliciesOnboardingAndDeploymentViewModels()
+    public void ShellExposesInventorySnapshotDiffZonesPoliciesOnboardingDeploymentDriftAndAudit()
     {
         System.Reflection.PropertyInfo[] properties = typeof(ShellViewModel).GetProperties();
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Inventory)
                                          && p.PropertyType == typeof(InventoryTreeViewModel));
+        Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Node)
+                                         && p.PropertyType == typeof(NodeDetailViewModel));
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Snapshot)
                                          && p.PropertyType == typeof(SnapshotViewerViewModel));
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Diff)
@@ -25,10 +27,16 @@ public sealed class DesktopVerticalSliceWiringTests
                                          && p.PropertyType == typeof(OnboardingViewModel));
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Deployment)
                                          && p.PropertyType == typeof(DeploymentViewModel));
+        Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Drift)
+                                         && p.PropertyType == typeof(DriftViewModel));
+        Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Audit)
+                                         && p.PropertyType == typeof(AuditViewModel));
+        Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.SelectedModule)
+                                         && p.PropertyType == typeof(ShellNavigationModule));
     }
 
     [Fact]
-    public void DesktopClientsCoverInventorySnapshotCompareZoneAndPolicyRpcs()
+    public void DesktopClientsCoverInventorySnapshotCompareZonePolicyOnboardingDeploymentDriftAndAuditRpcs()
     {
         Type client = typeof(ISnapshotViewerClient);
         Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.ListCapturesAsync)));
@@ -78,5 +86,12 @@ public sealed class DesktopVerticalSliceWiringTests
         Assert.NotNull(deployment.GetMethod(nameof(IDeploymentServiceClient.WatchAsync)));
         Assert.NotNull(deployment.GetMethod(nameof(IDeploymentServiceClient.RollbackAsync)));
         Assert.NotNull(deployment.GetMethod(nameof(IDeploymentServiceClient.GetRecoveryStatusAsync)));
+
+        Type drift = typeof(IDriftServiceClient);
+        Assert.NotNull(drift.GetMethod(nameof(IDriftServiceClient.ListDeviceDriftEventsAsync)));
+        Assert.NotNull(drift.GetMethod(nameof(IDriftServiceClient.GetDriftEventAsync)));
+
+        Type audit = typeof(IAuditServiceClient);
+        Assert.NotNull(audit.GetMethod(nameof(IAuditServiceClient.ListAuditEventsAsync)));
     }
 }

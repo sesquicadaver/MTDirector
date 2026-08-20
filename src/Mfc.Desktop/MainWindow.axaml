@@ -5,16 +5,30 @@
         x:Class="Mfc.Desktop.MainWindow"
         x:DataType="vm:ShellViewModel"
         Title="MikroTik Firewall Controller"
-        Width="1360"
-        Height="860"
-        MinWidth="960"
-        MinHeight="640">
+        Width="1440"
+        Height="900"
+        MinWidth="1024"
+        MinHeight="680"
+        Focusable="True">
+  <Window.KeyBindings>
+    <KeyBinding Gesture="Ctrl+1" Command="{Binding SelectModuleCommand}" CommandParameter="{x:Static vm:ShellNavigationModule.Inventory}" />
+    <KeyBinding Gesture="Ctrl+2" Command="{Binding SelectModuleCommand}" CommandParameter="{x:Static vm:ShellNavigationModule.Node}" />
+    <KeyBinding Gesture="Ctrl+3" Command="{Binding SelectModuleCommand}" CommandParameter="{x:Static vm:ShellNavigationModule.Snapshots}" />
+    <KeyBinding Gesture="Ctrl+4" Command="{Binding SelectModuleCommand}" CommandParameter="{x:Static vm:ShellNavigationModule.Policies}" />
+    <KeyBinding Gesture="Ctrl+5" Command="{Binding SelectModuleCommand}" CommandParameter="{x:Static vm:ShellNavigationModule.Operations}" />
+    <KeyBinding Gesture="Ctrl+6" Command="{Binding SelectModuleCommand}" CommandParameter="{x:Static vm:ShellNavigationModule.Drift}" />
+    <KeyBinding Gesture="Ctrl+7" Command="{Binding SelectModuleCommand}" CommandParameter="{x:Static vm:ShellNavigationModule.Audit}" />
+    <KeyBinding Gesture="F5" Command="{Binding Inventory.RefreshCommand}" />
+  </Window.KeyBindings>
+
   <DockPanel Margin="16">
-    <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,12">
+    <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,10">
       <TextBlock FontSize="22" FontWeight="SemiBold" Text="MTDirector" />
-      <TextBlock Opacity="0.8" Text="Controller · inventory · snapshot · semantic diff · zones · policies · onboarding" />
+      <TextBlock Opacity="0.8"
+                 Text="Inventory · Node · Snapshots · Policies · Operations · Drift · Audit" />
       <TextBlock Text="{Binding ControllerEndpoint, StringFormat=Endpoint: {0}}" />
       <TextBlock FontSize="16" Text="{Binding StatusText, StringFormat=Status: {0}}" FontWeight="Bold" />
+      <TextBlock Text="{Binding HotKeysText}" Opacity="0.7" FontSize="12" TextWrapping="Wrap" />
       <TextBlock Text="{Binding ErrorText}"
                  TextWrapping="Wrap"
                  IsVisible="{Binding HasError}"
@@ -25,7 +39,8 @@
       </StackPanel>
     </StackPanel>
 
-    <Grid ColumnDefinitions="240,12,*" RowDefinitions="Auto,*,Auto">
+    <Grid ColumnDefinitions="240,12,150,12,*" RowDefinitions="Auto,*,Auto">
+      <!-- Inventory tree (always visible) -->
       <DockPanel Grid.Column="0" Grid.Row="0" Margin="0,0,0,8">
         <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
           <Border Background="#E8EEF5"
@@ -54,6 +69,9 @@
               <StackPanel Orientation="Horizontal" Spacing="6" ToolTip.Tip="{Binding DetailSummary}">
                 <TextBlock Text="{Binding KindLabel}" Opacity="0.65" Width="48" />
                 <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding WorkflowStatusText}"
+                           Opacity="0.8"
+                           FontSize="11" />
               </StackPanel>
             </TreeDataTemplate>
           </TreeView.ItemTemplate>
@@ -68,108 +86,271 @@
                  Text="{Binding Inventory.ErrorText}"
                  IsVisible="{Binding Inventory.HasError}" />
 
-      <TabControl Grid.Column="2" Grid.Row="0" Grid.RowSpan="3">
-        <TabItem Header="Snapshot">
-          <Grid ColumnDefinitions="220,12,*" RowDefinitions="Auto,*,Auto" Margin="0,8,0,0">
-            <DockPanel Grid.Column="0" Grid.Row="0" Margin="0,0,0,8">
-              <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
-                <CheckBox Content="Technical"
-                          IsChecked="{Binding Snapshot.ShowTechnicalView}" />
-                <Button Content="Reload"
-                        Command="{Binding Snapshot.ReloadCommand}"
-                        MinWidth="80" />
-              </StackPanel>
-              <TextBlock FontSize="15" FontWeight="SemiBold" Text="Sections" VerticalAlignment="Center" />
-            </DockPanel>
+      <!-- Module navigation -->
+      <TextBlock Grid.Column="2" Grid.Row="0"
+                 FontSize="15" FontWeight="SemiBold"
+                 Text="Modules"
+                 Margin="0,0,0,8"
+                 VerticalAlignment="Center" />
+      <Border Grid.Column="2"
+              Grid.Row="1"
+              Grid.RowSpan="2"
+              BorderBrush="#D0D5DD"
+              BorderThickness="1"
+              Padding="4">
+        <ListBox ItemsSource="{Binding Modules}"
+                 SelectedItem="{Binding SelectedModule, Mode=TwoWay}"
+                 Name="ModuleNavList">
+          <ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+              <VirtualizingStackPanel />
+            </ItemsPanelTemplate>
+          </ListBox.ItemsPanel>
+        </ListBox>
+      </Border>
 
-            <Border Grid.Column="0"
-                    Grid.Row="1"
-                    BorderBrush="#D0D5DD"
-                    BorderThickness="1"
-                    Padding="4">
-              <ListBox ItemsSource="{Binding Snapshot.VisibleSections}"
-                       SelectedItem="{Binding Snapshot.SelectedSection, Mode=TwoWay}">
-                <ListBox.ItemsPanel>
-                  <ItemsPanelTemplate>
-                    <VirtualizingStackPanel />
-                  </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                  <DataTemplate DataType="svc:SnapshotSectionListItem">
-                    <StackPanel Spacing="2" Margin="2">
-                      <TextBlock Text="{Binding SectionId}" FontWeight="SemiBold" TextWrapping="Wrap" />
-                      <TextBlock Opacity="0.75" Text="{Binding StatusText, StringFormat=Status: {0}}" />
-                    </StackPanel>
-                  </DataTemplate>
-                </ListBox.ItemTemplate>
-              </ListBox>
-            </Border>
-
-            <TextBlock Grid.Column="0"
-                       Grid.Row="2"
-                       Margin="0,8,0,0"
+      <!-- Module content -->
+      <Panel Grid.Column="4" Grid.Row="0" Grid.RowSpan="3">
+        <!-- Inventory detail + Zones -->
+        <ScrollViewer IsVisible="{Binding IsInventorySelected}" VerticalScrollBarVisibility="Auto">
+          <StackPanel Spacing="10" Margin="0,0,0,8">
+            <TextBlock FontSize="16" FontWeight="SemiBold" Text="Inventory detail" />
+            <TextBlock Text="{Binding Inventory.SelectedNode.DetailSummary}"
                        TextWrapping="Wrap"
-                       Foreground="#B00020"
-                       Text="{Binding Snapshot.ErrorText}"
-                       IsVisible="{Binding Snapshot.HasError}" />
+                       Opacity="0.9" />
+            <TextBlock FontWeight="SemiBold" Text="Workflow status" />
+            <TextBlock Text="{Binding Inventory.SelectedNode.WorkflowStatusText}"
+                       FontSize="18"
+                       FontWeight="Bold" />
+            <TextBlock FontWeight="SemiBold" Text="Device hashes" />
+            <TextBlock Text="{Binding Inventory.SelectedNode.DesiredHashText, StringFormat=desired: {0}}"
+                       FontFamily="Consolas,Menlo,monospace" />
+            <TextBlock Text="{Binding Inventory.SelectedNode.CommittedHashText, StringFormat=committed: {0}}"
+                       FontFamily="Consolas,Menlo,monospace" />
+            <TextBlock Text="{Binding Inventory.SelectedNode.ActualHashText, StringFormat=actual: {0}}"
+                       FontFamily="Consolas,Menlo,monospace" />
 
-            <DockPanel Grid.Column="2" Grid.Row="0" Margin="0,0,0,8">
-              <Button Content="Copy sanitized"
-                      Command="{Binding Snapshot.CopySanitizedCommand}"
-                      DockPanel.Dock="Right"
-                      MinWidth="120" />
-              <TextBlock FontSize="15" FontWeight="SemiBold" Text="Snapshot (read-only)" VerticalAlignment="Center" />
-            </DockPanel>
+            <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8" Margin="0,12,0,0">
+              <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,*,Auto,*,Auto,*">
+                <DockPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Margin="0,0,0,8">
+                  <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
+                    <Button Content="Refresh" Command="{Binding Zones.RefreshCommand}" MinWidth="80" />
+                    <Button Content="Resolve node" Command="{Binding Zones.ResolveCommand}" MinWidth="110" />
+                  </StackPanel>
+                  <StackPanel Spacing="2">
+                    <TextBlock FontSize="15" FontWeight="SemiBold" Text="Logical zones &amp; Node bindings" />
+                    <TextBlock Text="{Binding Zones.SelectedNodeHint}" Opacity="0.8" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Zones.ErrorText}"
+                               Foreground="#B00020"
+                               TextWrapping="Wrap"
+                               IsVisible="{Binding Zones.HasError}" />
+                  </StackPanel>
+                </DockPanel>
 
-            <Border Grid.Column="2"
-                    Grid.Row="1"
-                    Grid.RowSpan="2"
-                    BorderBrush="#D0D5DD"
-                    BorderThickness="1"
-                    Padding="10">
-              <Grid RowDefinitions="Auto,Auto,*,*">
-                <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,8">
-                  <TextBlock Text="{Binding Snapshot.HintText}" TextWrapping="Wrap" Opacity="0.85" />
-                  <TextBlock Text="{Binding Snapshot.StatusText, StringFormat=Capture status: {0}}" />
-                  <TextBlock Text="{Binding Snapshot.SchemaVersionText, StringFormat=Schema version: {0}}" />
-                  <TextBlock Text="{Binding Snapshot.ConfigurationHashText, StringFormat=configuration_hash: {0}}"
-                             FontFamily="Consolas,Menlo,monospace"
-                             TextWrapping="Wrap" />
-                  <TextBlock Text="{Binding Snapshot.ObservationHashText, StringFormat=observation_hash: {0}}"
-                             FontFamily="Consolas,Menlo,monospace"
-                             TextWrapping="Wrap" />
-                  <TextBlock Text="{Binding Snapshot.CapabilityHashText, StringFormat=capability_hash: {0}}"
-                             FontFamily="Consolas,Menlo,monospace"
-                             TextWrapping="Wrap" />
-                  <ComboBox ItemsSource="{Binding Snapshot.Captures}"
-                            SelectedItem="{Binding Snapshot.SelectedCapture, Mode=TwoWay}"
-                            MinWidth="280"
-                            PlaceholderText="Captures">
-                    <ComboBox.ItemTemplate>
-                      <DataTemplate DataType="svc:SnapshotCaptureListItem">
-                        <TextBlock Text="{Binding CompletedAtText}" />
+                <Border Grid.Column="0" Grid.Row="1" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+                  <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
+                      <TextBlock FontWeight="SemiBold" Text="Company zones" />
+                      <TextBox PlaceholderText="key" Text="{Binding Zones.NewZoneKey}" />
+                      <TextBox PlaceholderText="name" Text="{Binding Zones.NewZoneName}" />
+                      <TextBox PlaceholderText="description (optional)" Text="{Binding Zones.NewZoneDescription}" />
+                      <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Content="Create" Command="{Binding Zones.CreateZoneCommand}" MinWidth="90" />
+                        <Button Content="Delete" Command="{Binding Zones.DeleteZoneCommand}" MinWidth="90" />
+                      </StackPanel>
+                    </StackPanel>
+                    <ListBox ItemsSource="{Binding Zones.Zones}"
+                             SelectedItem="{Binding Zones.SelectedZone, Mode=TwoWay}"
+                             MaxHeight="220">
+                      <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                      </ListBox.ItemsPanel>
+                      <ListBox.ItemTemplate>
+                        <DataTemplate DataType="svc:ZoneDefinitionListItem">
+                          <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
+                        </DataTemplate>
+                      </ListBox.ItemTemplate>
+                    </ListBox>
+                  </DockPanel>
+                </Border>
+
+                <Border Grid.Column="2" Grid.Row="1" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+                  <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
+                      <TextBlock FontWeight="SemiBold" Text="Node bindings" />
+                      <ComboBox ItemsSource="{Binding Zones.BindingKinds}"
+                                SelectedItem="{Binding Zones.SelectedBindingKind, Mode=TwoWay}"
+                                MinWidth="220" />
+                      <TextBox PlaceholderText="values (comma-separated)" Text="{Binding Zones.BindingValuesText}" />
+                      <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Content="Upsert binding" Command="{Binding Zones.UpsertBindingCommand}" MinWidth="120" />
+                        <Button Content="Delete binding" Command="{Binding Zones.DeleteBindingCommand}" MinWidth="120" />
+                      </StackPanel>
+                    </StackPanel>
+                    <ListBox ItemsSource="{Binding Zones.Bindings}"
+                             SelectedItem="{Binding Zones.SelectedBinding, Mode=TwoWay}"
+                             MaxHeight="220">
+                      <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                      </ListBox.ItemsPanel>
+                      <ListBox.ItemTemplate>
+                        <DataTemplate DataType="svc:NodeZoneBindingListItem">
+                          <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
+                        </DataTemplate>
+                      </ListBox.ItemTemplate>
+                    </ListBox>
+                  </DockPanel>
+                </Border>
+
+                <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
+                           Margin="0,12,0,4" FontWeight="SemiBold" Text="Resolve results / blockers" />
+                <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3"
+                        BorderBrush="#D0D5DD" BorderThickness="1" Padding="4" MinHeight="120">
+                  <ListBox ItemsSource="{Binding Zones.ResolveResults}">
+                    <ListBox.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                      </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                      <DataTemplate DataType="svc:ZoneResolveResultListItem">
+                        <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="4"
+                                   FontFamily="Consolas,Menlo,monospace" />
                       </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                  </ComboBox>
-                </StackPanel>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                </Border>
+              </Grid>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
 
-                <TextBlock Grid.Row="1" Margin="0,4,0,4" FontWeight="SemiBold" Text="Configuration records" />
-                <ListBox Grid.Row="2" ItemsSource="{Binding Snapshot.ConfigurationRecords}" Margin="0,0,0,8">
+        <!-- Node -->
+        <ScrollViewer IsVisible="{Binding IsNodeSelected}" VerticalScrollBarVisibility="Auto">
+          <StackPanel Spacing="10" Margin="0,0,0,8">
+            <DockPanel>
+              <Button Content="Refresh" Command="{Binding Node.RefreshCommand}" DockPanel.Dock="Right" MinWidth="80" />
+              <TextBlock FontSize="16" FontWeight="SemiBold" Text="Node" VerticalAlignment="Center" />
+            </DockPanel>
+            <TextBlock Text="{Binding Node.SelectionHint}" Opacity="0.85" TextWrapping="Wrap" />
+            <TextBlock FontWeight="SemiBold" Text="Topology" />
+            <TextBlock Text="{Binding Node.TopologyText}" TextWrapping="Wrap" />
+            <TextBlock FontWeight="SemiBold" Text="Workflow / readiness" />
+            <TextBlock Text="{Binding Node.WorkflowStatusText}" FontSize="18" FontWeight="Bold" />
+            <TextBlock Text="{Binding Node.DeploymentReadinessText}" TextWrapping="Wrap" Opacity="0.9" />
+            <TextBlock FontWeight="SemiBold" Text="Onboarding readiness" />
+            <TextBlock Text="{Binding Node.OnboardingReadinessText}" TextWrapping="Wrap" />
+            <TextBlock FontWeight="SemiBold" Text="Zones summary" />
+            <ListBox ItemsSource="{Binding Node.ZoneSummaryLines}" MaxHeight="160">
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
+            </ListBox>
+            <TextBlock FontWeight="SemiBold" Text="Device hashes" />
+            <ListBox ItemsSource="{Binding Node.DeviceHashLines}" MaxHeight="200">
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
+            </ListBox>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- Snapshots: Snapshot + Diff -->
+        <TabControl IsVisible="{Binding IsSnapshotsSelected}">
+          <TabItem Header="Snapshot">
+            <Grid ColumnDefinitions="220,12,*" RowDefinitions="Auto,*,Auto" Margin="0,8,0,0">
+              <DockPanel Grid.Column="0" Grid.Row="0" Margin="0,0,0,8">
+                <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
+                  <CheckBox Content="Technical"
+                            IsChecked="{Binding Snapshot.ShowTechnicalView}" />
+                  <Button Content="Reload"
+                          Command="{Binding Snapshot.ReloadCommand}"
+                          MinWidth="80" />
+                </StackPanel>
+                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Sections" VerticalAlignment="Center" />
+              </DockPanel>
+
+              <Border Grid.Column="0"
+                      Grid.Row="1"
+                      BorderBrush="#D0D5DD"
+                      BorderThickness="1"
+                      Padding="4">
+                <ListBox ItemsSource="{Binding Snapshot.VisibleSections}"
+                         SelectedItem="{Binding Snapshot.SelectedSection, Mode=TwoWay}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
                     </ItemsPanelTemplate>
                   </ListBox.ItemsPanel>
                   <ListBox.ItemTemplate>
-                    <DataTemplate DataType="svc:SnapshotRecordListItem">
-                      <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
+                    <DataTemplate DataType="svc:SnapshotSectionListItem">
+                      <StackPanel Spacing="2" Margin="2">
+                        <TextBlock Text="{Binding SectionId}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock Opacity="0.75" Text="{Binding StatusText, StringFormat=Status: {0}}" />
+                      </StackPanel>
                     </DataTemplate>
                   </ListBox.ItemTemplate>
                 </ListBox>
+              </Border>
 
-                <DockPanel Grid.Row="3">
-                  <TextBlock DockPanel.Dock="Top" Margin="0,0,0,4" FontWeight="SemiBold" Text="Observation records" />
-                  <ListBox ItemsSource="{Binding Snapshot.ObservationRecords}">
+              <TextBlock Grid.Column="0"
+                         Grid.Row="2"
+                         Margin="0,8,0,0"
+                         TextWrapping="Wrap"
+                         Foreground="#B00020"
+                         Text="{Binding Snapshot.ErrorText}"
+                         IsVisible="{Binding Snapshot.HasError}" />
+
+              <DockPanel Grid.Column="2" Grid.Row="0" Margin="0,0,0,8">
+                <Button Content="Copy sanitized"
+                        Command="{Binding Snapshot.CopySanitizedCommand}"
+                        DockPanel.Dock="Right"
+                        MinWidth="120" />
+                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Snapshot (configuration / observations)" VerticalAlignment="Center" />
+              </DockPanel>
+
+              <Border Grid.Column="2"
+                      Grid.Row="1"
+                      Grid.RowSpan="2"
+                      BorderBrush="#D0D5DD"
+                      BorderThickness="1"
+                      Padding="10">
+                <Grid RowDefinitions="Auto,Auto,*,*">
+                  <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,8">
+                    <TextBlock Text="{Binding Snapshot.HintText}" TextWrapping="Wrap" Opacity="0.85" />
+                    <TextBlock Text="{Binding Snapshot.StatusText, StringFormat=Capture status: {0}}" />
+                    <TextBlock Text="{Binding Snapshot.SchemaVersionText, StringFormat=Schema version: {0}}" />
+                    <TextBlock Text="{Binding Snapshot.ConfigurationHashText, StringFormat=configuration_hash: {0}}"
+                               FontFamily="Consolas,Menlo,monospace"
+                               TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Snapshot.ObservationHashText, StringFormat=observation_hash: {0}}"
+                               FontFamily="Consolas,Menlo,monospace"
+                               TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Snapshot.CapabilityHashText, StringFormat=capability_hash: {0}}"
+                               FontFamily="Consolas,Menlo,monospace"
+                               TextWrapping="Wrap" />
+                    <ComboBox ItemsSource="{Binding Snapshot.Captures}"
+                              SelectedItem="{Binding Snapshot.SelectedCapture, Mode=TwoWay}"
+                              MinWidth="280"
+                              PlaceholderText="Captures">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="svc:SnapshotCaptureListItem">
+                          <TextBlock Text="{Binding CompletedAtText}" />
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                  </StackPanel>
+
+                  <TextBlock Grid.Row="1" Margin="0,4,0,4" FontWeight="SemiBold" Text="Configuration records" />
+                  <ListBox Grid.Row="2" ItemsSource="{Binding Snapshot.ConfigurationRecords}" Margin="0,0,0,8">
                     <ListBox.ItemsPanel>
                       <ItemsPanelTemplate>
                         <VirtualizingStackPanel />
@@ -181,514 +362,435 @@
                       </DataTemplate>
                     </ListBox.ItemTemplate>
                   </ListBox>
-                </DockPanel>
-              </Grid>
-            </Border>
-          </Grid>
-        </TabItem>
 
-        <TabItem Header="Semantic diff">
-          <Grid ColumnDefinitions="220,12,*" RowDefinitions="Auto,*" Margin="0,8,0,0">
-            <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Spacing="8" Margin="0,0,0,10">
-              <TextBlock FontSize="15" FontWeight="SemiBold" Text="Compare snapshots (server-side)" />
-              <TextBlock Text="{Binding Diff.StatusText}" TextWrapping="Wrap" Opacity="0.85" />
-              <StackPanel Orientation="Horizontal" Spacing="12">
-                <StackPanel Spacing="4">
-                  <TextBlock Text="Base" FontWeight="SemiBold" />
-                  <ComboBox ItemsSource="{Binding Diff.Captures}"
-                            SelectedItem="{Binding Diff.BaseCapture, Mode=TwoWay}"
-                            MinWidth="260"
-                            PlaceholderText="Base capture">
-                    <ComboBox.ItemTemplate>
-                      <DataTemplate DataType="svc:SnapshotCaptureListItem">
-                        <TextBlock Text="{Binding CompletedAtText}" />
-                      </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                  </ComboBox>
+                  <DockPanel Grid.Row="3">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,4" FontWeight="SemiBold" Text="Observation records" />
+                    <ListBox ItemsSource="{Binding Snapshot.ObservationRecords}">
+                      <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                      </ListBox.ItemsPanel>
+                      <ListBox.ItemTemplate>
+                        <DataTemplate DataType="svc:SnapshotRecordListItem">
+                          <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
+                        </DataTemplate>
+                      </ListBox.ItemTemplate>
+                    </ListBox>
+                  </DockPanel>
+                </Grid>
+              </Border>
+            </Grid>
+          </TabItem>
+
+          <TabItem Header="Semantic diff">
+            <Grid ColumnDefinitions="220,12,*" RowDefinitions="Auto,*" Margin="0,8,0,0">
+              <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Spacing="8" Margin="0,0,0,10">
+                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Compare snapshots (server-side)" />
+                <TextBlock Text="{Binding Diff.StatusText}" TextWrapping="Wrap" Opacity="0.85" />
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                  <StackPanel Spacing="4">
+                    <TextBlock Text="Base" FontWeight="SemiBold" />
+                    <ComboBox ItemsSource="{Binding Diff.Captures}"
+                              SelectedItem="{Binding Diff.BaseCapture, Mode=TwoWay}"
+                              MinWidth="260"
+                              PlaceholderText="Base capture">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="svc:SnapshotCaptureListItem">
+                          <TextBlock Text="{Binding CompletedAtText}" />
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                  </StackPanel>
+                  <StackPanel Spacing="4">
+                    <TextBlock Text="Target" FontWeight="SemiBold" />
+                    <ComboBox ItemsSource="{Binding Diff.Captures}"
+                              SelectedItem="{Binding Diff.TargetCapture, Mode=TwoWay}"
+                              MinWidth="260"
+                              PlaceholderText="Target capture">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="svc:SnapshotCaptureListItem">
+                          <TextBlock Text="{Binding CompletedAtText}" />
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                  </StackPanel>
+                  <Button Content="Compare"
+                          Command="{Binding Diff.CompareCommand}"
+                          VerticalAlignment="Bottom"
+                          MinWidth="100" />
+                  <Button Content="Reload captures"
+                          Command="{Binding Diff.ReloadCapturesCommand}"
+                          VerticalAlignment="Bottom"
+                          MinWidth="120" />
                 </StackPanel>
-                <StackPanel Spacing="4">
-                  <TextBlock Text="Target" FontWeight="SemiBold" />
-                  <ComboBox ItemsSource="{Binding Diff.Captures}"
-                            SelectedItem="{Binding Diff.TargetCapture, Mode=TwoWay}"
-                            MinWidth="260"
-                            PlaceholderText="Target capture">
-                    <ComboBox.ItemTemplate>
-                      <DataTemplate DataType="svc:SnapshotCaptureListItem">
-                        <TextBlock Text="{Binding CompletedAtText}" />
-                      </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                  </ComboBox>
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                  <CheckBox Content="Configuration only"
+                            IsChecked="{Binding Diff.ShowConfigurationOnly}" />
+                  <CheckBox Content="Observations only"
+                            IsChecked="{Binding Diff.ShowObservationOnly}" />
                 </StackPanel>
-                <Button Content="Compare"
-                        Command="{Binding Diff.CompareCommand}"
-                        VerticalAlignment="Bottom"
-                        MinWidth="100" />
-                <Button Content="Reload captures"
-                        Command="{Binding Diff.ReloadCapturesCommand}"
-                        VerticalAlignment="Bottom"
-                        MinWidth="120" />
+                <TextBlock Text="No differences"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           IsVisible="{Binding Diff.IsNoDifferences}" />
+                <TextBlock Text="{Binding Diff.ErrorText}"
+                           TextWrapping="Wrap"
+                           Foreground="#B00020"
+                           IsVisible="{Binding Diff.HasError}" />
               </StackPanel>
-              <StackPanel Orientation="Horizontal" Spacing="16">
-                <CheckBox Content="Configuration only"
-                          IsChecked="{Binding Diff.ShowConfigurationOnly}" />
-                <CheckBox Content="Observations only"
-                          IsChecked="{Binding Diff.ShowObservationOnly}" />
-              </StackPanel>
-              <TextBlock Text="No differences"
-                         FontSize="18"
-                         FontWeight="Bold"
-                         IsVisible="{Binding Diff.IsNoDifferences}" />
-              <TextBlock Text="{Binding Diff.ErrorText}"
+
+              <Border Grid.Column="0"
+                      Grid.Row="1"
+                      BorderBrush="#D0D5DD"
+                      BorderThickness="1"
+                      Padding="4">
+                <ListBox ItemsSource="{Binding Diff.SectionGroups}"
+                         SelectedItem="{Binding Diff.SelectedSectionGroup, Mode=TwoWay}">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="svc:SnapshotDiffSectionGroup">
+                      <StackPanel Spacing="2" Margin="2">
+                        <TextBlock Text="{Binding SectionId}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock Opacity="0.75" Text="{Binding EntryCount, StringFormat={}{0} entries}" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+              </Border>
+
+              <Border Grid.Column="2"
+                      Grid.Row="1"
+                      BorderBrush="#D0D5DD"
+                      BorderThickness="1"
+                      Padding="4">
+                <ListBox ItemsSource="{Binding Diff.VisibleEntries}">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="svc:SnapshotDiffEntryItem">
+                      <StackPanel Spacing="2" Margin="4">
+                        <TextBlock Text="{Binding HeaderLine}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding ConfidenceText, StringFormat=Confidence: {0}}" Opacity="0.75" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+              </Border>
+            </Grid>
+          </TabItem>
+        </TabControl>
+
+        <!-- Policies -->
+        <ScrollViewer IsVisible="{Binding IsPoliciesSelected}" VerticalScrollBarVisibility="Auto">
+          <StackPanel Spacing="10">
+            <StackPanel Spacing="2">
+              <TextBlock FontSize="15" FontWeight="SemiBold" Text="Policy authoring / review / binding" />
+              <TextBlock Text="{Binding Policies.ReadOnlyBannerText}"
+                         Foreground="#8A5A00"
                          TextWrapping="Wrap"
+                         IsVisible="{Binding Policies.IsReadOnlyBannerVisible}" />
+              <TextBlock Text="{Binding Policies.ErrorText}"
                          Foreground="#B00020"
-                         IsVisible="{Binding Diff.HasError}" />
-              <ItemsControl ItemsSource="{Binding Diff.Warnings}">
-                <ItemsControl.ItemTemplate>
-                  <DataTemplate>
-                    <TextBlock Text="{Binding}" Opacity="0.8" TextWrapping="Wrap" />
-                  </DataTemplate>
-                </ItemsControl.ItemTemplate>
-              </ItemsControl>
+                         TextWrapping="Wrap"
+                         IsVisible="{Binding Policies.HasError}" />
             </StackPanel>
 
-            <Border Grid.Column="0"
-                    Grid.Row="1"
-                    BorderBrush="#D0D5DD"
-                    BorderThickness="1"
-                    Padding="4">
-              <ListBox ItemsSource="{Binding Diff.SectionGroups}"
-                       SelectedItem="{Binding Diff.SelectedSectionGroup, Mode=TwoWay}">
-                <ListBox.ItemsPanel>
-                  <ItemsPanelTemplate>
-                    <VirtualizingStackPanel />
-                  </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                  <DataTemplate DataType="svc:SnapshotDiffSectionGroup">
-                    <StackPanel Spacing="2" Margin="2">
-                      <TextBlock Text="{Binding SectionId}" FontWeight="SemiBold" TextWrapping="Wrap" />
-                      <TextBlock Opacity="0.75" Text="{Binding EntryCount, StringFormat={}{0} entries}" />
-                    </StackPanel>
-                  </DataTemplate>
-                </ListBox.ItemTemplate>
-              </ListBox>
-            </Border>
-
-            <Border Grid.Column="2"
-                    Grid.Row="1"
-                    BorderBrush="#D0D5DD"
-                    BorderThickness="1"
-                    Padding="4">
-              <ListBox ItemsSource="{Binding Diff.VisibleEntries}">
-                <ListBox.ItemsPanel>
-                  <ItemsPanelTemplate>
-                    <VirtualizingStackPanel />
-                  </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                  <DataTemplate DataType="svc:SnapshotDiffEntryItem">
-                    <StackPanel Spacing="2" Margin="4">
-                      <TextBlock Text="{Binding HeaderLine}" FontWeight="SemiBold" TextWrapping="Wrap" />
-                      <TextBlock Text="{Binding ConfidenceText, StringFormat=Confidence: {0}}" Opacity="0.75" />
-                      <ItemsControl ItemsSource="{Binding FieldLines}">
-                        <ItemsControl.ItemTemplate>
-                          <DataTemplate DataType="svc:SnapshotDiffFieldLine">
-                            <TextBlock Text="{Binding Summary}"
-                                       FontFamily="Consolas,Menlo,monospace"
-                                       TextWrapping="Wrap"
-                                       Margin="8,0,0,0" />
-                          </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                      </ItemsControl>
-                    </StackPanel>
-                  </DataTemplate>
-                </ListBox.ItemTemplate>
-              </ListBox>
-            </Border>
-          </Grid>
-        </TabItem>
-
-        <TabItem Header="Zones">
-          <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,*,Auto,*,Auto,*" Margin="0,8,0,0">
-            <DockPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Margin="0,0,0,8">
-              <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
-                <Button Content="Refresh" Command="{Binding Zones.RefreshCommand}" MinWidth="80" />
-                <Button Content="Resolve node" Command="{Binding Zones.ResolveCommand}" MinWidth="110" />
+            <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+              <StackPanel Spacing="6">
+                <TextBlock FontWeight="SemiBold" Text="Revision" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <TextBox PlaceholderText="revision UUID"
+                           Text="{Binding Policies.RevisionIdText}"
+                           MinWidth="280" />
+                  <Button Content="Load" Command="{Binding Policies.LoadCommand}" MinWidth="80" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <TextBox PlaceholderText="draft name (CompanyBaseline)"
+                           Text="{Binding Policies.DraftNameText}"
+                           MinWidth="280" />
+                  <Button Content="Create draft" Command="{Binding Policies.CreateDraftCommand}" MinWidth="110" />
+                </StackPanel>
+                <TextBlock Text="{Binding Policies.StateText, StringFormat=State: {0}}" />
+                <TextBlock Text="{Binding Policies.ContentHashText, StringFormat=Content hash: {0}}"
+                           FontFamily="Consolas,Menlo,monospace"
+                           TextWrapping="Wrap" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <Button Content="Validate" Command="{Binding Policies.ValidateCommand}" MinWidth="90" />
+                  <Button Content="Submit for review" Command="{Binding Policies.SubmitCommand}" MinWidth="130" />
+                  <Button Content="Approve" Command="{Binding Policies.ApproveCommand}" MinWidth="90" />
+                  <Button Content="Bind" Command="{Binding Policies.BindCommand}" MinWidth="80" />
+                  <Button Content="Deploy" Command="{Binding Policies.DeployCommand}" MinWidth="90"
+                          ToolTip.Tip="Deploy blocked from authoring (no Save and Deploy). Use Operations → Deploy." />
+                </StackPanel>
               </StackPanel>
-              <StackPanel Spacing="2">
-                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Logical zones &amp; Node bindings" />
-                <TextBlock Text="{Binding Zones.SelectedNodeHint}" Opacity="0.8" TextWrapping="Wrap" />
-                <TextBlock Text="{Binding Zones.ErrorText}"
-                           Foreground="#B00020"
-                           TextWrapping="Wrap"
-                           IsVisible="{Binding Zones.HasError}" />
-              </StackPanel>
-            </DockPanel>
-
-            <Border Grid.Column="0" Grid.Row="1" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
-              <DockPanel>
-                <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
-                  <TextBlock FontWeight="SemiBold" Text="Company zones" />
-                  <TextBox PlaceholderText="key" Text="{Binding Zones.NewZoneKey}" />
-                  <TextBox PlaceholderText="name" Text="{Binding Zones.NewZoneName}" />
-                  <TextBox PlaceholderText="description (optional)" Text="{Binding Zones.NewZoneDescription}" />
-                  <StackPanel Orientation="Horizontal" Spacing="8">
-                    <Button Content="Create" Command="{Binding Zones.CreateZoneCommand}" MinWidth="90" />
-                    <Button Content="Delete" Command="{Binding Zones.DeleteZoneCommand}" MinWidth="90" />
-                  </StackPanel>
-                </StackPanel>
-                <ListBox ItemsSource="{Binding Zones.Zones}"
-                         SelectedItem="{Binding Zones.SelectedZone, Mode=TwoWay}">
-                  <ListBox.ItemTemplate>
-                    <DataTemplate DataType="svc:ZoneDefinitionListItem">
-                      <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
-                    </DataTemplate>
-                  </ListBox.ItemTemplate>
-                </ListBox>
-              </DockPanel>
             </Border>
 
-            <Border Grid.Column="2" Grid.Row="1" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
-              <DockPanel>
-                <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
-                  <TextBlock FontWeight="SemiBold" Text="Node bindings" />
-                  <ComboBox ItemsSource="{Binding Zones.BindingKinds}"
-                            SelectedItem="{Binding Zones.SelectedBindingKind, Mode=TwoWay}"
-                            MinWidth="220" />
-                  <TextBox PlaceholderText="values (comma-separated)" Text="{Binding Zones.BindingValuesText}" />
-                  <StackPanel Orientation="Horizontal" Spacing="8">
-                    <Button Content="Upsert binding" Command="{Binding Zones.UpsertBindingCommand}" MinWidth="120" />
-                    <Button Content="Delete binding" Command="{Binding Zones.DeleteBindingCommand}" MinWidth="120" />
-                  </StackPanel>
-                </StackPanel>
-                <ListBox ItemsSource="{Binding Zones.Bindings}"
-                         SelectedItem="{Binding Zones.SelectedBinding, Mode=TwoWay}">
-                  <ListBox.ItemTemplate>
-                    <DataTemplate DataType="svc:NodeZoneBindingListItem">
-                      <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
-                    </DataTemplate>
-                  </ListBox.ItemTemplate>
-                </ListBox>
-              </DockPanel>
-            </Border>
-
-            <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
-                       Margin="0,12,0,4" FontWeight="SemiBold" Text="Resolve results / blockers" />
-            <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Grid.RowSpan="3"
-                    BorderBrush="#D0D5DD" BorderThickness="1" Padding="4">
-              <ListBox ItemsSource="{Binding Zones.ResolveResults}">
-                <ListBox.ItemTemplate>
-                  <DataTemplate DataType="svc:ZoneResolveResultListItem">
-                    <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="4"
-                               FontFamily="Consolas,Menlo,monospace" />
-                  </DataTemplate>
-                </ListBox.ItemTemplate>
-              </ListBox>
-            </Border>
-          </Grid>
-        </TabItem>
-
-        <TabItem Header="Policies">
-          <ScrollViewer Margin="0,8,0,0" VerticalScrollBarVisibility="Auto">
-            <StackPanel Spacing="10">
-              <StackPanel Spacing="2">
-                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Policy authoring &amp; review" />
-                <TextBlock Text="{Binding Policies.ReadOnlyBannerText}"
-                           Foreground="#8A5A00"
-                           TextWrapping="Wrap"
-                           IsVisible="{Binding Policies.IsReadOnlyBannerVisible}" />
-                <TextBlock Text="{Binding Policies.ErrorText}"
-                           Foreground="#B00020"
-                           TextWrapping="Wrap"
-                           IsVisible="{Binding Policies.HasError}" />
-              </StackPanel>
-
-              <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
-                <StackPanel Spacing="6">
-                  <TextBlock FontWeight="SemiBold" Text="Revision" />
-                  <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBox PlaceholderText="revision UUID"
-                             Text="{Binding Policies.RevisionIdText}"
-                             MinWidth="280" />
-                    <Button Content="Load" Command="{Binding Policies.LoadCommand}" MinWidth="80" />
-                  </StackPanel>
-                  <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBox PlaceholderText="draft name (CompanyBaseline)"
-                             Text="{Binding Policies.DraftNameText}"
-                             MinWidth="280" />
-                    <Button Content="Create draft" Command="{Binding Policies.CreateDraftCommand}" MinWidth="110" />
-                  </StackPanel>
-                  <TextBlock Text="{Binding Policies.StateText, StringFormat=State: {0}}" />
-                  <TextBlock Text="{Binding Policies.ContentHashText, StringFormat=Content hash: {0}}"
-                             FontFamily="Consolas,Menlo,monospace"
-                             TextWrapping="Wrap" />
-                  <StackPanel Orientation="Horizontal" Spacing="8">
-                    <Button Content="Validate" Command="{Binding Policies.ValidateCommand}" MinWidth="90" />
-                    <Button Content="Submit for review" Command="{Binding Policies.SubmitCommand}" MinWidth="130" />
-                    <Button Content="Approve" Command="{Binding Policies.ApproveCommand}" MinWidth="90" />
-                    <Button Content="Bind" Command="{Binding Policies.BindCommand}" MinWidth="80" />
-                    <Button Content="Deploy" Command="{Binding Policies.DeployCommand}" MinWidth="90"
-                            ToolTip.Tip="Deploy blocked from authoring (no Save and Deploy). Use the Deploy tab (M4-12)." />
-                  </StackPanel>
-                </StackPanel>
-              </Border>
-
-              <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
-                <StackPanel Spacing="6">
-                  <TextBlock FontWeight="SemiBold" Text="Rules" />
-                  <StackPanel Orientation="Horizontal" Spacing="8">
-                    <ComboBox ItemsSource="{Binding Policies.Families}"
-                              SelectedItem="{Binding Policies.SelectedFamily, Mode=TwoWay}"
-                              MinWidth="100" />
-                    <ComboBox ItemsSource="{Binding Policies.Chains}"
-                              SelectedItem="{Binding Policies.SelectedChain, Mode=TwoWay}"
-                              MinWidth="120" />
-                    <ComboBox ItemsSource="{Binding Policies.Stages}"
-                              SelectedItem="{Binding Policies.SelectedStage, Mode=TwoWay}"
-                              MinWidth="180" />
-                    <ComboBox ItemsSource="{Binding Policies.Effects}"
-                              SelectedItem="{Binding Policies.SelectedEffect, Mode=TwoWay}"
-                              MinWidth="140" />
-                  </StackPanel>
-                  <TextBox PlaceholderText="description" Text="{Binding Policies.RuleDescriptionText}" />
-                  <TextBox PlaceholderText="TrafficPredicate source address UUIDs (optional, comma)"
-                           Text="{Binding Policies.PredicateSourceAddressIdsText}" />
-                  <TextBox PlaceholderText="TrafficPredicate destination address UUIDs (optional, comma)"
-                           Text="{Binding Policies.PredicateDestinationAddressIdsText}" />
-                  <TextBox PlaceholderText="TrafficPredicate service UUIDs (optional, comma)"
-                           Text="{Binding Policies.PredicateServiceIdsText}" />
-                  <StackPanel Orientation="Horizontal" Spacing="8">
-                    <Button Content="Add rule" Command="{Binding Policies.AddRuleCommand}" MinWidth="100" />
-                  </StackPanel>
-                  <TextBox PlaceholderText="reorder within stage: comma rule UUIDs"
-                           Text="{Binding Policies.ReorderRuleIdsText}" />
-                  <Button Content="Reorder within stage" Command="{Binding Policies.ReorderRulesCommand}"
-                          MinWidth="160" HorizontalAlignment="Left" />
-                  <ListBox ItemsSource="{Binding Policies.Rules}" MaxHeight="180">
-                    <ListBox.ItemTemplate>
-                      <DataTemplate DataType="svc:PolicyRuleListItem">
-                        <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
-                                   FontFamily="Consolas,Menlo,monospace" />
-                      </DataTemplate>
-                    </ListBox.ItemTemplate>
-                  </ListBox>
-                </StackPanel>
-              </Border>
-
-              <Grid ColumnDefinitions="*,12,*">
-                <Border Grid.Column="0" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
-                  <StackPanel Spacing="6">
-                    <TextBlock FontWeight="SemiBold" Text="Address objects" />
-                    <TextBox PlaceholderText="name" Text="{Binding Policies.AddressNameText}" />
-                    <ComboBox ItemsSource="{Binding Policies.Families}"
-                              SelectedItem="{Binding Policies.AddressFamily, Mode=TwoWay}"
-                              MinWidth="120" />
-                    <TextBox PlaceholderText="entries (host / CIDR / range, one per line)"
-                             Text="{Binding Policies.AddressEntriesText}"
-                             AcceptsReturn="True"
-                             MinHeight="72"
-                             TextWrapping="Wrap" />
-                    <Button Content="Upsert address" Command="{Binding Policies.UpsertAddressCommand}"
-                            MinWidth="120" HorizontalAlignment="Left" />
-                    <ListBox ItemsSource="{Binding Policies.AddressObjects}" MaxHeight="140">
-                      <ListBox.ItemTemplate>
-                        <DataTemplate DataType="svc:PolicyAddressObjectListItem">
-                          <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
-                        </DataTemplate>
-                      </ListBox.ItemTemplate>
-                    </ListBox>
-                  </StackPanel>
-                </Border>
-                <Border Grid.Column="2" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
-                  <StackPanel Spacing="6">
-                    <TextBlock FontWeight="SemiBold" Text="Service objects" />
-                    <TextBox PlaceholderText="name" Text="{Binding Policies.ServiceNameText}" />
-                    <TextBox PlaceholderText="TCP port" Text="{Binding Policies.ServiceTcpPortText}" />
-                    <Button Content="Upsert service" Command="{Binding Policies.UpsertServiceCommand}"
-                            MinWidth="120" HorizontalAlignment="Left" />
-                    <ListBox ItemsSource="{Binding Policies.ServiceObjects}" MaxHeight="140">
-                      <ListBox.ItemTemplate>
-                        <DataTemplate DataType="svc:PolicyServiceObjectListItem">
-                          <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
-                        </DataTemplate>
-                      </ListBox.ItemTemplate>
-                    </ListBox>
-                  </StackPanel>
-                </Border>
-              </Grid>
-
-              <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
-                <StackPanel Spacing="6">
-                  <TextBlock FontWeight="SemiBold" Text="Chain contracts (company baseline)" />
-                  <StackPanel Orientation="Horizontal" Spacing="8">
-                    <ComboBox ItemsSource="{Binding Policies.Families}"
-                              SelectedItem="{Binding Policies.ContractFamily, Mode=TwoWay}"
-                              MinWidth="100" />
-                    <ComboBox ItemsSource="{Binding Policies.Chains}"
-                              SelectedItem="{Binding Policies.ContractChain, Mode=TwoWay}"
-                              MinWidth="120" />
-                    <TextBox PlaceholderText="disposition" Text="{Binding Policies.ContractDisposition}"
-                             MinWidth="180" />
-                    <ComboBox ItemsSource="{Binding Policies.RejectModes}"
-                              SelectedItem="{Binding Policies.ContractRejectMode, Mode=TwoWay}"
-                              MinWidth="160"
-                              ToolTip.Tip="Required when disposition is REJECT" />
-                    <Button Content="Replace contracts" Command="{Binding Policies.ReplaceContractsCommand}"
+            <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+              <StackPanel Spacing="6">
+                <TextBlock FontWeight="SemiBold" Text="Rules" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <ComboBox ItemsSource="{Binding Policies.Families}"
+                            SelectedItem="{Binding Policies.SelectedFamily, Mode=TwoWay}"
+                            MinWidth="100" />
+                  <ComboBox ItemsSource="{Binding Policies.Chains}"
+                            SelectedItem="{Binding Policies.SelectedChain, Mode=TwoWay}"
+                            MinWidth="120" />
+                  <ComboBox ItemsSource="{Binding Policies.Stages}"
+                            SelectedItem="{Binding Policies.SelectedStage, Mode=TwoWay}"
+                            MinWidth="180" />
+                  <ComboBox ItemsSource="{Binding Policies.Effects}"
+                            SelectedItem="{Binding Policies.SelectedEffect, Mode=TwoWay}"
                             MinWidth="140" />
-                  </StackPanel>
-                  <ListBox ItemsSource="{Binding Policies.ChainContracts}" MaxHeight="100">
-                    <ListBox.ItemTemplate>
-                      <DataTemplate DataType="svc:PolicyChainContractListItem">
-                        <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
-                      </DataTemplate>
-                    </ListBox.ItemTemplate>
-                  </ListBox>
                 </StackPanel>
-              </Border>
+                <TextBox PlaceholderText="description" Text="{Binding Policies.RuleDescriptionText}" />
+                <Button Content="Add rule" Command="{Binding Policies.AddRuleCommand}" MinWidth="100" HorizontalAlignment="Left" />
+                <ListBox ItemsSource="{Binding Policies.Rules}" MaxHeight="180">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="svc:PolicyRuleListItem">
+                      <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
+                                 FontFamily="Consolas,Menlo,monospace" />
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+              </StackPanel>
+            </Border>
 
-              <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
-                <StackPanel Spacing="6">
-                  <TextBlock FontWeight="SemiBold" Text="Tests (opaque JSON residual)" />
-                  <TextBox Text="{Binding Policies.TestsJsonText}"
-                           AcceptsReturn="True"
-                           MinHeight="80"
+            <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+              <StackPanel Spacing="6">
+                <TextBlock FontWeight="SemiBold" Text="Review: compose / diff / analysis risk" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <TextBox PlaceholderText="compose node UUID"
+                           Text="{Binding Policies.ComposeNodeIdText}"
+                           MinWidth="280" />
+                  <Button Content="Compose findings" Command="{Binding Policies.ComposeCommand}" MinWidth="130" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <TextBox PlaceholderText="baseline revision UUID"
+                           Text="{Binding Policies.DiffBaselineRevisionIdText}"
+                           MinWidth="280" />
+                  <Button Content="Semantic diff" Command="{Binding Policies.DiffCommand}" MinWidth="120" />
+                </StackPanel>
+                <ListBox ItemsSource="{Binding Policies.Findings}" MaxHeight="120">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="svc:PolicyFindingListItem">
+                      <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
+                                 FontFamily="Consolas,Menlo,monospace" />
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- Operations: Onboarding + Deploy + recovery -->
+        <TabControl IsVisible="{Binding IsOperationsSelected}">
+          <TabItem Header="Onboarding">
+            <ScrollViewer Margin="0,8,0,0" VerticalScrollBarVisibility="Auto">
+              <StackPanel Spacing="10">
+                <StackPanel Spacing="2">
+                  <TextBlock FontSize="15" FontWeight="SemiBold" Text="Managed-device onboarding" />
+                  <TextBlock Text="{Binding Onboarding.StatusText}" Opacity="0.85" TextWrapping="Wrap" />
+                  <TextBlock Text="{Binding Onboarding.ErrorText}"
+                             Foreground="#B00020"
+                             TextWrapping="Wrap"
+                             IsVisible="{Binding Onboarding.HasError}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <Button Content="Validate prerequisites" Command="{Binding Onboarding.ValidateCommand}" MinWidth="160" />
+                  <Button Content="Create plan" Command="{Binding Onboarding.CreatePlanCommand}" MinWidth="110" />
+                  <Button Content="Start" Command="{Binding Onboarding.StartCommand}" MinWidth="80" />
+                  <Button Content="Rollback" Command="{Binding Onboarding.RollbackCommand}" MinWidth="90" />
+                  <Button Content="Recovery status" Command="{Binding Onboarding.RecoveryCommand}" MinWidth="130" />
+                </StackPanel>
+                <TextBlock FontWeight="SemiBold" Text="Prerequisite checklist" />
+                <ListBox ItemsSource="{Binding Onboarding.Findings}" MaxHeight="140">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="svc:OnboardingFindingListItem">
+                      <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
+                                 FontFamily="Consolas,Menlo,monospace" />
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock FontWeight="SemiBold" Text="Recovery facts" />
+                <TextBlock Text="{Binding Onboarding.RecoveryFactsText}"
                            TextWrapping="Wrap"
                            FontFamily="Consolas,Menlo,monospace" />
-                  <Button Content="Replace tests" Command="{Binding Policies.ReplaceTestsCommand}"
-                          MinWidth="120" HorizontalAlignment="Left" />
+                <TextBlock FontWeight="SemiBold" Text="Progress" />
+                <ListBox ItemsSource="{Binding Onboarding.ProgressLines}" MaxHeight="120">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                </ListBox>
+              </StackPanel>
+            </ScrollViewer>
+          </TabItem>
+
+          <TabItem Header="Deploy">
+            <ScrollViewer Margin="0,8,0,0" VerticalScrollBarVisibility="Auto">
+              <StackPanel Spacing="10">
+                <StackPanel Spacing="2">
+                  <TextBlock FontSize="15" FontWeight="SemiBold" Text="Safe deployment" />
+                  <TextBlock Text="{Binding Deployment.StatusText}" Opacity="0.85" TextWrapping="Wrap" />
+                  <TextBlock Text="{Binding Deployment.ErrorText}"
+                             Foreground="#B00020"
+                             TextWrapping="Wrap"
+                             IsVisible="{Binding Deployment.HasError}" />
                 </StackPanel>
-              </Border>
-
-              <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
-                <StackPanel Spacing="6">
-                  <TextBlock FontWeight="SemiBold" Text="Review: compose / diff / analysis risk" />
-                  <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBox PlaceholderText="compose node UUID (optional device residual)"
-                             Text="{Binding Policies.ComposeNodeIdText}"
-                             MinWidth="280" />
-                    <Button Content="Compose findings" Command="{Binding Policies.ComposeCommand}" MinWidth="130" />
-                  </StackPanel>
-                  <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBox PlaceholderText="baseline revision UUID"
-                             Text="{Binding Policies.DiffBaselineRevisionIdText}"
-                             MinWidth="280" />
-                    <Button Content="Semantic diff" Command="{Binding Policies.DiffCommand}" MinWidth="120" />
-                  </StackPanel>
-                  <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBox PlaceholderText="risk level for RecordAnalysisRun"
-                             Text="{Binding Policies.AnalysisRiskLevelText}"
-                             MinWidth="160" />
-                    <Button Content="Record analysis run" Command="{Binding Policies.RecordAnalysisCommand}"
-                            MinWidth="150" />
-                  </StackPanel>
-                  <TextBlock Text="{Binding Policies.AnalysisRunIdText, StringFormat=Analysis run: {0}}" />
-                  <TextBlock Text="{Binding Policies.RiskLevelText, StringFormat=Risk: {0}}" />
-                  <TextBlock Text="{Binding Policies.EffectiveRiskLevelText, StringFormat=Effective risk: {0}}" />
-                  <TextBlock FontWeight="SemiBold" Text="Findings / witnesses" />
-                  <ListBox ItemsSource="{Binding Policies.Findings}" MaxHeight="120">
-                    <ListBox.ItemTemplate>
-                      <DataTemplate DataType="svc:PolicyFindingListItem">
-                        <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
-                                   FontFamily="Consolas,Menlo,monospace" />
-                      </DataTemplate>
-                    </ListBox.ItemTemplate>
-                  </ListBox>
-                  <TextBlock FontWeight="SemiBold" Text="Diff lines" />
-                  <ListBox ItemsSource="{Binding Policies.DiffLines}" MaxHeight="120">
-                    <ListBox.ItemTemplate>
-                      <DataTemplate DataType="svc:PolicyFindingListItem">
-                        <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
-                                   FontFamily="Consolas,Menlo,monospace" />
-                      </DataTemplate>
-                    </ListBox.ItemTemplate>
-                  </ListBox>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <Button Content="Create plan" Command="{Binding Deployment.CreatePlanCommand}" MinWidth="110" />
+                  <Button Content="Start" Command="{Binding Deployment.StartCommand}" MinWidth="80" />
+                  <Button Content="Rollback" Command="{Binding Deployment.RollbackCommand}" MinWidth="90" />
+                  <Button Content="Recovery status" Command="{Binding Deployment.RecoveryCommand}" MinWidth="130" />
                 </StackPanel>
-              </Border>
-            </StackPanel>
-          </ScrollViewer>
-        </TabItem>
-
-        <TabItem Header="Onboarding">
-          <ScrollViewer Margin="0,8,0,0" VerticalScrollBarVisibility="Auto">
-            <StackPanel Spacing="10">
-              <StackPanel Spacing="2">
-                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Managed-device onboarding" />
-                <TextBlock Text="{Binding Onboarding.StatusText}" Opacity="0.85" TextWrapping="Wrap" />
-                <TextBlock Text="{Binding Onboarding.ErrorText}"
-                           Foreground="#B00020"
+                <TextBlock FontWeight="SemiBold" Text="Semantic diff" />
+                <ListBox ItemsSource="{Binding Deployment.SemanticDiffLines}" MaxHeight="100">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                </ListBox>
+                <TextBlock FontWeight="SemiBold" Text="Recovery facts" />
+                <TextBlock Text="{Binding Deployment.RecoveryFactsText}"
                            TextWrapping="Wrap"
-                           IsVisible="{Binding Onboarding.HasError}" />
+                           FontFamily="Consolas,Menlo,monospace" />
+                <TextBlock FontWeight="SemiBold" Text="Progress" />
+                <ListBox ItemsSource="{Binding Deployment.ProgressLines}" MaxHeight="120">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                </ListBox>
               </StackPanel>
-              <StackPanel Orientation="Horizontal" Spacing="8">
-                <Button Content="Validate prerequisites" Command="{Binding Onboarding.ValidateCommand}" MinWidth="160" />
-                <Button Content="Create plan" Command="{Binding Onboarding.CreatePlanCommand}" MinWidth="110" />
-                <Button Content="Start" Command="{Binding Onboarding.StartCommand}" MinWidth="80" />
-                <Button Content="Rollback" Command="{Binding Onboarding.RollbackCommand}" MinWidth="90" />
-                <Button Content="Recovery status" Command="{Binding Onboarding.RecoveryCommand}" MinWidth="130" />
-              </StackPanel>
-              <TextBlock FontWeight="SemiBold" Text="Prerequisite checklist" />
-              <ListBox ItemsSource="{Binding Onboarding.Findings}" MaxHeight="140">
-                <ListBox.ItemTemplate>
-                  <DataTemplate DataType="svc:OnboardingFindingListItem">
-                    <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
-                               FontFamily="Consolas,Menlo,monospace" />
-                  </DataTemplate>
-                </ListBox.ItemTemplate>
-              </ListBox>
-              <TextBlock FontWeight="SemiBold" Text="Anchor placement" />
-              <ListBox ItemsSource="{Binding Onboarding.Placements}" MaxHeight="140">
-                <ListBox.ItemTemplate>
-                  <DataTemplate DataType="svc:OnboardingPlacementListItem">
-                    <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
-                               FontFamily="Consolas,Menlo,monospace" />
-                  </DataTemplate>
-                </ListBox.ItemTemplate>
-              </ListBox>
-              <TextBlock FontWeight="SemiBold" Text="Recovery facts" />
-              <TextBlock Text="{Binding Onboarding.RecoveryFactsText}"
-                         TextWrapping="Wrap"
-                         FontFamily="Consolas,Menlo,monospace" />
-              <TextBlock FontWeight="SemiBold" Text="Progress" />
-              <ListBox ItemsSource="{Binding Onboarding.ProgressLines}" MaxHeight="120" />
-            </StackPanel>
-          </ScrollViewer>
-        </TabItem>
+            </ScrollViewer>
+          </TabItem>
+        </TabControl>
 
-        <TabItem Header="Deploy">
-          <ScrollViewer Margin="0,8,0,0" VerticalScrollBarVisibility="Auto">
-            <StackPanel Spacing="10">
-              <StackPanel Spacing="2">
-                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Safe deployment" />
-                <TextBlock Text="{Binding Deployment.StatusText}" Opacity="0.85" TextWrapping="Wrap" />
-                <TextBlock Text="{Binding Deployment.ErrorText}"
-                           Foreground="#B00020"
-                           TextWrapping="Wrap"
-                           IsVisible="{Binding Deployment.HasError}" />
-              </StackPanel>
-              <StackPanel Orientation="Horizontal" Spacing="8">
-                <Button Content="Create plan" Command="{Binding Deployment.CreatePlanCommand}" MinWidth="110" />
-                <Button Content="Start" Command="{Binding Deployment.StartCommand}" MinWidth="80" />
-                <Button Content="Rollback" Command="{Binding Deployment.RollbackCommand}" MinWidth="90" />
-                <Button Content="Recovery status" Command="{Binding Deployment.RecoveryCommand}" MinWidth="130" />
-              </StackPanel>
-              <TextBlock FontWeight="SemiBold" Text="Semantic diff" />
-              <ListBox ItemsSource="{Binding Deployment.SemanticDiffLines}" MaxHeight="100" />
-              <TextBlock FontWeight="SemiBold" Text="Old / new artifacts" />
-              <ListBox ItemsSource="{Binding Deployment.ArtifactLines}" MaxHeight="100" />
-              <TextBlock FontWeight="SemiBold" Text="Activation / rollback order" />
-              <ListBox ItemsSource="{Binding Deployment.OrderLines}" MaxHeight="100" />
-              <TextBlock FontWeight="SemiBold" Text="Probes / watchdog TTL" />
-              <ListBox ItemsSource="{Binding Deployment.ProbeAndWatchdogLines}" MaxHeight="100" />
-              <TextBlock FontWeight="SemiBold" Text="Recovery facts" />
-              <TextBlock Text="{Binding Deployment.RecoveryFactsText}"
-                         TextWrapping="Wrap"
-                         FontFamily="Consolas,Menlo,monospace" />
-              <TextBlock FontWeight="SemiBold" Text="Progress" />
-              <ListBox ItemsSource="{Binding Deployment.ProgressLines}" MaxHeight="120" />
+        <!-- Drift (no automatic fix) -->
+        <Grid IsVisible="{Binding IsDriftSelected}" RowDefinitions="Auto,*,*" Margin="0,0,0,0">
+          <DockPanel Grid.Row="0" Margin="0,0,0,8">
+            <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
+              <Button Content="Refresh" Command="{Binding Drift.RefreshCommand}" MinWidth="80" />
             </StackPanel>
-          </ScrollViewer>
-        </TabItem>
-      </TabControl>
+            <StackPanel Spacing="2">
+              <TextBlock FontSize="16" FontWeight="SemiBold" Text="Drift" />
+              <TextBlock Text="Read-only drift events. Restoration is via Operations → Deploy (no automatic fix)."
+                         Opacity="0.8" TextWrapping="Wrap" />
+              <TextBlock Text="{Binding Drift.StatusText}" Opacity="0.85" TextWrapping="Wrap" />
+              <TextBlock Text="{Binding Drift.ErrorText}"
+                         Foreground="#B00020"
+                         TextWrapping="Wrap"
+                         IsVisible="{Binding Drift.HasError}" />
+            </StackPanel>
+          </DockPanel>
+          <Border Grid.Row="1" BorderBrush="#D0D5DD" BorderThickness="1" Padding="4" Margin="0,0,0,8">
+            <ListBox ItemsSource="{Binding Drift.Events}"
+                     SelectedItem="{Binding Drift.SelectedEvent, Mode=TwoWay}"
+                     Name="DriftEventsList">
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="vm:DriftEventListItem">
+                  <StackPanel Spacing="2" Margin="4">
+                    <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" FontWeight="SemiBold" />
+                    <TextBlock Opacity="0.75"
+                               Text="{Binding BaselineHashText, StringFormat=baseline: {0}}"
+                               FontFamily="Consolas,Menlo,monospace" />
+                    <TextBlock Opacity="0.75"
+                               Text="{Binding ActualHashText, StringFormat=actual: {0}}"
+                               FontFamily="Consolas,Menlo,monospace" />
+                  </StackPanel>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Border>
+          <Border Grid.Row="2" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+            <DockPanel>
+              <TextBlock DockPanel.Dock="Top" FontWeight="SemiBold" Text="Semantic diff" Margin="0,0,0,6" />
+              <TextBox Text="{Binding Drift.SemanticDiffText}"
+                       IsReadOnly="True"
+                       AcceptsReturn="True"
+                       TextWrapping="Wrap"
+                       FontFamily="Consolas,Menlo,monospace" />
+            </DockPanel>
+          </Border>
+        </Grid>
+
+        <!-- Audit (read-only) -->
+        <Grid IsVisible="{Binding IsAuditSelected}" RowDefinitions="Auto,*,*" Margin="0,0,0,0">
+          <DockPanel Grid.Row="0" Margin="0,0,0,8">
+            <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
+              <Button Content="Refresh" Command="{Binding Audit.RefreshCommand}" MinWidth="80" />
+            </StackPanel>
+            <StackPanel Spacing="2">
+              <TextBlock FontSize="16" FontWeight="SemiBold" Text="Audit" />
+              <TextBlock Text="Read-only append-only events (newest first). No mutate actions."
+                         Opacity="0.8" TextWrapping="Wrap" />
+              <TextBlock Text="{Binding Audit.StatusText}" Opacity="0.85" TextWrapping="Wrap" />
+              <TextBlock Text="{Binding Audit.ErrorText}"
+                         Foreground="#B00020"
+                         TextWrapping="Wrap"
+                         IsVisible="{Binding Audit.HasError}" />
+            </StackPanel>
+          </DockPanel>
+          <Border Grid.Row="1" BorderBrush="#D0D5DD" BorderThickness="1" Padding="4" Margin="0,0,0,8">
+            <ListBox ItemsSource="{Binding Audit.Events}"
+                     SelectedItem="{Binding Audit.SelectedEvent, Mode=TwoWay}"
+                     Name="AuditEventsList">
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="vm:AuditEventListItem">
+                  <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="4" />
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Border>
+          <Border Grid.Row="2" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+            <DockPanel>
+              <TextBlock DockPanel.Dock="Top" FontWeight="SemiBold" Text="Payload (JSON)" Margin="0,0,0,6" />
+              <TextBox Text="{Binding Audit.SelectedEvent.PayloadJson}"
+                       IsReadOnly="True"
+                       AcceptsReturn="True"
+                       TextWrapping="Wrap"
+                       FontFamily="Consolas,Menlo,monospace" />
+            </DockPanel>
+          </Border>
+        </Grid>
+      </Panel>
     </Grid>
   </DockPanel>
 </Window>

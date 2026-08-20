@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+package mfc.v1;
+
+option csharp_namespace = "Mfc.Contracts.Mfc.V1";
+
+import "google/protobuf/timestamp.proto";
+import "mfc/v1/common.proto";
+
+// DriftService — Issue Set M6-04 / E2E §42. Read-only drift events; no ForceRepair / AutoHeal.
+service DriftService {
+  rpc ListDeviceDriftEvents(ListDeviceDriftEventsRequest) returns (ListDeviceDriftEventsResponse);
+  rpc GetDriftEvent(GetDriftEventRequest) returns (DriftEvent);
+}
+
+enum DriftOutcome {
+  DRIFT_OUTCOME_UNSPECIFIED = 0;
+  DRIFT_OUTCOME_NO_DRIFT = 1;
+  DRIFT_OUTCOME_OBSERVATION_ONLY = 2;
+  DRIFT_OUTCOME_WARNING_DRIFT = 3;
+  DRIFT_OUTCOME_CRITICAL_DRIFT = 4;
+  DRIFT_OUTCOME_PENDING_DEPLOYMENT_NOT_DRIFT = 5;
+}
+
+enum DriftSeverity {
+  DRIFT_SEVERITY_UNSPECIFIED = 0;
+  DRIFT_SEVERITY_CRITICAL = 1;
+  DRIFT_SEVERITY_WARNING = 2;
+  DRIFT_SEVERITY_OBSERVATION = 3;
+  DRIFT_SEVERITY_IGNORED = 4;
+}
+
+enum DriftFindingKind {
+  DRIFT_FINDING_KIND_UNSPECIFIED = 0;
+  DRIFT_FINDING_KIND_MANAGED_RULE_CHANGED = 1;
+  DRIFT_FINDING_KIND_MANAGED_RULE_REORDERED = 2;
+  DRIFT_FINDING_KIND_MANAGED_RULE_MISSING = 3;
+  DRIFT_FINDING_KIND_ANCHOR_MISSING = 4;
+  DRIFT_FINDING_KIND_ANCHOR_DISABLED = 5;
+  DRIFT_FINDING_KIND_ANCHOR_TARGET_CHANGED = 6;
+  DRIFT_FINDING_KIND_ANCHOR_POSITION_CHANGED = 7;
+  DRIFT_FINDING_KIND_MANAGEMENT_GUARD_CHANGED = 8;
+  DRIFT_FINDING_KIND_MANAGED_ADDRESS_LIST_CHANGED = 9;
+  DRIFT_FINDING_KIND_INTERFACE_LIST_MEMBERSHIP_CHANGED = 10;
+  DRIFT_FINDING_KIND_ZONE_RESOLUTION_CHANGED = 11;
+  DRIFT_FINDING_KIND_ROUTEROS_VERSION_CHANGED = 12;
+  DRIFT_FINDING_KIND_CAPABILITY_CHANGED = 13;
+  DRIFT_FINDING_KIND_VRRP_MEMBERSHIP_CONFIG_CHANGED = 14;
+  DRIFT_FINDING_KIND_NAT_RAW_MANGLE_DEPENDENCY_CHANGED = 15;
+  DRIFT_FINDING_KIND_ROUTING_CONFIGURATION_CHANGED = 16;
+  DRIFT_FINDING_KIND_UNMANAGED_PRE_ANCHOR_RULE = 17;
+  DRIFT_FINDING_KIND_UNMANAGED_POST_ANCHOR_RULE = 18;
+  DRIFT_FINDING_KIND_VRRP_ROLE_CHANGED = 19;
+  DRIFT_FINDING_KIND_ACTIVE_WAN_CHANGED = 20;
+  DRIFT_FINDING_KIND_INTERFACE_RUNNING_STATE_CHANGED = 21;
+  DRIFT_FINDING_KIND_COUNTERS_CHANGED = 22;
+}
+
+message DriftFinding {
+  DriftFindingKind kind = 1;
+  DriftSeverity severity = 2;
+  optional string detail = 3;
+}
+
+message DriftEvent {
+  Uuid id = 1;
+  Uuid device_id = 2;
+  Uuid node_id = 3;
+  optional Sha256 baseline_committed_hash = 4;
+  optional Sha256 actual_managed_resource_hash = 5;
+  optional Sha256 desired_artifact_hash_ignored_for_baseline = 6;
+  DriftOutcome outcome = 7;
+  bool configuration_drift_present = 8;
+  bool blocks_deployment = 9;
+  repeated DriftFinding findings = 10;
+  optional string semantic_diff_canonical = 11;
+  optional Sha256 semantic_diff_hash = 12;
+  google.protobuf.Timestamp created_at = 13;
+  bool immutable = 14;
+}
+
+message ListDeviceDriftEventsRequest {
+  Uuid device_id = 1;
+}
+
+message ListDeviceDriftEventsResponse {
+  repeated DriftEvent events = 1;
+}
+
+message GetDriftEventRequest {
+  Uuid drift_event_id = 1;
+}

@@ -3,7 +3,7 @@
 **Дата оновлення:** 20 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M6-03 — bounded operational jobs DONE; черга зсунута на M6-04
+**Базовий коміт аудиту:** M6-04 — Desktop MVP workflows DONE; черга зсунута на M6-05
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -50,13 +50,13 @@
 | M3 Compiler | 8 | 0 | 100% |
 | M5 Onboarding | 10 | 0 | 100% |
 | M4 Safe deploy | 13 | 0 | 100% |
-| M6 E2E / drift | 3 | 6 | 33% |
+| M6 E2E / drift | 4 | 5 | 44% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **96** | **40** | **71% issues** |
+| **Разом** | **97** | **39** | **71% issues** |
 
-MVP issues (109) = **97 done + 12 remaining** до MVP CLOSED (**89%**).  
+MVP issues (109) = **98 done + 11 remaining** до MVP CLOSED (**90%**).  
 N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
-Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий**; multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance **DONE**; **M4 CLOSED**; desired/committed/actual projection **готовий** (M6-01); managed drift detection **готовий** (M6-02); bounded operational jobs **готовий** (M6-03); NEXT = M6-04 (#103).
+Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий**; multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance **DONE**; **M4 CLOSED**; desired/committed/actual projection **готовий** (M6-01); managed drift detection **готовий** (M6-02); bounded operational jobs **готовий** (M6-03); Desktop MVP workflows **готовий** (M6-04); NEXT = M6-05 (#104).
 
 ### 2.2 DONE (не в черзі)
 
@@ -154,23 +154,25 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | M4-13 | #98 | **M4 CLOSED** — deployment fault/security acceptance Living Spec AC 1–13 |
 | M6-01 | #100 | Desired/committed/actual hash projection + derived `NodeWorkflowStatus` (E2E §7–§8) |
 | M6-02 | #101 | Managed drift detection vs last committed + deploy gate + immutable events (E2E §32–§34) |
+| M6-03 | #102 | Bounded operational jobs (recovery > drift; no broker) |
+| M6-04 | #103 | Desktop MVP workflows: seven modules + Drift/Audit gRPC read paths |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
 | `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors; default `ProbeOnlyRouterOsReadPort` + `NotConfiguredSnapshotCapturePort`; actual-filter discovery mapper; packet-path blocker mapper; management-path discovery mapper (`api-ssl.address` in canonical projector); topology-dependency discovery mapper (VRRP sync fields, RAW/NAT/Mangle, rp-filter, switch chip); FastTrack discovery mapper (pre-anchor + VRF); policy-evidence discovery mapper (NODE_EFFECTIVE actual filter); closed `OnboardingBootstrapWriter` (M5-05) + `OnboardingWatchdogWriter` arm/disarm/cleanup (M5-06–M5-08; generic `Write` namespace still absent); restricted `RouterOsDeploymentSession` (M4-02) + `DeploymentWatchdogWriter` (M4-05); anchor jump-target set used by M4-06 activation |
-| `Mfc.Contracts` | `mfc.v1` inventory (+ workflow status / hash fields + `GetNodeWorkflow`) + snapshot/diff + `ZoneService` + `PolicyService` + `OnboardingService` + `DeploymentService` |
-| `Mfc.Application` | inventory/snapshot + … + deployment workflow use cases / `IDeploymentRuntime` (M4-12) + `IDeviceHashStateStore` + workflow use cases (M6-01) + `IDriftEventStore` + `DetectManagedDriftUseCase` (M6-02) + operational job use cases (M6-03) |
-| `Mfc.Controller` | health + `InventoryService` (incl. `GetNodeWorkflow`) + `SnapshotService` + `ZoneService` + `PolicyService` + `OnboardingService` + `DeploymentService` gRPC |
-| `Mfc.Desktop` | connection shell + inventory tree (desired/committed/actual hashes + workflow status) + snapshot/diff viewers + Zones + Policies + Onboarding + Deploy |
-| Persistence | inventory + snapshot CAS + policy lifecycle + zones + approvals/bindings + filter_artifacts + onboarding_* + deployment_* + `device_hash_states` (M6-01) + `drift_events` (M6-02) |
+| `Mfc.Contracts` | `mfc.v1` inventory (+ workflow status / hash fields + `GetNodeWorkflow`) + snapshot/diff + `ZoneService` + `PolicyService` + `OnboardingService` + `DeploymentService` + `DriftService` + `AuditService` |
+| `Mfc.Application` | inventory/snapshot + … + deployment workflow use cases / `IDeploymentRuntime` (M4-12) + `IDeviceHashStateStore` + workflow use cases (M6-01) + `IDriftEventStore` + `DetectManagedDriftUseCase` (M6-02) + operational job use cases (M6-03) + `ListAuditEventsUseCase` (M6-04) |
+| `Mfc.Controller` | health + `InventoryService` (incl. `GetNodeWorkflow`) + `SnapshotService` + `ZoneService` + `PolicyService` + `OnboardingService` + `DeploymentService` + `DriftService` + `AuditService` gRPC |
+| `Mfc.Desktop` | seven MVP modules (Inventory/Node/Snapshots/Policies/Operations/Drift/Audit); Contracts-only; cached inventory badge; no auto-fix drift |
+| Persistence | inventory + snapshot CAS + policy lifecycle + zones + approvals/bindings + filter_artifacts + onboarding_* + deployment_* + `device_hash_states` (M6-01) + `drift_events` (M6-02) + audit read store (M6-04) |
 | `Mfc.Domain.Workflow` | `DeviceHashState` + classifier + `NodeWorkflowStatusProjector` (derived status; never persisted on Node) |
 | `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) + management-path safety (M2-13) + topology/dependency safety (M2-14) + FastTrack policy validation (M2-15) + policy tests/diff/risk (M2-16) + approval/desired-binding (M2-17) + object JSON writer (M2-18) + RouterOS filter artifact model (M3-01) + managed chain namespace/layout (M3-02) + content-addressed address lists (M3-03) + zone/service variants (M3-04) + matcher/effect compile (M3-05) + FastTrack pairs + terminals (M3-06) + per-device compile orchestration (M3-07) + compiler acceptance / Switch FORWARD gate (M3-08) |
 | `Mfc.Domain.Onboarding` | immutable plans + plan hasher + operation SM + write-ahead steps + bootstrap artifact + `ManagementState` (M5-01) + prerequisite validator (M5-02) + `GuardProfile` / guard verifier (M5-03) + `AnchorPlacementPlanner` (M5-04) + `OnboardingBootstrapWritePlanner` (M5-05) + `OnboardingWatchdogPlanner` (M5-06) + pass-through equivalence / enable order (M5-07) + Spec §46 recovery decision table (M5-08) |
 | `Mfc.Domain.Deployment` | immutable `DeploymentPlan` + plan hasher `mfc.deployment.plan.v1` + Node/device SM + exclusive lock + write-ahead steps (M4-01) + packet-path deploy gate (N1-06) + address-list create-or-verify (M4-03) + detached chain create-or-verify (M4-04) + production watchdog planner/script (M4-05) + transition-state validation + anchor activation order/decision (M4-06) + post-activation integrity/probes/watchdog readiness (M4-07) + standalone eligibility/NO_CHANGES policy (M4-08) + multi-WAN dependency/probe gates (M4-09) + VRRP classification/order/partial-failure policy (M4-10) + recovery decision table / controller rollback (M4-11); no campaign |
 
-**NEXT = M6-04:** [M6-04](https://github.com/sesquicadaver/MTDirector/issues/103) Integrate final desktop workflows. **M6-03 DONE.**
+**NEXT = M6-05:** [M6-05](https://github.com/sesquicadaver/MTDirector/issues/104) Complete standalone and dual-stack end-to-end acceptance. **M6-04 DONE.**
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -341,7 +343,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | ~~82~~ | ~~M4-10~~ | ~~#95~~ | ~~Implement VRRP deployment coordinator~~ → DONE (`ExecuteVrrpDeploymentUseCase`) |
 | ~~83~~ | ~~M4-11~~ | ~~#96~~ | ~~Implement rollback and crash recovery~~ → DONE (`RecoverDeploymentUseCase`) |
 | ~~84~~ | ~~M4-12~~ | ~~#97~~ | ~~Expose deployment API and desktop operation workflow~~ → DONE (`DeploymentService` + Desktop Deploy) |
-|| ~~85~~ | ~~M4-13~~ | ~~#98~~ | ~~Complete deployment fault and security acceptance (**M4 CLOSED**)~~ → DONE (`DeploymentFaultSecurityAcceptanceLivingSpecTests` AC 1–13 all passed; `DeploymentAcceptanceHarness` shared infra) |
+| ~~85~~ | ~~M4-13~~ | ~~#98~~ | ~~Complete deployment fault and security acceptance (**M4 CLOSED**)~~ → DONE (`DeploymentFaultSecurityAcceptanceLivingSpecTests` AC 1–13 all passed; `DeploymentAcceptanceHarness` shared infra) |
 
 #### Блок A10 — M6 E2E (+ N1-07) → MVP CLOSED
 
@@ -351,7 +353,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | ~~87~~ | ~~M6-02~~ | ~~#101~~ | ~~Implement managed drift detection~~ → DONE (`ManagedDriftDetector` + `drift_events` + deploy gate; no auto-repair) |
 | 88 | N1-07 | #109 | E2E/drift acceptance for container/VLAN/VETH/HW path classes |
 | ~~89~~ | ~~M6-03~~ | ~~#102~~ | ~~Implement bounded operational background jobs~~ → DONE (`OperationalJobSchedulerHostedService` + bounded queues; no broker) |
-| 90 | M6-04 | #103 | Integrate final desktop workflows |
+| ~~90~~ | ~~M6-04~~ | ~~#103~~ | ~~Integrate final desktop workflows~~ → DONE (seven modules + Drift/Audit gRPC; Living Spec AC 1–12) |
 | 91 | M6-05 | #104 | Complete standalone and dual-stack end-to-end acceptance |
 | 92 | M6-06 | #105 | Complete multi-WAN end-to-end acceptance |
 | 93 | M6-07 | #106 | Complete VRRP and CRS end-to-end acceptance |
@@ -409,7 +411,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 35 відкритих атомарних задач (8 до MVP CLOSED + 27 M7). Start here: #103 M6-04.
+**Кінець черги:** 34 відкритих атомарних задач (7 до MVP CLOSED + 27 M7). Start here: #104 M6-05.
 
 ---
 
@@ -417,10 +419,10 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 8 | M6-04…M6-09 + N1-07 |
+| До MVP CLOSED | 7 | M6-05…M6-09 + N1-07 |
 | Post-MVP M7 | 27 | лише після M6-09 |
 | **Нереалізовано разом** | **37** | 10 MVP + 27 M7 |
-| DONE у коді (§2.2) | 97 | …+M4-01…13+M6-01+M6-02+M6-03 |
+| DONE у коді (§2.2) | 98 | …+M4-01…13+M6-01…M6-04 |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
@@ -504,7 +506,8 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | Desired / committed / actual projection | M6-01 | Living Spec `DeviceStateProjectionLivingSpecTests` AC#1–10; `DeviceHashStateClassifier` + `NodeWorkflowStatusProjector`; `device_hash_states`; Desktop hash surfaces | **DONE** |
 | Managed drift detection | M6-02 | Living Spec `ManagedDriftDetectionLivingSpecTests` AC#1–12; `ManagedDriftDetector` + immutable `DriftEvent`; `drift_events`; Critical blocks deploy; no auto-repair | **DONE** |
 | Bounded operational jobs | M6-03 | Living Spec `BoundedOperationalJobsLivingSpecTests` AC#1–10; `OperationalJobSchedulerHostedService` + bounded priority bag; recovery>drift; no Hangfire/Quartz/broker | **DONE** |
-| Desktop workflows + E2E DoD | M6-04… | E2E §E2E | TODO |
+| Desktop workflows (seven modules) | M6-04 | Living Spec `DesktopMvpWorkflowsLivingSpecTests` AC#1–12; `DriftService`/`AuditService`; Shell nav; no auto-fix | **DONE** |
+| Standalone / dual-stack E2E DoD | M6-05… | E2E §E2E | TODO |
 | Routing assurance | M7.1 | RouteResolutionTrace fixtures | TODO post-MVP |
 | Incident overlay | M7.4 | feasibility; TTL removal | TODO post-MVP |
 
@@ -565,7 +568,8 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 35. ~~Відкрити **M6-01** → [issue #100](https://github.com/sesquicadaver/MTDirector/issues/100).~~ → **DONE**.
 36. ~~Відкрити **M6-02** → [issue #101](https://github.com/sesquicadaver/MTDirector/issues/101).~~ → **DONE**.
 37. ~~Відкрити **M6-03** → [issue #102](https://github.com/sesquicadaver/MTDirector/issues/102).~~ → **DONE**.
-38. Відкрити **M6-04** → [issue #103](https://github.com/sesquicadaver/MTDirector/issues/103).
+38. ~~Відкрити **M6-04** → [issue #103](https://github.com/sesquicadaver/MTDirector/issues/103).~~ → **DONE**.
+39. Відкрити **M6-05** → [issue #104](https://github.com/sesquicadaver/MTDirector/issues/104).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones

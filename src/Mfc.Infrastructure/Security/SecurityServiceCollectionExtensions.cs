@@ -32,6 +32,7 @@ public static class SecurityServiceCollectionExtensions
 
         services.AddSingleton<ISecretProtector, AesGcmSecretProtector>();
         services.AddScoped<IAuditEventWriter, EfAuditEventWriter>();
+        services.AddScoped<IAuditEventReadStore, EfAuditEventReadStore>();
         services.AddScoped<IConnectionProfileService, ConnectionProfileService>();
         return services;
     }

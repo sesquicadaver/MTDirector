@@ -3,6 +3,7 @@ using Mfc.Application.Abstractions.Jobs;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Abstractions.Time;
+using Mfc.Application.Audit;
 using Mfc.Application.Deployment;
 using Mfc.Application.Drift;
 using Mfc.Application.Inventory;
@@ -27,8 +28,8 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 namespace Mfc.Controller;
 
 /// <summary>
-/// Composition root: health + inventory/snapshot/zone/policy/onboarding/deployment gRPC host with PostgreSQL schema guard
-/// (M0-05/M0-07, M1-25/M1-26, M2-05/M2-06, M4-12) + bounded operational jobs (M6-03).
+/// Composition root: health + inventory/snapshot/zone/policy/onboarding/deployment/drift/audit gRPC host with PostgreSQL schema guard
+/// (M0-05/M0-07, M1-25/M1-26, M2-05/M2-06, M4-12, M6-04) + bounded operational jobs (M6-03).
 /// </summary>
 public static class Program
 {
@@ -167,6 +168,8 @@ public static class Program
         app.MapGrpcService<PolicyGrpcService>();
         app.MapGrpcService<OnboardingGrpcService>();
         app.MapGrpcService<DeploymentGrpcService>();
+        app.MapGrpcService<DriftGrpcService>();
+        app.MapGrpcService<AuditGrpcService>();
         return app;
     }
 
@@ -217,6 +220,7 @@ public static class Program
         services.AddScoped<DetectManagedDriftUseCase>();
         services.AddScoped<GetDriftEventUseCase>();
         services.AddScoped<ListDeviceDriftEventsUseCase>();
+        services.AddScoped<ListAuditEventsUseCase>();
         services.AddScoped<RegisterDeviceUseCase>();
         services.AddScoped<UpdateDeviceUseCase>();
         services.AddScoped<UpdateConnectionProfileUseCase>();

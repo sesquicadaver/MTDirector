@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Desktop MVP workflows (M6-04): unified seven-module Shell navigation (`Inventory`/`Node`/`Snapshots`/`Policies`/`Operations`/`Drift`/`Audit`); Contracts `DriftService` + `AuditService`; Application `ListAuditEventsUseCase` + `IAuditEventReadStore`; Desktop Drift/Audit ViewModels (Task.Run, no auto-fix / read-only audit). Living Spec `DesktopMvpWorkflowsLivingSpecTests` AC 1–12.
+
 - Bounded operational background jobs (M6-03): Controller `OperationalJobSchedulerHostedService` (`IHostedService`/`BackgroundService`) + `BoundedWorkBag` (fail-closed capacity) + global `OperationalJobsOptions` (capture≤16, write≤8 per Spec §50). Five job kinds: operation recovery (priority > drift), periodic drift capture via `DetectManagedDriftUseCase`, expired-exception reconciliation via `ExpireExceptionBindingUseCase` (zero RouterOS writes), durable deployment lock heartbeat, disabled watchdog residue cleanup via restricted `IWatchdogResidueCleanupPort` + `WatchdogResidueCleanupPolicy`. No Hangfire/Quartz/Rabbit/Kafka. Living Spec `BoundedOperationalJobsLivingSpecTests` AC 1–10.
 
 - Managed drift detection (M6-02): Domain `DriftClassifier` / `ManagedDriftDetector` / immutable `DriftEvent` (E2E §32–§34). Baseline is last committed artifact only; desired is never the actual baseline. Critical findings and managed-hash divergence block deploy via `DeploymentOperationGate` + `IDriftEventStore.HasBlockingCriticalDriftAsync`. Persistence `drift_events` (`DriftEventsSchemaM602`, append-only). Application `DetectManagedDriftUseCase` + get/list (inventory.read); no AutoRepair / ForceRepair / silent enforce. Living Spec `ManagedDriftDetectionLivingSpecTests` AC 1–12.
@@ -47,6 +49,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP: M6-04 Desktop MVP workflows DONE; NEXT = M6-05 (#104); M6 E2E 4/9; 98/109 MVP DONE (90%).
 - ROADMAP: M6-03 bounded operational jobs DONE; NEXT = M6-04 (#103); M6 E2E 3/9; 97/109 MVP DONE (89%).
 - ROADMAP: M6-02 managed drift detection DONE; NEXT = M6-03 (#102); M6 E2E 2/9; 96/109 MVP DONE (88%).
 - ROADMAP: M6-01 desired/committed/actual projection DONE; NEXT = M6-02 (#101); M6 E2E 1/9; 95/109 MVP DONE (87%).
