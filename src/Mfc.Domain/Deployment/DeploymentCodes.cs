@@ -50,4 +50,12 @@ public static class DeploymentCodes
     public const string ActivationOrderInvalid = "DEPLOYMENT_ACTIVATION_ORDER_INVALID";
 
     public const string PacketPathBlocked = "DEPLOYMENT_PACKET_PATH_BLOCKED";
+
+    public const string StagingResourceCollision = "STAGING_RESOURCE_COLLISION";
+
+    public const string StagingArtifactHashMismatch = "STAGING_ARTIFACT_HASH_MISMATCH";
+
+    public const string StagingRuleInvalid = "STAGING_RULE_INVALID";
+
+    public const string StagingLimitExceeded = "STAGING_LIMIT_EXCEEDED";
 }
