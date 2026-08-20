@@ -1,10 +1,12 @@
 using Mfc.Application.Abstractions.Authorization;
+using Mfc.Application.Abstractions.Jobs;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Abstractions.Time;
 using Mfc.Application.Deployment;
 using Mfc.Application.Drift;
 using Mfc.Application.Inventory;
+using Mfc.Application.Jobs;
 using Mfc.Application.Onboarding;
 using Mfc.Application.Policies;
 using Mfc.Application.Snapshots;
@@ -13,6 +15,7 @@ using Mfc.Application.Zones;
 using Mfc.Controller.Authorization;
 using Mfc.Controller.Configuration;
 using Mfc.Controller.Grpc;
+using Mfc.Controller.Jobs;
 using Mfc.Infrastructure.Persistence;
 using Mfc.Infrastructure.Persistence.Logging;
 using Mfc.Infrastructure.Security;
@@ -25,7 +28,7 @@ namespace Mfc.Controller;
 
 /// <summary>
 /// Composition root: health + inventory/snapshot/zone/policy/onboarding/deployment gRPC host with PostgreSQL schema guard
-/// (M0-05/M0-07, M1-25/M1-26, M2-05/M2-06, M4-12).
+/// (M0-05/M0-07, M1-25/M1-26, M2-05/M2-06, M4-12) + bounded operational jobs (M6-03).
 /// </summary>
 public static class Program
 {
@@ -96,10 +99,21 @@ public static class Program
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
+        builder.Services
+            .AddOptions<OperationalJobsOptions>()
+            .Bind(builder.Configuration.GetSection($"{ControllerOptions.SectionName}:{OperationalJobsOptions.SectionName}"))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
         ControllerOptions options = builder.Configuration
             .GetSection(ControllerOptions.SectionName)
             .Get<ControllerOptions>()
             ?? throw new InvalidOperationException("Mfc configuration section is missing.");
+
+        OperationalJobsOptions jobOptions = builder.Configuration
+            .GetSection($"{ControllerOptions.SectionName}:{OperationalJobsOptions.SectionName}")
+            .Get<OperationalJobsOptions>()
+            ?? new OperationalJobsOptions();
 
         ControllerOptionsValidator.Validate(options, builder.Environment.EnvironmentName);
 
@@ -111,17 +125,19 @@ public static class Program
         builder.Services.AddMfcPersistence(options.Database.ConnectionString);
         builder.Services.AddMfcSecrets(options.Security.MasterKeyProvider);
 
-        RegisterAuthorization(builder.Services, options, builder.Environment.EnvironmentName);
+        RegisterAuthorization(builder.Services, options, jobOptions, builder.Environment.EnvironmentName);
         RegisterInventoryApplication(builder.Services);
         RegisterSnapshotApplication(builder.Services);
         RegisterZoneApplication(builder.Services);
         RegisterPolicyApplication(builder.Services);
         RegisterOnboardingApplication(builder.Services);
         RegisterDeploymentApplication(builder.Services);
+        RegisterOperationalJobs(builder.Services, jobOptions);
         builder.Services.TryAddSingleton<IRouterOsReadPort, ProbeOnlyRouterOsReadPort>();
         builder.Services.TryAddSingleton<ISnapshotCapturePort, NotConfiguredSnapshotCapturePort>();
         builder.Services.TryAddSingleton<Mfc.Application.Abstractions.Onboarding.IOnboardingRuntime, Mfc.Application.Abstractions.Onboarding.NotConfiguredOnboardingRuntime>();
         builder.Services.TryAddSingleton<Mfc.Application.Abstractions.Deployment.IDeploymentRuntime, Mfc.Application.Abstractions.Deployment.NotConfiguredDeploymentRuntime>();
+        builder.Services.TryAddSingleton<IWatchdogResidueCleanupPort, NotConfiguredWatchdogResidueCleanupPort>();
         builder.Services.AddSingleton<ValidateDeviceConnectionCoordinator>();
         builder.Services.AddSingleton<CaptureProgressHub>();
         builder.Services.AddSingleton<OnboardingProgressHub>();
@@ -157,20 +173,34 @@ public static class Program
     private static void RegisterAuthorization(
         IServiceCollection services,
         ControllerOptions options,
+        OperationalJobsOptions jobOptions,
         string environmentName)
     {
         bool isDevelopment = string.Equals(
             environmentName,
             Environments.Development,
             StringComparison.OrdinalIgnoreCase);
-        if (isDevelopment && options.Authentication.AllowDevelopmentAuthentication)
+        IAuthorizationBoundary inner = isDevelopment && options.Authentication.AllowDevelopmentAuthentication
+            ? new AllowAllAuthorizationBoundary()
+            : new DenyAllAuthorizationBoundary();
+        services.AddSingleton<IAuthorizationBoundary>(
+            new SystemActorAuthorizationBoundary(inner, jobOptions.SystemActor));
+    }
+
+    private static void RegisterOperationalJobs(IServiceCollection services, OperationalJobsOptions jobOptions)
+    {
+        services.AddSingleton(OperationalJobQueues.Create(jobOptions.MaxQueueDepth));
+        services.AddSingleton<OperationalJobTickPlanner>();
+        services.AddSingleton<OperationalJobExecutor>();
+        services.AddScoped<RecoverNonterminalOperationsJobUseCase>();
+        services.AddScoped<PollManagedDriftJobUseCase>();
+        services.AddScoped<ReconcileExpiredExceptionBindingsJobUseCase>();
+        services.AddScoped<HeartbeatDeploymentLocksJobUseCase>();
+        services.AddScoped<CleanupDisabledWatchdogResidueJobUseCase>();
+        // Hosted scheduler is opt-in via Mfc:OperationalJobs:Enabled (false in IntegrationTests).
+        if (jobOptions.Enabled)
         {
-            services.AddSingleton<IAuthorizationBoundary, AllowAllAuthorizationBoundary>();
-        }
-        else
-        {
-            // Fail-closed until real authentication lands.
-            services.AddSingleton<IAuthorizationBoundary, DenyAllAuthorizationBoundary>();
+            services.AddHostedService<OperationalJobSchedulerHostedService>();
         }
     }
 

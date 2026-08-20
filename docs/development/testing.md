@@ -1759,6 +1759,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ManagedDriftDetectionLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
 
+## Living Specification — bounded operational jobs (M6-03)
+
+Issue Set M6-03 + E2E Workflow Spec §49–§50 → in-process bounded background jobs (no broker):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Queues bounded (reject when full) | `BoundedWorkBag` | `Ac1QueuesAreBoundedAndRejectWhenFull` |
+| AC#2 Capture concurrency ≤ max (default 16) | `OperationalJobsOptions` / scheduler gates | `Ac2CaptureConcurrencyHonorsConfiguredMaxDefault16` |
+| AC#3 One global drift poll config | `OperationalJobTickPlanner` | `Ac3DriftPollingUsesOneGlobalBoundedConfiguration` |
+| AC#4 No per-device schedules | Options / Jobs surface | `Ac4NoPerDeviceComplexSchedules` |
+| AC#5 Expired exception → zero RouterOS writes | `ReconcileExpiredExceptionBindingsJobUseCase` | `Ac5ExpiredExceptionPathHasZeroRouterOsWritePorts` |
+| AC#6 Cleanup ≠ firewall artifacts | `WatchdogResidueCleanupPolicy` | `Ac6CleanupCannotDeleteFirewallArtifacts` |
+| AC#7 Cleanup ≠ snapshots/audit | `WatchdogResidueCleanupPolicy` | `Ac7CleanupCannotDeleteSnapshotsOrAudit` |
+| AC#8 Recovery priority > drift | `OperationalJobKind` / bag order | `Ac8RecoveryPriorityHigherThanDriftPolling` |
+| AC#9 Shutdown cancels cleanly | `OperationalJobSchedulerHostedService` | `Ac9ShutdownCancelsJobsCleanly` |
+| AC#10 No Hangfire/Quartz/broker | Architecture + HostedService | `Ac10NoMessageBrokerOrJobFramework` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~BoundedOperationalJobsLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`.

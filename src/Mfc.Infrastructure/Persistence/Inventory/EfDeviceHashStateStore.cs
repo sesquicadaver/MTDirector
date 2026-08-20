@@ -70,6 +70,24 @@ public sealed class EfDeviceHashStateStore : IDeviceHashStateStore
         return rows.Select(ToDomain).ToArray();
     }
 
+    public async Task<IReadOnlyList<DeviceHashState>> ListWithLastCommittedAsync(
+        int limit,
+        CancellationToken cancellationToken = default)
+    {
+        if (limit < 1)
+        {
+            return [];
+        }
+
+        List<DeviceHashStateEntity> rows = await _db.DeviceHashStates.AsNoTracking()
+            .Where(e => e.LastCommittedArtifactHash != null && e.LastCommittedArtifactHash.Length > 0)
+            .OrderBy(e => e.DeviceId)
+            .Take(limit)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+        return rows.Select(ToDomain).ToArray();
+    }
+
     private static DeviceHashStateEntity ToEntity(DeviceHashState state) => new()
     {
         DeviceId = state.DeviceId.Value,

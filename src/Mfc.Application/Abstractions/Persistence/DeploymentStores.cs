@@ -23,6 +23,11 @@ public interface IDeploymentStore
         NodeId nodeId,
         CancellationToken cancellationToken = default);
 
+    /// <summary>Bounded global scan of nonterminal deployment operations (M6-03 recovery job).</summary>
+    Task<IReadOnlyList<DeploymentOperation>> ListNonterminalAsync(
+        int limit,
+        CancellationToken cancellationToken = default);
+
     Task AddDeviceStateAsync(DeviceDeployment device, CancellationToken cancellationToken = default);
 
     Task SaveDeviceStateAsync(DeviceDeployment device, CancellationToken cancellationToken = default);
@@ -44,4 +49,9 @@ public interface IDeploymentStore
     Task SaveLockAsync(DeploymentLock deploymentLock, CancellationToken cancellationToken = default);
 
     Task<DeploymentLock?> GetLockByNodeAsync(NodeId nodeId, CancellationToken cancellationToken = default);
+
+    /// <summary>Locks owned by this controller instance (M6-03 durable lock heartbeat).</summary>
+    Task<IReadOnlyList<DeploymentLock>> ListLocksByOwnerAsync(
+        string ownerInstanceId,
+        CancellationToken cancellationToken = default);
 }

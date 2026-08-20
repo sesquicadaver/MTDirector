@@ -109,6 +109,27 @@ public sealed class EfOnboardingStore : IOnboardingStore
         return rows.Select(ToDomain).ToArray();
     }
 
+    public async Task<IReadOnlyList<OnboardingOperation>> ListNonterminalAsync(
+        int limit,
+        CancellationToken cancellationToken = default)
+    {
+        if (limit < 1)
+        {
+            return [];
+        }
+
+        List<OnboardingOperationEntity> rows = await _db.OnboardingOperations.AsNoTracking()
+            .Where(o => o.State != OnboardingOperationEntity.CommittedState
+                        && o.State != OnboardingOperationEntity.RolledBackState
+                        && o.State != OnboardingOperationEntity.BlockedState
+                        && o.State != OnboardingOperationEntity.RecoveryRequiredState)
+            .OrderBy(o => o.CreatedAtUtc)
+            .Take(limit)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+        return rows.Select(ToDomain).ToArray();
+    }
+
     public async Task AddStepAsync(OnboardingStep onboardingStep, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(onboardingStep);

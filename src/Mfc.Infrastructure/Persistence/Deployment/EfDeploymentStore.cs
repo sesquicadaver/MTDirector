@@ -115,6 +115,30 @@ public sealed class EfDeploymentStore : IDeploymentStore
         return rows.Select(ToDomain).ToArray();
     }
 
+    public async Task<IReadOnlyList<DeploymentOperation>> ListNonterminalAsync(
+        int limit,
+        CancellationToken cancellationToken = default)
+    {
+        if (limit < 1)
+        {
+            return [];
+        }
+
+        List<DeploymentOperationEntity> rows = await _db.DeploymentOperations.AsNoTracking()
+            .Where(o => o.State != DeploymentOperationEntity.CommittedState
+                        && o.State != DeploymentOperationEntity.RolledBackState
+                        && o.State != DeploymentOperationEntity.BlockedState
+                        && o.State != DeploymentOperationEntity.NoChangesState
+                        && o.State != DeploymentOperationEntity.CanceledState
+                        && o.State != DeploymentOperationEntity.FailedState
+                        && o.State != DeploymentOperationEntity.RecoveryRequiredState)
+            .OrderBy(o => o.CreatedAtUtc)
+            .Take(limit)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+        return rows.Select(ToDomain).ToArray();
+    }
+
     public async Task AddDeviceStateAsync(DeviceDeployment device, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(device);
@@ -217,6 +241,20 @@ public sealed class EfDeploymentStore : IDeploymentStore
             .SingleOrDefaultAsync(l => l.NodeId == nodeId.Value, cancellationToken)
             .ConfigureAwait(false);
         return entity is null ? null : ToDomain(entity);
+    }
+
+    public async Task<IReadOnlyList<DeploymentLock>> ListLocksByOwnerAsync(
+        string ownerInstanceId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(ownerInstanceId);
+        string owner = ownerInstanceId.Trim();
+        List<DeploymentLockEntity> rows = await _db.DeploymentLocks.AsNoTracking()
+            .Where(l => l.OwnerInstanceId == owner)
+            .OrderBy(l => l.NodeId)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+        return rows.Select(ToDomain).ToArray();
     }
 
     private static DeploymentPlan ToDomain(DeploymentPlanEntity entity)

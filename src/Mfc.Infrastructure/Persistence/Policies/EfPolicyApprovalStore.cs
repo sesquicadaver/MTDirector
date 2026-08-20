@@ -184,6 +184,30 @@ public sealed class EfPolicyApprovalStore : IPolicyApprovalStore
         return rows.Select(ToDomain).ToArray();
     }
 
+    public async Task<IReadOnlyList<PolicyDesiredBinding>> ListDueExceptionBindingsAsync(
+        DateTimeOffset nowUtc,
+        int limit,
+        CancellationToken cancellationToken = default)
+    {
+        if (limit < 1)
+        {
+            return [];
+        }
+
+        DateTimeOffset now = nowUtc.ToUniversalTime();
+        List<PolicyBindingEntity> rows = await _db.PolicyBindings.AsNoTracking()
+            .Where(b => b.Scope == (short)PolicyBindingScope.Exception
+                        && b.State == PolicyBindingEntity.ActiveState
+                        && b.ValidUntilUtc != null
+                        && b.ValidUntilUtc <= now)
+            .OrderBy(b => b.ValidUntilUtc)
+            .ThenBy(b => b.Id)
+            .Take(limit)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+        return rows.Select(ToDomain).ToArray();
+    }
+
     private static PolicyAnalysisRun ToDomain(PolicyAnalysisRunEntity entity)
     {
         FindingDto[] findings = JsonSerializer.Deserialize<FindingDto[]>(entity.FindingsJson, JsonOptions) ?? [];
