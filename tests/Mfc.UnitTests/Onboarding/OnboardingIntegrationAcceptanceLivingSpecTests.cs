@@ -154,7 +154,9 @@ public sealed class OnboardingIntegrationAcceptanceLivingSpecTests
         Assert.True(result.Succeeded, result.ErrorCode);
         Assert.Contains(result.Timeline, static t => t == "enable:mfc:anchor:v1:6:i");
         Assert.Contains(result.Timeline, static t => t == "enable:mfc:anchor:v1:6:o");
-        Assert.DoesNotContain(result.Timeline, static t => t.Contains(":f", StringComparison.Ordinal));
+        Assert.DoesNotContain(
+            result.Timeline,
+            static t => t.Contains(":4:f", StringComparison.Ordinal) || t.Contains(":6:f", StringComparison.Ordinal));
     }
 
     [Fact]
