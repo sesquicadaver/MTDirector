@@ -77,7 +77,7 @@ internal static class DeploymentTestFactory
             activation.Reverse().ToArray(),
             transitions.TransitionStateHashes,
             DeploymentCodes.DefaultRollbackTtl,
-            [new DeploymentProbe(DeploymentProbeKind.IcmpEcho, "192.0.2.1", 500)]);
+            [new DeploymentProbe(DeploymentProbeKind.RouterPing, "192.0.2.1", 500)]);
     }
 
     public static DeploymentPlan PlanFor(Node node, DateTimeOffset? created = null, bool noChanges = false)

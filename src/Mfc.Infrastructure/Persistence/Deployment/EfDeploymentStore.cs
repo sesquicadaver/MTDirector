@@ -272,7 +272,13 @@ public sealed class EfDeploymentStore : IDeploymentStore
         => AnchorKey.Create((IpAddressFamily)dto.Family, (FilterBuiltInContext)dto.Chain);
 
     private static DeploymentProbe ToDomain(ProbeDto dto)
-        => new((DeploymentProbeKind)dto.Kind, dto.Destination, dto.TimeoutMilliseconds);
+        => new(
+            (DeploymentProbeKind)dto.Kind,
+            dto.Destination,
+            dto.TimeoutMilliseconds,
+            dto.SourceAddress,
+            dto.RoutingTable,
+            dto.Interface);
 
     private static DeploymentOperation ToDomain(DeploymentOperationEntity entity)
         => DeploymentOperation.Reconstitute(
@@ -362,6 +368,9 @@ public sealed class EfDeploymentStore : IDeploymentStore
             Kind = (byte)probe.Kind,
             Destination = probe.Destination,
             TimeoutMilliseconds = probe.TimeoutMilliseconds,
+            SourceAddress = probe.SourceAddress,
+            RoutingTable = probe.RoutingTable,
+            Interface = probe.Interface,
         };
 
     private static DeploymentOperationEntity ToEntity(DeploymentOperation operation)
@@ -489,5 +498,11 @@ public sealed class EfDeploymentStore : IDeploymentStore
         public string Destination { get; set; } = string.Empty;
 
         public int TimeoutMilliseconds { get; set; }
+
+        public string? SourceAddress { get; set; }
+
+        public string? RoutingTable { get; set; }
+
+        public string? Interface { get; set; }
     }
 }

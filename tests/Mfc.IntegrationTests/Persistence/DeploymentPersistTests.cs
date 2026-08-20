@@ -260,7 +260,7 @@ public sealed class DeploymentPersistTests
             activation.Reverse().ToArray(),
             transitions.TransitionStateHashes,
             DeploymentCodes.DefaultRollbackTtl,
-            [new DeploymentProbe(DeploymentProbeKind.IcmpEcho, "192.0.2.1", 500)]);
+            [new DeploymentProbe(DeploymentProbeKind.RouterPing, "192.0.2.1", 500)]);
         return DeploymentPlan.Create(
             node,
             H("policy"),
