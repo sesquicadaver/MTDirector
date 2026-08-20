@@ -1320,7 +1320,7 @@ Safe Deployment Spec §9–§16 + Issue Set M4-01 → Domain + EF (no RouterOS w
 | AC#12 Plan hash preconditions | `DeploymentPlanHasher` | `Ac12PlanHashIncludesNormativePreconditions` |
 | Persistence schema `m4-01` | migration `DeploymentSchemaM401` | `MigrateCreatesDeploymentTablesAndSchemaMetadata` |
 
-**Residuals:** Watchdog / activate are M4-05+. Packet-path deploy gate is N1-06 (DONE). Restricted writer is M4-02 (DONE). Address-list staging is M4-03 (DONE). Detached chain staging is M4-04 (DONE).
+**Residuals:** Activate / probes are M4-06+. Packet-path deploy gate is N1-06 (DONE). Restricted writer is M4-02 (DONE). Address-list staging is M4-03 (DONE). Detached chain staging is M4-04 (DONE). Watchdog is M4-05 (DONE).
 
 Filter:
 ```bash
@@ -1347,7 +1347,7 @@ next-1 + Safe Deployment PRECHECKING → BLOCKED + ROADMAP N1-06 → Domain gate
 | AC#10 No offload writes / FailedPrecondition codes | Domain ↛ RouterOs | `Ac10GateDoesNotReferenceRouterOsOrOffloadWrites` |
 | Canonical mapper path | `DeploymentPacketPathPrecheck` | `CanonicalHardwareOffloadBlocksDeployWithoutReclassification` |
 
-**Residuals:** Watchdog / activate / gRPC Deploy are M4-05+. Desktop Deploy command stays `CanExecute=false` (no Save and Deploy). Controller never disables L2/L3 hardware offload.
+**Residuals:** Activate / probes / gRPC Deploy are M4-06+. Desktop Deploy command stays `CanExecute=false` (no Save and Deploy). Controller never disables L2/L3 hardware offload.
 
 Filter:
 ```bash
@@ -1374,7 +1374,7 @@ Safe Deployment Spec §6–§8 / §33.2 / §55 + Issue Set M4-02 → Application
 | AC#11 Every write has read-back | `DeploymentWriteExecutionResult.ReadBack` | `Ac11EachWriteHasReadBack` |
 | AC#12 No generic writer | `RouterOsDeploymentSession` in Deployment | `Ac12GenericWriterIsAbsent` |
 
-**Residuals:** Watchdog / activate / gRPC Deploy are M4-05+. No live RouterOS transport binding in this slice (channel is injectable).
+**Residuals:** Activate / probes / gRPC Deploy are M4-06+. No live RouterOS transport binding in this slice (channel is injectable).
 
 Filter:
 ```bash
@@ -1425,12 +1425,39 @@ Safe Deployment Spec §17 / §19 + Compiler Spec §26 + Issue Set M4-04 → Doma
 | AC#10 Partial ≠ STAGED | `ArtifactStaged=false` | `Ac10PartialArtifactDoesNotReceiveStaged` |
 | AC#11 Reconnect create-or-verify | read-before-add | `Ac11StagingReconnectRecoversWithCreateOrVerify` |
 
-**Residuals:** Watchdog / activate / gRPC Deploy are M4-05+.
+**Residuals:** Activate / probes / gRPC Deploy are M4-06+. Watchdog is M4-05 (DONE).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DetachedChainStagingLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — production rollback watchdog (M4-05)
+
+Safe Deployment Spec §22–§27 + Issue Set M4-05 → Domain planner/script + RouterOs writer over M4-02 session:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Script + deadline + startup | `DeploymentWatchdogBundle` | `Ac1WatchdogHasScriptDeadlineAndStartupSchedulers` |
+| AC#2 Fixed template | `DeploymentWatchdogScript` | `Ac2ScriptUsesFixedTemplate` |
+| AC#3 Old/new target set | `DecideRestore` | `Ac3ScriptChecksOldAndNewTargetSet` |
+| AC#4 Unknown third target | Abort | `Ac4UnknownThirdTargetIsNotChanged` |
+| AC#5 Stale later artifact | Abort | `Ac5StaleWatchdogDoesNotRollBackLaterArtifact` |
+| AC#6 No user text | literal gate | `Ac6UserTextDoesNotEnterScript` |
+| AC#7 dont-require-permissions=no | attributes | `Ac7DontRequirePermissionsIsNo` |
+| AC#8 Source hash verified | arm read-back | `Ac8ScriptSourceHashIsVerified` |
+| AC#9 TTL + commit margin | `DeploymentCodes` | `Ac9TtlAndCommitMarginAreBounded` |
+| AC#10 All devices armed (VRRP) | `EnsureAllDevicesArmed` | `Ac10AllDeviceWatchdogsMustBeArmedBeforeVrrpActivation` |
+| AC#11 Disable read-back | `DisarmWatchdogAsync` | `Ac11SchedulerDisablingHasReadBack` |
+| AC#12 Cleanup idempotent | `CleanupWatchdogAsync` | `Ac12CleanupIsIdempotent` |
+
+**Residuals:** Anchor activation / probes / gRPC Deploy are M4-06+.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentWatchdogLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

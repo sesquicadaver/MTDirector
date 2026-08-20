@@ -60,4 +60,24 @@ public static class DeploymentCodes
     public const string StagingRuleInvalid = "STAGING_RULE_INVALID";
 
     public const string StagingLimitExceeded = "STAGING_LIMIT_EXCEEDED";
+
+    public static readonly TimeSpan MinCommitMargin = TimeSpan.FromSeconds(30);
+
+    public const string WatchdogScriptCollision = "WATCHDOG_SCRIPT_COLLISION";
+
+    public const string WatchdogScriptInvalid = "WATCHDOG_SCRIPT_INVALID";
+
+    public const string WatchdogSchedulerCollision = "WATCHDOG_SCHEDULER_COLLISION";
+
+    public const string WatchdogArmFailed = "WATCHDOG_ARM_FAILED";
+
+    public const string WatchdogDeadlineTooClose = "WATCHDOG_DEADLINE_TOO_CLOSE";
+
+    public const string WatchdogDisableFailed = "WATCHDOG_DISABLE_FAILED";
+
+    public const string WatchdogCleanupIncomplete = "WATCHDOG_CLEANUP_INCOMPLETE";
+
+    public const string WatchdogNotArmed = "WATCHDOG_NOT_ARMED";
+
+    public const string SeverityBlocker = "BLOCKER";
 }
