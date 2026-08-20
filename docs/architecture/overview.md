@@ -105,7 +105,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | VRRP deployment coordinator | Done (M4-10) | `VrrpDeploymentPolicy` + `ExecuteVrrpDeploymentUseCase`; standby-first; no partial commit |
 | Rollback + crash recovery | Done (M4-11) | `DeploymentRecoveryDecision` + rollback/recover use cases; only COMMITTED keeps new |
 | Deployment API + Desktop workflow | Done (M4-12) | `DeploymentService` + Deploy tab; plan_hash start; streaming Watch; audited mutations |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-13 (#98) |
+| Deployment fault and security acceptance | Done (M4-13) **M4 CLOSED** | Living Spec AC 1–13 all passed; `DeploymentFaultSecurityAcceptanceLivingSpecTests` + `DeploymentAcceptanceHarness`; standalone/VRRP/multi-WAN/rollback/security vectors; ArchitectureBoundary green |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M6-01 (#100) |
 
 ## ADRs
 
