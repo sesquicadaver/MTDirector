@@ -19,6 +19,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Transition-state validation and anchor activation (M4-06): Domain `TransitionStateValidator` / `DeploymentAnchorOrder` / `AnchorActivationPlanner` + Application `PlanTransitionStatesUseCase` / `ActivateAnchorsUseCase` (re-read before set, no blind retry, watchdog margin, intent+verified journal). Living Spec `AnchorActivationLivingSpecTests` AC 1–11.
 - Deployment probes and post-activation verification (M4-07): Domain `PostActivationVerification` + typed `DeploymentProbe` (API_SSL / ROUTER_PING only, literal IP) + Application `VerifyDeploymentActivationUseCase` / `IDeploymentFreshSessionFactory` (fresh session, hash/anchors, critical probes → rollback, watchdog readiness). Living Spec `DeploymentVerificationLivingSpecTests` AC 1–11.
 - Standalone Node deployment coordinator (M4-08): Domain `StandaloneDeploymentPolicy` + Application `ExecuteStandaloneDeploymentUseCase` (PRECHECK→STAGE→ARM→ACTIVATE→VERIFY→DISARM→COMMIT; NO_CHANGES without writes; verify-fail → anchor rollback; commit snapshot). Living Spec `StandaloneDeploymentLivingSpecTests` AC 1–10.
+- VRRP deployment coordinator (M4-10): Domain `VrrpDeploymentPolicy` / classifier / activation order + Application `ExecuteVrrpDeploymentUseCase` (precheck/stage/arm all → role-ordered activate → verify → disarm/commit; role-change/partial failure rollback; no partial commit). Living Spec `VrrpDeploymentLivingSpecTests` AC 1–13.
 - Multi-WAN deployment verification (M4-09): Domain `MultiWanDeploymentVerification` + Application `VerifyMultiWanDeploymentUseCase` (dependency hash recheck; artifact independent of active route; per-table / active-path probes; no forced failover / temp routes / routing-NAT-Mangle writes). Living Spec `MultiWanDeploymentVerificationLivingSpecTests` AC 1–10.
 
 ### Security
@@ -36,6 +37,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP §2.1 progress table synced after M4-10 (95/136 closed; M4 safe deploy 10/13); NEXT = M4-11 (#96).
+- ROADMAP: M4-10 VRRP deployment coordinator DONE; NEXT = M4-11 (#96); counters 95/109 MVP done (14 remaining).
 - ROADMAP §2.1 progress table synced after M4-09 (94/136 closed; M4 safe deploy 9/13); NEXT = M4-10 (#95).
 - ROADMAP: M4-09 multi-WAN deployment verification DONE; NEXT = M4-10 (#95); counters 94/109 MVP done (15 remaining).
 - ROADMAP §2.1 progress table synced after M4-08 (93/136 closed; M4 safe deploy 8/13); NEXT = M4-09 (#94).

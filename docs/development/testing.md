@@ -1554,13 +1554,42 @@ Safe Deployment Spec §36 + Issue Set M4-09 → Domain gates + Application use c
 | AC#9 Dependency drift → rollback | `RecheckDependencyHashes` | `Ac9DependencyChangeBlocksOrRollsBack` |
 | AC#10 No routing/NAT/Mangle writes | `EnsureFilterOnlyWriteSurface` | `Ac10ControllerDoesNotChangeRoutingNatMangle` |
 
-**Residuals:** VRRP coordinator (M4-10), crash recovery (M4-11), gRPC Deploy (M4-12).
+**Residuals:** crash recovery (M4-11), gRPC Deploy (M4-12). VRRP coordinator is M4-10 (DONE).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~MultiWanDeploymentVerificationLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
+
+## Living Specification — VRRP deployment coordinator (M4-10)
+
+Safe Deployment Spec §37–§42 + Issue Set M4-10 → Domain classification/order + Application pseudo-transaction coordinator:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 All members prechecked | `ExecuteVrrpDeploymentUseCase` | `Ac1AllMembersArePrechecked` |
+| AC#2 Stage all before activation | timeline order | `Ac2AllArtifactsStagedBeforeActivation` |
+| AC#3 All watchdogs armed | `EnsureAllDevicesArmed` | `Ac3AllWatchdogsArmedBeforeActivation` |
+| AC#4 Standby-only first | `VrrpActivationOrderPlanner` | `Ac4StandbyOnlyMembersActivateFirst` |
+| AC#5 Traffic-bearing last | `VrrpActivationOrderPlanner` | `Ac5TrafficBearingMembersActivateLast` |
+| AC#6 Unknown → traffic-bearing | `VrrpMemberClassifier` | `Ac6UnknownRoleClassifiesAsTrafficBearing` |
+| AC#7 RoleVector before each member | timeline | `Ac7RoleVectorIsReadBeforeEachMember` |
+| AC#8 Role change → rollback | coordinator | `Ac8RoleChangeAfterFirstActivationTriggersRollback` |
+| AC#9 Unreachable blocks | `EnsureAllMembersReachable` | `Ac9UnreachableMemberBeforeActivationBlocks` |
+| AC#10 Partial activation rollback | `PlanPartialFailureActions` | `Ac10PartialActivationRollsBackReachableMembers` |
+| AC#11 Unreachable keeps watchdog | `PlanPartialFailureActions` | `Ac11UnreachableMemberKeepsWatchdog` |
+| AC#12 Split-master not simplified | `EnsureNoSplitMasterSimplification` | `Ac12SplitMasterIsNotSimplified` |
+| AC#13 No partial commit | `EnsureFullCommitAllowed` | `Ac13PartialCommitIsImpossible` |
+
+**Residuals:** crash recovery (M4-11), gRPC Deploy (M4-12).
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~VrrpDeploymentLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
 
