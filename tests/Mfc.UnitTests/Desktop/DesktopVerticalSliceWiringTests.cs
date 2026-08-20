@@ -8,7 +8,7 @@ namespace Mfc.UnitTests.Desktop;
 public sealed class DesktopVerticalSliceWiringTests
 {
     [Fact]
-    public void ShellExposesInventorySnapshotDiffZonesPoliciesAndOnboardingViewModels()
+    public void ShellExposesInventorySnapshotDiffZonesPoliciesOnboardingAndDeploymentViewModels()
     {
         System.Reflection.PropertyInfo[] properties = typeof(ShellViewModel).GetProperties();
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Inventory)
@@ -23,6 +23,8 @@ public sealed class DesktopVerticalSliceWiringTests
                                          && p.PropertyType == typeof(PoliciesViewModel));
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Onboarding)
                                          && p.PropertyType == typeof(OnboardingViewModel));
+        Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Deployment)
+                                         && p.PropertyType == typeof(DeploymentViewModel));
     }
 
     [Fact]
@@ -69,5 +71,12 @@ public sealed class DesktopVerticalSliceWiringTests
         Assert.NotNull(onboarding.GetMethod(nameof(IOnboardingServiceClient.WatchAsync)));
         Assert.NotNull(onboarding.GetMethod(nameof(IOnboardingServiceClient.RollbackAsync)));
         Assert.NotNull(onboarding.GetMethod(nameof(IOnboardingServiceClient.GetRecoveryStatusAsync)));
+
+        Type deployment = typeof(IDeploymentServiceClient);
+        Assert.NotNull(deployment.GetMethod(nameof(IDeploymentServiceClient.CreatePlanAsync)));
+        Assert.NotNull(deployment.GetMethod(nameof(IDeploymentServiceClient.StartAsync)));
+        Assert.NotNull(deployment.GetMethod(nameof(IDeploymentServiceClient.WatchAsync)));
+        Assert.NotNull(deployment.GetMethod(nameof(IDeploymentServiceClient.RollbackAsync)));
+        Assert.NotNull(deployment.GetMethod(nameof(IDeploymentServiceClient.GetRecoveryStatusAsync)));
     }
 }

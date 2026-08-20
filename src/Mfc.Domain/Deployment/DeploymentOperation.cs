@@ -12,11 +12,13 @@ public sealed class DeploymentOperation
     [
         (DeploymentOperationState.Created, DeploymentOperationState.Prechecking),
         (DeploymentOperationState.Created, DeploymentOperationState.Canceled),
+        (DeploymentOperationState.Created, DeploymentOperationState.RecoveryRequired),
         (DeploymentOperationState.Prechecking, DeploymentOperationState.Staging),
         (DeploymentOperationState.Prechecking, DeploymentOperationState.Blocked),
         (DeploymentOperationState.Prechecking, DeploymentOperationState.NoChanges),
         (DeploymentOperationState.Prechecking, DeploymentOperationState.Canceled),
         (DeploymentOperationState.Prechecking, DeploymentOperationState.Failed),
+        (DeploymentOperationState.Prechecking, DeploymentOperationState.RecoveryRequired),
         (DeploymentOperationState.Staging, DeploymentOperationState.Staged),
         (DeploymentOperationState.Staged, DeploymentOperationState.ArmingWatchdog),
         (DeploymentOperationState.ArmingWatchdog, DeploymentOperationState.WatchdogArmed),

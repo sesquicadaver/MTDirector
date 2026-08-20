@@ -36,6 +36,51 @@ public sealed class AnchorKey : IEquatable<AnchorKey>
             _ => throw new DomainInvariantException($"Unsupported anchor chain '{chain}'."),
         };
 
+    /// <summary>Parse permanent marker <c>mfc:anchor:v1:{4|6}:{i|f|o}</c>.</summary>
+    public static bool TryParse(string? marker, out AnchorKey key)
+    {
+        key = null!;
+        if (string.IsNullOrWhiteSpace(marker))
+        {
+            return false;
+        }
+
+        string[] parts = marker.Trim().Split(':', StringSplitOptions.None);
+        if (parts.Length != 5
+            || !string.Equals(parts[0], "mfc", StringComparison.Ordinal)
+            || !string.Equals(parts[1], "anchor", StringComparison.Ordinal)
+            || !string.Equals(parts[2], "v1", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        IpAddressFamily family = parts[3] switch
+        {
+            "4" => IpAddressFamily.IPv4,
+            "6" => IpAddressFamily.IPv6,
+            _ => (IpAddressFamily)255,
+        };
+        if (family is not (IpAddressFamily.IPv4 or IpAddressFamily.IPv6))
+        {
+            return false;
+        }
+
+        FilterBuiltInContext chain = parts[4] switch
+        {
+            "i" => FilterBuiltInContext.Input,
+            "f" => FilterBuiltInContext.Forward,
+            "o" => FilterBuiltInContext.Output,
+            _ => (FilterBuiltInContext)255,
+        };
+        if (chain is not (FilterBuiltInContext.Input or FilterBuiltInContext.Forward or FilterBuiltInContext.Output))
+        {
+            return false;
+        }
+
+        key = new AnchorKey(family, chain);
+        return true;
+    }
+
     public bool Equals(AnchorKey? other)
         => other is not null && Family == other.Family && Chain == other.Chain;
 

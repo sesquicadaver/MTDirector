@@ -1529,7 +1529,7 @@ Safe Deployment Spec §35 + Issue Set M4-08 → Domain policy + Application coor
 | AC#9 Commit snapshot | `DeploymentCommitSnapshot` | `Ac9CommitSnapshotIsStored` |
 | AC#10 Same artifact → NO_CHANGES | `IsNoChanges` | `Ac10RedeploySameArtifactReturnsNoChanges` |
 
-**Residuals:** gRPC Deploy (M4-12). Multi-WAN verify is M4-09 (DONE). VRRP coordinator is M4-10 (DONE). Rollback/crash recovery is M4-11 (DONE).
+**Residuals:** fault/security acceptance (M4-13). Multi-WAN/VRRP/rollback/API are DONE.
 
 Filter:
 ```bash
@@ -1554,7 +1554,7 @@ Safe Deployment Spec §36 + Issue Set M4-09 → Domain gates + Application use c
 | AC#9 Dependency drift → rollback | `RecheckDependencyHashes` | `Ac9DependencyChangeBlocksOrRollsBack` |
 | AC#10 No routing/NAT/Mangle writes | `EnsureFilterOnlyWriteSurface` | `Ac10ControllerDoesNotChangeRoutingNatMangle` |
 
-**Residuals:** gRPC Deploy (M4-12). VRRP coordinator is M4-10 (DONE). Rollback/crash recovery is M4-11 (DONE).
+**Residuals:** fault/security acceptance (M4-13).
 
 Filter:
 ```bash
@@ -1582,7 +1582,7 @@ Safe Deployment Spec §37–§42 + Issue Set M4-10 → Domain classification/ord
 | AC#12 Split-master not simplified | `EnsureNoSplitMasterSimplification` | `Ac12SplitMasterIsNotSimplified` |
 | AC#13 No partial commit | `EnsureFullCommitAllowed` | `Ac13PartialCommitIsImpossible` |
 
-**Residuals:** gRPC Deploy (M4-12). Rollback/crash recovery is M4-11 (DONE).
+**Residuals:** fault/security acceptance (M4-13).
 
 Filter:
 ```bash
@@ -1609,12 +1609,38 @@ Safe Deployment Spec §46–§49 + Issue Set M4-11 → Domain decision table + A
 | AC#11 Only durable COMMITTED keeps new | `MayRetainNewArtifact` / `Decide` | `Ac11OnlyDurableCommittedKeepsNewState` |
 | AC#12 Recovery decision table complete | `DeploymentRecoveryDecision.Decide` | `Ac12RecoveryDecisionTableIsComplete` |
 
-**Residuals:** gRPC Deploy (M4-12).
+**Residuals:** fault/security acceptance (M4-13).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentRollbackRecoveryLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
+
+
+
+## Living Specification — deployment workflow (M4-12)
+
+Safe Deployment + Issue Set M4-12 → gRPC DeploymentService + Desktop Deploy panel:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Separate RPCs | `deployment.proto` | `Ac1SeparateRpcsExistOnTheContract` |
+| AC#2 Start exact plan_hash | `StartDeploymentUseCase` | `Ac2StartRequiresExactPlanHash` |
+| AC#3 Watch server-streaming | `DeploymentProgressHub` | `Ac3WatchReplaysServerStreamingProgressUntilTerminal` |
+| AC#4–7 GUI surfaces | `DeploymentViewModel` | `Ac4To7DesktopSurfacesDiffArtifactsOrderProbesAndNoForceApply` |
+| AC#8 Cancel→rollback | `StartDeploymentUseCase` | `Ac8CancellationAfterActivationBecomesRollback` |
+| AC#9 No ForceApply | proto contract | `Ac9ForceApplyAbsentFromContract` |
+| AC#10 No raw ROS commands | Desktop flags | `Ac10NoRawRouterOsCommandsOnDesktop` |
+| AC#11 Audit | workflow use cases | `Ac11EveryWorkflowOperationIsAudited` |
+
+**Residuals:** fault/security acceptance (M4-13).
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentWorkflowLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 

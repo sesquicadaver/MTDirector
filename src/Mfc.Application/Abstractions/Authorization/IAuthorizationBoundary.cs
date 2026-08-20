@@ -48,4 +48,10 @@ public static class ApplicationPermissions
 
     /// <summary>Create plans and start/rollback onboarding (M5-09).</summary>
     public const string OnboardingWrite = "onboarding.write";
+
+    /// <summary>Read deployment plans, operations, and recovery status (M4-12).</summary>
+    public const string DeploymentRead = "deployment.read";
+
+    /// <summary>Create plans and start/rollback deployment (M4-12).</summary>
+    public const string DeploymentWrite = "deployment.write";
 }
