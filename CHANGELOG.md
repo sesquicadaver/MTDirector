@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Deployment fault and security acceptance (M4-13 / **M4 CLOSED**): Living Spec `DeploymentFaultSecurityAcceptanceLivingSpecTests` AC 1–13 all passed (47 tests total, 0 failures). `DeploymentAcceptanceHarness` sibling file provides shared test infra: `FakeRuntime`, `RecordingChannel`, `ScriptedWatchdog`, `ScriptedCluster`, `ScriptedMember`, `ScriptedRollbackRuntime`, `NullFreshSessionFactory`. AC coverage: standalone commit (AC1); no-writes for no-changes (AC2); multi-WAN failover + balanced probes filter-only (AC3); VRRP active/passive full commit (AC4); split-master detection prevents simplified commit (AC5); disconnect/fault at any effectful point leaves allowed terminal (AC6); deadline watchdog rollback recognized (AC7); startup watchdog rollback recognized (AC8); third-anchor target triggers RecoveryRequired (AC9); crash recovery deterministic across all anchor states (AC10); credentials/scripts do not leak through proto/ViewModel/watchdog script (AC11); forbidden write paths and namespaces blocked (AC12); recovery decision table only allows old-committed or exact-recovery outcomes (AC13). `ArchitectureBoundaryTests` and `DeploymentProtoContractTests` remain green.
+
 - Safe deployment workflow API + Desktop (M4-12): Contracts `DeploymentService` (CreatePlan/Start/Watch/Rollback/GetRecoveryStatus), Application workflow use cases + `IDeploymentRuntime`, Controller hub/mapper, Desktop Deploy tab (semantic diff / artifacts / order / probes+TTL; no ForceApply / no raw ROS). Living Spec `DeploymentWorkflowLivingSpecTests` AC 1–11.
 - Onboarding integration acceptance (M5-10): standalone IPv4, dual-stack, multi-WAN, VRRP active/passive and split-master, CRS INPUT/OUTPUT without FORWARD; scheduler/flagged blockers; deadline/startup and crash recovery; guard/namespace collisions; Node never partially managed. Living Spec `OnboardingIntegrationAcceptanceLivingSpecTests` + `OnboardingTopologyAcceptanceTests`. **M5 CLOSED**.
 - Deployment plan, states and persistence (M4-01): immutable `DeploymentPlan` (old/new artifact hashes + anchor targets, expiry, `plan_hash`), Node/device closed SMs, exclusive Node lock (expired rows retained), write-ahead journal; Application `IDeploymentStore`; EF `DeploymentSchemaM401`. No campaign, no RouterOS writer. Living Spec `DeploymentLivingSpecTests` AC 1–12 + `DeploymentPersistTests`.
@@ -39,6 +41,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP: M4-13 fault/security acceptance DONE; **M4 CLOSED**; NEXT = M6-01 (#100); M4 safe deploy 13/13 (100%); 94/109 MVP DONE (86%).
 - ROADMAP: M4-12 deployment API/Desktop DONE; NEXT = M4-13 (#98).
 - ROADMAP §2.1 progress table synced after M4-11 (96/136 closed; M4 safe deploy 11/13); NEXT = M4-12 (#97).
 - ROADMAP: M4-11 rollback and crash recovery DONE; NEXT = M4-12 (#97); counters 96/109 MVP done (13 remaining).

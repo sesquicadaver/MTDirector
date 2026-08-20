@@ -1635,12 +1635,42 @@ Safe Deployment + Issue Set M4-12 → gRPC DeploymentService + Desktop Deploy pa
 | AC#10 No raw ROS commands | Desktop flags | `Ac10NoRawRouterOsCommandsOnDesktop` |
 | AC#11 Audit | workflow use cases | `Ac11EveryWorkflowOperationIsAudited` |
 
-**Residuals:** fault/security acceptance (M4-13).
+**Residuals:** CHR live acceptance (optional lab, not required for merge).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentWorkflowLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — deployment fault and security acceptance (M4-13 / **M4 CLOSED**)
+
+Issue Set M4-13 + Safe Deployment §55/§59–§62 → full fault-injection, watchdog/crash recovery, and security-boundary acceptance:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Standalone commit | `ExecuteStandaloneDeploymentUseCase` | `Ac1SuccessfulStandaloneDeploymentCommits` |
+| AC#2 No writes for no-changes | `StandaloneDeploymentPolicy.NO_CHANGES` | `Ac2NoChangesPerformsNoWrites` |
+| AC#3 Multi-WAN filter-only write surface | `VerifyMultiWanDeploymentUseCase` | `Ac3MultiWanFailoverAndBalancedProbesPass` |
+| AC#4 VRRP active/passive full commit | `ExecuteVrrpDeploymentUseCase` | `Ac4VrrpActivePassiveCommitsAllMembers` |
+| AC#5 VRRP split-master prevention | `VrrpDeploymentPolicy.EnsureNoSplitMasterSimplification` | `Ac5VrrpSplitMasterIsNotSimplified` |
+| AC#6 Fault at effectful point → allowed terminal | `ExecuteStandaloneDeploymentUseCase` + `RecoverDeploymentUseCase` | `Ac6DisconnectAfterEffectfulPointsLeavesAllowedTerminal` (Theory) + `Ac6RecoverAfterCrashAtActivatingIsDeterministic` |
+| AC#7 Deadline watchdog rollback recognized | `DeploymentRecoveryDecision` | `Ac7DeadlineWatchdogRollbackIsRecognized` |
+| AC#8 Startup watchdog rollback recognized | `DeploymentRecoveryDecision` | `Ac8StartupWatchdogRollbackIsRecognized` |
+| AC#9 Third-anchor target → RecoveryRequired | `DeploymentRecoveryDecision` | `Ac9ManualAnchorChangeCreatesRecoveryRequired` |
+| AC#10 Crash recovery deterministic | `RecoverDeploymentUseCase` | `Ac10CrashRecoveryIsDeterministic` (Theory × 5) |
+| AC#11 Credentials/scripts do not leak | proto descriptor + `DeploymentViewModel` + `DeploymentWatchdogScript` | `Ac11CredentialsAndScriptsDoNotLeak` |
+| AC#12 Path/command injection impossible | `DeploymentWritePaths` + `ArchitectureBoundaryTests` | `Ac12ArbitraryCommandAndPathInjectionImpossible` |
+| AC#13 Decision table only old/exact recovery | `DeploymentRecoveryDecision` | `Ac13OnlyOldCommittedOrExactRecoveryAllowed` |
+
+**Harness:** `DeploymentAcceptanceHarness.cs` (sibling) — `FakeRuntime`, `RecordingChannel` (FailFilterSetsAfter), `ScriptedWatchdog`, `ScriptedCluster`, `ScriptedMember`, `ScriptedRollbackRuntime`, `NullFreshSessionFactory`.
+
+**Residuals:** live CHR deployment acceptance (optional lab, not required for merge). **M4 CLOSED.**
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentFaultSecurityAcceptanceLivingSpecTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DeploymentProtoContractTests"
 ```
 
 

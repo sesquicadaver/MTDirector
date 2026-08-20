@@ -3,7 +3,7 @@
 **Дата оновлення:** 20 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M4-12 — deployment API + Desktop workflow DONE; черга зсунута на M4-13
+**Базовий коміт аудиту:** M4-13 — deployment fault and security acceptance DONE; **M4 CLOSED**; черга зсунута на M6-01
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -49,14 +49,14 @@
 | M2 Policy core | 18 | 0 | 100% |
 | M3 Compiler | 8 | 0 | 100% |
 | M5 Onboarding | 10 | 0 | 100% |
-| M4 Safe deploy | 8 | 5 | 62% |
+| M4 Safe deploy | 13 | 0 | 100% |
 | M6 E2E / drift | 0 | 9 | 0% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **93** | **43** | **68% issues** |
+| **Разом** | **94** | **42** | **69% issues** |
 
-MVP issues (109) = **93 done + 16 remaining** до MVP CLOSED (**85%**).  
+MVP issues (109) = **94 done + 15 remaining** до MVP CLOSED (**86%**).  
 N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
-Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий** (stage→arm→activate→verify→commit); multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; NEXT = M4-13 (#98).
+Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий** (stage→arm→activate→verify→commit); multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance Living Spec **DONE** (AC1–13 passed); **M4 CLOSED**; NEXT = M6-01 (#100).
 
 ### 2.2 DONE (не в черзі)
 
@@ -165,7 +165,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | `Mfc.Domain.Onboarding` | immutable plans + plan hasher + operation SM + write-ahead steps + bootstrap artifact + `ManagementState` (M5-01) + prerequisite validator (M5-02) + `GuardProfile` / guard verifier (M5-03) + `AnchorPlacementPlanner` (M5-04) + `OnboardingBootstrapWritePlanner` (M5-05) + `OnboardingWatchdogPlanner` (M5-06) + pass-through equivalence / enable order (M5-07) + Spec §46 recovery decision table (M5-08) |
 | `Mfc.Domain.Deployment` | immutable `DeploymentPlan` + plan hasher `mfc.deployment.plan.v1` + Node/device SM + exclusive lock + write-ahead steps (M4-01) + packet-path deploy gate (N1-06) + address-list create-or-verify (M4-03) + detached chain create-or-verify (M4-04) + production watchdog planner/script (M4-05) + transition-state validation + anchor activation order/decision (M4-06) + post-activation integrity/probes/watchdog readiness (M4-07) + standalone eligibility/NO_CHANGES policy (M4-08) + multi-WAN dependency/probe gates (M4-09) + VRRP classification/order/partial-failure policy (M4-10) + recovery decision table / controller rollback (M4-11); no campaign |
 
-**NEXT = M4-13:** [M4-13](https://github.com/sesquicadaver/MTDirector/issues/98) Complete deployment fault and security acceptance.
+**NEXT = M6-01:** [M6-01](https://github.com/sesquicadaver/MTDirector/issues/100) Implement desired, committed and actual state projection. **M4 CLOSED.**
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -336,7 +336,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | ~~82~~ | ~~M4-10~~ | ~~#95~~ | ~~Implement VRRP deployment coordinator~~ → DONE (`ExecuteVrrpDeploymentUseCase`) |
 | ~~83~~ | ~~M4-11~~ | ~~#96~~ | ~~Implement rollback and crash recovery~~ → DONE (`RecoverDeploymentUseCase`) |
 | ~~84~~ | ~~M4-12~~ | ~~#97~~ | ~~Expose deployment API and desktop operation workflow~~ → DONE (`DeploymentService` + Desktop Deploy) |
-| 85 | M4-13 | #98 | Complete deployment fault and security acceptance (**M4 CLOSED**) |
+|| ~~85~~ | ~~M4-13~~ | ~~#98~~ | ~~Complete deployment fault and security acceptance (**M4 CLOSED**)~~ → DONE (`DeploymentFaultSecurityAcceptanceLivingSpecTests` AC 1–13 all passed; `DeploymentAcceptanceHarness` shared infra) |
 
 #### Блок A10 — M6 E2E (+ N1-07) → MVP CLOSED
 
@@ -404,7 +404,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 39 відкритих атомарних задач (12 до MVP CLOSED + 27 M7). Start here: #98 M4-13.
+**Кінець черги:** 38 відкритих атомарних задач (11 до MVP CLOSED + 27 M7). Start here: #100 M6-01.
 
 ---
 
@@ -412,10 +412,10 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 12 | M4-13…M6-09 + N1-07 |
+| До MVP CLOSED | 11 | M6-01…M6-09 + N1-07 |
 | Post-MVP M7 | 27 | лише після M6-09 |
 | **Нереалізовано разом** | **43** | 16 MVP + 27 M7 |
-| DONE у коді (§2.2) | 93 | M0+M1+N1-01…06+M2-01…18+M3-01…08+M5-01…10+M4-01…08 |
+| DONE у коді (§2.2) | 94 | M0+M1+N1-01…06+M2-01…18+M3-01…08+M5-01…10+M4-01…13 |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
@@ -495,6 +495,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | VRRP deployment coordinator | M4-10 | Living Spec `VrrpDeploymentLivingSpecTests` AC#1–13; `ExecuteVrrpDeploymentUseCase` | **DONE** |
 | Deployment rollback + crash recovery | M4-11 | Living Spec `DeploymentRollbackRecoveryLivingSpecTests` AC#1–12; Spec §46–§49 `DeploymentRecoveryDecision` | **DONE** |
 | Deployment API + Desktop workflow | M4-12 | Living Spec `DeploymentWorkflowLivingSpecTests` AC#1–11; `DeploymentService` + Deploy tab | **DONE** |
+|| Deployment fault and security acceptance / **M4 CLOSED** | M4-13 | Living Spec `DeploymentFaultSecurityAcceptanceLivingSpecTests` AC#1–13 all passed; `DeploymentAcceptanceHarness` shared infra (FakeRuntime / RecordingChannel / ScriptedMember / ScriptedRollbackRuntime); `ArchitectureBoundaryTests` + `DeploymentProtoContractTests` still green | **DONE** |
 | Drift + E2E DoD | M6 | E2E §E2E | TODO |
 | Routing assurance | M7.1 | RouteResolutionTrace fixtures | TODO post-MVP |
 | Incident overlay | M7.4 | feasibility; TTL removal | TODO post-MVP |
@@ -552,8 +553,8 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 31. ~~Відкрити **M4-10** → [issue #95](https://github.com/sesquicadaver/MTDirector/issues/95).~~ → **DONE**.
 32. ~~Відкрити **M4-11** → [issue #96](https://github.com/sesquicadaver/MTDirector/issues/96).~~ → **DONE**.
 33. ~~Відкрити **M4-12** → [issue #97](https://github.com/sesquicadaver/MTDirector/issues/97).~~ → **DONE**.
-34. Відкрити **M4-13** → [issue #98](https://github.com/sesquicadaver/MTDirector/issues/98).
-34. Не стартувати M7, доки не закрито **M6-09** (черга #95).
+34. ~~Відкрити **M4-13** → [issue #98](https://github.com/sesquicadaver/MTDirector/issues/98).~~ → **DONE / M4 CLOSED**.
+35. Відкрити **M6-01** → [issue #100](https://github.com/sesquicadaver/MTDirector/issues/100).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
