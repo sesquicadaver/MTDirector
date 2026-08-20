@@ -129,5 +129,9 @@ public static class DeploymentCodes
 
     public const string VrrpWatchdogRetainRequired = "DEPLOYMENT_VRRP_WATCHDOG_RETAIN_REQUIRED";
 
+    public const string WatchdogRollbackDetected = "DEPLOYMENT_WATCHDOG_ROLLBACK_DETECTED";
+
+    public const string OldArtifactHashMismatch = "DEPLOYMENT_OLD_ARTIFACT_HASH_MISMATCH";
+
     public const string SeverityBlocker = "BLOCKER";
 }

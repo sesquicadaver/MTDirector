@@ -1529,7 +1529,7 @@ Safe Deployment Spec §35 + Issue Set M4-08 → Domain policy + Application coor
 | AC#9 Commit snapshot | `DeploymentCommitSnapshot` | `Ac9CommitSnapshotIsStored` |
 | AC#10 Same artifact → NO_CHANGES | `IsNoChanges` | `Ac10RedeploySameArtifactReturnsNoChanges` |
 
-**Residuals:** VRRP (M4-10), crash recovery (M4-11), gRPC Deploy (M4-12). Multi-WAN verify is M4-09 (DONE).
+**Residuals:** gRPC Deploy (M4-12). Multi-WAN verify is M4-09 (DONE). VRRP coordinator is M4-10 (DONE). Rollback/crash recovery is M4-11 (DONE).
 
 Filter:
 ```bash
@@ -1554,7 +1554,7 @@ Safe Deployment Spec §36 + Issue Set M4-09 → Domain gates + Application use c
 | AC#9 Dependency drift → rollback | `RecheckDependencyHashes` | `Ac9DependencyChangeBlocksOrRollsBack` |
 | AC#10 No routing/NAT/Mangle writes | `EnsureFilterOnlyWriteSurface` | `Ac10ControllerDoesNotChangeRoutingNatMangle` |
 
-**Residuals:** crash recovery (M4-11), gRPC Deploy (M4-12). VRRP coordinator is M4-10 (DONE).
+**Residuals:** gRPC Deploy (M4-12). VRRP coordinator is M4-10 (DONE). Rollback/crash recovery is M4-11 (DONE).
 
 Filter:
 ```bash
@@ -1582,12 +1582,39 @@ Safe Deployment Spec §37–§42 + Issue Set M4-10 → Domain classification/ord
 | AC#12 Split-master not simplified | `EnsureNoSplitMasterSimplification` | `Ac12SplitMasterIsNotSimplified` |
 | AC#13 No partial commit | `EnsureFullCommitAllowed` | `Ac13PartialCommitIsImpossible` |
 
-**Residuals:** crash recovery (M4-11), gRPC Deploy (M4-12).
+**Residuals:** gRPC Deploy (M4-12). Rollback/crash recovery is M4-11 (DONE).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~VrrpDeploymentLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — deployment rollback and crash recovery (M4-11)
+
+Safe Deployment Spec §46–§49 + Issue Set M4-11 → Domain decision table + Application rollback/recover use cases:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Reverse activation order | `DeviceRollbackOrder` | `Ac1RollbackUsesReverseActivationOrder` |
+| AC#2 Anchor target old or new | `ClassifyAnchors` | `Ac2AnchorTargetMustBeOldOrNew` |
+| AC#3 Old artifact hash verified | `ExecuteDeploymentRollbackUseCase` | `Ac3OldArtifactHashIsVerified` |
+| AC#4 Fresh API-SSL after rollback | `ExecuteDeploymentRollbackUseCase` | `Ac4NewApiConnectionOpensAfterRollback` |
+| AC#5 Old-state probes pass | `ExecuteDeploymentRollbackUseCase` | `Ac5OldStateProbesPass` |
+| AC#6 Mixed → all-old | `ExecuteDeploymentRollbackUseCase` | `Ac6MixedOldNewCompletesToAllOld` |
+| AC#7 Third target → RECOVERY_REQUIRED | `ExecuteDeploymentRollbackUseCase` | `Ac7ThirdTargetCreatesRecoveryRequired` |
+| AC#8 Watchdog rollback recognized | `RecoverDeploymentUseCase` | `Ac8WatchdogRollbackIsRecognized` |
+| AC#9 Nonterminal after restart → rollback | `RecoverDeploymentUseCase` | `Ac9NonterminalAfterRestartIsRolledBack` |
+| AC#10 Crash after disarm before commit | `RecoverDeploymentUseCase` | `Ac10CrashAfterWatchdogDisableBeforeCommitRollsBack` |
+| AC#11 Only durable COMMITTED keeps new | `MayRetainNewArtifact` / `Decide` | `Ac11OnlyDurableCommittedKeepsNewState` |
+| AC#12 Recovery decision table complete | `DeploymentRecoveryDecision.Decide` | `Ac12RecoveryDecisionTableIsComplete` |
+
+**Residuals:** gRPC Deploy (M4-12).
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentRollbackRecoveryLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 
