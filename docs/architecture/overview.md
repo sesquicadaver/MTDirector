@@ -103,7 +103,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Standalone Node coordinator | Done (M4-08) | `ExecuteStandaloneDeploymentUseCase`; NO_CHANGES; verify-fail rollback; commit snapshot |
 | Multi-WAN deployment verification | Done (M4-09) | `MultiWanDeploymentVerification` + `VerifyMultiWanDeploymentUseCase`; no forced failover |
 | VRRP deployment coordinator | Done (M4-10) | `VrrpDeploymentPolicy` + `ExecuteVrrpDeploymentUseCase`; standby-first; no partial commit |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-11 (#96) |
+| Rollback + crash recovery | Done (M4-11) | `DeploymentRecoveryDecision` + rollback/recover use cases; only COMMITTED keeps new |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-12 (#97) |
 
 ## ADRs
 
