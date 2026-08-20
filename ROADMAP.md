@@ -3,7 +3,7 @@
 **Дата оновлення:** 20 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M4-08 — standalone Node deployment coordinator DONE; черга зсунута на M4-09
+**Базовий коміт аудиту:** M4-09 — multi-WAN deployment verification DONE; черга зсунута на M4-10
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -56,7 +56,7 @@
 
 MVP issues (109) = **93 done + 16 remaining** до MVP CLOSED (**85%**).  
 N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
-Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий** (stage→arm→activate→verify→commit); NEXT = M4-09 (#94).
+Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий** (stage→arm→activate→verify→commit); multi-WAN verify **готовий**; NEXT = M4-10 (#95).
 
 ### 2.2 DONE (не в черзі)
 
@@ -147,6 +147,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | M4-06 | #91 | Transition-state validation + anchor activation (`TransitionStateValidator` + `ActivateAnchorsUseCase`) |
 | M4-07 | #92 | Post-activation verification + probes (`PostActivationVerification` + `VerifyDeploymentActivationUseCase`) |
 | M4-08 | #93 | Standalone Node coordinator (`StandaloneDeploymentPolicy` + `ExecuteStandaloneDeploymentUseCase`) |
+| M4-09 | #94 | Multi-WAN deployment verification (`MultiWanDeploymentVerification` + `VerifyMultiWanDeploymentUseCase`) |
 
 ### 2.3 Поточні прогалини (код)
 
@@ -154,15 +155,15 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 |--------|------|
 | `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors; default `ProbeOnlyRouterOsReadPort` + `NotConfiguredSnapshotCapturePort`; actual-filter discovery mapper; packet-path blocker mapper; management-path discovery mapper (`api-ssl.address` in canonical projector); topology-dependency discovery mapper (VRRP sync fields, RAW/NAT/Mangle, rp-filter, switch chip); FastTrack discovery mapper (pre-anchor + VRF); policy-evidence discovery mapper (NODE_EFFECTIVE actual filter); closed `OnboardingBootstrapWriter` (M5-05) + `OnboardingWatchdogWriter` arm/disarm/cleanup (M5-06–M5-08; generic `Write` namespace still absent); restricted `RouterOsDeploymentSession` (M4-02) + `DeploymentWatchdogWriter` (M4-05); anchor jump-target set used by M4-06 activation |
 | `Mfc.Contracts` | `mfc.v1` inventory + snapshot/diff + `ZoneService` + `PolicyService` (authoring/review + approval/binding + compile summary RPCs) + `OnboardingService` |
-| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper + packet-path canonical mapper + management-path canonical mapper + topology-dependency canonical mapper + FastTrack canonical mapper + policy-evidence canonical mapper + analysis-run/approval/desired-binding use cases + validate/catalog/diff authoring use cases + compile-and-store filter artifacts + `IOnboardingStore` + `ValidateOnboardingPrerequisitesUseCase` + `VerifyManagementGuardUseCase` + `PlanAnchorPlacementUseCase` + `PlanOnboardingBootstrapWritesUseCase` / `IOnboardingBootstrapWritePort` + `PlanOnboardingWatchdogUseCase` / `IOnboardingWatchdogPort` + `ExecuteOnboardingBootstrapUseCase` + `RollbackOnboardingBootstrapUseCase` + `RecoverOnboardingUseCase` + onboarding workflow use cases / `IOnboardingRuntime` + `IDeploymentStore` + `DeploymentPacketPathPrecheck` + `IRouterOsDeploymentSession` contracts (M4-02) + `StageAddressListUseCase` (M4-03) + `StageDetachedChainsUseCase` (M4-04) + `PlanDeploymentWatchdogUseCase` / `IDeploymentWatchdogPort` (M4-05) + `PlanTransitionStatesUseCase` / `ActivateAnchorsUseCase` (M4-06) + `VerifyDeploymentActivationUseCase` / `IDeploymentFreshSessionFactory` (M4-07) + `ExecuteStandaloneDeploymentUseCase` (M4-08) |
+| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper + packet-path canonical mapper + management-path canonical mapper + topology-dependency canonical mapper + FastTrack canonical mapper + policy-evidence canonical mapper + analysis-run/approval/desired-binding use cases + validate/catalog/diff authoring use cases + compile-and-store filter artifacts + `IOnboardingStore` + `ValidateOnboardingPrerequisitesUseCase` + `VerifyManagementGuardUseCase` + `PlanAnchorPlacementUseCase` + `PlanOnboardingBootstrapWritesUseCase` / `IOnboardingBootstrapWritePort` + `PlanOnboardingWatchdogUseCase` / `IOnboardingWatchdogPort` + `ExecuteOnboardingBootstrapUseCase` + `RollbackOnboardingBootstrapUseCase` + `RecoverOnboardingUseCase` + onboarding workflow use cases / `IOnboardingRuntime` + `IDeploymentStore` + `DeploymentPacketPathPrecheck` + `IRouterOsDeploymentSession` contracts (M4-02) + `StageAddressListUseCase` (M4-03) + `StageDetachedChainsUseCase` (M4-04) + `PlanDeploymentWatchdogUseCase` / `IDeploymentWatchdogPort` (M4-05) + `PlanTransitionStatesUseCase` / `ActivateAnchorsUseCase` (M4-06) + `VerifyDeploymentActivationUseCase` / `IDeploymentFreshSessionFactory` (M4-07) + `ExecuteStandaloneDeploymentUseCase` (M4-08) + `VerifyMultiWanDeploymentUseCase` (M4-09) |
 | `Mfc.Controller` | health + `InventoryService` + `SnapshotService` + `ZoneService` + `PolicyService` (compose + authoring/review + approval/binding + compile) + `OnboardingService` gRPC |
 | `Mfc.Desktop` | connection shell + inventory tree + snapshot/diff viewers + Zones + Policies authoring/review workflow + Onboarding checklist/placement/recovery |
 | Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings + policy_analysis_runs/policy_approvals/warning_acknowledgments/policy_bindings + filter_artifacts + onboarding_plans/operations/steps + deployment_plans/operations/locks/steps |
 | `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) + management-path safety (M2-13) + topology/dependency safety (M2-14) + FastTrack policy validation (M2-15) + policy tests/diff/risk (M2-16) + approval/desired-binding (M2-17) + object JSON writer (M2-18) + RouterOS filter artifact model (M3-01) + managed chain namespace/layout (M3-02) + content-addressed address lists (M3-03) + zone/service variants (M3-04) + matcher/effect compile (M3-05) + FastTrack pairs + terminals (M3-06) + per-device compile orchestration (M3-07) + compiler acceptance / Switch FORWARD gate (M3-08) |
 | `Mfc.Domain.Onboarding` | immutable plans + plan hasher + operation SM + write-ahead steps + bootstrap artifact + `ManagementState` (M5-01) + prerequisite validator (M5-02) + `GuardProfile` / guard verifier (M5-03) + `AnchorPlacementPlanner` (M5-04) + `OnboardingBootstrapWritePlanner` (M5-05) + `OnboardingWatchdogPlanner` (M5-06) + pass-through equivalence / enable order (M5-07) + Spec §46 recovery decision table (M5-08) |
-| `Mfc.Domain.Deployment` | immutable `DeploymentPlan` + plan hasher `mfc.deployment.plan.v1` + Node/device SM + exclusive lock + write-ahead steps (M4-01) + packet-path deploy gate (N1-06) + address-list create-or-verify (M4-03) + detached chain create-or-verify (M4-04) + production watchdog planner/script (M4-05) + transition-state validation + anchor activation order/decision (M4-06) + post-activation integrity/probes/watchdog readiness (M4-07) + standalone eligibility/NO_CHANGES policy (M4-08); no campaign |
+| `Mfc.Domain.Deployment` | immutable `DeploymentPlan` + plan hasher `mfc.deployment.plan.v1` + Node/device SM + exclusive lock + write-ahead steps (M4-01) + packet-path deploy gate (N1-06) + address-list create-or-verify (M4-03) + detached chain create-or-verify (M4-04) + production watchdog planner/script (M4-05) + transition-state validation + anchor activation order/decision (M4-06) + post-activation integrity/probes/watchdog readiness (M4-07) + standalone eligibility/NO_CHANGES policy (M4-08) + multi-WAN dependency/probe gates (M4-09); no campaign |
 
-**NEXT = M4-09:** [M4-09](https://github.com/sesquicadaver/MTDirector/issues/94) Implement multi-WAN deployment verification.
+**NEXT = M4-10:** [M4-10](https://github.com/sesquicadaver/MTDirector/issues/95) Implement VRRP deployment coordinator.
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -329,7 +330,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | ~~78~~ | ~~M4-06~~ | ~~#91~~ | ~~Implement transition-state validation and anchor activation~~ → DONE (`TransitionStateValidator` + `ActivateAnchorsUseCase`) |
 | ~~79~~ | ~~M4-07~~ | ~~#92~~ | ~~Implement deployment probes and post-activation verification~~ → DONE (`PostActivationVerification` + `VerifyDeploymentActivationUseCase`) |
 | ~~80~~ | ~~M4-08~~ | ~~#93~~ | ~~Implement standalone Node deployment coordinator~~ → DONE (`ExecuteStandaloneDeploymentUseCase`) |
-| 81 | M4-09 | #94 | Implement multi-WAN deployment verification |
+| ~~81~~ | ~~M4-09~~ | ~~#94~~ | ~~Implement multi-WAN deployment verification~~ → DONE (`VerifyMultiWanDeploymentUseCase`) |
 | 82 | M4-10 | #95 | Implement VRRP deployment coordinator |
 | 83 | M4-11 | #96 | Implement rollback and crash recovery |
 | 84 | M4-12 | #97 | Expose deployment API and desktop operation workflow |
@@ -401,7 +402,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 43 відкритих атомарних задач (16 до MVP CLOSED + 27 M7). Start here: #94 M4-09.
+**Кінець черги:** 42 відкритих атомарних задач (15 до MVP CLOSED + 27 M7). Start here: #95 M4-10.
 
 ---
 
@@ -409,7 +410,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 16 | M4-09…M6-09 + N1-07 |
+| До MVP CLOSED | 15 | M4-10…M6-09 + N1-07 |
 | Post-MVP M7 | 27 | лише після M6-09 |
 | **Нереалізовано разом** | **43** | 16 MVP + 27 M7 |
 | DONE у коді (§2.2) | 93 | M0+M1+N1-01…06+M2-01…18+M3-01…08+M5-01…10+M4-01…08 |
@@ -538,8 +539,9 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 27. ~~Відкрити **M4-06** → [issue #91](https://github.com/sesquicadaver/MTDirector/issues/91).~~ → **DONE**.
 28. ~~Відкрити **M4-07** → [issue #92](https://github.com/sesquicadaver/MTDirector/issues/92).~~ → **DONE**.
 29. ~~Відкрити **M4-08** → [issue #93](https://github.com/sesquicadaver/MTDirector/issues/93).~~ → **DONE**.
-30. Відкрити **M4-09** → [issue #94](https://github.com/sesquicadaver/MTDirector/issues/94).
-31. Не стартувати M7, доки не закрито **M6-09** (черга #95).
+30. ~~Відкрити **M4-09** → [issue #94](https://github.com/sesquicadaver/MTDirector/issues/94).~~ → **DONE**.
+31. Відкрити **M4-10** → [issue #95](https://github.com/sesquicadaver/MTDirector/issues/95).
+32. Не стартувати M7, доки не закрито **M6-09** (черга #95).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones

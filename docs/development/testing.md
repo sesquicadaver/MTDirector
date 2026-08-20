@@ -1529,12 +1529,37 @@ Safe Deployment Spec §35 + Issue Set M4-08 → Domain policy + Application coor
 | AC#9 Commit snapshot | `DeploymentCommitSnapshot` | `Ac9CommitSnapshotIsStored` |
 | AC#10 Same artifact → NO_CHANGES | `IsNoChanges` | `Ac10RedeploySameArtifactReturnsNoChanges` |
 
-**Residuals:** Multi-WAN (M4-09), VRRP (M4-10), crash recovery (M4-11), gRPC Deploy (M4-12).
+**Residuals:** VRRP (M4-10), crash recovery (M4-11), gRPC Deploy (M4-12). Multi-WAN verify is M4-09 (DONE).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~StandaloneDeploymentLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — multi-WAN deployment verification (M4-09)
+
+Safe Deployment Spec §36 + Issue Set M4-09 → Domain gates + Application use case (no forced failover / no routing writes):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Routing/NAT/RAW/Mangle recheck | `RecheckDependencyHashes` | `Ac1RoutingNatRawMangleHashesAreRechecked` |
+| AC#2 Zone/interface-list recheck | `RecheckDependencyHashes` | `Ac2ZoneAndInterfaceListDependenciesAreRechecked` |
+| AC#3 Active route ≠ artifact | `ArtifactHashIgnoringActiveRoute` | `Ac3ActiveRouteStateDoesNotChangeArtifact` |
+| AC#4 Per-table ping (balanced) | `PlanRuntimeProbes` | `Ac4PerTablePingRequiredForBalanced` |
+| AC#5 Active-path ping (failover) | `PlanRuntimeProbes` | `Ac5CurrentActivePathCheckedForFailover` |
+| AC#6 No primary WAN disable | `RejectForbiddenOperationalIntents` | `Ac6ControllerDoesNotDisablePrimaryWan` |
+| AC#7 No temporary route | `RejectForbiddenOperationalIntents` | `Ac7ControllerDoesNotCreateTemporaryRoute` |
+| AC#8 No forced failover | `PlanRuntimeProbes` | `Ac8BackupPathNotTestedByForcedFailover` |
+| AC#9 Dependency drift → rollback | `RecheckDependencyHashes` | `Ac9DependencyChangeBlocksOrRollsBack` |
+| AC#10 No routing/NAT/Mangle writes | `EnsureFilterOnlyWriteSurface` | `Ac10ControllerDoesNotChangeRoutingNatMangle` |
+
+**Residuals:** VRRP coordinator (M4-10), crash recovery (M4-11), gRPC Deploy (M4-12).
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~MultiWanDeploymentVerificationLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
