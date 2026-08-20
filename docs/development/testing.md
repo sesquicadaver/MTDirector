@@ -1320,7 +1320,7 @@ Safe Deployment Spec §9–§16 + Issue Set M4-01 → Domain + EF (no RouterOS w
 | AC#12 Plan hash preconditions | `DeploymentPlanHasher` | `Ac12PlanHashIncludesNormativePreconditions` |
 | Persistence schema `m4-01` | migration `DeploymentSchemaM401` | `MigrateCreatesDeploymentTablesAndSchemaMetadata` |
 
-**Residuals:** Restricted deployment writer / staging / watchdog / activate are M4-02+. Packet-path deploy gate is N1-06 (DONE).
+**Residuals:** Staging / watchdog / activate are M4-03+. Packet-path deploy gate is N1-06 (DONE). Restricted writer is M4-02 (DONE).
 
 Filter:
 ```bash
@@ -1347,12 +1347,39 @@ next-1 + Safe Deployment PRECHECKING → BLOCKED + ROADMAP N1-06 → Domain gate
 | AC#10 No offload writes / FailedPrecondition codes | Domain ↛ RouterOs | `Ac10GateDoesNotReferenceRouterOsOrOffloadWrites` |
 | Canonical mapper path | `DeploymentPacketPathPrecheck` | `CanonicalHardwareOffloadBlocksDeployWithoutReclassification` |
 
-**Residuals:** Restricted writer / staging / watchdog / activate / gRPC Deploy are M4-02+. Desktop Deploy command stays `CanExecute=false` (no Save and Deploy). Controller never disables L2/L3 hardware offload.
+**Residuals:** Staging / watchdog / activate / gRPC Deploy are M4-03+. Desktop Deploy command stays `CanExecute=false` (no Save and Deploy). Controller never disables L2/L3 hardware offload.
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentPacketPath|FullyQualifiedName~DeploymentLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — restricted deployment writer (M4-02)
+
+Safe Deployment Spec §6–§8 / §33.2 / §55 + Issue Set M4-02 → Application contracts + `Mfc.RouterOs.Deployment` (not `Mfc.RouterOs.Write`):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Compile-time allowlisted paths | `DeploymentWritePath` / `DeploymentWritePaths` | `Ac1WritePathsAreCompileTimeAllowlisted` |
+| AC#2 Filter set = `.id` + `jump-target` | `SetAnchorTargetAsync` | `Ac2FilterSetAllowsOnlyAnchorJumpTarget` |
+| AC#3 Ordinary rules not mutated via set | anchor ownership match | `Ac3OrdinaryActiveRulesAreNotChangedBySet` |
+| AC#4 No `/move` | paths + typed write | `Ac4MoveIsNotUsed` |
+| AC#5 No filter remove on deployment path | allowlist + interface | `Ac5FilterRemoveIsAbsentFromDeploymentPath` |
+| AC#6 No address-list set/remove | allowlist + interface | `Ac6AddressListSetAndRemoveAreAbsent` |
+| AC#7 Typed script + scheduler APIs | add/disable allowlist | `Ac7ScriptAndSchedulerApisAreTyped` |
+| AC#8 Typed bounded ping | count=3; timeout bounds | `Ac8PingParametersAreTypedAndBounded` |
+| AC#9 Lookup via print/read | `PrintAsync` before set | `Ac9ResourceLookupUsesPrintRead` |
+| AC#10 `.id` session-only | `RouterOsItemId` | `Ac10ItemIdIsSessionScopedOnly` |
+| AC#11 Every write has read-back | `DeploymentWriteExecutionResult.ReadBack` | `Ac11EachWriteHasReadBack` |
+| AC#12 No generic writer | `RouterOsDeploymentSession` in Deployment | `Ac12GenericWriterIsAbsent` |
+
+**Residuals:** Address-list staging / detached chains / watchdog / activate / gRPC Deploy are M4-03+. No live RouterOS transport binding in this slice (channel is injectable).
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentWriterLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

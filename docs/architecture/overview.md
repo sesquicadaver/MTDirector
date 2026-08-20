@@ -94,7 +94,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Onboarding integration acceptance / M5 CLOSED | Done (M5-10) | Topology Living Spec + testlab dual-stack/CRS; crash/watchdog/guard; no partial managed Node |
 | Deployment plan + persistence | Done (M4-01) | Immutable plan + Node/device SM + lock + journal; EF `DeploymentSchemaM401`; no campaign / writer |
 | Packet-path deploy gate | Done (N1-06) | `PACKET_PATH_*` fail-closes Router/VRRP deploy; CPU/MIXED allowed; no offload writes |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-02 (#87) |
+| Restricted deployment writer | Done (M4-02) | Allowlisted `RouterOsDeploymentSession` + managed-state reader; no `Mfc.RouterOs.Write` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-03 (#88) |
 
 ## ADRs
 
