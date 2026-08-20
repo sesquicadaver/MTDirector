@@ -91,5 +91,19 @@ public static class DeploymentCodes
 
     public const string RecoveryRequired = "RECOVERY_REQUIRED";
 
+    public const string ActiveArtifactHashMismatch = "ACTIVE_ARTIFACT_HASH_MISMATCH";
+
+    public const string ManagementReconnectFailed = "MANAGEMENT_RECONNECT_FAILED";
+
+    public const string DeploymentProbeFailed = "DEPLOYMENT_PROBE_FAILED";
+
+    public const string DeploymentProbeInconclusive = "DEPLOYMENT_PROBE_INCONCLUSIVE";
+
+    public const string ProbeKindUnsupported = "DEPLOYMENT_PROBE_KIND_UNSUPPORTED";
+
+    public const string ProbeHostnameForbidden = "DEPLOYMENT_PROBE_HOSTNAME_FORBIDDEN";
+
+    public const string WatchdogNotReady = "WATCHDOG_NOT_READY";
+
     public const string SeverityBlocker = "BLOCKER";
 }

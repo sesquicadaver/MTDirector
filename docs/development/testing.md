@@ -1478,12 +1478,38 @@ Safe Deployment Spec §28–§31 + Issue Set M4-06 → Domain transition/order/d
 | AC#10 Watchdog margin after each | `MinCommitMargin` | `Ac10WatchdogMarginIsCheckedAfterEachAnchor` |
 | AC#11 Journal intent + verified | `AnchorActivationJournalEntry` | `Ac11StepJournalRecordsIntentAndVerifiedResult` |
 
-**Residuals:** Probes / post-activation verification / gRPC Deploy are M4-07+.
+**Residuals:** Node coordinator / gRPC Deploy are M4-08+. Probes/verification are M4-07 (DONE).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~AnchorActivationLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — probes and post-activation verification (M4-07)
+
+Safe Deployment Spec §32–§34 + Issue Set M4-07 → Domain integrity/probe gates + Application fresh-session verification:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Managed resource hash | `VerifyManagedResourceHash` | `Ac1ManagedResourceHashIsVerified` |
+| AC#2 Active anchor targets | `VerifyActiveAnchors` | `Ac2ActiveAnchorTargetsAreVerified` |
+| AC#3 New API-SSL connection | `IDeploymentFreshSessionFactory` | `Ac3OpensNewApiSslConnection` |
+| AC#4 Old session insufficient | `ReferenceEquals` gate | `Ac4EstablishedSessionIsNotSufficient` |
+| AC#5 Only API_SSL + ROUTER_PING | `DeploymentProbeKind` | `Ac5OnlyApiSslAndRouterPingAreSupported` |
+| AC#6 No hostname | `ProbeHostnameForbidden` | `Ac6PingDoesNotAcceptHostname` |
+| AC#7 Bounded count/timeout | `FixedPingCount` / timeout | `Ac7CountIntervalAndTimeoutAreBounded` |
+| AC#8 Typed src/table/iface | `DeploymentProbe` | `Ac8SourceAddressTableAndInterfaceAreTyped` |
+| AC#9 Critical FAIL/INCONCLUSIVE → rollback | `ClassifyCriticalProbeOutcome` | `Ac9CriticalFailOrInconclusiveTriggersRollback` |
+| AC#10 Probe profile in plan hash | `DeploymentPlanHasher` | `Ac10ProbeProfileIsPartOfPlanHash` |
+| AC#11 Watchdog readiness before commit | `VerifyWatchdogReadiness` | `Ac11WatchdogReadinessIsCheckedBeforeCommit` |
+
+**Residuals:** Standalone Node coordinator / multi-WAN / VRRP / gRPC Deploy are M4-08+.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentVerificationLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

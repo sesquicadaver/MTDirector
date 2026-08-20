@@ -99,7 +99,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Detached chain staging | Done (M4-04) | `FilterChainCreateOrVerify` + `StageDetachedChainsUseCase`; deny before root |
 | Production rollback watchdog | Done (M4-05) | `DeploymentWatchdogScript` + `DeploymentWatchdogWriter`; deadline/startup; VRRP arm gate |
 | Transition validation + anchor activation | Done (M4-06) | `TransitionStateValidator` + `ActivateAnchorsUseCase`; management-critical last; no blind retry |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-07 (#92) |
+| Probes + post-activation verification | Done (M4-07) | `PostActivationVerification` + `VerifyDeploymentActivationUseCase`; API_SSL/ROUTER_PING; fresh session |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-08 (#93) |
 
 ## ADRs
 

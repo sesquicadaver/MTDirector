@@ -66,8 +66,12 @@ public enum DeploymentStepKind : byte
     MarkRecovery = 10,
 }
 
-/// <summary>Bounded ICMP probe recorded on the plan (Safe Deployment Spec §9).</summary>
+/// <summary>Bounded verification probe kinds (Safe Deployment Spec §33). Only API_SSL and ROUTER_PING.</summary>
 public enum DeploymentProbeKind : byte
 {
-    IcmpEcho = 0,
+    /// <summary>ROUTER_PING — ICMP via RouterOS <c>/ping</c> (Spec §33.2).</summary>
+    RouterPing = 0,
+
+    /// <summary>API_SSL — independent management reconnect (Spec §33.1).</summary>
+    ApiSsl = 1,
 }

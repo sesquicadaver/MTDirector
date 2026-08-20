@@ -123,12 +123,18 @@ public static class DeploymentPlanHasher
 
         AppendUInt32Be(hasher, (uint)plan.RollbackTtl.TotalSeconds);
         AppendUInt32Be(hasher, (uint)plan.Probes.Count);
-        foreach (DeploymentProbe probe in plan.Probes)
+        foreach (DeploymentProbe probe in plan.Probes.OrderBy(static p => p.Kind).ThenBy(static p => p.Destination, StringComparer.Ordinal))
         {
             hasher.AppendData([(byte)probe.Kind]);
             AppendUtf8(hasher, probe.Destination);
             hasher.AppendData([(byte)0]);
             AppendUInt32Be(hasher, (uint)probe.TimeoutMilliseconds);
+            AppendUtf8(hasher, probe.SourceAddress ?? string.Empty);
+            hasher.AppendData([(byte)0]);
+            AppendUtf8(hasher, probe.RoutingTable ?? string.Empty);
+            hasher.AppendData([(byte)0]);
+            AppendUtf8(hasher, probe.Interface ?? string.Empty);
+            hasher.AppendData([(byte)0]);
         }
     }
 
