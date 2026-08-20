@@ -216,6 +216,7 @@ public sealed class RouterOsDeploymentSession : IRouterOsDeploymentSession
         [
             new("name", write.Name),
             new("source", write.Source),
+            new("policy", "read,write"),
             new("dont-require-permissions", "no"),
         ];
         DeploymentWritePath path = DeploymentWritePath.SystemScriptAdd;
@@ -253,6 +254,7 @@ public sealed class RouterOsDeploymentSession : IRouterOsDeploymentSession
         [
             new("name", write.Name),
             new("on-event", write.OnEvent),
+            new("policy", "read,write"),
         ];
         if (write.StartTime is not null)
         {

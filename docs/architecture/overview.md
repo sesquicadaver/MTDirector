@@ -97,7 +97,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Restricted deployment writer | Done (M4-02) | Allowlisted `RouterOsDeploymentSession` + managed-state reader; no `Mfc.RouterOs.Write` |
 | Address-list create-or-verify | Done (M4-03) | `AddressListCreateOrVerify` + `StageAddressListUseCase`; no AL set/remove |
 | Detached chain staging | Done (M4-04) | `FilterChainCreateOrVerify` + `StageDetachedChainsUseCase`; deny before root |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-05 (#90) |
+| Production rollback watchdog | Done (M4-05) | `DeploymentWatchdogScript` + `DeploymentWatchdogWriter`; deadline/startup; VRRP arm gate |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-06 (#91) |
 
 ## ADRs
 
