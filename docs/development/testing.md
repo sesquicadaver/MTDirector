@@ -19,7 +19,7 @@ Working tree must stay clean after build/test.
 | Project | Role |
 |---------|------|
 | `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28, Desktop semantic diff viewer M1-29, fault-injection matrix M1-33) |
-| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN/VRRP vertical-slice acceptance M1-30/M1-31/M1-32, fault-injection acceptance M1-33, onboarding topology acceptance M5-10 |
+| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN/VRRP vertical-slice acceptance M1-30/M1-31/M1-32, fault-injection acceptance M1-33, onboarding topology acceptance M5-10, standalone/dual-stack E2E inventory→capture→onboarding M6-05 |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts + optional live CHR TLS gate (`MFC_CHR_STANDALONE_HOST`) |
 
 ## Living Specification — semantic diff (M1-24)
@@ -1805,6 +1805,30 @@ Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopMvpWorkflowsLivingSpecTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DriftProtoContractTests|FullyQualifiedName~AuditProtoContractTests"
+```
+
+## Living Specification — standalone / dual-stack E2E (M6-05)
+
+Issue Set M6-05 + E2E Workflow Spec §53–§54. Live CHR matrix OFF — scripted/fake runtimes + in-process Controller + Postgres (same pattern as M5-10 / M4-13).
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Inventory→capture→onboarding→policy→deploy | Onboarding + `ExecuteStandaloneDeploymentUseCase` + Integration host | `Ac1InventoryOnboardingPolicyDeploymentEndToEnd` + `InventoryCaptureOnboardingSucceedsForStandaloneAndDualStack` |
+| AC#2 Management reconnect | `VerifyDeploymentActivationUseCase` fresh API-SSL | `Ac2ManagementReconnectSucceeds` |
+| AC#3 IPv4 / IPv6 artifacts independent | dual-stack plan + address-list staging | `Ac3Ipv4AndIpv6ArtifactsAreIndependent` |
+| AC#4 IPv6 failure rolls back Node | `FailIpv6FilterSets` harness | `Ac4Ipv6FailureRollsBackNodeDeployment` |
+| AC#5 Repeated deploy → NO_CHANGES | `StandaloneDeploymentPolicy` | `Ac5RepeatedDeploymentReturnsNoChanges` |
+| AC#6 Manual managed-rule → Critical drift | `DetectManagedDriftUseCase` | `Ac6ManualManagedRuleChangeCreatesDrift` |
+| AC#7 Restoration deployment | clear drift + standalone commit | `Ac7RestorationDeploymentWorks` |
+| AC#8 Exception expiry → pending, no ROS write | `ExpireExceptionBindingUseCase` | `Ac8ExceptionExpirationCreatesPendingDeploymentWithoutRouterOsWrite` |
+| AC#9 Audit reproduces lifecycle | `ListAuditEventsUseCase` | `Ac9AuditFullyReproducesLifecycle` |
+| AC#10 Restart in each nonterminal phase | `RecoverDeploymentUseCase` | `Ac10ControllerRestartInEachNonterminalPhaseIsHandled` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~StandaloneDualStackE2ELivingSpecTests"
+dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~StandaloneDualStackE2EAcceptanceTests"
 ```
 
 ## CHR live matrix

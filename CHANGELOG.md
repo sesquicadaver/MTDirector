@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Standalone and dual-stack end-to-end acceptance (M6-05): Living Spec `StandaloneDualStackE2ELivingSpecTests` AC 1–10 (onboarding→deploy, management reconnect, IPv4/IPv6 independence, IPv6 failure rollback, NO_CHANGES, drift, restoration, exception expiry without RouterOS write, audit lifecycle, nonterminal restart recovery) + Integration `StandaloneDualStackE2EAcceptanceTests` (inventory→capture→onboarding; `--Mfc:OperationalJobs:Enabled=false`). Live CHR matrix remains OFF (scripted/fake runtimes).
+
 - Desktop MVP workflows (M6-04): unified seven-module Shell navigation (`Inventory`/`Node`/`Snapshots`/`Policies`/`Operations`/`Drift`/`Audit`); Contracts `DriftService` + `AuditService`; Application `ListAuditEventsUseCase` + `IAuditEventReadStore`; Desktop Drift/Audit ViewModels (Task.Run, no auto-fix / read-only audit). Living Spec `DesktopMvpWorkflowsLivingSpecTests` AC 1–12.
 
 - Bounded operational background jobs (M6-03): Controller `OperationalJobSchedulerHostedService` (`IHostedService`/`BackgroundService`) + `BoundedWorkBag` (fail-closed capacity) + global `OperationalJobsOptions` (capture≤16, write≤8 per Spec §50). Five job kinds: operation recovery (priority > drift), periodic drift capture via `DetectManagedDriftUseCase`, expired-exception reconciliation via `ExpireExceptionBindingUseCase` (zero RouterOS writes), durable deployment lock heartbeat, disabled watchdog residue cleanup via restricted `IWatchdogResidueCleanupPort` + `WatchdogResidueCleanupPolicy`. No Hangfire/Quartz/Rabbit/Kafka. Living Spec `BoundedOperationalJobsLivingSpecTests` AC 1–10.

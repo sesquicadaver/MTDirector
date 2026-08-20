@@ -80,13 +80,17 @@ internal static class DeploymentTestFactory
             [new DeploymentProbe(DeploymentProbeKind.RouterPing, "192.0.2.1", 500)]);
     }
 
-    public static DeploymentPlan PlanFor(Node node, DateTimeOffset? created = null, bool noChanges = false)
+    public static DeploymentPlan PlanFor(
+        Node node,
+        DateTimeOffset? created = null,
+        bool noChanges = false,
+        bool includeIpv6 = false)
     {
         DateTimeOffset now = created ?? new DateTimeOffset(2026, 8, 19, 21, 0, 0, TimeSpan.Zero);
         List<DeviceDeploymentPlan> devicePlans = [];
         foreach (Device device in node.Devices.OrderBy(static d => d.Id.Value))
         {
-            devicePlans.Add(DevicePlan(device.Id, node.DeclaredKind, noChanges: noChanges));
+            devicePlans.Add(DevicePlan(device.Id, node.DeclaredKind, ipv6: includeIpv6, noChanges: noChanges));
         }
 
         return DeploymentPlan.Create(node, H("policy"), H("analysis"), H("topology"), devicePlans, UserId.New(), now);
