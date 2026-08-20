@@ -1320,7 +1320,7 @@ Safe Deployment Spec §9–§16 + Issue Set M4-01 → Domain + EF (no RouterOS w
 | AC#12 Plan hash preconditions | `DeploymentPlanHasher` | `Ac12PlanHashIncludesNormativePreconditions` |
 | Persistence schema `m4-01` | migration `DeploymentSchemaM401` | `MigrateCreatesDeploymentTablesAndSchemaMetadata` |
 
-**Residuals:** Staging / watchdog / activate are M4-03+. Packet-path deploy gate is N1-06 (DONE). Restricted writer is M4-02 (DONE).
+**Residuals:** Detached chain staging / watchdog / activate are M4-04+. Packet-path deploy gate is N1-06 (DONE). Restricted writer is M4-02 (DONE). Address-list staging is M4-03 (DONE).
 
 Filter:
 ```bash
@@ -1347,7 +1347,7 @@ next-1 + Safe Deployment PRECHECKING → BLOCKED + ROADMAP N1-06 → Domain gate
 | AC#10 No offload writes / FailedPrecondition codes | Domain ↛ RouterOs | `Ac10GateDoesNotReferenceRouterOsOrOffloadWrites` |
 | Canonical mapper path | `DeploymentPacketPathPrecheck` | `CanonicalHardwareOffloadBlocksDeployWithoutReclassification` |
 
-**Residuals:** Staging / watchdog / activate / gRPC Deploy are M4-03+. Desktop Deploy command stays `CanExecute=false` (no Save and Deploy). Controller never disables L2/L3 hardware offload.
+**Residuals:** Detached chain staging / watchdog / activate / gRPC Deploy are M4-04+. Desktop Deploy command stays `CanExecute=false` (no Save and Deploy). Controller never disables L2/L3 hardware offload.
 
 Filter:
 ```bash
@@ -1374,12 +1374,37 @@ Safe Deployment Spec §6–§8 / §33.2 / §55 + Issue Set M4-02 → Application
 | AC#11 Every write has read-back | `DeploymentWriteExecutionResult.ReadBack` | `Ac11EachWriteHasReadBack` |
 | AC#12 No generic writer | `RouterOsDeploymentSession` in Deployment | `Ac12GenericWriterIsAbsent` |
 
-**Residuals:** Address-list staging / detached chains / watchdog / activate / gRPC Deploy are M4-03+. No live RouterOS transport binding in this slice (channel is injectable).
+**Residuals:** Detached chain staging / watchdog / activate / gRPC Deploy are M4-04+. No live RouterOS transport binding in this slice (channel is injectable).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentWriterLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — address-list create-or-verify staging (M4-03)
+
+Safe Deployment Spec §18 + Compiler Spec §26–§27 + Issue Set M4-03 → Domain planner + Application staging over M4-02 writer:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Exact list reuse | `AddressListCreateOrVerify` / `StageAddressListUseCase` | `Ac1ExistingExactListIsReused` |
+| AC#2 Exact subset → add missing | `AddMissing` | `Ac2ExactSubsetIsSupplementedWithMissingEntries` |
+| AC#3 Extra/divergent → collision | `STAGING_RESOURCE_COLLISION` | `Ac3ExtraOrDivergentEntryCreatesCollision` |
+| AC#4 Unmanaged entry blocks | foreign comment | `Ac4UnmanagedEntryInGeneratedListBlocksStaging` |
+| AC#5 No blind add retry | read-before-add | `Ac5BlindAddRetryAfterConnectionLossIsAbsent` |
+| AC#6 Actual state before retry | `ReadBeforeWriteCount` | `Ac6ActualStateIsReadBeforeRetry` |
+| AC#7 Unordered content hash | `TryVerifyContentHash` | `Ac7FinalUnorderedContentHashIsVerified` |
+| AC#8 Dynamic/timeout blocks | `STAGING_RULE_INVALID` | `Ac8DynamicEntryInGeneratedListBlocksStaging` |
+| AC#9 No in-place edit | no AL set/remove | `Ac9ActiveListsAreNotEditedInPlace` |
+| AC#10 Record/payload limits | `AddressListCompileLimits` | `Ac10RecordAndPayloadLimitsAreApplied` |
+
+**Residuals:** Detached chain staging / watchdog / activate / gRPC Deploy are M4-04+.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~AddressListStagingLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)
