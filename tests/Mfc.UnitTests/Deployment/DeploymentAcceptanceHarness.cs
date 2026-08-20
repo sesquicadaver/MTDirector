@@ -33,8 +33,11 @@ internal static class DeploymentAcceptanceHarness
                 FilterBuiltInContext.Output => "output",
                 _ => "input",
             };
+            DeploymentReadSurface surface = target.Key.Family == IpAddressFamily.IPv4
+                ? DeploymentReadSurface.Ipv4Filter
+                : DeploymentReadSurface.Ipv6Filter;
             channel.Seed(
-                DeploymentReadSurface.Ipv4Filter,
+                surface,
                 new Dictionary<string, string>(StringComparer.Ordinal)
                 {
                     [".id"] = "*" + id.ToString(CultureInfo.InvariantCulture),
@@ -71,6 +74,9 @@ internal sealed class RecordingChannel : IDeploymentWriteChannel
     /// <summary>After this many filter-set calls, subsequent set responses return empty (simulating failure).</summary>
     public int FailFilterSetsAfter { get; set; } = int.MaxValue;
 
+    /// <summary>When true, every IPv6 filter-set leaves jump-target unchanged (dual-stack failure injection).</summary>
+    public bool FailIpv6FilterSets { get; set; }
+
     public void Seed(DeploymentReadSurface surface, Dictionary<string, string> row)
     {
         if (!_prints.TryGetValue(surface, out List<Dictionary<string, string>>? list))
@@ -84,7 +90,10 @@ internal sealed class RecordingChannel : IDeploymentWriteChannel
 
     public Dictionary<string, string>? FindAnchor(AnchorKey key)
     {
-        if (!_prints.TryGetValue(DeploymentReadSurface.Ipv4Filter, out List<Dictionary<string, string>>? list))
+        DeploymentReadSurface surface = key.Family == IpAddressFamily.IPv4
+            ? DeploymentReadSurface.Ipv4Filter
+            : DeploymentReadSurface.Ipv6Filter;
+        if (!_prints.TryGetValue(surface, out List<Dictionary<string, string>>? list))
         {
             return null;
         }
@@ -137,7 +146,8 @@ internal sealed class RecordingChannel : IDeploymentWriteChannel
             if (DeploymentWritePaths.IsFilterSet(path))
             {
                 _filterSetCount++;
-                if (_filterSetCount > FailFilterSetsAfter)
+                bool failIpv6 = FailIpv6FilterSets && path == DeploymentWritePath.Ipv6FilterSet;
+                if (failIpv6 || _filterSetCount > FailFilterSetsAfter)
                 {
                     // Return empty dict — jump-target unchanged so read-back sees divergence → RecoveryRequired.
                     return Task.FromResult<IReadOnlyDictionary<string, string>>(
@@ -146,9 +156,12 @@ internal sealed class RecordingChannel : IDeploymentWriteChannel
             }
 
             string id = attributes.Single(static a => a.Key == ".id").Value;
-            DeploymentReadSurface surface = path == DeploymentWritePath.SystemSchedulerSet
-                ? DeploymentReadSurface.Scheduler
-                : DeploymentReadSurface.Ipv4Filter;
+            DeploymentReadSurface surface = path switch
+            {
+                DeploymentWritePath.SystemSchedulerSet => DeploymentReadSurface.Scheduler,
+                DeploymentWritePath.Ipv6FilterSet => DeploymentReadSurface.Ipv6Filter,
+                _ => DeploymentReadSurface.Ipv4Filter,
+            };
             Dictionary<string, string> row = _prints[surface].Single(r => r[".id"] == id);
             foreach ((string key, string value) in attributes.Where(static a => a.Key != ".id"))
             {
