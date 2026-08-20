@@ -101,7 +101,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Transition validation + anchor activation | Done (M4-06) | `TransitionStateValidator` + `ActivateAnchorsUseCase`; management-critical last; no blind retry |
 | Probes + post-activation verification | Done (M4-07) | `PostActivationVerification` + `VerifyDeploymentActivationUseCase`; API_SSL/ROUTER_PING; fresh session |
 | Standalone Node coordinator | Done (M4-08) | `ExecuteStandaloneDeploymentUseCase`; NO_CHANGES; verify-fail rollback; commit snapshot |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-09 (#94) |
+| Multi-WAN deployment verification | Done (M4-09) | `MultiWanDeploymentVerification` + `VerifyMultiWanDeploymentUseCase`; no forced failover |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-10 (#95) |
 
 ## ADRs
 
