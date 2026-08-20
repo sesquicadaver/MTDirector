@@ -180,6 +180,16 @@ internal sealed class FakeOnboardingStore : IOnboardingStore
         => Task.FromResult<IReadOnlyList<OnboardingOperation>>(
             _operations.Values.Where(o => o.NodeId == nodeId && o.IsNonterminal).ToArray());
 
+    public Task<IReadOnlyList<OnboardingOperation>> ListNonterminalAsync(
+        int limit,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<OnboardingOperation>>(
+            _operations.Values
+                .Where(static o => o.IsNonterminal)
+                .OrderBy(static o => o.CreatedAtUtc)
+                .Take(Math.Max(0, limit))
+                .ToArray());
+
     public Task AddStepAsync(OnboardingStep onboardingStep, CancellationToken cancellationToken = default)
     {
         _steps[onboardingStep.Id.Value] = onboardingStep;
@@ -241,6 +251,15 @@ internal sealed class FakeDeploymentStore : IDeploymentStore
         => Task.FromResult<IReadOnlyList<DeploymentOperation>>(
             _operations.Values.Where(o => o.NodeId == nodeId && o.IsNonterminal).ToArray());
 
+    public Task<IReadOnlyList<DeploymentOperation>> ListNonterminalAsync(
+        int limit,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<DeploymentOperation>>(
+            _operations.Values.Where(static o => o.IsNonterminal)
+                .OrderBy(static o => o.CreatedAtUtc)
+                .Take(Math.Max(0, limit))
+                .ToArray());
+
     public Task AddDeviceStateAsync(DeviceDeployment device, CancellationToken cancellationToken = default)
     {
         _devices[(device.OperationId.Value, device.DeviceId.Value)] = device;
@@ -291,6 +310,15 @@ internal sealed class FakeDeploymentStore : IDeploymentStore
 
     public Task<DeploymentLock?> GetLockByNodeAsync(NodeId nodeId, CancellationToken cancellationToken = default)
         => Task.FromResult(_locks.TryGetValue(nodeId.Value, out DeploymentLock? value) ? value : null);
+
+    public Task<IReadOnlyList<DeploymentLock>> ListLocksByOwnerAsync(
+        string ownerInstanceId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<DeploymentLock>>(
+            _locks.Values
+                .Where(l => string.Equals(l.OwnerInstanceId, ownerInstanceId, StringComparison.Ordinal))
+                .OrderBy(l => l.NodeId.Value)
+                .ToArray());
 }
 
 internal sealed class FakeIdempotencyStore : IIdempotencyStore
@@ -1084,6 +1112,25 @@ internal sealed class FakePolicyApprovalStore : IPolicyApprovalStore
                 .Select(CloneBinding)
                 .ToArray());
 
+    public Task<IReadOnlyList<PolicyDesiredBinding>> ListDueExceptionBindingsAsync(
+        DateTimeOffset nowUtc,
+        int limit,
+        CancellationToken cancellationToken = default)
+    {
+        DateTimeOffset now = nowUtc.ToUniversalTime();
+        return Task.FromResult<IReadOnlyList<PolicyDesiredBinding>>(
+            _bindings.Values
+                .Where(b => b.Scope == PolicyBindingScope.Exception
+                            && b.State == PolicyBindingState.Active
+                            && b.ValidUntilUtc is not null
+                            && now >= b.ValidUntilUtc.Value)
+                .OrderBy(b => b.ValidUntilUtc)
+                .ThenBy(b => b.Id.Value)
+                .Take(Math.Max(0, limit))
+                .Select(CloneBinding)
+                .ToArray());
+    }
+
     private static PolicyAnalysisRun CloneRun(PolicyAnalysisRun run)
         => PolicyAnalysisRun.Reconstitute(
             run.Id,
@@ -1221,6 +1268,16 @@ internal sealed class FakeDeviceHashStateStore : IDeviceHashStateStore
         return Task.FromResult<IReadOnlyList<DeviceHashState>>(
             rows.OrderBy(static s => s.DeviceId.Value).ToArray());
     }
+
+    public Task<IReadOnlyList<DeviceHashState>> ListWithLastCommittedAsync(
+        int limit,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<DeviceHashState>>(
+            _byDevice.Values
+                .Where(static s => s.LastCommittedArtifactHash is not null)
+                .OrderBy(static s => s.DeviceId.Value)
+                .Take(Math.Max(0, limit))
+                .ToArray());
 }
 
 internal sealed class FakeDriftEventStore : IDriftEventStore

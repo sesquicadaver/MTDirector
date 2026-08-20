@@ -23,6 +23,11 @@ public interface IOnboardingStore
         NodeId nodeId,
         CancellationToken cancellationToken = default);
 
+    /// <summary>Bounded global scan of nonterminal onboarding operations (M6-03 recovery job).</summary>
+    Task<IReadOnlyList<OnboardingOperation>> ListNonterminalAsync(
+        int limit,
+        CancellationToken cancellationToken = default);
+
     Task AddStepAsync(OnboardingStep onboardingStep, CancellationToken cancellationToken = default);
 
     Task SaveStepAsync(OnboardingStep onboardingStep, CancellationToken cancellationToken = default);

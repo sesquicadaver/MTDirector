@@ -292,4 +292,27 @@ public sealed class ArchitectureBoundaryTests
             types,
             t => t == typeof(Mfc.RouterOs.Commands.RosReadCommandExecutor));
     }
+
+    [Fact]
+    public void ControllerMustNotReferenceJobBrokersOrFrameworks()
+    {
+        string[] forbidden =
+        [
+            "Hangfire.Core",
+            "Hangfire.AspNetCore",
+            "Quartz",
+            "MassTransit",
+            "RabbitMQ.Client",
+            "Confluent.Kafka",
+        ];
+
+        foreach (string name in forbidden)
+        {
+            AssertDoesNotReference(Controller, name, $"Controller must not use {name} (M6-03 AC#10)");
+        }
+
+        Assert.Contains(
+            Controller.GetTypes(),
+            static t => t == typeof(Mfc.Controller.Jobs.OperationalJobSchedulerHostedService));
+    }
 }

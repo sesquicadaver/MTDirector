@@ -46,6 +46,14 @@ public interface IPolicyApprovalStore
         PolicyBindingScope scope,
         Guid? scopeId,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// ACTIVE EXCEPTION bindings past valid_until (M6-03 expired-exception reconciliation).
+    /// </summary>
+    Task<IReadOnlyList<PolicyDesiredBinding>> ListDueExceptionBindingsAsync(
+        DateTimeOffset nowUtc,
+        int limit,
+        CancellationToken cancellationToken = default);
 }
 
 /// <summary>Runs store mutations in one database transaction.</summary>
