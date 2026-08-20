@@ -117,5 +117,17 @@ public static class DeploymentCodes
 
     public const string MultiWanWriteSurfaceViolation = "DEPLOYMENT_MULTIWAN_WRITE_SURFACE_VIOLATION";
 
+    public const string VrrpNodeRequired = "DEPLOYMENT_VRRP_NODE_REQUIRED";
+
+    public const string VrrpRoleChangedDuringDeployment = "VRRP_ROLE_CHANGED_DURING_DEPLOYMENT";
+
+    public const string VrrpMemberUnreachable = "DEPLOYMENT_VRRP_MEMBER_UNREACHABLE";
+
+    public const string VrrpSplitMaster = "DEPLOYMENT_VRRP_SPLIT_MASTER";
+
+    public const string VrrpPartialCommitForbidden = "DEPLOYMENT_VRRP_PARTIAL_COMMIT_FORBIDDEN";
+
+    public const string VrrpWatchdogRetainRequired = "DEPLOYMENT_VRRP_WATCHDOG_RETAIN_REQUIRED";
+
     public const string SeverityBlocker = "BLOCKER";
 }

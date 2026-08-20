@@ -102,7 +102,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Probes + post-activation verification | Done (M4-07) | `PostActivationVerification` + `VerifyDeploymentActivationUseCase`; API_SSL/ROUTER_PING; fresh session |
 | Standalone Node coordinator | Done (M4-08) | `ExecuteStandaloneDeploymentUseCase`; NO_CHANGES; verify-fail rollback; commit snapshot |
 | Multi-WAN deployment verification | Done (M4-09) | `MultiWanDeploymentVerification` + `VerifyMultiWanDeploymentUseCase`; no forced failover |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-10 (#95) |
+| VRRP deployment coordinator | Done (M4-10) | `VrrpDeploymentPolicy` + `ExecuteVrrpDeploymentUseCase`; standby-first; no partial commit |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-11 (#96) |
 
 ## ADRs
 
