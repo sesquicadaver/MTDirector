@@ -17,6 +17,11 @@ public sealed class OperationalJobTickPlanner
         IReadOnlyList<(Guid DeviceId, IReadOnlyList<string> CandidateNames)>? cleanupCandidates = null)
     {
         ArgumentNullException.ThrowIfNull(options);
+        if (!options.Enabled)
+        {
+            return [];
+        }
+
         List<OperationalJobWorkItem> due = [];
 
         if (options.RecoveryEnabled

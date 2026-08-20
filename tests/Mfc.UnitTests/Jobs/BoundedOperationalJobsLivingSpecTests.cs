@@ -21,6 +21,7 @@ public sealed class BoundedOperationalJobsLivingSpecTests
     private static OperationalJobsOptions DefaultOptions(int queueDepth = 8)
         => new()
         {
+            Enabled = true,
             RecoveryEnabled = true,
             MaxQueueDepth = queueDepth,
             MaxCaptureConcurrency = 16,
@@ -96,6 +97,23 @@ public sealed class BoundedOperationalJobsLivingSpecTests
         Assert.Single(due, static i => i.Kind == OperationalJobKind.DriftCapture);
         Assert.Equal(300, options.DriftPollIntervalSeconds);
         Assert.Equal(32, options.DriftBatchSize);
+    }
+
+    [Fact]
+    public void Ac3bDisabledMasterSwitchProducesNoDueWork()
+    {
+        OperationalJobsOptions options = DefaultOptions();
+        options.Enabled = false;
+        OperationalJobTickPlanner planner = new();
+        IReadOnlyList<OperationalJobWorkItem> due = planner.Plan(
+            options,
+            FixedUtc,
+            lastRecoveryUtc: null,
+            lastHeartbeatUtc: null,
+            lastExpiredUtc: null,
+            lastCleanupUtc: null,
+            lastDriftUtc: null);
+        Assert.Empty(due);
     }
 
     [Fact]

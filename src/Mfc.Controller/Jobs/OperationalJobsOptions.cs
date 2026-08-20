@@ -10,6 +10,12 @@ public sealed class OperationalJobsOptions
 {
     public const string SectionName = "OperationalJobs";
 
+    /// <summary>
+    /// Master switch for the in-process scheduler. Integration hosts set this false so
+    /// background scopes do not exhaust PostgreSQL client slots.
+    /// </summary>
+    public bool Enabled { get; set; } = true;
+
     /// <summary>When false, recovery scan is skipped (other jobs still run).</summary>
     public bool RecoveryEnabled { get; set; } = true;
 

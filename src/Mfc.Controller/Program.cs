@@ -197,7 +197,11 @@ public static class Program
         services.AddScoped<ReconcileExpiredExceptionBindingsJobUseCase>();
         services.AddScoped<HeartbeatDeploymentLocksJobUseCase>();
         services.AddScoped<CleanupDisabledWatchdogResidueJobUseCase>();
-        services.AddHostedService<OperationalJobSchedulerHostedService>();
+        // Hosted scheduler is opt-in via Mfc:OperationalJobs:Enabled (false in IntegrationTests).
+        if (jobOptions.Enabled)
+        {
+            services.AddHostedService<OperationalJobSchedulerHostedService>();
+        }
     }
 
     private static void RegisterInventoryApplication(IServiceCollection services)

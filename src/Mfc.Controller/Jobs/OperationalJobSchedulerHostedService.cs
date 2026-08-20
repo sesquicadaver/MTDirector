@@ -69,6 +69,19 @@ public sealed partial class OperationalJobSchedulerHostedService : BackgroundSer
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         OperationalJobsOptions options = _options.CurrentValue;
+        if (!options.Enabled)
+        {
+            try
+            {
+                await DelayAsync(Timeout.InfiniteTimeSpan, stoppingToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+            }
+
+            return;
+        }
+
         Task worker = RunWorkersAsync(stoppingToken);
         try
         {

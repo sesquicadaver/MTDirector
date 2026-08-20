@@ -502,6 +502,7 @@ public sealed class VrrpVerticalSliceAcceptanceTests
             "--Mfc:Security:RequireTls=true",
             "--Mfc:Security:MasterKeyProvider=Development",
             "--Mfc:Authentication:AllowDevelopmentAuthentication=true",
+                "--Mfc:OperationalJobs:Enabled=false",
             $"--Mfc:Database:ConnectionString={connectionString}",
         ];
 
