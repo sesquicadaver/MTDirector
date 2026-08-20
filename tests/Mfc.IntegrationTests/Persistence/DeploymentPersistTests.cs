@@ -226,15 +226,23 @@ public sealed class DeploymentPersistTests
     private static DeploymentPlan PlanFor(Node node, Device device)
     {
         IReadOnlyList<AnchorKey> keys = RequiredAnchorSet.For(NodeKind.Router, includeIpv6: false);
+        IReadOnlyList<AnchorKey> activation = DeploymentAnchorOrder.Sort(keys);
         List<AnchorTarget> oldTargets = [];
         List<AnchorTarget> newTargets = [];
-        foreach (AnchorKey key in keys)
+        foreach (AnchorKey key in activation)
         {
             oldTargets.Add(new AnchorTarget(key, BootstrapArtifact.RootChainName(key.Family, key.Chain)));
             newTargets.Add(new AnchorTarget(
                 key,
                 $"mfc{(key.Family == IpAddressFamily.IPv4 ? "4" : "6")}.{AnchorKey.ChainCode(key.Chain)}.r.0123456789abcdef"));
         }
+
+        TransitionStateValidationResult transitions = TransitionStateValidator.Validate(
+            activation,
+            oldTargets,
+            newTargets,
+            TransitionStateValidator.AllSafeEvidence(activation.Count));
+        Assert.False(transitions.HasBlockers);
 
         DeviceDeploymentPlan devicePlan = DeviceDeploymentPlan.Create(
             device.Id,
@@ -248,9 +256,9 @@ public sealed class DeploymentPersistTests
             oldTargets,
             H("new-art"),
             newTargets,
-            keys,
-            keys.Reverse().ToArray(),
-            [H("t0"), H("t1")],
+            activation,
+            activation.Reverse().ToArray(),
+            transitions.TransitionStateHashes,
             DeploymentCodes.DefaultRollbackTtl,
             [new DeploymentProbe(DeploymentProbeKind.IcmpEcho, "192.0.2.1", 500)]);
         return DeploymentPlan.Create(

@@ -36,9 +36,10 @@ internal static class DeploymentTestFactory
         bool noChanges = false)
     {
         IReadOnlyList<AnchorKey> keys = RequiredAnchorSet.For(kind, ipv6);
+        IReadOnlyList<AnchorKey> activation = DeploymentAnchorOrder.Sort(keys);
         List<AnchorTarget> oldTargets = [];
         List<AnchorTarget> newTargets = [];
-        foreach (AnchorKey key in keys)
+        foreach (AnchorKey key in activation)
         {
             oldTargets.Add(new AnchorTarget(key, BootstrapArtifact.RootChainName(key.Family, key.Chain)));
             newTargets.Add(new AnchorTarget(
@@ -46,6 +47,16 @@ internal static class DeploymentTestFactory
                 noChanges
                     ? BootstrapArtifact.RootChainName(key.Family, key.Chain)
                     : $"mfc{(key.Family == IpAddressFamily.IPv4 ? "4" : "6")}.{AnchorKey.ChainCode(key.Chain)}.r.0123456789abcdef"));
+        }
+
+        TransitionStateValidationResult transitions = TransitionStateValidator.Validate(
+            activation,
+            oldTargets,
+            newTargets,
+            TransitionStateValidator.AllSafeEvidence(activation.Count));
+        if (transitions.HasBlockers)
+        {
+            throw new InvalidOperationException(string.Join(';', transitions.Findings.Select(static f => f.Message)));
         }
 
         Hash256 oldArt = H("old-art");
@@ -62,9 +73,9 @@ internal static class DeploymentTestFactory
             oldTargets,
             newArt,
             newTargets,
-            keys,
-            keys.Reverse().ToArray(),
-            [H("t0"), H("t1")],
+            activation,
+            activation.Reverse().ToArray(),
+            transitions.TransitionStateHashes,
             DeploymentCodes.DefaultRollbackTtl,
             [new DeploymentProbe(DeploymentProbeKind.IcmpEcho, "192.0.2.1", 500)]);
     }
