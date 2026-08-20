@@ -73,7 +73,7 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | FastTrack policy validation | Done (M2-15) | `FastTrackAnalysis`; IPv4 FORWARD STATE_PRELUDE TCP/UDP; PCC/balanced/marks/VRF/IPsec/pre-anchor fail-closed; fallback flag; risk HIGH; 5-arg hash isolation |
 | Policy tests / semantic diff / risk | Done (M2-16) | `PolicyEvidenceAnalysis`; MANAGED_ONLY/NODE_EFFECTIVE; UUID diff + object impact; packet-space classes; risk floor; 6-arg hash isolation |
 | Approval / desired binding | Done (M2-17) | `PolicyApprovalGate` / `PolicyBindingGate`; immutable analysis run; bundle hash + SoD; binding ≠ deploy; exception expiry without deploy |
-| Policy authoring / review Desktop | Done (M2-18) | Contracts-only catalog editors + Validate/Submit/Approve/Bind; Deploy residual N1-06; **M2 CLOSED** |
+| Policy authoring / review Desktop | Done (M2-18) | Contracts-only catalog editors + Validate/Submit/Approve/Bind; Deploy residual M4-12; **M2 CLOSED** |
 | RouterOS filter artifact model | Done (M3-01) | `RouterOsFilterArtifact` + MFC-CJ1 canonical writer; physical_semantics/artifact_id/resource_hash; no `.id`/API commands |
 | Managed chain namespace / layout | Done (M3-02) | `ManagedChainNamespace` + `ManagedChainLayoutBuilder`; mfc4/mfc6 root+deny layout; Pipeline v1 order; no guard/physical anchors |
 | Content-addressed address lists | Done (M3-03) | `AddressListCompileSession` + `AddressPrefixEncoder`; intern by content hash; `mfc{4\|6}.a.<16-hex>`; negated universe-minus-exclusions; layout v1 limits |
@@ -93,7 +93,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Onboarding API + Desktop workflow | Done (M5-09) | `OnboardingService` RPCs + Desktop checklist/placement/recovery; plan_hash; no script source |
 | Onboarding integration acceptance / M5 CLOSED | Done (M5-10) | Topology Living Spec + testlab dual-stack/CRS; crash/watchdog/guard; no partial managed Node |
 | Deployment plan + persistence | Done (M4-01) | Immutable plan + Node/device SM + lock + journal; EF `DeploymentSchemaM401`; no campaign / writer |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at N1-06 (#99) |
+| Packet-path deploy gate | Done (N1-06) | `PACKET_PATH_*` fail-closes Router/VRRP deploy; CPU/MIXED allowed; no offload writes |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-02 (#87) |
 
 ## ADRs
 

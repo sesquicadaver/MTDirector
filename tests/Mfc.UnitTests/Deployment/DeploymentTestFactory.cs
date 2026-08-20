@@ -80,4 +80,23 @@ internal static class DeploymentTestFactory
 
         return DeploymentPlan.Create(node, H("policy"), H("analysis"), H("topology"), devicePlans, UserId.New(), now);
     }
+
+    public static Node SwitchWithDevice(out Device device)
+    {
+        Node node = Node.Create(SiteId.New(), NonEmptyName.Create("sw1"), NodeKind.Switch, DeclaredUplinkMode.None);
+        device = node.AddDevice(NonEmptyName.Create("sw1-dev"), ManagementEndpoint.Create("10.0.2.1"), DeviceRole.L2Switch);
+        return node;
+    }
+
+    public static IReadOnlyList<PacketPathPairFact> CpuPairs()
+        => [PacketPathPairFact.Create("ether1", "wan1", PacketPathKind.CpuFirewallPath)];
+
+    public static IReadOnlyList<PacketPathPairFact> HardwareOffloadedPairs()
+        => [PacketPathPairFact.Create("ether1", "wan1", PacketPathKind.HardwareOffloadedPath)];
+
+    public static IReadOnlyList<PacketPathPairFact> IndeterminatePairs()
+        => [PacketPathPairFact.Create("ether1", "wan1", PacketPathKind.Indeterminate)];
+
+    public static IReadOnlyList<PacketPathPairFact> MixedPairs()
+        => [PacketPathPairFact.Create("ether1", "wan1", PacketPathKind.MixedPath)];
 }

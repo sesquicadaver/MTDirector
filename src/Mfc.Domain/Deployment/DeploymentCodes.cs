@@ -48,4 +48,6 @@ public static class DeploymentCodes
     public const string RollbackTtlOutOfRange = "DEPLOYMENT_ROLLBACK_TTL_OUT_OF_RANGE";
 
     public const string ActivationOrderInvalid = "DEPLOYMENT_ACTIVATION_ORDER_INVALID";
+
+    public const string PacketPathBlocked = "DEPLOYMENT_PACKET_PATH_BLOCKED";
 }

@@ -271,9 +271,9 @@ public sealed class DeploymentLivingSpecTests
         Node node = DeploymentTestFactory.RouterWithDevice(out _);
         DeploymentPlan plan = DeploymentTestFactory.PlanFor(node, T0);
         DeploymentOperation first = DeploymentOperation.Create(plan, UserId.New(), T0);
-        DeploymentOperationGate.EnsureCanStart(node, plan, [], T0);
+        DeploymentOperationGate.EnsureCanStart(node, plan, [], T0, DeploymentTestFactory.CpuPairs());
         Assert.Throws<DomainInvariantException>(() =>
-            DeploymentOperationGate.EnsureCanStart(node, plan, [first], T0));
+            DeploymentOperationGate.EnsureCanStart(node, plan, [first], T0, DeploymentTestFactory.CpuPairs()));
         node.Disable();
         Assert.Throws<DomainInvariantException>(() =>
             DeploymentPlan.Create(

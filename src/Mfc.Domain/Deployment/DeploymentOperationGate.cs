@@ -1,19 +1,22 @@
 using Mfc.Domain.Inventory;
+using Mfc.Domain.Policy;
 
 namespace Mfc.Domain.Deployment;
 
-/// <summary>Pure start/transition gate (Issue Set M4-01). Campaign state is rejected by construction.</summary>
+/// <summary>Pure start/transition gate (Issue Set M4-01 / N1-06). Campaign state is rejected by construction.</summary>
 public static class DeploymentOperationGate
 {
     public static void EnsureCanStart(
         Node node,
         DeploymentPlan plan,
         IReadOnlyList<DeploymentOperation> existingForNode,
-        DateTimeOffset nowUtc)
+        DateTimeOffset nowUtc,
+        IReadOnlyList<PacketPathPairFact> packetPathPairs)
     {
         ArgumentNullException.ThrowIfNull(node);
         ArgumentNullException.ThrowIfNull(plan);
         ArgumentNullException.ThrowIfNull(existingForNode);
+        ArgumentNullException.ThrowIfNull(packetPathPairs);
         if (node.Id != plan.NodeId)
         {
             throw new DomainInvariantException(
@@ -40,5 +43,7 @@ public static class DeploymentOperationGate
             throw new DomainInvariantException(
                 $"{DeploymentCodes.NonterminalExists}: only one nonterminal deployment per Node.");
         }
+
+        DeploymentPacketPathGate.EnsureCleared(node.DeclaredKind, packetPathPairs);
     }
 }

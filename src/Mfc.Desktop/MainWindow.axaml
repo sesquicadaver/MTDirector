@@ -428,7 +428,7 @@
                     <Button Content="Approve" Command="{Binding Policies.ApproveCommand}" MinWidth="90" />
                     <Button Content="Bind" Command="{Binding Policies.BindCommand}" MinWidth="80" />
                     <Button Content="Deploy" Command="{Binding Policies.DeployCommand}" MinWidth="90"
-                            ToolTip.Tip="N1-06: deploy gated; not available from authoring (no Save and Deploy)." />
+                            ToolTip.Tip="Deploy blocked from authoring (no Save and Deploy). PACKET_PATH_* fail-closed in Domain; RPC is M4-12." />
                   </StackPanel>
                 </StackPanel>
               </Border>

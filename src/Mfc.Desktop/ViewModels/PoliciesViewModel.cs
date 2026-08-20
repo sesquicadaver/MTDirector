@@ -12,7 +12,7 @@ namespace Mfc.Desktop.ViewModels;
 public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
 {
     private const string DeployResidual =
-        "Deploy is gated by N1-06 and is not available from Desktop policy authoring (no Save and Deploy).";
+        "Deploy stays blocked from policy authoring (no Save and Deploy). Packet-path PACKET_PATH_* blockers fail-closed in Domain; deployment RPC is M4-12.";
 
     private readonly IPolicyPanelService _policies;
     private readonly IControllerConnectionService _connection;
