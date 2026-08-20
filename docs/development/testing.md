@@ -1734,6 +1734,31 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeviceStateProjectionLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
 
+## Living Specification — managed drift detection (M6-02)
+
+Issue Set M6-02 + E2E Workflow Spec §32–§34 → compare actual managed state to last committed artifact:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Baseline = last committed | `ManagedDriftDetector` | `Ac1BaselineIsLastCommittedArtifactNotDesired` |
+| AC#2 Desired ≠ actual baseline | `ManagedDriftDetector` | `Ac2DesiredPolicyIsNotUsedAsActualBaseline` |
+| AC#3 Managed rule → Critical | `DriftClassifier` | `Ac3ManagedRuleChangesAreCritical` |
+| AC#4 Anchor → Critical | `DriftClassifier` | `Ac4AnchorChangesAreCritical` |
+| AC#5 Guard / managed list → Critical | `DriftClassifier` | `Ac5GuardAndManagedListChangesAreCritical` |
+| AC#6 Dependency config → Critical | `DriftClassifier` | `Ac6DependencyConfigurationChangesAreCritical` |
+| AC#7 Observation VRRP/WAN/IF/counters ≠ config drift | `ManagedDriftDetector` | `Ac7ObservationOnlyVrrpWanInterfaceCountersAreNotConfigurationDrift` |
+| AC#8 Semantic diff stored | `DetectManagedDriftUseCase` + store | `Ac8SemanticDiffIsStored` |
+| AC#9 Drift blocks deploy | `DeploymentOperationGate` | `Ac9DriftBlocksNewDeployment` |
+| AC#10 No automatic repair | Application/Domain surface | `Ac10AutomaticRepairIsAbsent` |
+| AC#11 Restore via normal deploy only | API surface | `Ac11RestorationIsNormalDeploymentPathOnly` |
+| AC#12 Immutable + audited | `DriftEvent` + audit | `Ac12DriftEventsAreImmutableAndAudited` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ManagedDriftDetectionLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`.

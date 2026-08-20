@@ -335,6 +335,7 @@ public sealed class StartDeploymentUseCase
     private readonly IAuthorizationBoundary _auth;
     private readonly INodeStore _nodes;
     private readonly IDeploymentStore _deployments;
+    private readonly IDriftEventStore _driftEvents;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
     private readonly IClock _clock;
@@ -344,6 +345,7 @@ public sealed class StartDeploymentUseCase
         IAuthorizationBoundary auth,
         INodeStore nodes,
         IDeploymentStore deployments,
+        IDriftEventStore driftEvents,
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
         IClock clock,
@@ -352,6 +354,7 @@ public sealed class StartDeploymentUseCase
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
         ArgumentNullException.ThrowIfNull(deployments);
+        ArgumentNullException.ThrowIfNull(driftEvents);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(clock);
@@ -359,6 +362,7 @@ public sealed class StartDeploymentUseCase
         _auth = auth;
         _nodes = nodes;
         _deployments = deployments;
+        _driftEvents = driftEvents;
         _idempotency = idempotency;
         _audit = audit;
         _clock = clock;
@@ -439,7 +443,11 @@ public sealed class StartDeploymentUseCase
             IReadOnlyList<DeploymentOperation> existing = await _deployments
                 .ListNonterminalByNodeAsync(node.Id, cancellationToken)
                 .ConfigureAwait(false);
-            DeploymentOperationGate.EnsureCanStart(node, plan, existing, now, command.PacketPathPairs);
+            bool hasBlockingCriticalDrift = await _driftEvents
+                .HasBlockingCriticalDriftAsync(node.Id, cancellationToken)
+                .ConfigureAwait(false);
+            DeploymentOperationGate.EnsureCanStart(
+                node, plan, existing, now, command.PacketPathPairs, hasBlockingCriticalDrift);
             DeploymentOperation operation = DeploymentOperation.Create(
                 plan, node, new UserId(ActorKey.FromActor(command.Actor)), now);
             await _deployments.AddOperationAsync(operation, cancellationToken).ConfigureAwait(false);

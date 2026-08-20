@@ -31,6 +31,8 @@ public sealed class MfcDbContext : DbContext
 
     public DbSet<DeviceHashStateEntity> DeviceHashStates => Set<DeviceHashStateEntity>();
 
+    public DbSet<DriftEventEntity> DriftEvents => Set<DriftEventEntity>();
+
     public DbSet<DeviceConnectionProfileEntity> DeviceConnectionProfiles => Set<DeviceConnectionProfileEntity>();
 
     public DbSet<CaptureOperationEntity> CaptureOperations => Set<CaptureOperationEntity>();
@@ -114,6 +116,16 @@ public sealed class MfcDbContext : DbContext
             {
                 throw new InvalidOperationException(
                     "audit_events is append-only: update and delete are not allowed through the application DbContext.");
+            }
+        }
+
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<DriftEventEntity> entry
+                 in ChangeTracker.Entries<DriftEventEntity>())
+        {
+            if (entry.State is EntityState.Modified or EntityState.Deleted)
+            {
+                throw new InvalidOperationException(
+                    "drift_events is append-only: update and delete are not allowed through the application DbContext.");
             }
         }
 

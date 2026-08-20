@@ -9,6 +9,8 @@ using Mfc.Domain.Canonicalization;
 using Mfc.Domain.Capabilities;
 using Mfc.Domain.Deployment;
 using Mfc.Domain.Deployment.Primitives;
+using Mfc.Domain.Drift;
+using Mfc.Domain.Drift.Primitives;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
@@ -1218,5 +1220,62 @@ internal sealed class FakeDeviceHashStateStore : IDeviceHashStateStore
 
         return Task.FromResult<IReadOnlyList<DeviceHashState>>(
             rows.OrderBy(static s => s.DeviceId.Value).ToArray());
+    }
+}
+
+internal sealed class FakeDriftEventStore : IDriftEventStore
+{
+    private readonly Dictionary<Guid, DriftEvent> _byId = [];
+
+    public Task AppendAsync(DriftEvent driftEvent, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(driftEvent);
+        _byId[driftEvent.Id.Value] = driftEvent;
+        return Task.CompletedTask;
+    }
+
+    public Task<DriftEvent?> GetAsync(DriftEventId id, CancellationToken cancellationToken = default)
+        => Task.FromResult(_byId.TryGetValue(id.Value, out DriftEvent? e) ? e : null);
+
+    public Task<IReadOnlyList<DriftEvent>> ListByDeviceAsync(
+        DeviceId deviceId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<DriftEvent>>(
+            _byId.Values
+                .Where(e => e.DeviceId == deviceId)
+                .OrderByDescending(e => e.CreatedAtUtc)
+                .ThenByDescending(e => e.Id.Value)
+                .ToArray());
+
+    public Task<IReadOnlyList<DriftEvent>> ListByNodeAsync(
+        NodeId nodeId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<DriftEvent>>(
+            _byId.Values
+                .Where(e => e.NodeId == nodeId)
+                .OrderByDescending(e => e.CreatedAtUtc)
+                .ThenByDescending(e => e.Id.Value)
+                .ToArray());
+
+    public Task<bool> HasBlockingCriticalDriftAsync(
+        NodeId nodeId,
+        CancellationToken cancellationToken = default)
+    {
+        IEnumerable<IGrouping<Guid, DriftEvent>> byDevice = _byId.Values
+            .Where(e => e.NodeId == nodeId)
+            .GroupBy(e => e.DeviceId.Value);
+        foreach (IGrouping<Guid, DriftEvent> group in byDevice)
+        {
+            DriftEvent latest = group
+                .OrderByDescending(e => e.CreatedAtUtc)
+                .ThenByDescending(e => e.Id.Value)
+                .First();
+            if (latest.BlocksDeployment)
+            {
+                return Task.FromResult(true);
+            }
+        }
+
+        return Task.FromResult(false);
     }
 }
