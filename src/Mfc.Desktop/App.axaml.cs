@@ -41,8 +41,24 @@ public sealed class App : Application, IAsyncDisposable
         OnboardingViewModel onboardingVm = new(onboardingClient, connection, inventoryVm);
         GrpcDeploymentServiceClient deploymentClient = new(connection, options);
         DeploymentViewModel deploymentVm = new(deploymentClient, connection, inventoryVm);
+        NodeDetailViewModel nodeVm = new(inventoryVm, zonesVm, onboardingVm);
+        GrpcDriftServiceClient driftClient = new(connection, options);
+        DriftViewModel driftVm = new(driftClient, connection, inventoryVm);
+        GrpcAuditServiceClient auditClient = new(connection, options);
+        AuditViewModel auditVm = new(auditClient, connection);
         _shell = new ShellViewModel(
-            connection, options, inventoryVm, snapshotVm, diffVm, zonesVm, policiesVm, onboardingVm, deploymentVm);
+            connection,
+            options,
+            inventoryVm,
+            nodeVm,
+            snapshotVm,
+            diffVm,
+            zonesVm,
+            policiesVm,
+            onboardingVm,
+            deploymentVm,
+            driftVm,
+            auditVm);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

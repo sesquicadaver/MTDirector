@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package mfc.v1;
+
+option csharp_namespace = "Mfc.Contracts.Mfc.V1";
+
+import "google/protobuf/timestamp.proto";
+import "mfc/v1/common.proto";
+
+// AuditService — Issue Set M6-04 / E2E §43. Read-only audit event list; no mutate RPCs.
+service AuditService {
+  rpc ListAuditEvents(ListAuditEventsRequest) returns (ListAuditEventsResponse);
+}
+
+message AuditEvent {
+  Uuid id = 1;
+  google.protobuf.Timestamp occurred_at = 2;
+  string actor = 3;
+  string action = 4;
+  string payload_json = 5;
+}
+
+message ListAuditEventsRequest {
+  // Bounded newest-first page size (server clamps; default applied when unset/zero).
+  uint32 page_size = 1;
+}
+
+message ListAuditEventsResponse {
+  repeated AuditEvent events = 1;
+}

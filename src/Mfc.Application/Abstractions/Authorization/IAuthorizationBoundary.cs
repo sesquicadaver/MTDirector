@@ -54,4 +54,7 @@ public static class ApplicationPermissions
 
     /// <summary>Create plans and start/rollback deployment (M4-12).</summary>
     public const string DeploymentWrite = "deployment.write";
+
+    /// <summary>Read append-only audit events (M6-04). No mutate path.</summary>
+    public const string AuditRead = "audit.read";
 }

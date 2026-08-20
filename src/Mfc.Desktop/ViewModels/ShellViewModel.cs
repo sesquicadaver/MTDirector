@@ -6,7 +6,7 @@ using Mfc.Desktop.Services;
 
 namespace Mfc.Desktop.ViewModels;
 
-/// <summary>Shell view-model: connection, inventory, snapshot, diff, zones, policies, onboarding, and deployment.</summary>
+/// <summary>Shell view-model: connection + seven MVP modules (M6-04).</summary>
 public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
 {
     private readonly IControllerConnectionService _connection;
@@ -16,27 +16,54 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
         IControllerConnectionService connection,
         DesktopOptions options,
         InventoryTreeViewModel inventory,
+        NodeDetailViewModel node,
         SnapshotViewerViewModel snapshot,
         SnapshotDiffViewModel diff,
         ZonesViewModel zones,
         PoliciesViewModel policies,
         OnboardingViewModel onboarding,
-        DeploymentViewModel deployment)
+        DeploymentViewModel deployment,
+        DriftViewModel drift,
+        AuditViewModel audit)
     {
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _options = options ?? throw new ArgumentNullException(nameof(options));
         Inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
+        Node = node ?? throw new ArgumentNullException(nameof(node));
         Snapshot = snapshot ?? throw new ArgumentNullException(nameof(snapshot));
         Diff = diff ?? throw new ArgumentNullException(nameof(diff));
         Zones = zones ?? throw new ArgumentNullException(nameof(zones));
         Policies = policies ?? throw new ArgumentNullException(nameof(policies));
         Onboarding = onboarding ?? throw new ArgumentNullException(nameof(onboarding));
         Deployment = deployment ?? throw new ArgumentNullException(nameof(deployment));
+        Drift = drift ?? throw new ArgumentNullException(nameof(drift));
+        Audit = audit ?? throw new ArgumentNullException(nameof(audit));
+        Modules =
+        [
+            ShellNavigationModule.Inventory,
+            ShellNavigationModule.Node,
+            ShellNavigationModule.Snapshots,
+            ShellNavigationModule.Policies,
+            ShellNavigationModule.Operations,
+            ShellNavigationModule.Drift,
+            ShellNavigationModule.Audit,
+        ];
+        SelectedModule = ShellNavigationModule.Inventory;
         _connection.StateChanged += OnConnectionStateChanged;
         SyncFromService();
     }
 
+    /// <summary>Exact seven MVP module names in navigation order.</summary>
+    public IReadOnlyList<ShellNavigationModule> Modules { get; }
+
+    /// <summary>Documented keyboard shortcuts for Living Spec AC#12.</summary>
+    public string HotKeysText { get; } =
+        "Ctrl+1 Inventory · Ctrl+2 Node · Ctrl+3 Snapshots · Ctrl+4 Policies · " +
+        "Ctrl+5 Operations · Ctrl+6 Drift · Ctrl+7 Audit · F5 Refresh inventory";
+
     public InventoryTreeViewModel Inventory { get; }
+
+    public NodeDetailViewModel Node { get; }
 
     public SnapshotViewerViewModel Snapshot { get; }
 
@@ -50,9 +77,27 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
 
     public DeploymentViewModel Deployment { get; }
 
+    public DriftViewModel Drift { get; }
+
+    public AuditViewModel Audit { get; }
+
     public string ControllerEndpoint => _options.ControllerEndpoint;
 
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorText);
+
+    public bool IsInventorySelected => SelectedModule == ShellNavigationModule.Inventory;
+
+    public bool IsNodeSelected => SelectedModule == ShellNavigationModule.Node;
+
+    public bool IsSnapshotsSelected => SelectedModule == ShellNavigationModule.Snapshots;
+
+    public bool IsPoliciesSelected => SelectedModule == ShellNavigationModule.Policies;
+
+    public bool IsOperationsSelected => SelectedModule == ShellNavigationModule.Operations;
+
+    public bool IsDriftSelected => SelectedModule == ShellNavigationModule.Drift;
+
+    public bool IsAuditSelected => SelectedModule == ShellNavigationModule.Audit;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasError))]
@@ -67,6 +112,19 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
 
     [ObservableProperty]
     private bool _isBusy;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsInventorySelected))]
+    [NotifyPropertyChangedFor(nameof(IsNodeSelected))]
+    [NotifyPropertyChangedFor(nameof(IsSnapshotsSelected))]
+    [NotifyPropertyChangedFor(nameof(IsPoliciesSelected))]
+    [NotifyPropertyChangedFor(nameof(IsOperationsSelected))]
+    [NotifyPropertyChangedFor(nameof(IsDriftSelected))]
+    [NotifyPropertyChangedFor(nameof(IsAuditSelected))]
+    private ShellNavigationModule _selectedModule;
+
+    [RelayCommand]
+    private void SelectModule(ShellNavigationModule module) => SelectedModule = module;
 
     [RelayCommand(CanExecute = nameof(CanConnect))]
     private async Task ConnectAsync()
@@ -146,12 +204,15 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         _connection.StateChanged -= OnConnectionStateChanged;
+        Audit.Dispose();
+        Drift.Dispose();
         Policies.Dispose();
         Deployment.Dispose();
         Onboarding.Dispose();
         Zones.Dispose();
         Diff.Dispose();
         Snapshot.Dispose();
+        Node.Dispose();
         Inventory.Dispose();
         await _connection.DisposeAsync().ConfigureAwait(false);
     }

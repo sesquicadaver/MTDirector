@@ -1782,6 +1782,31 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~BoundedOperationalJobsLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
 
+## Living Specification — Desktop MVP workflows (M6-04)
+
+Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop modules (Inventory, Node, Snapshots, Policies, Operations, Drift, Audit):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Єдина навігаційна модель | `ShellNavigationModule` + `ShellViewModel.SelectedModule` | `Ac1SingleNavigationModelExposesExactlySevenModules` |
+| AC#2 Inventory workflow status | `InventoryNodeViewModel.WorkflowStatusText` + MainWindow | `Ac2InventorySurfacesWorkflowStatusVisibly` |
+| AC#3 Node topology/zones/onboarding/readiness | `NodeDetailViewModel` | `Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness` |
+| AC#4 Snapshot configuration/observations | `SnapshotViewerViewModel` | `Ac4SnapshotViewShowsConfigurationAndObservations` |
+| AC#5 Policy authoring/review/binding | `PoliciesViewModel` | `Ac5PolicyViewSupportsAuthoringReviewAndBinding` |
+| AC#6 Operations onboarding/deploy/recovery | Onboarding + Deployment VMs | `Ac6OperationsViewSupportsOnboardingDeploymentAndRecovery` |
+| AC#7 Drift без automatic fix | `DriftViewModel` + `DriftService` | `Ac7DriftViewHasNoAutomaticFix` |
+| AC#8 Audit read-only | `AuditViewModel` + `AuditService` | `Ac8AuditIsReadOnly` |
+| AC#9 UI thread без remote I/O | Drift/Audit/Shell `Task.Run` | `Ac9UiThreadNeverPerformsRemoteIo` |
+| AC#10 Cached state позначений | Inventory Cached badge | `Ac10CachedStateIsClearlyMarked` |
+| AC#11 Desktop без RouterOS/SQL | Contracts-only refs | `Ac11DesktopHasNoRouterOsOrSqlDependencies` |
+| AC#12 Keyboard + virtualization | KeyBindings + VirtualizingStackPanel | `Ac12KeyboardNavigationAndLargeListVirtualization` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopMvpWorkflowsLivingSpecTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DriftProtoContractTests|FullyQualifiedName~AuditProtoContractTests"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`.
