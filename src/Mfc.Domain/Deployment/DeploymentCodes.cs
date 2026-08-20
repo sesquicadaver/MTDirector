@@ -79,5 +79,17 @@ public static class DeploymentCodes
 
     public const string WatchdogNotArmed = "WATCHDOG_NOT_ARMED";
 
+    public const string TransitionStateUnsafe = "TRANSITION_STATE_UNSAFE";
+
+    public const string AnchorPreconditionFailed = "ANCHOR_PRECONDITION_FAILED";
+
+    public const string AnchorSetFailed = "ANCHOR_SET_FAILED";
+
+    public const string AnchorReadbackFailed = "ANCHOR_READBACK_FAILED";
+
+    public const string AnchorInvalid = "ANCHOR_INVALID";
+
+    public const string RecoveryRequired = "RECOVERY_REQUIRED";
+
     public const string SeverityBlocker = "BLOCKER";
 }

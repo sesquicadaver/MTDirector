@@ -16,6 +16,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Address-list create-or-verify staging (M4-03): Domain `AddressListCreateOrVerify` (reuse / subset-add / collision; dynamic+unmanaged blocks; content-hash verify; compile limits) + Application `StageAddressListUseCase` (read-before-add, no blind retry, no AL set/remove). Living Spec `AddressListStagingLivingSpecTests` AC 1–10.
 - Detached chain staging (M4-04): Domain `FilterChainCreateOrVerify` (deny→root order, exact/prefix recovery, unmanaged/disabled/invalid/active-root gates, `HashChainContent`) + Application `StageDetachedChainsUseCase` (`ArtifactStaged` only on full success). Living Spec `DetachedChainStagingLivingSpecTests` AC 1–11.
 - Production rollback watchdog (M4-05): Domain `DeploymentWatchdogScript`/`Planner` (fixed compare-before-restore template, `mfc-rb-*` names, TTL/margin, VRRP all-armed gate) + `DeploymentWatchdogWriter` (arm/disarm/cleanup via deployment session). Living Spec `DeploymentWatchdogLivingSpecTests` AC 1–12.
+- Transition-state validation and anchor activation (M4-06): Domain `TransitionStateValidator` / `DeploymentAnchorOrder` / `AnchorActivationPlanner` + Application `PlanTransitionStatesUseCase` / `ActivateAnchorsUseCase` (re-read before set, no blind retry, watchdog margin, intent+verified journal). Living Spec `AnchorActivationLivingSpecTests` AC 1–11.
 
 ### Security
 
@@ -32,6 +33,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP §2.1 progress table synced after M4-06 (91/136 closed; M4 safe deploy 6/13); NEXT = M4-07 (#92).
+- ROADMAP: M4-06 transition validation + anchor activation DONE; NEXT = M4-07 (#92); counters 91/109 MVP done (18 remaining).
 - ROADMAP §2.1 progress table synced after M4-05 (90/136 closed; M4 safe deploy 5/13); NEXT = M4-06 (#91).
 - ROADMAP: M4-05 production rollback watchdog DONE; NEXT = M4-06 (#91); counters 90/109 MVP done (19 remaining).
 - ROADMAP §2.1 progress table synced after M4-04 (89/136 closed; M4 safe deploy 4/13); NEXT = M4-05 (#90).

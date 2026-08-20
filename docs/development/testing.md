@@ -1320,7 +1320,7 @@ Safe Deployment Spec §9–§16 + Issue Set M4-01 → Domain + EF (no RouterOS w
 | AC#12 Plan hash preconditions | `DeploymentPlanHasher` | `Ac12PlanHashIncludesNormativePreconditions` |
 | Persistence schema `m4-01` | migration `DeploymentSchemaM401` | `MigrateCreatesDeploymentTablesAndSchemaMetadata` |
 
-**Residuals:** Activate / probes are M4-06+. Packet-path deploy gate is N1-06 (DONE). Restricted writer is M4-02 (DONE). Address-list staging is M4-03 (DONE). Detached chain staging is M4-04 (DONE). Watchdog is M4-05 (DONE).
+**Residuals:** Probes are M4-07+. Packet-path deploy gate is N1-06 (DONE). Restricted writer is M4-02 (DONE). Address-list staging is M4-03 (DONE). Detached chain staging is M4-04 (DONE). Watchdog is M4-05 (DONE). Anchor activation is M4-06 (DONE).
 
 Filter:
 ```bash
@@ -1399,7 +1399,7 @@ Safe Deployment Spec §18 + Compiler Spec §26–§27 + Issue Set M4-03 → Doma
 | AC#9 No in-place edit | no AL set/remove | `Ac9ActiveListsAreNotEditedInPlace` |
 | AC#10 Record/payload limits | `AddressListCompileLimits` | `Ac10RecordAndPayloadLimitsAreApplied` |
 
-**Residuals:** Watchdog / activate / gRPC Deploy are M4-05+. Detached chain staging is M4-04 (DONE).
+**Residuals:** Probes / gRPC Deploy are M4-07+. Detached chain staging is M4-04 (DONE). Watchdog is M4-05 (DONE). Anchor activation is M4-06 (DONE).
 
 Filter:
 ```bash
@@ -1425,7 +1425,7 @@ Safe Deployment Spec §17 / §19 + Compiler Spec §26 + Issue Set M4-04 → Doma
 | AC#10 Partial ≠ STAGED | `ArtifactStaged=false` | `Ac10PartialArtifactDoesNotReceiveStaged` |
 | AC#11 Reconnect create-or-verify | read-before-add | `Ac11StagingReconnectRecoversWithCreateOrVerify` |
 
-**Residuals:** Activate / probes / gRPC Deploy are M4-06+. Watchdog is M4-05 (DONE).
+**Residuals:** Probes / gRPC Deploy are M4-07+. Watchdog is M4-05 (DONE). Anchor activation is M4-06 (DONE).
 
 Filter:
 ```bash
@@ -1452,12 +1452,38 @@ Safe Deployment Spec §22–§27 + Issue Set M4-05 → Domain planner/script + R
 | AC#11 Disable read-back | `DisarmWatchdogAsync` | `Ac11SchedulerDisablingHasReadBack` |
 | AC#12 Cleanup idempotent | `CleanupWatchdogAsync` | `Ac12CleanupIsIdempotent` |
 
-**Residuals:** Anchor activation / probes / gRPC Deploy are M4-06+.
+**Residuals:** Probes / gRPC Deploy are M4-07+. Anchor activation is M4-06 (DONE).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentWatchdogLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — transition validation and anchor activation (M4-06)
+
+Safe Deployment Spec §28–§31 + Issue Set M4-06 → Domain transition/order/decision + Application activation over M4-02 session:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 All intermediate old/new states | `TransitionStateValidator` | `Ac1AllIntermediateOldNewCombinationsAreAnalyzed` |
+| AC#2 Unsafe state blocks plan | `TRANSITION_STATE_UNSAFE` | `Ac2UnsafeStateBlocksPlan` |
+| AC#3 Management-critical last | `DeploymentAnchorOrder` | `Ac3ManagementCriticalAnchorsAreActivatedLast` |
+| AC#4 Re-read before each set | `ActivateAnchorsUseCase` | `Ac4AnchorIsReReadBeforeEverySet` |
+| AC#5 Target = old or new | `AnchorActivationPlanner` | `Ac5CurrentTargetMustEqualExpectedOldOrDesiredNew` |
+| AC#6 Unknown target → recovery | `RECOVERY_REQUIRED` | `Ac6UnknownTargetStartsRecovery` |
+| AC#7 Unknown set verified by read | Spec §31 classify | `Ac7UnknownSetResultIsVerifiedByRead` |
+| AC#8 No blind set retry | controlled retry only if old | `Ac8BlindSetRetryIsAbsent` |
+| AC#9 Sequential writes per Device | journal order | `Ac9WritesPerDeviceAreSequential` |
+| AC#10 Watchdog margin after each | `MinCommitMargin` | `Ac10WatchdogMarginIsCheckedAfterEachAnchor` |
+| AC#11 Journal intent + verified | `AnchorActivationJournalEntry` | `Ac11StepJournalRecordsIntentAndVerifiedResult` |
+
+**Residuals:** Probes / post-activation verification / gRPC Deploy are M4-07+.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~AnchorActivationLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

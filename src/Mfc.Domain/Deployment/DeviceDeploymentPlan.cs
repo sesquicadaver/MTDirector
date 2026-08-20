@@ -196,6 +196,12 @@ public sealed class DeviceDeploymentPlan
                 $"{DeploymentCodes.ActivationOrderInvalid}: rollback order must reverse activation order.");
         }
 
+        if (!DeploymentAnchorOrder.IsManagementCriticalLast(anchorActivationOrder))
+        {
+            throw new DomainInvariantException(
+                $"{DeploymentCodes.ActivationOrderInvalid}: management-critical anchors must be last.");
+        }
+
         HashSet<string> activation = anchorActivationOrder.Select(static k => k.Marker).ToHashSet(StringComparer.Ordinal);
         if (activation.Count != anchorActivationOrder.Count)
         {
@@ -204,9 +210,10 @@ public sealed class DeviceDeploymentPlan
 
         EnsureTargetsCover(oldAnchorTargets, activation, "old");
         EnsureTargetsCover(newAnchorTargets, activation, "new");
-        if (transitionStateHashes.Count == 0)
+        if (transitionStateHashes.Count != anchorActivationOrder.Count + 1)
         {
-            throw new DomainInvariantException("transition_state_hashes must be non-empty.");
+            throw new DomainInvariantException(
+                $"{DeploymentCodes.TransitionStateUnsafe}: transition_state_hashes must cover states 0..N.");
         }
 
         return new DeviceDeploymentPlan(
