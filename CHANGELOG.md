@@ -18,6 +18,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Production rollback watchdog (M4-05): Domain `DeploymentWatchdogScript`/`Planner` (fixed compare-before-restore template, `mfc-rb-*` names, TTL/margin, VRRP all-armed gate) + `DeploymentWatchdogWriter` (arm/disarm/cleanup via deployment session). Living Spec `DeploymentWatchdogLivingSpecTests` AC 1–12.
 - Transition-state validation and anchor activation (M4-06): Domain `TransitionStateValidator` / `DeploymentAnchorOrder` / `AnchorActivationPlanner` + Application `PlanTransitionStatesUseCase` / `ActivateAnchorsUseCase` (re-read before set, no blind retry, watchdog margin, intent+verified journal). Living Spec `AnchorActivationLivingSpecTests` AC 1–11.
 - Deployment probes and post-activation verification (M4-07): Domain `PostActivationVerification` + typed `DeploymentProbe` (API_SSL / ROUTER_PING only, literal IP) + Application `VerifyDeploymentActivationUseCase` / `IDeploymentFreshSessionFactory` (fresh session, hash/anchors, critical probes → rollback, watchdog readiness). Living Spec `DeploymentVerificationLivingSpecTests` AC 1–11.
+- Standalone Node deployment coordinator (M4-08): Domain `StandaloneDeploymentPolicy` + Application `ExecuteStandaloneDeploymentUseCase` (PRECHECK→STAGE→ARM→ACTIVATE→VERIFY→DISARM→COMMIT; NO_CHANGES without writes; verify-fail → anchor rollback; commit snapshot). Living Spec `StandaloneDeploymentLivingSpecTests` AC 1–10.
 
 ### Security
 
@@ -34,6 +35,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP §2.1 progress table synced after M4-08 (93/136 closed; M4 safe deploy 8/13); NEXT = M4-09 (#94).
+- ROADMAP: M4-08 standalone Node coordinator DONE; NEXT = M4-09 (#94); counters 93/109 MVP done (16 remaining).
 - ROADMAP §2.1 progress table synced after M4-07 (92/136 closed; M4 safe deploy 7/13); NEXT = M4-08 (#93).
 - ROADMAP: M4-07 probes + post-activation verification DONE; NEXT = M4-08 (#93); counters 92/109 MVP done (17 remaining).
 - ROADMAP §2.1 progress table synced after M4-06 (91/136 closed; M4 safe deploy 6/13); NEXT = M4-07 (#92).
