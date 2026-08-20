@@ -14,6 +14,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Packet-path deploy gate (N1-06): `DeploymentPacketPathGate` fail-closes Router/VRRP start on `PACKET_PATH_BYPASSES_IP_FIREWALL` / `PACKET_PATH_NOT_PROVEN` (empty pairs = not proven); CPU/MIXED allowed; Switch does not require FORWARD proof; PRECHECKING → BLOCKED without STAGING. Canonical `DeploymentPacketPathPrecheck`. Controller still does not disable L2/L3 offload. Desktop Deploy remains non-executable (no Save and Deploy; RPC is M4-12).
 - Restricted deployment writer (M4-02): Application `IRouterOsDeploymentSession` + typed writes; `Mfc.RouterOs.Deployment` allowlisted paths (`DeploymentWritePaths`) and `RouterOsDeploymentSession` (AL/filter add, anchor jump-target set, script/scheduler, bounded ping, `ReadManagedStateAsync`); no `Mfc.RouterOs.Write`, no filter remove/move, no AL set/remove. Living Spec `DeploymentWriterLivingSpecTests` AC 1–12.
 - Address-list create-or-verify staging (M4-03): Domain `AddressListCreateOrVerify` (reuse / subset-add / collision; dynamic+unmanaged blocks; content-hash verify; compile limits) + Application `StageAddressListUseCase` (read-before-add, no blind retry, no AL set/remove). Living Spec `AddressListStagingLivingSpecTests` AC 1–10.
+- Detached chain staging (M4-04): Domain `FilterChainCreateOrVerify` (deny→root order, exact/prefix recovery, unmanaged/disabled/invalid/active-root gates, `HashChainContent`) + Application `StageDetachedChainsUseCase` (`ArtifactStaged` only on full success). Living Spec `DetachedChainStagingLivingSpecTests` AC 1–11.
 
 ### Security
 
@@ -30,6 +31,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP §2.1 progress table synced after M4-04 (89/136 closed; M4 safe deploy 4/13); NEXT = M4-05 (#90).
+- ROADMAP: M4-04 detached chain staging DONE; NEXT = M4-05 (#90); counters 89/109 MVP done (20 remaining).
 - ROADMAP §2.1 progress table synced after M4-03 (88/136 closed; M4 safe deploy 3/13); NEXT = M4-04 (#89).
 - ROADMAP: M4-03 address-list create-or-verify staging DONE; NEXT = M4-04 (#89); counters 88/109 MVP done (21 remaining).
 - ROADMAP §2.1 progress table synced after M4-02 (87/136 closed; M4 safe deploy 2/13); NEXT = M4-03 (#88).

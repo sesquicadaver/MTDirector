@@ -19,6 +19,8 @@ public static class RouterOsFilterArtifactIdentity
 
     public const string AddressListContentPrefix = "mfc.filter.address_list.v1";
 
+    public const string ChainContentPrefix = "mfc.filter.chain.v1";
+
     public const int ArtifactIdHexLength = 16;
 
     private static readonly HashSet<string> ForbiddenFieldNames = new(StringComparer.OrdinalIgnoreCase)
@@ -140,6 +142,80 @@ public static class RouterOsFilterArtifactIdentity
             }),
         ]);
         return Hash256.Create(SHA256.HashData(writer.ToUtf8Bytes()));
+    }
+
+    /// <summary>
+    /// Ordered chain content hash for create-or-verify (Safe Deployment Spec §19 step 8).
+    /// Rule order is significant; address-list content hash remains unordered.
+    /// </summary>
+    public static Hash256 HashChainContent(
+        IpAddressFamily family,
+        FilterBuiltInContext builtInContext,
+        FilterChainArtifactRole role,
+        string name,
+        IReadOnlyList<FilterRuleArtifact> rules)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentNullException.ThrowIfNull(rules);
+        CanonicalJsonWriter writer = new();
+        writer.WriteObject(
+        [
+            ("schema", w => w.WriteString(ChainContentPrefix)),
+            ("family", w => w.WriteString(FormatFamily(family))),
+            ("builtInContext", w => w.WriteString(FormatBuiltIn(builtInContext))),
+            ("name", w => w.WriteString(name.Trim())),
+            ("role", w => w.WriteString(FormatRole(role))),
+            ("rules", w =>
+            {
+                w.WriteArrayStart();
+                for (int i = 0; i < rules.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        w.WriteComma();
+                    }
+
+                    FilterRuleArtifact rule = rules[i];
+                    List<(string Key, Action<CanonicalJsonWriter> WriteValue)> properties =
+                    [
+                        ("ordinal", x => x.WriteNumber(rule.Ordinal)),
+                    ];
+                    properties.Add(("matchers", x => WriteSortedMap(x, rule.Matchers)));
+                    properties.Add(("action", x => x.WriteString(rule.Action)));
+                    properties.Add(("actionParameters", x => WriteSortedMap(x, rule.ActionParameters)));
+                    properties.Add(("log", x => x.WriteBoolean(rule.Log)));
+                    if (!string.IsNullOrWhiteSpace(rule.LogPrefix))
+                    {
+                        properties.Add(("logPrefix", x => x.WriteString(rule.LogPrefix)));
+                    }
+
+                    properties.Add(("comment", x => x.WriteString(rule.Comment)));
+                    w.WriteObject(properties);
+                }
+
+                w.WriteArrayEnd();
+            }),
+        ]);
+        return Hash256.Create(SHA256.HashData(writer.ToUtf8Bytes()));
+    }
+
+    private static void WriteSortedMap(CanonicalJsonWriter writer, ImmutableSortedDictionary<string, string> map)
+    {
+        writer.WriteObjectStart();
+        bool first = true;
+        foreach ((string key, string value) in map)
+        {
+            if (!first)
+            {
+                writer.WriteComma();
+            }
+
+            first = false;
+            writer.WritePropertyName(key);
+            writer.WriteString(value);
+        }
+
+        writer.WriteObjectEnd();
     }
 
     public static void EnsureNotForbiddenField(string fieldName, string? value)
