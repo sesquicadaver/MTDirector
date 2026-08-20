@@ -216,6 +216,203 @@ public sealed class AnchorActivationLivingSpecTests
         Assert.Contains(result.Journal, static e => e.Code == "ANCHOR_SET_VERIFIED" || e.Code == "ANCHOR_ALREADY_APPLIED");
     }
 
+    [Fact]
+    public async Task MissingAnchorFailsPrecondition()
+    {
+        (DeviceDeploymentPlan plan, RecordingChannel channel, RouterOsDeploymentSession session) = SeededSession();
+        channel.ClearFilters();
+        AnchorActivationResult result = await ActivateAnchorsUseCase.ExecuteAsync(
+            plan,
+            session,
+            static () => TimeSpan.FromSeconds(120));
+        Assert.False(result.Succeeded);
+        Assert.Equal(DeploymentCodes.AnchorPreconditionFailed, result.Code);
+    }
+
+    [Fact]
+    public async Task DuplicateAnchorMarkerRequiresRecovery()
+    {
+        (DeviceDeploymentPlan plan, RecordingChannel channel, RouterOsDeploymentSession session) = SeededSession();
+        AnchorKey first = plan.AnchorActivationOrder[0];
+        Dictionary<string, string> clone = new(channel.FindAnchor(first)!, StringComparer.Ordinal)
+        {
+            [".id"] = "*99",
+        };
+        channel.Seed(DeploymentReadSurface.Ipv4Filter, clone);
+        AnchorActivationResult result = await ActivateAnchorsUseCase.ExecuteAsync(
+            plan,
+            session,
+            static () => TimeSpan.FromSeconds(120));
+        Assert.False(result.Succeeded);
+        Assert.True(result.RecoveryRequired);
+        Assert.Equal(DeploymentCodes.AnchorInvalid, result.Code);
+    }
+
+    [Fact]
+    public async Task EmptyJumpTargetIsPreconditionFailure()
+    {
+        (DeviceDeploymentPlan plan, RecordingChannel channel, RouterOsDeploymentSession session) = SeededSession();
+        channel.FindAnchor(plan.AnchorActivationOrder[0])!["jump-target"] = " ";
+        AnchorActivationResult result = await ActivateAnchorsUseCase.ExecuteAsync(
+            plan,
+            session,
+            static () => TimeSpan.FromSeconds(120));
+        Assert.False(result.Succeeded);
+        Assert.Equal(DeploymentCodes.AnchorPreconditionFailed, result.Code);
+    }
+
+    [Fact]
+    public async Task FailedSetThenMissingAnchorDoesNotBlindRetry()
+    {
+        (DeviceDeploymentPlan plan, RecordingChannel channel, RouterOsDeploymentSession session) = SeededSession();
+        channel.FailNextFilterSet = true;
+        channel.OnFilterSet = (_, _) => channel.ClearFilters();
+        AnchorActivationResult result = await ActivateAnchorsUseCase.ExecuteAsync(
+            plan,
+            session,
+            static () => TimeSpan.FromSeconds(120));
+        Assert.False(result.Succeeded);
+        Assert.Equal(DeploymentCodes.AnchorPreconditionFailed, result.Code);
+        Assert.Equal(1, channel.Sent.Count(static s => DeploymentWritePaths.IsFilterSet(s.Path)));
+    }
+
+    [Fact]
+    public async Task FailedSetWithThirdTargetRequiresRecoveryWithoutRetry()
+    {
+        (DeviceDeploymentPlan plan, RecordingChannel channel, RouterOsDeploymentSession session) = SeededSession();
+        channel.FailNextFilterSet = true;
+        channel.OnFilterSet = (id, _) =>
+        {
+            channel.Ipv4Filters().Single(r => r[".id"] == id)["jump-target"] = "mfc4.f.r.third";
+        };
+        AnchorActivationResult result = await ActivateAnchorsUseCase.ExecuteAsync(
+            plan,
+            session,
+            static () => TimeSpan.FromSeconds(120));
+        Assert.False(result.Succeeded);
+        Assert.True(result.RecoveryRequired);
+        Assert.Equal(DeploymentCodes.RecoveryRequired, result.Code);
+        Assert.Equal(1, channel.Sent.Count(static s => DeploymentWritePaths.IsFilterSet(s.Path)));
+    }
+
+    [Fact]
+    public async Task ControlledRetryFailureWithThirdTargetRequiresRecovery()
+    {
+        (DeviceDeploymentPlan plan, RecordingChannel channel, RouterOsDeploymentSession session) = SeededSession();
+        int sets = 0;
+        channel.OnFilterSet = (id, _) =>
+        {
+            sets++;
+            if (sets >= 2)
+            {
+                channel.Ipv4Filters().Single(r => r[".id"] == id)["jump-target"] = "mfc4.f.r.third";
+                throw new InvalidOperationException("simulated retry loss");
+            }
+        };
+        channel.FailFilterSetCount = 1;
+        AnchorActivationResult result = await ActivateAnchorsUseCase.ExecuteAsync(
+            plan,
+            session,
+            static () => TimeSpan.FromSeconds(120));
+        Assert.False(result.Succeeded);
+        Assert.True(result.RecoveryRequired);
+        Assert.Equal(DeploymentCodes.RecoveryRequired, result.Code);
+        Assert.Equal(2, channel.Sent.Count(static s => DeploymentWritePaths.IsFilterSet(s.Path)));
+    }
+
+    [Fact]
+    public async Task ControlledRetryFailureWhileStillOldIsSetFailed()
+    {
+        (DeviceDeploymentPlan plan, RecordingChannel channel, RouterOsDeploymentSession session) = SeededSession();
+        channel.FailFilterSetCount = 2;
+        AnchorActivationResult result = await ActivateAnchorsUseCase.ExecuteAsync(
+            plan,
+            session,
+            static () => TimeSpan.FromSeconds(120));
+        Assert.False(result.Succeeded);
+        Assert.False(result.RecoveryRequired);
+        Assert.Equal(DeploymentCodes.AnchorSetFailed, result.Code);
+    }
+
+    [Fact]
+    public async Task PostSetReadBackMismatchRequiresRecovery()
+    {
+        DeviceDeploymentPlan plan = DeploymentTestFactory.DevicePlan(DeviceId.New(), NodeKind.Router);
+        AnchorKey first = plan.AnchorActivationOrder[0];
+        string oldTarget = plan.OldAnchorTargets.Single(t => t.Key.Equals(first)).JumpTarget;
+        string newTarget = plan.NewAnchorTargets.Single(t => t.Key.Equals(first)).JumpTarget;
+        FakeSession session = new(first, oldTarget, newTarget)
+        {
+            SucceededSetWithJump = "mfc4.f.r.foreign",
+        };
+        AnchorActivationResult result = await ActivateAnchorsUseCase.ExecuteAsync(
+            plan,
+            session,
+            static () => TimeSpan.FromSeconds(120));
+        Assert.False(result.Succeeded);
+        Assert.True(result.RecoveryRequired);
+        Assert.Equal(DeploymentCodes.AnchorReadbackFailed, result.Code);
+    }
+
+    [Fact]
+    public async Task MarginFailureAfterAlreadyAppliedIsReported()
+    {
+        (DeviceDeploymentPlan plan, RecordingChannel channel, RouterOsDeploymentSession session) = SeededSession();
+        foreach (AnchorKey key in plan.AnchorActivationOrder)
+        {
+            channel.FindAnchor(key)!["jump-target"] =
+                plan.NewAnchorTargets.Single(t => t.Key.Equals(key)).JumpTarget;
+        }
+
+        AnchorActivationResult result = await ActivateAnchorsUseCase.ExecuteAsync(
+            plan,
+            session,
+            static () => TimeSpan.FromSeconds(5));
+        Assert.False(result.Succeeded);
+        Assert.Equal(DeploymentCodes.WatchdogDeadlineTooClose, result.Code);
+    }
+
+    [Fact]
+    public async Task Ipv6AnchorsAreActivatedFromIpv6Surface()
+    {
+        DeviceDeploymentPlan plan = DeploymentTestFactory.DevicePlan(DeviceId.New(), NodeKind.Router, ipv6: true);
+        RecordingChannel channel = new();
+        int id = 1;
+        foreach (AnchorTarget target in plan.OldAnchorTargets)
+        {
+            string chain = target.Key.Chain switch
+            {
+                FilterBuiltInContext.Input => "input",
+                FilterBuiltInContext.Forward => "forward",
+                FilterBuiltInContext.Output => "output",
+                _ => "input",
+            };
+            DeploymentReadSurface surface = target.Key.Family == IpAddressFamily.IPv4
+                ? DeploymentReadSurface.Ipv4Filter
+                : DeploymentReadSurface.Ipv6Filter;
+            channel.Seed(
+                surface,
+                new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    [".id"] = "*" + id.ToString(CultureInfo.InvariantCulture),
+                    ["chain"] = chain,
+                    ["action"] = "jump",
+                    ["jump-target"] = target.JumpTarget,
+                    ["comment"] = target.Key.Marker,
+                    ["disabled"] = "false",
+                });
+            id++;
+        }
+
+        await using RouterOsDeploymentSession session = new(channel);
+        AnchorActivationResult result = await ActivateAnchorsUseCase.ExecuteAsync(
+            plan,
+            session,
+            static () => TimeSpan.FromSeconds(180));
+        Assert.True(result.Succeeded, result.Message);
+        Assert.Equal(plan.AnchorActivationOrder.Count, result.Journal.Count);
+    }
+
     private static (DeviceDeploymentPlan Plan, RecordingChannel Channel, RouterOsDeploymentSession Session) SeededSession()
     {
         DeviceDeploymentPlan plan = DeploymentTestFactory.DevicePlan(DeviceId.New(), NodeKind.Router);
@@ -257,6 +454,8 @@ public sealed class AnchorActivationLivingSpecTests
 
         public bool FailNextFilterSet { get; set; }
 
+        public int FailFilterSetCount { get; set; }
+
         public Action<string, IReadOnlyList<KeyValuePair<string, string>>>? OnFilterSet { get; set; }
 
         public void Seed(DeploymentReadSurface surface, Dictionary<string, string> row)
@@ -270,6 +469,12 @@ public sealed class AnchorActivationLivingSpecTests
             list.Add(new Dictionary<string, string>(row, StringComparer.Ordinal));
         }
 
+        public void ClearFilters()
+        {
+            _prints[DeploymentReadSurface.Ipv4Filter] = [];
+            _prints[DeploymentReadSurface.Ipv6Filter] = [];
+        }
+
         public Dictionary<string, string>? FindAnchor(AnchorKey key)
         {
             string chain = key.Chain switch
@@ -279,7 +484,11 @@ public sealed class AnchorActivationLivingSpecTests
                 FilterBuiltInContext.Output => "output",
                 _ => string.Empty,
             };
-            return Ipv4Filters().FirstOrDefault(r =>
+            DeploymentReadSurface surface = key.Family == IpAddressFamily.IPv4
+                ? DeploymentReadSurface.Ipv4Filter
+                : DeploymentReadSurface.Ipv6Filter;
+            List<Dictionary<string, string>> rows = _prints.GetValueOrDefault(surface) ?? [];
+            return rows.FirstOrDefault(r =>
                 string.Equals(r.GetValueOrDefault("comment"), key.Marker, StringComparison.Ordinal)
                 && string.Equals(r.GetValueOrDefault("chain"), chain, StringComparison.OrdinalIgnoreCase));
         }
@@ -297,13 +506,22 @@ public sealed class AnchorActivationLivingSpecTests
             {
                 string id = attributes.Single(static a => a.Key == ".id").Value;
                 OnFilterSet?.Invoke(id, attributes);
+                if (FailFilterSetCount > 0)
+                {
+                    FailFilterSetCount--;
+                    throw new InvalidOperationException("simulated transport loss during set");
+                }
+
                 if (FailNextFilterSet)
                 {
                     FailNextFilterSet = false;
                     throw new InvalidOperationException("simulated transport loss during set");
                 }
 
-                Dictionary<string, string> row = _prints[DeploymentReadSurface.Ipv4Filter].Single(r => r[".id"] == id);
+                DeploymentReadSurface surface = path == DeploymentWritePath.Ipv4FilterSet
+                    ? DeploymentReadSurface.Ipv4Filter
+                    : DeploymentReadSurface.Ipv6Filter;
+                Dictionary<string, string> row = _prints[surface].Single(r => r[".id"] == id);
                 foreach ((string key, string value) in attributes.Where(static a => a.Key != ".id"))
                 {
                     row[key] = value;
@@ -336,5 +554,113 @@ public sealed class AnchorActivationLivingSpecTests
             IReadOnlyList<KeyValuePair<string, string>> attributes,
             CancellationToken cancellationToken = default)
             => Task.FromResult(new ChannelPingResult { Sent = 0, Received = 0 });
+    }
+
+    /// <summary>Minimal session stub for post-set read-back mismatch without RouterOS channel semantics.</summary>
+    private sealed class FakeSession : IRouterOsDeploymentSession
+    {
+        private readonly AnchorKey _first;
+        private readonly string _oldTarget;
+        private string _jump;
+
+        public FakeSession(AnchorKey first, string oldTarget, string newTarget)
+        {
+            _first = first;
+            _oldTarget = oldTarget;
+            _ = newTarget;
+            _jump = oldTarget;
+        }
+
+        public string? SucceededSetWithJump { get; init; }
+
+        public ValueTask DisposeAsync() => ValueTask.CompletedTask;
+
+        public Task<ActualManagedState> ReadManagedStateAsync(CancellationToken cancellationToken = default)
+        {
+            string chain = _first.Chain switch
+            {
+                FilterBuiltInContext.Input => "input",
+                FilterBuiltInContext.Forward => "forward",
+                FilterBuiltInContext.Output => "output",
+                _ => "input",
+            };
+            Dictionary<string, string> row = new(StringComparer.Ordinal)
+            {
+                [".id"] = "*1",
+                ["chain"] = chain,
+                ["action"] = "jump",
+                ["jump-target"] = _jump,
+                ["comment"] = _first.Marker,
+            };
+            return Task.FromResult(new ActualManagedState
+            {
+                Ipv4FilterRules = [row],
+                Ipv6FilterRules = [],
+                Ipv4AddressLists = [],
+                Ipv6AddressLists = [],
+                Scripts = [],
+                Schedulers = [],
+            });
+        }
+
+        public Task<DeploymentWriteExecutionResult> SetAnchorTargetAsync(
+            AnchorTargetWrite write,
+            CancellationToken cancellationToken = default)
+        {
+            string jump = SucceededSetWithJump ?? write.JumpTarget;
+            _jump = jump;
+            return Task.FromResult(new DeploymentWriteExecutionResult
+            {
+                Succeeded = true,
+                Path = "ipv4-filter-set",
+                SentAttributes = [new(".id", "*1"), new("jump-target", write.JumpTarget)],
+                ReadBack = new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    [".id"] = "*1",
+                    ["jump-target"] = jump,
+                    ["comment"] = write.OwnershipMarker,
+                },
+            });
+        }
+
+        public Task<DeploymentWriteExecutionResult> AddAddressListEntryAsync(
+            AddressListEntryWrite write,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<DeploymentWriteExecutionResult> AddFilterRuleAsync(
+            FilterRuleWrite write,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<DeploymentWriteExecutionResult> AddRollbackScriptAsync(
+            RollbackScriptWrite write,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<DeploymentWriteExecutionResult> AddRollbackSchedulerAsync(
+            RollbackSchedulerWrite write,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<DeploymentWriteExecutionResult> DisableRollbackSchedulerAsync(
+            RouterOsItemId schedulerId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<DeploymentWriteExecutionResult> RemoveRollbackSchedulerAsync(
+            RouterOsItemId schedulerId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<DeploymentWriteExecutionResult> RemoveRollbackScriptAsync(
+            RouterOsItemId scriptId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<RouterPingResult> PingAsync(
+            RouterPingRequest request,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
     }
 }

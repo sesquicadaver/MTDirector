@@ -59,28 +59,6 @@ public static class ActivateAnchorsUseCase
         ArgumentNullException.ThrowIfNull(session);
         ArgumentNullException.ThrowIfNull(remainingWatchdogTtl);
 
-        if (!DeploymentAnchorOrder.IsManagementCriticalLast(devicePlan.AnchorActivationOrder))
-        {
-            return Fail(
-                DeploymentCodes.ActivationOrderInvalid,
-                "Management-critical anchors must be activated last.",
-                [],
-                0,
-                0,
-                recovery: false);
-        }
-
-        if (devicePlan.TransitionStateHashes.Count != devicePlan.AnchorActivationOrder.Count + 1)
-        {
-            return Fail(
-                DeploymentCodes.TransitionStateUnsafe,
-                "Plan transition hashes do not cover all intermediate states.",
-                [],
-                0,
-                0,
-                recovery: false);
-        }
-
         Dictionary<string, string> oldBy = devicePlan.OldAnchorTargets
             .ToDictionary(static t => t.Key.Marker, static t => t.JumpTarget, StringComparer.Ordinal);
         Dictionary<string, string> newBy = devicePlan.NewAnchorTargets
@@ -213,11 +191,36 @@ public static class ActivateAnchorsUseCase
                             desiredNew,
                             StringComparison.Ordinal))
                     {
-                        string? finalTarget = retry.ReadBack.GetValueOrDefault("jump-target");
+                        (bool finalOk, string? finalTarget, _, string? finalCode, bool finalRecovery, _) =
+                            await ReadJumpTargetAsync(session, key, cancellationToken).ConfigureAwait(false);
+                        readCount++;
+                        if (!finalOk)
+                        {
+                            MarkLast(journal, DeploymentStepState.Failed, finalTarget, finalCode ?? DeploymentCodes.AnchorSetFailed);
+                            return Fail(
+                                finalCode ?? DeploymentCodes.AnchorSetFailed,
+                                retry.Error ?? "Controlled anchor set retry failed.",
+                                journal,
+                                setCount,
+                                readCount,
+                                finalRecovery);
+                        }
+
                         AnchorActivationDecision final = AnchorActivationPlanner.ClassifyAfterUnknownSet(
                             finalTarget,
                             expectedOld,
                             desiredNew);
+                        if (final.Action == AnchorActivationAction.AlreadyApplied)
+                        {
+                            MarkLast(journal, DeploymentStepState.Verified, finalTarget, final.Code);
+                            if (!EnsureMargin(remainingWatchdogTtl, journal, key, beforeHash, afterHash, setCount, readCount, out AnchorActivationResult? mRetryOk))
+                            {
+                                return mRetryOk!;
+                            }
+
+                            continue;
+                        }
+
                         MarkLast(
                             journal,
                             DeploymentStepState.Failed,
