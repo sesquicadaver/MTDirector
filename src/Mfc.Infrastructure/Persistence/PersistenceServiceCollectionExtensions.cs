@@ -1,5 +1,6 @@
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Infrastructure.Persistence.Deployment;
+using Mfc.Infrastructure.Persistence.Drift;
 using Mfc.Infrastructure.Persistence.Hosting;
 using Mfc.Infrastructure.Persistence.Inventory;
 using Mfc.Infrastructure.Persistence.Onboarding;
@@ -39,6 +40,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<INodeStore, EfNodeStore>();
         services.AddScoped<IDeviceStore, EfDeviceStore>();
         services.AddScoped<IDeviceHashStateStore, EfDeviceHashStateStore>();
+        services.AddScoped<IDriftEventStore, EfDriftEventStore>();
         services.AddScoped<IConnectionProfileReadStore, EfConnectionProfileReadStore>();
         services.AddScoped<IIdempotencyStore, EfIdempotencyStore>();
         services.AddScoped<ISnapshotStore, EfSnapshotStore>();

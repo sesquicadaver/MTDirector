@@ -3,6 +3,7 @@ using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Abstractions.Time;
 using Mfc.Application.Deployment;
+using Mfc.Application.Drift;
 using Mfc.Application.Inventory;
 using Mfc.Application.Onboarding;
 using Mfc.Application.Policies;
@@ -183,6 +184,9 @@ public static class Program
         services.AddScoped<ProjectNodeWorkflowUseCase>();
         services.AddScoped<UpsertDeviceHashStateUseCase>();
         services.AddScoped<GetDeviceHashStateUseCase>();
+        services.AddScoped<DetectManagedDriftUseCase>();
+        services.AddScoped<GetDriftEventUseCase>();
+        services.AddScoped<ListDeviceDriftEventsUseCase>();
         services.AddScoped<RegisterDeviceUseCase>();
         services.AddScoped<UpdateDeviceUseCase>();
         services.AddScoped<UpdateConnectionProfileUseCase>();

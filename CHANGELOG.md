@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Managed drift detection (M6-02): Domain `DriftClassifier` / `ManagedDriftDetector` / immutable `DriftEvent` (E2E §32–§34). Baseline is last committed artifact only; desired is never the actual baseline. Critical findings and managed-hash divergence block deploy via `DeploymentOperationGate` + `IDriftEventStore.HasBlockingCriticalDriftAsync`. Persistence `drift_events` (`DriftEventsSchemaM602`, append-only). Application `DetectManagedDriftUseCase` + get/list (inventory.read); no AutoRepair / ForceRepair / silent enforce. Living Spec `ManagedDriftDetectionLivingSpecTests` AC 1–12.
+
 - Desired / committed / actual state projection (M6-01): Domain `DeviceHashState` + `DeviceHashStateClassifier` (E2E §8) + `NodeWorkflowStatusProjector` (E2E §7 priority; VRRP retains per-device rows). Persistence `device_hash_states` (`DeviceHashStateSchemaM601`). Application upsert/get + `ProjectNodeWorkflowUseCase`. Contracts `NodeWorkflowStatus` / hash fields on Device + `GetNodeWorkflow`. Desktop inventory shows Desired/Committed/Actual hashes and Node workflow status. Living Spec `DeviceStateProjectionLivingSpecTests` AC 1–10. Status is derived only — never an authoritative Node column.
 
 - Deployment fault and security acceptance (M4-13 / **M4 CLOSED**): Living Spec `DeploymentFaultSecurityAcceptanceLivingSpecTests` AC 1–13 all passed (47 tests total, 0 failures). `DeploymentAcceptanceHarness` sibling file provides shared test infra: `FakeRuntime`, `RecordingChannel`, `ScriptedWatchdog`, `ScriptedCluster`, `ScriptedMember`, `ScriptedRollbackRuntime`, `NullFreshSessionFactory`. AC coverage: standalone commit (AC1); no-writes for no-changes (AC2); multi-WAN failover + balanced probes filter-only (AC3); VRRP active/passive full commit (AC4); split-master detection prevents simplified commit (AC5); disconnect/fault at any effectful point leaves allowed terminal (AC6); deadline watchdog rollback recognized (AC7); startup watchdog rollback recognized (AC8); third-anchor target triggers RecoveryRequired (AC9); crash recovery deterministic across all anchor states (AC10); credentials/scripts do not leak through proto/ViewModel/watchdog script (AC11); forbidden write paths and namespaces blocked (AC12); recovery decision table only allows old-committed or exact-recovery outcomes (AC13). `ArchitectureBoundaryTests` and `DeploymentProtoContractTests` remain green.
@@ -43,6 +45,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP: M6-02 managed drift detection DONE; NEXT = M6-03 (#102); M6 E2E 2/9; 96/109 MVP DONE (88%).
 - ROADMAP: M6-01 desired/committed/actual projection DONE; NEXT = M6-02 (#101); M6 E2E 1/9; 95/109 MVP DONE (87%).
 - ROADMAP: M4-13 fault/security acceptance DONE; **M4 CLOSED**; NEXT = M6-01 (#100); M4 safe deploy 13/13 (100%); 94/109 MVP DONE (86%).
 - ROADMAP: M4-12 deployment API/Desktop DONE; NEXT = M4-13 (#98).

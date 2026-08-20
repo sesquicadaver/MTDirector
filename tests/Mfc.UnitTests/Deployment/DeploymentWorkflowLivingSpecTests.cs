@@ -428,7 +428,8 @@ public sealed class DeploymentWorkflowLivingSpecTests
                 auth,
                 audit,
                 new CreateDeploymentPlanUseCase(auth, nodes, store, idempotency, audit, clock),
-                new StartDeploymentUseCase(auth, nodes, store, idempotency, audit, clock, runtime),
+                new StartDeploymentUseCase(
+                    auth, nodes, store, new FakeDriftEventStore(), idempotency, audit, clock, runtime),
                 new RollbackDeploymentWorkflowUseCase(auth, nodes, store, idempotency, audit, clock, runtime),
                 new GetDeploymentRecoveryStatusUseCase(auth, nodes, store, audit));
         }
