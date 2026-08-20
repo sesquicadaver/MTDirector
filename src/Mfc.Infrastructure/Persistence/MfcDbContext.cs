@@ -29,6 +29,8 @@ public sealed class MfcDbContext : DbContext
 
     public DbSet<DeviceEntity> Devices => Set<DeviceEntity>();
 
+    public DbSet<DeviceHashStateEntity> DeviceHashStates => Set<DeviceHashStateEntity>();
+
     public DbSet<DeviceConnectionProfileEntity> DeviceConnectionProfiles => Set<DeviceConnectionProfileEntity>();
 
     public DbSet<CaptureOperationEntity> CaptureOperations => Set<CaptureOperationEntity>();

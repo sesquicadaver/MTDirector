@@ -16,6 +16,7 @@ using Mfc.Domain.Onboarding.Primitives;
 using Mfc.Domain.Policy;
 using Mfc.Domain.Policy.Primitives;
 using Mfc.Domain.Snapshots;
+using Mfc.Domain.Workflow;
 
 namespace Mfc.UnitTests.Application.Fakes;
 
@@ -1184,5 +1185,38 @@ internal sealed class FakeFilterArtifactStore : IFilterArtifactStore
         };
         ByHash[key] = stored;
         return Task.FromResult(stored);
+    }
+}
+
+internal sealed class FakeDeviceHashStateStore : IDeviceHashStateStore
+{
+    private readonly Dictionary<Guid, DeviceHashState> _byDevice = [];
+
+    public Task UpsertAsync(DeviceHashState state, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        _byDevice[state.DeviceId.Value] = state;
+        return Task.CompletedTask;
+    }
+
+    public Task<DeviceHashState?> GetAsync(DeviceId deviceId, CancellationToken cancellationToken = default)
+        => Task.FromResult(_byDevice.TryGetValue(deviceId.Value, out DeviceHashState? state) ? state : null);
+
+    public Task<IReadOnlyList<DeviceHashState>> ListByDeviceIdsAsync(
+        IReadOnlyList<DeviceId> deviceIds,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(deviceIds);
+        List<DeviceHashState> rows = [];
+        foreach (DeviceId id in deviceIds)
+        {
+            if (_byDevice.TryGetValue(id.Value, out DeviceHashState? state))
+            {
+                rows.Add(state);
+            }
+        }
+
+        return Task.FromResult<IReadOnlyList<DeviceHashState>>(
+            rows.OrderBy(static s => s.DeviceId.Value).ToArray());
     }
 }

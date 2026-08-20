@@ -1,6 +1,7 @@
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Snapshots;
+using Mfc.Domain.Workflow;
 
 namespace Mfc.Application.Models;
 
@@ -84,6 +85,18 @@ public sealed class DeviceView
 
     /// <summary>CompletedAtUtc of last completed capture when resolvable.</summary>
     public DateTimeOffset? LastSnapshotAtUtc { get; init; }
+
+    /// <summary>Desired artifact hash hex when persisted (M6-01); null → UI shows —.</summary>
+    public string? DesiredArtifactHashHex { get; init; }
+
+    /// <summary>Last committed artifact hash hex when persisted (M6-01); null → UI shows —.</summary>
+    public string? LastCommittedArtifactHashHex { get; init; }
+
+    /// <summary>Actual managed resource hash hex when persisted (M6-01); null → UI shows —.</summary>
+    public string? ActualManagedResourceHashHex { get; init; }
+
+    /// <summary>Derived per-device sync class when hash projection is available.</summary>
+    public DeviceSyncClassification? SyncClassification { get; init; }
 }
 
 public sealed class NodeDetailsView
@@ -91,6 +104,9 @@ public sealed class NodeDetailsView
     public required NodeView Node { get; init; }
 
     public required IReadOnlyList<DeviceView> Devices { get; init; }
+
+    /// <summary>Derived workflow status (M6-01). Never persisted on Node.</summary>
+    public NodeWorkflowStatus? WorkflowStatus { get; init; }
 }
 
 public sealed class SnapshotView

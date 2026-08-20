@@ -4,6 +4,7 @@ using Mfc.Application.Common;
 using Mfc.Application.Inventory;
 using Mfc.Application.Models;
 using Mfc.Application.Snapshots;
+using Mfc.Application.Workflow;
 using Mfc.Contracts.Mfc.V1;
 using Mfc.Domain.Inventory.Primitives;
 using ProtoDevice = Mfc.Contracts.Mfc.V1.Device;
@@ -12,7 +13,7 @@ using ProtoSite = Mfc.Contracts.Mfc.V1.Site;
 
 namespace Mfc.Controller.Grpc;
 
-/// <summary>gRPC surface for Vertical Slice §9.2 InventoryService (M1-25).</summary>
+/// <summary>gRPC surface for Vertical Slice §9.2 InventoryService (M1-25 / M6-01 workflow).</summary>
 public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
 {
     public const string ActorMetadataKey = "x-mfc-actor";
@@ -22,6 +23,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
     private readonly CreateSiteUseCase _createSite;
     private readonly CreateNodeUseCase _createNode;
     private readonly GetNodeUseCase _getNode;
+    private readonly ProjectNodeWorkflowUseCase _projectWorkflow;
     private readonly RegisterDeviceUseCase _registerDevice;
     private readonly UpdateDeviceUseCase _updateDevice;
     private readonly UpdateConnectionProfileUseCase _updateConnection;
@@ -35,6 +37,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         CreateSiteUseCase createSite,
         CreateNodeUseCase createNode,
         GetNodeUseCase getNode,
+        ProjectNodeWorkflowUseCase projectWorkflow,
         RegisterDeviceUseCase registerDevice,
         UpdateDeviceUseCase updateDevice,
         UpdateConnectionProfileUseCase updateConnection,
@@ -47,6 +50,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         ArgumentNullException.ThrowIfNull(createSite);
         ArgumentNullException.ThrowIfNull(createNode);
         ArgumentNullException.ThrowIfNull(getNode);
+        ArgumentNullException.ThrowIfNull(projectWorkflow);
         ArgumentNullException.ThrowIfNull(registerDevice);
         ArgumentNullException.ThrowIfNull(updateDevice);
         ArgumentNullException.ThrowIfNull(updateConnection);
@@ -58,6 +62,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         _createSite = createSite;
         _createNode = createNode;
         _getNode = getNode;
+        _projectWorkflow = projectWorkflow;
         _registerDevice = registerDevice;
         _updateDevice = updateDevice;
         _updateConnection = updateConnection;
@@ -154,12 +159,21 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
             },
             context.CancellationToken).ConfigureAwait(false);
         NodeDetailsView details = Unwrap(result);
-        NodeDetails response = new()
-        {
-            Node = InventoryProtoMapper.ToProto(details.Node),
-        };
-        response.Devices.AddRange(details.Devices.Select(InventoryProtoMapper.ToProto));
-        return response;
+        return InventoryProtoMapper.ToProto(details);
+    }
+
+    public override async Task<NodeWorkflow> GetNodeWorkflow(GetNodeWorkflowRequest request, ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        Guid nodeId = ProtoUuid.ToGuid(request.NodeId);
+        ApplicationResult<NodeWorkflowProjectionView> result = await _projectWorkflow.ExecuteAsync(
+            new ProjectNodeWorkflowQuery
+            {
+                Actor = ResolveActor(context),
+                NodeId = nodeId,
+            },
+            context.CancellationToken).ConfigureAwait(false);
+        return InventoryProtoMapper.ToProto(nodeId, Unwrap(result));
     }
 
     public override async Task<ProtoDevice> RegisterDevice(RegisterDeviceRequest request, ServerCallContext context)

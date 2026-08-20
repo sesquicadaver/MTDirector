@@ -3,7 +3,7 @@
 **Дата оновлення:** 20 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M4-13 — deployment fault and security acceptance DONE; **M4 CLOSED**; черга зсунута на M6-01
+**Базовий коміт аудиту:** M6-01 — desired/committed/actual state projection DONE; черга зсунута на M6-02
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -50,13 +50,13 @@
 | M3 Compiler | 8 | 0 | 100% |
 | M5 Onboarding | 10 | 0 | 100% |
 | M4 Safe deploy | 13 | 0 | 100% |
-| M6 E2E / drift | 0 | 9 | 0% |
+| M6 E2E / drift | 1 | 8 | 11% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **94** | **42** | **69% issues** |
+| **Разом** | **95** | **41** | **70% issues** |
 
-MVP issues (109) = **94 done + 15 remaining** до MVP CLOSED (**86%**).  
+MVP issues (109) = **95 done + 14 remaining** до MVP CLOSED (**87%**).  
 N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
-Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий** (stage→arm→activate→verify→commit); multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance Living Spec **DONE** (AC1–13 passed); **M4 CLOSED**; NEXT = M6-01 (#100).
+Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий**; multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance **DONE**; **M4 CLOSED**; desired/committed/actual projection **готовий** (M6-01); NEXT = M6-02 (#101).
 
 ### 2.2 DONE (не в черзі)
 
@@ -150,22 +150,26 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | M4-09 | #94 | Multi-WAN deployment verification (`MultiWanDeploymentVerification` + `VerifyMultiWanDeploymentUseCase`) |
 | M4-10 | #95 | VRRP deployment coordinator (`VrrpDeploymentPolicy` + `ExecuteVrrpDeploymentUseCase`) |
 | M4-11 | #96 | Rollback + crash recovery (`DeploymentRecoveryDecision` + `ExecuteDeploymentRollbackUseCase` / `RecoverDeploymentUseCase`) |
+| M4-12 | #97 | Deployment API + Desktop Deploy workflow (`DeploymentService` + plan_hash Watch) |
+| M4-13 | #98 | **M4 CLOSED** — deployment fault/security acceptance Living Spec AC 1–13 |
+| M6-01 | #100 | Desired/committed/actual hash projection + derived `NodeWorkflowStatus` (E2E §7–§8) |
 
 ### 2.3 Поточні прогалини (код)
 
 | Збірка | Стан |
 |--------|------|
 | `Mfc.RouterOs` | protocol + discovery + capability + N1 + stable-read + raw/canonical snapshot projectors; default `ProbeOnlyRouterOsReadPort` + `NotConfiguredSnapshotCapturePort`; actual-filter discovery mapper; packet-path blocker mapper; management-path discovery mapper (`api-ssl.address` in canonical projector); topology-dependency discovery mapper (VRRP sync fields, RAW/NAT/Mangle, rp-filter, switch chip); FastTrack discovery mapper (pre-anchor + VRF); policy-evidence discovery mapper (NODE_EFFECTIVE actual filter); closed `OnboardingBootstrapWriter` (M5-05) + `OnboardingWatchdogWriter` arm/disarm/cleanup (M5-06–M5-08; generic `Write` namespace still absent); restricted `RouterOsDeploymentSession` (M4-02) + `DeploymentWatchdogWriter` (M4-05); anchor jump-target set used by M4-06 activation |
-| `Mfc.Contracts` | `mfc.v1` inventory + snapshot/diff + `ZoneService` + `PolicyService` (authoring/review + approval/binding + compile summary RPCs) + `OnboardingService` |
-| `Mfc.Application` | inventory/snapshot + policy draft/rule CRUD + compose-on-read + deny-stage exceptions + address/service/zone evaluators + N1-05 snapshot topology enrichment + actual-filter canonical mapper + packet-path canonical mapper + management-path canonical mapper + topology-dependency canonical mapper + FastTrack canonical mapper + policy-evidence canonical mapper + analysis-run/approval/desired-binding use cases + validate/catalog/diff authoring use cases + compile-and-store filter artifacts + `IOnboardingStore` + `ValidateOnboardingPrerequisitesUseCase` + `VerifyManagementGuardUseCase` + `PlanAnchorPlacementUseCase` + `PlanOnboardingBootstrapWritesUseCase` / `IOnboardingBootstrapWritePort` + `PlanOnboardingWatchdogUseCase` / `IOnboardingWatchdogPort` + `ExecuteOnboardingBootstrapUseCase` + `RollbackOnboardingBootstrapUseCase` + `RecoverOnboardingUseCase` + onboarding workflow use cases / `IOnboardingRuntime` + `IDeploymentStore` + `DeploymentPacketPathPrecheck` + `IRouterOsDeploymentSession` contracts (M4-02) + `StageAddressListUseCase` (M4-03) + `StageDetachedChainsUseCase` (M4-04) + `PlanDeploymentWatchdogUseCase` / `IDeploymentWatchdogPort` (M4-05) + `PlanTransitionStatesUseCase` / `ActivateAnchorsUseCase` (M4-06) + `VerifyDeploymentActivationUseCase` / `IDeploymentFreshSessionFactory` (M4-07) + `ExecuteStandaloneDeploymentUseCase` (M4-08) + `VerifyMultiWanDeploymentUseCase` (M4-09) + `ExecuteVrrpDeploymentUseCase` (M4-10) + `ExecuteDeploymentRollbackUseCase` / `RecoverDeploymentUseCase` (M4-11) + deployment workflow use cases / `IDeploymentRuntime` (M4-12) |
-| `Mfc.Controller` | health + `InventoryService` + `SnapshotService` + `ZoneService` + `PolicyService` (compose + authoring/review + approval/binding + compile) + `OnboardingService` gRPC |
-| `Mfc.Desktop` | connection shell + inventory tree + snapshot/diff viewers + Zones + Policies authoring/review workflow + Onboarding checklist/placement/recovery |
-| Persistence | inventory + snapshot CAS + policy lifecycle + zone_definitions/node_zone_bindings + policy_analysis_runs/policy_approvals/warning_acknowledgments/policy_bindings + filter_artifacts + onboarding_plans/operations/steps + deployment_plans/operations/locks/steps |
+| `Mfc.Contracts` | `mfc.v1` inventory (+ workflow status / hash fields + `GetNodeWorkflow`) + snapshot/diff + `ZoneService` + `PolicyService` + `OnboardingService` + `DeploymentService` |
+| `Mfc.Application` | inventory/snapshot + … + deployment workflow use cases / `IDeploymentRuntime` (M4-12) + `IDeviceHashStateStore` + `UpsertDeviceHashStateUseCase` / `GetDeviceHashStateUseCase` / `ProjectNodeWorkflowUseCase` (M6-01) |
+| `Mfc.Controller` | health + `InventoryService` (incl. `GetNodeWorkflow`) + `SnapshotService` + `ZoneService` + `PolicyService` + `OnboardingService` + `DeploymentService` gRPC |
+| `Mfc.Desktop` | connection shell + inventory tree (desired/committed/actual hashes + workflow status) + snapshot/diff viewers + Zones + Policies + Onboarding + Deploy |
+| Persistence | inventory + snapshot CAS + policy lifecycle + zones + approvals/bindings + filter_artifacts + onboarding_* + deployment_* + `device_hash_states` (M6-01) |
+| `Mfc.Domain.Workflow` | `DeviceHashState` + classifier + `NodeWorkflowStatusProjector` (derived status; never persisted on Node) |
 | `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) + management-path safety (M2-13) + topology/dependency safety (M2-14) + FastTrack policy validation (M2-15) + policy tests/diff/risk (M2-16) + approval/desired-binding (M2-17) + object JSON writer (M2-18) + RouterOS filter artifact model (M3-01) + managed chain namespace/layout (M3-02) + content-addressed address lists (M3-03) + zone/service variants (M3-04) + matcher/effect compile (M3-05) + FastTrack pairs + terminals (M3-06) + per-device compile orchestration (M3-07) + compiler acceptance / Switch FORWARD gate (M3-08) |
 | `Mfc.Domain.Onboarding` | immutable plans + plan hasher + operation SM + write-ahead steps + bootstrap artifact + `ManagementState` (M5-01) + prerequisite validator (M5-02) + `GuardProfile` / guard verifier (M5-03) + `AnchorPlacementPlanner` (M5-04) + `OnboardingBootstrapWritePlanner` (M5-05) + `OnboardingWatchdogPlanner` (M5-06) + pass-through equivalence / enable order (M5-07) + Spec §46 recovery decision table (M5-08) |
 | `Mfc.Domain.Deployment` | immutable `DeploymentPlan` + plan hasher `mfc.deployment.plan.v1` + Node/device SM + exclusive lock + write-ahead steps (M4-01) + packet-path deploy gate (N1-06) + address-list create-or-verify (M4-03) + detached chain create-or-verify (M4-04) + production watchdog planner/script (M4-05) + transition-state validation + anchor activation order/decision (M4-06) + post-activation integrity/probes/watchdog readiness (M4-07) + standalone eligibility/NO_CHANGES policy (M4-08) + multi-WAN dependency/probe gates (M4-09) + VRRP classification/order/partial-failure policy (M4-10) + recovery decision table / controller rollback (M4-11); no campaign |
 
-**NEXT = M6-01:** [M6-01](https://github.com/sesquicadaver/MTDirector/issues/100) Implement desired, committed and actual state projection. **M4 CLOSED.**
+**NEXT = M6-02:** [M6-02](https://github.com/sesquicadaver/MTDirector/issues/101) Implement managed drift detection. **M6-01 DONE.**
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -342,7 +346,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 
 | # | ID | GitHub | Задача |
 |--:|----|-------:|--------|
-| 86 | M6-01 | #100 | Implement desired, committed and actual state projection |
+| ~~86~~ | ~~M6-01~~ | ~~#100~~ | ~~Implement desired, committed and actual state projection~~ → DONE (`DeviceHashState` + projector + `device_hash_states` + Desktop hashes) |
 | 87 | M6-02 | #101 | Implement managed drift detection |
 | 88 | N1-07 | #109 | E2E/drift acceptance for container/VLAN/VETH/HW path classes |
 | 89 | M6-03 | #102 | Implement bounded operational background jobs |
@@ -404,7 +408,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 38 відкритих атомарних задач (11 до MVP CLOSED + 27 M7). Start here: #100 M6-01.
+**Кінець черги:** 37 відкритих атомарних задач (10 до MVP CLOSED + 27 M7). Start here: #101 M6-02.
 
 ---
 
@@ -412,10 +416,10 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 11 | M6-01…M6-09 + N1-07 |
+| До MVP CLOSED | 10 | M6-02…M6-09 + N1-07 |
 | Post-MVP M7 | 27 | лише після M6-09 |
-| **Нереалізовано разом** | **43** | 16 MVP + 27 M7 |
-| DONE у коді (§2.2) | 94 | M0+M1+N1-01…06+M2-01…18+M3-01…08+M5-01…10+M4-01…13 |
+| **Нереалізовано разом** | **37** | 10 MVP + 27 M7 |
+| DONE у коді (§2.2) | 95 | …+M4-01…13+M6-01 |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
@@ -495,8 +499,9 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | VRRP deployment coordinator | M4-10 | Living Spec `VrrpDeploymentLivingSpecTests` AC#1–13; `ExecuteVrrpDeploymentUseCase` | **DONE** |
 | Deployment rollback + crash recovery | M4-11 | Living Spec `DeploymentRollbackRecoveryLivingSpecTests` AC#1–12; Spec §46–§49 `DeploymentRecoveryDecision` | **DONE** |
 | Deployment API + Desktop workflow | M4-12 | Living Spec `DeploymentWorkflowLivingSpecTests` AC#1–11; `DeploymentService` + Deploy tab | **DONE** |
-|| Deployment fault and security acceptance / **M4 CLOSED** | M4-13 | Living Spec `DeploymentFaultSecurityAcceptanceLivingSpecTests` AC#1–13 all passed; `DeploymentAcceptanceHarness` shared infra (FakeRuntime / RecordingChannel / ScriptedMember / ScriptedRollbackRuntime); `ArchitectureBoundaryTests` + `DeploymentProtoContractTests` still green | **DONE** |
-| Drift + E2E DoD | M6 | E2E §E2E | TODO |
+| Deployment fault and security acceptance / **M4 CLOSED** | M4-13 | Living Spec `DeploymentFaultSecurityAcceptanceLivingSpecTests` AC#1–13 all passed; `DeploymentAcceptanceHarness` shared infra (FakeRuntime / RecordingChannel / ScriptedMember / ScriptedRollbackRuntime); `ArchitectureBoundaryTests` + `DeploymentProtoContractTests` still green | **DONE** |
+| Desired / committed / actual projection | M6-01 | Living Spec `DeviceStateProjectionLivingSpecTests` AC#1–10; `DeviceHashStateClassifier` + `NodeWorkflowStatusProjector`; `device_hash_states`; Desktop hash surfaces | **DONE** |
+| Drift + E2E DoD | M6-02… | E2E §E2E | TODO |
 | Routing assurance | M7.1 | RouteResolutionTrace fixtures | TODO post-MVP |
 | Incident overlay | M7.4 | feasibility; TTL removal | TODO post-MVP |
 
@@ -554,7 +559,8 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 32. ~~Відкрити **M4-11** → [issue #96](https://github.com/sesquicadaver/MTDirector/issues/96).~~ → **DONE**.
 33. ~~Відкрити **M4-12** → [issue #97](https://github.com/sesquicadaver/MTDirector/issues/97).~~ → **DONE**.
 34. ~~Відкрити **M4-13** → [issue #98](https://github.com/sesquicadaver/MTDirector/issues/98).~~ → **DONE / M4 CLOSED**.
-35. Відкрити **M6-01** → [issue #100](https://github.com/sesquicadaver/MTDirector/issues/100).
+35. ~~Відкрити **M6-01** → [issue #100](https://github.com/sesquicadaver/MTDirector/issues/100).~~ → **DONE**.
+36. Відкрити **M6-02** → [issue #101](https://github.com/sesquicadaver/MTDirector/issues/101).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones

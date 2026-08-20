@@ -5,6 +5,7 @@ using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Common;
 using Mfc.Application.Mapping;
 using Mfc.Application.Models;
+using Mfc.Application.Workflow;
 using Mfc.Domain;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
@@ -415,21 +416,25 @@ public sealed class GetNodeUseCase
     private readonly INodeStore _nodes;
     private readonly IDeviceStore _devices;
     private readonly ISnapshotStore _snapshots;
+    private readonly ProjectNodeWorkflowUseCase _projectWorkflow;
 
     public GetNodeUseCase(
         IAuthorizationBoundary auth,
         INodeStore nodes,
         IDeviceStore devices,
-        ISnapshotStore snapshots)
+        ISnapshotStore snapshots,
+        ProjectNodeWorkflowUseCase projectWorkflow)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
         ArgumentNullException.ThrowIfNull(devices);
         ArgumentNullException.ThrowIfNull(snapshots);
+        ArgumentNullException.ThrowIfNull(projectWorkflow);
         _auth = auth;
         _nodes = nodes;
         _devices = devices;
         _snapshots = snapshots;
+        _projectWorkflow = projectWorkflow;
     }
 
     public async Task<ApplicationResult<NodeDetailsView>> ExecuteAsync(
@@ -458,6 +463,20 @@ public sealed class GetNodeUseCase
             devices,
             cancellationToken).ConfigureAwait(false);
 
+        ApplicationResult<NodeWorkflowProjectionView> workflowResult = await _projectWorkflow
+            .ExecuteAsync(
+                new ProjectNodeWorkflowQuery { Actor = query.Actor, NodeId = query.NodeId },
+                cancellationToken)
+            .ConfigureAwait(false);
+        if (workflowResult.IsFailure)
+        {
+            return ApplicationResults.Fail(workflowResult.Error!);
+        }
+
+        NodeWorkflowProjectionView workflow = workflowResult.Value!;
+        Dictionary<Guid, DeviceWorkflowProjectionView> byDevice = workflow.Devices
+            .ToDictionary(static d => d.DeviceId);
+
         DeviceView[] deviceViews = devices.Select(device =>
         {
             DateTimeOffset? lastSnapshot = null;
@@ -467,13 +486,41 @@ public sealed class GetNodeUseCase
                 lastSnapshot = completedAt;
             }
 
-            return ViewMapper.ToView(device, lastSnapshot);
+            DeviceView view = ViewMapper.ToView(device, lastSnapshot);
+            if (byDevice.TryGetValue(device.Id.Value, out DeviceWorkflowProjectionView? projection))
+            {
+                view = new DeviceView
+                {
+                    Id = view.Id,
+                    NodeId = view.NodeId,
+                    DisplayName = view.DisplayName,
+                    ManagementHost = view.ManagementHost,
+                    ManagementPort = view.ManagementPort,
+                    Role = view.Role,
+                    Enabled = view.Enabled,
+                    LastSupportState = view.LastSupportState,
+                    LastCompletedCaptureId = view.LastCompletedCaptureId,
+                    RowVersion = view.RowVersion,
+                    RouterOsVersion = view.RouterOsVersion,
+                    Model = view.Model,
+                    Reachability = view.Reachability,
+                    VrrpRoleLabels = view.VrrpRoleLabels,
+                    LastSnapshotAtUtc = view.LastSnapshotAtUtc,
+                    DesiredArtifactHashHex = projection.HashState.DesiredArtifactHashHex,
+                    LastCommittedArtifactHashHex = projection.HashState.LastCommittedArtifactHashHex,
+                    ActualManagedResourceHashHex = projection.HashState.ActualManagedResourceHashHex,
+                    SyncClassification = projection.SyncClassification,
+                };
+            }
+
+            return view;
         }).ToArray();
 
         return ApplicationResults.Ok(new NodeDetailsView
         {
             Node = ViewMapper.ToView(node),
             Devices = deviceViews,
+            WorkflowStatus = workflow.NodeStatus,
         });
     }
 

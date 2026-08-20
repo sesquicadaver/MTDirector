@@ -35,6 +35,18 @@ public sealed class InventoryTreeItem
 
     public string LastSnapshotText { get; init; } = "—";
 
+    /// <summary>Derived Node workflow status text (M6-01); empty for Site/Device.</summary>
+    public string WorkflowStatusText { get; init; } = "—";
+
+    /// <summary>Desired artifact hash short hex (M6-01); — when missing.</summary>
+    public string DesiredHashText { get; init; } = "—";
+
+    /// <summary>Last committed artifact hash short hex (M6-01); — when missing.</summary>
+    public string CommittedHashText { get; init; } = "—";
+
+    /// <summary>Actual managed resource hash short hex (M6-01); — when missing.</summary>
+    public string ActualHashText { get; init; } = "—";
+
     public IReadOnlyList<InventoryTreeItem> Children { get; init; } = [];
 }
 

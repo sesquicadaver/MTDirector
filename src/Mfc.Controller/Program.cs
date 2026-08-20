@@ -7,6 +7,7 @@ using Mfc.Application.Inventory;
 using Mfc.Application.Onboarding;
 using Mfc.Application.Policies;
 using Mfc.Application.Snapshots;
+using Mfc.Application.Workflow;
 using Mfc.Application.Zones;
 using Mfc.Controller.Authorization;
 using Mfc.Controller.Configuration;
@@ -179,6 +180,9 @@ public static class Program
         services.AddScoped<CreateSiteUseCase>();
         services.AddScoped<CreateNodeUseCase>();
         services.AddScoped<GetNodeUseCase>();
+        services.AddScoped<ProjectNodeWorkflowUseCase>();
+        services.AddScoped<UpsertDeviceHashStateUseCase>();
+        services.AddScoped<GetDeviceHashStateUseCase>();
         services.AddScoped<RegisterDeviceUseCase>();
         services.AddScoped<UpdateDeviceUseCase>();
         services.AddScoped<UpdateConnectionProfileUseCase>();

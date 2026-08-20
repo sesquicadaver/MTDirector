@@ -106,7 +106,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Rollback + crash recovery | Done (M4-11) | `DeploymentRecoveryDecision` + rollback/recover use cases; only COMMITTED keeps new |
 | Deployment API + Desktop workflow | Done (M4-12) | `DeploymentService` + Deploy tab; plan_hash start; streaming Watch; audited mutations |
 | Deployment fault and security acceptance | Done (M4-13) **M4 CLOSED** | Living Spec AC 1–13 all passed; `DeploymentFaultSecurityAcceptanceLivingSpecTests` + `DeploymentAcceptanceHarness`; standalone/VRRP/multi-WAN/rollback/security vectors; ArchitectureBoundary green |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M6-01 (#100) |
+| Desired / committed / actual projection | Done (M6-01) | `DeviceHashState` + classifier + `NodeWorkflowStatusProjector`; EF `device_hash_states`; `GetNodeWorkflow`; Desktop desired/committed/actual hashes |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M6-02 (#101) |
 
 ## ADRs
 
