@@ -1504,12 +1504,37 @@ Safe Deployment Spec §32–§34 + Issue Set M4-07 → Domain integrity/probe ga
 | AC#10 Probe profile in plan hash | `DeploymentPlanHasher` | `Ac10ProbeProfileIsPartOfPlanHash` |
 | AC#11 Watchdog readiness before commit | `VerifyWatchdogReadiness` | `Ac11WatchdogReadinessIsCheckedBeforeCommit` |
 
-**Residuals:** Standalone Node coordinator / multi-WAN / VRRP / gRPC Deploy are M4-08+.
+**Residuals:** Multi-WAN / VRRP / gRPC Deploy are M4-09+. Standalone coordinator is M4-08 (DONE).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeploymentVerificationLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — standalone Node deployment coordinator (M4-08)
+
+Safe Deployment Spec §35 + Issue Set M4-08 → Domain policy + Application coordinator over M4-02…M4-07 ports:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Preconditions rechecked | `RecheckPreconditions` | `Ac1PreconditionsAreRechecked` |
+| AC#2 NO_CHANGES no writes | `IsNoChanges` | `Ac2NoChangesPerformsNoWrites` |
+| AC#3 Staging ≠ active cut-over | `stage:detached-only` | `Ac3StagingDoesNotCutOverActiveTraffic` |
+| AC#4 Watchdog before activation | timeline order | `Ac4WatchdogIsArmedBeforeActivation` |
+| AC#5 Verify fail → rollback | `RollbackAfterActivation` | `Ac5FailedVerificationTriggersRollback` |
+| AC#6 Disarm before commit | timeline order | `Ac6WatchdogDisabledBeforeDurableCommit` |
+| AC#7 Old artifact retained | `CommitSnapshot.OldArtifactHash` | `Ac7OldArtifactRemainsForRollback` |
+| AC#8 Detached kept on failure | no remove | `Ac8NewDetachedArtifactIsNotRemovedOnFailure` |
+| AC#9 Commit snapshot | `DeploymentCommitSnapshot` | `Ac9CommitSnapshotIsStored` |
+| AC#10 Same artifact → NO_CHANGES | `IsNoChanges` | `Ac10RedeploySameArtifactReturnsNoChanges` |
+
+**Residuals:** Multi-WAN (M4-09), VRRP (M4-10), crash recovery (M4-11), gRPC Deploy (M4-12).
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~StandaloneDeploymentLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

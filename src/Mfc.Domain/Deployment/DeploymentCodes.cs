@@ -105,5 +105,9 @@ public static class DeploymentCodes
 
     public const string WatchdogNotReady = "WATCHDOG_NOT_READY";
 
+    public const string StandaloneNodeRequired = "DEPLOYMENT_STANDALONE_NODE_REQUIRED";
+
+    public const string CommitSnapshotMissing = "DEPLOYMENT_COMMIT_SNAPSHOT_MISSING";
+
     public const string SeverityBlocker = "BLOCKER";
 }
