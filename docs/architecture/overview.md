@@ -96,7 +96,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Packet-path deploy gate | Done (N1-06) | `PACKET_PATH_*` fail-closes Router/VRRP deploy; CPU/MIXED allowed; no offload writes |
 | Restricted deployment writer | Done (M4-02) | Allowlisted `RouterOsDeploymentSession` + managed-state reader; no `Mfc.RouterOs.Write` |
 | Address-list create-or-verify | Done (M4-03) | `AddressListCreateOrVerify` + `StageAddressListUseCase`; no AL set/remove |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-04 (#89) |
+| Detached chain staging | Done (M4-04) | `FilterChainCreateOrVerify` + `StageDetachedChainsUseCase`; deny before root |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M4-05 (#90) |
 
 ## ADRs
 

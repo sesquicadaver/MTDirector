@@ -1320,7 +1320,7 @@ Safe Deployment Spec §9–§16 + Issue Set M4-01 → Domain + EF (no RouterOS w
 | AC#12 Plan hash preconditions | `DeploymentPlanHasher` | `Ac12PlanHashIncludesNormativePreconditions` |
 | Persistence schema `m4-01` | migration `DeploymentSchemaM401` | `MigrateCreatesDeploymentTablesAndSchemaMetadata` |
 
-**Residuals:** Detached chain staging / watchdog / activate are M4-04+. Packet-path deploy gate is N1-06 (DONE). Restricted writer is M4-02 (DONE). Address-list staging is M4-03 (DONE).
+**Residuals:** Watchdog / activate are M4-05+. Packet-path deploy gate is N1-06 (DONE). Restricted writer is M4-02 (DONE). Address-list staging is M4-03 (DONE). Detached chain staging is M4-04 (DONE).
 
 Filter:
 ```bash
@@ -1347,7 +1347,7 @@ next-1 + Safe Deployment PRECHECKING → BLOCKED + ROADMAP N1-06 → Domain gate
 | AC#10 No offload writes / FailedPrecondition codes | Domain ↛ RouterOs | `Ac10GateDoesNotReferenceRouterOsOrOffloadWrites` |
 | Canonical mapper path | `DeploymentPacketPathPrecheck` | `CanonicalHardwareOffloadBlocksDeployWithoutReclassification` |
 
-**Residuals:** Detached chain staging / watchdog / activate / gRPC Deploy are M4-04+. Desktop Deploy command stays `CanExecute=false` (no Save and Deploy). Controller never disables L2/L3 hardware offload.
+**Residuals:** Watchdog / activate / gRPC Deploy are M4-05+. Desktop Deploy command stays `CanExecute=false` (no Save and Deploy). Controller never disables L2/L3 hardware offload.
 
 Filter:
 ```bash
@@ -1374,7 +1374,7 @@ Safe Deployment Spec §6–§8 / §33.2 / §55 + Issue Set M4-02 → Application
 | AC#11 Every write has read-back | `DeploymentWriteExecutionResult.ReadBack` | `Ac11EachWriteHasReadBack` |
 | AC#12 No generic writer | `RouterOsDeploymentSession` in Deployment | `Ac12GenericWriterIsAbsent` |
 
-**Residuals:** Detached chain staging / watchdog / activate / gRPC Deploy are M4-04+. No live RouterOS transport binding in this slice (channel is injectable).
+**Residuals:** Watchdog / activate / gRPC Deploy are M4-05+. No live RouterOS transport binding in this slice (channel is injectable).
 
 Filter:
 ```bash
@@ -1399,12 +1399,38 @@ Safe Deployment Spec §18 + Compiler Spec §26–§27 + Issue Set M4-03 → Doma
 | AC#9 No in-place edit | no AL set/remove | `Ac9ActiveListsAreNotEditedInPlace` |
 | AC#10 Record/payload limits | `AddressListCompileLimits` | `Ac10RecordAndPayloadLimitsAreApplied` |
 
-**Residuals:** Detached chain staging / watchdog / activate / gRPC Deploy are M4-04+.
+**Residuals:** Watchdog / activate / gRPC Deploy are M4-05+. Detached chain staging is M4-04 (DONE).
 
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~AddressListStagingLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
+## Living Specification — detached chain staging (M4-04)
+
+Safe Deployment Spec §17 / §19 + Compiler Spec §26 + Issue Set M4-04 → Domain planner + Application staging over M4-02 writer:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Deny before root | `OrderForStaging` | `Ac1DenyChainsAreStagedBeforeRootChains` |
+| AC#2 Exact chain reuse | `FilterChainCreateOrVerify` | `Ac2ExistingExactChainIsReused` |
+| AC#3 Exact prefix → append suffix | `AppendSuffix` | `Ac3ExactDesiredPrefixIsExtendedWithSuffix` |
+| AC#4 Other divergence → collision | `STAGING_*` | `Ac4AnyOtherDivergenceCreatesCollision` |
+| AC#5 Unmanaged rule blocks | ownership comments | `Ac5UnmanagedRuleInGeneratedChainBlocksStaging` |
+| AC#6 Rule order verified | ordinal prefix | `Ac6RuleOrderIsVerified` |
+| AC#7 Disabled/invalid blocks | `STAGING_RULE_INVALID` | `Ac7DisabledOrInvalidRuleBlocksStaging` |
+| AC#8 Active root not staging target | managed name gate | `Ac8ActiveRootChainIsNotUsedAsStagingTarget` |
+| AC#9 Canonical chain hash | `HashChainContent` | `Ac9FinalCanonicalChainHashMatches` |
+| AC#10 Partial ≠ STAGED | `ArtifactStaged=false` | `Ac10PartialArtifactDoesNotReceiveStaged` |
+| AC#11 Reconnect create-or-verify | read-before-add | `Ac11StagingReconnectRecoversWithCreateOrVerify` |
+
+**Residuals:** Watchdog / activate / gRPC Deploy are M4-05+.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DetachedChainStagingLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
 ```
 
 ## Living Specification — snapshot/diff gRPC (M1-26)

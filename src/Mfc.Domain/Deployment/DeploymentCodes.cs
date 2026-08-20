@@ -53,6 +53,8 @@ public static class DeploymentCodes
 
     public const string StagingResourceCollision = "STAGING_RESOURCE_COLLISION";
 
+    public const string StagingPrefixDiverged = "STAGING_PREFIX_DIVERGED";
+
     public const string StagingArtifactHashMismatch = "STAGING_ARTIFACT_HASH_MISMATCH";
 
     public const string StagingRuleInvalid = "STAGING_RULE_INVALID";
