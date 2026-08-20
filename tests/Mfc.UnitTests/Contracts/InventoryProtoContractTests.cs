@@ -75,6 +75,7 @@ public sealed class InventoryProtoContractTests
                 "CreateNode",
                 "CreateSite",
                 "GetNode",
+                "GetNodeWorkflow",
                 "ListNodes",
                 "ListSites",
                 "RegisterDevice",

@@ -1,18 +1,26 @@
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Mfc.Application.Abstractions.ConnectionProfiles;
 using Mfc.Application.Models;
 using Mfc.Contracts.Mfc.V1;
+using Mfc.Domain;
 using Mfc.Domain.Inventory.Primitives;
+using Mfc.Domain.Workflow;
 using DomainDeviceRole = Mfc.Domain.Inventory.DeviceRole;
+using DomainDeviceSync = Mfc.Domain.Workflow.DeviceSyncClassification;
 using DomainNodeKind = Mfc.Domain.Inventory.NodeKind;
 using DomainNodeStatus = Mfc.Domain.Inventory.NodeStatus;
+using DomainNodeWorkflow = Mfc.Domain.Workflow.NodeWorkflowStatus;
 using DomainSiteStatus = Mfc.Domain.Inventory.SiteStatus;
 using DomainSupportState = Mfc.Domain.Inventory.SupportState;
 using DomainTrust = Mfc.Domain.Inventory.CertificateTrustMode;
 using DomainUplink = Mfc.Domain.Inventory.DeclaredUplinkMode;
 using ProtoDeviceRole = Mfc.Contracts.Mfc.V1.DeviceRole;
+using ProtoDeviceSync = Mfc.Contracts.Mfc.V1.DeviceSyncClassification;
+using ProtoDeviceWorkflowProjection = Mfc.Contracts.Mfc.V1.DeviceWorkflowProjection;
 using ProtoNodeKind = Mfc.Contracts.Mfc.V1.NodeKind;
 using ProtoNodeStatus = Mfc.Contracts.Mfc.V1.NodeStatus;
+using ProtoNodeWorkflow = Mfc.Contracts.Mfc.V1.NodeWorkflowStatus;
 using ProtoSiteStatus = Mfc.Contracts.Mfc.V1.SiteStatus;
 using ProtoSupportState = Mfc.Contracts.Mfc.V1.SupportState;
 using ProtoTrust = Mfc.Contracts.Mfc.V1.CertificateTrustMode;
@@ -58,6 +66,9 @@ internal static class InventoryProtoMapper
             RowVersion = view.RowVersion,
             Role = ToProto(view.Role),
             Reachability = string.IsNullOrWhiteSpace(view.Reachability) ? "Unknown" : view.Reachability,
+            SyncClassification = view.SyncClassification is null
+                ? ProtoDeviceSync.Unspecified
+                : ToProto(view.SyncClassification.Value),
         };
         if (view.LastCompletedCaptureId is Guid captureId)
         {
@@ -84,7 +95,55 @@ internal static class InventoryProtoMapper
             device.LastSnapshotAt = Timestamp.FromDateTimeOffset(lastSnapshot);
         }
 
+        if (TryHexToSha256(view.DesiredArtifactHashHex, out Sha256? desired))
+        {
+            device.DesiredArtifactHash = desired;
+        }
+
+        if (TryHexToSha256(view.LastCommittedArtifactHashHex, out Sha256? committed))
+        {
+            device.LastCommittedArtifactHash = committed;
+        }
+
+        if (TryHexToSha256(view.ActualManagedResourceHashHex, out Sha256? actual))
+        {
+            device.ActualManagedResourceHash = actual;
+        }
+
         return device;
+    }
+
+    public static NodeDetails ToProto(NodeDetailsView view)
+    {
+        NodeDetails details = new()
+        {
+            Node = ToProto(view.Node),
+            WorkflowStatus = view.WorkflowStatus is null
+                ? ProtoNodeWorkflow.Unspecified
+                : ToProto(view.WorkflowStatus.Value),
+        };
+        details.Devices.AddRange(view.Devices.Select(ToProto));
+        foreach (DeviceView device in view.Devices)
+        {
+            details.DeviceProjections.Add(ToDeviceProjection(device));
+        }
+
+        return details;
+    }
+
+    public static NodeWorkflow ToProto(Guid nodeId, NodeWorkflowProjectionView view)
+    {
+        NodeWorkflow message = new()
+        {
+            NodeId = ProtoUuid.FromGuid(nodeId),
+            WorkflowStatus = ToProto(view.NodeStatus),
+        };
+        foreach (DeviceWorkflowProjectionView device in view.Devices)
+        {
+            message.Devices.Add(ToDeviceProjection(device));
+        }
+
+        return message;
     }
 
     public static DeviceConnectionSummary ToProto(ConnectionProfileView view)
@@ -173,6 +232,84 @@ internal static class InventoryProtoMapper
         return Hash256.Create(sha.Value.ToByteArray());
     }
 
+    private static ProtoDeviceWorkflowProjection ToDeviceProjection(DeviceView view)
+    {
+        ProtoDeviceWorkflowProjection projection = new()
+        {
+            DeviceId = ProtoUuid.FromGuid(view.Id),
+            SyncClassification = view.SyncClassification is null
+                ? ProtoDeviceSync.Unspecified
+                : ToProto(view.SyncClassification.Value),
+            ContributingStatus = view.SyncClassification is null
+                ? ProtoNodeWorkflow.Unspecified
+                : ToContributingProto(view.SyncClassification.Value),
+        };
+        if (TryHexToSha256(view.DesiredArtifactHashHex, out Sha256? desired))
+        {
+            projection.DesiredArtifactHash = desired;
+        }
+
+        if (TryHexToSha256(view.LastCommittedArtifactHashHex, out Sha256? committed))
+        {
+            projection.LastCommittedArtifactHash = committed;
+        }
+
+        if (TryHexToSha256(view.ActualManagedResourceHashHex, out Sha256? actual))
+        {
+            projection.ActualManagedResourceHash = actual;
+        }
+
+        return projection;
+    }
+
+    private static ProtoDeviceWorkflowProjection ToDeviceProjection(DeviceWorkflowProjectionView view)
+    {
+        ProtoDeviceWorkflowProjection projection = new()
+        {
+            DeviceId = ProtoUuid.FromGuid(view.DeviceId),
+            SyncClassification = ToProto(view.SyncClassification),
+            ContributingStatus = view.ContributingStatus is null
+                ? ProtoNodeWorkflow.Unspecified
+                : ToProto(view.ContributingStatus.Value),
+        };
+        if (TryHexToSha256(view.HashState.DesiredArtifactHashHex, out Sha256? desired))
+        {
+            projection.DesiredArtifactHash = desired;
+        }
+
+        if (TryHexToSha256(view.HashState.LastCommittedArtifactHashHex, out Sha256? committed))
+        {
+            projection.LastCommittedArtifactHash = committed;
+        }
+
+        if (TryHexToSha256(view.HashState.ActualManagedResourceHashHex, out Sha256? actual))
+        {
+            projection.ActualManagedResourceHash = actual;
+        }
+
+        return projection;
+    }
+
+    private static bool TryHexToSha256(string? hex, out Sha256? sha)
+    {
+        sha = null;
+        if (string.IsNullOrWhiteSpace(hex))
+        {
+            return false;
+        }
+
+        try
+        {
+            byte[] bytes = Hash256.ParseHex(hex).Bytes.ToArray();
+            sha = new Sha256 { Value = ByteString.CopyFrom(bytes) };
+            return true;
+        }
+        catch (DomainInvariantException)
+        {
+            return false;
+        }
+    }
+
     private static ProtoSiteStatus ToProto(DomainSiteStatus status) => status switch
     {
         DomainSiteStatus.Draft => ProtoSiteStatus.Draft,
@@ -231,4 +368,43 @@ internal static class InventoryProtoMapper
         DomainTrust.SpkiPin => ProtoTrust.SpkiPin,
         _ => ProtoTrust.Unspecified,
     };
+
+    private static ProtoNodeWorkflow ToProto(DomainNodeWorkflow status) => status switch
+    {
+        DomainNodeWorkflow.InventoryIncomplete => ProtoNodeWorkflow.InventoryIncomplete,
+        DomainNodeWorkflow.ConnectionInvalid => ProtoNodeWorkflow.ConnectionInvalid,
+        DomainNodeWorkflow.CaptureRequired => ProtoNodeWorkflow.CaptureRequired,
+        DomainNodeWorkflow.TopologyBlocked => ProtoNodeWorkflow.TopologyBlocked,
+        DomainNodeWorkflow.OnboardingRequired => ProtoNodeWorkflow.OnboardingRequired,
+        DomainNodeWorkflow.OnboardingInProgress => ProtoNodeWorkflow.OnboardingInProgress,
+        DomainNodeWorkflow.PolicyRequired => ProtoNodeWorkflow.PolicyRequired,
+        DomainNodeWorkflow.AnalysisRequired => ProtoNodeWorkflow.AnalysisRequired,
+        DomainNodeWorkflow.AnalysisBlocked => ProtoNodeWorkflow.AnalysisBlocked,
+        DomainNodeWorkflow.PendingDeployment => ProtoNodeWorkflow.PendingDeployment,
+        DomainNodeWorkflow.DeploymentInProgress => ProtoNodeWorkflow.DeploymentInProgress,
+        DomainNodeWorkflow.Synchronized => ProtoNodeWorkflow.Synchronized,
+        DomainNodeWorkflow.Drifted => ProtoNodeWorkflow.Drifted,
+        DomainNodeWorkflow.RecoveryRequired => ProtoNodeWorkflow.RecoveryRequired,
+        _ => ProtoNodeWorkflow.Unspecified,
+    };
+
+    private static ProtoDeviceSync ToProto(DomainDeviceSync classification) => classification switch
+    {
+        DomainDeviceSync.Synchronized => ProtoDeviceSync.Synchronized,
+        DomainDeviceSync.PendingDeployment => ProtoDeviceSync.PendingDeployment,
+        DomainDeviceSync.Drifted => ProtoDeviceSync.Drifted,
+        DomainDeviceSync.RecoveryRequired => ProtoDeviceSync.RecoveryRequired,
+        DomainDeviceSync.Incomplete => ProtoDeviceSync.Incomplete,
+        _ => ProtoDeviceSync.Unspecified,
+    };
+
+    private static ProtoNodeWorkflow ToContributingProto(DomainDeviceSync classification)
+        => classification switch
+        {
+            DomainDeviceSync.RecoveryRequired => ProtoNodeWorkflow.RecoveryRequired,
+            DomainDeviceSync.Drifted => ProtoNodeWorkflow.Drifted,
+            DomainDeviceSync.PendingDeployment => ProtoNodeWorkflow.PendingDeployment,
+            DomainDeviceSync.Synchronized => ProtoNodeWorkflow.Synchronized,
+            _ => ProtoNodeWorkflow.Unspecified,
+        };
 }

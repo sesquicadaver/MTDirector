@@ -177,6 +177,7 @@ public sealed class InventoryTreeService : IInventoryTreeService
                     StatusText = FormatEnum(node.Status),
                     NodeKindText = FormatEnum(node.DeclaredKind),
                     UplinkModeText = FormatEnum(node.DeclaredUplinkMode),
+                    WorkflowStatusText = FormatEnum(details.WorkflowStatus),
                     Children = devices,
                 });
             }
@@ -224,7 +225,21 @@ public sealed class InventoryTreeService : IInventoryTreeService
             ModelText = model,
             VrrpRolesText = vrrp,
             LastSnapshotText = lastSnapshot,
+            DesiredHashText = FormatHash(device.DesiredArtifactHash),
+            CommittedHashText = FormatHash(device.LastCommittedArtifactHash),
+            ActualHashText = FormatHash(device.ActualManagedResourceHash),
         };
+    }
+
+    private static string FormatHash(Sha256? hash)
+    {
+        if (hash is null || hash.Value.Length == 0)
+        {
+            return "—";
+        }
+
+        string hex = Convert.ToHexString(hash.Value.Span).ToLowerInvariant();
+        return hex.Length <= 12 ? hex : hex[..12] + "…";
     }
 
     private static string FormatEnum<TEnum>(TEnum value)

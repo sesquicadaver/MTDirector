@@ -7,6 +7,7 @@ using Mfc.Application.Common;
 using Mfc.Application.Inventory;
 using Mfc.Application.Models;
 using Mfc.Application.Snapshots;
+using Mfc.Application.Workflow;
 using Mfc.Domain.Capabilities;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
@@ -159,7 +160,16 @@ public sealed class InventoryUseCaseTests
             Role = DeviceRole.Router,
         })).Value!;
 
-        GetNodeUseCase getNode = new(auth, nodes, devices, new FakeSnapshotStore());
+        ProjectNodeWorkflowUseCase projectWorkflow = new(
+            auth,
+            nodes,
+            devices,
+            new FakeDeviceHashStateStore(),
+            new FakeConnectionProfileReadStore(),
+            new FakeOnboardingStore(),
+            new FakeDeploymentStore(),
+            new FakePolicyApprovalStore());
+        GetNodeUseCase getNode = new(auth, nodes, devices, new FakeSnapshotStore(), projectWorkflow);
         ApplicationResult<NodeDetailsView> details = await getNode.ExecuteAsync(
             new GetNodeQuery { Actor = "a", NodeId = node.Id });
         Assert.True(details.IsSuccess);
@@ -1136,6 +1146,13 @@ public sealed class SnapshotUseCaseTests
         FakeNodeStore nodes = new();
         FakeDeviceStore devices = new();
         FakeSnapshotStore snapshots = new();
+        FakeDeviceHashStateStore hashStates = new();
+        FakeConnectionProfileReadStore connections = new();
+        FakeOnboardingStore onboarding = new();
+        FakeDeploymentStore deployments = new();
+        FakePolicyApprovalStore approvals = new();
+        ProjectNodeWorkflowUseCase projectWorkflow = new(
+            auth, nodes, devices, hashStates, connections, onboarding, deployments, approvals);
 
         SiteView site = (await CreateSite(auth, sites).ExecuteAsync(
             new CreateSiteCommand
@@ -1185,7 +1202,8 @@ public sealed class SnapshotUseCaseTests
         persisted!.RecordCompletedCapture(stored.Metadata.Id.Value);
         await devices.UpdateAsync(persisted);
 
-        ApplicationResult<NodeDetailsView> details = await new GetNodeUseCase(auth, nodes, devices, snapshots)
+        ApplicationResult<NodeDetailsView> details = await new GetNodeUseCase(
+                auth, nodes, devices, snapshots, projectWorkflow)
             .ExecuteAsync(new GetNodeQuery { Actor = "a", NodeId = node.Id });
         Assert.True(details.IsSuccess);
         Assert.Equal(completedAt, details.Value!.Devices[0].LastSnapshotAtUtc);

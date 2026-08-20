@@ -20,6 +20,8 @@ service InventoryService {
   rpc UpdateDevice(UpdateDeviceRequest) returns (Device);
   rpc UpdateDeviceConnection(UpdateDeviceConnectionRequest) returns (DeviceConnectionSummary);
   rpc ValidateDeviceConnection(ValidateDeviceConnectionRequest) returns (ValidateDeviceConnectionResponse);
+  // Derived desired/committed/actual projection (M6-01). Status is never stored on Node.
+  rpc GetNodeWorkflow(GetNodeWorkflowRequest) returns (NodeWorkflow);
 }
 
 enum SiteStatus {
@@ -110,11 +112,66 @@ message Device {
   optional string reachability = 13;
   repeated string vrrp_role_labels = 14;
   optional google.protobuf.Timestamp last_snapshot_at = 15;
+  // Desired / committed / actual artifact hashes (M6-01). Unset when unknown.
+  optional Sha256 desired_artifact_hash = 16;
+  optional Sha256 last_committed_artifact_hash = 17;
+  optional Sha256 actual_managed_resource_hash = 18;
+  DeviceSyncClassification sync_classification = 19;
+}
+
+// Derived Node workflow status (E2E Spec §7). Never persisted as an authoritative Node field.
+enum NodeWorkflowStatus {
+  NODE_WORKFLOW_STATUS_UNSPECIFIED = 0;
+  NODE_WORKFLOW_STATUS_INVENTORY_INCOMPLETE = 1;
+  NODE_WORKFLOW_STATUS_CONNECTION_INVALID = 2;
+  NODE_WORKFLOW_STATUS_CAPTURE_REQUIRED = 3;
+  NODE_WORKFLOW_STATUS_TOPOLOGY_BLOCKED = 4;
+  NODE_WORKFLOW_STATUS_ONBOARDING_REQUIRED = 5;
+  NODE_WORKFLOW_STATUS_ONBOARDING_IN_PROGRESS = 6;
+  NODE_WORKFLOW_STATUS_POLICY_REQUIRED = 7;
+  NODE_WORKFLOW_STATUS_ANALYSIS_REQUIRED = 8;
+  NODE_WORKFLOW_STATUS_ANALYSIS_BLOCKED = 9;
+  NODE_WORKFLOW_STATUS_PENDING_DEPLOYMENT = 10;
+  NODE_WORKFLOW_STATUS_DEPLOYMENT_IN_PROGRESS = 11;
+  NODE_WORKFLOW_STATUS_SYNCHRONIZED = 12;
+  NODE_WORKFLOW_STATUS_DRIFTED = 13;
+  NODE_WORKFLOW_STATUS_RECOVERY_REQUIRED = 14;
+}
+
+enum DeviceSyncClassification {
+  DEVICE_SYNC_CLASSIFICATION_UNSPECIFIED = 0;
+  DEVICE_SYNC_CLASSIFICATION_SYNCHRONIZED = 1;
+  DEVICE_SYNC_CLASSIFICATION_PENDING_DEPLOYMENT = 2;
+  DEVICE_SYNC_CLASSIFICATION_DRIFTED = 3;
+  DEVICE_SYNC_CLASSIFICATION_RECOVERY_REQUIRED = 4;
+  DEVICE_SYNC_CLASSIFICATION_INCOMPLETE = 5;
+}
+
+message DeviceWorkflowProjection {
+  Uuid device_id = 1;
+  optional Sha256 desired_artifact_hash = 2;
+  optional Sha256 last_committed_artifact_hash = 3;
+  optional Sha256 actual_managed_resource_hash = 4;
+  DeviceSyncClassification sync_classification = 5;
+  NodeWorkflowStatus contributing_status = 6;
+}
+
+message NodeWorkflow {
+  Uuid node_id = 1;
+  NodeWorkflowStatus workflow_status = 2;
+  repeated DeviceWorkflowProjection devices = 3;
 }
 
 message NodeDetails {
   Node node = 1;
   repeated Device devices = 2;
+  // Derived (M6-01). Unset only when projection was not requested/available.
+  NodeWorkflowStatus workflow_status = 3;
+  repeated DeviceWorkflowProjection device_projections = 4;
+}
+
+message GetNodeWorkflowRequest {
+  Uuid node_id = 1;
 }
 
 // Desktop-safe connection summary — never includes password/ciphertext.

@@ -1711,6 +1711,29 @@ python3 scripts/ci/verify-coverage-thresholds.py /path/to/coverage
 
 Domain/Application line ≥ 85%, branch ≥ 75% when `lines_valid > 0` (Bootstrap Plan §13.3).
 
+## Living Specification — desired/committed/actual projection (M6-01)
+
+Issue Set M6-01 + E2E Workflow Spec §7–§8 → derived Node workflow status from per-Device hashes:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Persist desired/committed/actual | `IDeviceHashStateStore` + Upsert/Get use cases | `Ac1PersistsDesiredCommittedAndActualHashes` |
+| AC#2 SYNCHRONIZED | `DeviceHashStateClassifier` | `Ac2SynchronizedWhenDesiredCommittedAndActualMatch` |
+| AC#3 PENDING ≠ drift | `DeviceHashStateClassifier` | `Ac3PendingDeploymentIsNotDrift` |
+| AC#4 Actual divergence → DRIFTED | `DeviceHashStateClassifier` | `Ac4ActualDivergenceIsDrifted` |
+| AC#5 Unknown anchor/actual → RECOVERY | `DeviceHashStateClassifier` | `Ac5UnknownAnchorOrActualIsRecoveryRequired` |
+| AC#6 Status derived (not Node column) | `NodeEntity` + projector | `Ac6WorkflowStatusIsDerivedNotPersistedOnNodeEntity` |
+| AC#7 Priority ordering | `NodeWorkflowStatusProjector` | `Ac7PriorityOrderingMatchesE2ESpec` |
+| AC#8 VRRP keeps per-device rows | `NodeWorkflowStatusProjector` | `Ac8VrrpAggregatesWithoutDroppingPerDeviceState` |
+| AC#9 Deterministic projection | `NodeWorkflowStatusProjector` | `Ac9ProjectionIsDeterministicAcrossInputPermutation` |
+| AC#10 Desktop three hash states | `InventoryTreeItem` / `InventoryNodeViewModel` | `Ac10DesktopSurfacesDesiredCommittedAndActualHashes` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DeviceStateProjectionLivingSpecTests|FullyQualifiedName~ArchitectureBoundary"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`.

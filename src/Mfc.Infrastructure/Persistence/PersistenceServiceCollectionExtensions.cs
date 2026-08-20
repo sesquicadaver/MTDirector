@@ -38,6 +38,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<ISiteStore, EfSiteStore>();
         services.AddScoped<INodeStore, EfNodeStore>();
         services.AddScoped<IDeviceStore, EfDeviceStore>();
+        services.AddScoped<IDeviceHashStateStore, EfDeviceHashStateStore>();
         services.AddScoped<IConnectionProfileReadStore, EfConnectionProfileReadStore>();
         services.AddScoped<IIdempotencyStore, EfIdempotencyStore>();
         services.AddScoped<ISnapshotStore, EfSnapshotStore>();

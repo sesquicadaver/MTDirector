@@ -23,6 +23,10 @@ public sealed partial class InventoryNodeViewModel : ObservableObject
         ModelText = item.ModelText;
         VrrpRolesText = item.VrrpRolesText;
         LastSnapshotText = item.LastSnapshotText;
+        WorkflowStatusText = item.WorkflowStatusText;
+        DesiredHashText = item.DesiredHashText;
+        CommittedHashText = item.CommittedHashText;
+        ActualHashText = item.ActualHashText;
         foreach (InventoryTreeItem child in item.Children)
         {
             Children.Add(new InventoryNodeViewModel(child, parentId: item.Id));
@@ -55,6 +59,14 @@ public sealed partial class InventoryNodeViewModel : ObservableObject
 
     public string LastSnapshotText { get; }
 
+    public string WorkflowStatusText { get; }
+
+    public string DesiredHashText { get; }
+
+    public string CommittedHashText { get; }
+
+    public string ActualHashText { get; }
+
     public ObservableCollection<InventoryNodeViewModel> Children { get; } = [];
 
     public string KindLabel => Kind switch
@@ -68,7 +80,7 @@ public sealed partial class InventoryNodeViewModel : ObservableObject
     public string Subtitle => Kind switch
     {
         InventoryTreeKind.Site => StatusText,
-        InventoryTreeKind.Node => $"{NodeKindText} · {UplinkModeText}",
+        InventoryTreeKind.Node => $"{NodeKindText} · {UplinkModeText} · {WorkflowStatusText}",
         InventoryTreeKind.Device =>
             $"{SupportStateText} · {ReachabilityText} · {RouterOsVersionText} · {ModelText}",
         _ => string.Empty,
@@ -78,11 +90,14 @@ public sealed partial class InventoryNodeViewModel : ObservableObject
     {
         InventoryTreeKind.Site => $"Status: {OrDash(StatusText)}",
         InventoryTreeKind.Node =>
-            $"Kind: {OrDash(NodeKindText)}; Uplink: {OrDash(UplinkModeText)}; Status: {OrDash(StatusText)}",
+            $"Kind: {OrDash(NodeKindText)}; Uplink: {OrDash(UplinkModeText)}; Status: {OrDash(StatusText)}; " +
+            $"Workflow: {OrDash(WorkflowStatusText)}",
         InventoryTreeKind.Device =>
             $"Support: {OrDash(SupportStateText)}; Reachability: {OrDash(ReachabilityText)}; " +
             $"Version: {OrDash(RouterOsVersionText)}; Model: {OrDash(ModelText)}; " +
-            $"VRRP: {OrDash(VrrpRolesText)}; Last snapshot: {OrDash(LastSnapshotText)}",
+            $"VRRP: {OrDash(VrrpRolesText)}; Last snapshot: {OrDash(LastSnapshotText)}; " +
+            $"Desired: {OrDash(DesiredHashText)}; Committed: {OrDash(CommittedHashText)}; " +
+            $"Actual: {OrDash(ActualHashText)}",
         _ => string.Empty,
     };
 
