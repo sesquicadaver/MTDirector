@@ -6,7 +6,7 @@ using Mfc.Desktop.Services;
 
 namespace Mfc.Desktop.ViewModels;
 
-/// <summary>Shell view-model: connection, inventory, snapshot, diff, zones, policies, and onboarding.</summary>
+/// <summary>Shell view-model: connection, inventory, snapshot, diff, zones, policies, onboarding, and deployment.</summary>
 public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
 {
     private readonly IControllerConnectionService _connection;
@@ -20,7 +20,8 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
         SnapshotDiffViewModel diff,
         ZonesViewModel zones,
         PoliciesViewModel policies,
-        OnboardingViewModel onboarding)
+        OnboardingViewModel onboarding,
+        DeploymentViewModel deployment)
     {
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _options = options ?? throw new ArgumentNullException(nameof(options));
@@ -30,6 +31,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
         Zones = zones ?? throw new ArgumentNullException(nameof(zones));
         Policies = policies ?? throw new ArgumentNullException(nameof(policies));
         Onboarding = onboarding ?? throw new ArgumentNullException(nameof(onboarding));
+        Deployment = deployment ?? throw new ArgumentNullException(nameof(deployment));
         _connection.StateChanged += OnConnectionStateChanged;
         SyncFromService();
     }
@@ -45,6 +47,8 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
     public PoliciesViewModel Policies { get; }
 
     public OnboardingViewModel Onboarding { get; }
+
+    public DeploymentViewModel Deployment { get; }
 
     public string ControllerEndpoint => _options.ControllerEndpoint;
 
@@ -143,6 +147,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
     {
         _connection.StateChanged -= OnConnectionStateChanged;
         Policies.Dispose();
+        Deployment.Dispose();
         Onboarding.Dispose();
         Zones.Dispose();
         Diff.Dispose();

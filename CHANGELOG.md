@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Safe deployment workflow API + Desktop (M4-12): Contracts `DeploymentService` (CreatePlan/Start/Watch/Rollback/GetRecoveryStatus), Application workflow use cases + `IDeploymentRuntime`, Controller hub/mapper, Desktop Deploy tab (semantic diff / artifacts / order / probes+TTL; no ForceApply / no raw ROS). Living Spec `DeploymentWorkflowLivingSpecTests` AC 1–11.
 - Onboarding integration acceptance (M5-10): standalone IPv4, dual-stack, multi-WAN, VRRP active/passive and split-master, CRS INPUT/OUTPUT without FORWARD; scheduler/flagged blockers; deadline/startup and crash recovery; guard/namespace collisions; Node never partially managed. Living Spec `OnboardingIntegrationAcceptanceLivingSpecTests` + `OnboardingTopologyAcceptanceTests`. **M5 CLOSED**.
 - Deployment plan, states and persistence (M4-01): immutable `DeploymentPlan` (old/new artifact hashes + anchor targets, expiry, `plan_hash`), Node/device closed SMs, exclusive Node lock (expired rows retained), write-ahead journal; Application `IDeploymentStore`; EF `DeploymentSchemaM401`. No campaign, no RouterOS writer. Living Spec `DeploymentLivingSpecTests` AC 1–12 + `DeploymentPersistTests`.
 - Packet-path deploy gate (N1-06): `DeploymentPacketPathGate` fail-closes Router/VRRP start on `PACKET_PATH_BYPASSES_IP_FIREWALL` / `PACKET_PATH_NOT_PROVEN` (empty pairs = not proven); CPU/MIXED allowed; Switch does not require FORWARD proof; PRECHECKING → BLOCKED without STAGING. Canonical `DeploymentPacketPathPrecheck`. Controller still does not disable L2/L3 offload. Desktop Deploy remains non-executable (no Save and Deploy; RPC is M4-12).
@@ -38,6 +39,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP: M4-12 deployment API/Desktop DONE; NEXT = M4-13 (#98).
 - ROADMAP §2.1 progress table synced after M4-11 (96/136 closed; M4 safe deploy 11/13); NEXT = M4-12 (#97).
 - ROADMAP: M4-11 rollback and crash recovery DONE; NEXT = M4-12 (#97); counters 96/109 MVP done (13 remaining).
 - ROADMAP §2.1 progress table synced after M4-10 (95/136 closed; M4 safe deploy 10/13); NEXT = M4-11 (#96).

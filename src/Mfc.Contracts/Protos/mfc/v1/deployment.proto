@@ -1,0 +1,201 @@
+syntax = "proto3";
+
+package mfc.v1;
+
+option csharp_namespace = "Mfc.Contracts.Mfc.V1";
+
+import "google/protobuf/timestamp.proto";
+import "mfc/v1/common.proto";
+
+// DeploymentService — Issue Set M4-12. Desktop stays Contracts-only (ADR 0005).
+// Mutation RPCs require idempotency_key. No ForceApply, no raw RouterOS command surface.
+service DeploymentService {
+  rpc CreatePlan(CreateDeploymentPlanRequest) returns (DeploymentPlanSummary);
+  rpc Start(StartDeploymentRequest) returns (DeploymentOperationSummary);
+  rpc Watch(WatchDeploymentRequest) returns (stream DeploymentProgress);
+  rpc Rollback(RollbackDeploymentRequest) returns (DeploymentOperationSummary);
+  rpc GetRecoveryStatus(GetDeploymentRecoveryStatusRequest) returns (DeploymentRecoveryStatus);
+}
+
+enum DeploymentOperationState {
+  DEPLOYMENT_OPERATION_STATE_UNSPECIFIED = 0;
+  DEPLOYMENT_OPERATION_STATE_CREATED = 1;
+  DEPLOYMENT_OPERATION_STATE_PRECHECKING = 2;
+  DEPLOYMENT_OPERATION_STATE_STAGING = 3;
+  DEPLOYMENT_OPERATION_STATE_STAGED = 4;
+  DEPLOYMENT_OPERATION_STATE_ARMING_WATCHDOG = 5;
+  DEPLOYMENT_OPERATION_STATE_WATCHDOG_ARMED = 6;
+  DEPLOYMENT_OPERATION_STATE_ACTIVATING = 7;
+  DEPLOYMENT_OPERATION_STATE_VERIFYING = 8;
+  DEPLOYMENT_OPERATION_STATE_DISARMING_WATCHDOG = 9;
+  DEPLOYMENT_OPERATION_STATE_COMMITTED = 10;
+  DEPLOYMENT_OPERATION_STATE_ROLLBACK_PENDING = 11;
+  DEPLOYMENT_OPERATION_STATE_ROLLING_BACK = 12;
+  DEPLOYMENT_OPERATION_STATE_ROLLED_BACK = 13;
+  DEPLOYMENT_OPERATION_STATE_BLOCKED = 14;
+  DEPLOYMENT_OPERATION_STATE_NO_CHANGES = 15;
+  DEPLOYMENT_OPERATION_STATE_CANCELED = 16;
+  DEPLOYMENT_OPERATION_STATE_FAILED = 17;
+  DEPLOYMENT_OPERATION_STATE_RECOVERY_REQUIRED = 18;
+}
+
+enum DeploymentRecoveryAction {
+  DEPLOYMENT_RECOVERY_ACTION_UNSPECIFIED = 0;
+  DEPLOYMENT_RECOVERY_ACTION_MARK_FAILED_OR_CANCELED = 1;
+  DEPLOYMENT_RECOVERY_ACTION_CONTROLLER_ROLLBACK = 2;
+  DEPLOYMENT_RECOVERY_ACTION_RECOGNIZE_WATCHDOG_ROLLBACK = 3;
+  DEPLOYMENT_RECOVERY_ACTION_RECOVERY_REQUIRED = 4;
+  DEPLOYMENT_RECOVERY_ACTION_KEEP_COMMITTED = 5;
+}
+
+enum DeploymentProbeKind {
+  DEPLOYMENT_PROBE_KIND_UNSPECIFIED = 0;
+  DEPLOYMENT_PROBE_KIND_ROUTER_PING = 1;
+  DEPLOYMENT_PROBE_KIND_API_SSL = 2;
+}
+
+enum DeploymentPacketPathKind {
+  DEPLOYMENT_PACKET_PATH_KIND_UNSPECIFIED = 0;
+  DEPLOYMENT_PACKET_PATH_KIND_CPU_FIREWALL = 1;
+  DEPLOYMENT_PACKET_PATH_KIND_HARDWARE_OFFLOADED = 2;
+  DEPLOYMENT_PACKET_PATH_KIND_MIXED = 3;
+  DEPLOYMENT_PACKET_PATH_KIND_INDETERMINATE = 4;
+}
+
+message DeploymentAnchorTargetInput {
+  string marker = 1;
+  string jump_target = 2;
+}
+
+message DeploymentProbeInput {
+  DeploymentProbeKind kind = 1;
+  string destination = 2;
+  uint32 timeout_milliseconds = 3;
+  optional string source_address = 4;
+  optional string routing_table = 5;
+  optional string interface = 6;
+}
+
+message DeploymentDevicePlanInput {
+  Uuid device_id = 1;
+  string expected_routeros_version = 2;
+  Sha256 expected_capability_hash = 3;
+  Sha256 expected_configuration_hash = 4;
+  Sha256 expected_compatibility_hash = 5;
+  Sha256 expected_guard_context_hash = 6;
+  Sha256 expected_anchor_context_hash = 7;
+  Sha256 old_artifact_hash = 8;
+  repeated DeploymentAnchorTargetInput old_anchor_targets = 9;
+  Sha256 new_artifact_hash = 10;
+  repeated DeploymentAnchorTargetInput new_anchor_targets = 11;
+  repeated string anchor_activation_order_markers = 12;
+  repeated Sha256 transition_state_hashes = 13;
+  uint32 rollback_ttl_seconds = 14;
+  repeated DeploymentProbeInput probes = 15;
+}
+
+message CreateDeploymentPlanRequest {
+  Uuid idempotency_key = 1;
+  Uuid node_id = 2;
+  Sha256 logical_policy_hash = 3;
+  Sha256 analysis_bundle_hash = 4;
+  Sha256 topology_projection_hash = 5;
+  repeated DeploymentDevicePlanInput devices = 6;
+}
+
+message DeploymentProbeView {
+  DeploymentProbeKind kind = 1;
+  string destination = 2;
+  uint32 timeout_milliseconds = 3;
+  optional string source_address = 4;
+  optional string routing_table = 5;
+  optional string interface = 6;
+}
+
+message DeploymentDevicePlanView {
+  Uuid device_id = 1;
+  Sha256 old_artifact_hash = 2;
+  Sha256 new_artifact_hash = 3;
+  repeated string activation_order_markers = 4;
+  repeated string rollback_order_markers = 5;
+  uint32 watchdog_ttl_seconds = 6;
+  repeated DeploymentProbeView probes = 7;
+}
+
+message DeploymentPlanSummary {
+  Uuid plan_id = 1;
+  Uuid node_id = 2;
+  Sha256 plan_hash = 3;
+  google.protobuf.Timestamp expires_at = 4;
+  repeated string semantic_diff_entries = 5;
+  repeated Uuid activation_order_device_ids = 6;
+  repeated Uuid rollback_order_device_ids = 7;
+  repeated DeploymentDevicePlanView devices = 8;
+}
+
+message DeploymentPacketPathPairFact {
+  string ingress_interface = 1;
+  string egress_interface = 2;
+  DeploymentPacketPathKind path_class = 3;
+  optional string bridge = 4;
+  optional string vlan_id = 5;
+}
+
+message StartDeploymentRequest {
+  Uuid idempotency_key = 1;
+  Uuid plan_id = 2;
+  Sha256 plan_hash = 3;
+  repeated DeploymentPacketPathPairFact packet_path_pairs = 4;
+}
+
+message RollbackDeploymentRequest {
+  Uuid idempotency_key = 1;
+  Uuid operation_id = 2;
+}
+
+message DeploymentOperationSummary {
+  Uuid operation_id = 1;
+  Uuid plan_id = 2;
+  Uuid node_id = 3;
+  DeploymentOperationState state = 4;
+  optional string error_code = 5;
+  repeated string timeline = 6;
+}
+
+message WatchDeploymentRequest {
+  Uuid operation_id = 1;
+}
+
+message DeploymentProgress {
+  Uuid operation_id = 1;
+  DeploymentOperationState state = 2;
+  optional string error_code = 3;
+  optional string timeline_entry = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+}
+
+message DeploymentLiveJumpFact {
+  string marker = 1;
+  string jump_target = 2;
+}
+
+message DeploymentLiveWatchdogFact {
+  string name = 1;
+  bool disabled = 2;
+}
+
+message GetDeploymentRecoveryStatusRequest {
+  Uuid node_id = 1;
+  optional Uuid operation_id = 2;
+  repeated DeploymentLiveJumpFact jumps = 3;
+  repeated DeploymentLiveWatchdogFact watchdog_schedulers = 4;
+}
+
+message DeploymentRecoveryStatus {
+  Uuid node_id = 1;
+  optional Uuid operation_id = 2;
+  DeploymentOperationState operation_state = 3;
+  optional string error_code = 4;
+  DeploymentRecoveryAction action = 5;
+  repeated string device_states = 6;
+}

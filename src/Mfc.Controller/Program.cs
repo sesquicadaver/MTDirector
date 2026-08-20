@@ -2,6 +2,7 @@ using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Abstractions.Time;
+using Mfc.Application.Deployment;
 using Mfc.Application.Inventory;
 using Mfc.Application.Onboarding;
 using Mfc.Application.Policies;
@@ -21,8 +22,8 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 namespace Mfc.Controller;
 
 /// <summary>
-/// Composition root: health + inventory/snapshot/zone/policy/onboarding gRPC host with PostgreSQL schema guard
-/// (M0-05/M0-07, M1-25/M1-26, M2-05/M2-06).
+/// Composition root: health + inventory/snapshot/zone/policy/onboarding/deployment gRPC host with PostgreSQL schema guard
+/// (M0-05/M0-07, M1-25/M1-26, M2-05/M2-06, M4-12).
 /// </summary>
 public static class Program
 {
@@ -114,12 +115,15 @@ public static class Program
         RegisterZoneApplication(builder.Services);
         RegisterPolicyApplication(builder.Services);
         RegisterOnboardingApplication(builder.Services);
+        RegisterDeploymentApplication(builder.Services);
         builder.Services.TryAddSingleton<IRouterOsReadPort, ProbeOnlyRouterOsReadPort>();
         builder.Services.TryAddSingleton<ISnapshotCapturePort, NotConfiguredSnapshotCapturePort>();
         builder.Services.TryAddSingleton<Mfc.Application.Abstractions.Onboarding.IOnboardingRuntime, Mfc.Application.Abstractions.Onboarding.NotConfiguredOnboardingRuntime>();
+        builder.Services.TryAddSingleton<Mfc.Application.Abstractions.Deployment.IDeploymentRuntime, Mfc.Application.Abstractions.Deployment.NotConfiguredDeploymentRuntime>();
         builder.Services.AddSingleton<ValidateDeviceConnectionCoordinator>();
         builder.Services.AddSingleton<CaptureProgressHub>();
         builder.Services.AddSingleton<OnboardingProgressHub>();
+        builder.Services.AddSingleton<DeploymentProgressHub>();
 
         builder.WebHost.ConfigureKestrel(kestrel =>
         {
@@ -144,6 +148,7 @@ public static class Program
         app.MapGrpcService<ZoneGrpcService>();
         app.MapGrpcService<PolicyGrpcService>();
         app.MapGrpcService<OnboardingGrpcService>();
+        app.MapGrpcService<DeploymentGrpcService>();
         return app;
     }
 
@@ -239,6 +244,14 @@ public static class Program
         services.AddScoped<StartOnboardingUseCase>();
         services.AddScoped<RollbackOnboardingWorkflowUseCase>();
         services.AddScoped<GetOnboardingRecoveryStatusUseCase>();
+    }
+
+    private static void RegisterDeploymentApplication(IServiceCollection services)
+    {
+        services.AddScoped<CreateDeploymentPlanUseCase>();
+        services.AddScoped<StartDeploymentUseCase>();
+        services.AddScoped<RollbackDeploymentWorkflowUseCase>();
+        services.AddScoped<GetDeploymentRecoveryStatusUseCase>();
     }
 
     public static bool ContainsMigrateOnly(IEnumerable<string> args)

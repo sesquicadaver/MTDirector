@@ -7,6 +7,8 @@ using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Domain.Canonicalization;
 using Mfc.Domain.Capabilities;
+using Mfc.Domain.Deployment;
+using Mfc.Domain.Deployment.Primitives;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
@@ -192,6 +194,100 @@ internal sealed class FakeOnboardingStore : IOnboardingStore
         CancellationToken cancellationToken = default)
         => Task.FromResult<IReadOnlyList<OnboardingStep>>(
             _steps.Values.Where(s => s.OperationId == operationId).ToArray());
+}
+
+internal sealed class FakeDeploymentStore : IDeploymentStore
+{
+    private readonly Dictionary<Guid, DeploymentPlan> _plans = [];
+    private readonly Dictionary<Guid, DeploymentOperation> _operations = [];
+    private readonly Dictionary<(Guid OperationId, Guid DeviceId), DeviceDeployment> _devices = [];
+    private readonly Dictionary<Guid, DeploymentStep> _steps = [];
+    private readonly Dictionary<Guid, DeploymentLock> _locks = [];
+
+    public IReadOnlyCollection<DeploymentOperation> Operations => _operations.Values;
+
+    public Task AddPlanAsync(DeploymentPlan plan, CancellationToken cancellationToken = default)
+    {
+        _plans[plan.Id.Value] = plan;
+        return Task.CompletedTask;
+    }
+
+    public Task<DeploymentPlan?> GetPlanAsync(DeploymentPlanId id, CancellationToken cancellationToken = default)
+        => Task.FromResult(_plans.TryGetValue(id.Value, out DeploymentPlan? plan) ? plan : null);
+
+    public Task AddOperationAsync(DeploymentOperation operation, CancellationToken cancellationToken = default)
+    {
+        _operations[operation.Id.Value] = operation;
+        return Task.CompletedTask;
+    }
+
+    public Task SaveOperationAsync(DeploymentOperation operation, CancellationToken cancellationToken = default)
+    {
+        _operations[operation.Id.Value] = operation;
+        return Task.CompletedTask;
+    }
+
+    public Task<DeploymentOperation?> GetOperationAsync(
+        DeploymentOperationId id,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(_operations.TryGetValue(id.Value, out DeploymentOperation? operation) ? operation : null);
+
+    public Task<IReadOnlyList<DeploymentOperation>> ListNonterminalByNodeAsync(
+        NodeId nodeId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<DeploymentOperation>>(
+            _operations.Values.Where(o => o.NodeId == nodeId && o.IsNonterminal).ToArray());
+
+    public Task AddDeviceStateAsync(DeviceDeployment device, CancellationToken cancellationToken = default)
+    {
+        _devices[(device.OperationId.Value, device.DeviceId.Value)] = device;
+        return Task.CompletedTask;
+    }
+
+    public Task SaveDeviceStateAsync(DeviceDeployment device, CancellationToken cancellationToken = default)
+    {
+        _devices[(device.OperationId.Value, device.DeviceId.Value)] = device;
+        return Task.CompletedTask;
+    }
+
+    public Task<IReadOnlyList<DeviceDeployment>> ListDeviceStatesAsync(
+        DeploymentOperationId operationId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<DeviceDeployment>>(
+            _devices.Values.Where(d => d.OperationId == operationId).ToArray());
+
+    public Task AddStepAsync(DeploymentStep deploymentStep, CancellationToken cancellationToken = default)
+    {
+        _steps[deploymentStep.Id.Value] = deploymentStep;
+        return Task.CompletedTask;
+    }
+
+    public Task SaveStepAsync(DeploymentStep deploymentStep, CancellationToken cancellationToken = default)
+    {
+        _steps[deploymentStep.Id.Value] = deploymentStep;
+        return Task.CompletedTask;
+    }
+
+    public Task<IReadOnlyList<DeploymentStep>> ListStepsAsync(
+        DeploymentOperationId operationId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<DeploymentStep>>(
+            _steps.Values.Where(s => s.OperationId == operationId).ToArray());
+
+    public Task AddLockAsync(DeploymentLock deploymentLock, CancellationToken cancellationToken = default)
+    {
+        _locks[deploymentLock.NodeId.Value] = deploymentLock;
+        return Task.CompletedTask;
+    }
+
+    public Task SaveLockAsync(DeploymentLock deploymentLock, CancellationToken cancellationToken = default)
+    {
+        _locks[deploymentLock.NodeId.Value] = deploymentLock;
+        return Task.CompletedTask;
+    }
+
+    public Task<DeploymentLock?> GetLockByNodeAsync(NodeId nodeId, CancellationToken cancellationToken = default)
+        => Task.FromResult(_locks.TryGetValue(nodeId.Value, out DeploymentLock? value) ? value : null);
 }
 
 internal sealed class FakeIdempotencyStore : IIdempotencyStore

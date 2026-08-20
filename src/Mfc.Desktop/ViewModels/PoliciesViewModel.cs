@@ -12,7 +12,7 @@ namespace Mfc.Desktop.ViewModels;
 public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
 {
     private const string DeployResidual =
-        "Deploy stays blocked from policy authoring (no Save and Deploy). Packet-path PACKET_PATH_* blockers fail-closed in Domain; deployment RPC is M4-12.";
+        "Deploy from Policies stays blocked (no Save and Deploy). Use the Deploy tab for safe deployment workflow (M4-12).";
 
     private readonly IPolicyPanelService _policies;
     private readonly IControllerConnectionService _connection;
