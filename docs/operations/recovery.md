@@ -1,10 +1,12 @@
 # Recovery
 
+Part of the MVP operations set ([`operations-manual.md`](operations-manual.md), [`../release/mvp-acceptance.md`](../release/mvp-acceptance.md)).
+
 ## Database
 
 1. Stop Controller instances that write to the affected database.
 2. Restore PostgreSQL from the last known-good backup (PITR if configured).
-3. Confirm `__EFMigrationsHistory` matches the deployed binary’s migrations.
+3. Confirm `__EFMigrationsHistory` matches the deployed binary’s migrations (or re-apply via EF migrations bundle from `scripts/release/create-migration-bundle.sh`).
 4. Start Controller (schema guard must pass). Do **not** run experimental `Down()` migrations.
 5. Acceptance coverage: Integration `SecurityBackupRestoreAcceptanceTests` (M6-08 AC11–14) runs in-container `pg_dump`/`pg_restore` against Testcontainers Postgres and checks snapshot hashes, active artifact refs, and nonterminal recovery.
 
