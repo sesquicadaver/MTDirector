@@ -1,3 +1,5 @@
+using System.Globalization;
+using DotNet.Testcontainers.Containers;
 using Npgsql;
 using Testcontainers.PostgreSql;
 using Xunit;
@@ -43,6 +45,42 @@ public sealed class PostgresFixture : IAsyncLifetime
             Database = dbName,
         };
         return test.ConnectionString;
+    }
+
+    /// <summary>
+    /// Runs <c>pg_dump -Fc</c> then <c>pg_restore</c> inside the Postgres container (M6-08 AC11).
+    /// Avoids host client version skew and host volume mount issues.
+    /// </summary>
+    public async Task DumpAndRestoreAsync(
+        string sourceConnectionString,
+        string targetConnectionString,
+        CancellationToken cancellationToken = default)
+    {
+        string sourceDb = new NpgsqlConnectionStringBuilder(sourceConnectionString).Database
+            ?? throw new InvalidOperationException("Source connection string has no database.");
+        string targetDb = new NpgsqlConnectionStringBuilder(targetConnectionString).Database
+            ?? throw new InvalidOperationException("Target connection string has no database.");
+        string dumpPath = "/tmp/mfc-m608-" + Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture) + ".dump";
+
+        ExecResult dump = await _container.ExecAsync(
+            ["pg_dump", "-U", "mfc", "-d", sourceDb, "-Fc", "-f", dumpPath],
+            cancellationToken).ConfigureAwait(false);
+        if (dump.ExitCode != 0)
+        {
+            throw new InvalidOperationException(
+                $"pg_dump failed ({dump.ExitCode}): {dump.Stderr}{dump.Stdout}");
+        }
+
+        ExecResult restore = await _container.ExecAsync(
+            ["pg_restore", "-U", "mfc", "-d", targetDb, "--no-owner", "--no-acl", dumpPath],
+            cancellationToken).ConfigureAwait(false);
+        if (restore.ExitCode != 0)
+        {
+            throw new InvalidOperationException(
+                $"pg_restore failed ({restore.ExitCode}): {restore.Stderr}{restore.Stdout}");
+        }
+
+        _ = await _container.ExecAsync(["rm", "-f", dumpPath], cancellationToken).ConfigureAwait(false);
     }
 }
 

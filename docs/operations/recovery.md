@@ -6,6 +6,7 @@
 2. Restore PostgreSQL from the last known-good backup (PITR if configured).
 3. Confirm `__EFMigrationsHistory` matches the deployed binary’s migrations.
 4. Start Controller (schema guard must pass). Do **not** run experimental `Down()` migrations.
+5. Acceptance coverage: Integration `SecurityBackupRestoreAcceptanceTests` (M6-08 AC11–14) runs in-container `pg_dump`/`pg_restore` against Testcontainers Postgres and checks snapshot hashes, active artifact refs, and nonterminal recovery.
 
 ## Controller process
 
