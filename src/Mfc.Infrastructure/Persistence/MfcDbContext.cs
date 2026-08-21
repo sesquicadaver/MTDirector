@@ -31,6 +31,8 @@ public sealed class MfcDbContext : DbContext
 
     public DbSet<DeviceHashStateEntity> DeviceHashStates => Set<DeviceHashStateEntity>();
 
+    public DbSet<RoutingAssuranceStateEntity> RoutingAssuranceStates => Set<RoutingAssuranceStateEntity>();
+
     public DbSet<DriftEventEntity> DriftEvents => Set<DriftEventEntity>();
 
     public DbSet<DeviceConnectionProfileEntity> DeviceConnectionProfiles => Set<DeviceConnectionProfileEntity>();

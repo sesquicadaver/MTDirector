@@ -17,6 +17,7 @@ using Mfc.Domain.Onboarding;
 using Mfc.Domain.Onboarding.Primitives;
 using Mfc.Domain.Policy;
 using Mfc.Domain.Policy.Primitives;
+using Mfc.Domain.Routing;
 using Mfc.Domain.Snapshots;
 using Mfc.Domain.Workflow;
 
@@ -1278,6 +1279,21 @@ internal sealed class FakeDeviceHashStateStore : IDeviceHashStateStore
                 .OrderBy(static s => s.DeviceId.Value)
                 .Take(Math.Max(0, limit))
                 .ToArray());
+}
+
+internal sealed class FakeRoutingAssuranceStateStore : IRoutingAssuranceStateStore
+{
+    private readonly Dictionary<Guid, RoutingAssuranceState> _byDevice = [];
+
+    public Task UpsertAsync(RoutingAssuranceState state, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        _byDevice[state.DeviceId.Value] = state;
+        return Task.CompletedTask;
+    }
+
+    public Task<RoutingAssuranceState?> GetAsync(DeviceId deviceId, CancellationToken cancellationToken = default)
+        => Task.FromResult(_byDevice.TryGetValue(deviceId.Value, out RoutingAssuranceState? state) ? state : null);
 }
 
 internal sealed class FakeDriftEventStore : IDriftEventStore

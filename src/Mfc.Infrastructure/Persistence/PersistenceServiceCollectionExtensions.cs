@@ -5,6 +5,7 @@ using Mfc.Infrastructure.Persistence.Hosting;
 using Mfc.Infrastructure.Persistence.Inventory;
 using Mfc.Infrastructure.Persistence.Onboarding;
 using Mfc.Infrastructure.Persistence.Policies;
+using Mfc.Infrastructure.Persistence.Routing;
 using Mfc.Infrastructure.Persistence.Snapshots;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +41,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<INodeStore, EfNodeStore>();
         services.AddScoped<IDeviceStore, EfDeviceStore>();
         services.AddScoped<IDeviceHashStateStore, EfDeviceHashStateStore>();
+        services.AddScoped<IRoutingAssuranceStateStore, EfRoutingAssuranceStateStore>();
         services.AddScoped<IDriftEventStore, EfDriftEventStore>();
         services.AddScoped<IConnectionProfileReadStore, EfConnectionProfileReadStore>();
         services.AddScoped<IIdempotencyStore, EfIdempotencyStore>();

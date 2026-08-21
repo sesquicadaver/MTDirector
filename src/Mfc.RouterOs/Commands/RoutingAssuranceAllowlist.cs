@@ -3,7 +3,8 @@ namespace Mfc.RouterOs.Commands;
 /// <summary>
 /// Compile-time routing-assurance read allowlist surface (M7.1-01).
 /// Covers Spec §3 mandatory sections; Controller must not manage routing writes.
-/// Persistence/mapping of settings and filter rules is deferred to M7.1-02+.
+/// M7.1-01 registers <see cref="RoutingAssuranceAllowlist"/> paths (settings, VRF, filter rules);
+/// M7.1-02 maps those sections into ConfigurationHashMaterial / RoutingAssuranceState.
 /// </summary>
 public static class RoutingAssuranceAllowlist
 {

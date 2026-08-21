@@ -1,0 +1,180 @@
+using System.Globalization;
+using Mfc.Application.Abstractions.Authorization;
+using Mfc.Application.Abstractions.Persistence;
+using Mfc.Application.Abstractions.Time;
+using Mfc.Application.Common;
+using Mfc.Application.Models;
+using Mfc.Domain;
+using Mfc.Domain.Inventory;
+using Mfc.Domain.Inventory.Primitives;
+using Mfc.Domain.Routing;
+using Auth = Mfc.Application.Common.AuthorizationGuard;
+
+namespace Mfc.Application.Routing;
+
+/// <summary>Upserts routing assurance configuration + operational snapshots for one Device.</summary>
+public sealed class UpsertRoutingAssuranceStateCommand
+{
+    public required string Actor { get; init; }
+
+    public required Guid DeviceId { get; init; }
+
+    public required RoutingConfigurationSnapshot Configuration { get; init; }
+
+    public required RoutingOperationalSnapshot OperationalState { get; init; }
+
+    /// <summary>Deferred slot — must be empty until M7.1-06.</summary>
+    public IReadOnlyList<RouteExpectation> RouteExpectations { get; init; } = [];
+
+    /// <summary>Deferred slot — must be empty until analysis issues populate findings.</summary>
+    public IReadOnlyList<RouteFinding> RouteFindings { get; init; } = [];
+
+    /// <summary>Deferred slot — must be empty until M7.1-03.</summary>
+    public IReadOnlyList<RouteResolutionTrace> ResolutionTraces { get; init; } = [];
+}
+
+/// <summary>Stores routing assurance state shell (M7.1-02).</summary>
+public sealed class UpsertRoutingAssuranceStateUseCase
+{
+    private readonly IAuthorizationBoundary _auth;
+    private readonly IDeviceStore _devices;
+    private readonly IRoutingAssuranceStateStore _states;
+    private readonly IClock _clock;
+
+    public UpsertRoutingAssuranceStateUseCase(
+        IAuthorizationBoundary auth,
+        IDeviceStore devices,
+        IRoutingAssuranceStateStore states,
+        IClock clock)
+    {
+        ArgumentNullException.ThrowIfNull(auth);
+        ArgumentNullException.ThrowIfNull(devices);
+        ArgumentNullException.ThrowIfNull(states);
+        ArgumentNullException.ThrowIfNull(clock);
+        _auth = auth;
+        _devices = devices;
+        _states = states;
+        _clock = clock;
+    }
+
+    public async Task<ApplicationResult<RoutingAssuranceStateView>> ExecuteAsync(
+        UpsertRoutingAssuranceStateCommand command,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+        ApplicationError? authError = await Auth.EnsureAsync(
+            _auth, command.Actor, ApplicationPermissions.InventoryWrite, cancellationToken).ConfigureAwait(false);
+        if (authError is not null)
+        {
+            return ApplicationResults.Fail(authError);
+        }
+
+        DeviceId deviceId = new(command.DeviceId);
+        Device? device = await _devices.GetAsync(deviceId, cancellationToken).ConfigureAwait(false);
+        if (device is null)
+        {
+            return ApplicationResults.Fail(ApplicationError.NotFound($"Device '{command.DeviceId}' not found."));
+        }
+
+        if (command.Configuration is null || command.OperationalState is null)
+        {
+            return ApplicationResults.Fail(
+                ApplicationError.Validation("Configuration and operational_state snapshots are required."));
+        }
+
+        DateTimeOffset now = _clock.UtcNow;
+        RoutingAssuranceState? existing = await _states.GetAsync(deviceId, cancellationToken).ConfigureAwait(false);
+        RoutingAssuranceState state = existing is null
+            ? RoutingAssuranceState.Create(
+                deviceId,
+                command.Configuration,
+                command.OperationalState,
+                now,
+                command.RouteExpectations,
+                command.RouteFindings,
+                command.ResolutionTraces)
+            : existing.With(
+                command.Configuration,
+                command.OperationalState,
+                now,
+                command.RouteExpectations,
+                command.RouteFindings,
+                command.ResolutionTraces);
+
+        await _states.UpsertAsync(state, cancellationToken).ConfigureAwait(false);
+        return ApplicationResults.Ok(RoutingAssuranceViewMapper.ToView(state));
+    }
+}
+
+/// <summary>Loads one routing assurance state row.</summary>
+public sealed class GetRoutingAssuranceStateQuery
+{
+    public required string Actor { get; init; }
+
+    public required Guid DeviceId { get; init; }
+}
+
+/// <summary>Reads persisted routing assurance state (M7.1-02).</summary>
+public sealed class GetRoutingAssuranceStateUseCase
+{
+    private readonly IAuthorizationBoundary _auth;
+    private readonly IRoutingAssuranceStateStore _states;
+
+    public GetRoutingAssuranceStateUseCase(IAuthorizationBoundary auth, IRoutingAssuranceStateStore states)
+    {
+        ArgumentNullException.ThrowIfNull(auth);
+        ArgumentNullException.ThrowIfNull(states);
+        _auth = auth;
+        _states = states;
+    }
+
+    public async Task<ApplicationResult<RoutingAssuranceStateView>> ExecuteAsync(
+        GetRoutingAssuranceStateQuery query,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        ApplicationError? authError = await Auth.EnsureAsync(
+            _auth, query.Actor, ApplicationPermissions.InventoryRead, cancellationToken).ConfigureAwait(false);
+        if (authError is not null)
+        {
+            return ApplicationResults.Fail(authError);
+        }
+
+        RoutingAssuranceState? state = await _states
+            .GetAsync(new DeviceId(query.DeviceId), cancellationToken)
+            .ConfigureAwait(false);
+        if (state is null)
+        {
+            return ApplicationResults.Fail(
+                ApplicationError.NotFound(
+                    string.Create(
+                        CultureInfo.InvariantCulture,
+                        $"Routing assurance state '{query.DeviceId}' not found.")));
+        }
+
+        return ApplicationResults.Ok(RoutingAssuranceViewMapper.ToView(state));
+    }
+}
+
+internal static class RoutingAssuranceViewMapper
+{
+    public static RoutingAssuranceStateView ToView(RoutingAssuranceState state)
+        => new()
+        {
+            DeviceId = state.DeviceId.Value,
+            ConfigurationHashHex = state.ConfigurationHash.ToString(),
+            OperationalHashHex = state.OperationalHash.ToString(),
+            RouteExpectationCount = state.RouteExpectations.Count,
+            RouteFindingCount = state.RouteFindings.Count,
+            ResolutionTraceCount = state.ResolutionTraces.Count,
+            ConfigurationTableCount = state.Configuration.Tables.Count,
+            ConfigurationRuleCount = state.Configuration.Rules.Count,
+            ConfigurationVrfCount = state.Configuration.Vrfs.Count,
+            ConfigurationStaticRouteCount = state.Configuration.StaticRoutes.Count,
+            ConfigurationFilterRuleCount = state.Configuration.FilterRules.Count,
+            OperationalRouteCount = state.OperationalState.Routes.Count,
+            OperationalDefaultRouteCount = state.OperationalState.DefaultRoutes.Count,
+            UpdatedAtUtc = state.UpdatedAtUtc,
+            RowVersion = state.RowVersion,
+        };
+}

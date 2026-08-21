@@ -467,11 +467,25 @@ public sealed class DiscoveryCanonicalProjectorTests
         => new()
         {
             RoutingTables = [],
+            RoutingSettings = new RoutingSettingsDiscovery
+            {
+                PolicyRules = null,
+                CheckGatewayPingCount = null,
+                CheckGatewayPingInterval = null,
+                CheckGatewayPingTimeout = null,
+                ConnectedInChain = null,
+                DynamicInChain = null,
+                SingleProcess = null,
+                RawProperties = EmptyBag(),
+            },
             RoutingRules = [],
+            Vrfs = [],
             Ipv4StaticRoutes = ipv4StaticRoutes ?? [],
             Ipv6StaticRoutes = [],
             Ipv4DefaultRouteState = [],
             Ipv6DefaultRouteState = [],
+            RoutingFilterRules = [],
+            RoutingFilterSelectRules = [],
             Ipv4NatRules = [],
             Ipv6NatRules = [],
             Ipv4RawRules = [],

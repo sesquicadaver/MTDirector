@@ -83,6 +83,43 @@ public sealed class RoutingDependencyDiscoveryTests
     }
 
     [Fact]
+    public void MapsRoutingSettingsVrfAndFilterRulesIntoConfigurationMaterial()
+    {
+        RoutingDependencyDiscoveryResult result = BuildMinimal(
+            routingSettings: Ok(
+                RosReadCommandId.RoutingSettings,
+                Row(("policy-rules", "lookup-only-in-table,lookup"), ("single-process", "yes"))),
+            ipVrfs: Ok(
+                RosReadCommandId.IpVrfs,
+                Row(("name", "corp"), ("interfaces", "vlan10"), ("disabled", "false"))),
+            routingFilterRules: Ok(
+                RosReadCommandId.RoutingFilterRules,
+                Row(("chain", "bgp-in"), ("rule", "accept"), ("disabled", "false"))),
+            routingFilterSelectRules: Ok(
+                RosReadCommandId.RoutingFilterSelectRules,
+                Row(("chain", "select"), ("rule", "jump bgp-in"), ("disabled", "false"))));
+
+        Assert.Equal("lookup-only-in-table,lookup", result.RoutingSettings.PolicyRules);
+        Assert.Equal("corp", Assert.Single(result.Vrfs).Name);
+        Assert.Equal("bgp-in", Assert.Single(result.RoutingFilterRules).Chain);
+        Assert.Equal("select", Assert.Single(result.RoutingFilterSelectRules).Chain);
+        Assert.Equal("lookup-only-in-table,lookup", result.ConfigurationHashMaterial["rsettings.policy-rules"]);
+        Assert.Equal("vlan10", result.ConfigurationHashMaterial["vrf.corp.interfaces"]);
+        Assert.Equal("accept", result.ConfigurationHashMaterial["filter.0.rule"]);
+        Assert.Equal("jump bgp-in", result.ConfigurationHashMaterial["filter-select.0.rule"]);
+    }
+
+    [Fact]
+    public void OperationalHashMaterialExcludesConfigurationDistance()
+    {
+        RoutingDependencyDiscoveryResult result = FirewallFilterDiscoveryLike();
+        Assert.Contains(result.OperationalHashMaterial.Keys, k => k.Contains("gateway-status", StringComparison.Ordinal));
+        Assert.Contains(result.OperationalHashMaterial.Keys, k => k.StartsWith("default.", StringComparison.Ordinal));
+        Assert.DoesNotContain(result.ConfigurationHashMaterial.Keys, k => k.Contains("gateway-status", StringComparison.Ordinal));
+        Assert.DoesNotContain(result.ConfigurationHashMaterial.Keys, k => k.StartsWith("default.", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void DiscoveryCommandSetNeverTouchesVpnPeerSecrets()
     {
         foreach (RosReadCommandId id in RoutingDependencyDiscovery.DiscoveryCommandIds)
@@ -173,11 +210,15 @@ public sealed class RoutingDependencyDiscoveryTests
 
     private static RoutingDependencyDiscoveryResult BuildMinimal(
         RosReadCommandResult? routingTables = null,
+        RosReadCommandResult? routingSettings = null,
         RosReadCommandResult? routingRules = null,
+        RosReadCommandResult? ipVrfs = null,
         RosReadCommandResult? ipv4StaticRoutes = null,
         RosReadCommandResult? ipv6StaticRoutes = null,
         RosReadCommandResult? ipv4DefaultRouteState = null,
         RosReadCommandResult? ipv6DefaultRouteState = null,
+        RosReadCommandResult? routingFilterRules = null,
+        RosReadCommandResult? routingFilterSelectRules = null,
         RosReadCommandResult? ipv4Nat = null,
         RosReadCommandResult? ipv6Nat = null,
         RosReadCommandResult? ipv4Raw = null,
@@ -188,11 +229,15 @@ public sealed class RoutingDependencyDiscoveryTests
         RosReadCommandResult? ipv6Settings = null)
         => RoutingDependencyDiscovery.BuildResult(
             routingTables ?? Ok(RosReadCommandId.RoutingTables, Row(("name", "main"), ("fib", "yes"))),
+            routingSettings ?? Ok(RosReadCommandId.RoutingSettings),
             routingRules ?? Ok(RosReadCommandId.RoutingRules),
+            ipVrfs ?? Ok(RosReadCommandId.IpVrfs),
             ipv4StaticRoutes ?? Ok(RosReadCommandId.Ipv4StaticRoutes),
             ipv6StaticRoutes ?? Ok(RosReadCommandId.Ipv6StaticRoutes),
             ipv4DefaultRouteState ?? Ok(RosReadCommandId.Ipv4DefaultRouteState),
             ipv6DefaultRouteState ?? Ok(RosReadCommandId.Ipv6DefaultRouteState),
+            routingFilterRules ?? Ok(RosReadCommandId.RoutingFilterRules),
+            routingFilterSelectRules ?? Ok(RosReadCommandId.RoutingFilterSelectRules),
             ipv4Nat ?? Ok(RosReadCommandId.Ipv4Nat),
             ipv6Nat ?? Ok(RosReadCommandId.Ipv6Nat),
             ipv4Raw ?? Ok(RosReadCommandId.Ipv4Raw),
