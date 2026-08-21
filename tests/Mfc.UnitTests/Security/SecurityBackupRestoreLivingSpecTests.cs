@@ -29,8 +29,8 @@ using CertificateTrustMode = Mfc.Domain.Inventory.CertificateTrustMode;
 using DomainDevice = Mfc.Domain.Inventory.Device;
 using DomainNode = Mfc.Domain.Inventory.Node;
 using DomainOnboardingFacts = Mfc.Domain.Onboarding.OnboardingDevicePrerequisiteFacts;
-using ProtoDeviceConnectionSummary = Mfc.Contracts.Mfc.V1.DeviceConnectionSummary;
 using ProtoDeploymentService = Mfc.Contracts.Mfc.V1.DeploymentService;
+using ProtoDeviceConnectionSummary = Mfc.Contracts.Mfc.V1.DeviceConnectionSummary;
 
 namespace Mfc.UnitTests.Security;
 
