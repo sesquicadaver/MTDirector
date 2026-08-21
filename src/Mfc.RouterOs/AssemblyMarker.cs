@@ -47,6 +47,9 @@ public static class AssemblyMarker
     /// <summary>Roots N1 packet-path allowlist commands for architecture scans.</summary>
     public static Type PacketPathAllowlistAnchor { get; } = typeof(Commands.PacketPathAllowlist);
 
+    /// <summary>Roots M7.1 routing-assurance allowlist commands for architecture scans.</summary>
+    public static Type RoutingAssuranceAllowlistAnchor { get; } = typeof(Commands.RoutingAssuranceAllowlist);
+
     /// <summary>Roots capability profile evaluation for architecture scans.</summary>
     public static Type CapabilityProfileEvaluatorAnchor { get; } = typeof(Capabilities.CapabilityProfileEvaluator);
 

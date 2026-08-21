@@ -50,4 +50,9 @@ public enum RosReadCommandId
 
     /// <summary>L3 VLAN interfaces for topology projection (N1-02, next-1).</summary>
     VlanInterfaces = 41,
+
+    /// <summary>Routing assurance reads (M7.1-01 / Spec §3).</summary>
+    RoutingSettings = 42,
+    RoutingFilterRules = 43,
+    RoutingFilterSelectRules = 44,
 }
