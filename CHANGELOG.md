@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- Path-class E2E/drift acceptance (N1-07 / **MVP CLOSED**): Living Spec `PathClassE2EDriftLivingSpecTests` AC 1–12 (Container/App→VETH→Bridge→VLAN→VRF topology, published/egress container paths fail-closed when unproven, no 1:1 assumptions, container running-state observation ≠ config drift, VETH/VLAN/bridge/VRF/NAT/HW-path Critical config drift voids analysis/approval/artifact/plan via `PathClassConfigDriftVoiding`, observation fields alone do not drift when hashes match, no container/VLAN/bridge/VRF/HW/NAT write APIs, `DeploymentPacketPathGate` reuse, `container:`/`app:` zone markers, Critical drift blocks deploy, Live CHR OFF). Domain extends `DriftFindingKind` 23–32 + `DriftClassifier` + Contracts `drift.proto` additive enums. ROADMAP marks **MVP CLOSED**; NEXT = M7.1-01 (#110).
+- Routing-assurance read allowlist (M7.1-01): Spec §3 mandatory paths via `RoutingAssuranceAllowlist` / `RoutingAssuranceAllowlistProfiles`. New `RosReadCommandId` values `RoutingSettings`, `RoutingFilterRules`, `RoutingFilterSelectRules` registered in `RosReadCommandRegistry` (read-only `/print` only). Reuses existing tables/rules/VRF/route command ids; `/ip/route` and `/ipv6/route` listed once in `FixedPaths` while CommandIds include static + default-route-state profiles. Discovery mapping of settings/filters/VRF deferred to M7.1-02. Unit tests `RoutingAssuranceAllowlistTests`; ArchitectureBoundary unchanged (no routing writes). ROADMAP marks M7.1-01 DONE; NEXT = M7.1-02 (#111).
+
+- Path-class E2E/drift acceptance (N1-07 / **MVP CLOSED**): Living Spec `PathClassE2EDriftLivingSpecTests` AC 1–12 (Container/App→VETH→Bridge→VLAN→VRF topology, published/egress container paths fail-closed when unproven, no 1:1 assumptions, container running-state observation ≠ config drift, VETH/VLAN/bridge/VRF/NAT/HW-path Critical config drift voids analysis/approval/artifact/plan via `PathClassConfigDriftVoiding`, observation fields alone do not drift when hashes match, no container/VLAN/bridge/VRF/HW/NAT write APIs, `DeploymentPacketPathGate` reuse, `container:`/`app:` zone markers, Critical drift blocks deploy, Live CHR OFF). Domain extends `DriftFindingKind` 23–32 + `DriftClassifier` + Contracts `drift.proto` additive enums. ROADMAP marks **MVP CLOSED**; NEXT was M7.1-01 (#110).
 
 - MVP production acceptance (M6-09 / **M6 CLOSED**): release package under `docs/release/` (acceptance report, gates checklist, known limitations, packaging notes, `RELEASE_SIGNING.md`), operations manuals (`installation`, `prerequisite-checklist`, `operations-manual`), `scripts/release/` packaging helpers (Controller publish, Desktop zip/tar installer substitute, EF migrations bundle, dependency scan, SBOM + SHA256SUMS attestation). Living Spec `MvpReleaseAcceptanceLivingSpecTests` AC 1–16. Live CHR / live physical CRS remain OFF (E2E Living Specs are DoD substitutes). **No git release tag** in this change — tag only after acceptance review.
 
@@ -61,7 +63,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- ROADMAP: N1-07 path-class E2E/drift DONE; **MVP CLOSED**; NEXT = M7.1-01 (#110); N1 weave 7/7; 109/109 MVP DONE (100%); Post-MVP queue = 27.
+- ROADMAP: M7.1-01 routing-assurance read allowlist DONE; NEXT = M7.1-02 (#111); Post-MVP M7 = 26 open (1/27 DONE).
+- ROADMAP: N1-07 path-class E2E/drift DONE; **MVP CLOSED**; NEXT was M7.1-01 (#110); N1 weave 7/7; 109/109 MVP DONE (100%); Post-MVP queue = 27.
 - ROADMAP: M6-09 MVP production acceptance DONE; **M6 CLOSED**; NEXT was N1-07 (#109); M6 E2E 9/9; 103/109 MVP DONE (95%); MVP CLOSED after N1-07.
 - ROADMAP: M6-08 security/backup/restore acceptance DONE; NEXT = M6-09 (#108); M6 E2E 8/9; 102/109 MVP DONE (94%).
 - ROADMAP: M6-07 VRRP/CRS E2E DONE; NEXT = M6-08 (#107); M6 E2E 7/9; 101/109 MVP DONE (93%).

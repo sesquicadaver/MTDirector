@@ -27,6 +27,7 @@ internal static class RoutingDependencyProfiles
             P("routing-mark"),
             P("table"),
             P("min-prefix"),
+            P("chain"),
             P("disabled"),
             P("comment", redaction: RosRedactionPolicy.LogRedacted),
             P("dynamic", RosPropertyClassification.ObservationTyped),

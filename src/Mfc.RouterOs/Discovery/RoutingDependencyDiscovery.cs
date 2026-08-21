@@ -7,6 +7,9 @@ namespace Mfc.RouterOs.Discovery;
 /// <summary>
 /// Reads routing tables/rules/routes plus NAT/RAW/Mangle and IP settings for multi-WAN analysis (M1-14).
 /// Read-only: never compiles or mutates these facilities. VPN peer credentials are never requested.
+/// M7.1-01 registers <see cref="RoutingAssuranceAllowlist"/> paths (settings, VRF, filter rules);
+/// discovery mapping of those new sections is deferred to M7.1-02 (RoutingAssuranceState persistence).
+/// Tables, rules, and static/default routes remain fetched here as before.
 /// </summary>
 public static class RoutingDependencyDiscovery
 {
