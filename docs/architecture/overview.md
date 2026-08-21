@@ -112,7 +112,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Desktop MVP workflows | Done (M6-04) | Seven modules + `DriftService`/`AuditService` read paths; Shell nav; no auto-fix; Living Spec AC 1–12 |
 | Standalone / dual-stack E2E | Done (M6-05) | Living Spec AC 1–10 + Integration inventory→capture→onboarding; scripted runtimes; Live CHR OFF |
 | Multi-WAN E2E | Done (M6-06) | Living Spec AC 1–10; failover/PCC/probes/FastTrack/drift; scripted runtimes; Live CHR OFF |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M6-07 (#106) |
+| VRRP / CRS E2E | Done (M6-07) | Living Spec AC 1–11; VRRP coordinator + Switch FORWARD gate + CRS fixtures; Live CHR OFF |
+| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at M6-08 (#107) |
 
 ## ADRs
 
