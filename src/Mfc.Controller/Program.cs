@@ -10,6 +10,7 @@ using Mfc.Application.Inventory;
 using Mfc.Application.Jobs;
 using Mfc.Application.Onboarding;
 using Mfc.Application.Policies;
+using Mfc.Application.Routing;
 using Mfc.Application.Snapshots;
 using Mfc.Application.Workflow;
 using Mfc.Application.Zones;
@@ -217,6 +218,8 @@ public static class Program
         services.AddScoped<ProjectNodeWorkflowUseCase>();
         services.AddScoped<UpsertDeviceHashStateUseCase>();
         services.AddScoped<GetDeviceHashStateUseCase>();
+        services.AddScoped<UpsertRoutingAssuranceStateUseCase>();
+        services.AddScoped<GetRoutingAssuranceStateUseCase>();
         services.AddScoped<DetectManagedDriftUseCase>();
         services.AddScoped<GetDriftEventUseCase>();
         services.AddScoped<ListDeviceDriftEventsUseCase>();

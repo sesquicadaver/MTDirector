@@ -5,11 +5,9 @@ using Mfc.RouterOs.Session;
 namespace Mfc.RouterOs.Discovery;
 
 /// <summary>
-/// Reads routing tables/rules/routes plus NAT/RAW/Mangle and IP settings for multi-WAN analysis (M1-14).
+/// Reads routing tables/settings/rules/VRF/filters/routes plus NAT/RAW/Mangle and IP settings
+/// for multi-WAN and routing-assurance analysis (M1-14 / M7.1-02).
 /// Read-only: never compiles or mutates these facilities. VPN peer credentials are never requested.
-/// M7.1-01 registers <see cref="RoutingAssuranceAllowlist"/> paths (settings, VRF, filter rules);
-/// discovery mapping of those new sections is deferred to M7.1-02 (RoutingAssuranceState persistence).
-/// Tables, rules, and static/default routes remain fetched here as before.
 /// </summary>
 public static class RoutingDependencyDiscovery
 {
@@ -23,11 +21,15 @@ public static class RoutingDependencyDiscovery
     private static readonly RosReadCommandId[] CommandSet =
     [
         RosReadCommandId.RoutingTables,
+        RosReadCommandId.RoutingSettings,
         RosReadCommandId.RoutingRules,
+        RosReadCommandId.IpVrfs,
         RosReadCommandId.Ipv4StaticRoutes,
         RosReadCommandId.Ipv6StaticRoutes,
         RosReadCommandId.Ipv4DefaultRouteState,
         RosReadCommandId.Ipv6DefaultRouteState,
+        RosReadCommandId.RoutingFilterRules,
+        RosReadCommandId.RoutingFilterSelectRules,
         RosReadCommandId.Ipv4Nat,
         RosReadCommandId.Ipv6Nat,
         RosReadCommandId.Ipv4Raw,
@@ -52,11 +54,15 @@ public static class RoutingDependencyDiscovery
 
         return BuildResult(
             results[RosReadCommandId.RoutingTables],
+            results[RosReadCommandId.RoutingSettings],
             results[RosReadCommandId.RoutingRules],
+            results[RosReadCommandId.IpVrfs],
             results[RosReadCommandId.Ipv4StaticRoutes],
             results[RosReadCommandId.Ipv6StaticRoutes],
             results[RosReadCommandId.Ipv4DefaultRouteState],
             results[RosReadCommandId.Ipv6DefaultRouteState],
+            results[RosReadCommandId.RoutingFilterRules],
+            results[RosReadCommandId.RoutingFilterSelectRules],
             results[RosReadCommandId.Ipv4Nat],
             results[RosReadCommandId.Ipv6Nat],
             results[RosReadCommandId.Ipv4Raw],
@@ -75,6 +81,47 @@ public static class RoutingDependencyDiscovery
         RosReadCommandResult ipv6StaticRoutes,
         RosReadCommandResult ipv4DefaultRouteState,
         RosReadCommandResult ipv6DefaultRouteState,
+        RosReadCommandResult ipv4Nat,
+        RosReadCommandResult ipv6Nat,
+        RosReadCommandResult ipv4Raw,
+        RosReadCommandResult ipv6Raw,
+        RosReadCommandResult ipv4Mangle,
+        RosReadCommandResult ipv6Mangle,
+        RosReadCommandResult ipv4Settings,
+        RosReadCommandResult ipv6Settings,
+        IReadOnlyList<string>? warnings = null)
+        => BuildResult(
+            routingTables,
+            Empty(RosReadCommandId.RoutingSettings),
+            routingRules,
+            Empty(RosReadCommandId.IpVrfs),
+            ipv4StaticRoutes,
+            ipv6StaticRoutes,
+            ipv4DefaultRouteState,
+            ipv6DefaultRouteState,
+            Empty(RosReadCommandId.RoutingFilterRules),
+            Empty(RosReadCommandId.RoutingFilterSelectRules),
+            ipv4Nat,
+            ipv6Nat,
+            ipv4Raw,
+            ipv6Raw,
+            ipv4Mangle,
+            ipv6Mangle,
+            ipv4Settings,
+            ipv6Settings,
+            warnings);
+
+    public static RoutingDependencyDiscoveryResult BuildResult(
+        RosReadCommandResult routingTables,
+        RosReadCommandResult routingSettings,
+        RosReadCommandResult routingRules,
+        RosReadCommandResult ipVrfs,
+        RosReadCommandResult ipv4StaticRoutes,
+        RosReadCommandResult ipv6StaticRoutes,
+        RosReadCommandResult ipv4DefaultRouteState,
+        RosReadCommandResult ipv6DefaultRouteState,
+        RosReadCommandResult routingFilterRules,
+        RosReadCommandResult routingFilterSelectRules,
         RosReadCommandResult ipv4Nat,
         RosReadCommandResult ipv6Nat,
         RosReadCommandResult ipv4Raw,
@@ -104,11 +151,15 @@ public static class RoutingDependencyDiscovery
         return new RoutingDependencyDiscoveryResult
         {
             RoutingTables = tables.OrderBy(t => t.Name, StringComparer.Ordinal).ToArray(),
+            RoutingSettings = MapRoutingSettings(routingSettings),
             RoutingRules = rules,
+            Vrfs = MapVrfs(ipVrfs),
             Ipv4StaticRoutes = v4Routes.Where(r => !r.IsDynamic).OrderBy(r => r.DstAddress, StringComparer.Ordinal).ToArray(),
             Ipv6StaticRoutes = v6Routes.Where(r => !r.IsDynamic).OrderBy(r => r.DstAddress, StringComparer.Ordinal).ToArray(),
             Ipv4DefaultRouteState = v4Defaults,
             Ipv6DefaultRouteState = v6Defaults,
+            RoutingFilterRules = MapFilterRules(routingFilterRules),
+            RoutingFilterSelectRules = MapFilterSelectRules(routingFilterSelectRules),
             Ipv4NatRules = MapFacility(ipv4Nat, OrderedFirewallFacility.Nat, IpAddressFamilyKind.Ipv4, findings),
             Ipv6NatRules = MapFacility(ipv6Nat, OrderedFirewallFacility.Nat, IpAddressFamilyKind.Ipv6, findings),
             Ipv4RawRules = MapFacility(ipv4Raw, OrderedFirewallFacility.Raw, IpAddressFamilyKind.Ipv4, findings),
@@ -124,6 +175,16 @@ public static class RoutingDependencyDiscovery
 
     /// <summary>Command allowlist used by this discovery — must never include VPN peer secret paths.</summary>
     public static IReadOnlyList<RosReadCommandId> DiscoveryCommandIds => CommandSet;
+
+    private static RosReadCommandResult Empty(RosReadCommandId commandId)
+        => new()
+        {
+            CommandId = commandId,
+            Lifecycle = RosCommandLifecycle.Completed,
+            Records = [],
+            SessionInvalidated = false,
+            Error = null,
+        };
 
     private static async Task<RosReadCommandResult> ExecuteAsync(
         RosSession session,
@@ -154,6 +215,86 @@ public static class RoutingDependencyDiscovery
                 Fib = Get(row, "fib"),
                 Disabled = Get(row, "disabled"),
                 Dynamic = Get(row, "dynamic"),
+                RawProperties = row.RawProperties,
+            });
+        }
+
+        return items;
+    }
+
+    private static RoutingSettingsDiscovery MapRoutingSettings(RosReadCommandResult result)
+    {
+        RosReadRecord row = FirstOrEmpty(result);
+        return new RoutingSettingsDiscovery
+        {
+            PolicyRules = Get(row, "policy-rules"),
+            CheckGatewayPingCount = Get(row, "check-gateway-ping-count"),
+            CheckGatewayPingInterval = Get(row, "check-gateway-ping-interval"),
+            CheckGatewayPingTimeout = Get(row, "check-gateway-ping-timeout"),
+            ConnectedInChain = Get(row, "connected-in-chain"),
+            DynamicInChain = Get(row, "dynamic-in-chain"),
+            SingleProcess = Get(row, "single-process"),
+            RawProperties = row.RawProperties,
+        };
+    }
+
+    private static List<VrfDiscovery> MapVrfs(RosReadCommandResult result)
+    {
+        List<VrfDiscovery> items = new(result.Records.Count);
+        foreach (RosReadRecord row in result.Records)
+        {
+            items.Add(new VrfDiscovery
+            {
+                Name = Get(row, "name"),
+                Interfaces = Get(row, "interfaces"),
+                Disabled = Get(row, "disabled"),
+                IsDynamic = IsTruthy(Get(row, "dynamic")),
+                Inactive = Get(row, "inactive"),
+                Invalid = Get(row, "invalid"),
+                RawProperties = row.RawProperties,
+            });
+        }
+
+        return items.OrderBy(v => v.Name, StringComparer.Ordinal).ToList();
+    }
+
+    private static List<RoutingFilterRuleDiscovery> MapFilterRules(RosReadCommandResult result)
+    {
+        List<RoutingFilterRuleDiscovery> items = new(result.Records.Count);
+        for (int i = 0; i < result.Records.Count; i++)
+        {
+            RosReadRecord row = result.Records[i];
+            items.Add(new RoutingFilterRuleDiscovery
+            {
+                EffectiveOrdinal = i,
+                Chain = Get(row, "chain"),
+                Rule = Get(row, "rule"),
+                Disabled = Get(row, "disabled"),
+                IsDynamic = IsTruthy(Get(row, "dynamic")),
+                Inactive = Get(row, "inactive"),
+                Invalid = Get(row, "invalid"),
+                RawProperties = row.RawProperties,
+            });
+        }
+
+        return items;
+    }
+
+    private static List<RoutingFilterSelectRuleDiscovery> MapFilterSelectRules(RosReadCommandResult result)
+    {
+        List<RoutingFilterSelectRuleDiscovery> items = new(result.Records.Count);
+        for (int i = 0; i < result.Records.Count; i++)
+        {
+            RosReadRecord row = result.Records[i];
+            items.Add(new RoutingFilterSelectRuleDiscovery
+            {
+                EffectiveOrdinal = i,
+                Chain = Get(row, "chain"),
+                Rule = Get(row, "rule"),
+                Disabled = Get(row, "disabled"),
+                IsDynamic = IsTruthy(Get(row, "dynamic")),
+                Inactive = Get(row, "inactive"),
+                Invalid = Get(row, "invalid"),
                 RawProperties = row.RawProperties,
             });
         }

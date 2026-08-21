@@ -167,12 +167,94 @@ public sealed class Ipv6SettingsDiscovery
     public required IReadOnlyDictionary<string, string> RawProperties { get; init; }
 }
 
-/// <summary>Routing + NAT/RAW/Mangle dependency discovery result (M1-14).</summary>
+/// <summary>Routing decision-order / check-gateway settings (M7.1-02).</summary>
+public sealed class RoutingSettingsDiscovery
+{
+    public required string? PolicyRules { get; init; }
+
+    public required string? CheckGatewayPingCount { get; init; }
+
+    public required string? CheckGatewayPingInterval { get; init; }
+
+    public required string? CheckGatewayPingTimeout { get; init; }
+
+    public required string? ConnectedInChain { get; init; }
+
+    public required string? DynamicInChain { get; init; }
+
+    public required string? SingleProcess { get; init; }
+
+    public required IReadOnlyDictionary<string, string> RawProperties { get; init; }
+}
+
+/// <summary>VRF definition (M7.1-02).</summary>
+public sealed class VrfDiscovery
+{
+    public required string? Name { get; init; }
+
+    public required string? Interfaces { get; init; }
+
+    public required string? Disabled { get; init; }
+
+    public required bool IsDynamic { get; init; }
+
+    public required string? Inactive { get; init; }
+
+    public required string? Invalid { get; init; }
+
+    public required IReadOnlyDictionary<string, string> RawProperties { get; init; }
+}
+
+/// <summary>Route filter rule (M7.1-02).</summary>
+public sealed class RoutingFilterRuleDiscovery
+{
+    public required int EffectiveOrdinal { get; init; }
+
+    public required string? Chain { get; init; }
+
+    public required string? Rule { get; init; }
+
+    public required string? Disabled { get; init; }
+
+    public required bool IsDynamic { get; init; }
+
+    public required string? Inactive { get; init; }
+
+    public required string? Invalid { get; init; }
+
+    public required IReadOnlyDictionary<string, string> RawProperties { get; init; }
+}
+
+/// <summary>Route filter select-rule (M7.1-02).</summary>
+public sealed class RoutingFilterSelectRuleDiscovery
+{
+    public required int EffectiveOrdinal { get; init; }
+
+    public required string? Chain { get; init; }
+
+    public required string? Rule { get; init; }
+
+    public required string? Disabled { get; init; }
+
+    public required bool IsDynamic { get; init; }
+
+    public required string? Inactive { get; init; }
+
+    public required string? Invalid { get; init; }
+
+    public required IReadOnlyDictionary<string, string> RawProperties { get; init; }
+}
+
+/// <summary>Routing + NAT/RAW/Mangle dependency discovery result (M1-14 / M7.1-02).</summary>
 public sealed class RoutingDependencyDiscoveryResult
 {
     public required IReadOnlyList<RoutingTableDiscovery> RoutingTables { get; init; }
 
+    public required RoutingSettingsDiscovery RoutingSettings { get; init; }
+
     public required IReadOnlyList<RoutingRuleDiscovery> RoutingRules { get; init; }
+
+    public required IReadOnlyList<VrfDiscovery> Vrfs { get; init; }
 
     public required IReadOnlyList<StaticRouteDiscovery> Ipv4StaticRoutes { get; init; }
 
@@ -181,6 +263,10 @@ public sealed class RoutingDependencyDiscoveryResult
     public required IReadOnlyList<DefaultRouteStateDiscovery> Ipv4DefaultRouteState { get; init; }
 
     public required IReadOnlyList<DefaultRouteStateDiscovery> Ipv6DefaultRouteState { get; init; }
+
+    public required IReadOnlyList<RoutingFilterRuleDiscovery> RoutingFilterRules { get; init; }
+
+    public required IReadOnlyList<RoutingFilterSelectRuleDiscovery> RoutingFilterSelectRules { get; init; }
 
     public required IReadOnlyList<OrderedFirewallFacilityRuleDiscovery> Ipv4NatRules { get; init; }
 
@@ -204,6 +290,7 @@ public sealed class RoutingDependencyDiscoveryResult
 
     /// <summary>
     /// Configuration hash material. Excludes default-route runtime state and gateway reachability.
+    /// Includes routing settings, VRF, and filter rules (M7.1-02).
     /// </summary>
     public IReadOnlyDictionary<string, string> ConfigurationHashMaterial
     {
@@ -216,6 +303,14 @@ public sealed class RoutingDependencyDiscoveryResult
                 Put(material, $"rtab.{table.Name}.disabled", table.Disabled);
             }
 
+            Put(material, "rsettings.policy-rules", RoutingSettings.PolicyRules);
+            Put(material, "rsettings.check-gateway-ping-count", RoutingSettings.CheckGatewayPingCount);
+            Put(material, "rsettings.check-gateway-ping-interval", RoutingSettings.CheckGatewayPingInterval);
+            Put(material, "rsettings.check-gateway-ping-timeout", RoutingSettings.CheckGatewayPingTimeout);
+            Put(material, "rsettings.connected-in-chain", RoutingSettings.ConnectedInChain);
+            Put(material, "rsettings.dynamic-in-chain", RoutingSettings.DynamicInChain);
+            Put(material, "rsettings.single-process", RoutingSettings.SingleProcess);
+
             foreach (RoutingRuleDiscovery rule in RoutingRules.Where(r => !r.IsDynamic).OrderBy(r => r.EffectiveOrdinal))
             {
                 string p = $"rrule.{rule.EffectiveOrdinal}";
@@ -223,6 +318,13 @@ public sealed class RoutingDependencyDiscoveryResult
                 Put(material, $"{p}.table", rule.Table);
                 Put(material, $"{p}.routing-mark", rule.RoutingMark);
                 Put(material, $"{p}.disabled", rule.Disabled);
+            }
+
+            foreach (VrfDiscovery vrf in Vrfs.Where(v => !v.IsDynamic).OrderBy(v => v.Name, StringComparer.Ordinal))
+            {
+                string p = $"vrf.{vrf.Name}";
+                Put(material, $"{p}.interfaces", vrf.Interfaces);
+                Put(material, $"{p}.disabled", vrf.Disabled);
             }
 
             foreach (StaticRouteDiscovery route in Ipv4StaticRoutes.Concat(Ipv6StaticRoutes)
@@ -236,7 +338,24 @@ public sealed class RoutingDependencyDiscoveryResult
                 Put(material, $"route.{key}.scope", route.Scope?.ToString(System.Globalization.CultureInfo.InvariantCulture));
                 Put(material, $"route.{key}.target-scope", route.TargetScope?.ToString(System.Globalization.CultureInfo.InvariantCulture));
                 Put(material, $"route.{key}.disabled", route.Disabled);
+                Put(material, $"route.{key}.check-gateway", route.CheckGateway);
                 // Omit Active / GatewayStatus / ImmediateGateway.
+            }
+
+            foreach (RoutingFilterRuleDiscovery rule in RoutingFilterRules.Where(r => !r.IsDynamic).OrderBy(r => r.EffectiveOrdinal))
+            {
+                string p = $"filter.{rule.EffectiveOrdinal}";
+                Put(material, $"{p}.chain", rule.Chain);
+                Put(material, $"{p}.rule", rule.Rule);
+                Put(material, $"{p}.disabled", rule.Disabled);
+            }
+
+            foreach (RoutingFilterSelectRuleDiscovery rule in RoutingFilterSelectRules.Where(r => !r.IsDynamic).OrderBy(r => r.EffectiveOrdinal))
+            {
+                string p = $"filter-select.{rule.EffectiveOrdinal}";
+                Put(material, $"{p}.chain", rule.Chain);
+                Put(material, $"{p}.rule", rule.Rule);
+                Put(material, $"{p}.disabled", rule.Disabled);
             }
 
             AppendFacility(material, "nat4", Ipv4NatRules);
@@ -250,6 +369,44 @@ public sealed class RoutingDependencyDiscoveryResult
             Put(material, "ip4.ip-forward", Ipv4Settings.IpForward);
             Put(material, "ip6.forward", Ipv6Settings.Forward);
             Put(material, "ip6.disable-ipv6", Ipv6Settings.DisableIpv6);
+            return material;
+        }
+    }
+
+    /// <summary>
+    /// Operational hash material: active routes, immediate gateways, reachability, defaults.
+    /// Never mixed into <see cref="ConfigurationHashMaterial"/>.
+    /// </summary>
+    public IReadOnlyDictionary<string, string> OperationalHashMaterial
+    {
+        get
+        {
+            Dictionary<string, string> material = new(StringComparer.Ordinal);
+            foreach (StaticRouteDiscovery route in Ipv4StaticRoutes.Concat(Ipv6StaticRoutes)
+                         .OrderBy(r => r.Family)
+                         .ThenBy(r => r.DstAddress, StringComparer.Ordinal)
+                         .ThenBy(r => r.Gateway, StringComparer.Ordinal))
+            {
+                string key = $"{(int)route.Family}:{route.RoutingTable}:{route.DstAddress}:{route.Gateway}";
+                Put(material, $"route.{key}.active", route.Active);
+                Put(material, $"route.{key}.immediate-gw", route.ImmediateGateway);
+                Put(material, $"route.{key}.gateway-status", route.GatewayStatus);
+                Put(material, $"route.{key}.dynamic", route.IsDynamic ? "true" : "false");
+            }
+
+            foreach (DefaultRouteStateDiscovery route in Ipv4DefaultRouteState.Concat(Ipv6DefaultRouteState)
+                         .OrderBy(r => r.Family)
+                         .ThenBy(r => r.RoutingTable, StringComparer.Ordinal)
+                         .ThenBy(r => r.Gateway, StringComparer.Ordinal))
+            {
+                string key = $"{(int)route.Family}:{route.RoutingTable}:{route.Gateway}";
+                Put(material, $"default.{key}.active", route.Active);
+                Put(material, $"default.{key}.immediate-gw", route.ImmediateGateway);
+                Put(material, $"default.{key}.gateway-status", route.GatewayStatus);
+                Put(material, $"default.{key}.distance", route.Distance?.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                Put(material, $"default.{key}.dynamic", route.IsDynamic ? "true" : "false");
+            }
+
             return material;
         }
     }
