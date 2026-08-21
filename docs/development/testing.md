@@ -19,7 +19,7 @@ Working tree must stay clean after build/test.
 | Project | Role |
 |---------|------|
 | `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28, Desktop semantic diff viewer M1-29, fault-injection matrix M1-33) |
-| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN/VRRP vertical-slice acceptance M1-30/M1-31/M1-32, fault-injection acceptance M1-33, onboarding topology acceptance M5-10, standalone/dual-stack E2E inventory→capture→onboarding M6-05, multi-WAN capture slice M1-31 (M6-06 reuse), VRRP capture slice M1-32 (M6-07 reuse) |
+| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN/VRRP vertical-slice acceptance M1-30/M1-31/M1-32, fault-injection acceptance M1-33, onboarding topology acceptance M5-10, standalone/dual-stack E2E inventory→capture→onboarding M6-05, multi-WAN capture slice M1-31 (M6-06 reuse), VRRP capture slice M1-32 (M6-07 reuse), security backup/restore pg_dump/restore M6-08 |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts + optional live CHR TLS gate (`MFC_CHR_STANDALONE_HOST`) |
 
 ## Living Specification — semantic diff (M1-24)
@@ -1878,6 +1878,34 @@ Filter:
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~VrrpCrsE2ELivingSpecTests"
 dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~VrrpVerticalSliceAcceptanceTests"
+```
+
+## Living Specification — security / backup / restore (M6-08)
+
+Issue Set M6-08 / E2E Spec §47 + §52. No live CHR; Development master key only. AC 1–10 are pure/domain/desktop/reflection Living Spec; AC 11–14 use Integration Postgres fixture with in-container `pg_dump`/`pg_restore` (`--Mfc:OperationalJobs:Enabled=false`).
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Invalid CA / SAN / SPKI rejected | `ApiSslCertificateValidator` | `Ac1InvalidCaSanAndSpkiAreRejected` |
+| AC#2 Plain API blocked | `AuthenticatedRosConnection` + `OnboardingPrerequisiteValidator` | `Ac2PlainApiIsBlocked` |
+| AC#3 Default RouterOS group rejected | `OnboardingPrerequisiteValidator` | `Ac3DefaultRouterOsGroupIsRejected` |
+| AC#4 Desktop never receives credentials | `ConnectionProfileView` + Desktop refs + proto | `Ac4DesktopNeverReceivesCredentials` |
+| AC#5 DB no plaintext credentials | `EncryptedSecretEntity` | `Ac5DbEntityHasNoPlaintextCredentials` (+ Integration ciphertext) |
+| AC#6 Logs/audit contain no secrets | redaction + audit payload forbid | `Ac6LogsAndAuditContainNoSecrets` |
+| AC#7 RBAC bypass impossible | `ListAuditEventsUseCase` + `DenyAllAuthorizationBoundary` | `Ac7RbacBypassIsImpossible` |
+| AC#8 Path injection impossible | `DeploymentWritePaths` + RouterOs namespaces | `Ac8ArbitraryRouterOsPathInjectionIsImpossible` |
+| AC#9 Script injection impossible | Deployment proto + watchdog script | `Ac9ScriptInjectionIsImpossible` |
+| AC#10 Audit tampering detected | hash-chain preimage (+ Bootstrap update/delete) | `Ac10AuditTamperingIsDetected` |
+| AC#11 PostgreSQL backup/restore | `PostgresFixture.DumpAndRestoreAsync` | `Ac11PostgresBackupRestoreSucceeds` |
+| AC#12 Snapshots hash verification | `BrotliPayloadCodec.DecodeAndVerify` | `Ac12SnapshotsAfterRestorePassHashVerification` |
+| AC#13 Active artifact references | `device_hash_states` → `filter_artifacts` | `Ac13ActiveArtifactReferencesAreRestored` |
+| AC#14 Nonterminal ops → recovery | `RecoverDeploymentUseCase` after restore | `Ac14NonterminalOperationsAfterRestoreGoThroughRecovery` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~SecurityBackupRestoreLivingSpecTests"
+dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~SecurityBackupRestoreAcceptanceTests"
 ```
 
 ## CHR live matrix
