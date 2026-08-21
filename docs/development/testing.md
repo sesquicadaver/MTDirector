@@ -19,7 +19,7 @@ Working tree must stay clean after build/test.
 | Project | Role |
 |---------|------|
 | `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28, Desktop semantic diff viewer M1-29, fault-injection matrix M1-33) |
-| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN/VRRP vertical-slice acceptance M1-30/M1-31/M1-32, fault-injection acceptance M1-33, onboarding topology acceptance M5-10, standalone/dual-stack E2E inventory→capture→onboarding M6-05, multi-WAN capture slice M1-31 (M6-06 reuse) |
+| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN/VRRP vertical-slice acceptance M1-30/M1-31/M1-32, fault-injection acceptance M1-33, onboarding topology acceptance M5-10, standalone/dual-stack E2E inventory→capture→onboarding M6-05, multi-WAN capture slice M1-31 (M6-06 reuse), VRRP capture slice M1-32 (M6-07 reuse) |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts + optional live CHR TLS gate (`MFC_CHR_STANDALONE_HOST`) |
 
 ## Living Specification — semantic diff (M1-24)
@@ -1853,6 +1853,31 @@ Filter:
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~MultiWanE2ELivingSpecTests"
 dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~MultiWanVerticalSliceAcceptanceTests"
+```
+
+## Living Specification — VRRP / CRS E2E (M6-07)
+
+Issue Set M6-07. Live CHR / live physical CRS OFF — scripted/fake runtimes + deterministic CRS lab fixtures (same pattern as M6-05 / M6-06). Inventory/capture VRRP slice remains `VrrpVerticalSliceAcceptanceTests` (`--Mfc:OperationalJobs:Enabled=false`). AC#11 documents scripted DoD for physical CRS hardware fixture while CHR remains OFF.
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 VRRP active/passive lifecycle | onboard + `ExecuteVrrpDeploymentUseCase` | `Ac1VrrpActivePassiveLifecycleSucceeds` |
+| AC#2 VRRP split-master lifecycle | `VrrpDeploymentPolicy` + deploy fail-closed | `Ac2VrrpSplitMasterLifecycleSucceeds` |
+| AC#3 All members onboard together | `ExecuteOnboardingBootstrapUseCase` | `Ac3AllMembersOnboardTogether` |
+| AC#4 All members deploy together | stage/arm-all before activate; `commit:all` | `Ac4AllMembersDeployTogether` |
+| AC#5 Role change after activation → rollback | ScriptedMember role flip | `Ac5RoleChangeAfterActivationTriggersRollback` |
+| AC#6 Partial commit impossible | `EnsureFullCommitAllowed` + happy path | `Ac6PartialCommitIsImpossible` |
+| AC#7 Physical management addresses | `ManagementPathAnalysis` VIP-only gate | `Ac7PhysicalManagementAddressesAreUsed` |
+| AC#8 CRS INPUT/OUTPUT lifecycle | Switch onboard + standalone deploy | `Ac8CrsInputOutputLifecycleSucceeds` |
+| AC#9 CRS FORWARD rejected | topology + `DeviceFilterCompiler` Switch gate | `Ac9CrsForwardPolicyIsRejected` |
+| AC#10 Bridge/VLAN/HW offload unchanged | `DeploymentWritePaths` allowlist | `Ac10BridgeVlanHardwareOffloadAreNotChanged` |
+| AC#11 Physical CRS hardware fixture | `crs-switch` topology + sanitized CRS fixture + `BoardClass.Crs` | `Ac11PhysicalCrsHardwareFixtureSucceeds` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~VrrpCrsE2ELivingSpecTests"
+dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~VrrpVerticalSliceAcceptanceTests"
 ```
 
 ## CHR live matrix

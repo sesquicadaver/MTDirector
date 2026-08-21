@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- VRRP and CRS end-to-end acceptance (M6-07): Living Spec `VrrpCrsE2ELivingSpecTests` AC 1–11 (VRRP active/passive lifecycle, split-master fail-closed lifecycle, all-members onboard/deploy, role-change rollback, no partial commit, physical management addresses, CRS INPUT/OUTPUT lifecycle, FORWARD rejected, no Bridge/VLAN/HW-offload writes, scripted physical CRS hardware fixture contract). Reuses `ExecuteVrrpDeploymentUseCase` / `DeploymentAcceptanceHarness` ScriptedMember, onboarding bootstrap, Switch FORWARD compiler/topology gates, `CapabilityProfileEvaluator` CRS board class, `testlab/chr/topologies/crs-switch` + sanitized fixture. Live CHR / live physical CRS remain OFF. Optional Integration reuse: `VrrpVerticalSliceAcceptanceTests` (inventory/capture).
+
 - Multi-WAN end-to-end acceptance (M6-06): Living Spec `MultiWanE2ELivingSpecTests` AC 1–10 (failover primary/backup, identical artifact across operational states, PCC/balanced topology, per-table probes, FastTrack unsafe blocked, no Routing/NAT/Mangle writes, no forced failover, dependency change voids plan, active-route observation ≠ configuration drift). Reuses `VerifyMultiWanDeploymentUseCase` / `MultiWanDeploymentVerification` / `ManagedDriftDetector` / `FastTrackAnalysis`. Live CHR matrix remains OFF (scripted/fake runtimes). Existing Integration `MultiWanVerticalSliceAcceptanceTests` covers inventory/capture slice (`--Mfc:OperationalJobs:Enabled=false`).
 
 - Standalone and dual-stack end-to-end acceptance (M6-05): Living Spec `StandaloneDualStackE2ELivingSpecTests` AC 1–10 (onboarding→deploy, management reconnect, IPv4/IPv6 independence, IPv6 failure rollback, NO_CHANGES, drift, restoration, exception expiry without RouterOS write, audit lifecycle, nonterminal restart recovery) + Integration `StandaloneDualStackE2EAcceptanceTests` (inventory→capture→onboarding; `--Mfc:OperationalJobs:Enabled=false`). Live CHR matrix remains OFF (scripted/fake runtimes).
@@ -53,6 +55,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP: M6-07 VRRP/CRS E2E DONE; NEXT = M6-08 (#107); M6 E2E 7/9; 101/109 MVP DONE (93%).
 - ROADMAP: M6-06 multi-WAN E2E DONE; NEXT = M6-07 (#106); M6 E2E 6/9; 100/109 MVP DONE (92%).
 - ROADMAP: M6-04 Desktop MVP workflows DONE; NEXT = M6-05 (#104); M6 E2E 4/9; 98/109 MVP DONE (90%).
 - ROADMAP: M6-03 bounded operational jobs DONE; NEXT = M6-04 (#103); M6 E2E 3/9; 97/109 MVP DONE (89%).
