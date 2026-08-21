@@ -118,6 +118,16 @@ internal static class DriftProtoMapper
         DomainFindingKind.ActiveWanChanged => ProtoFindingKind.ActiveWanChanged,
         DomainFindingKind.InterfaceRunningStateChanged => ProtoFindingKind.InterfaceRunningStateChanged,
         DomainFindingKind.CountersChanged => ProtoFindingKind.CountersChanged,
+        DomainFindingKind.ContainerRunningStateChanged => ProtoFindingKind.ContainerRunningStateChanged,
+        DomainFindingKind.VethConfigChanged => ProtoFindingKind.VethConfigChanged,
+        DomainFindingKind.VlanConfigChanged => ProtoFindingKind.VlanConfigChanged,
+        DomainFindingKind.BridgeMembershipConfigChanged => ProtoFindingKind.BridgeMembershipConfigChanged,
+        DomainFindingKind.VrfAssignmentConfigChanged => ProtoFindingKind.VrfAssignmentConfigChanged,
+        DomainFindingKind.ContainerNatExposureConfigChanged => ProtoFindingKind.ContainerNatExposureConfigChanged,
+        DomainFindingKind.HardwarePathConfigChanged => ProtoFindingKind.HardwarePathConfigChanged,
+        DomainFindingKind.VethRunningStateChanged => ProtoFindingKind.VethRunningStateChanged,
+        DomainFindingKind.BridgePortStateChanged => ProtoFindingKind.BridgePortStateChanged,
+        DomainFindingKind.HardwareOffloadStateChanged => ProtoFindingKind.HardwareOffloadStateChanged,
         _ => ProtoFindingKind.Unspecified,
     };
 

@@ -40,7 +40,7 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
 
     // ── AC 1 ──────────────────────────────────────────────────────────────────────
 
-    /// <summary>M0–M6 issues are closed in ROADMAP / ISSUES matrix (M6-01…M6-09; N1-07 remains NEXT).</summary>
+    /// <summary>M0–M6 + N1-07 closed in ROADMAP / ISSUES; MVP CLOSED; NEXT = M7.1-01.</summary>
     [Fact]
     public void Ac1M0ThroughM6IssuesAreClosedInRoadmap()
     {
@@ -48,15 +48,19 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         string issues = Read("ISSUES.md");
 
         Assert.Contains("M6 CLOSED", roadmap, StringComparison.Ordinal);
+        Assert.Contains("MVP CLOSED", roadmap, StringComparison.Ordinal);
         Assert.Contains("M6-09", roadmap, StringComparison.Ordinal);
         Assert.Contains("#108", roadmap, StringComparison.Ordinal);
         Assert.Contains("N1-07", roadmap, StringComparison.Ordinal);
         Assert.Contains("#109", roadmap, StringComparison.Ordinal);
+        Assert.Contains("M7.1-01", roadmap, StringComparison.Ordinal);
+        Assert.Contains("#110", roadmap, StringComparison.Ordinal);
+        Assert.Contains("NEXT = M7.1-01", roadmap, StringComparison.Ordinal);
 
         // Prior M6 E2E issues must appear as DONE in §2.2 / queue strikethroughs.
         foreach (string id in new[]
                  {
-                     "M6-01", "M6-02", "M6-03", "M6-04", "M6-05", "M6-06", "M6-07", "M6-08", "M6-09",
+                     "M6-01", "M6-02", "M6-03", "M6-04", "M6-05", "M6-06", "M6-07", "M6-08", "M6-09", "N1-07",
                  })
         {
             Assert.Contains(id, roadmap, StringComparison.Ordinal);
@@ -71,16 +75,14 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
             Assert.Contains(closedMilestone.Split(' ')[0], roadmap, StringComparison.Ordinal);
         }
 
-        // Closed GitHub IDs for M6-01…M6-08 documented in acceptance report.
         string acceptance = Read("docs", "release", "mvp-acceptance.md");
         Assert.Contains("#100", acceptance, StringComparison.Ordinal);
         Assert.Contains("#107", acceptance, StringComparison.Ordinal);
         Assert.Contains("gh issue", acceptance, StringComparison.Ordinal);
-        Assert.Contains("deferred until", acceptance, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("N1-07", acceptance, StringComparison.Ordinal);
         Assert.Contains("M6 CLOSED", acceptance, StringComparison.Ordinal);
-        // MVP CLOSED waits on N1-07 — acceptance must not claim full MVP CLOSED yet.
-        Assert.Contains("MVP CLOSED:** deferred", acceptance, StringComparison.Ordinal);
+        Assert.Contains("MVP CLOSED:** **yes**", acceptance, StringComparison.Ordinal);
+        Assert.Contains("M7.1-01", acceptance, StringComparison.Ordinal);
     }
 
     // ── AC 2 ──────────────────────────────────────────────────────────────────────
@@ -336,6 +338,7 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         foreach (string needle in new[]
                  {
                      "N1-07",
+                     "MVP CLOSED",
                      "Live CHR",
                      "physical CRS",
                      "zip",

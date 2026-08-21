@@ -32,10 +32,10 @@ Execute every gate before requesting acceptance review. Checkboxes are the opera
 
 ## Tracker / docs
 
-- [ ] ROADMAP: M6-09 DONE, **M6 CLOSED**, NEXT = N1-07 (#109)
-- [ ] CHANGELOG Unreleased entry for M6-09
+- [ ] ROADMAP: N1-07 DONE, **MVP CLOSED**, NEXT = M7.1-01 (#110)
+- [ ] CHANGELOG Unreleased entry for N1-07 / MVP CLOSED
 - [ ] Known limitations match scope ([`known-limitations.md`](known-limitations.md))
-- [ ] GitHub issues M0–M6 closed (M6-01…M6-08 #100–#107; M6-09 closes with this PR)
+- [ ] GitHub issues M0–M6 + N1-07 closed (M6-01…M6-09 #100–#108; N1-07 #109)
 - [ ] **Do not** create `git tag` / GitHub Release until acceptance review (AC16)
 
 ## Residual (optional — not MVP DoD blockers)

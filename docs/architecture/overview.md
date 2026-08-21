@@ -115,7 +115,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | VRRP / CRS E2E | Done (M6-07) | Living Spec AC 1–11; VRRP coordinator + Switch FORWARD gate + CRS fixtures; Live CHR OFF |
 | Security / backup / restore acceptance | Done (M6-08) | Living Spec AC 1–10 + Integration pg_dump/restore AC 11–14; no live CHR |
 | MVP production acceptance | Done (M6-09) **M6 CLOSED** | Release docs + `scripts/release/*` + Living Spec AC 1–16; Live CHR OFF; no release tag in PR |
-| Remaining delivery order | See ROADMAP v0.2 §3 | Linear queue continues at N1-07 (#109); MVP CLOSED after N1-07 |
+| Path-class E2E / drift | Done (N1-07) **MVP CLOSED** | Living Spec AC 1–12; path-class drift kinds + voiding; Live CHR OFF |
+| Remaining delivery order | See ROADMAP v0.2 §3 | **MVP CLOSED**; NEXT = M7.1-01 (#110) |
 
 ## ADRs
 

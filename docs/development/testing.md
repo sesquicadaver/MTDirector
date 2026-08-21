@@ -1910,7 +1910,7 @@ dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~S
 
 ## Living Specification — MVP production acceptance (M6-09)
 
-Issue Set M6-09. **M6 CLOSED**. Live CHR / live physical CRS OFF — E2E Living Specs (M6-05…M6-07) are the DoD substitute; live lab is optional residual only. No git release tag in this PR (AC16).
+Issue Set M6-09. **M6 CLOSED**. Live CHR / live physical CRS OFF — E2E Living Specs (M6-05…M6-07 + N1-07) are the DoD substitute; live lab is optional residual only. No git release tag in this PR (AC16).
 
 | AC / вимога | Модуль | Тест / артефакт |
 |-------------|--------|-----------------|
@@ -1937,6 +1937,31 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~MvpReleaseAcceptanceLivingSpecTests"
 ```
 
+## Living Specification — path-class E2E / drift (N1-07 / **MVP CLOSED**)
+
+Issue Set N1-07 + `next-1.md`. **MVP CLOSED**. Live CHR matrix OFF — scripted topology/analysis/drift fixtures only.
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Topology Container→VETH→Bridge→VLAN→VRF | `PacketPathTopologyDiscovery` | `Ac1TopologyGraphPathClassesAreProven` |
+| AC#2 Published service path analyzed / fail-closed | `TopologyDependencyAnalysis` + `PacketPathAnalysis` + deploy gate | `Ac2PublishedContainerServicePathAnalyzedOrFailClosed` |
+| AC#3 Container egress path analyzed | NAT srcnat facts + packet-path pairs | `Ac3ContainerEgressPathIsAnalyzed` |
+| AC#4 No 1:1 / bridge≠firewall assumptions | shared VETH + topology flags | `Ac4OneToOneAndBridgeFirewallAssumptionsAreRejected` |
+| AC#5 Container running = observation | `ManagedDriftDetector` + `ContainerRunningStateChanged` | `Ac5ContainerRunningStateIsObservationNotConfigurationDrift` |
+| AC#6 Path-class config Critical + void readiness | `PathClassConfigDriftVoiding` + deploy gate | `Ac6PathClassConfigChangesAreCriticalAndVoidReadiness` |
+| AC#7 Observation fields ≠ config drift | VETH/bridge-port/HW-offload/active route | `Ac7PathClassObservationsDoNotCreateConfigurationDrift` |
+| AC#8 No path-class write APIs | ArchitectureBoundary + `DeploymentWritePaths` | `Ac8ControllerHasNoPathClassWriteApis` |
+| AC#9 Packet-path blockers fail-close | `DeploymentPacketPathGate` | `Ac9PacketPathBlockersFailCloseDeployment` |
+| AC#10 Zone `container:`/`app:` markers | `ZoneResolveEngine` | `Ac10ZoneResolveContainerAppMarkersWork` |
+| AC#11 Critical drift blocks deploy | M6-02 `DeploymentOperationGate` | `Ac11PathClassCriticalDriftBlocksNewDeployment` |
+| AC#12 Deterministic / no live CHR | Living Spec source + `testing.md` | `Ac12DeterministicLivingSpecNoLiveChr` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PathClassE2EDriftLivingSpecTests"
+```
+
 ## CHR live matrix
 
-Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 DoD, scripted E2E Living Specs replace the live CHR matrix.
+Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

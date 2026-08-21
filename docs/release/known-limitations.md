@@ -1,14 +1,14 @@
-# Known limitations (MVP / M6 CLOSED)
+# Known limitations (MVP CLOSED)
 
-These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They are intentional residuals, not defects against M6-09 DoD.
+These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They are intentional residuals, not defects against M6-09 / N1-07 DoD.
 
-## Deferred to N1-07 / MVP CLOSED
+## Closed with N1-07 / MVP CLOSED
 
-- **N1-07 (#109)** — E2E/drift acceptance for container/VLAN/VETH/HW path classes remains open. Spine: `M6(+N1-07) → MVP CLOSED`. M6 CLOSED does **not** imply MVP CLOSED.
+- **N1-07 (#109)** — E2E/drift acceptance for container/VLAN/VETH/HW path classes is DONE (`PathClassE2EDriftLivingSpecTests`). Spine complete: `M6(+N1-07) → MVP CLOSED`.
 
 ## Live lab residuals (optional)
 
-- Live CHR matrix is **OFF**. Scripted E2E Living Specs (M6-05…M6-07) are the DoD substitute.
+- Live CHR matrix is **OFF**. Scripted E2E Living Specs (M6-05…M6-07 + N1-07) are the DoD substitute.
 - Live physical CRS hardware exercise is **OFF**. Scripted CRS fixture + `VrrpCrsE2ELivingSpecTests` AC11 are the DoD substitute.
 - Golden live CHR hashes remain env-gated until an isolated runner exists.
 
@@ -22,7 +22,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 
 - No NAT / RAW / Mangle / routing / VRRP / bridge / VLAN **writes** beyond managed filter/onboarding/deploy allowlists.
 - No campaigns, auto-deploy, auto-fix drift, web/mobile UI, multi-tenant, microservices/Redis/K8s, multi-vendor, SIEM/SOAR in Controller.
-- Post-MVP **M7.*** (#110–#136) must not start before MVP CLOSED.
+- Post-MVP **M7.*** (#110–#136) starts after MVP CLOSED (NEXT = M7.1-01).
 
 ## Operational notes
 
