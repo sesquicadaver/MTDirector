@@ -1,10 +1,10 @@
 # MVP production acceptance report (M6-09)
 
-**Milestone:** M6 — End-to-End Integration  
+**Milestone:** M6 — End-to-End Integration (+ N1 weave)  
 **Issue:** [M6-09 / #108](https://github.com/sesquicadaver/MTDirector/issues/108)  
 **PR title:** `docs(release): complete MVP production acceptance`  
 **Status:** **M6 CLOSED** (formal release acceptance package).  
-**MVP CLOSED:** deferred until **N1-07 (#109)** per ROADMAP spine `M6(+N1-07) → MVP CLOSED`.
+**MVP CLOSED:** **yes** — completed by **N1-07 (#109)** per ROADMAP spine `M6(+N1-07) → MVP CLOSED`.
 
 This document is the Living Specification index for M6-09 AC 1–16 and the milestone gate: M6 closes only after this acceptance package is green.
 
@@ -39,7 +39,7 @@ M0–M6 logical IDs map to GitHub via [`ISSUES.md`](../../ISSUES.md). Acceptance
 | M6 E2E | M6-01…M6-08 | #100–#107 | CLOSED |
 | M6-09 acceptance | M6-09 | #108 | THIS PACKAGE |
 
-N1 weave items N1-01…N1-06 are DONE; **N1-07 (#109)** remains open and is **NEXT** after M6 CLOSED (not part of M6 issue count).
+N1 weave items N1-01…N1-07 are DONE; **MVP CLOSED**. Linear queue continues at **M7.1-01 (#110)**.
 
 Verify closed M6-01…M6-08 (example):
 
@@ -96,4 +96,4 @@ Live CHR / live physical CRS remain **OFF**. Optional residual: env-gated `MFC_C
 
 ## Milestone close statement
 
-With M6-01…M6-09 delivered and AC 1–16 green, **M6 is CLOSED**. Linear queue continues at **N1-07 (#109)**. Do **not** create a git release tag until acceptance review signs off (AC16).
+With M6-01…M6-09 and N1-07 delivered, **M6 is CLOSED** and **MVP CLOSED**. Linear queue continues at **M7.1-01 (#110)**. Do **not** create a git release tag until acceptance review signs off (AC16).

@@ -103,6 +103,12 @@ public sealed class ManagedDriftDetectionLivingSpecTests
     [InlineData(DriftFindingKind.RoutingConfigurationChanged)]
     [InlineData(DriftFindingKind.RouterOsVersionChanged)]
     [InlineData(DriftFindingKind.CapabilityChanged)]
+    [InlineData(DriftFindingKind.VethConfigChanged)]
+    [InlineData(DriftFindingKind.VlanConfigChanged)]
+    [InlineData(DriftFindingKind.BridgeMembershipConfigChanged)]
+    [InlineData(DriftFindingKind.VrfAssignmentConfigChanged)]
+    [InlineData(DriftFindingKind.ContainerNatExposureConfigChanged)]
+    [InlineData(DriftFindingKind.HardwarePathConfigChanged)]
     public void Ac6DependencyConfigurationChangesAreCritical(DriftFindingKind kind)
     {
         Assert.Equal(DriftSeverity.Critical, DriftClassifier.Classify(kind));
@@ -117,6 +123,10 @@ public sealed class ManagedDriftDetectionLivingSpecTests
     [InlineData(DriftFindingKind.ActiveWanChanged)]
     [InlineData(DriftFindingKind.InterfaceRunningStateChanged)]
     [InlineData(DriftFindingKind.CountersChanged)]
+    [InlineData(DriftFindingKind.ContainerRunningStateChanged)]
+    [InlineData(DriftFindingKind.VethRunningStateChanged)]
+    [InlineData(DriftFindingKind.BridgePortStateChanged)]
+    [InlineData(DriftFindingKind.HardwareOffloadStateChanged)]
     public void Ac7ObservationOnlyVrrpWanInterfaceCountersAreNotConfigurationDrift(DriftFindingKind kind)
     {
         DriftSeverity severity = DriftClassifier.Classify(kind);

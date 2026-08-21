@@ -1,6 +1,6 @@
 namespace Mfc.Domain.Drift;
 
-/// <summary>Pure severity mapping for E2E Spec §33 drift classes.</summary>
+/// <summary>Pure severity mapping for E2E Spec §33 drift classes (+ N1-07 path-class kinds).</summary>
 public static class DriftClassifier
 {
     /// <summary>Maps <paramref name="kind"/> to its normative severity.</summary>
@@ -30,6 +30,16 @@ public static class DriftClassifier
             DriftFindingKind.ActiveWanChanged => DriftSeverity.Observation,
             DriftFindingKind.InterfaceRunningStateChanged => DriftSeverity.Observation,
             DriftFindingKind.CountersChanged => DriftSeverity.Ignored,
+            DriftFindingKind.ContainerRunningStateChanged => DriftSeverity.Observation,
+            DriftFindingKind.VethConfigChanged => DriftSeverity.Critical,
+            DriftFindingKind.VlanConfigChanged => DriftSeverity.Critical,
+            DriftFindingKind.BridgeMembershipConfigChanged => DriftSeverity.Critical,
+            DriftFindingKind.VrfAssignmentConfigChanged => DriftSeverity.Critical,
+            DriftFindingKind.ContainerNatExposureConfigChanged => DriftSeverity.Critical,
+            DriftFindingKind.HardwarePathConfigChanged => DriftSeverity.Critical,
+            DriftFindingKind.VethRunningStateChanged => DriftSeverity.Observation,
+            DriftFindingKind.BridgePortStateChanged => DriftSeverity.Observation,
+            DriftFindingKind.HardwareOffloadStateChanged => DriftSeverity.Observation,
             _ => throw new DomainInvariantException($"Unknown drift finding kind '{kind}'."),
         };
 }
