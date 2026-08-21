@@ -40,7 +40,7 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
 
     // ── AC 1 ──────────────────────────────────────────────────────────────────────
 
-    /// <summary>M0–M6 + N1-07 closed in ROADMAP / ISSUES; MVP CLOSED; NEXT = M7.1-01.</summary>
+    /// <summary>M0–M6 + N1-07 closed in ROADMAP / ISSUES; MVP CLOSED; post-MVP queue advances past M7.1-01.</summary>
     [Fact]
     public void Ac1M0ThroughM6IssuesAreClosedInRoadmap()
     {
@@ -55,7 +55,8 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         Assert.Contains("#109", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.1-01", roadmap, StringComparison.Ordinal);
         Assert.Contains("#110", roadmap, StringComparison.Ordinal);
-        Assert.Contains("NEXT = M7.1-01", roadmap, StringComparison.Ordinal);
+        Assert.Contains("M7.1-01 DONE", roadmap, StringComparison.Ordinal);
+        Assert.Contains("NEXT = M7.1-02", roadmap, StringComparison.Ordinal);
 
         // Prior M6 E2E issues must appear as DONE in §2.2 / queue strikethroughs.
         foreach (string id in new[]
