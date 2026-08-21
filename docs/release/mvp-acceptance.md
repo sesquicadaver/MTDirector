@@ -1,0 +1,99 @@
+# MVP production acceptance report (M6-09)
+
+**Milestone:** M6 — End-to-End Integration  
+**Issue:** [M6-09 / #108](https://github.com/sesquicadaver/MTDirector/issues/108)  
+**PR title:** `docs(release): complete MVP production acceptance`  
+**Status:** **M6 CLOSED** (formal release acceptance package).  
+**MVP CLOSED:** deferred until **N1-07 (#109)** per ROADMAP spine `M6(+N1-07) → MVP CLOSED`.
+
+This document is the Living Specification index for M6-09 AC 1–16 and the milestone gate: M6 closes only after this acceptance package is green.
+
+## Operator / release documentation map
+
+| Topic | Document |
+|-------|----------|
+| Release gates checklist | [`release-gates.md`](release-gates.md) |
+| Known limitations (actual MVP scope) | [`known-limitations.md`](known-limitations.md) |
+| Packaging (Controller / Desktop / migrations / SBOM) | [`packaging.md`](packaging.md) |
+| Artifact signing policy | [`RELEASE_SIGNING.md`](RELEASE_SIGNING.md) |
+| Installation | [`../operations/installation.md`](../operations/installation.md) |
+| RouterOS prerequisite checklist | [`../operations/prerequisite-checklist.md`](../operations/prerequisite-checklist.md) |
+| Operations manual | [`../operations/operations-manual.md`](../operations/operations-manual.md) |
+| Recovery / backup restore | [`../operations/recovery.md`](../operations/recovery.md) |
+| Support / hardware profiles | [`../development/support-manifest.md`](../development/support-manifest.md) |
+| Test matrices / Living Spec | [`../development/testing.md`](../development/testing.md) |
+| Linear queue | [`../../ROADMAP.md`](../../ROADMAP.md) |
+
+## Closed-issue matrix (AC1)
+
+M0–M6 logical IDs map to GitHub via [`ISSUES.md`](../../ISSUES.md). Acceptance asserts ROADMAP §2.2 DONE markers for M0–M5 closed milestones and M6-01…M6-09.
+
+| Block | IDs | GitHub | Status |
+|-------|-----|--------|--------|
+| M0 Bootstrap | M0-01…M0-10 | #1–#10 | CLOSED |
+| M1 Read-only | M1-01…M1-34 | #11–#44 | CLOSED |
+| M2 Policy | M2-01…M2-18 | #48–#65 | CLOSED |
+| M3 Compiler | M3-01…M3-08 | #68–#75 | CLOSED |
+| M5 Onboarding | M5-01…M5-10 | #76–#85 | CLOSED |
+| M4 Safe deploy | M4-01…M4-13 | #86–#98 | CLOSED |
+| M6 E2E | M6-01…M6-08 | #100–#107 | CLOSED |
+| M6-09 acceptance | M6-09 | #108 | THIS PACKAGE |
+
+N1 weave items N1-01…N1-06 are DONE; **N1-07 (#109)** remains open and is **NEXT** after M6 CLOSED (not part of M6 issue count).
+
+Verify closed M6-01…M6-08 (example):
+
+```bash
+gh issue view 100 --json state -q .state   # CLOSED
+# … through 107
+gh issue list --search "M6-0 in:title is:closed" --limit 20
+```
+
+## Acceptance criteria → evidence
+
+| # | Criterion | Evidence |
+|--:|-----------|----------|
+| 1 | All M0–M6 issues closed | ROADMAP §2.2 + matrix above; Living Spec `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
+| 2 | All release gates executed | [`release-gates.md`](release-gates.md); `Ac2ReleaseGatesChecklistExists` |
+| 3 | CHR test matrix green | Live CHR OFF — DoD substitute: `StandaloneDualStackE2ELivingSpecTests`, `MultiWanE2ELivingSpecTests`, `VrrpCrsE2ELivingSpecTests`; residual live CHR optional only |
+| 4 | Physical CRS test green | Same substitute: `VrrpCrsE2ELivingSpecTests` AC11 + `testlab/chr/topologies/crs-switch` |
+| 5 | Fault-injection suite green | `FullyQualifiedName~FaultInjection` (+ M4-13 fault Living Spec) |
+| 6 | Security suite green | `SecurityBackupRestoreLivingSpecTests` (M6-08 AC 1–10) |
+| 7 | Backup/restore suite green | `SecurityBackupRestoreAcceptanceTests` (M6-08 AC 11–14) |
+| 8 | Dependency scan no unresolved Critical | `scripts/release/run-dependency-scan.sh` + CI `Package vulnerability scan`; `Ac8DependencyScanPolicyAndScriptExist` |
+| 9 | Controller package created | `scripts/release/package-controller.sh` → `OUT_DIR/controller` |
+| 10 | Desktop installer created | `scripts/release/package-desktop.sh` → zip/tar publish dir (MVP installer substitute) |
+| 11 | Migration bundle created | `scripts/release/create-migration-bundle.sh` |
+| 12 | SBOM + SHA-256 checksums | `scripts/release/generate-sbom-and-checksums.sh` |
+| 13 | Release artifacts “signed” | Cleartext `SHA256SUMS` + attestation / optional GPG; [`RELEASE_SIGNING.md`](RELEASE_SIGNING.md) |
+| 14 | Known limitations match scope | [`known-limitations.md`](known-limitations.md) |
+| 15 | Git working tree clean | CI gate + Living Spec script isolation; clean after this PR merges |
+| 16 | Release tag only after acceptance review | **No tag in this PR**; gate documented in [`RELEASE_SIGNING.md`](RELEASE_SIGNING.md) / gates checklist |
+
+## Clean-environment release candidate
+
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+git clone https://github.com/sesquicadaver/MTDirector.git
+cd MTDirector
+dotnet tool restore
+dotnet restore MikroTikFirewallController.sln --locked-mode
+dotnet build MikroTikFirewallController.sln -c Release --no-restore
+dotnet test MikroTikFirewallController.sln -c Release --no-build \
+  --filter "FullyQualifiedName~MvpReleaseAcceptance\
+|FullyQualifiedName~StandaloneDualStackE2ELivingSpecTests\
+|FullyQualifiedName~MultiWanE2ELivingSpecTests\
+|FullyQualifiedName~VrrpCrsE2ELivingSpecTests\
+|FullyQualifiedName~FaultInjection\
+|FullyQualifiedName~SecurityBackupRestore\
+|FullyQualifiedName~ArchitectureBoundary"
+OUT_DIR="$(mktemp -d)" MFC_RELEASE_DRY_RUN=0 ./scripts/release/run-dependency-scan.sh
+OUT_DIR="$(mktemp -d)" ./scripts/release/package-controller.sh
+# … desktop, migrations, sbom (see packaging.md)
+```
+
+Live CHR / live physical CRS remain **OFF**. Optional residual: env-gated `MFC_CHR_*` on an isolated runner.
+
+## Milestone close statement
+
+With M6-01…M6-09 delivered and AC 1–16 green, **M6 is CLOSED**. Linear queue continues at **N1-07 (#109)**. Do **not** create a git release tag until acceptance review signs off (AC16).

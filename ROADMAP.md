@@ -3,7 +3,7 @@
 **Дата оновлення:** 21 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M6-08 — security/backup/restore acceptance DONE; черга зсунута на M6-09
+**Базовий коміт аудиту:** M6-09 — MVP production acceptance DONE; **M6 CLOSED**; черга зсунута на N1-07
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -50,13 +50,13 @@
 | M3 Compiler | 8 | 0 | 100% |
 | M5 Onboarding | 10 | 0 | 100% |
 | M4 Safe deploy | 13 | 0 | 100% |
-| M6 E2E / drift | 8 | 1 | 89% |
+| M6 E2E / drift | 9 | 0 | 100% |
 | M7 Post-MVP | 0 | 27 | 0% |
-| **Разом** | **101** | **35** | **74% issues** |
+| **Разом** | **102** | **34** | **75% issues** |
 
-MVP issues (109) = **102 done + 7 remaining** до MVP CLOSED (**94%**).  
-N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після M6-09.  
-Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий**; multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance **DONE**; **M4 CLOSED**; desired/committed/actual projection **готовий** (M6-01); managed drift detection **готовий** (M6-02); bounded operational jobs **готовий** (M6-03); Desktop MVP workflows **готовий** (M6-04); standalone/dual-stack E2E **готовий** (M6-05); multi-WAN E2E **готовий** (M6-06); VRRP/CRS E2E **готовий** (M6-07); security/backup/restore acceptance **готовий** (M6-08); NEXT = M6-09 (#108).
+MVP issues (109) = **103 done + 6 remaining** до MVP CLOSED (**95%**).  
+N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише після MVP CLOSED (після N1-07).  
+Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий**; multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance **DONE**; **M4 CLOSED**; desired/committed/actual projection **готовий** (M6-01); managed drift detection **готовий** (M6-02); bounded operational jobs **готовий** (M6-03); Desktop MVP workflows **готовий** (M6-04); standalone/dual-stack E2E **готовий** (M6-05); multi-WAN E2E **готовий** (M6-06); VRRP/CRS E2E **готовий** (M6-07); security/backup/restore acceptance **готовий** (M6-08); MVP production acceptance **готовий** (M6-09); **M6 CLOSED**; NEXT = N1-07 (#109).
 
 ### 2.2 DONE (не в черзі)
 
@@ -160,6 +160,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | M6-06 | #105 | Multi-WAN E2E Living Spec AC 1–10 (Live CHR OFF) |
 | M6-07 | #106 | VRRP / CRS E2E Living Spec AC 1–11 (scripted fixtures; Live CHR OFF) |
 | M6-08 | #107 | Security/backup/restore Living Spec AC 1–10 + Integration pg_dump/restore AC 11–14 |
+| M6-09 | #108 | **M6 CLOSED** — MVP production acceptance (docs/release + scripts/release + Living Spec AC 1–16; no git tag) |
 
 ### 2.3 Поточні прогалини (код)
 
@@ -176,7 +177,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | `Mfc.Domain.Onboarding` | immutable plans + plan hasher + operation SM + write-ahead steps + bootstrap artifact + `ManagementState` (M5-01) + prerequisite validator (M5-02) + `GuardProfile` / guard verifier (M5-03) + `AnchorPlacementPlanner` (M5-04) + `OnboardingBootstrapWritePlanner` (M5-05) + `OnboardingWatchdogPlanner` (M5-06) + pass-through equivalence / enable order (M5-07) + Spec §46 recovery decision table (M5-08) |
 | `Mfc.Domain.Deployment` | immutable `DeploymentPlan` + plan hasher `mfc.deployment.plan.v1` + Node/device SM + exclusive lock + write-ahead steps (M4-01) + packet-path deploy gate (N1-06) + address-list create-or-verify (M4-03) + detached chain create-or-verify (M4-04) + production watchdog planner/script (M4-05) + transition-state validation + anchor activation order/decision (M4-06) + post-activation integrity/probes/watchdog readiness (M4-07) + standalone eligibility/NO_CHANGES policy (M4-08) + multi-WAN dependency/probe gates (M4-09) + VRRP classification/order/partial-failure policy (M4-10) + recovery decision table / controller rollback (M4-11); no campaign |
 
-**NEXT = M6-09:** [M6-09](https://github.com/sesquicadaver/MTDirector/issues/108) Complete MVP release acceptance. **M6-08 DONE.**
+**NEXT = N1-07:** [N1-07](https://github.com/sesquicadaver/MTDirector/issues/109) E2E/drift acceptance for container/VLAN/VETH/HW path classes. **M6-09 DONE / M6 CLOSED.** MVP CLOSED після N1-07.
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -203,7 +204,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 
 **Хвиля 6 — M4 Safe deploy + N1-06 (черга #72–#85, #86–#99):** N1-06 блокує deploy при packet-path blockers. Далі plan/writer/staging/watchdog/VRRP/rollback/API → **M4 CLOSED**. Заборона: Safe Mode замість watchdog; partial VRRP.
 
-**Хвиля 7 — M6 E2E + N1-07 → MVP CLOSED (черга #86–#95, #100–#109):** desired/committed/actual → drift → jobs → Desktop → CHR suites (standalone, multi-WAN, VRRP/CRS) → security/backup → **M6-09 MVP CLOSED**. Live CHR matrix увімкнути лише на isolated runner (зараз OFF).
+**Хвиля 7 — M6 E2E + N1-07 → MVP CLOSED (черга #86–#95, #100–#109):** desired/committed/actual → drift → jobs → Desktop → CHR suites (standalone, multi-WAN, VRRP/CRS) → security/backup → ~~**M6-09 M6 CLOSED**~~ → **N1-07 → MVP CLOSED**. Live CHR matrix увімкнути лише на isolated runner (зараз OFF).
 
 **Поза планом до MVP CLOSED:** M7.* (#110–#136). Не виносити вперед.
 
@@ -362,7 +363,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | ~~92~~ | ~~M6-06~~ | ~~#105~~ | ~~Complete multi-WAN end-to-end acceptance~~ → DONE (Living Spec AC 1–10; scripted runtimes; Live CHR OFF) |
 | ~~93~~ | ~~M6-07~~ | ~~#106~~ | ~~Complete VRRP and CRS end-to-end acceptance~~ → DONE (Living Spec AC 1–11; scripted fixtures; Live CHR OFF) |
 | ~~94~~ | ~~M6-08~~ | ~~#107~~ | ~~Complete security, backup and restore acceptance~~ → DONE (Living Spec AC 1–10; Integration pg_dump/restore AC 11–14) |
-| 95 | M6-09 | #108 | Complete MVP release acceptance (**MVP CLOSED**) |
+| ~~95~~ | ~~M6-09~~ | ~~#108~~ | ~~Complete MVP release acceptance (**M6 CLOSED**; MVP CLOSED after N1-07)~~ → DONE (`docs/release/*` + `scripts/release/*` + `MvpReleaseAcceptanceLivingSpecTests` AC 1–16) |
 
 ---
 
@@ -415,7 +416,7 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 30 відкритих атомарних задач (3 до MVP CLOSED + 27 M7). Start here: #108 M6-09.
+**Кінець черги:** 28 відкритих атомарних задач (1 до MVP CLOSED + 27 M7). Start here: #109 N1-07.
 
 ---
 
@@ -423,10 +424,10 @@ N1-07 входить у N1 Open, не в M4/M6. Post-MVP M7 = **27** лише п
 
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
-| До MVP CLOSED | 3 | M6-09 + N1-07 |
-| Post-MVP M7 | 27 | лише після M6-09 |
-| **Нереалізовано разом** | **33** | 6 MVP + 27 M7 |
-| DONE у коді (§2.2) | 102 | …+M4-01…13+M6-01…M6-08 |
+| До MVP CLOSED | 1 | N1-07 |
+| Post-MVP M7 | 27 | лише після MVP CLOSED (N1-07) |
+| **Нереалізовано разом** | **28** | 1 MVP + 27 M7 |
+| DONE у коді (§2.2) | 103 | …+M4-01…13+M6-01…M6-09 |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
@@ -514,6 +515,8 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | Standalone / dual-stack E2E DoD | M6-05 | Living Spec `StandaloneDualStackE2ELivingSpecTests` AC#1–10 + `StandaloneDualStackE2EAcceptanceTests`; scripted runtimes; Live CHR OFF | **DONE** |
 | Multi-WAN E2E DoD | M6-06 | Living Spec `MultiWanE2ELivingSpecTests` AC#1–10; `VerifyMultiWanDeploymentUseCase` + drift/FastTrack; Live CHR OFF | **DONE** |
 | VRRP / CRS E2E DoD | M6-07 | Living Spec `VrrpCrsE2ELivingSpecTests` AC#1–11; `ExecuteVrrpDeploymentUseCase` + Switch FORWARD gate + CRS fixtures; Live CHR OFF | **DONE** |
+| Security / backup / restore | M6-08 | Living Spec `SecurityBackupRestoreLivingSpecTests` AC#1–10 + Integration AC#11–14; Live CHR OFF | **DONE** |
+| MVP production acceptance / **M6 CLOSED** | M6-09 | Living Spec `MvpReleaseAcceptanceLivingSpecTests` AC#1–16; `docs/release/*` + `scripts/release/*`; no git tag | **DONE** |
 | Routing assurance | M7.1 | RouteResolutionTrace fixtures | TODO post-MVP |
 | Incident overlay | M7.4 | feasibility; TTL removal | TODO post-MVP |
 
@@ -579,7 +582,8 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 40. ~~Відкрити **M6-06** → [issue #105](https://github.com/sesquicadaver/MTDirector/issues/105).~~ → **DONE**.
 41. ~~Відкрити **M6-07** → [issue #106](https://github.com/sesquicadaver/MTDirector/issues/106).~~ → **DONE**.
 42. ~~Відкрити **M6-08** → [issue #107](https://github.com/sesquicadaver/MTDirector/issues/107).~~ → **DONE**.
-43. Відкрити **M6-09** → [issue #108](https://github.com/sesquicadaver/MTDirector/issues/108).
+43. ~~Відкрити **M6-09** → [issue #108](https://github.com/sesquicadaver/MTDirector/issues/108).~~ → **DONE / M6 CLOSED**.
+44. Відкрити **N1-07** → [issue #109](https://github.com/sesquicadaver/MTDirector/issues/109).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones

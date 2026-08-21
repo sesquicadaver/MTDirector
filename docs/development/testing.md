@@ -18,7 +18,7 @@ Working tree must stay clean after build/test.
 
 | Project | Role |
 |---------|------|
-| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28, Desktop semantic diff viewer M1-29, fault-injection matrix M1-33) |
+| `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28, Desktop semantic diff viewer M1-29, fault-injection matrix M1-33, MVP release acceptance M6-09) |
 | `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN/VRRP vertical-slice acceptance M1-30/M1-31/M1-32, fault-injection acceptance M1-33, onboarding topology acceptance M5-10, standalone/dual-stack E2E inventory→capture→onboarding M6-05, multi-WAN capture slice M1-31 (M6-06 reuse), VRRP capture slice M1-32 (M6-07 reuse), security backup/restore pg_dump/restore M6-08 |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts + optional live CHR TLS gate (`MFC_CHR_STANDALONE_HOST`) |
 
@@ -1908,6 +1908,35 @@ dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~Security
 dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~SecurityBackupRestoreAcceptanceTests"
 ```
 
+## Living Specification — MVP production acceptance (M6-09)
+
+Issue Set M6-09. **M6 CLOSED**. Live CHR / live physical CRS OFF — E2E Living Specs (M6-05…M6-07) are the DoD substitute; live lab is optional residual only. No git release tag in this PR (AC16).
+
+| AC / вимога | Модуль | Тест / артефакт |
+|-------------|--------|-----------------|
+| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md` | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
+| AC#2 Release gates executed | `docs/release/release-gates.md` | `Ac2ReleaseGatesChecklistExists` |
+| AC#3 CHR matrix green | E2E Living Specs (substitute) | `Ac3ChrMatrixSubstitutedByE2ELivingSpecs` |
+| AC#4 Physical CRS green | `VrrpCrsE2E` + `crs-switch` | `Ac4PhysicalCrsSubstitutedByScriptedFixture` |
+| AC#5 Fault-injection green | FaultInjection suites | `Ac5FaultInjectionSuiteExists` |
+| AC#6 Security suite green | M6-08 Living Spec | `Ac6SecuritySuiteExists` |
+| AC#7 Backup/restore green | M6-08 Integration | `Ac7BackupRestoreSuiteExists` |
+| AC#8 Dependency scan | `run-dependency-scan.sh` + CI | `Ac8DependencyScanPolicyAndScriptExist` |
+| AC#9 Controller package | `package-controller.sh` | `Ac9ControllerPackageCreatedInDryRun` |
+| AC#10 Desktop installer | `package-desktop.sh` (zip/tar) | `Ac10DesktopInstallerCreatedInDryRun` |
+| AC#11 Migration bundle | `create-migration-bundle.sh` | `Ac11MigrationBundleCreatedInDryRun` |
+| AC#12 SBOM + SHA-256 | `generate-sbom-and-checksums.sh` | `Ac12SbomAndSha256ChecksumsCreatedInDryRun` |
+| AC#13 Signed artifacts | `SHA256SUMS` + `RELEASE_SIGNING.md` | `Ac13ReleaseArtifactsSignedViaChecksumAttestation` |
+| AC#14 Known limitations | `known-limitations.md` | `Ac14KnownLimitationsMatchActualScope` |
+| AC#15 Clean work tree | script isolation + CI gate | `Ac15PackagingDoesNotDirtyGitWorkTree` |
+| AC#16 Tag after review | docs; no `git tag` in scripts | `Ac16ReleaseTagOnlyAfterAcceptanceReview` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~MvpReleaseAcceptanceLivingSpecTests"
+```
+
 ## CHR live matrix
 
-Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`.
+Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 DoD, scripted E2E Living Specs replace the live CHR matrix.

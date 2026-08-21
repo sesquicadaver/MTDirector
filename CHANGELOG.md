@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- MVP production acceptance (M6-09 / **M6 CLOSED**): release package under `docs/release/` (acceptance report, gates checklist, known limitations, packaging notes, `RELEASE_SIGNING.md`), operations manuals (`installation`, `prerequisite-checklist`, `operations-manual`), `scripts/release/` packaging helpers (Controller publish, Desktop zip/tar installer substitute, EF migrations bundle, dependency scan, SBOM + SHA256SUMS attestation). Living Spec `MvpReleaseAcceptanceLivingSpecTests` AC 1–16. Live CHR / live physical CRS remain OFF (E2E Living Specs are DoD substitutes). **No git release tag** in this change — tag only after acceptance review. NEXT = N1-07 (#109); MVP CLOSED deferred until N1-07.
+
 - Security, backup and restore acceptance (M6-08): Living Spec `SecurityBackupRestoreLivingSpecTests` AC 1–10 (invalid CA/SAN/SPKI, plain API block, default RouterOS group reject, Desktop credential surface, ciphertext-only entity, log/audit redaction, RBAC fail-closed, path/script injection bans, audit hash-chain tamper detection). Integration `SecurityBackupRestoreAcceptanceTests` AC 11–14 via in-container `pg_dump`/`pg_restore` on Testcontainers Postgres (`--Mfc:OperationalJobs:Enabled=false`): dump/restore round-trip, snapshot `BrotliPayloadCodec` hash verify, `device_hash_states`→`filter_artifacts` active artifact refs, nonterminal Activating → `RecoverDeploymentUseCase` ControllerRollback. Reuses ConnectionProfile/ApiSsl/OnboardingPrerequisite/M4-13 security surfaces; Live CHR OFF; no production secrets.
 
 - VRRP and CRS end-to-end acceptance (M6-07): Living Spec `VrrpCrsE2ELivingSpecTests` AC 1–11 (VRRP active/passive lifecycle, split-master fail-closed lifecycle, all-members onboard/deploy, role-change rollback, no partial commit, physical management addresses, CRS INPUT/OUTPUT lifecycle, FORWARD rejected, no Bridge/VLAN/HW-offload writes, scripted physical CRS hardware fixture contract). Reuses `ExecuteVrrpDeploymentUseCase` / `DeploymentAcceptanceHarness` ScriptedMember, onboarding bootstrap, Switch FORWARD compiler/topology gates, `CapabilityProfileEvaluator` CRS board class, `testlab/chr/topologies/crs-switch` + sanitized fixture. Live CHR / live physical CRS remain OFF. Optional Integration reuse: `VrrpVerticalSliceAcceptanceTests` (inventory/capture).
@@ -57,6 +59,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP: M6-09 MVP production acceptance DONE; **M6 CLOSED**; NEXT = N1-07 (#109); M6 E2E 9/9; 103/109 MVP DONE (95%); MVP CLOSED after N1-07.
 - ROADMAP: M6-08 security/backup/restore acceptance DONE; NEXT = M6-09 (#108); M6 E2E 8/9; 102/109 MVP DONE (94%).
 - ROADMAP: M6-07 VRRP/CRS E2E DONE; NEXT = M6-08 (#107); M6 E2E 7/9; 101/109 MVP DONE (93%).
 - ROADMAP: M6-06 multi-WAN E2E DONE; NEXT = M6-07 (#106); M6 E2E 6/9; 100/109 MVP DONE (92%).
