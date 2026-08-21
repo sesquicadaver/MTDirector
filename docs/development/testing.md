@@ -19,7 +19,7 @@ Working tree must stay clean after build/test.
 | Project | Role |
 |---------|------|
 | `tests/Mfc.UnitTests` | Unit + architecture boundary tests + coverage (incl. Inventory, Snapshots/Capabilities, RouterOS discovery + capability + N1 topology/path class, node topology validation, stable-read, raw snapshot, canonicalization, menu projector, capture idempotency/audit, semantic diff M1-24, inventory/snapshot proto contracts M1-25/M1-26, Desktop inventory tree M1-27, Desktop snapshot viewer M1-28, Desktop semantic diff viewer M1-29, fault-injection matrix M1-33) |
-| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN/VRRP vertical-slice acceptance M1-30/M1-31/M1-32, fault-injection acceptance M1-33, onboarding topology acceptance M5-10, standalone/dual-stack E2E inventory→capture→onboarding M6-05 |
+| `tests/Mfc.IntegrationTests` | Controller health + Inventory/Snapshot gRPC host (M1-25/M1-26/ListNodes M1-27), Desktop connection, PostgreSQL bootstrap + inventory/snapshot persist (Testcontainers), standalone/multi-WAN/VRRP vertical-slice acceptance M1-30/M1-31/M1-32, fault-injection acceptance M1-33, onboarding topology acceptance M5-10, standalone/dual-stack E2E inventory→capture→onboarding M6-05, multi-WAN capture slice M1-31 (M6-06 reuse) |
 | `tests/Mfc.RouterOs.IntegrationTests` | RouterOS markers + CHR skeleton contracts + optional live CHR TLS gate (`MFC_CHR_STANDALONE_HOST`) |
 
 ## Living Specification — semantic diff (M1-24)
@@ -1829,6 +1829,30 @@ Filter:
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~StandaloneDualStackE2ELivingSpecTests"
 dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~StandaloneDualStackE2EAcceptanceTests"
+```
+
+## Living Specification — multi-WAN E2E (M6-06)
+
+Issue Set M6-06 + E2E Workflow Spec §55–§56. Live CHR matrix OFF — scripted/fake runtimes (same pattern as M6-05 / M4-13). Inventory/capture multi-WAN slice remains `MultiWanVerticalSliceAcceptanceTests` (`--Mfc:OperationalJobs:Enabled=false`).
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Failover primary active | `VerifyMultiWanDeploymentUseCase` + standalone filter deploy | `Ac1FailoverWithPrimaryActiveSucceeds` |
+| AC#2 Failover backup active | active-path probe selection | `Ac2FailoverWithBackupActiveSucceeds` |
+| AC#3 Artifact identical across operational states | `ArtifactHashIgnoringActiveRoute` | `Ac3ArtifactIdenticalForBothOperationalStates` |
+| AC#4 PCC topology succeeds | Balanced tables + PCC facts | `Ac4PccTopologySucceeds` |
+| AC#5 Per-table probes | Mixed/Balanced `PlanRuntimeProbes` | `Ac5PerTableProbesSucceed` |
+| AC#6 FastTrack unsafe blocked | `FastTrackAnalysis` PCC/balanced/mixed | `Ac6FastTrackUnsafeCaseIsBlocked` |
+| AC#7 Routing/NAT/Mangle unchanged | `EnsureFilterOnlyWriteSurface` + write allowlist | `Ac7RoutingNatMangleAreNotChanged` |
+| AC#8 Forced failover not performed | `MultiWanForcedFailoverForbidden` + reflection | `Ac8ForcedFailoverIsNotPerformed` |
+| AC#9 Dependency change voids plan | `RecheckDependencyHashes` RequiresRollback | `Ac9DependencyChangeVoidsOrCancelsThePlan` |
+| AC#10 Active route ≠ configuration drift | `ManagedDriftDetector` + `ActiveWanChanged` | `Ac10ActiveRouteChangeDoesNotCreateConfigurationDrift` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~MultiWanE2ELivingSpecTests"
+dotnet test tests/Mfc.IntegrationTests -c Release --filter "FullyQualifiedName~MultiWanVerticalSliceAcceptanceTests"
 ```
 
 ## CHR live matrix
