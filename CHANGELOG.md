@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Analyze dynamic route origins read-only (M7.1-05): Domain `RouteOrigins` + `RouteOriginClassifier` + `DynamicRouteOriginAnalysis` / `DynamicRouteOriginAnalyzer` (per-table origin counts + active dynamic route facts from FIB snapshot only; no BGP table load). `RouteObservationFact` / `DefaultRouteObservationFact` gain `RouteType` + `Origin`; `RoutingOperationalSnapshot.DynamicRouteOrigins` persisted in operational jsonb. Discovery maps RouterOS route `type`, exposes all `/ip/route` + `/ipv6/route` observations (dynamic included in ops, excluded from static config). Optional `Origin` on `RouteCandidate` / `SelectedRoute` in traces. Living Spec `DynamicRouteOriginLivingSpecTests` AC 1–8; no routing writes. ROADMAP marks M7.1-05 DONE; NEXT = M7.1-06 (#115).
+
 - Model ECMP as ONE_OF bounded next-hop sets (M7.1-04): Domain `EcmpRouteSet` / `EcmpNextHop` / `EcmpHashingContext` + `EcmpRouteSetBuilder` (flow-key shell from probe inputs; active / hardware-offloaded subsets; single-hop convention `EcmpRouteSet = null`). `RouteResolutionTrace.EcmpRouteSet` populated by `RouteResolutionTraceEngine` for multi-path ECMP forward outcomes. Living Spec `EcmpRouteSetLivingSpecTests` AC 1–9; persistence round-trip via `routing_assurance_states.ResolutionTracesJson`; no routing writes. ROADMAP marks M7.1-04 DONE; NEXT = M7.1-05 (#114).
 
 - Implement RouteResolutionTrace (M7.1-03): Domain `RouteResolutionTraceEngine` + `RouteResolutionQuery` / `RouteResolutionTrace` model (policy-routing stages, routing rules LOOKUP/LOOKUP_ONLY/DROP/UNREACHABLE, table lookup, recursive gateway resolution, ECMP `ONE_OF` immediate next hops, execution path / certainty). Application upsert computes traces from `TraceQueries` when `ResolutionTraces` empty. Living Spec `RouteResolutionTraceLivingSpecTests` AC 1–10; persistence round-trip via `routing_assurance_states`; no routing writes. ROADMAP marks M7.1-03 DONE; NEXT = M7.1-04 (#113).
@@ -69,7 +71,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- ROADMAP: M7.1-04 ECMP ONE_OF bounded next-hop sets DONE; NEXT = M7.1-05 (#114); Post-MVP M7 = 23 open (4/27 DONE).
+- ROADMAP: M7.1-05 dynamic route origins read-only DONE; NEXT = M7.1-06 (#115); Post-MVP M7 = 22 open (5/27 DONE).
 - ROADMAP: M7.1-02 RoutingAssuranceState persistence DONE; NEXT = M7.1-03 (#112); Post-MVP M7 = 25 open (2/27 DONE).
 - ROADMAP: M7.1-01 routing-assurance read allowlist DONE; NEXT was M7.1-02 (#111); Post-MVP M7 = 26 open (1/27 DONE).
 - ROADMAP: N1-07 path-class E2E/drift DONE; **MVP CLOSED**; NEXT was M7.1-01 (#110); N1 weave 7/7; 109/109 MVP DONE (100%); Post-MVP queue = 27.

@@ -407,6 +407,7 @@ public static class RouteResolutionTraceEngine
                 Active = r.Active,
                 Selected = selected.Any(s => SameRoute(s, r)),
                 RouteKind = r.RouteKind,
+                Origin = r.Origin,
             })
             .OrderBy(static c => c.DstPrefix, StringComparer.Ordinal)
             .ThenBy(static c => c.Gateway, StringComparer.Ordinal)
@@ -701,6 +702,7 @@ public static class RouteResolutionTraceEngine
                 Distance = r.Distance,
                 ImmediateGateway = r.ImmediateGateway,
                 RouteKind = r.RouteKind,
+                Origin = r.Origin,
             })
             .ToArray();
 
@@ -780,6 +782,8 @@ public static class RouteResolutionTraceEngine
                 ImmediateGateway = observation?.ImmediateGateway,
                 HwOffloaded = observation?.HwOffloaded,
                 RouteKind = ClassifyRouteKind(gateway),
+                RouteType = observation?.RouteType,
+                Origin = observation?.Origin ?? ClassifyOrigin(family, gateway, isDynamic: observation?.IsDynamic ?? false, routeType: observation?.RouteType),
             };
         }
 
@@ -801,6 +805,14 @@ public static class RouteResolutionTraceEngine
                     Active = IsActive(observation.Active),
                     ImmediateGateway = observation.ImmediateGateway ?? existing.ImmediateGateway,
                     HwOffloaded = observation.HwOffloaded ?? existing.HwOffloaded,
+                    RouteType = observation.RouteType ?? existing.RouteType,
+                    Origin = observation.Origin
+                             ?? ClassifyOrigin(
+                                 observation.Family,
+                                 observation.Gateway ?? string.Empty,
+                                 observation.IsDynamic,
+                                 observation.RouteType)
+                             ?? existing.Origin,
                 };
                 continue;
             }
@@ -820,6 +832,13 @@ public static class RouteResolutionTraceEngine
                 ImmediateGateway = observation.ImmediateGateway,
                 HwOffloaded = observation.HwOffloaded,
                 RouteKind = ClassifyRouteKind(gateway),
+                RouteType = observation.RouteType,
+                Origin = observation.Origin
+                         ?? ClassifyOrigin(
+                             observation.Family,
+                             gateway,
+                             observation.IsDynamic,
+                             observation.RouteType),
             };
         }
 
@@ -848,6 +867,22 @@ public static class RouteResolutionTraceEngine
 
         return IsLocalGateway(gateway) ? "connected" : "unicast";
     }
+
+    private static string ClassifyOrigin(string family, string gateway, bool isDynamic, string? routeType)
+        => RouteOriginClassifier.Classify(new RouteObservationFact
+        {
+            Family = family,
+            DstAddress = null,
+            RoutingTable = null,
+            Gateway = gateway,
+            Active = null,
+            ImmediateGateway = null,
+            GatewayStatus = null,
+            IsDynamic = isDynamic,
+            HwOffloaded = null,
+            RouteType = routeType,
+            Origin = null,
+        });
 
     private static string ClassifyRouteDecision(ResolvedRoute route)
     {
@@ -1137,6 +1172,10 @@ public static class RouteResolutionTraceEngine
         public string? HwOffloaded { get; init; }
 
         public string? RouteKind { get; init; }
+
+        public string? RouteType { get; init; }
+
+        public string? Origin { get; init; }
     }
 
     private sealed record LookupResult

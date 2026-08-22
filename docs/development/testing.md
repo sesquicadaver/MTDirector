@@ -2007,6 +2007,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~EcmpRouteSetLivingSpecTests"
 ```
 
+## Living Specification — dynamic route origins read-only (M7.1-05)
+
+Issue Set M7.1-05 / Network Rule M7.1 Spec §10. Deterministic scripted fixtures only; no live CHR; no routing writes; full BGP table never loaded.
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Static configured route → STATIC | `RouteOriginClassifier` | `Ac1StaticConfiguredRouteClassifiesAsStatic` |
+| AC#2 Connected interface gateway → CONNECTED | gateway heuristic | `Ac2ConnectedInterfaceGatewayClassifiesAsConnected` |
+| AC#3 Dynamic `type` bgp/ospf/dhcp/vpn | `RouteOriginClassifier` | `Ac3DynamicRouteTypeMapsProtocolOrigin` |
+| AC#4 Active dynamic default in facts | `DynamicRouteOriginAnalyzer` | `Ac4DynamicDefaultRouteIncludedInActiveDynamicFacts` |
+| AC#5 Unknown dynamic type → OTHER | fallback | `Ac5UnknownDynamicTypeFallsBackToOther` |
+| AC#6 Per-table origin summary | `DynamicRouteOriginTableSummary` | `Ac6PerTableSummaryCountsOrigins` |
+| AC#7 No routing writes | `RosReadCommandRegistry` | `Ac7NoRoutingWriteApisOpened` |
+| AC#8 Persistence round-trip | operational jsonb | `Ac8PersistenceRoundTripIncludesDynamicRouteOriginAnalysis` |
+
+Discovery + trace coverage: `DiscoveryMapsRouteTypeAndIncludesDynamicRoutesInOperationalObservations`, `TraceExposesOriginOnSelectedRouteWhenObservationPresent`.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DynamicRouteOriginLivingSpecTests"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

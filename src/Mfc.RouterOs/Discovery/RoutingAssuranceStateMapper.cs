@@ -140,43 +140,89 @@ public static class RoutingAssuranceStateMapper
 
     private static RoutingOperationalSnapshot ToOperational(RoutingDependencyDiscoveryResult discovery)
     {
-        RouteObservationFact[] routes = discovery.Ipv4StaticRoutes
-            .Concat(discovery.Ipv6StaticRoutes)
-            .Select(static r => new RouteObservationFact
-            {
-                Family = FamilyName(r.Family),
-                DstAddress = r.DstAddress,
-                RoutingTable = r.RoutingTable,
-                Gateway = r.Gateway,
-                Active = r.Active,
-                ImmediateGateway = r.ImmediateGateway,
-                GatewayStatus = r.GatewayStatus,
-                IsDynamic = r.IsDynamic,
-                HwOffloaded = null,
-            })
+        RouteObservationFact[] routes = discovery.Ipv4RouteObservations
+            .Concat(discovery.Ipv6RouteObservations)
+            .Select(MapRouteObservation)
             .ToArray();
 
         DefaultRouteObservationFact[] defaults = discovery.Ipv4DefaultRouteState
             .Concat(discovery.Ipv6DefaultRouteState)
-            .Select(static r => new DefaultRouteObservationFact
-            {
-                Family = FamilyName(r.Family),
-                DstAddress = r.DstAddress,
-                RoutingTable = r.RoutingTable,
-                Gateway = r.Gateway,
-                Distance = r.Distance,
-                Active = r.Active,
-                ImmediateGateway = r.ImmediateGateway,
-                GatewayStatus = r.GatewayStatus,
-                IsDynamic = r.IsDynamic,
-                IsStatic = r.IsStatic,
-            })
+            .Select(MapDefaultRouteObservation)
             .ToArray();
+
+        DynamicRouteOriginAnalysis analysis = DynamicRouteOriginAnalyzer.Analyze(routes, defaults);
 
         return new RoutingOperationalSnapshot(
             routes,
             defaults,
-            discovery.OperationalHashMaterial.ToDictionary(static kv => kv.Key, static kv => kv.Value, StringComparer.Ordinal));
+            discovery.OperationalHashMaterial.ToDictionary(static kv => kv.Key, static kv => kv.Value, StringComparer.Ordinal),
+            analysis);
+    }
+
+    private static RouteObservationFact MapRouteObservation(StaticRouteDiscovery route)
+    {
+        RouteObservationFact draft = new()
+        {
+            Family = FamilyName(route.Family),
+            DstAddress = route.DstAddress,
+            RoutingTable = route.RoutingTable,
+            Gateway = route.Gateway,
+            Active = route.Active,
+            ImmediateGateway = route.ImmediateGateway,
+            GatewayStatus = route.GatewayStatus,
+            IsDynamic = route.IsDynamic,
+            HwOffloaded = null,
+            RouteType = route.RouteType,
+            Origin = null,
+        };
+        return new RouteObservationFact
+        {
+            Family = draft.Family,
+            DstAddress = draft.DstAddress,
+            RoutingTable = draft.RoutingTable,
+            Gateway = draft.Gateway,
+            Active = draft.Active,
+            ImmediateGateway = draft.ImmediateGateway,
+            GatewayStatus = draft.GatewayStatus,
+            IsDynamic = draft.IsDynamic,
+            HwOffloaded = draft.HwOffloaded,
+            RouteType = draft.RouteType,
+            Origin = RouteOriginClassifier.Classify(draft),
+        };
+    }
+
+    private static DefaultRouteObservationFact MapDefaultRouteObservation(DefaultRouteStateDiscovery route)
+    {
+        DefaultRouteObservationFact draft = new()
+        {
+            Family = FamilyName(route.Family),
+            DstAddress = route.DstAddress,
+            RoutingTable = route.RoutingTable,
+            Gateway = route.Gateway,
+            Distance = route.Distance,
+            Active = route.Active,
+            ImmediateGateway = route.ImmediateGateway,
+            GatewayStatus = route.GatewayStatus,
+            IsDynamic = route.IsDynamic,
+            IsStatic = route.IsStatic,
+            RouteType = null,
+            Origin = null,
+        };
+        return new DefaultRouteObservationFact
+        {
+            Family = draft.Family,
+            DstAddress = draft.DstAddress,
+            RoutingTable = draft.RoutingTable,
+            Gateway = draft.Gateway,
+            Distance = draft.Distance,
+            Active = draft.Active,
+            ImmediateGateway = draft.ImmediateGateway,
+            GatewayStatus = draft.GatewayStatus,
+            IsDynamic = draft.IsDynamic,
+            IsStatic = draft.IsStatic,
+            RouteType = draft.RouteType,
+            Origin = RouteOriginClassifier.Classify(draft),
+        };
     }
 
     private static string FamilyName(IpAddressFamilyKind family)
