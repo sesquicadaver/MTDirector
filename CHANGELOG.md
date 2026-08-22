@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Desktop routing assurance and expectation viewers (M7.1-10): Contracts `RoutingAssuranceService.GetDeviceRoutingAssuranceState` + bounded `RouteResolutionTraceSummary` (no full BGP/FIB dump). Application `RoutingAssuranceDetailView` + `GetRoutingAssuranceStateUseCase` detail read model. Controller `RoutingAssuranceGrpcService` + `RoutingAssuranceProtoMapper`. Desktop `RoutingAssuranceViewModel` sub-panel under Node module (`ExpectationLines`, `FindingLines`, `TraceSummaryLines`, config/ops hashes, read-only `Refresh`). Living Spec `DesktopRoutingAssuranceLivingSpecTests` AC 1–8; no routing writes from Desktop. ROADMAP marks M7.1-10 DONE; NEXT = M7.1-11 (#120).
+
 - Classify routing configuration vs operational drift (M7.1-09): Domain `RoutingDriftKind` + `RoutingDriftCodes` + `RoutingDriftClassifier` (hash-material key → §14 category) + `RoutingDriftAnalyzer` + `RoutingDriftClassification` (config vs ops hash diff; umbrella `ROUTING_CONFIGURATION_DRIFT` / `ROUTING_OPERATIONAL_CHANGE` plus specific sub-codes). Application upsert auto-runs analyzer when persisted state exists and merges drift findings into `RouteFindings` (dedupe by code+subject). Living Spec `RoutingDriftLivingSpecTests` AC 1–8 + `RoutingDriftCoverageTests`; scripted snapshots only; no routing writes. ROADMAP marks M7.1-09 DONE; NEXT = M7.1-10 (#119).
 
 - Implement network path profile latency probes bound to routing result (M7.1-08): Domain `NetworkPathProfile` + `NetworkPathProbeBinding` + `RoutingBoundLatencyProbe` + `RoutePathFingerprint` + `NetworkPathProfileBinder` (table/VRF/egress from trace; destination from profile) + `NetworkPathLatencyEvaluator` + `NetworkPathProfileCodes` (`ROUTE_PATH_CHANGED_WITH_LATENCY_REGRESSION`, isolated RTT/loss/jitter findings). Application upsert accepts `NetworkPathProfiles` / `LatencyEvaluations`; binds probes onto `RouteResolutionTrace.NetworkPathProbeBindings`. Living Spec `NetworkPathProfileLivingSpecTests` AC 1–8; scripted `LatencyMeasurement` only; no routing writes. ROADMAP marks M7.1-08 DONE; NEXT = M7.1-09 (#118).
@@ -79,7 +81,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- ROADMAP: M7.1-09 routing configuration vs operational drift DONE; NEXT = M7.1-10 (#119); Post-MVP M7 = 18 open (9/27 DONE).
+- ROADMAP: M7.1-10 routing assurance Desktop viewers DONE; NEXT = M7.1-11 (#120); Post-MVP M7 = 17 open (10/27 DONE).
 - ROADMAP: M7.1-05 dynamic route origins read-only DONE; NEXT = M7.1-06 (#115); Post-MVP M7 = 22 open (5/27 DONE).
 - ROADMAP: M7.1-02 RoutingAssuranceState persistence DONE; NEXT = M7.1-03 (#112); Post-MVP M7 = 25 open (2/27 DONE).
 - ROADMAP: M7.1-01 routing-assurance read allowlist DONE; NEXT was M7.1-02 (#111); Post-MVP M7 = 26 open (1/27 DONE).

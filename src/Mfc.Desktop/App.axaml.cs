@@ -44,6 +44,8 @@ public sealed class App : Application, IAsyncDisposable
         NodeDetailViewModel nodeVm = new(inventoryVm, zonesVm, onboardingVm);
         GrpcDriftServiceClient driftClient = new(connection, options);
         DriftViewModel driftVm = new(driftClient, connection, inventoryVm);
+        GrpcRoutingAssuranceServiceClient routingAssuranceClient = new(connection, options);
+        RoutingAssuranceViewModel routingAssuranceVm = new(routingAssuranceClient, connection, inventoryVm);
         GrpcAuditServiceClient auditClient = new(connection, options);
         AuditViewModel auditVm = new(auditClient, connection);
         _shell = new ShellViewModel(
@@ -58,7 +60,8 @@ public sealed class App : Application, IAsyncDisposable
             onboardingVm,
             deploymentVm,
             driftVm,
-            auditVm);
+            auditVm,
+            routingAssuranceVm);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

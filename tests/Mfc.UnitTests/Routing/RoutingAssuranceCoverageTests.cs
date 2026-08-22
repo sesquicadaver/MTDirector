@@ -71,12 +71,12 @@ public sealed class RoutingAssuranceCoverageTests
     {
         FakeAuthorizationBoundary denied = new();
         denied.DeniedPermissions.Add(ApplicationPermissions.InventoryRead);
-        ApplicationResult<RoutingAssuranceStateView> forbidden =
+        ApplicationResult<RoutingAssuranceDetailView> forbidden =
             await new GetRoutingAssuranceStateUseCase(denied, new FakeRoutingAssuranceStateStore())
                 .ExecuteAsync(new GetRoutingAssuranceStateQuery { Actor = "a", DeviceId = Guid.NewGuid() });
         Assert.Equal("forbidden", forbidden.Error!.Code);
 
-        ApplicationResult<RoutingAssuranceStateView> missing =
+        ApplicationResult<RoutingAssuranceDetailView> missing =
             await new GetRoutingAssuranceStateUseCase(new FakeAuthorizationBoundary(), new FakeRoutingAssuranceStateStore())
                 .ExecuteAsync(new GetRoutingAssuranceStateQuery { Actor = "a", DeviceId = Guid.NewGuid() });
         Assert.Equal("not_found", missing.Error!.Code);

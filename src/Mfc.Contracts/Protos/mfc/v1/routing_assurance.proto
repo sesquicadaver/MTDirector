@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package mfc.v1;
+
+option csharp_namespace = "Mfc.Contracts.Mfc.V1";
+
+import "google/protobuf/timestamp.proto";
+import "mfc/v1/common.proto";
+
+// RoutingAssuranceService — Issue Set M7.1-10. Read-only routing assurance detail; no routing writes.
+service RoutingAssuranceService {
+  rpc GetDeviceRoutingAssuranceState(GetDeviceRoutingAssuranceStateRequest) returns (RoutingAssuranceStateDetail);
+}
+
+message GetDeviceRoutingAssuranceStateRequest {
+  Uuid device_id = 1;
+}
+
+// Summary hashes/counts plus bounded expectation/finding/trace rows (no full BGP/FIB dump).
+message RoutingAssuranceStateDetail {
+  Uuid device_id = 1;
+  Sha256 configuration_hash = 2;
+  Sha256 operational_hash = 3;
+  uint32 route_expectation_count = 4;
+  uint32 route_finding_count = 5;
+  uint32 resolution_trace_count = 6;
+  uint32 configuration_table_count = 7;
+  uint32 configuration_rule_count = 8;
+  uint32 configuration_vrf_count = 9;
+  uint32 configuration_static_route_count = 10;
+  uint32 configuration_filter_rule_count = 11;
+  uint32 operational_route_count = 12;
+  uint32 operational_default_route_count = 13;
+  google.protobuf.Timestamp updated_at = 14;
+  uint64 row_version = 15;
+  repeated RouteExpectation expectations = 16;
+  repeated RouteFinding findings = 17;
+  repeated RouteResolutionTraceSummary trace_summaries = 18;
+}
+
+message RouteExpectation {
+  optional Uuid node_id = 1;
+  string family = 2;
+  optional string source_zone = 3;
+  optional string source_address = 4;
+  string destination_prefix = 5;
+  optional string expected_vrf = 6;
+  optional string expected_table = 7;
+  repeated string allowed_next_hops = 8;
+  repeated string allowed_egress_zones = 9;
+  repeated string allowed_egress_interfaces = 10;
+  repeated string required_route_types = 11;
+  repeated string forbidden_route_types = 12;
+  bool require_cpu_firewall_path = 13;
+  bool require_reverse_path = 14;
+  bool expect_asymmetric_reverse_path = 15;
+  bool critical = 16;
+}
+
+message RouteFinding {
+  string code = 1;
+  string message = 2;
+  optional string subject = 3;
+}
+
+// Bounded trace summary — no route_candidates / recursive_resolution / full operational route table.
+message RouteResolutionTraceSummary {
+  string family = 1;
+  optional string destination_address = 2;
+  optional string source_address = 3;
+  optional string selected_vrf = 4;
+  optional string selected_table = 5;
+  optional string matched_prefix = 6;
+  repeated string next_hop_gateways = 7;
+  repeated string egress_interfaces = 8;
+  optional string execution_path = 9;
+  optional string decision = 10;
+  repeated string drift_codes = 11;
+  repeated string latency_codes = 12;
+  optional string reverse_path_symmetry_result = 13;
+}
