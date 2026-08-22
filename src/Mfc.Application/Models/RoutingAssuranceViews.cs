@@ -1,3 +1,5 @@
+using Mfc.Domain.Routing;
+
 namespace Mfc.Application.Models;
 
 /// <summary>Application view of persisted routing assurance state (hashes as lowercase hex).</summary>
@@ -155,4 +157,38 @@ public sealed class RouteResolutionTraceSummaryView
     public IReadOnlyList<string> LatencyCodes { get; init; } = [];
 
     public string? ReversePathSymmetryResult { get; init; }
+
+    /// <summary>Maps a domain trace into the bounded summary shape (M7.2-02).</summary>
+    public static RouteResolutionTraceSummaryView? FromTrace(RouteResolutionTrace? trace)
+    {
+        if (trace is null)
+        {
+            return null;
+        }
+
+        List<string> nextHops = trace.ImmediateNextHops
+            .Select(static h => h.Gateway)
+            .Where(static g => !string.IsNullOrWhiteSpace(g))
+            .Take(MaxNextHopGateways)
+            .ToList()!;
+        List<string> egress = trace.EgressInterfaces
+            .Where(static e => !string.IsNullOrWhiteSpace(e))
+            .Take(MaxEgressInterfaces)
+            .ToList();
+
+        return new RouteResolutionTraceSummaryView
+        {
+            Family = trace.Family,
+            DestinationAddress = trace.DestinationAddress,
+            SourceAddress = trace.SourceAddress,
+            SelectedVrf = trace.SelectedVrf,
+            SelectedTable = trace.SelectedTable,
+            MatchedPrefix = trace.MatchedPrefix,
+            NextHopGateways = nextHops,
+            EgressInterfaces = egress,
+            ExecutionPath = trace.ExecutionPath,
+            Decision = trace.Decision,
+            ReversePathSymmetryResult = trace.ReversePathSymmetry?.Result,
+        };
+    }
 }

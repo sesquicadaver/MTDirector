@@ -130,7 +130,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Desktop routing assurance viewers | Done (M7.1-10) | `RoutingAssuranceService` gRPC + `RoutingAssuranceViewModel` under Node; bounded trace summaries; Living Spec AC 1–8; read-only Desktop |
 | CHR routing assurance acceptance | Done (M7.1-11) **M7.1 CLOSED** | `RoutingAssuranceChrAcceptanceLivingSpecTests` AC 1–10; scripted upsert chain; testlab skeleton; live CHR OFF |
 | Endpoint attribution resolver | Done (M7.2-01) | `Mfc.Domain.Endpoint/`, `EndpointAttributionAllowlist`, `EndpointAttributionSnapshotMapper`; Living Spec AC 1–8; no routing/firewall writes |
-| Remaining delivery order | See ROADMAP v0.2 §3 | **M7.2-01 DONE**; NEXT = M7.2-02 (#122) |
+| Endpoint presence + routing context | Done (M7.2-02) | `EndpointPresenceInterval` / `EndpointRoutingContext` + EF `endpoint_presence_intervals` / `endpoint_routing_contexts`; Living Spec AC 1–8; no routing writes |
+| Remaining delivery order | See ROADMAP v0.2 §3 | **M7.2-02 DONE**; NEXT = M7.2-03 (#123) |
 
 ## ADRs
 
