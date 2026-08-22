@@ -81,7 +81,11 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         Assert.Contains("M7.1-10", roadmap, StringComparison.Ordinal);
         Assert.Contains("#119", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.1-10 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("NEXT = M7.1-11", roadmap, StringComparison.Ordinal);
+        Assert.Contains("M7.1-11", roadmap, StringComparison.Ordinal);
+        Assert.Contains("#120", roadmap, StringComparison.Ordinal);
+        Assert.Contains("M7.1-11 DONE", roadmap, StringComparison.Ordinal);
+        Assert.Contains("M7.1 CLOSED", roadmap, StringComparison.Ordinal);
+        Assert.Contains("NEXT = M7.2-01", roadmap, StringComparison.Ordinal);
 
         // Prior M6 E2E issues must appear as DONE in §2.2 / queue strikethroughs.
         foreach (string id in new[]
@@ -149,10 +153,12 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         AssertFile("tests", "Mfc.UnitTests", "E2E", "StandaloneDualStackE2ELivingSpecTests.cs");
         AssertFile("tests", "Mfc.UnitTests", "E2E", "MultiWanE2ELivingSpecTests.cs");
         AssertFile("tests", "Mfc.UnitTests", "E2E", "VrrpCrsE2ELivingSpecTests.cs");
+        AssertFile("tests", "Mfc.UnitTests", "E2E", "RoutingAssuranceChrAcceptanceLivingSpecTests.cs");
 
         string acceptance = Read("docs", "release", "mvp-acceptance.md");
         Assert.Contains("Live CHR OFF", acceptance, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("StandaloneDualStackE2ELivingSpecTests", acceptance, StringComparison.Ordinal);
+        Assert.Contains("RoutingAssuranceChrAcceptanceLivingSpecTests", acceptance, StringComparison.Ordinal);
         Assert.Contains("optional", acceptance, StringComparison.OrdinalIgnoreCase);
 
         string limitations = Read("docs", "release", "known-limitations.md");

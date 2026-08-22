@@ -39,7 +39,7 @@ M0–M6 logical IDs map to GitHub via [`ISSUES.md`](../../ISSUES.md). Acceptance
 | M6 E2E | M6-01…M6-08 | #100–#107 | CLOSED |
 | M6-09 acceptance | M6-09 | #108 | THIS PACKAGE |
 
-N1 weave items N1-01…N1-07 are DONE; **MVP CLOSED**. Linear queue continues at **M7.1-11 (#120)** (M7.1-03…M7.1-10 DONE).
+N1 weave items N1-01…N1-07 are DONE; **MVP CLOSED**. **M7.1 CLOSED** (M7.1-01…M7.1-11 DONE). Linear queue continues at **M7.2-01 (#121)**.
 
 Post-MVP M7.1 progress: **M7.1-03** RouteResolutionTrace DONE; **M7.1-04** ECMP ONE_OF DONE; **M7.1-05** dynamic route origins DONE.
 
@@ -57,7 +57,7 @@ gh issue list --search "M6-0 in:title is:closed" --limit 20
 |--:|-----------|----------|
 | 1 | All M0–M6 issues closed | ROADMAP §2.2 + matrix above; Living Spec `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
 | 2 | All release gates executed | [`release-gates.md`](release-gates.md); `Ac2ReleaseGatesChecklistExists` |
-| 3 | CHR test matrix green | Live CHR OFF — DoD substitute: `StandaloneDualStackE2ELivingSpecTests`, `MultiWanE2ELivingSpecTests`, `VrrpCrsE2ELivingSpecTests`; residual live CHR optional only |
+| 3 | CHR test matrix green | Live CHR OFF — DoD substitute: `StandaloneDualStackE2ELivingSpecTests`, `MultiWanE2ELivingSpecTests`, `VrrpCrsE2ELivingSpecTests`, `RoutingAssuranceChrAcceptanceLivingSpecTests` (M7.1-11); residual live CHR optional only |
 | 4 | Physical CRS test green | Same substitute: `VrrpCrsE2ELivingSpecTests` AC11 + `testlab/chr/topologies/crs-switch` |
 | 5 | Fault-injection suite green | `FullyQualifiedName~FaultInjection` (+ M4-13 fault Living Spec) |
 | 6 | Security suite green | `SecurityBackupRestoreLivingSpecTests` (M6-08 AC 1–10) |
@@ -98,4 +98,4 @@ Live CHR / live physical CRS remain **OFF**. Optional residual: env-gated `MFC_C
 
 ## Milestone close statement
 
-With M6-01…M6-09 and N1-07 delivered, **M6 is CLOSED** and **MVP CLOSED**. Linear queue continues at **M7.1-11 (#120)** (M7.1-03…M7.1-10 DONE). Do **not** create a git release tag until acceptance review signs off (AC16).
+With M6-01…M6-09 and N1-07 delivered, **M6 is CLOSED** and **MVP CLOSED**. **M7.1 CLOSED** (M7.1-11 CHR acceptance Living Spec). Linear queue continues at **M7.2-01 (#121)**. Do **not** create a git release tag until acceptance review signs off (AC16).
