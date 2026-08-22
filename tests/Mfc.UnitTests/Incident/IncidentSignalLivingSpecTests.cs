@@ -1,5 +1,4 @@
 using System.Reflection;
-using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Common;
 using Mfc.Application.Incident;
