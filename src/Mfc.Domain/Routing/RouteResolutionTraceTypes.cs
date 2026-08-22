@@ -74,6 +74,9 @@ public sealed class RouteResolutionQuery
 
     /// <summary>Optional matched Mangle rule facts from probe input.</summary>
     public MatchedMangleRule? MatchedMangleRule { get; init; }
+
+    /// <summary>When true, table/VRF/egress/decision mismatches on reverse path are expected (M7.1 Spec §12).</summary>
+    public bool ExpectAsymmetricReversePath { get; init; }
 }
 
 /// <summary>Matched Mangle rule that assigned a routing mark (M7.1 Spec §5).</summary>

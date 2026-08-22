@@ -40,4 +40,9 @@ public static class RouteExpectationCodes
     public const string ReversePathMissing = "ROUTE_EXPECTATION_REVERSE_PATH_MISSING";
 
     public const string ReversePathMissingCritical = "ROUTE_EXPECTATION_REVERSE_PATH_MISSING_CRITICAL";
+
+    public const string AsymmetricReversePathUnexpected = "ROUTE_EXPECTATION_ASYMMETRIC_REVERSE_PATH_UNEXPECTED";
+
+    public const string AsymmetricReversePathUnexpectedCritical =
+        "ROUTE_EXPECTATION_ASYMMETRIC_REVERSE_PATH_UNEXPECTED_CRITICAL";
 }

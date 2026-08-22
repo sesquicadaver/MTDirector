@@ -2041,7 +2041,7 @@ Issue Set M7.1-06 / Network Rule M7.1 Spec §11. Deterministic scripted fixtures
 | AC#3 Forbidden BLACKHOLE/UNREACHABLE | decision + forbidden types | `Ac3ForbiddenBlackholeAndUnreachableDecisions` |
 | AC#4 Required origin type | `RouteOrigins` on selected routes | `Ac4RequiredOriginTypeMustBePresent` |
 | AC#5 CPU firewall path | execution path CPU/MIXED | `Ac5CpuFirewallPathRequirementFailsOnHardwareOnly` |
-| AC#6 Reverse path missing | minimal reverse trace NO_ROUTE | `Ac6ReversePathMissingProducesFinding` |
+| AC#6 Reverse path missing | `ReversePathSymmetryAnalyzer` via evaluator | `Ac6ReversePathMissingProducesFinding` |
 | AC#7 Critical vs warning codes | `RouteExpectationCodes` | `Ac7CriticalExpectationsUseCriticalFindingCodes` |
 | AC#8 Persistence round-trip | expectations + findings jsonb | `Ac8PersistenceRoundTripStoresExpectationsAndFindings` |
 | AC#9 No routing writes | `RosReadCommandRegistry` | `Ac9NoRoutingWriteApisOpened` |
@@ -2051,6 +2051,27 @@ Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~RouteExpectationLivingSpecTests"
+```
+
+## Living Specification — reverse-path symmetry analysis (M7.1-07)
+
+Issue Set M7.1-07 / Network Rule M7.1 Spec §12. Deterministic scripted fixtures only; no live CHR; no routing writes.
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Symmetric forward/reverse pair | table/VRF/egress/decision match | `Ac1SymmetricPairMatchesTableVrfEgressAndDecision` |
+| AC#2 Reverse path missing | `REVERSE_PATH_MISSING` + evaluator finding | `Ac2ReversePathMissingWhenReturnRouteAbsent` |
+| AC#3 Asymmetric expected | `ExpectAsymmetricReversePath` flag | `Ac3AsymmetricExpectedWhenFlagSet` |
+| AC#4 Asymmetric unexpected | evaluator `ASYMMETRIC_UNEXPECTED` finding | `Ac4AsymmetricUnexpectedProducesEvaluatorFinding` |
+| AC#5 Indeterminate missing source | incomplete probe endpoints | `Ac5IndeterminateWhenForwardSourceMissing` |
+| AC#6 Multi-WAN different egress | policy-routed forward vs main reverse | `Ac6MultiWanDifferentEgressInterfacesAreAsymmetric` |
+| AC#7 No routing writes | `RosReadCommandRegistry` | `Ac7NoRoutingWriteApisOpened` |
+| AC#8 Persistence round-trip | `RouteResolutionTrace.ReversePathSymmetry` jsonb | `Ac8PersistenceRoundTripStoresReversePathSymmetryOnTrace` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ReversePathSymmetryLivingSpecTests"
 ```
 
 ## CHR live matrix

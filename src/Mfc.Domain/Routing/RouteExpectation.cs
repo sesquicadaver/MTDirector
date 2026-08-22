@@ -34,5 +34,8 @@ public sealed class RouteExpectation
 
     public bool RequireReversePath { get; init; }
 
+    /// <summary>When set with <see cref="RequireReversePath"/>, asymmetry does not produce a finding.</summary>
+    public bool ExpectAsymmetricReversePath { get; init; }
+
     public bool Critical { get; init; }
 }

@@ -5,8 +5,9 @@ namespace Mfc.Domain.Routing;
 /// <summary>
 /// Persisted routing-assurance state shell per Device (M7.1 Spec §2 / M7.1-02).
 /// Separates <see cref="Configuration"/> from <see cref="OperationalState"/> via distinct hashes.
-/// <see cref="RouteExpectations"/> and <see cref="RouteFindings"/> are populated by M7.1-06 evaluation;
-/// <see cref="ResolutionTraces"/> by M7.1-03 trace analysis.
+/// <see cref="RouteExpectations"/> and <see cref="RouteFindings"/> are populated by M7.1-06 evaluation
+/// (reverse-path checks delegate to M7.1-07 <see cref="ReversePathSymmetryAnalyzer"/>);
+/// <see cref="ResolutionTraces"/> by M7.1-03 trace analysis with optional M7.1-07 symmetry attachment.
 /// </summary>
 public sealed class RoutingAssuranceState : IEquatable<RoutingAssuranceState>
 {

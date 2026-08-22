@@ -199,28 +199,33 @@ public static class RouteExpectationEvaluator
             && !string.IsNullOrWhiteSpace(trace.SourceAddress)
             && !string.IsNullOrWhiteSpace(trace.DestinationAddress))
         {
-            RouteResolutionTrace reverse = RouteResolutionTraceEngine.Analyze(
-                new RouteResolutionQuery
-                {
-                    Family = trace.Family,
-                    SourceAddress = trace.DestinationAddress,
-                    DestinationAddress = trace.SourceAddress,
-                    IngressInterface = trace.IngressInterface,
-                    InitialVrf = trace.InitialVrf,
-                    RoutingMark = trace.RoutingMark,
-                    MatchedMangleRule = trace.MatchedMangleRule,
-                },
+            ReversePathSymmetryAnalysis analysis = ReversePathSymmetryAnalyzer.Analyze(
+                trace,
                 configuration,
-                operational);
+                operational,
+                new ReversePathSymmetryAnalyzerOptions
+                {
+                    ExpectAsymmetricReversePath = expectation.ExpectAsymmetricReversePath,
+                });
 
-            if (string.Equals(reverse.Decision, RouteResolutionDecisions.NoRoute, StringComparison.Ordinal))
+            switch (analysis.Result)
             {
-                yield return Finding(
-                    expectation,
-                    RouteExpectationCodes.ReversePathMissing,
-                    RouteExpectationCodes.ReversePathMissingCritical,
-                    "Reverse route trace returned NO_ROUTE.",
-                    subject);
+                case ReversePathSymmetryResults.ReversePathMissing:
+                    yield return Finding(
+                        expectation,
+                        RouteExpectationCodes.ReversePathMissing,
+                        RouteExpectationCodes.ReversePathMissingCritical,
+                        analysis.Detail ?? "Reverse route trace returned NO_ROUTE.",
+                        subject);
+                    break;
+                case ReversePathSymmetryResults.AsymmetricUnexpected:
+                    yield return Finding(
+                        expectation,
+                        RouteExpectationCodes.AsymmetricReversePathUnexpected,
+                        RouteExpectationCodes.AsymmetricReversePathUnexpectedCritical,
+                        analysis.Detail ?? "Reverse path is asymmetric and not marked as expected.",
+                        subject);
+                    break;
             }
         }
     }

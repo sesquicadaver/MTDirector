@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Implement reverse-path symmetry analysis (M7.1-07): Domain `ReversePathSymmetryResults` + `ReversePathSymmetryAnalysis` / `ReversePathSymmetryAnalyzer` (forward A→B vs reverse B→A compare selected table, VRF, egress interfaces, decision; `ExpectAsymmetricReversePath` on `RouteResolutionQuery` / `RouteExpectation` / analyzer options). Optional `RouteResolutionTrace.ReversePathSymmetry` persisted on upsert enrichment. `RouteExpectationEvaluator` delegates to analyzer (`REVERSE_PATH_MISSING`, `ASYMMETRIC_UNEXPECTED` findings). Living Spec `ReversePathSymmetryLivingSpecTests` AC 1–8; no routing writes. ROADMAP marks M7.1-07 DONE; NEXT = M7.1-08 (#117).
+
 - Implement RouteExpectation evaluation (M7.1-06): Domain `RouteExpectation` / `RouteFinding` + `RouteExpectationCodes` + `RouteExpectationEvaluator` (table/VRF, allowed next hops ECMP ONE_OF, egress interfaces/zones as interface proxy, required/forbidden route types incl. BLACKHOLE/UNREACHABLE/DROP, CPU firewall path, minimal reverse-path NO_ROUTE check). Application upsert evaluates expectations when traces present → `RouteFindings`. Living Spec `RouteExpectationLivingSpecTests` AC 1–10; `RoutingAssuranceStateLivingSpecTests` AC3 updated; no routing writes. ROADMAP marks M7.1-06 DONE; NEXT = M7.1-07 (#116).
 
 - Analyze dynamic route origins read-only (M7.1-05): Domain `RouteOrigins` + `RouteOriginClassifier` + `DynamicRouteOriginAnalysis` / `DynamicRouteOriginAnalyzer` (per-table origin counts + active dynamic route facts from FIB snapshot only; no BGP table load). `RouteObservationFact` / `DefaultRouteObservationFact` gain `RouteType` + `Origin`; `RoutingOperationalSnapshot.DynamicRouteOrigins` persisted in operational jsonb. Discovery maps RouterOS route `type`, exposes all `/ip/route` + `/ipv6/route` observations (dynamic included in ops, excluded from static config). Optional `Origin` on `RouteCandidate` / `SelectedRoute` in traces. Living Spec `DynamicRouteOriginLivingSpecTests` AC 1–8; no routing writes. ROADMAP marks M7.1-05 DONE; NEXT = M7.1-06 (#115).
@@ -73,7 +75,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- ROADMAP: M7.1-06 RouteExpectation evaluation DONE; NEXT = M7.1-07 (#116); Post-MVP M7 = 21 open (6/27 DONE).
+- ROADMAP: M7.1-07 reverse-path symmetry analysis DONE; NEXT = M7.1-08 (#117); Post-MVP M7 = 20 open (7/27 DONE).
 - ROADMAP: M7.1-05 dynamic route origins read-only DONE; NEXT = M7.1-06 (#115); Post-MVP M7 = 22 open (5/27 DONE).
 - ROADMAP: M7.1-02 RoutingAssuranceState persistence DONE; NEXT = M7.1-03 (#112); Post-MVP M7 = 25 open (2/27 DONE).
 - ROADMAP: M7.1-01 routing-assurance read allowlist DONE; NEXT was M7.1-02 (#111); Post-MVP M7 = 26 open (1/27 DONE).
