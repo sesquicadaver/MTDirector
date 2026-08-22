@@ -1,9 +1,8 @@
 namespace Mfc.Domain.Routing;
 
 /// <summary>
-/// Declarative route expectation shell (M7.1 Spec §11).
-/// Evaluation and population are deferred to <c>M7.1-06</c> (#115).
-/// Persistence stores an empty typed collection until that issue.
+/// Declarative route expectation (M7.1 Spec §11).
+/// Evaluated by <see cref="RouteExpectationEvaluator"/> against <see cref="RouteResolutionTrace"/> probes.
 /// </summary>
 public sealed class RouteExpectation
 {
@@ -37,17 +36,3 @@ public sealed class RouteExpectation
 
     public bool Critical { get; init; }
 }
-
-/// <summary>
-/// Routing assurance finding shell (Spec §5–§14 findings).
-/// Population is deferred to later M7.1 analysis issues; slot is typed and persisted as [].
-/// </summary>
-public sealed class RouteFinding
-{
-    public required string Code { get; init; }
-
-    public required string Message { get; init; }
-
-    public string? Subject { get; init; }
-}
-

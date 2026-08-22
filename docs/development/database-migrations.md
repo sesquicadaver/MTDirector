@@ -30,7 +30,7 @@ M5-01 adds `ManagementState` on `nodes`/`devices` (default UNMANAGED) and append
 
 M4-01 adds append-only `deployment_plans` / `deployment_device_plans`, mutable `deployment_operations` (filtered unique nonterminal per `NodeId`; terminal includes `NO_CHANGES`), `deployment_device_states`, unique `deployment_locks` (expired rows are not deleted), and write-ahead `deployment_steps`. DbContext blocks plan mutation, terminal-operation/device-state/step identity changes, and lock identity mutation (heartbeat/expiry may change).
 
-M7.1-02 adds upsertable `routing_assurance_states` keyed by `DeviceId` (FK → `devices`): distinct `ConfigurationHash` / `OperationalHash`, jsonb configuration and operational snapshots, and typed empty jsonb arrays for deferred `RouteExpectations` / `RouteFindings` / `ResolutionTraces` (M7.1-03 / M7.1-06).
+M7.1-02 adds upsertable `routing_assurance_states` keyed by `DeviceId` (FK → `devices`): distinct `ConfigurationHash` / `OperationalHash`, jsonb configuration and operational snapshots, and jsonb arrays for `RouteExpectations` / `RouteFindings` / `ResolutionTraces` (M7.1-03 traces; M7.1-06 expectation evaluation).
 
 ## Local PostgreSQL
 
