@@ -2185,6 +2185,27 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~EndpointAttribution"
 ```
 
+## Living Specification — endpoint presence interval and routing context (M7.2-02)
+
+Issue Set M7.2-02 / M7.1 §15. Scripted attribution + route-trace fixtures ONLY; no live CHR; Domain pure (no RouterOS types); no routing/firewall writes. Suite: `EndpointPresenceLivingSpecTests` + `EndpointPresenceCoverageTests`.
+
+| AC | Requirement | Module | Test |
+|----|-------------|--------|------|
+| AC#1 Build presence from attribution | `EndpointPresenceBuilder` site/node/vlan/vrf | `Ac1BuildPresenceIntervalFromAttributionResult` |
+| AC#2 Routing context stores trace triple | `EndpointRoutingContextBuilder` | `Ac2RoutingContextStoresCorporateInternetAndWazuhTraces` |
+| AC#3 Active presence valid_from + null valid_until | `EndpointPresenceInterval.IsActive` | `Ac3ActivePresenceHasValidFromAndNullValidUntil` |
+| AC#4 Migration closes prior + new presence_id | `EndpointPresenceInterval.Open` | `Ac4MigrationClosesPreviousIntervalAndOpensNewPresence` |
+| AC#5 Persistence round-trip | `OpenEndpointPresenceUseCase` + `FakeEndpointPresenceStore` | `Ac5PersistenceRoundTripStoresPresenceAndRoutingContext` |
+| AC#6 Attribution certainty preserved | presence interval field | `Ac6AttributionCertaintyPreservedOnPresence` |
+| AC#7 No routing write APIs | `RosReadCommandRegistry` guard | `Ac7NoRoutingWriteApisOpened` |
+| AC#8 As-of query returns correct interval | `GetEndpointRoutingContextUseCase` | `Ac8AsOfQueryReturnsCorrectActiveInterval` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~EndpointPresence"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

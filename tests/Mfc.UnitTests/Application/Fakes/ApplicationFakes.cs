@@ -5,12 +5,14 @@ using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.ConnectionProfiles;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
+using Mfc.Domain;
 using Mfc.Domain.Canonicalization;
 using Mfc.Domain.Capabilities;
 using Mfc.Domain.Deployment;
 using Mfc.Domain.Deployment.Primitives;
 using Mfc.Domain.Drift;
 using Mfc.Domain.Drift.Primitives;
+using Mfc.Domain.Endpoint;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
@@ -1350,5 +1352,87 @@ internal sealed class FakeDriftEventStore : IDriftEventStore
         }
 
         return Task.FromResult(false);
+    }
+}
+
+internal sealed class FakeEndpointPresenceStore : IEndpointPresenceStore
+{
+    private readonly Dictionary<Guid, EndpointPresenceInterval> _intervals = [];
+    private readonly Dictionary<Guid, EndpointRoutingContext> _contexts = [];
+
+    public Task<EndpointPresenceInterval?> GetActiveIntervalAsync(
+        EndpointId endpointId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(_intervals.Values.SingleOrDefault(i =>
+            i.EndpointId.Equals(endpointId) && i.IsActive));
+
+    public Task<EndpointPresenceInterval?> GetIntervalAsOfAsync(
+        EndpointId endpointId,
+        DateTimeOffset asOfUtc,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(_intervals.Values
+            .Where(i => i.EndpointId.Equals(endpointId))
+            .OrderByDescending(i => i.ValidFrom)
+            .FirstOrDefault(i => i.Contains(asOfUtc)));
+
+    public Task<EndpointRoutingContext?> GetRoutingContextAsync(
+        PresenceId presenceId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(_contexts.TryGetValue(presenceId.Value, out EndpointRoutingContext? context) ? context : null);
+
+    public Task<EndpointRoutingContext?> GetRoutingContextAsOfAsync(
+        EndpointId endpointId,
+        DateTimeOffset asOfUtc,
+        CancellationToken cancellationToken = default)
+    {
+        EndpointPresenceInterval? interval = _intervals.Values
+            .Where(i => i.EndpointId.Equals(endpointId))
+            .OrderByDescending(i => i.ValidFrom)
+            .FirstOrDefault(i => i.Contains(asOfUtc));
+        return interval is null
+            ? Task.FromResult<EndpointRoutingContext?>(null)
+            : GetRoutingContextAsync(interval.PresenceId, cancellationToken);
+    }
+
+    public Task SaveMigrationAsync(
+        EndpointPresenceInterval? closedInterval,
+        EndpointPresenceInterval openedInterval,
+        EndpointRoutingContext routingContext,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(openedInterval);
+        ArgumentNullException.ThrowIfNull(routingContext);
+
+        if (closedInterval is not null)
+        {
+            _intervals[closedInterval.PresenceId.Value] = closedInterval;
+            if (_contexts.TryGetValue(closedInterval.PresenceId.Value, out EndpointRoutingContext? closedContext))
+            {
+                _contexts[closedInterval.PresenceId.Value] = EndpointRoutingContext.Reconstitute(
+                    closedContext.EndpointId,
+                    closedContext.PresenceId,
+                    closedContext.SiteId,
+                    closedContext.NodeId,
+                    closedContext.SourceAddress,
+                    closedContext.ValidFrom,
+                    closedInterval.ValidUntil,
+                    closedContext.VlanId,
+                    closedContext.Vrf,
+                    closedContext.CorporateRouteTrace,
+                    closedContext.InternetRouteTrace,
+                    closedContext.WazuhRouteTrace);
+            }
+        }
+
+        bool activeExists = _intervals.Values.Any(i => i.EndpointId.Equals(openedInterval.EndpointId) && i.IsActive);
+        if (activeExists && closedInterval is null)
+        {
+            throw new DomainInvariantException(
+                $"Endpoint '{openedInterval.EndpointId}' already has an active presence interval ({EndpointPresenceCodes.OverlappingActiveInterval}).");
+        }
+
+        _intervals[openedInterval.PresenceId.Value] = openedInterval;
+        _contexts[routingContext.PresenceId.Value] = routingContext;
+        return Task.CompletedTask;
     }
 }

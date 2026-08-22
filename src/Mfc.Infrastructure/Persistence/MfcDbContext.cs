@@ -33,6 +33,10 @@ public sealed class MfcDbContext : DbContext
 
     public DbSet<RoutingAssuranceStateEntity> RoutingAssuranceStates => Set<RoutingAssuranceStateEntity>();
 
+    public DbSet<EndpointPresenceIntervalEntity> EndpointPresenceIntervals => Set<EndpointPresenceIntervalEntity>();
+
+    public DbSet<EndpointRoutingContextEntity> EndpointRoutingContexts => Set<EndpointRoutingContextEntity>();
+
     public DbSet<DriftEventEntity> DriftEvents => Set<DriftEventEntity>();
 
     public DbSet<DeviceConnectionProfileEntity> DeviceConnectionProfiles => Set<DeviceConnectionProfileEntity>();
