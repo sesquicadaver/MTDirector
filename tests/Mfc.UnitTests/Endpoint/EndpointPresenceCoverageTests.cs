@@ -19,6 +19,7 @@ public sealed class EndpointPresenceCoverageTests
     private static readonly DateTimeOffset T10 = new(2026, 8, 22, 10, 0, 0, TimeSpan.Zero);
     private static readonly DateTimeOffset T12 = new(2026, 8, 22, 12, 0, 0, TimeSpan.Zero);
     private static readonly DateTimeOffset T13 = new(2026, 8, 22, 13, 0, 0, TimeSpan.Zero);
+    private static readonly DateTimeOffset T14 = new(2026, 8, 22, 14, 0, 0, TimeSpan.Zero);
     [Fact]
     public void CloseRejectsUntilBeforeValidFrom()
     {
@@ -175,6 +176,240 @@ public sealed class EndpointPresenceCoverageTests
         EndpointPresenceInterval second = SampleInterval(first.EndpointId, first.SiteId, first.NodeId);
         await Assert.ThrowsAsync<DomainInvariantException>(() =>
             store.SaveMigrationAsync(null, second, EndpointRoutingContextBuilder.Build(second)));
+    }
+
+    [Fact]
+    public void BuilderRejectsMissingNodeId()
+    {
+        SiteId site = SiteId.New();
+        EndpointAttributionResult attribution = EndpointAttributionResolver.Resolve(
+            new EndpointAttributionQuery
+            {
+                Family = "ipv4",
+                IpAddress = "192.168.1.1",
+                SiteId = site,
+            },
+            new EndpointAttributionSnapshot
+            {
+                DhcpLeases = [new DhcpLeaseFact { IpAddress = "192.168.1.1", MacAddress = "AA:BB:CC:DD:EE:01" }],
+            });
+        DomainInvariantException ex = Assert.Throws<DomainInvariantException>(() =>
+            EndpointPresenceBuilder.BuildInterval(
+                EndpointId.New(),
+                PresenceId.New(),
+                attribution,
+                new EndpointAttributionQuery
+                {
+                    Family = "ipv4",
+                    IpAddress = "192.168.1.1",
+                    SiteId = site,
+                },
+                T10));
+        Assert.Contains(EndpointPresenceCodes.MissingNodeId, ex.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BuilderResolvesInventoryAnchorsFromAttributionHops()
+    {
+        SiteId site = SiteId.New();
+        NodeId node = NodeId.New();
+        DeviceId device = DeviceId.New();
+        EndpointAttributionResult attribution = EndpointAttributionResolver.Resolve(
+            new EndpointAttributionQuery { Family = "ipv4", IpAddress = "192.168.1.50" },
+            new EndpointAttributionSnapshot
+            {
+                SiteId = site,
+                NodeId = node,
+                DeviceId = device,
+                DhcpLeases = [new DhcpLeaseFact { IpAddress = "192.168.1.50", MacAddress = "AA:BB:CC:DD:EE:01" }],
+            });
+        EndpointPresenceInterval interval = EndpointPresenceBuilder.BuildInterval(
+            EndpointId.New(),
+            PresenceId.New(),
+            attribution,
+            new EndpointAttributionQuery { Family = "ipv4", IpAddress = "192.168.1.50" },
+            T10);
+        Assert.Equal(site, interval.SiteId);
+        Assert.Equal(node, interval.NodeId);
+        Assert.Equal(device, interval.DeviceId);
+    }
+
+    [Fact]
+    public void OpenWithNoActiveIntervalReturnsOpenedOnly()
+    {
+        EndpointId endpointId = EndpointId.New();
+        SiteId site = SiteId.New();
+        NodeId node = NodeId.New();
+        EndpointPresenceMigrationResult migration = EndpointPresenceInterval.Open(
+            endpointId,
+            activeInterval: null,
+            Resolve(site, node),
+            Query(site, node),
+            T10);
+        Assert.Null(migration.ClosedInterval);
+        Assert.Equal(endpointId, migration.OpenedInterval.EndpointId);
+        Assert.True(migration.OpenedInterval.IsActive);
+    }
+
+    [Fact]
+    public void OpenRejectsClosedIntervalMarkedActive()
+    {
+        EndpointId endpointId = EndpointId.New();
+        SiteId site = SiteId.New();
+        NodeId node = NodeId.New();
+        EndpointPresenceInterval closed = EndpointPresenceInterval.Reconstitute(
+            PresenceId.New(),
+            endpointId,
+            site,
+            node,
+            "192.168.1.1",
+            EndpointAttributionCertainty.Proven,
+            T08,
+            T12);
+        DomainInvariantException ex = Assert.Throws<DomainInvariantException>(() =>
+            EndpointPresenceInterval.Open(
+                endpointId,
+                closed,
+                Resolve(site, node),
+                Query(site, node),
+                T14));
+        Assert.Contains(EndpointPresenceCodes.OverlappingActiveInterval, ex.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void OpenRejectsEndpointIdMismatch()
+    {
+        SiteId site = SiteId.New();
+        NodeId node = NodeId.New();
+        EndpointPresenceInterval active = SampleInterval();
+        DomainInvariantException ex = Assert.Throws<DomainInvariantException>(() =>
+            EndpointPresenceInterval.Open(
+                EndpointId.New(),
+                active,
+                Resolve(site, node),
+                Query(site, node),
+                T14));
+        Assert.Contains("endpoint_id mismatch", ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void CreateRejectsMissingSourceAddress()
+    {
+        DomainInvariantException ex = Assert.Throws<DomainInvariantException>(() =>
+            EndpointPresenceInterval.Create(
+                PresenceId.New(),
+                EndpointId.New(),
+                SiteId.New(),
+                NodeId.New(),
+                "  ",
+                EndpointAttributionCertainty.Proven,
+                T10));
+        Assert.Contains(EndpointPresenceCodes.MissingSourceAddress, ex.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ActiveIntervalContainsFuturePoints()
+    {
+        EndpointPresenceInterval active = SampleInterval();
+        Assert.True(active.Contains(T12));
+        Assert.False(active.Contains(T07));
+    }
+
+    [Fact]
+    public void IntervalEqualityCoversValueSemantics()
+    {
+        PresenceId presenceId = PresenceId.New();
+        EndpointId endpointId = EndpointId.New();
+        SiteId site = SiteId.New();
+        NodeId node = NodeId.New();
+        DeviceId device = DeviceId.New();
+        EndpointPresenceInterval left = EndpointPresenceInterval.Reconstitute(
+            presenceId,
+            endpointId,
+            site,
+            node,
+            "192.168.1.50",
+            EndpointAttributionCertainty.Proven,
+            T10,
+            T12,
+            device,
+            vlanId: "10",
+            vrf: "corp",
+            macAddress: "AA:BB:CC:DD:EE:01");
+        EndpointPresenceInterval right = EndpointPresenceInterval.Reconstitute(
+            presenceId,
+            endpointId,
+            site,
+            node,
+            "192.168.1.50",
+            EndpointAttributionCertainty.Proven,
+            T10,
+            T12,
+            device,
+            vlanId: "10",
+            vrf: "corp",
+            macAddress: "aa:bb:cc:dd:ee:01");
+        EndpointPresenceInterval different = EndpointPresenceInterval.Reconstitute(
+            PresenceId.New(),
+            endpointId,
+            site,
+            node,
+            "192.168.1.50",
+            EndpointAttributionCertainty.Proven,
+            T10,
+            T12);
+
+        Assert.True(left.Equals(right));
+        Assert.True(left.Equals((object)right));
+        Assert.False(left.Equals(null));
+        Assert.False(left.Equals(different));
+        Assert.False(left.Equals("not-an-interval"));
+        Assert.Equal(left.GetHashCode(), right.GetHashCode());
+    }
+
+    [Fact]
+    public void RoutingContextEqualityAndContainsCoverActiveInterval()
+    {
+        EndpointPresenceInterval interval = SampleInterval();
+        EndpointRoutingContext left = EndpointRoutingContextBuilder.Build(interval);
+        EndpointRoutingContext right = EndpointRoutingContext.Create(interval);
+        EndpointRoutingContext different = EndpointRoutingContext.Reconstitute(
+            interval.EndpointId,
+            PresenceId.New(),
+            interval.SiteId,
+            interval.NodeId,
+            interval.SourceAddress,
+            interval.ValidFrom,
+            interval.ValidUntil,
+            interval.VlanId,
+            interval.Vrf);
+
+        Assert.True(left.Equals(right));
+        Assert.True(left.Equals((object)right));
+        Assert.False(left.Equals(null));
+        Assert.False(left.Equals(different));
+        Assert.False(left.Equals("not-a-context"));
+        Assert.True(left.Contains(T12));
+        Assert.False(left.Contains(T07));
+        Assert.Equal(left.GetHashCode(), right.GetHashCode());
+    }
+
+    [Fact]
+    public void RoutingContextBuilderOverloadHonorsValidUntil()
+    {
+        SiteId site = SiteId.New();
+        NodeId node = NodeId.New();
+        EndpointRoutingContext context = EndpointRoutingContextBuilder.Build(
+            EndpointId.New(),
+            PresenceId.New(),
+            Resolve(site, node),
+            Query(site, node),
+            T10,
+            validUntil: T12,
+            vrf: "corp");
+        Assert.Equal(T10, context.ValidFrom);
+        Assert.Equal(T12, context.ValidUntil);
+        Assert.Equal("corp", context.Vrf);
     }
 
     private static EndpointPresenceInterval SampleInterval(
