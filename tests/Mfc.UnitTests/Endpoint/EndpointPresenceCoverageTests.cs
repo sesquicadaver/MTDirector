@@ -119,10 +119,7 @@ public sealed class EndpointPresenceCoverageTests
     {
         FakeAuthorizationBoundary denied = new();
         denied.DeniedPermissions.Add(ApplicationPermissions.InventoryWrite);
-        ApplicationResult<EndpointRoutingContextView> forbidden = await new OpenEndpointPresenceUseCase(
-                denied,
-                new FakeEndpointPresenceStore(),
-                new FakeClock())
+        ApplicationResult<EndpointPresenceUpsertResultView> forbidden = await EndpointPresenceTestKit.CreateOpenUseCase(denied)
             .ExecuteAsync(new UpsertEndpointPresenceCommand
             {
                 Actor = "tester",
@@ -131,6 +128,80 @@ public sealed class EndpointPresenceCoverageTests
                 Snapshot = Snapshot(),
             });
         Assert.Equal("forbidden", forbidden.Error!.Code);
+    }
+
+    [Fact]
+    public void MobilityCoordinatorRequiresProbeTargetsWhenAssessmentActive()
+    {
+        EndpointId endpointId = EndpointId.New();
+        SiteId siteA = SiteId.New();
+        NodeId nodeA = NodeId.New();
+        SiteId siteB = SiteId.New();
+        NodeId nodeB = NodeId.New();
+        EndpointPresenceInterval prior = SampleInterval(endpointId, siteA, nodeA);
+        EndpointPresenceMigrationResult migration = EndpointPresenceInterval.Open(
+            endpointId,
+            prior,
+            Resolve(siteB, nodeB),
+            Query(siteB, nodeB),
+            T14);
+        ResponseAssessment active = ResponseAssessment.CreateActive(
+            IncidentId.New(),
+            endpointId,
+            prior.PresenceId,
+            nodeA,
+            ResponseAssessmentFeasibility.FullyEnforceable,
+            T10);
+        DomainInvariantException ex = Assert.Throws<DomainInvariantException>(() =>
+            EndpointMobilityCoordinator.PlanMigration(
+                migration,
+                new UpsertEndpointPresenceCommand
+                {
+                    Actor = "tester",
+                    EndpointId = endpointId.Value,
+                    Query = Query(siteB, nodeB),
+                    Snapshot = Snapshot(),
+                },
+                active,
+                MobilityRoutingFixtures.RoutingState(DeviceId.New()),
+                T14));
+        Assert.Contains(EndpointMobilityCodes.MissingProbeTargets, ex.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ResponseAssessmentInvalidateRejectsSecondCall()
+    {
+        ResponseAssessment active = ResponseAssessment.CreateActive(
+            IncidentId.New(),
+            EndpointId.New(),
+            PresenceId.New(),
+            NodeId.New(),
+            ResponseAssessmentFeasibility.Indeterminate,
+            T10);
+        ResponseAssessment invalidated = active.Invalidate(T12, EndpointMobilityCodes.MobilityInvalidation);
+        Assert.Throws<DomainInvariantException>(() =>
+            invalidated.Invalidate(T13, EndpointMobilityCodes.MobilityInvalidation));
+    }
+
+    [Fact]
+    public void MobilityHandlerRejectsAssessmentEndpointMismatch()
+    {
+        EndpointPresenceInterval opened = SampleInterval();
+        ResponseAssessment active = ResponseAssessment.CreateActive(
+            IncidentId.New(),
+            EndpointId.New(),
+            PresenceId.New(),
+            opened.NodeId,
+            ResponseAssessmentFeasibility.FullyEnforceable,
+            T10);
+        Assert.Throws<DomainInvariantException>(() =>
+            EndpointMobilityHandler.ProcessActiveIncidentMobility(
+                opened,
+                active,
+                MobilityRoutingFixtures.Configuration(),
+                MobilityRoutingFixtures.Operational(),
+                MobilityRoutingFixtures.ProbeTargets(),
+                T14));
     }
 
     [Fact]

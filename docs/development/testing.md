@@ -2206,6 +2206,27 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~EndpointPresence"
 ```
 
+## Living Specification — endpoint mobility (M7.2-03)
+
+Issue Set M7.2-03 / M7.1 §15. Scripted attribution + routing-assurance fixtures ONLY; no live CHR; Domain pure; no routing/firewall writes; no auto-deploy. Suite: `EndpointMobilityLivingSpecTests` + mobility branches in `EndpointPresenceCoverageTests`.
+
+| AC | Requirement | Module | Test |
+|----|-------------|--------|------|
+| AC#1 Mobility detected on anchor change | `EndpointMobilityHandler.IsMobilityEvent` | `Ac1MobilityDetectedWhenRoutingAnchorsChange` |
+| AC#2 Active assessment invalidated | `ResponseAssessment.Invalidate` | `Ac2ActiveAssessmentInvalidatedOnIncidentMobility` |
+| AC#3 Route traces recomputed | `RouteResolutionTraceEngine` via handler | `Ac3RouteTracesRecomputedForNewPresenceContext` |
+| AC#4 Enforcement node from opened presence | `ResolveEnforcementNode` | `Ac4EnforcementNodeResolvedFromOpenedPresence` |
+| AC#5 Auto-deploy suppressed | `AutoDeploySuppressed` flag | `Ac5AutoDeploySuppressedOnIncidentMobility` |
+| AC#6 Mobility without incident keeps command traces | `EndpointMobilityCoordinator` | `Ac6MobilityWithoutActiveIncidentKeepsCommandTraces` |
+| AC#7 No routing write APIs | `RosReadCommandRegistry` guard | `Ac7NoRoutingWriteApisOpened` |
+| AC#8 Use-case round-trip | `OpenEndpointPresenceUseCase` + stores | `Ac8UseCaseRoundTripInvalidatesAssessmentAndStoresRecomputedContext` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~EndpointMobility"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

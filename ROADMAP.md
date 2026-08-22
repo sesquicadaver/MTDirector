@@ -3,7 +3,7 @@
 **Дата оновлення:** 21 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M7.2-02 — EndpointPresenceInterval and EndpointRoutingContext DONE; NEXT = M7.2-03 (#123)
+**Базовий коміт аудиту:** M7.2-03 — Endpoint mobility invalidate assessment + recompute traces DONE; NEXT = M7.2-04 (#124)
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -55,7 +55,7 @@
 | **Разом** | **118** | **18** | **87% issues** |
 
 MVP issues (109) = **109 done + 0 remaining** — **MVP CLOSED (100%)**.  
-M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** Post-MVP M7 = **14** open (NEXT = M7.2-03 #123).
+M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** Post-MVP M7 = **13** open (NEXT = M7.2-04 #124).
 Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий**; multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance **DONE**; **M4 CLOSED**; desired/committed/actual projection **готовий** (M6-01); managed drift detection **готовий** (M6-02); bounded operational jobs **готовий** (M6-03); Desktop MVP workflows **готовий** (M6-04); standalone/dual-stack E2E **готовий** (M6-05); multi-WAN E2E **готовий** (M6-06); VRRP/CRS E2E **готовий** (M6-07); security/backup/restore acceptance **готовий** (M6-08); MVP production acceptance **готовий** (M6-09); **M6 CLOSED**; path-class E2E/drift **готовий** (N1-07); **MVP CLOSED**; routing-assurance read allowlist **готовий** (M7.1-01); RoutingAssuranceState persistence **готовий** (M7.1-02); RouteResolutionTrace **готовий** (M7.1-03); ECMP ONE_OF sets **готовий** (M7.1-04); dynamic route origins **готовий** (M7.1-05); RouteExpectation evaluation **готовий** (M7.1-06); reverse-path symmetry **готовий** (M7.1-07); network path profile latency probes **готовий** (M7.1-08); routing configuration vs operational drift **готовий** (M7.1-09); NEXT = M7.1-10 (#119).
 
 ### 2.2 DONE (не в черзі)
@@ -181,7 +181,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | `Mfc.Domain.Onboarding` | immutable plans + plan hasher + operation SM + write-ahead steps + bootstrap artifact + `ManagementState` (M5-01) + prerequisite validator (M5-02) + `GuardProfile` / guard verifier (M5-03) + `AnchorPlacementPlanner` (M5-04) + `OnboardingBootstrapWritePlanner` (M5-05) + `OnboardingWatchdogPlanner` (M5-06) + pass-through equivalence / enable order (M5-07) + Spec §46 recovery decision table (M5-08) |
 | `Mfc.Domain.Deployment` | immutable `DeploymentPlan` + plan hasher `mfc.deployment.plan.v1` + Node/device SM + exclusive lock + write-ahead steps (M4-01) + packet-path deploy gate (N1-06) + address-list create-or-verify (M4-03) + detached chain create-or-verify (M4-04) + production watchdog planner/script (M4-05) + transition-state validation + anchor activation order/decision (M4-06) + post-activation integrity/probes/watchdog readiness (M4-07) + standalone eligibility/NO_CHANGES policy (M4-08) + multi-WAN dependency/probe gates (M4-09) + VRRP classification/order/partial-failure policy (M4-10) + recovery decision table / controller rollback (M4-11); no campaign |
 
-**NEXT = M7.2-03:** [M7.2-03](https://github.com/sesquicadaver/MTDirector/issues/123) Mobility: invalidate assessment, recompute traces. **M7.2-02 DONE.**
+**NEXT = M7.2-04:** [M7.2-04](https://github.com/sesquicadaver/MTDirector/issues/124) CHR/fixture acceptance for migration (**M7.2 CLOSED**). **M7.2-03 DONE.**
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -395,7 +395,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 |--:|----|-------:|--------|
 | 107 | M7.2-01 | #121 | Endpoint attribution resolver → DONE (`EndpointAttributionResolver` + `EndpointAttributionAllowlist`; Living Spec AC 1–8; no routing/firewall writes) |
 | 108 | M7.2-02 | #122 | EndpointPresenceInterval and EndpointRoutingContext → DONE (`EndpointPresenceInterval` + `EndpointRoutingContext` + EF persistence; Living Spec AC 1–8; no routing writes) |
-| 109 | M7.2-03 | #123 | Mobility: invalidate assessment, recompute traces |
+| 109 | M7.2-03 | #123 | Mobility: invalidate assessment, recompute traces → DONE (`EndpointMobilityHandler` + `ResponseAssessment`; Living Spec AC 1–8; no auto-deploy) |
 | 110 | M7.2-04 | #124 | CHR/fixture acceptance for migration (**M7.2 CLOSED**) |
 
 #### Блок B3 — M7.3 External correlation contract
@@ -420,7 +420,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 14 відкритих атомарних задач (усі Post-MVP M7). Start here: #123 M7.2-03.
+**Кінець черги:** 13 відкритих атомарних задач (усі Post-MVP M7). Start here: #124 M7.2-04.
 
 ---
 
@@ -429,8 +429,8 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
 | До MVP CLOSED | 0 | **MVP CLOSED** (N1-07 DONE) |
-| Post-MVP M7 | 14 | NEXT = M7.2-03 (#123) |
-| **Нереалізовано разом** | **18** | лише M7 |
+| Post-MVP M7 | 13 | NEXT = M7.2-04 (#124) |
+| **Нереалізовано разом** | **17** | лише M7 |
 | DONE у коді (§2.2) | 115 | …+M4-01…13+M6-01…M6-09+N1-07+M7.1-01…M7.1-11 |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
@@ -602,7 +602,8 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 49. ~~Відкрити **M7.1-05** → [issue #114](https://github.com/sesquicadaver/MTDirector/issues/114).~~ → **DONE**.
 50. ~~Відкрити **M7.1-06** → [issue #115](https://github.com/sesquicadaver/MTDirector/issues/115).~~ → **DONE**.
 51. ~~Відкрити **M7.1-07** → [issue #116](https://github.com/sesquicadaver/MTDirector/issues/116).~~ → **DONE**.
-52. Відкрити **M7.2-03** → [issue #123](https://github.com/sesquicadaver/MTDirector/issues/123).
+52. ~~Відкрити **M7.2-03** → [issue #123](https://github.com/sesquicadaver/MTDirector/issues/123).~~ → **DONE**.
+53. Відкрити **M7.2-04** → [issue #124](https://github.com/sesquicadaver/MTDirector/issues/124).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones

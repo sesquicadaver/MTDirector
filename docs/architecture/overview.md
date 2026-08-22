@@ -131,7 +131,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | CHR routing assurance acceptance | Done (M7.1-11) **M7.1 CLOSED** | `RoutingAssuranceChrAcceptanceLivingSpecTests` AC 1–10; scripted upsert chain; testlab skeleton; live CHR OFF |
 | Endpoint attribution resolver | Done (M7.2-01) | `Mfc.Domain.Endpoint/`, `EndpointAttributionAllowlist`, `EndpointAttributionSnapshotMapper`; Living Spec AC 1–8; no routing/firewall writes |
 | Endpoint presence + routing context | Done (M7.2-02) | `EndpointPresenceInterval` / `EndpointRoutingContext` + EF `endpoint_presence_intervals` / `endpoint_routing_contexts`; Living Spec AC 1–8; no routing writes |
-| Remaining delivery order | See ROADMAP v0.2 §3 | **M7.2-02 DONE**; NEXT = M7.2-03 (#123) |
+| Endpoint mobility (assessment invalidation + trace recompute) | Done (M7.2-03) | `EndpointMobilityHandler` + `ResponseAssessment`; Living Spec AC 1–8; no auto-deploy |
+| Remaining delivery order | See ROADMAP v0.2 §3 | **M7.2-03 DONE**; NEXT = M7.2-04 (#124) |
 
 ## ADRs
 
