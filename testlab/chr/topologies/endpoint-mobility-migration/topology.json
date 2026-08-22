@@ -1,0 +1,39 @@
+{
+  "id": "endpoint-mobility-migration",
+  "description": "Dual-site endpoint presence migration with incident assessment invalidation (M7.2-04).",
+  "management": {
+    "network": "10.255.60.0/24",
+    "gateway": "10.255.60.1",
+    "deviceAddress": "10.255.60.10",
+    "apiSslPort": 8729
+  },
+  "siteSegments": [
+    { "name": "branch-a", "vlan": "10", "network": "192.168.1.0/24", "vrf": "corp" },
+    { "name": "branch-b", "vlan": "20", "network": "192.168.2.0/24", "vrf": "guest" }
+  ],
+  "credentials": {
+    "strategy": "ephemeral-per-run",
+    "reuseForbidden": true
+  },
+  "fixture": "fixtures/endpoint-mobility-migration-minimal.rsc.example",
+  "reset": {
+    "snapshotName": "clean-endpoint-mobility-migration",
+    "steps": [
+      "Power off VM",
+      "Restore clean-endpoint-mobility-migration snapshot",
+      "Regenerate ephemeral API credentials",
+      "Apply fixtures/endpoint-mobility-migration-minimal.rsc.example"
+    ]
+  },
+  "cleanup": {
+    "steps": [
+      "Export redacted diagnostics if the job failed",
+      "Delete ephemeral credentials",
+      "Restore clean-endpoint-mobility-migration snapshot",
+      "Remove temporary disks"
+    ]
+  },
+  "expectedSnapshotHashes": {
+    "afterReset": "REPLACE_AFTER_FIRST_GOLDEN_CAPTURE"
+  }
+}

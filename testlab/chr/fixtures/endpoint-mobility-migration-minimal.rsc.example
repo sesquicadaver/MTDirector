@@ -1,0 +1,17 @@
+# Synthetic endpoint mobility migration fixture — M7.2-04
+# Branch A: vlan10 / corp VRF 192.168.1.0/24; Branch B: vlan20 / guest VRF 192.168.2.0/24.
+# Applied via testlab/chr/scripts/provision-endpoint-mobility.sh (outside product adapter).
+#
+# /system identity set name=chr-endpoint-mobility
+# /ip address add address=10.255.60.10/24 interface=ether1
+# /interface vlan add name=vlan10 vlan-id=10 interface=bridge-lan
+# /interface vlan add name=vlan20 vlan-id=20 interface=bridge-lan
+# /ip vrf add name=corp interfaces=vlan10
+# /ip vrf add name=guest interfaces=vlan20
+# /ip dhcp-server lease add address=192.168.1.50 mac-address=AA:BB:CC:DD:EE:01 server=dhcp-a
+# /ip dhcp-server lease add address=192.168.2.50 mac-address=AA:BB:CC:DD:EE:02 server=dhcp-b
+# /routing table add name=corp fib
+# /routing table add name=main fib
+# /ip route add dst-address=10.20.0.0/16 gateway=10.99.0.1 routing-table=corp distance=1
+# /ip route add dst-address=0.0.0.0/0 gateway=1.1.1.1 routing-table=main distance=1
+# No secrets.
