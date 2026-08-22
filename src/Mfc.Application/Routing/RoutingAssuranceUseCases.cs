@@ -121,6 +121,18 @@ public sealed class UpsertRoutingAssuranceStateUseCase
             routeFindings = merged;
         }
         RoutingAssuranceState? existing = await _states.GetAsync(deviceId, cancellationToken).ConfigureAwait(false);
+        if (existing is not null)
+        {
+            RoutingDriftClassification drift = RoutingDriftAnalyzer.Analyze(
+                existing,
+                command.Configuration,
+                operationalState);
+            if (drift.Findings.Count > 0)
+            {
+                routeFindings = MergeDriftFindings(routeFindings, drift.Findings);
+            }
+        }
+
         RoutingAssuranceState state = existing is null
             ? RoutingAssuranceState.Create(
                 deviceId,
@@ -178,6 +190,24 @@ public sealed class UpsertRoutingAssuranceStateUseCase
         }
 
         return enriched;
+    }
+
+    private static List<RouteFinding> MergeDriftFindings(
+        IReadOnlyList<RouteFinding> existing,
+        IReadOnlyList<RouteFinding> driftFindings)
+    {
+        HashSet<string> seen = new(StringComparer.Ordinal);
+        List<RouteFinding> merged = [];
+        foreach (RouteFinding finding in existing.Concat(driftFindings))
+        {
+            string key = $"{finding.Code}|{finding.Subject ?? string.Empty}";
+            if (seen.Add(key))
+            {
+                merged.Add(finding);
+            }
+        }
+
+        return merged;
     }
 }
 

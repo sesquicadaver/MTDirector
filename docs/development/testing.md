@@ -2095,6 +2095,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~NetworkPathProfileLivingSpecTests"
 ```
 
+## Living Specification — routing configuration vs operational drift (M7.1-09)
+
+Issue Set M7.1-09 / Network Rule M7.1 Spec §14. Scripted hash-material snapshots only; no live CHR; no routing writes.
+
+| AC | Requirement | Module | Test |
+|----|-------------|--------|------|
+| AC#1 Routing table FIB/disabled change → configuration drift | `RoutingDriftAnalyzer` + `RoutingDriftClassifier` | `Ac1RoutingTableFibChangeIsConfigurationDrift` |
+| AC#2 Active/gateway-status only → operational, not config drift | hash-material diff + classifier | `Ac2ActiveAndGatewayStatusChangeOnlyIsOperationalNotConfigurationDrift` |
+| AC#3 Static route distance/scope → configuration drift | config material keys `route.*.distance/scope` | `Ac3StaticRouteDistanceScopeChangeIsConfigurationDrift` |
+| AC#4 Default route gateway change (ops) → default WAN changed | `default.*` operational keys | `Ac4DefaultRouteGatewayChangeIsOperationalDefaultWanChanged` |
+| AC#5 Config hash unchanged + ops changed → operational only | `RoutingDriftClassification` flags | `Ac5ConfigHashUnchangedOpsHashChangedIsOperationalOnly` |
+| AC#6 Config hash changed → configuration drift even if ops also changed | combined diff | `Ac6ConfigHashChangedIsConfigurationDriftEvenWhenOpsAlsoChanged` |
+| AC#7 Upsert round-trip persists drift findings | `UpsertRoutingAssuranceStateUseCase` merge | `Ac7UpsertRoundTripPersistsDriftFindings` |
+| AC#8 No routing write APIs | `RosReadCommandRegistry` | `Ac8NoRoutingWriteApisOpened` |
+
+Branch coverage helper: `RoutingDriftCoverageTests` (target ≥75% on M7.1-09 modules).
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~RoutingDrift"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.
