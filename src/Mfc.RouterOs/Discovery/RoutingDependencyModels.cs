@@ -70,6 +70,8 @@ public sealed class StaticRouteDiscovery
 
     public required bool IsDynamic { get; init; }
 
+    public required string? RouteType { get; init; }
+
     public required string? Active { get; init; }
 
     public required string? ImmediateGateway { get; init; }
@@ -260,6 +262,12 @@ public sealed class RoutingDependencyDiscoveryResult
 
     public required IReadOnlyList<StaticRouteDiscovery> Ipv6StaticRoutes { get; init; }
 
+    /// <summary>All IPv4 routes from <c>/ip/route</c> including dynamic (operational FIB).</summary>
+    public required IReadOnlyList<StaticRouteDiscovery> Ipv4RouteObservations { get; init; }
+
+    /// <summary>All IPv6 routes from <c>/ipv6/route</c> including dynamic (operational FIB).</summary>
+    public required IReadOnlyList<StaticRouteDiscovery> Ipv6RouteObservations { get; init; }
+
     public required IReadOnlyList<DefaultRouteStateDiscovery> Ipv4DefaultRouteState { get; init; }
 
     public required IReadOnlyList<DefaultRouteStateDiscovery> Ipv6DefaultRouteState { get; init; }
@@ -382,7 +390,7 @@ public sealed class RoutingDependencyDiscoveryResult
         get
         {
             Dictionary<string, string> material = new(StringComparer.Ordinal);
-            foreach (StaticRouteDiscovery route in Ipv4StaticRoutes.Concat(Ipv6StaticRoutes)
+            foreach (StaticRouteDiscovery route in AllRouteObservations()
                          .OrderBy(r => r.Family)
                          .ThenBy(r => r.DstAddress, StringComparer.Ordinal)
                          .ThenBy(r => r.Gateway, StringComparer.Ordinal))
@@ -392,6 +400,7 @@ public sealed class RoutingDependencyDiscoveryResult
                 Put(material, $"route.{key}.immediate-gw", route.ImmediateGateway);
                 Put(material, $"route.{key}.gateway-status", route.GatewayStatus);
                 Put(material, $"route.{key}.dynamic", route.IsDynamic ? "true" : "false");
+                Put(material, $"route.{key}.type", route.RouteType);
             }
 
             foreach (DefaultRouteStateDiscovery route in Ipv4DefaultRouteState.Concat(Ipv6DefaultRouteState)
@@ -435,4 +444,7 @@ public sealed class RoutingDependencyDiscoveryResult
             target[key] = value;
         }
     }
+
+    private IEnumerable<StaticRouteDiscovery> AllRouteObservations()
+        => Ipv4RouteObservations.Concat(Ipv6RouteObservations);
 }

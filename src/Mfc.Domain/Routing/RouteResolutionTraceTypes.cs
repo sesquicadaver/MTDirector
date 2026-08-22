@@ -118,6 +118,9 @@ public sealed class RouteCandidate
     public bool Selected { get; init; }
 
     public string? RouteKind { get; init; }
+
+    /// <summary>Route origin (<see cref="RouteOrigins"/>) when present on the operational observation.</summary>
+    public string? Origin { get; init; }
 }
 
 /// <summary>Recursive gateway resolution hop (M7.1 Spec §8).</summary>
@@ -165,4 +168,7 @@ public sealed class SelectedRoute
     public string? ImmediateGateway { get; init; }
 
     public string? RouteKind { get; init; }
+
+    /// <summary>Route origin (<see cref="RouteOrigins"/>) when present on the operational observation.</summary>
+    public string? Origin { get; init; }
 }

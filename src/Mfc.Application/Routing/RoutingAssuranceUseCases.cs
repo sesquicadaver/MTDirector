@@ -85,6 +85,7 @@ public sealed class UpsertRoutingAssuranceStateUseCase
                 ApplicationError.Validation("Configuration and operational_state snapshots are required."));
         }
 
+        RoutingOperationalSnapshot operationalState = DynamicRouteOriginAnalyzer.EnsureAnalysis(command.OperationalState);
         DateTimeOffset now = _clock.UtcNow;
         IReadOnlyList<RouteResolutionTrace> resolutionTraces = command.ResolutionTraces.Count > 0
             ? command.ResolutionTraces
@@ -92,21 +93,21 @@ public sealed class UpsertRoutingAssuranceStateUseCase
                 ? RouteResolutionTraceEngine.AnalyzeMany(
                     command.TraceQueries,
                     command.Configuration,
-                    command.OperationalState)
+                    operationalState)
                 : [];
         RoutingAssuranceState? existing = await _states.GetAsync(deviceId, cancellationToken).ConfigureAwait(false);
         RoutingAssuranceState state = existing is null
             ? RoutingAssuranceState.Create(
                 deviceId,
                 command.Configuration,
-                command.OperationalState,
+                operationalState,
                 now,
                 command.RouteExpectations,
                 command.RouteFindings,
                 resolutionTraces)
             : existing.With(
                 command.Configuration,
-                command.OperationalState,
+                operationalState,
                 now,
                 command.RouteExpectations,
                 command.RouteFindings,

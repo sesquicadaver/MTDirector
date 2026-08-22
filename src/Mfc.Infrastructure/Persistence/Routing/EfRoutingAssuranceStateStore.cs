@@ -123,7 +123,8 @@ public sealed class EfRoutingAssuranceStateStore : IRoutingAssuranceStateStore
         => new(
             dto.Routes ?? [],
             dto.DefaultRoutes ?? [],
-            dto.HashMaterial ?? new Dictionary<string, string>(StringComparer.Ordinal));
+            dto.HashMaterial ?? new Dictionary<string, string>(StringComparer.Ordinal),
+            dto.DynamicRouteOrigins);
 
     private sealed class ConfigurationDto
     {
@@ -162,12 +163,15 @@ public sealed class EfRoutingAssuranceStateStore : IRoutingAssuranceStateStore
 
         public List<DefaultRouteObservationFact>? DefaultRoutes { get; set; }
 
+        public DynamicRouteOriginAnalysis? DynamicRouteOrigins { get; set; }
+
         public Dictionary<string, string>? HashMaterial { get; set; }
 
         public static OperationalDto From(RoutingOperationalSnapshot snapshot) => new()
         {
             Routes = snapshot.Routes.ToList(),
             DefaultRoutes = snapshot.DefaultRoutes.ToList(),
+            DynamicRouteOrigins = snapshot.DynamicRouteOrigins,
             HashMaterial = snapshot.HashMaterial.ToDictionary(static kv => kv.Key, static kv => kv.Value, StringComparer.Ordinal),
         };
     }
