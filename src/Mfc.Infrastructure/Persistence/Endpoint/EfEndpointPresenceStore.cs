@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Mfc.Domain;
 using Mfc.Application.Abstractions.Persistence;
+using Mfc.Domain;
 using Mfc.Domain.Endpoint;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Routing;

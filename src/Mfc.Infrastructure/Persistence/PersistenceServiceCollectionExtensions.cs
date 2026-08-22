@@ -1,7 +1,7 @@
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Infrastructure.Persistence.Deployment;
-using Mfc.Infrastructure.Persistence.Endpoint;
 using Mfc.Infrastructure.Persistence.Drift;
+using Mfc.Infrastructure.Persistence.Endpoint;
 using Mfc.Infrastructure.Persistence.Hosting;
 using Mfc.Infrastructure.Persistence.Inventory;
 using Mfc.Infrastructure.Persistence.Onboarding;
