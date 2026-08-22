@@ -7,7 +7,8 @@ namespace Mfc.Domain.Routing;
 /// Separates <see cref="Configuration"/> from <see cref="OperationalState"/> via distinct hashes.
 /// <see cref="RouteExpectations"/> and <see cref="RouteFindings"/> are populated by M7.1-06 evaluation
 /// (reverse-path checks delegate to M7.1-07 <see cref="ReversePathSymmetryAnalyzer"/>);
-/// <see cref="ResolutionTraces"/> by M7.1-03 trace analysis with optional M7.1-07 symmetry attachment.
+/// <see cref="ResolutionTraces"/> by M7.1-03 trace analysis with optional M7.1-07 symmetry attachment
+/// and M7.1-08 network path probe bindings.
 /// </summary>
 public sealed class RoutingAssuranceState : IEquatable<RoutingAssuranceState>
 {

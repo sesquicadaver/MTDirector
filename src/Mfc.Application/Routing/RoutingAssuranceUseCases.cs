@@ -34,6 +34,12 @@ public sealed class UpsertRoutingAssuranceStateCommand
 
     /// <summary>Optional probes analyzed by <see cref="RouteResolutionTraceEngine"/> during upsert.</summary>
     public IReadOnlyList<RouteResolutionQuery> TraceQueries { get; init; } = [];
+
+    /// <summary>Network path latency profiles bound to traces on upsert (M7.1-08).</summary>
+    public IReadOnlyList<NetworkPathProfile> NetworkPathProfiles { get; init; } = [];
+
+    /// <summary>Optional scripted latency measurements evaluated against profiles and traces (M7.1-08).</summary>
+    public IReadOnlyList<NetworkPathLatencyEvaluationInput> LatencyEvaluations { get; init; } = [];
 }
 
 /// <summary>Stores routing assurance state shell (M7.1-02).</summary>
@@ -100,6 +106,7 @@ public sealed class UpsertRoutingAssuranceStateUseCase
             command.Configuration,
             operationalState,
             command.TraceQueries);
+        resolutionTraces = NetworkPathProfileBinder.AttachBindings(resolutionTraces, command.NetworkPathProfiles);
         IReadOnlyList<RouteFinding> routeFindings = command.RouteExpectations.Count > 0 && resolutionTraces.Count > 0
             ? RouteExpectationEvaluator.Evaluate(
                 command.RouteExpectations,
@@ -107,6 +114,12 @@ public sealed class UpsertRoutingAssuranceStateUseCase
                 command.Configuration,
                 operationalState)
             : command.RouteFindings;
+        if (command.LatencyEvaluations.Count > 0)
+        {
+            List<RouteFinding> merged = routeFindings.ToList();
+            merged.AddRange(NetworkPathLatencyEvaluator.EvaluateMany(command.LatencyEvaluations));
+            routeFindings = merged;
+        }
         RoutingAssuranceState? existing = await _states.GetAsync(deviceId, cancellationToken).ConfigureAwait(false);
         RoutingAssuranceState state = existing is null
             ? RoutingAssuranceState.Create(

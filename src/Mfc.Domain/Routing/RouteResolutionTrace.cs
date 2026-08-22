@@ -56,8 +56,20 @@ public sealed class RouteResolutionTrace
     /// <summary>Reverse B→A symmetry analysis when computed (M7.1-07); null when not analyzed.</summary>
     public ReversePathSymmetryAnalysis? ReversePathSymmetry { get; init; }
 
+    /// <summary>Trace-bound network path latency probes (M7.1-08).</summary>
+    public IReadOnlyList<NetworkPathProbeBinding> NetworkPathProbeBindings { get; init; } = [];
+
     /// <summary>Returns a copy with optional reverse-path symmetry analysis attached.</summary>
     public RouteResolutionTrace WithReversePathSymmetry(ReversePathSymmetryAnalysis? analysis)
+        => CopyWith(reversePathSymmetry: analysis);
+
+    /// <summary>Returns a copy with network path probe bindings attached (M7.1-08).</summary>
+    public RouteResolutionTrace WithNetworkPathProbeBindings(IReadOnlyList<NetworkPathProbeBinding> bindings)
+        => CopyWith(networkPathProbeBindings: bindings);
+
+    private RouteResolutionTrace CopyWith(
+        ReversePathSymmetryAnalysis? reversePathSymmetry = null,
+        IReadOnlyList<NetworkPathProbeBinding>? networkPathProbeBindings = null)
         => new()
         {
             Family = Family,
@@ -83,6 +95,7 @@ public sealed class RouteResolutionTrace
             Decision = Decision,
             ExecutionPath = ExecutionPath,
             Certainty = Certainty,
-            ReversePathSymmetry = analysis,
+            ReversePathSymmetry = reversePathSymmetry ?? ReversePathSymmetry,
+            NetworkPathProbeBindings = networkPathProbeBindings ?? NetworkPathProbeBindings,
         };
 }

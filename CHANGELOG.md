@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Implement network path profile latency probes bound to routing result (M7.1-08): Domain `NetworkPathProfile` + `NetworkPathProbeBinding` + `RoutingBoundLatencyProbe` + `RoutePathFingerprint` + `NetworkPathProfileBinder` (table/VRF/egress from trace; destination from profile) + `NetworkPathLatencyEvaluator` + `NetworkPathProfileCodes` (`ROUTE_PATH_CHANGED_WITH_LATENCY_REGRESSION`, isolated RTT/loss/jitter findings). Application upsert accepts `NetworkPathProfiles` / `LatencyEvaluations`; binds probes onto `RouteResolutionTrace.NetworkPathProbeBindings`. Living Spec `NetworkPathProfileLivingSpecTests` AC 1–8; scripted `LatencyMeasurement` only; no routing writes. ROADMAP marks M7.1-08 DONE; NEXT = M7.1-09 (#118).
+
 - Implement reverse-path symmetry analysis (M7.1-07): Domain `ReversePathSymmetryResults` + `ReversePathSymmetryAnalysis` / `ReversePathSymmetryAnalyzer` (forward A→B vs reverse B→A compare selected table, VRF, egress interfaces, decision; `ExpectAsymmetricReversePath` on `RouteResolutionQuery` / `RouteExpectation` / analyzer options). Optional `RouteResolutionTrace.ReversePathSymmetry` persisted on upsert enrichment. `RouteExpectationEvaluator` delegates to analyzer (`REVERSE_PATH_MISSING`, `ASYMMETRIC_UNEXPECTED` findings). Living Spec `ReversePathSymmetryLivingSpecTests` AC 1–8; no routing writes. ROADMAP marks M7.1-07 DONE; NEXT = M7.1-08 (#117).
 
 - Implement RouteExpectation evaluation (M7.1-06): Domain `RouteExpectation` / `RouteFinding` + `RouteExpectationCodes` + `RouteExpectationEvaluator` (table/VRF, allowed next hops ECMP ONE_OF, egress interfaces/zones as interface proxy, required/forbidden route types incl. BLACKHOLE/UNREACHABLE/DROP, CPU firewall path, minimal reverse-path NO_ROUTE check). Application upsert evaluates expectations when traces present → `RouteFindings`. Living Spec `RouteExpectationLivingSpecTests` AC 1–10; `RoutingAssuranceStateLivingSpecTests` AC3 updated; no routing writes. ROADMAP marks M7.1-06 DONE; NEXT = M7.1-07 (#116).
@@ -75,7 +77,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- ROADMAP: M7.1-07 reverse-path symmetry analysis DONE; NEXT = M7.1-08 (#117); Post-MVP M7 = 20 open (7/27 DONE).
+- ROADMAP: M7.1-08 network path profile latency probes DONE; NEXT = M7.1-09 (#118); Post-MVP M7 = 19 open (8/27 DONE).
 - ROADMAP: M7.1-05 dynamic route origins read-only DONE; NEXT = M7.1-06 (#115); Post-MVP M7 = 22 open (5/27 DONE).
 - ROADMAP: M7.1-02 RoutingAssuranceState persistence DONE; NEXT = M7.1-03 (#112); Post-MVP M7 = 25 open (2/27 DONE).
 - ROADMAP: M7.1-01 routing-assurance read allowlist DONE; NEXT was M7.1-02 (#111); Post-MVP M7 = 26 open (1/27 DONE).

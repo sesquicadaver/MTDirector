@@ -125,7 +125,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Dynamic route origins (read-only) | Done (M7.1-05) | `RouteOriginClassifier` + `DynamicRouteOriginAnalysis`; per-table summaries + active dynamic facts; Living Spec AC 1–8; no routing writes |
 | RouteExpectation evaluation | Done (M7.1-06) | `RouteExpectationEvaluator` + `RouteExpectationCodes`; upsert evaluates expectations vs traces; Living Spec AC 1–10; no routing writes |
 | Reverse-path symmetry | Done (M7.1-07) | `ReversePathSymmetryAnalyzer` + `ReversePathSymmetryResults`; forward/reverse compare; trace attachment; Living Spec AC 1–8; no routing writes |
-| Remaining delivery order | See ROADMAP v0.2 §3 | **MVP CLOSED**; NEXT = M7.1-08 (#117) |
+| Network path profile latency probes | Done (M7.1-08) | `NetworkPathProfileBinder` + `NetworkPathLatencyEvaluator` + `RoutePathFingerprint`; trace-bound ROUTER_PING params; `ROUTE_PATH_CHANGED_WITH_LATENCY_REGRESSION`; Living Spec AC 1–8; no routing writes |
+| Remaining delivery order | See ROADMAP v0.2 §3 | **MVP CLOSED**; NEXT = M7.1-09 (#118) |
 
 ## ADRs
 
