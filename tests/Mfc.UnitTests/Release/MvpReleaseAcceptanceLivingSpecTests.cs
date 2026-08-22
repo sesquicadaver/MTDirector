@@ -87,8 +87,8 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         Assert.Contains("N1-07", acceptance, StringComparison.Ordinal);
         Assert.Contains("M6 CLOSED", acceptance, StringComparison.Ordinal);
         Assert.Contains("MVP CLOSED:** **yes**", acceptance, StringComparison.Ordinal);
-        Assert.Contains("M7.1-02", acceptance, StringComparison.Ordinal);
         Assert.Contains("M7.1-03", acceptance, StringComparison.Ordinal);
+        Assert.Contains("M7.1-04", acceptance, StringComparison.Ordinal);
     }
 
     // ── AC 2 ──────────────────────────────────────────────────────────────────────
