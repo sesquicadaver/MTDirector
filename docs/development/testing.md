@@ -2139,6 +2139,31 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopRoutingAssuranceLivingSpecTests"
 ```
 
+## Living Specification — CHR routing assurance acceptance (M7.1-11 / **M7.1 CLOSED**)
+
+Issue Set M7.1-11 / Network Rule M7.1 Spec §15. Scripted in-process fixtures ONLY; live CHR matrix remains OFF; chains M7.1 modules via `UpsertRoutingAssuranceStateUseCase`; no routing writes. Suite: `RoutingAssuranceChrAcceptanceLivingSpecTests`.
+
+| AC | Requirement | Module | Test |
+|----|-------------|--------|------|
+| AC#1 Multi-WAN recursive mark → table → recursive gateway | `RouteResolutionTraceEngine` + upsert | `Ac1MultiWanRecursivePolicyMarkTableLookupAndRecursiveGatewaySucceeds` |
+| AC#2 Balanced/per-table multi-WAN traces | per-table routing rules + traces | `Ac2BalancedPerTableMultiWanTracesResolvePerRoutingTable` |
+| AC#3 ECMP ONE_OF + allowed next-hop expectation | `EcmpRouteSet` + `RouteExpectationEvaluator` | `Ac3EcmpOneOfExpectationPassesWhenAnyMemberMatches` |
+| AC#4 Corp VRF trace + expectation | VRF selection + evaluator | `Ac4CorpVrfTraceAndExpectationPasses` |
+| AC#5 Expectation fail (table/VRF/egress) critical | `RouteExpectationEvaluator` | `Ac5ExpectationFailWrongTableVrfEgressProducesCriticalFindings` |
+| AC#6 Operational route change ≠ config drift | `RoutingDriftAnalyzer` on upsert | `Ac6OperationalRouteChangeProducesOperationalDriftNotConfigurationDrift` |
+| AC#7 Reverse-path symmetry + network path probe binding | `ReversePathSymmetryAnalyzer` + `NetworkPathProfileBinder` | `Ac7ReversePathSymmetryAndNetworkPathProbeBindingOnBranchToHqTrace` |
+| AC#8 Full upsert round-trip persistence | `UpsertRoutingAssuranceStateUseCase` + get | `Ac8FullUpsertRoundTripPersistsExpectationsFindingsTracesAndDrift` |
+| AC#9 No routing write APIs | `RosReadCommandRegistry` | `Ac9NoRoutingWriteApisOpened` |
+| AC#10 Deterministic / no live CHR | Living Spec source + `testing.md` + testlab README | `Ac10DeterministicLivingSpecNoLiveChr` |
+
+Testlab skeleton (optional live CHR): `testlab/chr/topologies/routing-assurance-multiwan` + `scripts/provision-routing-assurance.sh`.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~RoutingAssuranceChrAcceptance"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

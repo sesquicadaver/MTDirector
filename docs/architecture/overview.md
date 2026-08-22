@@ -128,7 +128,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Network path profile latency probes | Done (M7.1-08) | `NetworkPathProfileBinder` + `NetworkPathLatencyEvaluator` + `RoutePathFingerprint`; trace-bound ROUTER_PING params; `ROUTE_PATH_CHANGED_WITH_LATENCY_REGRESSION`; Living Spec AC 1–8; no routing writes |
 | Routing configuration vs operational drift | Done (M7.1-09) | `RoutingDriftAnalyzer` + `RoutingDriftClassifier` + `RoutingDriftCodes`; config≠ops hash diff; upsert auto-merge drift findings; Living Spec AC 1–8; no routing writes |
 | Desktop routing assurance viewers | Done (M7.1-10) | `RoutingAssuranceService` gRPC + `RoutingAssuranceViewModel` under Node; bounded trace summaries; Living Spec AC 1–8; read-only Desktop |
-| Remaining delivery order | See ROADMAP v0.2 §3 | **MVP CLOSED**; NEXT = M7.1-11 (#120) |
+| CHR routing assurance acceptance | Done (M7.1-11) **M7.1 CLOSED** | `RoutingAssuranceChrAcceptanceLivingSpecTests` AC 1–10; scripted upsert chain; testlab skeleton; live CHR OFF |
+| Remaining delivery order | See ROADMAP v0.2 §3 | **M7.1 CLOSED**; NEXT = M7.2-01 (#121) |
 
 ## ADRs
 

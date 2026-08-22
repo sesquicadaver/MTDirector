@@ -1,0 +1,42 @@
+{
+  "id": "routing-assurance-multiwan",
+  "description": "Multi-WAN recursive, ECMP, and corp VRF routing-assurance acceptance topology.",
+  "management": {
+    "network": "10.255.50.0/24",
+    "gateway": "10.255.50.1",
+    "deviceAddress": "10.255.50.10",
+    "apiSslPort": 8729
+  },
+  "wanSimulators": [
+    { "name": "wan-primary", "network": "198.51.100.0/30", "role": "balanced" },
+    { "name": "wan-backup", "network": "203.0.113.0/30", "role": "balanced" }
+  ],
+  "vrfSegments": [
+    { "name": "corp", "interface": "vlan10", "network": "10.20.0.0/16" }
+  ],
+  "credentials": {
+    "strategy": "ephemeral-per-run",
+    "reuseForbidden": true
+  },
+  "fixture": "fixtures/routing-assurance-multiwan-ecmp-vrf-minimal.rsc.example",
+  "reset": {
+    "snapshotName": "clean-routing-assurance-multiwan",
+    "steps": [
+      "Power off VM",
+      "Restore clean-routing-assurance-multiwan snapshot",
+      "Regenerate ephemeral API credentials",
+      "Apply fixtures/routing-assurance-multiwan-ecmp-vrf-minimal.rsc.example"
+    ]
+  },
+  "cleanup": {
+    "steps": [
+      "Export redacted diagnostics if the job failed",
+      "Delete ephemeral credentials",
+      "Restore clean-routing-assurance-multiwan snapshot",
+      "Remove temporary disks"
+    ]
+  },
+  "expectedSnapshotHashes": {
+    "afterReset": "REPLACE_AFTER_FIRST_GOLDEN_CAPTURE"
+  }
+}

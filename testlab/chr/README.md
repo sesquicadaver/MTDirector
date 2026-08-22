@@ -27,6 +27,7 @@ testlab/chr/
 | `standalone` | Single managed router |
 | `multi-wan-failover` | Dual WAN, failover preference |
 | `multi-wan-balanced` | Dual WAN, balanced |
+| `routing-assurance-multiwan` | Multi-WAN recursive, ECMP, corp VRF (M7.1-11) |
 | `vrrp-active-passive` | VRRP pair, stable master |
 | `vrrp-split-master` | Split-brain / dual-master scenario |
 
@@ -41,5 +42,6 @@ Each topology directory contains `topology.json` with management/WAN addressing,
 5. For standalone M1-30: run `scripts/provision-standalone.sh`, then set `MFC_CHR_STANDALONE_HOST`.
 6. For multi-WAN M1-31: run `scripts/provision-multi-wan.sh failover|balanced`.
 7. For VRRP M1-32: run `scripts/provision-vrrp.sh active-passive|split-master`.
+8. For routing assurance M7.1-11: run `scripts/provision-routing-assurance.sh` (Living Spec substitute; live CHR OFF).
 
 See also [`docs/development/chr-lab.md`](../../docs/development/chr-lab.md).
