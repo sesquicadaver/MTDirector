@@ -2275,6 +2275,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~IncidentSignal"
 ```
 
+## Living Specification — Historical ActiveStateInterval resolver (M7.3-02)
+
+Issue Set M7.3-02 / next-2 §4. Scripted deployment/audit transition timeline ONLY; Domain pure; no live CHR; no routing writes. Suite: `ActiveStateIntervalLivingSpecTests` + `ActiveStateIntervalCoverageTests`.
+
+| AC | Requirement | Test |
+|----|-------------|------|
+| AC#1 Ordered non-overlapping intervals | `ActiveStateIntervalBuilder` | `Ac1BuildsOrderedNonOverlappingIntervals` |
+| AC#2 Resolve occurred_at inside interval | `ActiveStateIntervalResolver` | `Ac2ResolvesOccurredAtInsideMiddleInterval` |
+| AC#3 valid_from inclusive | `ActiveStateInterval.Contains` | `Ac3ValidFromIsInclusiveAtBoundary` |
+| AC#4 Active tail covers later instant | `ActiveStateIntervalResolver` | `Ac4ActiveTailIntervalCoversLaterOccurredAt` |
+| AC#5 Fail-closed before first transition | `ActiveStateIntervalResolver` | `Ac5OccurredBeforeFirstTransitionFailsClosed` |
+| AC#6 PROVEN certainty | `ActiveStateIntervalClassifier` | `Ac6ProvenCertaintyRequiresAllHashesAndKnownFlags` |
+| AC#7 PARTIAL certainty | `ActiveStateIntervalClassifier` | `Ac7PartialCertaintyWhenHashesIncomplete` |
+| AC#8 UNKNOWN certainty | `ActiveStateIntervalClassifier` | `Ac8UnknownCertaintyWhenNoHashesPresent` |
+| AC#9 Device-scoped timeline | `ActiveStateIntervalResolver` | `Ac9ResolverIgnoresOtherDeviceTransitions` |
+| AC#10 Use case + auth | `ResolveActiveStateIntervalUseCase` | `Ac10UseCaseReturnsViewAndRejectsUnauthorized` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ActiveStateInterval"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.
