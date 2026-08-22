@@ -26,7 +26,7 @@ public sealed class RoutingAssuranceState : IEquatable<RoutingAssuranceState>
     /// <summary>Deferred to later M7.1 analysis issues — empty typed collection only.</summary>
     public IReadOnlyList<RouteFinding> RouteFindings { get; }
 
-    /// <summary>Deferred to M7.1-03 (#112) — empty typed collection only.</summary>
+    /// <summary>Route resolution traces (M7.1-03); empty when no probes were analyzed.</summary>
     public IReadOnlyList<RouteResolutionTrace> ResolutionTraces { get; }
 
     public DateTimeOffset UpdatedAtUtc { get; }

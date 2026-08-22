@@ -51,36 +51,3 @@ public sealed class RouteFinding
     public string? Subject { get; init; }
 }
 
-/// <summary>
-/// Route resolution trace shell (M7.1 Spec §4).
-/// Full policy-routing → FIB → recursive NH implementation is deferred to <c>M7.1-03</c> (#112).
-/// Persistence stores an empty typed collection until that issue.
-/// </summary>
-public sealed class RouteResolutionTrace
-{
-    public required string Family { get; init; }
-
-    public string? SourceAddress { get; init; }
-
-    public string? DestinationAddress { get; init; }
-
-    public string? IngressInterface { get; init; }
-
-    public string? InitialVrf { get; init; }
-
-    public string? RoutingMark { get; init; }
-
-    public IReadOnlyList<string> RoutingDecisionOrder { get; init; } = [];
-
-    public string? SelectedVrf { get; init; }
-
-    public string? SelectedTable { get; init; }
-
-    public string? MatchedPrefix { get; init; }
-
-    public string? Decision { get; init; }
-
-    public string? ExecutionPath { get; init; }
-
-    public string? Certainty { get; init; }
-}

@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Implement RouteResolutionTrace (M7.1-03): Domain `RouteResolutionTraceEngine` + `RouteResolutionQuery` / `RouteResolutionTrace` model (policy-routing stages, routing rules LOOKUP/LOOKUP_ONLY/DROP/UNREACHABLE, table lookup, recursive gateway resolution, ECMP `ONE_OF` immediate next hops, execution path / certainty). Application upsert computes traces from `TraceQueries` when `ResolutionTraces` empty. Living Spec `RouteResolutionTraceLivingSpecTests` AC 1–10; persistence round-trip via `routing_assurance_states`; no routing writes. ROADMAP marks M7.1-03 DONE; NEXT = M7.1-04 (#113).
+
 - Persist RoutingAssuranceState (M7.1-02): Domain `Mfc.Domain.Routing` (`RoutingAssuranceState`, config/ops snapshots, `RoutingAssurancePropertyClassifier`, `RoutingAssuranceHashContract`) with typed empty deferred slots for `RouteExpectation` / `RouteFinding` / `RouteResolutionTrace` (M7.1-06 / analysis / M7.1-03). EF `routing_assurance_states` (FK → `devices`, jsonb snapshots + distinct config/ops hashes). Application upsert/get + `IRoutingAssuranceStateStore`. Discovery maps settings/VRF/filter rules into config material and separates `OperationalHashMaterial`; `RoutingAssuranceStateMapper` builds Domain state. Living Spec `RoutingAssuranceStateLivingSpecTests` AC 1–8; no routing writes. ROADMAP marks M7.1-02 DONE; NEXT = M7.1-03 (#112).
 
 - Routing-assurance read allowlist (M7.1-01): Spec §3 mandatory paths via `RoutingAssuranceAllowlist` / `RoutingAssuranceAllowlistProfiles`. New `RosReadCommandId` values `RoutingSettings`, `RoutingFilterRules`, `RoutingFilterSelectRules` registered in `RosReadCommandRegistry` (read-only `/print` only). Reuses existing tables/rules/VRF/route command ids; `/ip/route` and `/ipv6/route` listed once in `FixedPaths` while CommandIds include static + default-route-state profiles. Discovery mapping of settings/filters/VRF completed in M7.1-02. Unit tests `RoutingAssuranceAllowlistTests`; ArchitectureBoundary unchanged (no routing writes). ROADMAP marks M7.1-01 DONE; NEXT was M7.1-02 (#111).
@@ -65,6 +67,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- ROADMAP: M7.1-03 RouteResolutionTrace DONE; NEXT = M7.1-04 (#113); Post-MVP M7 = 24 open (3/27 DONE).
 - ROADMAP: M7.1-02 RoutingAssuranceState persistence DONE; NEXT = M7.1-03 (#112); Post-MVP M7 = 25 open (2/27 DONE).
 - ROADMAP: M7.1-01 routing-assurance read allowlist DONE; NEXT was M7.1-02 (#111); Post-MVP M7 = 26 open (1/27 DONE).
 - ROADMAP: N1-07 path-class E2E/drift DONE; **MVP CLOSED**; NEXT was M7.1-01 (#110); N1 weave 7/7; 109/109 MVP DONE (100%); Post-MVP queue = 27.

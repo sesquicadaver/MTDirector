@@ -119,8 +119,9 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | MVP production acceptance | Done (M6-09) **M6 CLOSED** | Release docs + `scripts/release/*` + Living Spec AC 1–16; Live CHR OFF; no release tag in PR |
 | Path-class E2E / drift | Done (N1-07) **MVP CLOSED** | Living Spec AC 1–12; path-class drift kinds + voiding; Live CHR OFF |
 | Routing-assurance read allowlist | Done (M7.1-01) | Spec §3 paths via `RoutingAssuranceAllowlist` + 3 new `RosReadCommandId`s; no routing writes |
-| RoutingAssuranceState persistence | Done (M7.1-02) | Domain `RoutingAssuranceState` + EF `routing_assurance_states`; config≠ops hashes; discovery settings/VRF/filters mapped; deferred expectation/finding/trace slots |
-| Remaining delivery order | See ROADMAP v0.2 §3 | **MVP CLOSED**; NEXT = M7.1-03 (#112) |
+| RoutingAssuranceState persistence | Done (M7.1-02) | Domain `RoutingAssuranceState` + EF `routing_assurance_states`; config≠ops hashes; discovery settings/VRF/filters mapped |
+| Route resolution traces | Done (M7.1-03) | `RouteResolutionTraceEngine` + policy-routing → FIB → recursive NH; upsert `TraceQueries`; Living Spec AC 1–10; no routing writes |
+| Remaining delivery order | See ROADMAP v0.2 §3 | **MVP CLOSED**; NEXT = M7.1-04 (#113) |
 
 ## ADRs
 

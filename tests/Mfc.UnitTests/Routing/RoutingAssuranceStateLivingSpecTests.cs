@@ -75,7 +75,7 @@ public sealed class RoutingAssuranceStateLivingSpecTests
     }
 
     [Fact]
-    public void Ac3DeferredSlotsExistAsEmptyTypedCollections()
+    public void Ac3DeferredSlotsExistAsEmptyTypedCollectionsByDefault()
     {
         RoutingAssuranceState state = RoutingAssuranceState.Create(
             DeviceId.New(),
@@ -89,10 +89,11 @@ public sealed class RoutingAssuranceStateLivingSpecTests
         Assert.Empty(state.RouteFindings);
         Assert.Empty(state.ResolutionTraces);
 
-        // Types exist for later M7.1-* issues (expectations=06, traces=03).
+        // Types exist for later M7.1-* issues (expectations=06); traces populated by M7.1-03 engine.
         Assert.NotNull(typeof(RouteExpectation).GetProperty(nameof(RouteExpectation.DestinationPrefix)));
         Assert.NotNull(typeof(RouteFinding).GetProperty(nameof(RouteFinding.Code)));
         Assert.NotNull(typeof(RouteResolutionTrace).GetProperty(nameof(RouteResolutionTrace.Decision)));
+        Assert.NotNull(typeof(RouteResolutionQuery).GetProperty(nameof(RouteResolutionQuery.DestinationAddress)));
     }
 
     [Fact]
