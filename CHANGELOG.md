@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Historical ActiveStateInterval resolver (M7.3-02 / next-2 §4): Domain `ActiveStateInterval`, `ActiveStateIntervalBuilder`, `ActiveStateIntervalResolver` + certainty classifier from scripted deployment/audit transition facts; `ResolveActiveStateIntervalUseCase` + views + permission `incident.context.read`. Living Spec `ActiveStateIntervalLivingSpecTests` AC 1–10 + `ActiveStateIntervalCoverageTests`; no live CHR; no routing writes. ROADMAP marks M7.3-02 DONE; NEXT = M7.3-03 (#127); Post-MVP M7 = 10 open.
+
 - IncidentSignal ingress contract (M7.3-01 / next-2 §IncidentSignal): Domain `Mfc.Domain.Incident` (`EventId`, `IncidentSignal`, `EntityReference`, `FlowTuple`, `Indicator`, `IncidentSignalIngressGuard` fail-closed raw-syslog rejection). Application `IngestIncidentSignalUseCase` + `IncidentSignalView` + permission `incident.signal.ingest`; no raw syslog store and no signal persistence port. Living Spec `IncidentSignalLivingSpecTests` AC 1–10 + `IncidentSignalCoverageTests`. ROADMAP marks M7.3-01 DONE; NEXT = M7.3-02 (#126); Post-MVP M7 = 11 open.
 
 - CHR/fixture acceptance for endpoint migration scenarios (M7.2-04 / **M7.2 CLOSED**): Living Spec `EndpointMobilityChrAcceptanceLivingSpecTests` AC 1–10 chains M7.2-01…03 end-to-end (attribution → presence → incident mobility → as-of query); testlab skeleton `endpoint-mobility-migration` + `provision-endpoint-mobility.sh`; scripted fixtures only; live CHR OFF. ROADMAP marks M7.2-04 DONE, **M7.2 CLOSED**; NEXT = M7.3-01 (#125); Post-MVP M7 = 12 open.

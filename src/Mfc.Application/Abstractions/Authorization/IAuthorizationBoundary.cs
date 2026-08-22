@@ -60,4 +60,7 @@ public static class ApplicationPermissions
 
     /// <summary>Ingest normalized incident signals (M7.3-01). No raw syslog store.</summary>
     public const string IncidentSignalIngest = "incident.signal.ingest";
+
+    /// <summary>Resolve historical active-state context for incident correlation (M7.3-02).</summary>
+    public const string IncidentContextRead = "incident.context.read";
 }

@@ -227,6 +227,7 @@ public static class Program
         services.AddScoped<GetEndpointRoutingContextUseCase>();
         services.AddScoped<ResolveEndpointAttributionUseCase>();
         services.AddScoped<IngestIncidentSignalUseCase>();
+        services.AddScoped<ResolveActiveStateIntervalUseCase>();
         services.AddScoped<DetectManagedDriftUseCase>();
         services.AddScoped<GetDriftEventUseCase>();
         services.AddScoped<ListDeviceDriftEventsUseCase>();
