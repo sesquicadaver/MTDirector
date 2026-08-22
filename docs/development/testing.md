@@ -1962,6 +1962,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PathClassE2EDriftLivingSpecTests"
 ```
 
+## Living Specification — route resolution trace (M7.1-03)
+
+Issue Set M7.1-03 / Network Rule M7.1 Spec §4–§9. Deterministic scripted fixtures only; no live CHR; no routing writes.
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Main table forward route | `RouteResolutionTraceEngine` | `Ac1MainTableForwardRouteResolvesNextHop` |
+| AC#2 Policy rule LOOKUP → non-main table | routing rule matching | `Ac2RoutingRuleLookupSelectsNonMainTable` |
+| AC#3 Routing mark from probe | mangle mark + rule/table selection | `Ac3RoutingMarkFromProbeSelectsMarkedTable` |
+| AC#4 DROP / UNREACHABLE rule actions | `RoutingRuleActions` | `Ac4DropAndUnreachableRuleDecisions` |
+| AC#5 Recursive gateway chain | `RecursiveResolutionStep` | `Ac5RecursiveGatewayResolutionChain` |
+| AC#6 ECMP ONE_OF / INDETERMINATE | equal-cost next hops | `Ac6EcmpReturnsOneOfSetWithIndeterminateCertainty` |
+| AC#7 NO_ROUTE on LOOKUP_ONLY miss | `LOOKUP_ONLY` | `Ac7NoRouteWhenLookupOnlyFails` |
+| AC#8 LOCAL_DELIVERY connected | connected route kind | `Ac8LocalDeliveryForConnectedRoute` |
+| AC#9 Persistence round-trip | upsert + `FakeRoutingAssuranceStateStore` | `Ac9PersistenceRoundTripStoresResolutionTraces` |
+| AC#10 No routing writes | `RosReadCommandRegistry` | `Ac10NoRoutingWriteApisOpened` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~RouteResolutionTraceLivingSpecTests"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

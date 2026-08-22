@@ -29,8 +29,11 @@ public sealed class UpsertRoutingAssuranceStateCommand
     /// <summary>Deferred slot — must be empty until analysis issues populate findings.</summary>
     public IReadOnlyList<RouteFinding> RouteFindings { get; init; } = [];
 
-    /// <summary>Deferred slot — must be empty until M7.1-03.</summary>
+    /// <summary>Precomputed traces; when empty and <see cref="TraceQueries"/> is set, traces are computed on upsert.</summary>
     public IReadOnlyList<RouteResolutionTrace> ResolutionTraces { get; init; } = [];
+
+    /// <summary>Optional probes analyzed by <see cref="RouteResolutionTraceEngine"/> during upsert.</summary>
+    public IReadOnlyList<RouteResolutionQuery> TraceQueries { get; init; } = [];
 }
 
 /// <summary>Stores routing assurance state shell (M7.1-02).</summary>
@@ -83,6 +86,14 @@ public sealed class UpsertRoutingAssuranceStateUseCase
         }
 
         DateTimeOffset now = _clock.UtcNow;
+        IReadOnlyList<RouteResolutionTrace> resolutionTraces = command.ResolutionTraces.Count > 0
+            ? command.ResolutionTraces
+            : command.TraceQueries.Count > 0
+                ? RouteResolutionTraceEngine.AnalyzeMany(
+                    command.TraceQueries,
+                    command.Configuration,
+                    command.OperationalState)
+                : [];
         RoutingAssuranceState? existing = await _states.GetAsync(deviceId, cancellationToken).ConfigureAwait(false);
         RoutingAssuranceState state = existing is null
             ? RoutingAssuranceState.Create(
@@ -92,14 +103,14 @@ public sealed class UpsertRoutingAssuranceStateUseCase
                 now,
                 command.RouteExpectations,
                 command.RouteFindings,
-                command.ResolutionTraces)
+                resolutionTraces)
             : existing.With(
                 command.Configuration,
                 command.OperationalState,
                 now,
                 command.RouteExpectations,
                 command.RouteFindings,
-                command.ResolutionTraces);
+                resolutionTraces);
 
         await _states.UpsertAsync(state, cancellationToken).ConfigureAwait(false);
         return ApplicationResults.Ok(RoutingAssuranceViewMapper.ToView(state));
