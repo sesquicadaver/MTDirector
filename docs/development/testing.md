@@ -2074,6 +2074,27 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ReversePathSymmetryLivingSpecTests"
 ```
 
+## Living Specification — network path profile latency probes (M7.1-08)
+
+Issue Set M7.1-08 / Network Rule M7.1 Spec §13. Scripted `LatencyMeasurement` fixtures only; no live ping; no routing writes.
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Bind table/VRF/interface from trace | profile hints ignored for probe params | `Ac1BindTableVrfAndInterfaceFromTraceNotProfileHints` |
+| AC#2 Probe destination from profile | `NetworkPathProfileBinder` | `Ac2ProbeDestinationComesFromProfile` |
+| AC#3 Path change + latency regression | `ROUTE_PATH_CHANGED_WITH_LATENCY_REGRESSION` | `Ac3PathChangeWithLatencyRegressionEmitsCombinedFinding` |
+| AC#4 High latency without path change | isolated RTT finding | `Ac4HighLatencyWithoutPathChangeEmitsIsolatedFinding` |
+| AC#5 Route expectation pass-through | prefix/next hop/egress/execution path | `Ac5RouteExpectationsPassThroughOnTrace` |
+| AC#6 No routing writes | `RosReadCommandRegistry` | `Ac6NoRoutingWriteApisOpened` |
+| AC#7 Persistence round-trip | `RouteResolutionTrace.NetworkPathProbeBindings` jsonb | `Ac7PersistenceRoundTripStoresBoundProbeOnTrace` |
+| AC#8 Path fingerprint helper | prefix/next hop/egress change detection | `Ac8PathFingerprintHelperDetectsPrefixNextHopAndEgressChanges` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~NetworkPathProfileLivingSpecTests"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.
