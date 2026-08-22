@@ -44,6 +44,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IDeviceHashStateStore, EfDeviceHashStateStore>();
         services.AddScoped<IRoutingAssuranceStateStore, EfRoutingAssuranceStateStore>();
         services.AddScoped<IEndpointPresenceStore, EfEndpointPresenceStore>();
+        services.AddScoped<IResponseAssessmentStore, EfResponseAssessmentStore>();
         services.AddScoped<IDriftEventStore, EfDriftEventStore>();
         services.AddScoped<IConnectionProfileReadStore, EfConnectionProfileReadStore>();
         services.AddScoped<IIdempotencyStore, EfIdempotencyStore>();

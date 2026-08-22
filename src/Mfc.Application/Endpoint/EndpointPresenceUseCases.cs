@@ -4,6 +4,7 @@ using Mfc.Application.Abstractions.Time;
 using Mfc.Application.Common;
 using Mfc.Application.Models;
 using Mfc.Domain.Endpoint;
+using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Routing;
 using Auth = Mfc.Application.Common.AuthorizationGuard;
 
@@ -26,6 +27,12 @@ public sealed class UpsertEndpointPresenceCommand
     public RouteResolutionTrace? WazuhRouteTrace { get; init; }
 
     public string? Vrf { get; init; }
+
+    /// <summary>Device whose routing assurance snapshots are used to recompute traces on mobility (M7.2-03).</summary>
+    public Guid? MobilityRoutingDeviceId { get; init; }
+
+    /// <summary>Corporate/internet/Wazuh destinations for mobility trace recompute (M7.2-03).</summary>
+    public EndpointMobilityProbeTargets? MobilityProbeTargets { get; init; }
 }
 
 public sealed class GetEndpointRoutingContextQuery
@@ -44,22 +51,30 @@ public sealed class OpenEndpointPresenceUseCase
 {
     private readonly IAuthorizationBoundary _auth;
     private readonly IEndpointPresenceStore _presence;
+    private readonly IResponseAssessmentStore _assessments;
+    private readonly IRoutingAssuranceStateStore _routingStates;
     private readonly IClock _clock;
 
     public OpenEndpointPresenceUseCase(
         IAuthorizationBoundary auth,
         IEndpointPresenceStore presence,
+        IResponseAssessmentStore assessments,
+        IRoutingAssuranceStateStore routingStates,
         IClock clock)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(presence);
+        ArgumentNullException.ThrowIfNull(assessments);
+        ArgumentNullException.ThrowIfNull(routingStates);
         ArgumentNullException.ThrowIfNull(clock);
         _auth = auth;
         _presence = presence;
+        _assessments = assessments;
+        _routingStates = routingStates;
         _clock = clock;
     }
 
-    public async Task<ApplicationResult<EndpointRoutingContextView>> ExecuteAsync(
+    public async Task<ApplicationResult<EndpointPresenceUpsertResultView>> ExecuteAsync(
         UpsertEndpointPresenceCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -86,19 +101,38 @@ public sealed class OpenEndpointPresenceUseCase
             command.Query,
             validFrom,
             command.Vrf);
-        EndpointRoutingContext routingContext = EndpointRoutingContextBuilder.Build(
-            migration.OpenedInterval,
-            command.CorporateRouteTrace,
-            command.InternetRouteTrace,
-            command.WazuhRouteTrace);
+        ResponseAssessment? activeAssessment = await _assessments
+            .GetActiveByEndpointAsync(endpointId, cancellationToken)
+            .ConfigureAwait(false);
+        RoutingAssuranceState? routingState = command.MobilityRoutingDeviceId is Guid deviceId
+            ? await _routingStates.GetAsync(new DeviceId(deviceId), cancellationToken).ConfigureAwait(false)
+            : null;
+        EndpointPresenceMigrationPlan plan = EndpointMobilityCoordinator.PlanMigration(
+            migration,
+            command,
+            activeAssessment,
+            routingState,
+            validFrom);
+        if (plan.InvalidatedAssessment is not null)
+        {
+            await _assessments.SaveAsync(plan.InvalidatedAssessment, cancellationToken).ConfigureAwait(false);
+        }
 
         await _presence.SaveMigrationAsync(
             migration.ClosedInterval,
             migration.OpenedInterval,
-            routingContext,
+            plan.RoutingContext,
             cancellationToken).ConfigureAwait(false);
 
-        return ApplicationResults.Ok(EndpointRoutingContextView.FromDomain(routingContext));
+        return ApplicationResults.Ok(new EndpointPresenceUpsertResultView
+        {
+            RoutingContext = EndpointRoutingContextView.FromDomain(plan.RoutingContext),
+            InvalidatedAssessment = plan.InvalidatedAssessment is null
+                ? null
+                : ResponseAssessmentView.FromDomain(plan.InvalidatedAssessment),
+            EnforcementNodeId = plan.EnforcementNodeId.Value,
+            AutoDeploySuppressed = plan.AutoDeploySuppressed,
+        });
     }
 }
 

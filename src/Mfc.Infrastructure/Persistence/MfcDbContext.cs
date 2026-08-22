@@ -37,6 +37,8 @@ public sealed class MfcDbContext : DbContext
 
     public DbSet<EndpointRoutingContextEntity> EndpointRoutingContexts => Set<EndpointRoutingContextEntity>();
 
+    public DbSet<ResponseAssessmentEntity> ResponseAssessments => Set<ResponseAssessmentEntity>();
+
     public DbSet<DriftEventEntity> DriftEvents => Set<DriftEventEntity>();
 
     public DbSet<DeviceConnectionProfileEntity> DeviceConnectionProfiles => Set<DeviceConnectionProfileEntity>();

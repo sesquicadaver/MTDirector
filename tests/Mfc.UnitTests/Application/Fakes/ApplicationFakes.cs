@@ -1296,6 +1296,12 @@ internal sealed class FakeRoutingAssuranceStateStore : IRoutingAssuranceStateSto
 
     public Task<RoutingAssuranceState?> GetAsync(DeviceId deviceId, CancellationToken cancellationToken = default)
         => Task.FromResult(_byDevice.TryGetValue(deviceId.Value, out RoutingAssuranceState? state) ? state : null);
+
+    public void Seed(RoutingAssuranceState state)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        _byDevice[state.DeviceId.Value] = state;
+    }
 }
 
 internal sealed class FakeDriftEventStore : IDriftEventStore
@@ -1435,4 +1441,23 @@ internal sealed class FakeEndpointPresenceStore : IEndpointPresenceStore
         _contexts[routingContext.PresenceId.Value] = routingContext;
         return Task.CompletedTask;
     }
+}
+
+internal sealed class FakeResponseAssessmentStore : IResponseAssessmentStore
+{
+    private readonly Dictionary<Guid, ResponseAssessment> _byId = [];
+
+    public Task<ResponseAssessment?> GetActiveByEndpointAsync(
+        EndpointId endpointId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(_byId.Values.SingleOrDefault(a =>
+            a.EndpointId.Equals(endpointId) && a.IsActive));
+
+    public Task SaveAsync(ResponseAssessment assessment, CancellationToken cancellationToken = default)
+    {
+        _byId[assessment.AssessmentId.Value] = assessment;
+        return Task.CompletedTask;
+    }
+
+    public void Seed(ResponseAssessment assessment) => _byId[assessment.AssessmentId.Value] = assessment;
 }

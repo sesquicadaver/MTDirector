@@ -116,9 +116,9 @@ public sealed class EndpointPresenceLivingSpecTests
         SiteId site = SiteId.New();
         NodeId node = NodeId.New();
         EndpointId endpointId = EndpointId.New();
-        OpenEndpointPresenceUseCase open = new(auth, store, clock);
+        OpenEndpointPresenceUseCase open = EndpointPresenceTestKit.CreateOpenUseCase(auth, store, clock: clock);
 
-        ApplicationResult<EndpointRoutingContextView> written = await open.ExecuteAsync(
+        ApplicationResult<EndpointPresenceUpsertResultView> written = await open.ExecuteAsync(
             new UpsertEndpointPresenceCommand
             {
                 Actor = "tester",
@@ -132,7 +132,7 @@ public sealed class EndpointPresenceLivingSpecTests
             });
         Assert.True(written.IsSuccess, written.Error?.Message);
 
-        EndpointRoutingContext? persisted = await store.GetRoutingContextAsync(new PresenceId(written.Value!.PresenceId));
+        EndpointRoutingContext? persisted = await store.GetRoutingContextAsync(new PresenceId(written.Value!.RoutingContext.PresenceId));
         Assert.NotNull(persisted);
         Assert.Equal("10.20.0.10", persisted!.CorporateRouteTrace!.DestinationAddress);
         Assert.Equal("corp", persisted.Vrf);
@@ -149,9 +149,9 @@ public sealed class EndpointPresenceLivingSpecTests
         FakeClock clock = new();
         SiteId site = SiteId.New();
         NodeId node = NodeId.New();
-        OpenEndpointPresenceUseCase open = new(auth, store, clock);
+        OpenEndpointPresenceUseCase open = EndpointPresenceTestKit.CreateOpenUseCase(auth, store, clock: clock);
 
-        ApplicationResult<EndpointRoutingContextView> partial = await open.ExecuteAsync(
+        ApplicationResult<EndpointPresenceUpsertResultView> partial = await open.ExecuteAsync(
             new UpsertEndpointPresenceCommand
             {
                 Actor = "tester",
@@ -171,7 +171,7 @@ public sealed class EndpointPresenceLivingSpecTests
             });
         Assert.True(partial.IsSuccess);
 
-        EndpointPresenceInterval? active = await store.GetActiveIntervalAsync(new EndpointId(partial.Value!.EndpointId));
+        EndpointPresenceInterval? active = await store.GetActiveIntervalAsync(new EndpointId(partial.Value!.RoutingContext.EndpointId));
         Assert.Equal(EndpointAttributionCertainty.Partial, active!.AttributionCertainty);
     }
 
@@ -198,7 +198,7 @@ public sealed class EndpointPresenceLivingSpecTests
         SiteId siteB = SiteId.New();
         NodeId nodeB = NodeId.New();
         EndpointId endpointId = EndpointId.New();
-        OpenEndpointPresenceUseCase open = new(auth, store, clock);
+        OpenEndpointPresenceUseCase open = EndpointPresenceTestKit.CreateOpenUseCase(auth, store, clock: clock);
         GetEndpointRoutingContextUseCase get = new(auth, store, clock);
 
         await open.ExecuteAsync(new UpsertEndpointPresenceCommand
