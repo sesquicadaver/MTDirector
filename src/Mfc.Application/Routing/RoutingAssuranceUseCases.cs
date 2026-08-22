@@ -233,7 +233,7 @@ public sealed class GetRoutingAssuranceStateUseCase
         _states = states;
     }
 
-    public async Task<ApplicationResult<RoutingAssuranceStateView>> ExecuteAsync(
+    public async Task<ApplicationResult<RoutingAssuranceDetailView>> ExecuteAsync(
         GetRoutingAssuranceStateQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -257,7 +257,7 @@ public sealed class GetRoutingAssuranceStateUseCase
                         $"Routing assurance state '{query.DeviceId}' not found.")));
         }
 
-        return ApplicationResults.Ok(RoutingAssuranceViewMapper.ToView(state));
+        return ApplicationResults.Ok(RoutingAssuranceViewMapper.ToDetailView(state));
     }
 }
 
@@ -282,4 +282,132 @@ internal static class RoutingAssuranceViewMapper
             UpdatedAtUtc = state.UpdatedAtUtc,
             RowVersion = state.RowVersion,
         };
+
+    public static RoutingAssuranceDetailView ToDetailView(RoutingAssuranceState state)
+        => new()
+        {
+            DeviceId = state.DeviceId.Value,
+            ConfigurationHashHex = state.ConfigurationHash.ToString(),
+            OperationalHashHex = state.OperationalHash.ToString(),
+            RouteExpectationCount = state.RouteExpectations.Count,
+            RouteFindingCount = state.RouteFindings.Count,
+            ResolutionTraceCount = state.ResolutionTraces.Count,
+            ConfigurationTableCount = state.Configuration.Tables.Count,
+            ConfigurationRuleCount = state.Configuration.Rules.Count,
+            ConfigurationVrfCount = state.Configuration.Vrfs.Count,
+            ConfigurationStaticRouteCount = state.Configuration.StaticRoutes.Count,
+            ConfigurationFilterRuleCount = state.Configuration.FilterRules.Count,
+            OperationalRouteCount = state.OperationalState.Routes.Count,
+            OperationalDefaultRouteCount = state.OperationalState.DefaultRoutes.Count,
+            UpdatedAtUtc = state.UpdatedAtUtc,
+            RowVersion = state.RowVersion,
+            Expectations = state.RouteExpectations.Select(ToExpectationView).ToArray(),
+            Findings = state.RouteFindings.Select(ToFindingView).ToArray(),
+            TraceSummaries = state.ResolutionTraces
+                .Select(trace => ToTraceSummaryView(trace, state.RouteFindings))
+                .ToArray(),
+        };
+
+    private static RouteExpectationView ToExpectationView(RouteExpectation expectation)
+        => new()
+        {
+            NodeId = expectation.NodeId,
+            Family = expectation.Family,
+            SourceZone = expectation.SourceZone,
+            SourceAddress = expectation.SourceAddress,
+            DestinationPrefix = expectation.DestinationPrefix,
+            ExpectedVrf = expectation.ExpectedVrf,
+            ExpectedTable = expectation.ExpectedTable,
+            AllowedNextHops = expectation.AllowedNextHops,
+            AllowedEgressZones = expectation.AllowedEgressZones,
+            AllowedEgressInterfaces = expectation.AllowedEgressInterfaces,
+            RequiredRouteTypes = expectation.RequiredRouteTypes,
+            ForbiddenRouteTypes = expectation.ForbiddenRouteTypes,
+            RequireCpuFirewallPath = expectation.RequireCpuFirewallPath,
+            RequireReversePath = expectation.RequireReversePath,
+            ExpectAsymmetricReversePath = expectation.ExpectAsymmetricReversePath,
+            Critical = expectation.Critical,
+        };
+
+    private static RouteFindingView ToFindingView(RouteFinding finding)
+        => new()
+        {
+            Code = finding.Code,
+            Message = finding.Message,
+            Subject = finding.Subject,
+        };
+
+    private static RouteResolutionTraceSummaryView ToTraceSummaryView(
+        RouteResolutionTrace trace,
+        IReadOnlyList<RouteFinding> findings)
+    {
+        List<string> nextHops = [];
+        foreach (ImmediateNextHop hop in trace.ImmediateNextHops)
+        {
+            if (!string.IsNullOrWhiteSpace(hop.Gateway))
+            {
+                nextHops.Add(hop.Gateway);
+            }
+
+            if (nextHops.Count >= RouteResolutionTraceSummaryView.MaxNextHopGateways)
+            {
+                break;
+            }
+        }
+
+        List<string> egress = trace.EgressInterfaces
+            .Where(static e => !string.IsNullOrWhiteSpace(e))
+            .Take(RouteResolutionTraceSummaryView.MaxEgressInterfaces)
+            .ToList();
+
+        string? destination = trace.DestinationAddress;
+        List<string> driftCodes = [];
+        List<string> latencyCodes = [];
+        foreach (RouteFinding finding in findings)
+        {
+            if (!SubjectMatchesDestination(finding.Subject, destination))
+            {
+                continue;
+            }
+
+            if (finding.Code.StartsWith("ROUTING_", StringComparison.Ordinal))
+            {
+                driftCodes.Add(finding.Code);
+            }
+            else if (finding.Code.StartsWith("NETWORK_PATH_", StringComparison.Ordinal)
+                     || finding.Code.StartsWith("ROUTE_PATH_CHANGED", StringComparison.Ordinal))
+            {
+                latencyCodes.Add(finding.Code);
+            }
+        }
+
+        return new RouteResolutionTraceSummaryView
+        {
+            Family = trace.Family,
+            DestinationAddress = destination,
+            SourceAddress = trace.SourceAddress,
+            SelectedVrf = trace.SelectedVrf,
+            SelectedTable = trace.SelectedTable,
+            MatchedPrefix = trace.MatchedPrefix,
+            NextHopGateways = nextHops,
+            EgressInterfaces = egress,
+            ExecutionPath = trace.ExecutionPath,
+            Decision = trace.Decision,
+            DriftCodes = driftCodes,
+            LatencyCodes = latencyCodes,
+            ReversePathSymmetryResult = trace.ReversePathSymmetry?.Result,
+        };
+    }
+
+    private static bool SubjectMatchesDestination(string? subject, string? destination)
+    {
+        if (string.IsNullOrWhiteSpace(subject) || string.IsNullOrWhiteSpace(destination))
+        {
+            return false;
+        }
+
+        return string.Equals(subject, destination, StringComparison.Ordinal)
+               || destination.StartsWith(subject, StringComparison.Ordinal)
+               || subject.StartsWith(destination, StringComparison.Ordinal);
+    }
 }

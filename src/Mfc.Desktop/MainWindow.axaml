@@ -260,6 +260,53 @@
                 </ItemsPanelTemplate>
               </ListBox.ItemsPanel>
             </ListBox>
+
+            <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8" Margin="0,12,0,0">
+              <StackPanel Spacing="8">
+                <DockPanel>
+                  <Button Content="Refresh"
+                          Command="{Binding RoutingAssurance.RefreshCommand}"
+                          DockPanel.Dock="Right"
+                          MinWidth="80" />
+                  <TextBlock FontWeight="SemiBold" Text="Routing assurance (read-only)" VerticalAlignment="Center" />
+                </DockPanel>
+                <TextBlock Text="{Binding RoutingAssurance.StatusText}" Opacity="0.85" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding RoutingAssurance.ErrorText}"
+                           Foreground="#B00020"
+                           TextWrapping="Wrap"
+                           IsVisible="{Binding RoutingAssurance.HasError}" />
+                <TextBlock Text="{Binding RoutingAssurance.ConfigurationHashText, StringFormat=configuration_hash: {0}}"
+                           FontFamily="Consolas,Menlo,monospace"
+                           TextWrapping="Wrap" />
+                <TextBlock Text="{Binding RoutingAssurance.OperationalHashText, StringFormat=operational_hash: {0}}"
+                           FontFamily="Consolas,Menlo,monospace"
+                           TextWrapping="Wrap" />
+                <TextBlock FontWeight="SemiBold" Text="Route expectations" />
+                <ListBox ItemsSource="{Binding RoutingAssurance.ExpectationLines}" MaxHeight="120">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                </ListBox>
+                <TextBlock FontWeight="SemiBold" Text="Route findings" />
+                <ListBox ItemsSource="{Binding RoutingAssurance.FindingLines}" MaxHeight="120">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                </ListBox>
+                <TextBlock FontWeight="SemiBold" Text="Trace summaries" />
+                <ListBox ItemsSource="{Binding RoutingAssurance.TraceSummaryLines}" MaxHeight="160">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                </ListBox>
+              </StackPanel>
+            </Border>
           </StackPanel>
         </ScrollViewer>
 

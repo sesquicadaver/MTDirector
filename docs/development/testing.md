@@ -2118,6 +2118,27 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~RoutingDrift"
 ```
 
+## Living Specification — Desktop routing assurance viewers (M7.1-10)
+
+Issue Set M7.1-10 / Network Rule M7.1 Spec §10–§11. Read-only summaries; no full BGP table on Desktop; no routing writes.
+
+| AC | Requirement | Module | Test |
+|----|-------------|--------|------|
+| AC#1 gRPC proto + service registered | `RoutingAssuranceService` + `RoutingAssuranceGrpcService` | `Ac1GrpcProtoAndServiceRegistered` |
+| AC#2 ViewModel exposes expectations/findings/traces | `RoutingAssuranceViewModel` collections | `Ac2ViewModelExposesExpectationsFindingsAndTraceCollections` |
+| AC#3 No routing write surface on Desktop | `HasRoutingWriteControls` = false | `Ac3NoRoutingWriteSurfaceOnDesktop` |
+| AC#4 MainWindow routing assurance section | `MainWindow.axaml` Node sub-panel | `Ac4MainWindowContainsRoutingAssuranceSection` |
+| AC#5 Get use case returns detail view | `RoutingAssuranceDetailView` | `Ac5GetUseCaseReturnsDetailViewWithExpectationsAndFindings` |
+| AC#6 Trace summary bounded | `RouteResolutionTraceSummary` proto/view | `Ac6TraceSummaryBoundedWithoutFullRouteTableDump` |
+| AC#7 Desktop architecture boundary | no Domain/RouterOs refs | `Ac7DesktopHasNoDomainOrRouterOsReferences` |
+| AC#8 Seven MVP modules unchanged | `ShellNavigationModule` count | `Ac8SevenMvpModulesRemainUnchanged` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopRoutingAssuranceLivingSpecTests"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

@@ -31,6 +31,8 @@ public sealed class DesktopVerticalSliceWiringTests
                                          && p.PropertyType == typeof(DriftViewModel));
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Audit)
                                          && p.PropertyType == typeof(AuditViewModel));
+        Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.RoutingAssurance)
+                                         && p.PropertyType == typeof(RoutingAssuranceViewModel));
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.SelectedModule)
                                          && p.PropertyType == typeof(ShellNavigationModule));
     }
@@ -93,5 +95,8 @@ public sealed class DesktopVerticalSliceWiringTests
 
         Type audit = typeof(IAuditServiceClient);
         Assert.NotNull(audit.GetMethod(nameof(IAuditServiceClient.ListAuditEventsAsync)));
+
+        Type routingAssurance = typeof(IRoutingAssuranceServiceClient);
+        Assert.NotNull(routingAssurance.GetMethod(nameof(IRoutingAssuranceServiceClient.GetDeviceRoutingAssuranceStateAsync)));
     }
 }

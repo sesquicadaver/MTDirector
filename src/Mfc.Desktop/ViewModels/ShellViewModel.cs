@@ -24,7 +24,8 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
         OnboardingViewModel onboarding,
         DeploymentViewModel deployment,
         DriftViewModel drift,
-        AuditViewModel audit)
+        AuditViewModel audit,
+        RoutingAssuranceViewModel routingAssurance)
     {
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _options = options ?? throw new ArgumentNullException(nameof(options));
@@ -38,6 +39,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
         Deployment = deployment ?? throw new ArgumentNullException(nameof(deployment));
         Drift = drift ?? throw new ArgumentNullException(nameof(drift));
         Audit = audit ?? throw new ArgumentNullException(nameof(audit));
+        RoutingAssurance = routingAssurance ?? throw new ArgumentNullException(nameof(routingAssurance));
         Modules =
         [
             ShellNavigationModule.Inventory,
@@ -80,6 +82,8 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
     public DriftViewModel Drift { get; }
 
     public AuditViewModel Audit { get; }
+
+    public RoutingAssuranceViewModel RoutingAssurance { get; }
 
     public string ControllerEndpoint => _options.ControllerEndpoint;
 
@@ -205,6 +209,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
     {
         _connection.StateChanged -= OnConnectionStateChanged;
         Audit.Dispose();
+        RoutingAssurance.Dispose();
         Drift.Dispose();
         Policies.Dispose();
         Deployment.Dispose();

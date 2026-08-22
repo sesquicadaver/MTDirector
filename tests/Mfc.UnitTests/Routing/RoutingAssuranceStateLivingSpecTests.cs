@@ -40,7 +40,7 @@ public sealed class RoutingAssuranceStateLivingSpecTests
             });
         Assert.True(written.IsSuccess, written.Error?.Message);
 
-        ApplicationResult<RoutingAssuranceStateView> loaded = await new GetRoutingAssuranceStateUseCase(auth, store)
+        ApplicationResult<RoutingAssuranceDetailView> loaded = await new GetRoutingAssuranceStateUseCase(auth, store)
             .ExecuteAsync(new GetRoutingAssuranceStateQuery { Actor = "tester", DeviceId = device.Id.Value });
         Assert.True(loaded.IsSuccess);
         Assert.Equal(written.Value!.ConfigurationHashHex, loaded.Value!.ConfigurationHashHex);
