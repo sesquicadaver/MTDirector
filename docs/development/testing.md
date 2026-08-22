@@ -2227,6 +2227,31 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~EndpointMobility"
 ```
 
+## Living Specification — CHR endpoint migration acceptance (M7.2-04 / **M7.2 CLOSED**)
+
+Issue Set M7.2-04 / M7.1 §15. Scripted in-process fixtures ONLY; live CHR matrix remains OFF; chains M7.2-01…03 via attribution, presence, mobility, and assessment stores; no routing writes. Suite: `EndpointMobilityChrAcceptanceLivingSpecTests`.
+
+| AC | Requirement | Module | Test |
+|----|-------------|--------|------|
+| AC#1 Attribution at branch A | `EndpointAttributionResolver` | `Ac1AttributionResolvesBranchAEndpointAnchors` |
+| AC#2 Open presence + routing context | `OpenEndpointPresenceUseCase` | `Ac2OpenPresenceAtBranchAStoresRoutingContext` |
+| AC#3 Active incident assessment | `ResponseAssessment` | `Ac3ActiveIncidentAssessmentBoundToEndpoint` |
+| AC#4 Migration closes A, opens B | `EndpointPresenceInterval.Open` | `Ac4MigrationClosesBranchAAndOpensBranchBPresence` |
+| AC#5 Invalidate + recompute traces | `EndpointMobilityHandler` | `Ac5IncidentMobilityInvalidatesAssessmentAndRecomputesTraces` |
+| AC#6 Enforcement node at branch B | `ResolveEnforcementNode` | `Ac6EnforcementNodeFollowsOpenedPresenceAtBranchB` |
+| AC#7 Auto-deploy suppressed | mobility outcome | `Ac7AutoDeploySuppressedOnIncidentMobilityPath` |
+| AC#8 As-of historical context | `GetEndpointRoutingContextUseCase` | `Ac8AsOfQueryReturnsBranchAHistoricalRoutingContext` |
+| AC#9 No routing write APIs | `RosReadCommandRegistry` | `Ac9NoRoutingWriteApisOpened` |
+| AC#10 Deterministic / no live CHR | Living Spec + testlab README | `Ac10DeterministicLivingSpecNoLiveChr` |
+
+Testlab skeleton (optional live CHR): `testlab/chr/topologies/endpoint-mobility-migration` + `scripts/provision-endpoint-mobility.sh`.
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~EndpointMobilityChrAcceptance"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

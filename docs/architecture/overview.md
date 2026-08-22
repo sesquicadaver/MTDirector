@@ -132,7 +132,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Endpoint attribution resolver | Done (M7.2-01) | `Mfc.Domain.Endpoint/`, `EndpointAttributionAllowlist`, `EndpointAttributionSnapshotMapper`; Living Spec AC 1–8; no routing/firewall writes |
 | Endpoint presence + routing context | Done (M7.2-02) | `EndpointPresenceInterval` / `EndpointRoutingContext` + EF `endpoint_presence_intervals` / `endpoint_routing_contexts`; Living Spec AC 1–8; no routing writes |
 | Endpoint mobility (assessment invalidation + trace recompute) | Done (M7.2-03) | `EndpointMobilityHandler` + `ResponseAssessment`; Living Spec AC 1–8; no auto-deploy |
-| Remaining delivery order | See ROADMAP v0.2 §3 | **M7.2-03 DONE**; NEXT = M7.2-04 (#124) |
+| Endpoint migration CHR acceptance | Done (M7.2-04) | `EndpointMobilityChrAcceptanceLivingSpecTests` AC 1–10; testlab skeleton; **M7.2 CLOSED** |
+| Remaining delivery order | See ROADMAP v0.2 §3 | **M7.2 CLOSED**; NEXT = M7.3-01 (#125) |
 
 ## ADRs
 
