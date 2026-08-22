@@ -3,7 +3,7 @@
 **Дата оновлення:** 21 серпня 2026
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** M7.1-03 — Implement RouteResolutionTrace DONE; **MVP CLOSED**; черга зсунута на M7.1-04 (#113)
+**Базовий коміт аудиту:** M7.1-04 — Model ECMP as ONE_OF bounded next-hop sets DONE; **MVP CLOSED**; черга зсунута на M7.1-05 (#114)
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -51,12 +51,12 @@
 | M5 Onboarding | 10 | 0 | 100% |
 | M4 Safe deploy | 13 | 0 | 100% |
 | M6 E2E / drift | 9 | 0 | 100% |
-| M7 Post-MVP | 3 | 24 | 11% |
-| **Разом** | **112** | **25** | **82% issues** |
+| M7 Post-MVP | 4 | 23 | 15% |
+| **Разом** | **113** | **24** | **83% issues** |
 
 MVP issues (109) = **109 done + 0 remaining** — **MVP CLOSED (100%)**.  
-M7.1-03 DONE. Post-MVP M7 = **24** open (NEXT = M7.1-04 #113).  
-Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий**; multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance **DONE**; **M4 CLOSED**; desired/committed/actual projection **готовий** (M6-01); managed drift detection **готовий** (M6-02); bounded operational jobs **готовий** (M6-03); Desktop MVP workflows **готовий** (M6-04); standalone/dual-stack E2E **готовий** (M6-05); multi-WAN E2E **готовий** (M6-06); VRRP/CRS E2E **готовий** (M6-07); security/backup/restore acceptance **готовий** (M6-08); MVP production acceptance **готовий** (M6-09); **M6 CLOSED**; path-class E2E/drift **готовий** (N1-07); **MVP CLOSED**; routing-assurance read allowlist **готовий** (M7.1-01); RoutingAssuranceState persistence **готовий** (M7.1-02); NEXT = M7.1-03 (#112).
+M7.1-03 DONE. M7.1-04 DONE. Post-MVP M7 = **23** open (NEXT = M7.1-05 #114).  
+Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий**; multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance **DONE**; **M4 CLOSED**; desired/committed/actual projection **готовий** (M6-01); managed drift detection **готовий** (M6-02); bounded operational jobs **готовий** (M6-03); Desktop MVP workflows **готовий** (M6-04); standalone/dual-stack E2E **готовий** (M6-05); multi-WAN E2E **готовий** (M6-06); VRRP/CRS E2E **готовий** (M6-07); security/backup/restore acceptance **готовий** (M6-08); MVP production acceptance **готовий** (M6-09); **M6 CLOSED**; path-class E2E/drift **готовий** (N1-07); **MVP CLOSED**; routing-assurance read allowlist **готовий** (M7.1-01); RoutingAssuranceState persistence **готовий** (M7.1-02); RouteResolutionTrace **готовий** (M7.1-03); ECMP ONE_OF sets **готовий** (M7.1-04); NEXT = M7.1-05 (#114).
 
 ### 2.2 DONE (не в черзі)
 
@@ -175,12 +175,12 @@ M7.1-03 DONE. Post-MVP M7 = **24** open (NEXT = M7.1-04 #113).
 | `Mfc.Desktop` | seven MVP modules (Inventory/Node/Snapshots/Policies/Operations/Drift/Audit); Contracts-only; cached inventory badge; no auto-fix drift |
 | Persistence | inventory + snapshot CAS + policy lifecycle + zones + approvals/bindings + filter_artifacts + onboarding_* + deployment_* + `device_hash_states` (M6-01) + `drift_events` (M6-02) + `routing_assurance_states` (M7.1-02) + audit read store (M6-04) |
 | `Mfc.Domain.Workflow` | `DeviceHashState` + classifier + `NodeWorkflowStatusProjector` (derived status; never persisted on Node) |
-| `Mfc.Domain.Routing` | `RoutingAssuranceState` + config/ops snapshots + property classifier + hash contract (M7.1-02) + `RouteResolutionTraceEngine` / policy-routing trace (M7.1-03); deferred expectation/finding slots |
+| `Mfc.Domain.Routing` | `RoutingAssuranceState` + config/ops snapshots + property classifier + hash contract (M7.1-02) + `RouteResolutionTraceEngine` / policy-routing trace (M7.1-03) + `EcmpRouteSet` ONE_OF bounded next-hop sets (M7.1-04); deferred expectation/finding slots |
 | `Mfc.Domain.Policy` | lifecycle + Pipeline v1 + chain contracts + address/service/zone + N1-05 marker expand + typed rules + logical compose + deny-stage exceptions + bounded predicate algebra (M2-09) + structural/satisfiability (M2-10) + sequence (M2-11) + actual filter CFG/pre-anchor (M2-12) + packet-path FORWARD blockers (N1-04) + management-path safety (M2-13) + topology/dependency safety (M2-14) + FastTrack policy validation (M2-15) + policy tests/diff/risk (M2-16) + approval/desired-binding (M2-17) + object JSON writer (M2-18) + RouterOS filter artifact model (M3-01) + managed chain namespace/layout (M3-02) + content-addressed address lists (M3-03) + zone/service variants (M3-04) + matcher/effect compile (M3-05) + FastTrack pairs + terminals (M3-06) + per-device compile orchestration (M3-07) + compiler acceptance / Switch FORWARD gate (M3-08) |
 | `Mfc.Domain.Onboarding` | immutable plans + plan hasher + operation SM + write-ahead steps + bootstrap artifact + `ManagementState` (M5-01) + prerequisite validator (M5-02) + `GuardProfile` / guard verifier (M5-03) + `AnchorPlacementPlanner` (M5-04) + `OnboardingBootstrapWritePlanner` (M5-05) + `OnboardingWatchdogPlanner` (M5-06) + pass-through equivalence / enable order (M5-07) + Spec §46 recovery decision table (M5-08) |
 | `Mfc.Domain.Deployment` | immutable `DeploymentPlan` + plan hasher `mfc.deployment.plan.v1` + Node/device SM + exclusive lock + write-ahead steps (M4-01) + packet-path deploy gate (N1-06) + address-list create-or-verify (M4-03) + detached chain create-or-verify (M4-04) + production watchdog planner/script (M4-05) + transition-state validation + anchor activation order/decision (M4-06) + post-activation integrity/probes/watchdog readiness (M4-07) + standalone eligibility/NO_CHANGES policy (M4-08) + multi-WAN dependency/probe gates (M4-09) + VRRP classification/order/partial-failure policy (M4-10) + recovery decision table / controller rollback (M4-11); no campaign |
 
-**NEXT = M7.1-04:** [M7.1-04](https://github.com/sesquicadaver/MTDirector/issues/113) Model ECMP as ONE_OF bounded next-hop sets. **M7.1-03 DONE.**
+**NEXT = M7.1-05:** [M7.1-05](https://github.com/sesquicadaver/MTDirector/issues/114) Analyze dynamic route origins (read-only). **M7.1-04 DONE.**
 
 ### 2.4 Операційний план до MVP CLOSED (2026-08-15)
 
@@ -379,7 +379,7 @@ M7.1-03 DONE. Post-MVP M7 = **24** open (NEXT = M7.1-04 #113).
 | ~~96~~ | ~~M7.1-01~~ | ~~#110~~ | ~~Extend read allowlist: routing tables/settings/rules, VRF, route filters~~ → DONE (`RoutingAssuranceAllowlist` + `RoutingSettings` / `RoutingFilterRules` / `RoutingFilterSelectRules`; no routing writes) |
 | ~~97~~ | ~~M7.1-02~~ | ~~#111~~ | ~~Persist RoutingAssuranceState (config + operational)~~ → DONE (`routing_assurance_states` + Domain RoutingAssuranceState; config≠ops hashes; no routing writes) |
 | ~~98~~ | ~~M7.1-03~~ | ~~#112~~ | ~~Implement RouteResolutionTrace~~ → DONE (`RouteResolutionTraceEngine` + Living Spec AC 1–10; upsert computes traces from `TraceQueries`; no routing writes) |
-| 99 | M7.1-04 | #113 | Model ECMP as ONE_OF bounded next-hop sets |
+| ~~99~~ | ~~M7.1-04~~ | ~~#113~~ | ~~Model ECMP as ONE_OF bounded next-hop sets~~ → DONE (`EcmpRouteSet` + `EcmpRouteSetBuilder`; Living Spec AC 1–9; persistence round-trip; no routing writes) |
 | 100 | M7.1-05 | #114 | Analyze dynamic route origins (read-only) |
 | 101 | M7.1-06 | #115 | Implement RouteExpectation declarations and evaluation |
 | 102 | M7.1-07 | #116 | Implement reverse-path symmetry analysis |
@@ -419,7 +419,7 @@ M7.1-03 DONE. Post-MVP M7 = **24** open (NEXT = M7.1-04 #113).
 | 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex |
 | 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk |
 
-**Кінець черги:** 24 відкритих атомарних задач (усі Post-MVP M7). Start here: #113 M7.1-04.
+**Кінець черги:** 23 відкритих атомарних задач (усі Post-MVP M7). Start here: #114 M7.1-05.
 
 ---
 
@@ -428,9 +428,9 @@ M7.1-03 DONE. Post-MVP M7 = **24** open (NEXT = M7.1-04 #113).
 | Сегмент | У черзі | Примітка |
 |---------|--------:|----------|
 | До MVP CLOSED | 0 | **MVP CLOSED** (N1-07 DONE) |
-| Post-MVP M7 | 24 | NEXT = M7.1-04 (#113) |
-| **Нереалізовано разом** | **26** | лише M7 |
-| DONE у коді (§2.2) | 112 | …+M4-01…13+M6-01…M6-09+N1-07+M7.1-01…M7.1-03 |
+| Post-MVP M7 | 23 | NEXT = M7.1-05 (#114) |
+| **Нереалізовано разом** | **25** | лише M7 |
+| DONE у коді (§2.2) | 113 | …+M4-01…13+M6-01…M6-09+N1-07+M7.1-01…M7.1-04 |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
@@ -524,6 +524,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | Routing-assurance read allowlist | M7.1-01 | `RoutingAssuranceAllowlist` + registry `RoutingSettings` / filter-rule ids; `RoutingAssuranceAllowlistTests`; no routing writes | **DONE** |
 | RoutingAssuranceState persistence | M7.1-02 | Domain `RoutingAssuranceState` + `routing_assurance_states`; config≠ops hashes; Living Spec; no routing writes | **DONE** |
 | Route resolution traces | M7.1-03 | `RouteResolutionTraceEngine` + Living Spec AC 1–10; upsert `TraceQueries`; no routing writes | **DONE** |
+| ECMP ONE_OF bounded next-hop sets | M7.1-04 | `EcmpRouteSet` + `EcmpRouteSetBuilder`; Living Spec AC 1–9; persistence round-trip; no routing writes | **DONE** |
 | Incident overlay | M7.4 | feasibility; TTL removal | TODO post-MVP |
 
 Оновлювати рядок **Статус** і зсувати «NEXT» при закритті кожного issue з §3.
@@ -593,7 +594,8 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 45. ~~Відкрити **M7.1-01** → [issue #110](https://github.com/sesquicadaver/MTDirector/issues/110).~~ → **DONE**.
 46. ~~Відкрити **M7.1-02** → [issue #111](https://github.com/sesquicadaver/MTDirector/issues/111).~~ → **DONE**.
 47. ~~Відкрити **M7.1-03** → [issue #112](https://github.com/sesquicadaver/MTDirector/issues/112).~~ → **DONE**.
-48. Відкрити **M7.1-04** → [issue #113](https://github.com/sesquicadaver/MTDirector/issues/113).
+48. ~~Відкрити **M7.1-04** → [issue #113](https://github.com/sesquicadaver/MTDirector/issues/113).~~ → **DONE**.
+49. Відкрити **M7.1-05** → [issue #114](https://github.com/sesquicadaver/MTDirector/issues/114).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones

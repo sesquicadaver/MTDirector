@@ -334,6 +334,7 @@ public static class RouteResolutionTraceEngine
         outcome.ExecutionPath = recursive.ExecutionPath;
         outcome.Certainty = recursive.Certainty;
         outcome.Decision = recursive.Decision ?? RouteResolutionDecisions.Forward;
+        outcome.EcmpMembers = recursive.EcmpMembers;
         outcome.PreferredSource = lookup.Selected[0].PreferredSource;
         return true;
     }
@@ -428,11 +429,19 @@ public static class RouteResolutionTraceEngine
         if (selected.Count > 1)
         {
             List<ImmediateNextHop> ecmpHops = [];
+            List<EcmpRouteSetBuilder.Member> ecmpMembers = [];
             HashSet<string> interfaces = new(StringComparer.Ordinal);
             List<string> executionPaths = [];
             foreach (ResolvedRoute route in selected)
             {
                 RecursiveOutcome single = ResolveSingleRoute(family, table, routes, route);
+                ImmediateNextHop resolvedHop = single.ImmediateNextHops.Length > 0
+                    ? single.ImmediateNextHops[0]
+                    : new ImmediateNextHop { Gateway = route.Gateway, Interface = route.Gateway };
+                ecmpMembers.Add(new EcmpRouteSetBuilder.Member(
+                    route.Active,
+                    IsHardwareOffloaded(route.HwOffloaded),
+                    resolvedHop));
                 ecmpHops.AddRange(single.ImmediateNextHops);
                 foreach (string iface in single.EgressInterfaces)
                 {
@@ -455,6 +464,7 @@ public static class RouteResolutionTraceEngine
                     .OrderBy(static h => h.Gateway ?? string.Empty, StringComparer.Ordinal)
                     .ThenBy(static h => h.Interface ?? string.Empty, StringComparer.Ordinal)
                     .ToArray(),
+                EcmpMembers = ecmpMembers.ToArray(),
                 EgressInterfaces = interfaces.OrderBy(static i => i, StringComparer.Ordinal).ToArray(),
                 ExecutionPath = CombineExecutionPaths(executionPaths),
                 Certainty = RouteResolutionCertainties.Indeterminate,
@@ -720,6 +730,12 @@ public static class RouteResolutionTraceEngine
             SelectedRoutes = selectedRoutes,
             RecursiveResolution = policy.RecursiveSteps,
             ImmediateNextHops = policy.ImmediateNextHops,
+            EcmpRouteSet = EcmpRouteSetBuilder.Build(
+                query,
+                policy.SelectedTable,
+                policy.MatchedPrefix,
+                decision,
+                policy.EcmpMembers),
             EgressInterfaces = policy.EgressInterfaces,
             PreferredSource = policy.PreferredSource,
             Decision = decision,
@@ -1090,6 +1106,8 @@ public static class RouteResolutionTraceEngine
         public string? ExecutionPath { get; set; }
 
         public string? Certainty { get; set; }
+
+        public IReadOnlyList<EcmpRouteSetBuilder.Member> EcmpMembers { get; set; } = [];
     }
 
     private sealed record ResolvedRoute
@@ -1141,7 +1159,7 @@ public static class RouteResolutionTraceEngine
     {
         public IReadOnlyList<RecursiveResolutionStep> Steps { get; init; } = [];
 
-        public IReadOnlyList<ImmediateNextHop> ImmediateNextHops { get; init; } = [];
+        public ImmediateNextHop[] ImmediateNextHops { get; init; } = [];
 
         public IReadOnlyList<string> EgressInterfaces { get; init; } = [];
 
@@ -1150,5 +1168,7 @@ public static class RouteResolutionTraceEngine
         public string? Certainty { get; init; }
 
         public string? Decision { get; init; }
+
+        public EcmpRouteSetBuilder.Member[] EcmpMembers { get; init; } = [];
     }
 }

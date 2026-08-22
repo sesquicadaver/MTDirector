@@ -189,6 +189,11 @@ public sealed class RouteResolutionTraceLivingSpecTests
         Assert.All(trace.ImmediateNextHops, h => Assert.Equal(ImmediateNextHopSelectors.OneOf, h.Selector));
         Assert.Equal(RouteResolutionCertainties.Indeterminate, trace.Certainty);
         Assert.Equal(RouteResolutionDecisions.Forward, trace.Decision);
+        Assert.NotNull(trace.EcmpRouteSet);
+        EcmpRouteSet set = trace.EcmpRouteSet!;
+        Assert.Equal("main", set.Table);
+        Assert.Equal(2, set.NextHops.Count);
+        Assert.Equal(2, set.ActiveNextHops.Count);
     }
 
     [Fact]

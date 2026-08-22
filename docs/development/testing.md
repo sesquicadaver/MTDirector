@@ -1985,6 +1985,28 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~RouteResolutionTraceLivingSpecTests"
 ```
 
+## Living Specification — ECMP ONE_OF bounded next-hop sets (M7.1-04)
+
+Issue Set M7.1-04 / Network Rule M7.1 Spec §9. Deterministic scripted fixtures only; no live CHR; no routing writes.
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Multi-path ECMP populates `EcmpRouteSet` | `EcmpRouteSetBuilder` | `Ac1MultiPathEcmpPopulatesEcmpRouteSetFields` |
+| AC#2 `next_hops` align with `ImmediateNextHops` ONE_OF | trace + set correlation | `Ac2NextHopsAlignWithImmediateOneOfHops` |
+| AC#3 Inactive equal-cost route excluded | operational `Active` flag | `Ac3InactiveEqualCostRouteExcludedFromEcmpSet` |
+| AC#4 Partial HW offload subset + MIXED path | `HardwareOffloadedNextHops` | `Ac4PartialHardwareOffloadListsSubsetAndMixedExecutionPath` |
+| AC#5 Deterministic `hashing_context` flow-key shell | `EcmpHashingContext.FlowKeyMaterial` | `Ac5HashingContextDeterministicFromQueryFields` |
+| AC#6 Single-hop convention (`EcmpRouteSet` null) | non-ECMP forward | `Ac6SingleHopForwardLeavesEcmpRouteSetNull` |
+| AC#7 ONE_OF selector + INDETERMINATE certainty | ECMP > 1 | `Ac7EcmpUsesOneOfSelectorAndIndeterminateCertainty` |
+| AC#8 Persistence round-trip | `ResolutionTracesJson` | `Ac8PersistenceRoundTripIncludesEcmpRouteSet` |
+| AC#9 No routing writes | `RosReadCommandRegistry` | `Ac9NoRoutingWriteApisOpened` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~EcmpRouteSetLivingSpecTests"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

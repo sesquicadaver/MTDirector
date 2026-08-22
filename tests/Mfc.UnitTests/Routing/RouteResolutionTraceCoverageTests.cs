@@ -119,6 +119,8 @@ public sealed class RouteResolutionTraceCoverageTests
             configuration,
             operational);
         Assert.Equal(RouteResolutionExecutionPaths.Mixed, trace.ExecutionPath);
+        Assert.NotNull(trace.EcmpRouteSet);
+        Assert.Single(trace.EcmpRouteSet!.HardwareOffloadedNextHops);
     }
 
     [Fact]
