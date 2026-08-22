@@ -95,6 +95,11 @@ public sealed class UpsertRoutingAssuranceStateUseCase
                     command.Configuration,
                     operationalState)
                 : [];
+        resolutionTraces = EnrichWithReversePathSymmetry(
+            resolutionTraces,
+            command.Configuration,
+            operationalState,
+            command.TraceQueries);
         IReadOnlyList<RouteFinding> routeFindings = command.RouteExpectations.Count > 0 && resolutionTraces.Count > 0
             ? RouteExpectationEvaluator.Evaluate(
                 command.RouteExpectations,
@@ -122,6 +127,44 @@ public sealed class UpsertRoutingAssuranceStateUseCase
 
         await _states.UpsertAsync(state, cancellationToken).ConfigureAwait(false);
         return ApplicationResults.Ok(RoutingAssuranceViewMapper.ToView(state));
+    }
+
+    private static IReadOnlyList<RouteResolutionTrace> EnrichWithReversePathSymmetry(
+        IReadOnlyList<RouteResolutionTrace> traces,
+        RoutingConfigurationSnapshot configuration,
+        RoutingOperationalSnapshot operational,
+        IReadOnlyList<RouteResolutionQuery> traceQueries)
+    {
+        if (traces.Count == 0)
+        {
+            return traces;
+        }
+
+        List<RouteResolutionTrace> enriched = new(traces.Count);
+        for (int i = 0; i < traces.Count; i++)
+        {
+            RouteResolutionTrace trace = traces[i];
+            if (string.IsNullOrWhiteSpace(trace.SourceAddress)
+                || string.IsNullOrWhiteSpace(trace.DestinationAddress)
+                || trace.ReversePathSymmetry is not null)
+            {
+                enriched.Add(trace);
+                continue;
+            }
+
+            ReversePathSymmetryAnalyzerOptions? options = i < traceQueries.Count
+                                                        && traceQueries[i].ExpectAsymmetricReversePath
+                ? new ReversePathSymmetryAnalyzerOptions { ExpectAsymmetricReversePath = true }
+                : null;
+            ReversePathSymmetryAnalysis analysis = ReversePathSymmetryAnalyzer.Analyze(
+                trace,
+                configuration,
+                operational,
+                options);
+            enriched.Add(trace.WithReversePathSymmetry(analysis));
+        }
+
+        return enriched;
     }
 }
 

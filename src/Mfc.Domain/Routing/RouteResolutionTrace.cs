@@ -52,4 +52,37 @@ public sealed class RouteResolutionTrace
     public string? ExecutionPath { get; init; }
 
     public string? Certainty { get; init; }
+
+    /// <summary>Reverse B→A symmetry analysis when computed (M7.1-07); null when not analyzed.</summary>
+    public ReversePathSymmetryAnalysis? ReversePathSymmetry { get; init; }
+
+    /// <summary>Returns a copy with optional reverse-path symmetry analysis attached.</summary>
+    public RouteResolutionTrace WithReversePathSymmetry(ReversePathSymmetryAnalysis? analysis)
+        => new()
+        {
+            Family = Family,
+            SourceAddress = SourceAddress,
+            DestinationAddress = DestinationAddress,
+            IngressInterface = IngressInterface,
+            InitialVrf = InitialVrf,
+            RoutingMark = RoutingMark,
+            RoutingDecisionOrder = RoutingDecisionOrder,
+            MatchedMangleRule = MatchedMangleRule,
+            MatchedRoutingRule = MatchedRoutingRule,
+            RoutingRuleAction = RoutingRuleAction,
+            SelectedVrf = SelectedVrf,
+            SelectedTable = SelectedTable,
+            MatchedPrefix = MatchedPrefix,
+            RouteCandidates = RouteCandidates,
+            SelectedRoutes = SelectedRoutes,
+            RecursiveResolution = RecursiveResolution,
+            ImmediateNextHops = ImmediateNextHops,
+            EcmpRouteSet = EcmpRouteSet,
+            EgressInterfaces = EgressInterfaces,
+            PreferredSource = PreferredSource,
+            Decision = Decision,
+            ExecutionPath = ExecutionPath,
+            Certainty = Certainty,
+            ReversePathSymmetry = analysis,
+        };
 }
