@@ -40,6 +40,9 @@ public sealed class RouteResolutionTrace
 
     public IReadOnlyList<ImmediateNextHop> ImmediateNextHops { get; init; } = [];
 
+    /// <summary>Bounded ECMP next-hop set when multiple equal-cost forward paths exist; null for single-hop or non-forward outcomes (M7.1-04).</summary>
+    public EcmpRouteSet? EcmpRouteSet { get; init; }
+
     public IReadOnlyList<string> EgressInterfaces { get; init; } = [];
 
     public string? PreferredSource { get; init; }

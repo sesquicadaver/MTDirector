@@ -121,7 +121,8 @@ Normative detail lives in `TOR-1.md` and the MVP specifications. This folder rec
 | Routing-assurance read allowlist | Done (M7.1-01) | Spec §3 paths via `RoutingAssuranceAllowlist` + 3 new `RosReadCommandId`s; no routing writes |
 | RoutingAssuranceState persistence | Done (M7.1-02) | Domain `RoutingAssuranceState` + EF `routing_assurance_states`; config≠ops hashes; discovery settings/VRF/filters mapped |
 | Route resolution traces | Done (M7.1-03) | `RouteResolutionTraceEngine` + policy-routing → FIB → recursive NH; upsert `TraceQueries`; Living Spec AC 1–10; no routing writes |
-| Remaining delivery order | See ROADMAP v0.2 §3 | **MVP CLOSED**; NEXT = M7.1-04 (#113) |
+| ECMP ONE_OF bounded next-hop sets | Done (M7.1-04) | `EcmpRouteSet` + `EcmpRouteSetBuilder`; flow-key shell; active/HW subsets; Living Spec AC 1–9; persistence round-trip; no routing writes |
+| Remaining delivery order | See ROADMAP v0.2 §3 | **MVP CLOSED**; NEXT = M7.1-05 (#114) |
 
 ## ADRs
 
