@@ -57,4 +57,7 @@ public static class ApplicationPermissions
 
     /// <summary>Read append-only audit events (M6-04). No mutate path.</summary>
     public const string AuditRead = "audit.read";
+
+    /// <summary>Ingest normalized incident signals (M7.3-01). No raw syslog store.</summary>
+    public const string IncidentSignalIngest = "incident.signal.ingest";
 }
