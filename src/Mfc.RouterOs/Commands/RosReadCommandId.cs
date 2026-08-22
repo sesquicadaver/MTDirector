@@ -55,4 +55,14 @@ public enum RosReadCommandId
     RoutingSettings = 42,
     RoutingFilterRules = 43,
     RoutingFilterSelectRules = 44,
+
+    /// <summary>Endpoint attribution reads (M7.2-01 / next-2 §3).</summary>
+    Ipv4Arp = 45,
+    Ipv6Neighbors = 46,
+    DhcpServerLeases = 47,
+    BridgeHosts = 48,
+    DhcpSnoopingBindings = 49,
+    WireGuardPeers = 50,
+    IpsecActivePeers = 51,
+    PppActiveSessions = 52,
 }
