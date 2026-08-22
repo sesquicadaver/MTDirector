@@ -23,10 +23,10 @@ public sealed class UpsertRoutingAssuranceStateCommand
 
     public required RoutingOperationalSnapshot OperationalState { get; init; }
 
-    /// <summary>Deferred slot — must be empty until M7.1-06.</summary>
+    /// <summary>Declarative route expectations evaluated when traces are available (M7.1-06).</summary>
     public IReadOnlyList<RouteExpectation> RouteExpectations { get; init; } = [];
 
-    /// <summary>Deferred slot — must be empty until analysis issues populate findings.</summary>
+    /// <summary>Computed by <see cref="RouteExpectationEvaluator"/> when expectations and traces are present.</summary>
     public IReadOnlyList<RouteFinding> RouteFindings { get; init; } = [];
 
     /// <summary>Precomputed traces; when empty and <see cref="TraceQueries"/> is set, traces are computed on upsert.</summary>
@@ -95,6 +95,13 @@ public sealed class UpsertRoutingAssuranceStateUseCase
                     command.Configuration,
                     operationalState)
                 : [];
+        IReadOnlyList<RouteFinding> routeFindings = command.RouteExpectations.Count > 0 && resolutionTraces.Count > 0
+            ? RouteExpectationEvaluator.Evaluate(
+                command.RouteExpectations,
+                resolutionTraces,
+                command.Configuration,
+                operationalState)
+            : command.RouteFindings;
         RoutingAssuranceState? existing = await _states.GetAsync(deviceId, cancellationToken).ConfigureAwait(false);
         RoutingAssuranceState state = existing is null
             ? RoutingAssuranceState.Create(
@@ -103,14 +110,14 @@ public sealed class UpsertRoutingAssuranceStateUseCase
                 operationalState,
                 now,
                 command.RouteExpectations,
-                command.RouteFindings,
+                routeFindings,
                 resolutionTraces)
             : existing.With(
                 command.Configuration,
                 operationalState,
                 now,
                 command.RouteExpectations,
-                command.RouteFindings,
+                routeFindings,
                 resolutionTraces);
 
         await _states.UpsertAsync(state, cancellationToken).ConfigureAwait(false);

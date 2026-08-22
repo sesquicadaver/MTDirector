@@ -22,7 +22,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 
 - No NAT / RAW / Mangle / routing / VRRP / bridge / VLAN **writes** beyond managed filter/onboarding/deploy allowlists.
 - No campaigns, auto-deploy, auto-fix drift, web/mobile UI, multi-tenant, microservices/Redis/K8s, multi-vendor, SIEM/SOAR in Controller.
-- Post-MVP **M7.*** (#110–#136) continues after MVP CLOSED (M7.1-05 DONE; NEXT = M7.1-06).
+- Post-MVP **M7.*** (#110–#136) continues after MVP CLOSED (M7.1-06 DONE; NEXT = M7.1-07).
 
 ## Operational notes
 

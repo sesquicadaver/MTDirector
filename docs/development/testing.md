@@ -2030,6 +2030,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DynamicRouteOriginLivingSpecTests"
 ```
 
+## Living Specification — RouteExpectation evaluation (M7.1-06)
+
+Issue Set M7.1-06 / Network Rule M7.1 Spec §11. Deterministic scripted fixtures only; no live CHR; no routing writes; egress zones matched via interface-name proxy (no zone engine).
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC#1 Expected table/VRF pass/fail | `RouteExpectationEvaluator` | `Ac1ExpectedTableAndVrfMatchPassAndFail` |
+| AC#2 Allowed next hop / egress interface | intersection checks | `Ac2AllowedNextHopAndEgressInterfaceViolations` |
+| AC#3 Forbidden BLACKHOLE/UNREACHABLE | decision + forbidden types | `Ac3ForbiddenBlackholeAndUnreachableDecisions` |
+| AC#4 Required origin type | `RouteOrigins` on selected routes | `Ac4RequiredOriginTypeMustBePresent` |
+| AC#5 CPU firewall path | execution path CPU/MIXED | `Ac5CpuFirewallPathRequirementFailsOnHardwareOnly` |
+| AC#6 Reverse path missing | minimal reverse trace NO_ROUTE | `Ac6ReversePathMissingProducesFinding` |
+| AC#7 Critical vs warning codes | `RouteExpectationCodes` | `Ac7CriticalExpectationsUseCriticalFindingCodes` |
+| AC#8 Persistence round-trip | expectations + findings jsonb | `Ac8PersistenceRoundTripStoresExpectationsAndFindings` |
+| AC#9 No routing writes | `RosReadCommandRegistry` | `Ac9NoRoutingWriteApisOpened` |
+| AC#10 ECMP ONE_OF allowed hop | any allowed hop suffices | `Ac10EcmpOneOfAllowedHopSetPassesWhenAnyHopAllowed` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~RouteExpectationLivingSpecTests"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

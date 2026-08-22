@@ -5,8 +5,8 @@ namespace Mfc.Domain.Routing;
 /// <summary>
 /// Persisted routing-assurance state shell per Device (M7.1 Spec §2 / M7.1-02).
 /// Separates <see cref="Configuration"/> from <see cref="OperationalState"/> via distinct hashes.
-/// <see cref="RouteExpectations"/>, <see cref="RouteFindings"/>, and <see cref="ResolutionTraces"/>
-/// are typed empty collections until later M7.1-* issues populate them.
+/// <see cref="RouteExpectations"/> and <see cref="RouteFindings"/> are populated by M7.1-06 evaluation;
+/// <see cref="ResolutionTraces"/> by M7.1-03 trace analysis.
 /// </summary>
 public sealed class RoutingAssuranceState : IEquatable<RoutingAssuranceState>
 {
@@ -20,10 +20,10 @@ public sealed class RoutingAssuranceState : IEquatable<RoutingAssuranceState>
 
     public Hash256 OperationalHash { get; }
 
-    /// <summary>Deferred to M7.1-06 (#115) — empty typed collection only.</summary>
+    /// <summary>Declarative route expectations (M7.1 Spec §11).</summary>
     public IReadOnlyList<RouteExpectation> RouteExpectations { get; }
 
-    /// <summary>Deferred to later M7.1 analysis issues — empty typed collection only.</summary>
+    /// <summary>Findings from expectation evaluation and later routing analysis.</summary>
     public IReadOnlyList<RouteFinding> RouteFindings { get; }
 
     /// <summary>Route resolution traces (M7.1-03); empty when no probes were analyzed.</summary>

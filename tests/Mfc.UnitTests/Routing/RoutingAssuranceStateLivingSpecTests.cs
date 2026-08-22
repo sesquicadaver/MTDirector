@@ -75,25 +75,44 @@ public sealed class RoutingAssuranceStateLivingSpecTests
     }
 
     [Fact]
-    public void Ac3DeferredSlotsExistAsEmptyTypedCollectionsByDefault()
+    public void Ac3ExpectationsAndFindingsSlotsCanBePopulated()
     {
-        RoutingAssuranceState state = RoutingAssuranceState.Create(
+        RoutingAssuranceState empty = RoutingAssuranceState.Create(
             DeviceId.New(),
             RoutingConfigurationSnapshot.Empty,
             RoutingOperationalSnapshot.Empty,
             DateTimeOffset.UtcNow);
-        Assert.NotNull(state.RouteExpectations);
-        Assert.NotNull(state.RouteFindings);
-        Assert.NotNull(state.ResolutionTraces);
-        Assert.Empty(state.RouteExpectations);
-        Assert.Empty(state.RouteFindings);
-        Assert.Empty(state.ResolutionTraces);
+        Assert.NotNull(empty.RouteExpectations);
+        Assert.NotNull(empty.RouteFindings);
+        Assert.NotNull(empty.ResolutionTraces);
+        Assert.Empty(empty.RouteExpectations);
+        Assert.Empty(empty.RouteFindings);
+        Assert.Empty(empty.ResolutionTraces);
 
-        // Types exist for later M7.1-* issues (expectations=06); traces populated by M7.1-03 engine.
-        Assert.NotNull(typeof(RouteExpectation).GetProperty(nameof(RouteExpectation.DestinationPrefix)));
-        Assert.NotNull(typeof(RouteFinding).GetProperty(nameof(RouteFinding.Code)));
-        Assert.NotNull(typeof(RouteResolutionTrace).GetProperty(nameof(RouteResolutionTrace.Decision)));
-        Assert.NotNull(typeof(RouteResolutionQuery).GetProperty(nameof(RouteResolutionQuery.DestinationAddress)));
+        RouteExpectation expectation = new()
+        {
+            NodeId = null,
+            Family = "ipv4",
+            DestinationPrefix = "203.0.113.0/24",
+            ExpectedTable = "main",
+        };
+        RouteFinding finding = new()
+        {
+            Code = RouteExpectationCodes.ExpectedTableMismatch,
+            Message = "table mismatch",
+            Subject = "203.0.113.10",
+        };
+        RoutingAssuranceState populated = RoutingAssuranceState.Create(
+            DeviceId.New(),
+            RoutingConfigurationSnapshot.Empty,
+            RoutingOperationalSnapshot.Empty,
+            DateTimeOffset.UtcNow,
+            [expectation],
+            [finding]);
+        Assert.Single(populated.RouteExpectations);
+        Assert.Single(populated.RouteFindings);
+        Assert.Equal(expectation.DestinationPrefix, populated.RouteExpectations[0].DestinationPrefix);
+        Assert.Equal(finding.Code, populated.RouteFindings[0].Code);
     }
 
     [Fact]
