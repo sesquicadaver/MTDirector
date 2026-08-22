@@ -7,6 +7,7 @@ using Mfc.Application.Audit;
 using Mfc.Application.Deployment;
 using Mfc.Application.Drift;
 using Mfc.Application.Endpoint;
+using Mfc.Application.Incident;
 using Mfc.Application.Inventory;
 using Mfc.Application.Jobs;
 using Mfc.Application.Onboarding;
@@ -225,6 +226,7 @@ public static class Program
         services.AddScoped<OpenEndpointPresenceUseCase>();
         services.AddScoped<GetEndpointRoutingContextUseCase>();
         services.AddScoped<ResolveEndpointAttributionUseCase>();
+        services.AddScoped<IngestIncidentSignalUseCase>();
         services.AddScoped<DetectManagedDriftUseCase>();
         services.AddScoped<GetDriftEventUseCase>();
         services.AddScoped<ListDeviceDriftEventsUseCase>();

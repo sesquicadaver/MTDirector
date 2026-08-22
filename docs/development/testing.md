@@ -2252,6 +2252,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~EndpointMobilityChrAcceptance"
 ```
 
+## Living Specification — IncidentSignal ingress contract (M7.3-01)
+
+Issue Set M7.3-01 / next-2 §IncidentSignal. Domain-only validation + application ingress use case; no raw syslog store; no signal persistence port; no live CHR. Suite: `IncidentSignalLivingSpecTests` + `IncidentSignalCoverageTests`.
+
+| AC | Requirement | Test |
+|----|-------------|------|
+| AC#1 Valid minimal signal accepted | `IncidentSignal.Create` | `Ac1ValidMinimalSignalAccepted` |
+| AC#2 Required fields enforced | `IncidentSignal.Create` | `Ac2RequiredFieldsEnforced` |
+| AC#3 Confidence bounded 0–100 | `IncidentSignal.Create` | `Ac3ConfidenceBoundedZeroToOneHundred` |
+| AC#4 Flow tuple validation | `FlowTuple.Create` | `Ac4FlowTupleRequiresAtLeastOneFieldAndValidPorts` |
+| AC#5 Entity reference validation | `EntityReference.Create` | `Ac5EntityReferenceRequiresKindAndValue` |
+| AC#6 Forbidden ingress field names | `IncidentSignalIngressGuard` | `Ac6ForbiddenIngressFieldNamesRejected` |
+| AC#7 Inline raw syslog rejected | `IncidentSignalIngressGuard` | `Ac7InlineRawSyslogRejectedInReferences` |
+| AC#8 ROUTEROS_LOG requires normalized category | `IncidentSignalIngressGuard` | `Ac8RouterOsLogRequiresNormalizedCategory` |
+| AC#9 Ingest use case returns view; no persistence port | `IngestIncidentSignalUseCase` | `Ac9IngestUseCaseReturnsNormalizedViewWithoutPersistencePort` |
+| AC#10 Unauthorized ingest rejected | `IngestIncidentSignalUseCase` | `Ac10UnauthorizedIngestRejected` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~IncidentSignal"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.
