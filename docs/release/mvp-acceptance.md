@@ -39,7 +39,7 @@ M0–M6 logical IDs map to GitHub via [`ISSUES.md`](../../ISSUES.md). Acceptance
 | M6 E2E | M6-01…M6-08 | #100–#107 | CLOSED |
 | M6-09 acceptance | M6-09 | #108 | THIS PACKAGE |
 
-N1 weave items N1-01…N1-07 are DONE; **MVP CLOSED**. Linear queue continues at **M7.1-09 (#118)** (M7.1-03…M7.1-08 DONE).
+N1 weave items N1-01…N1-07 are DONE; **MVP CLOSED**. Linear queue continues at **M7.1-10 (#119)** (M7.1-03…M7.1-09 DONE).
 
 Post-MVP M7.1 progress: **M7.1-03** RouteResolutionTrace DONE; **M7.1-04** ECMP ONE_OF DONE; **M7.1-05** dynamic route origins DONE.
 
@@ -98,4 +98,4 @@ Live CHR / live physical CRS remain **OFF**. Optional residual: env-gated `MFC_C
 
 ## Milestone close statement
 
-With M6-01…M6-09 and N1-07 delivered, **M6 is CLOSED** and **MVP CLOSED**. Linear queue continues at **M7.1-09 (#118)** (M7.1-03…M7.1-08 DONE). Do **not** create a git release tag until acceptance review signs off (AC16).
+With M6-01…M6-09 and N1-07 delivered, **M6 is CLOSED** and **MVP CLOSED**. Linear queue continues at **M7.1-10 (#119)** (M7.1-03…M7.1-09 DONE). Do **not** create a git release tag until acceptance review signs off (AC16).
