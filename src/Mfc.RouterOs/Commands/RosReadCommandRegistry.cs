@@ -209,6 +209,22 @@ public static class RosReadCommandRegistry
                 PacketPathAllowlistProfiles.IpVrfs),
             Def(RosReadCommandId.VlanInterfaces, "/interface/vlan/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
                 PacketPathAllowlistProfiles.VlanInterfaces),
+            Def(RosReadCommandId.Ipv4Arp, "/ip/arp/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                EndpointAttributionAllowlistProfiles.Ipv4Arp),
+            Def(RosReadCommandId.Ipv6Neighbors, "/ipv6/neighbor/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
+                EndpointAttributionAllowlistProfiles.Ipv6Neighbors),
+            Def(RosReadCommandId.DhcpServerLeases, "/ip/dhcp-server/lease/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                EndpointAttributionAllowlistProfiles.DhcpServerLeases),
+            Def(RosReadCommandId.BridgeHosts, "/interface/bridge/host/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                EndpointAttributionAllowlistProfiles.BridgeHosts),
+            Def(RosReadCommandId.DhcpSnoopingBindings, "/interface/bridge/dhcp-snooping/binding/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                EndpointAttributionAllowlistProfiles.DhcpSnoopingBindings),
+            Def(RosReadCommandId.WireGuardPeers, "/interface/wireguard/peers/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                EndpointAttributionAllowlistProfiles.WireGuardPeers),
+            Def(RosReadCommandId.IpsecActivePeers, "/ip/ipsec/active-peers/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                EndpointAttributionAllowlistProfiles.IpsecActivePeers),
+            Def(RosReadCommandId.PppActiveSessions, "/ppp/active/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                EndpointAttributionAllowlistProfiles.PppActiveSessions),
         ];
 
         Dictionary<RosReadCommandId, RosReadCommandDefinition> map = new(all.Length);

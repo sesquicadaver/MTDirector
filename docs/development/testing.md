@@ -2164,6 +2164,27 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~RoutingAssuranceChrAcceptance"
 ```
 
+## Living Specification — endpoint attribution resolver (M7.2-01)
+
+Issue Set M7.2-01 / next-2 §3. Scripted snapshot fixtures ONLY; no live CHR; Domain pure (no RouterOS types in resolver); no routing/firewall writes. Suite: `EndpointAttributionLivingSpecTests` + `EndpointAttributionCoverageTests`.
+
+| AC | Requirement | Module | Test |
+|----|-------------|--------|------|
+| AC#1 LAN IP via DHCP + bridge host | `EndpointAttributionResolver` | `Ac1LanIpResolvesThroughDhcpAndBridgeHost` |
+| AC#2 Container IP via VETH mapping | VETH/container hops | `Ac2ContainerIpResolvesThroughVethMapping` |
+| AC#3 VPN internal IP → WireGuard/IPsec peer | `VpnSessionFact` match | `Ac3VpnInternalIpResolvesToWireGuardPeer` |
+| AC#4 Ambiguous MAC → PARTIAL + finding | `EndpointAttributionCodes.MacAmbiguous` | `Ac4AmbiguousMacSourcesProducePartialAndFinding` |
+| AC#5 Unknown IP → UNKNOWN | fail-closed | `Ac5UnknownIpProducesUnknownCertainty` |
+| AC#6 IPv6 ND path | ND before bridge host | `Ac6Ipv6NeighborDiscoveryPathResolvesMac` |
+| AC#7 No routing/firewall write APIs | `EndpointAttributionAllowlist` + `RosReadCommandRegistry` | `Ac7NoRoutingOrFirewallWriteApisOpened` |
+| AC#8 Inventory anchors site/node/device | query context hops | `Ac8InventoryAnchorsAttachedWhenProvided` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~EndpointAttribution"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.
