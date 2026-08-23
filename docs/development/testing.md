@@ -2367,6 +2367,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ResponseAssessmentQuality"
 ```
 
+## Living Specification — IncidentSignal ↔ ResponseAssessment contract (M7.3-06)
+
+Issue Set M7.3-06 / next-2. Scripted contract bind ONLY; Domain pure; no live CHR; no routing writes; **M7.3 CLOSED**. Suite: `IncidentResponseAssessmentContractLivingSpecTests` + `IncidentResponseAssessmentContractCoverageTests`.
+
+| AC | Requirement | Test |
+|----|-------------|------|
+| AC#1 event_id → incident_id | `IncidentResponseAssessmentContract` | `Ac1EventIdMapsOneToOneToIncidentId` |
+| AC#2 original_flow preferred | `IncidentResponseAssessmentContract` | `Ac2OriginalFlowPreferredOverFlowForCorrelation` |
+| AC#3 Missing flow fail-closed | `IncidentResponseAssessmentContract` | `Ac3MissingCorrelationFlowFailsClosed` |
+| AC#4 CPU path + full session | `IncidentResponseAssessmentContract` | `Ac4CpuPathWithFullSessionYieldsFullyEnforceableAssessment` |
+| AC#5 HW-offload path | `IncidentResponseAssessmentContract` | `Ac5HardwareOffloadedPathYieldsNotEnforceableAssessment` |
+| AC#6 Partial session → NEW_CONNECTIONS_ONLY | `IncidentResponseFeasibilityClassifier` | `Ac6PartialSessionVisibilityYieldsNewConnectionsOnly` |
+| AC#7 Signal confidence vs assessment | `IncidentResponseAssessmentContract` | `Ac7HighSignalConfidenceMayExceedAssessmentWhenVisibilityLimited` |
+| AC#8 Assessment incident_id | `IncidentResponseAssessmentContract` | `Ac8AssessmentCarriesMappedIncidentId` |
+| AC#9 View round-trip | `IncidentResponseAssessmentBindingView` | `Ac9BindingViewRoundTripsContractFields` |
+| AC#10 Use case + auth | `BindIncidentResponseAssessmentUseCase` | `Ac10UseCaseReturnsViewAndRejectsUnauthorized` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~IncidentResponseAssessment"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

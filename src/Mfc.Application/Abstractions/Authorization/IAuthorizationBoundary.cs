@@ -72,4 +72,7 @@ public static class ApplicationPermissions
 
     /// <summary>Evaluate response assessment visibility and confidence (M7.3-05).</summary>
     public const string IncidentAssessmentRead = "incident.assessment.read";
+
+    /// <summary>Bind incident signal to response assessment contract (M7.3-06).</summary>
+    public const string IncidentAssessmentBind = "incident.assessment.bind";
 }
