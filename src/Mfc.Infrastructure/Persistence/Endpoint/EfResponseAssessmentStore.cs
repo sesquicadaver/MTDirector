@@ -47,6 +47,8 @@ public sealed class EfResponseAssessmentStore : IResponseAssessmentStore
             existing.PresenceId = entity.PresenceId;
             existing.EnforcementNodeId = entity.EnforcementNodeId;
             existing.Feasibility = entity.Feasibility;
+            existing.VisibilityStatus = entity.VisibilityStatus;
+            existing.Confidence = entity.Confidence;
             existing.Status = entity.Status;
             existing.CreatedAt = entity.CreatedAt;
             existing.InvalidatedAt = entity.InvalidatedAt;
@@ -64,6 +66,8 @@ public sealed class EfResponseAssessmentStore : IResponseAssessmentStore
             new PresenceId(entity.PresenceId),
             new NodeId(entity.EnforcementNodeId),
             (ResponseAssessmentFeasibility)entity.Feasibility,
+            (AssessmentVisibilityStatus)entity.VisibilityStatus,
+            entity.Confidence,
             (ResponseAssessmentStatus)entity.Status,
             entity.CreatedAt,
             entity.InvalidatedAt,
@@ -78,6 +82,8 @@ public sealed class EfResponseAssessmentStore : IResponseAssessmentStore
             PresenceId = assessment.PresenceId.Value,
             EnforcementNodeId = assessment.EnforcementNodeId.Value,
             Feasibility = (int)assessment.Feasibility,
+            VisibilityStatus = (int)assessment.VisibilityStatus,
+            Confidence = assessment.Confidence,
             Status = (int)assessment.Status,
             CreatedAt = assessment.CreatedAt,
             InvalidatedAt = assessment.InvalidatedAt,

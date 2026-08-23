@@ -90,8 +90,8 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         Assert.Contains("M7.2-03 DONE", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.2-04 DONE", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.2 CLOSED", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.3-03 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("NEXT = M7.3-05", roadmap, StringComparison.Ordinal);
+        Assert.Contains("M7.3-04 DONE", roadmap, StringComparison.Ordinal);
+        Assert.Contains("NEXT = M7.3-06", roadmap, StringComparison.Ordinal);
 
         // Prior M6 E2E issues must appear as DONE in §2.2 / queue strikethroughs.
         foreach (string id in new[]

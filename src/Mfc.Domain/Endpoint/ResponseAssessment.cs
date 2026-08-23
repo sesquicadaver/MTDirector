@@ -36,6 +36,10 @@ public sealed class ResponseAssessment
 
     public ResponseAssessmentFeasibility Feasibility { get; }
 
+    public AssessmentVisibilityStatus VisibilityStatus { get; }
+
+    public int Confidence { get; }
+
     public ResponseAssessmentStatus Status { get; }
 
     public DateTimeOffset CreatedAt { get; }
@@ -51,6 +55,8 @@ public sealed class ResponseAssessment
         PresenceId presenceId,
         NodeId enforcementNodeId,
         ResponseAssessmentFeasibility feasibility,
+        AssessmentVisibilityStatus visibilityStatus,
+        int confidence,
         ResponseAssessmentStatus status,
         DateTimeOffset createdAt,
         DateTimeOffset? invalidatedAt,
@@ -62,6 +68,8 @@ public sealed class ResponseAssessment
         PresenceId = presenceId;
         EnforcementNodeId = enforcementNodeId;
         Feasibility = feasibility;
+        VisibilityStatus = visibilityStatus;
+        Confidence = confidence;
         Status = status;
         CreatedAt = createdAt.ToUniversalTime();
         InvalidatedAt = invalidatedAt?.ToUniversalTime();
@@ -78,12 +86,16 @@ public sealed class ResponseAssessment
         NodeId enforcementNodeId,
         ResponseAssessmentFeasibility feasibility,
         DateTimeOffset createdAt,
-        AssessmentId? assessmentId = null)
+        AssessmentId? assessmentId = null,
+        ResponseAssessmentQualityInput? qualityInput = null)
     {
         if (incidentId.Value == Guid.Empty)
         {
             throw new DomainInvariantException("incident_id is required.");
         }
+
+        ResponseAssessmentQualityResult quality = ResponseAssessmentQualityEvaluator.Evaluate(
+            qualityInput ?? new ResponseAssessmentQualityInput { Feasibility = feasibility });
 
         return new ResponseAssessment(
             assessmentId ?? AssessmentId.New(),
@@ -92,6 +104,8 @@ public sealed class ResponseAssessment
             presenceId,
             enforcementNodeId,
             feasibility,
+            quality.VisibilityStatus,
+            quality.Confidence,
             ResponseAssessmentStatus.Active,
             createdAt,
             invalidatedAt: null,
@@ -106,21 +120,32 @@ public sealed class ResponseAssessment
         PresenceId presenceId,
         NodeId enforcementNodeId,
         ResponseAssessmentFeasibility feasibility,
+        AssessmentVisibilityStatus visibilityStatus,
+        int confidence,
         ResponseAssessmentStatus status,
         DateTimeOffset createdAt,
         DateTimeOffset? invalidatedAt = null,
         string? invalidationReason = null)
-        => new(
+    {
+        if (confidence is < 0 or > 100)
+        {
+            throw new DomainInvariantException("confidence must be between 0 and 100.");
+        }
+
+        return new ResponseAssessment(
             assessmentId,
             incidentId,
             endpointId,
             presenceId,
             enforcementNodeId,
             feasibility,
+            visibilityStatus,
+            confidence,
             status,
             createdAt,
             invalidatedAt,
             NormalizeOptional(invalidationReason));
+    }
 
     /// <summary>Invalidates the assessment because endpoint mobility changed routing context.</summary>
     public ResponseAssessment Invalidate(DateTimeOffset invalidatedAt, string reason)
@@ -149,6 +174,8 @@ public sealed class ResponseAssessment
             PresenceId,
             EnforcementNodeId,
             Feasibility,
+            VisibilityStatus,
+            Confidence,
             ResponseAssessmentStatus.Invalidated,
             CreatedAt,
             at,

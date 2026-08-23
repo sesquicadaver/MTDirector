@@ -69,4 +69,7 @@ public static class ApplicationPermissions
 
     /// <summary>Correlate sensor observation points with route resolution traces (M7.3-04).</summary>
     public const string IncidentCorrelationRead = "incident.correlation.read";
+
+    /// <summary>Evaluate response assessment visibility and confidence (M7.3-05).</summary>
+    public const string IncidentAssessmentRead = "incident.assessment.read";
 }

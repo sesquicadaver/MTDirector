@@ -15,6 +15,10 @@ public sealed class ResponseAssessmentEntity
 
     public int Feasibility { get; set; }
 
+    public int VisibilityStatus { get; set; }
+
+    public int Confidence { get; set; }
+
     public int Status { get; set; }
 
     public DateTimeOffset CreatedAt { get; set; }
