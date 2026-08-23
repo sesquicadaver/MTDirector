@@ -2321,6 +2321,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~IncidentSessionContext|FullyQualifiedName~ConnectionTrackingAllowlist"
 ```
 
+## Living Specification — Sensor observation correlation (M7.3-04)
+
+Issue Set M7.3-04 / M7.1 §16. Scripted `RouteResolutionTrace` ONLY; Domain pure; no live CHR; no routing writes. Suite: `SensorObservationCorrelationLivingSpecTests` + `SensorObservationCorrelationCoverageTests`.
+
+| AC | Requirement | Test |
+|----|-------------|------|
+| AC#1 Prerouting aligned | `SensorObservationCorrelationResolver` | `Ac1PreroutingAlignedWhenFlowAndIngressMatchTrace` |
+| AC#2 Missing trace → Indeterminate | `SensorObservationCorrelationResolver` | `Ac2MissingRouteTraceReturnsIndeterminate` |
+| AC#3 HW-offload → SensorBypassed | `SensorObservationCorrelationResolver` | `Ac3HardwareOffloadMarksSensorBypassed` |
+| AC#4 Post-dstnat aligned | `SensorObservationCorrelationResolver` | `Ac4PostDstNatAlignedWhenTranslatedDestinationMatchesTrace` |
+| AC#5 Post-dstnat without translated flow | `SensorObservationCorrelationResolver` | `Ac5PostDstNatWithoutTranslatedFlowIsIndeterminate` |
+| AC#6 Egress mismatch (alternate WAN) | `SensorObservationCorrelationResolver` | `Ac6EgressMismatchDetectsAlternateWanPath` |
+| AC#7 VRF mismatch | `SensorObservationCorrelationResolver` | `Ac7VrfMismatchAtPostRoutingReturnsMismatched` |
+| AC#8 Routing mark mismatch | `SensorObservationCorrelationResolver` | `Ac8RoutingMarkMismatchAtPreroutingReturnsMismatched` |
+| AC#9 Post-routing aligned | `SensorObservationCorrelationResolver` | `Ac9PostRoutingAlignedWhenTableAndDestinationMatchTrace` |
+| AC#10 Use case + auth | `CorrelateSensorObservationUseCase` | `Ac10UseCaseReturnsViewAndRejectsUnauthorized` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~SensorObservationCorrelation"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.
