@@ -17,6 +17,10 @@ public sealed class ResponseAssessmentView
 
     public required string Feasibility { get; init; }
 
+    public required string VisibilityStatus { get; init; }
+
+    public required int Confidence { get; init; }
+
     public required string Status { get; init; }
 
     public required DateTimeOffset CreatedAtUtc { get; init; }
@@ -36,6 +40,8 @@ public sealed class ResponseAssessmentView
             PresenceId = assessment.PresenceId.Value,
             EnforcementNodeId = assessment.EnforcementNodeId.Value,
             Feasibility = assessment.Feasibility.ToString(),
+            VisibilityStatus = assessment.VisibilityStatus.ToString(),
+            Confidence = assessment.Confidence,
             Status = assessment.Status.ToString(),
             CreatedAtUtc = assessment.CreatedAt,
             InvalidatedAtUtc = assessment.InvalidatedAt,

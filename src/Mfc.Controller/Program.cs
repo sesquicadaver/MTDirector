@@ -230,6 +230,7 @@ public static class Program
         services.AddScoped<ResolveActiveStateIntervalUseCase>();
         services.AddScoped<ResolveIncidentSessionContextUseCase>();
         services.AddScoped<CorrelateSensorObservationUseCase>();
+        services.AddScoped<EvaluateResponseAssessmentQualityUseCase>();
         services.AddScoped<DetectManagedDriftUseCase>();
         services.AddScoped<GetDriftEventUseCase>();
         services.AddScoped<ListDeviceDriftEventsUseCase>();

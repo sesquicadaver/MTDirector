@@ -16,6 +16,8 @@ internal sealed class ResponseAssessmentConfiguration : IEntityTypeConfiguration
         builder.Property(e => e.PresenceId).IsRequired();
         builder.Property(e => e.EnforcementNodeId).IsRequired();
         builder.Property(e => e.Feasibility).IsRequired();
+        builder.Property(e => e.VisibilityStatus).IsRequired();
+        builder.Property(e => e.Confidence).IsRequired();
         builder.Property(e => e.Status).IsRequired();
         builder.Property(e => e.CreatedAt).IsRequired();
         builder.Property(e => e.InvalidatedAt);

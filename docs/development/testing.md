@@ -2344,6 +2344,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~SensorObservationCorrelation"
 ```
 
+## Living Specification — Response assessment visibility/confidence (M7.3-05)
+
+Issue Set M7.3-05 / next-2. Scripted observation inputs ONLY; Domain pure; no live CHR; no routing writes. Suite: `ResponseAssessmentQualityLivingSpecTests` + `ResponseAssessmentQualityCoverageTests`.
+
+| AC | Requirement | Test |
+|----|-------------|------|
+| AC#1 Full observation → high confidence | `ResponseAssessmentQualityEvaluator` | `Ac1FullyEnforceableWithFullObservationYieldsHighConfidence` |
+| AC#2 HW-offload route trace | `ResponseAssessmentQualityEvaluator` | `Ac2HardwareOffloadedRouteTraceLimitsVisibility` |
+| AC#3 Session not observed | `ResponseAssessmentQualityEvaluator` | `Ac3SessionNotObservedFailsClosedToNotObserved` |
+| AC#4 Indeterminate feasibility | `ResponseAssessmentQualityEvaluator` | `Ac4IndeterminateFeasibilityReducesConfidence` |
+| AC#5 Partial session visibility | `ResponseAssessmentQualityEvaluator` | `Ac5PartialSessionVisibilityDowngradesAssessment` |
+| AC#6 HW-offloaded packet path | `ResponseAssessmentQualityEvaluator` | `Ac6HardwareOffloadedPacketPathDowngradesVisibility` |
+| AC#7 Mixed packet path | `ResponseAssessmentQualityEvaluator` | `Ac7MixedPacketPathDowngradesVisibility` |
+| AC#8 CreateActive embeds quality | `ResponseAssessment` | `Ac8CreateActiveEmbedsEvaluatedQuality` |
+| AC#9 View emits quality | `ResponseAssessmentView` | `Ac9AssessmentViewEmitsVisibilityAndConfidence` |
+| AC#10 Use case + auth | `EvaluateResponseAssessmentQualityUseCase` | `Ac10UseCaseReturnsViewAndRejectsUnauthorized` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ResponseAssessmentQuality"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.
