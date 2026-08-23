@@ -78,4 +78,7 @@ public static class ApplicationPermissions
 
     /// <summary>Validate incident deny overlay policy documents (M7.4-01).</summary>
     public const string IncidentOverlayValidate = "incident.overlay.validate";
+
+    /// <summary>Assess ResponseIntent feasibility matrix (M7.4-02).</summary>
+    public const string IncidentResponseAssess = "incident.response.assess";
 }

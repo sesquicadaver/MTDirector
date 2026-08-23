@@ -233,6 +233,7 @@ public static class Program
         services.AddScoped<EvaluateResponseAssessmentQualityUseCase>();
         services.AddScoped<BindIncidentResponseAssessmentUseCase>();
         services.AddScoped<ValidateIncidentDenyOverlayUseCase>();
+        services.AddScoped<AssessResponseIntentFeasibilityUseCase>();
         services.AddScoped<DetectManagedDriftUseCase>();
         services.AddScoped<GetDriftEventUseCase>();
         services.AddScoped<ListDeviceDriftEventsUseCase>();

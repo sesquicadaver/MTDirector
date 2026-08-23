@@ -2413,6 +2413,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~IncidentDenyOverlay"
 ```
 
+## Living Specification — ResponseIntent feasibility matrix (M7.4-02)
+
+Issue Set M7.4-02 / next-2. Scripted observation inputs ONLY; Domain pure; no deploy path. Suite: `ResponseIntentFeasibilityLivingSpecTests` + `ResponseIntentFeasibilityCoverageTests`.
+
+| AC | Requirement | Test |
+|----|-------------|------|
+| AC#1 TEMPORARY_PRE_STATE_DENY requires expiry | `ResponseIntent.Create` | `Ac1TemporaryDenyRequiresFiniteExpiresAt` |
+| AC#2 CPU firewall path | `ResponseIntentFeasibilityMatrix` | `Ac2CpuFirewallPathYieldsFullyEnforceable` |
+| AC#3 HW-offload path | `ResponseIntentFeasibilityMatrix` | `Ac3HardwareOffloadedPathYieldsNotEnforceable` |
+| AC#4 L2 bridge/VLAN bypass | `ResponseIntentFeasibilityMatrix` | `Ac4L2BridgeVlanBypassYieldsNotEnforceable` |
+| AC#5 FastTrack session | `ResponseIntentFeasibilityMatrix` | `Ac5FastTrackSessionYieldsNewConnectionsOnly` |
+| AC#6 Unknown path | `ResponseIntentFeasibilityMatrix` | `Ac6UnknownPacketPathYieldsIndeterminate` |
+| AC#7 Proven container forward | `ResponseIntentFeasibilityMatrix` | `Ac7ProvenContainerForwardYieldsFullyEnforceable` |
+| AC#8 Revoke action | `ResponseIntentFeasibilityMatrix` | `Ac8RevokeTemporaryExceptionIsFullyEnforceable` |
+| AC#9 View round-trip | `ResponseIntentFeasibilityView` | `Ac9ViewRoundTripsIntentAndFeasibility` |
+| AC#10 Use case + auth | `AssessResponseIntentFeasibilityUseCase` | `Ac10UseCaseReturnsViewAndRejectsUnauthorized` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ResponseIntentFeasibility"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.
