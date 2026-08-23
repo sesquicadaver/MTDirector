@@ -66,4 +66,7 @@ public static class ApplicationPermissions
 
     /// <summary>Resolve on-demand connection-tracking session context (M7.3-03).</summary>
     public const string IncidentSessionRead = "incident.session.read";
+
+    /// <summary>Correlate sensor observation points with route resolution traces (M7.3-04).</summary>
+    public const string IncidentCorrelationRead = "incident.correlation.read";
 }
