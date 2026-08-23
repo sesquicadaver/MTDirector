@@ -63,4 +63,7 @@ public static class ApplicationPermissions
 
     /// <summary>Resolve historical active-state context for incident correlation (M7.3-02).</summary>
     public const string IncidentContextRead = "incident.context.read";
+
+    /// <summary>Resolve on-demand connection-tracking session context (M7.3-03).</summary>
+    public const string IncidentSessionRead = "incident.session.read";
 }

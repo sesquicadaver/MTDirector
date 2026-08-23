@@ -2298,6 +2298,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ActiveStateInterval"
 ```
 
+## Living Specification — On-demand session context (M7.3-03)
+
+Issue Set M7.3-03 / next-2 §2. Scripted connection-tracking reads ONLY; on-demand flow match; no full-table persistence; no live CHR. Suite: `IncidentSessionContextLivingSpecTests` + `IncidentSessionContextCoverageTests` + `ConnectionTrackingAllowlistTests`.
+
+| AC | Requirement | Test |
+|----|-------------|------|
+| AC#1 Exact original flow resolves session | `IncidentSessionContextResolver` | `Ac1ExactOriginalFlowResolvesSession` |
+| AC#2 Missing session → NotObserved | `IncidentSessionContextResolver` | `Ac2MissingSessionReturnsNotObserved` |
+| AC#3 Ambiguous matches fail-closed | `IncidentSessionContextResolver` | `Ac3AmbiguousMatchesFailClosed` |
+| AC#4 HW-offload → partial visibility | `IncidentSessionContextResolver` | `Ac4HwOffloadLimitsVisibilityToPartial` |
+| AC#5 FastTrack → partial visibility | `IncidentSessionContextResolver` | `Ac5FastTrackLimitsVisibilityToPartial` |
+| AC#6 NAT flags surfaced | `IncidentSessionContextResolver` | `Ac6NatFlagsAreSurfaced` |
+| AC#7 Reply tuple mapped | `IncidentSessionContextResolver` | `Ac7ReplyTupleMappedFromSnapshot` |
+| AC#8 Mapper parses ROS rows | `ConnectionTrackingSnapshotMapper` | `Ac8SnapshotMapperParsesRouterOsConnectionRows` |
+| AC#9 Allowlist read-only print paths | `ConnectionTrackingAllowlist` | `Ac9ConnectionTrackingAllowlistIsReadOnlyPrintPaths` |
+| AC#10 Use case + auth | `ResolveIncidentSessionContextUseCase` | `Ac10UseCaseReturnsViewAndRejectsUnauthorized` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~IncidentSessionContext|FullyQualifiedName~ConnectionTrackingAllowlist"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

@@ -65,4 +65,8 @@ public enum RosReadCommandId
     WireGuardPeers = 50,
     IpsecActivePeers = 51,
     PppActiveSessions = 52,
+
+    /// <summary>On-demand connection-tracking reads (M7.3-03 / next-2 §2).</summary>
+    Ipv4FirewallConnections = 53,
+    Ipv6FirewallConnections = 54,
 }
