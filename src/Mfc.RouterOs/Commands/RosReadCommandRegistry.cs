@@ -225,6 +225,10 @@ public static class RosReadCommandRegistry
                 EndpointAttributionAllowlistProfiles.IpsecActivePeers),
             Def(RosReadCommandId.PppActiveSessions, "/ppp/active/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
                 EndpointAttributionAllowlistProfiles.PppActiveSessions),
+            Def(RosReadCommandId.Ipv4FirewallConnections, "/ip/firewall/connection/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                ConnectionTrackingAllowlistProfiles.Ipv4FirewallConnections),
+            Def(RosReadCommandId.Ipv6FirewallConnections, "/ipv6/firewall/connection/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
+                ConnectionTrackingAllowlistProfiles.Ipv6FirewallConnections),
         ];
 
         Dictionary<RosReadCommandId, RosReadCommandDefinition> map = new(all.Length);
