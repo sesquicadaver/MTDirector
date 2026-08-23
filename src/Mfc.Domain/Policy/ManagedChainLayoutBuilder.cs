@@ -21,6 +21,8 @@ public sealed class ManagedChainSurfacePlan
 
     public IReadOnlyList<FilterRuleArtifact> ProtectedControlPlane { get; init; } = [];
 
+    public IReadOnlyList<FilterRuleArtifact> IncidentPreStateDeny { get; init; } = [];
+
     public IReadOnlyList<FilterRuleArtifact> MandatoryPreStateDeny { get; init; } = [];
 
     public IReadOnlyList<FilterRuleArtifact> StatePrelude { get; init; } = [];
@@ -172,6 +174,7 @@ public static class ManagedChainLayoutBuilder
         }
 
         EnsureArtifactBoundary(surface.ProtectedControlPlane, "PROTECTED_CONTROL_PLANE");
+        EnsureArtifactBoundary(surface.IncidentPreStateDeny, "INCIDENT_PRE_STATE_DENY");
         EnsureArtifactBoundary(surface.MandatoryPreStateDeny, "MANDATORY_PRE_STATE_DENY");
         EnsureArtifactBoundary(surface.StatePrelude, "STATE_PRELUDE");
         EnsureArtifactBoundary(surface.CompanyDenyBody, "COMPANY_DENY");
@@ -201,6 +204,7 @@ public static class ManagedChainLayoutBuilder
 
         List<FilterRuleArtifact> rootRules = [];
         AppendRelocated(rootRules, surface.ProtectedControlPlane);
+        AppendRelocated(rootRules, surface.IncidentPreStateDeny);
         AppendRelocated(rootRules, surface.MandatoryPreStateDeny);
         AppendRelocated(rootRules, surface.StatePrelude);
 

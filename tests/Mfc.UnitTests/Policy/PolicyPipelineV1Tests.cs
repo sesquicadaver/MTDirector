@@ -14,6 +14,7 @@ public sealed class PolicyPipelineV1Tests
         Assert.Equal(
             [
                 PolicyPipelineStage.ProtectedControlPlane,
+                PolicyPipelineStage.IncidentPreStateDeny,
                 PolicyPipelineStage.MandatoryPreStateDeny,
                 PolicyPipelineStage.StatePrelude,
                 PolicyPipelineStage.CompanyDenyExemptions,
@@ -58,7 +59,7 @@ public sealed class PolicyPipelineV1Tests
     public void RuleStagesExcludeDefaultDisposition()
     {
         Assert.DoesNotContain(PolicyPipelineStage.DefaultDisposition, PolicyPipelineV1.RuleStages);
-        Assert.Equal(12, PolicyPipelineV1.RuleStages.Count);
+        Assert.Equal(13, PolicyPipelineV1.RuleStages.Count);
     }
 
     [Theory]
@@ -92,6 +93,10 @@ public sealed class PolicyPipelineV1Tests
             {
                 PolicyPipelineStage.ProtectedControlPlane, PolicyKind.CompanyBaseline,
                 PolicyOwnerScope.Company, PolicyRuleEffect.Accept
+            },
+            {
+                PolicyPipelineStage.IncidentPreStateDeny, PolicyKind.IncidentDenyOverlay,
+                PolicyOwnerScope.Node, PolicyRuleEffect.Drop
             },
             {
                 PolicyPipelineStage.MandatoryPreStateDeny, PolicyKind.CompanyBaseline,
@@ -169,6 +174,12 @@ public sealed class PolicyPipelineV1Tests
         data.Add(
             PolicyPipelineStage.ProtectedControlPlane, PolicyKind.SiteOverlay,
             PolicyOwnerScope.Site, PolicyRuleEffect.Accept);
+        data.Add(
+            PolicyPipelineStage.IncidentPreStateDeny, PolicyKind.NodeOverlay,
+            PolicyOwnerScope.Node, PolicyRuleEffect.Drop);
+        data.Add(
+            PolicyPipelineStage.IncidentPreStateDeny, PolicyKind.IncidentDenyOverlay,
+            PolicyOwnerScope.Node, PolicyRuleEffect.Reject);
 
         // Allow stages reject deny effects.
         data.Add(

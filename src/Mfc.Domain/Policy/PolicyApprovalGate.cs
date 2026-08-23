@@ -115,6 +115,17 @@ public static class PolicyApprovalGate
             }
         }
 
+        if (policy.Kind == PolicyKind.IncidentDenyOverlay)
+        {
+            PolicyDocument document = PolicyDocumentReader.Read(revision.CanonicalBytes);
+            if (IncidentDenyOverlayDocumentGuard.Validate(document) != IncidentDenyOverlayCodes.ValidDocument)
+            {
+                return PolicyApprovalEvaluation.Reject(
+                    PolicyApprovalCodes.Blocker,
+                    "INCIDENT_DENY_OVERLAY approval requires valid metadata and INCIDENT_PRE_STATE_DENY DROP rules.");
+            }
+        }
+
         string risk = run.EffectiveRiskLevel();
         IReadOnlyList<PolicyApproval> matchingVotes = existingVotes
             .Where(v => v.RevisionId == revision.Id && v.BundleHash.Equals(run.BundleHash))

@@ -325,6 +325,7 @@ public sealed class DeviceFilterCompiler
                 DefaultDisposition = contract.DefaultDisposition,
                 RejectModeValue = contract.RejectModeValue,
                 ProtectedControlPlane = Collect(physical.Rules, rulesById, contract, PolicyPipelineStage.ProtectedControlPlane),
+                IncidentPreStateDeny = Collect(physical.Rules, rulesById, contract, PolicyPipelineStage.IncidentPreStateDeny),
                 MandatoryPreStateDeny = Collect(physical.Rules, rulesById, contract, PolicyPipelineStage.MandatoryPreStateDeny),
                 StatePrelude = Collect(physical.Rules, rulesById, contract, PolicyPipelineStage.StatePrelude),
                 CompanyDenyBody = CollectDenyBody(

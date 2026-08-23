@@ -114,6 +114,10 @@ public sealed class ManagedChainLayoutBuilderTests
         Assert.Equal(
             0,
             PolicyPipelineV1.Ordinal(PolicyPipelineStage.ProtectedControlPlane));
+        Assert.True(PolicyPipelineV1.Ordinal(PolicyPipelineStage.ProtectedControlPlane)
+                    < PolicyPipelineV1.Ordinal(PolicyPipelineStage.IncidentPreStateDeny));
+        Assert.True(PolicyPipelineV1.Ordinal(PolicyPipelineStage.IncidentPreStateDeny)
+                    < PolicyPipelineV1.Ordinal(PolicyPipelineStage.MandatoryPreStateDeny));
         Assert.True(PolicyPipelineV1.Ordinal(PolicyPipelineStage.CompanyDeny)
                     < PolicyPipelineV1.Ordinal(PolicyPipelineStage.SiteDeny));
         Assert.True(PolicyPipelineV1.Ordinal(PolicyPipelineStage.SiteDeny)

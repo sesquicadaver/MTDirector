@@ -7,6 +7,7 @@ public enum PolicyKind : byte
     SiteOverlay = 1,
     NodeOverlay = 2,
     Exception = 3,
+    IncidentDenyOverlay = 4,
 }
 
 /// <summary>Owner scope for a policy container (Policy Model §7).</summary>
@@ -43,6 +44,7 @@ public enum PolicyBindingScope : byte
     Site = 1,
     Node = 2,
     Exception = 3,
+    IncidentDenyOverlay = 4,
 }
 
 /// <summary>Desired-binding state (Policy Model §10). Expiry never deploys.</summary>

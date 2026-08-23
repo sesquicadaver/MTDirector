@@ -61,6 +61,11 @@ public static class PolicyHashing
                 siteOverlayHash,
                 nodeOverlayHash,
                 Require(waivedRuleHash, "EXCEPTION requires waived rule hash.")),
+            PolicyKind.IncidentDenyOverlay => HashComposite(
+                PolicyKind.IncidentDenyOverlay,
+                Require(companyBaselineHash, "INCIDENT_DENY_OVERLAY requires company baseline hash."),
+                siteOverlayHash,
+                Require(nodeOverlayHash, "INCIDENT_DENY_OVERLAY requires node overlay hash.")),
             _ => throw new DomainInvariantException($"Unknown policy kind '{kind}'."),
         };
     }

@@ -62,6 +62,8 @@ public static class PolicyDocumentReader
         IReadOnlyList<PolicyRule> rules = ReadRules(root.GetProperty("rules"));
         IReadOnlyList<JsonElement> tests = CloneArray(root.GetProperty("tests"));
         ExceptionMetadata? exceptionMetadata = ReadExceptionMetadata(root.GetProperty("exception_metadata"));
+        IncidentDenyOverlayMetadata? incidentDenyOverlayMetadata =
+            ReadIncidentDenyOverlayMetadata(root.GetProperty("incident_deny_overlay_metadata"));
 
         return new PolicyDocument(
             kind,
@@ -73,7 +75,8 @@ public static class PolicyDocumentReader
             services,
             rules,
             tests,
-            exceptionMetadata);
+            exceptionMetadata,
+            incidentDenyOverlayMetadata);
     }
 
     private static List<PolicyRule> ReadRules(JsonElement rulesElement)
@@ -386,6 +389,60 @@ public static class PolicyDocumentReader
             supersedes);
     }
 
+    private static IncidentDenyOverlayMetadata? ReadIncidentDenyOverlayMetadata(JsonElement element)
+    {
+        if (element.ValueKind != JsonValueKind.Object)
+        {
+            throw new DomainInvariantException("incident_deny_overlay_metadata must be a JSON object.");
+        }
+
+        if (!element.EnumerateObject().Any())
+        {
+            return null;
+        }
+
+        HashSet<string> allowed =
+        [
+            "incident_id",
+            "node_id",
+            "expires_at",
+            "reason",
+            "evidence_refs",
+        ];
+        foreach (JsonProperty property in element.EnumerateObject())
+        {
+            if (!allowed.Contains(property.Name))
+            {
+                throw new DomainInvariantException(
+                    $"Unknown incident_deny_overlay_metadata property '{property.Name}'.");
+            }
+        }
+
+        List<string> evidenceRefs = [];
+        JsonElement refsElement = element.GetProperty("evidence_refs");
+        if (refsElement.ValueKind != JsonValueKind.Array)
+        {
+            throw new DomainInvariantException("incident_deny_overlay_metadata evidence_refs must be a JSON array.");
+        }
+
+        foreach (JsonElement item in refsElement.EnumerateArray())
+        {
+            if (item.ValueKind != JsonValueKind.String)
+            {
+                throw new DomainInvariantException("incident_deny_overlay_metadata evidence_refs must be strings.");
+            }
+
+            evidenceRefs.Add(item.GetString() ?? string.Empty);
+        }
+
+        return IncidentDenyOverlayMetadata.Create(
+            new Endpoint.IncidentId(ParseGuid(RequireString(element, "incident_id"), "incident_id")),
+            ParseGuid(RequireString(element, "node_id"), "node_id"),
+            IncidentDenyOverlayMetadata.ParseTimestamp(RequireString(element, "expires_at"), "expires_at"),
+            RequireString(element, "reason"),
+            evidenceRefs);
+    }
+
     private static Guid[] ReadGuidArray(JsonElement parent, string name)
     {
         JsonElement element = parent.GetProperty(name);
@@ -513,6 +570,7 @@ public static class PolicyDocumentReader
             "SITE_OVERLAY" => PolicyKind.SiteOverlay,
             "NODE_OVERLAY" => PolicyKind.NodeOverlay,
             "EXCEPTION" => PolicyKind.Exception,
+            "INCIDENT_DENY_OVERLAY" => PolicyKind.IncidentDenyOverlay,
             _ => throw new DomainInvariantException($"Unknown policy kind '{text}'."),
         };
 
@@ -546,6 +604,7 @@ public static class PolicyDocumentReader
         => text switch
         {
             "PROTECTED_CONTROL_PLANE" => PolicyPipelineStage.ProtectedControlPlane,
+            "INCIDENT_PRE_STATE_DENY" => PolicyPipelineStage.IncidentPreStateDeny,
             "MANDATORY_PRE_STATE_DENY" => PolicyPipelineStage.MandatoryPreStateDeny,
             "STATE_PRELUDE" => PolicyPipelineStage.StatePrelude,
             "COMPANY_DENY_EXEMPTIONS" => PolicyPipelineStage.CompanyDenyExemptions,

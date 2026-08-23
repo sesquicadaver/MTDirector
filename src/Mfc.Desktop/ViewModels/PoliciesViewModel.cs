@@ -43,6 +43,7 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         Stages =
         [
             PolicyPipelineStage.ProtectedControlPlane,
+            PolicyPipelineStage.IncidentPreStateDeny,
             PolicyPipelineStage.MandatoryPreStateDeny,
             PolicyPipelineStage.StatePrelude,
             PolicyPipelineStage.CompanyDenyExemptions,
