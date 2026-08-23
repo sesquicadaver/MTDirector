@@ -144,6 +144,15 @@ public sealed class Policy
 
                 break;
 
+            case PolicyKind.IncidentDenyOverlay:
+                if (ownerScope != PolicyOwnerScope.Node || ownerId is null)
+                {
+                    throw new DomainInvariantException(
+                        "INCIDENT_DENY_OVERLAY must own a concrete NODE (owner_id required).");
+                }
+
+                break;
+
             default:
                 throw new DomainInvariantException($"Unknown policy kind '{kind}'.");
         }

@@ -75,4 +75,7 @@ public static class ApplicationPermissions
 
     /// <summary>Bind incident signal to response assessment contract (M7.3-06).</summary>
     public const string IncidentAssessmentBind = "incident.assessment.bind";
+
+    /// <summary>Validate incident deny overlay policy documents (M7.4-01).</summary>
+    public const string IncidentOverlayValidate = "incident.overlay.validate";
 }

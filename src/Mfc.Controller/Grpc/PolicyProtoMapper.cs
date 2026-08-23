@@ -705,6 +705,7 @@ internal static class PolicyProtoMapper
         ProtoKind.SiteOverlay => DomainKind.SiteOverlay,
         ProtoKind.NodeOverlay => DomainKind.NodeOverlay,
         ProtoKind.Exception => DomainKind.Exception,
+        ProtoKind.IncidentDenyOverlay => DomainKind.IncidentDenyOverlay,
         _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, "Unsupported policy kind."),
     };
 
@@ -714,6 +715,7 @@ internal static class PolicyProtoMapper
         DomainKind.SiteOverlay => ProtoKind.SiteOverlay,
         DomainKind.NodeOverlay => ProtoKind.NodeOverlay,
         DomainKind.Exception => ProtoKind.Exception,
+        DomainKind.IncidentDenyOverlay => ProtoKind.IncidentDenyOverlay,
         _ => ProtoKind.Unspecified,
     };
 
@@ -766,6 +768,7 @@ internal static class PolicyProtoMapper
     public static DomainStage ToDomain(ProtoStage stage) => stage switch
     {
         ProtoStage.ProtectedControlPlane => DomainStage.ProtectedControlPlane,
+        ProtoStage.IncidentPreStateDeny => DomainStage.IncidentPreStateDeny,
         ProtoStage.MandatoryPreStateDeny => DomainStage.MandatoryPreStateDeny,
         ProtoStage.StatePrelude => DomainStage.StatePrelude,
         ProtoStage.CompanyDenyExemptions => DomainStage.CompanyDenyExemptions,
@@ -784,6 +787,7 @@ internal static class PolicyProtoMapper
     public static ProtoStage ToProto(DomainStage stage) => stage switch
     {
         DomainStage.ProtectedControlPlane => ProtoStage.ProtectedControlPlane,
+        DomainStage.IncidentPreStateDeny => ProtoStage.IncidentPreStateDeny,
         DomainStage.MandatoryPreStateDeny => ProtoStage.MandatoryPreStateDeny,
         DomainStage.StatePrelude => ProtoStage.StatePrelude,
         DomainStage.CompanyDenyExemptions => ProtoStage.CompanyDenyExemptions,
@@ -1047,6 +1051,7 @@ internal static class PolicyProtoMapper
         Mfc.Domain.Policy.PolicyBindingScope.Site => ProtoBindingScope.Site,
         Mfc.Domain.Policy.PolicyBindingScope.Node => ProtoBindingScope.Node,
         Mfc.Domain.Policy.PolicyBindingScope.Exception => ProtoBindingScope.Exception,
+        Mfc.Domain.Policy.PolicyBindingScope.IncidentDenyOverlay => ProtoBindingScope.IncidentDenyOverlay,
         _ => throw new ArgumentOutOfRangeException(nameof(scope), scope, "Unsupported binding scope."),
     };
 

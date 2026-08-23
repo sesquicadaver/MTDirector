@@ -8,11 +8,12 @@ public static class PolicyPipelineV1
 {
     public const string Version = "v1";
 
-    public const int StageCount = 13;
+    public const int StageCount = 14;
 
     private static readonly PolicyPipelineStage[] OrderedStageValues =
     [
         PolicyPipelineStage.ProtectedControlPlane,
+        PolicyPipelineStage.IncidentPreStateDeny,
         PolicyPipelineStage.MandatoryPreStateDeny,
         PolicyPipelineStage.StatePrelude,
         PolicyPipelineStage.CompanyDenyExemptions,
@@ -66,6 +67,7 @@ public static class PolicyPipelineV1
         => stage switch
         {
             PolicyPipelineStage.ProtectedControlPlane => "PROTECTED_CONTROL_PLANE",
+            PolicyPipelineStage.IncidentPreStateDeny => "INCIDENT_PRE_STATE_DENY",
             PolicyPipelineStage.MandatoryPreStateDeny => "MANDATORY_PRE_STATE_DENY",
             PolicyPipelineStage.StatePrelude => "STATE_PRELUDE",
             PolicyPipelineStage.CompanyDenyExemptions => "COMPANY_DENY_EXEMPTIONS",
@@ -135,6 +137,7 @@ public static class PolicyPipelineV1
         => stage switch
         {
             PolicyPipelineStage.ProtectedControlPlane => PolicyOwnerScope.Company,
+            PolicyPipelineStage.IncidentPreStateDeny => PolicyOwnerScope.Node,
             PolicyPipelineStage.MandatoryPreStateDeny => PolicyOwnerScope.Company,
             PolicyPipelineStage.StatePrelude => PolicyOwnerScope.Company,
             PolicyPipelineStage.CompanyDeny => PolicyOwnerScope.Company,
@@ -182,6 +185,11 @@ public static class PolicyPipelineV1
                    && effect == PolicyRuleEffect.ExemptDenyStage
                    && MatchesExemptionScope(stage, ownerScope),
 
+            PolicyPipelineStage.IncidentPreStateDeny
+                => policyKind == PolicyKind.IncidentDenyOverlay
+                   && ownerScope == PolicyOwnerScope.Node
+                   && effect == PolicyRuleEffect.Drop,
+
             _ => policyKind != PolicyKind.Exception
                  && ownerScope == RequiredOwner(stage)
                  && MatchesPolicyKindOwner(policyKind, ownerScope),
@@ -208,6 +216,7 @@ public static class PolicyPipelineV1
         => stage switch
         {
             PolicyPipelineStage.ProtectedControlPlane => [PolicyRuleEffect.Accept],
+            PolicyPipelineStage.IncidentPreStateDeny => [PolicyRuleEffect.Drop],
             PolicyPipelineStage.MandatoryPreStateDeny => [PolicyRuleEffect.Drop, PolicyRuleEffect.Reject],
             PolicyPipelineStage.StatePrelude =>
             [
@@ -283,6 +292,7 @@ public static class PolicyPipelineV1
             PolicyKind.CompanyBaseline => ownerScope == PolicyOwnerScope.Company,
             PolicyKind.SiteOverlay => ownerScope == PolicyOwnerScope.Site,
             PolicyKind.NodeOverlay => ownerScope == PolicyOwnerScope.Node,
+            PolicyKind.IncidentDenyOverlay => ownerScope == PolicyOwnerScope.Node,
             PolicyKind.Exception => false,
             _ => false,
         };

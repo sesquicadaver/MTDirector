@@ -70,7 +70,7 @@ public sealed class ChainContractSet
 
     public void EnsureCannotBeChangedBy(PolicyKind kind)
     {
-        if (kind is PolicyKind.SiteOverlay or PolicyKind.NodeOverlay or PolicyKind.Exception)
+        if (kind is PolicyKind.SiteOverlay or PolicyKind.NodeOverlay or PolicyKind.Exception or PolicyKind.IncidentDenyOverlay)
         {
             if (_contracts.Length > 0)
             {

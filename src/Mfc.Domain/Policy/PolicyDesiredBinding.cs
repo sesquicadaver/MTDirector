@@ -201,6 +201,7 @@ public sealed class PolicyDesiredBinding
             PolicyKind.SiteOverlay => PolicyBindingScope.Site,
             PolicyKind.NodeOverlay => PolicyBindingScope.Node,
             PolicyKind.Exception => PolicyBindingScope.Exception,
+            PolicyKind.IncidentDenyOverlay => PolicyBindingScope.IncidentDenyOverlay,
             _ => throw new DomainInvariantException($"Unknown policy kind '{kind}'."),
         };
 }

@@ -29,6 +29,7 @@ public static class PolicyCanonicalWriter
             ("rules", w => WriteRules(w, document.Rules)),
             ("tests", w => WriteElementArray(w, document.Tests)),
             ("exception_metadata", w => WriteExceptionMetadata(w, document.ExceptionMetadata)),
+            ("incident_deny_overlay_metadata", w => WriteIncidentDenyOverlayMetadata(w, document.IncidentDenyOverlayMetadata)),
         ]);
         return writer.ToUtf8Bytes();
     }
@@ -58,6 +59,7 @@ public static class PolicyCanonicalWriter
             PolicyKind.SiteOverlay => "SITE_OVERLAY",
             PolicyKind.NodeOverlay => "NODE_OVERLAY",
             PolicyKind.Exception => "EXCEPTION",
+            PolicyKind.IncidentDenyOverlay => "INCIDENT_DENY_OVERLAY",
             _ => throw new DomainInvariantException($"Unknown policy kind '{kind}'."),
         };
 
@@ -360,6 +362,41 @@ public static class PolicyCanonicalWriter
         }
 
         writer.WriteObject(properties);
+    }
+
+    private static void WriteIncidentDenyOverlayMetadata(CanonicalJsonWriter writer, IncidentDenyOverlayMetadata? metadata)
+    {
+        if (metadata is null)
+        {
+            writer.WriteSortedObject(new Dictionary<string, string>(StringComparer.Ordinal));
+            return;
+        }
+
+        List<(string Key, Action<CanonicalJsonWriter> WriteValue)> properties =
+        [
+            ("incident_id", w => w.WriteString(metadata.IncidentId.Value.ToString("D"))),
+            ("node_id", w => w.WriteString(metadata.NodeId.ToString("D"))),
+            ("expires_at", w => w.WriteString(IncidentDenyOverlayMetadata.FormatTimestamp(metadata.ExpiresAt))),
+            ("reason", w => w.WriteString(metadata.Reason)),
+            ("evidence_refs", w => WriteStringArray(w, metadata.EvidenceRefs)),
+        ];
+        writer.WriteObject(properties);
+    }
+
+    private static void WriteStringArray(CanonicalJsonWriter writer, IReadOnlyList<string> values)
+    {
+        writer.WriteArrayStart();
+        for (int i = 0; i < values.Count; i++)
+        {
+            if (i > 0)
+            {
+                writer.WriteComma();
+            }
+
+            writer.WriteString(values[i]);
+        }
+
+        writer.WriteArrayEnd();
     }
 
     internal static string FormatConnectionState(ConnectionState state)

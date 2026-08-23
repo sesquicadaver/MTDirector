@@ -2390,6 +2390,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~IncidentResponseAssessment"
 ```
 
+## Living Specification — INCIDENT_PRE_STATE_DENY / INCIDENT_DENY_OVERLAY (M7.4-01)
+
+Issue Set M7.4-01 / next-2. Pipeline stage + overlay kind ONLY; no deploy path yet (M7.4-03). Suite: `IncidentDenyOverlayLivingSpecTests` + `IncidentDenyOverlayCoverageTests`.
+
+| AC | Requirement | Test |
+|----|-------------|------|
+| AC#1 stage order | `PolicyPipelineV1.OrderedStages` | `Ac1PipelineStageFollowsProtectedControlPlaneBeforeMandatoryPreStateDeny` |
+| AC#2 DROP-only incident stage | `PolicyPipelineV1.AllowedEffects` | `Ac2IncidentStageAllowsDropOnlyForIncidentDenyOverlay` |
+| AC#3 reject/accept forbidden | `IsOwnerEffectAllowed` | `Ac3RejectAndAcceptAreForbiddenInIncidentStage` |
+| AC#4 overlay metadata | `IncidentDenyOverlayMetadata` | `Ac4OverlayMetadataRequiresIncidentNodeReasonEvidenceAndExpiry` |
+| AC#5 document guard | `IncidentDenyOverlayDocumentGuard` | `Ac5OverlayDocumentRequiresIncidentPreStateDenyDropRules` |
+| AC#6 wrong stage | `IncidentDenyOverlayDocumentGuard` | `Ac6WrongStageFailsValidation` |
+| AC#7 canonical round-trip | `PolicyCanonicalWriter` / `PolicyDocumentReader` | `Ac7CanonicalRoundTripPreservesOverlayMetadata` |
+| AC#8 managed layout order | `ManagedChainLayoutBuilder` | `Ac8ManagedLayoutPlacesIncidentRulesAfterProtectedControlPlane` |
+| AC#9 policy kind owner | `Policy.Create` | `Ac9PolicyKindIncidentDenyOverlayRequiresNodeOwner` |
+| AC#10 use case + auth | `ValidateIncidentDenyOverlayUseCase` | `Ac10UseCaseReturnsViewAndRejectsUnauthorized` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~IncidentDenyOverlay"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

@@ -88,6 +88,11 @@ internal static class PolicyCatalogViewMapper
                 PolicyObjectOwnerScope.Exception,
                 policy.OwnerId,
                 revision.Id),
+            PolicyKind.IncidentDenyOverlay => new PolicyObjectIdentity(
+                Guid.Empty,
+                PolicyObjectOwnerScope.Node,
+                policy.OwnerId,
+                revision.Id),
             _ => throw new Domain.DomainInvariantException($"Unknown policy kind '{policy.Kind}'."),
         };
     }

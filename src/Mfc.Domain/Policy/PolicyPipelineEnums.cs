@@ -12,18 +12,19 @@ public enum PolicyFilterChain : byte
 public enum PolicyPipelineStage : byte
 {
     ProtectedControlPlane = 0,
-    MandatoryPreStateDeny = 1,
-    StatePrelude = 2,
-    CompanyDenyExemptions = 3,
-    CompanyDeny = 4,
-    SiteDenyExemptions = 5,
-    SiteDeny = 6,
-    NodeDenyExemptions = 7,
-    NodeDeny = 8,
-    CompanyAllow = 9,
-    SiteAllow = 10,
-    NodeAllow = 11,
-    DefaultDisposition = 12,
+    IncidentPreStateDeny = 1,
+    MandatoryPreStateDeny = 2,
+    StatePrelude = 3,
+    CompanyDenyExemptions = 4,
+    CompanyDeny = 5,
+    SiteDenyExemptions = 6,
+    SiteDeny = 7,
+    NodeDenyExemptions = 8,
+    NodeDeny = 9,
+    CompanyAllow = 10,
+    SiteAllow = 11,
+    NodeAllow = 12,
+    DefaultDisposition = 13,
 }
 
 /// <summary>Rule effect kinds allowed in Pipeline v1 stages (Policy Model §13 / §26).</summary>

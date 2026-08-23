@@ -34,6 +34,9 @@ public sealed class PolicyDocument
     /// <summary>Typed exception metadata; null when the object is empty (non-exception or empty draft).</summary>
     public ExceptionMetadata? ExceptionMetadata { get; }
 
+    /// <summary>Typed incident deny overlay metadata; null when the object is empty.</summary>
+    public IncidentDenyOverlayMetadata? IncidentDenyOverlayMetadata { get; }
+
     public PolicyDocument(
         PolicyKind kind,
         PolicyOwnerScope ownerScope,
@@ -44,7 +47,8 @@ public sealed class PolicyDocument
         IReadOnlyList<JsonElement>? serviceObjects = null,
         IReadOnlyList<PolicyRule>? rules = null,
         IReadOnlyList<JsonElement>? tests = null,
-        ExceptionMetadata? exceptionMetadata = null)
+        ExceptionMetadata? exceptionMetadata = null,
+        IncidentDenyOverlayMetadata? incidentDenyOverlayMetadata = null)
     {
         if (schemaVersion == 0)
         {
@@ -73,6 +77,7 @@ public sealed class PolicyDocument
         Rules = typedRules;
         Tests = tests ?? [];
         ExceptionMetadata = exceptionMetadata;
+        IncidentDenyOverlayMetadata = incidentDenyOverlayMetadata;
     }
 
     /// <summary>Empty document for a new draft of the given kind/scope.</summary>
@@ -112,7 +117,8 @@ public sealed class PolicyDocument
             ServiceObjects,
             Rules,
             Tests,
-            ExceptionMetadata);
+            ExceptionMetadata,
+            IncidentDenyOverlayMetadata);
     }
 
     /// <summary>Returns a copy with replacement typed rules (draft editing helper).</summary>
@@ -129,7 +135,8 @@ public sealed class PolicyDocument
             ServiceObjects,
             rules,
             Tests,
-            ExceptionMetadata);
+            ExceptionMetadata,
+            IncidentDenyOverlayMetadata);
     }
 
     /// <summary>Returns a copy with replacement opaque address-object catalog JSON.</summary>
@@ -146,7 +153,8 @@ public sealed class PolicyDocument
             ServiceObjects,
             Rules,
             Tests,
-            ExceptionMetadata);
+            ExceptionMetadata,
+            IncidentDenyOverlayMetadata);
     }
 
     /// <summary>Returns a copy with replacement opaque service-object catalog JSON.</summary>
@@ -163,7 +171,8 @@ public sealed class PolicyDocument
             serviceObjects,
             Rules,
             Tests,
-            ExceptionMetadata);
+            ExceptionMetadata,
+            IncidentDenyOverlayMetadata);
     }
 
     /// <summary>Returns a copy with replacement opaque policy-test JSON elements.</summary>
@@ -180,7 +189,8 @@ public sealed class PolicyDocument
             ServiceObjects,
             Rules,
             tests,
-            ExceptionMetadata);
+            ExceptionMetadata,
+            IncidentDenyOverlayMetadata);
     }
 
     /// <summary>Returns a copy with replacement exception metadata (EXCEPTION drafts).</summary>
@@ -195,5 +205,21 @@ public sealed class PolicyDocument
             ServiceObjects,
             Rules,
             Tests,
-            exceptionMetadata);
+            exceptionMetadata,
+            IncidentDenyOverlayMetadata);
+
+    /// <summary>Returns a copy with replacement incident deny overlay metadata.</summary>
+    public PolicyDocument WithIncidentDenyOverlayMetadata(IncidentDenyOverlayMetadata? incidentDenyOverlayMetadata)
+        => new(
+            Kind,
+            OwnerScope,
+            SchemaVersion,
+            ChainContracts,
+            ZoneDefinitions,
+            AddressObjects,
+            ServiceObjects,
+            Rules,
+            Tests,
+            ExceptionMetadata,
+            incidentDenyOverlayMetadata);
 }
