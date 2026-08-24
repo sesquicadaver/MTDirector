@@ -125,9 +125,9 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         Assert.Contains("N1-07", acceptance, StringComparison.Ordinal);
         Assert.Contains("M6 CLOSED", acceptance, StringComparison.Ordinal);
         Assert.Contains("MVP CLOSED:** **yes**", acceptance, StringComparison.Ordinal);
-        Assert.Contains("M7.1-03", acceptance, StringComparison.Ordinal);
-        Assert.Contains("M7.1-04", acceptance, StringComparison.Ordinal);
-        Assert.Contains("M7.1-05", acceptance, StringComparison.Ordinal);
+        Assert.Contains("M7.4 CLOSED", acceptance, StringComparison.Ordinal);
+        Assert.Contains("v0.2.0", acceptance, StringComparison.Ordinal);
+        Assert.Contains("Acceptance review", acceptance, StringComparison.OrdinalIgnoreCase);
     }
 
     // ── AC 2 ──────────────────────────────────────────────────────────────────────
@@ -148,7 +148,7 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
                      "Desktop",
                      "migrations bundle",
                      "SBOM",
-                     "Do not",
+                     "Acceptance review",
                      "git tag",
                      "Live CHR",
                  })
@@ -358,7 +358,8 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         string signing = Read("docs", "release", "RELEASE_SIGNING.md");
         Assert.Contains("SHA256SUMS", signing, StringComparison.Ordinal);
         Assert.Contains("CI signing gate", signing, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Do not create a git tag", signing, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("v0.2.0", signing, StringComparison.Ordinal);
+        Assert.Contains("Acceptance review signed off", signing, StringComparison.OrdinalIgnoreCase);
 
         string outDir = NewTempOutDir();
         try
@@ -432,11 +433,11 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
     public void Ac16ReleaseTagOnlyAfterAcceptanceReview()
     {
         string acceptance = Read("docs", "release", "mvp-acceptance.md");
-        Assert.Contains("No tag in this PR", acceptance, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("acceptance review", acceptance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Acceptance review", acceptance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("v0.2.0", acceptance, StringComparison.Ordinal);
 
         string gates = Read("docs", "release", "release-gates.md");
-        Assert.Contains("Do not", gates, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Acceptance review", gates, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("git tag", gates, StringComparison.OrdinalIgnoreCase);
 
         foreach (string scriptName in new[]

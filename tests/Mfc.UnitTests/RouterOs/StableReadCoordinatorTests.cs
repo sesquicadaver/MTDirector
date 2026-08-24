@@ -116,10 +116,7 @@ public sealed class StableReadCoordinatorTests
         StableReadCoordinator coordinator = new(new RecordingDelay());
         ScriptedAttemptFactory factory = new(
             [
-                AttemptScript.Stable(
-                    "slow",
-                    fingerprintSeed: 1,
-                    discoveryDelay: TimeSpan.FromMilliseconds(200)),
+                AttemptScript.HangUntilCanceled("slow", fingerprintSeed: 1),
             ]);
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
@@ -335,10 +332,14 @@ public sealed class StableReadCoordinatorTests
         int FingerprintAfter,
         string Dataset,
         Action? OnFingerprint = null,
-        TimeSpan? DiscoveryDelay = null)
+        TimeSpan? DiscoveryDelay = null,
+        bool BlocksUntilCanceled = false)
     {
         public static AttemptScript Stable(string dataset, int fingerprintSeed, Action? onFingerprint = null, TimeSpan? discoveryDelay = null)
             => new(fingerprintSeed, fingerprintSeed, dataset, onFingerprint, discoveryDelay);
+
+        public static AttemptScript HangUntilCanceled(string dataset, int fingerprintSeed)
+            => new(fingerprintSeed, fingerprintSeed, dataset, BlocksUntilCanceled: true);
 
         public static AttemptScript Drifting(int fingerprintBefore, int fingerprintAfter)
             => new(fingerprintBefore, fingerprintAfter, "discarded");
@@ -383,7 +384,11 @@ public sealed class StableReadCoordinatorTests
             StableReadExecutionContext context,
             CancellationToken cancellationToken)
         {
-            if (_script.DiscoveryDelay is { } delay)
+            if (_script.BlocksUntilCanceled)
+            {
+                await Task.Delay(Timeout.Infinite, cancellationToken).ConfigureAwait(false);
+            }
+            else if (_script.DiscoveryDelay is { } delay)
             {
                 await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
             }

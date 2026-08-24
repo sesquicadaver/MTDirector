@@ -22,6 +22,6 @@ Before publishing a GitHub Release:
 
 ## Release tag gate (AC16)
 
-**Do not create a git tag in the M6-09 PR.**
+Acceptance review signed off **2026-08-24**. Git tag **`v0.2.0`** on `main` marks MVP CLOSED + Post-MVP M7 CLOSED (M7.1…M7.4).
 
-A release tag (for example `v0.1.0-mvp`) is created **only after** acceptance review signs off on [`mvp-acceptance.md`](mvp-acceptance.md) and [`release-gates.md`](release-gates.md). Tag creation is an operator/CI step outside this documentation PR.
+Future tags follow the same gate: green CI, checked [`release-gates.md`](release-gates.md), updated CHANGELOG.
