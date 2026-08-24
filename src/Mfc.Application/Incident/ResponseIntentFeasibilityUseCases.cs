@@ -2,6 +2,7 @@ using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Common;
 using Mfc.Application.Models;
 using Mfc.Domain;
+using Mfc.Domain.Endpoint;
 using Mfc.Domain.Incident;
 using Auth = Mfc.Application.Common.AuthorizationGuard;
 
@@ -18,11 +19,16 @@ public sealed class AssessResponseIntentFeasibilityCommand
 public sealed class AssessResponseIntentFeasibilityUseCase
 {
     private readonly IAuthorizationBoundary _auth;
+    private readonly EmitResponseFeedbackUseCase _feedback;
 
-    public AssessResponseIntentFeasibilityUseCase(IAuthorizationBoundary auth)
+    public AssessResponseIntentFeasibilityUseCase(
+        IAuthorizationBoundary auth,
+        EmitResponseFeedbackUseCase feedback)
     {
         ArgumentNullException.ThrowIfNull(auth);
+        ArgumentNullException.ThrowIfNull(feedback);
         _auth = auth;
+        _feedback = feedback;
     }
 
     public async Task<ApplicationResult<ResponseIntentFeasibilityView>> ExecuteAsync(
@@ -45,6 +51,20 @@ public sealed class AssessResponseIntentFeasibilityUseCase
         try
         {
             ResponseIntentFeasibilityResult result = ResponseIntentFeasibilityMatrix.Assess(command.Query);
+            if (result.Feasibility == ResponseAssessmentFeasibility.NotEnforceableByIpFilter)
+            {
+                await IncidentOverlayFeedbackSupport.EmitAsync(
+                    _feedback,
+                    command.Actor,
+                    ResponseFeedbackEventKind.Blocked,
+                    command.Query.Intent.IncidentId.Value,
+                    command.Query.Intent.NodeId.Value,
+                    [],
+                    command.Query.Intent.IdempotencyKey,
+                    residualRisk: result.Feasibility.ToString(),
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
+
             return ApplicationResults.Ok(ResponseIntentFeasibilityView.FromResult(command.Query.Intent, result));
         }
         catch (DomainInvariantException ex)

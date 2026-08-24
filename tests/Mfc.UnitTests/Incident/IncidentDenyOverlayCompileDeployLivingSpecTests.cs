@@ -387,6 +387,8 @@ public sealed class IncidentDenyOverlayCompileDeployLivingSpecTests
             ScriptedDeploymentRuntime runtime = new() { Commit = true };
             DomainNode node = DeploymentTestFactory.RouterWithDevice(out _);
             nodes.AddAsync(node).GetAwaiter().GetResult();
+            FakeResponseFeedbackEventStore feedbackStore = new();
+            EmitResponseFeedbackUseCase feedback = ResponseFeedbackTestFactory.CreateEmit(auth, feedbackStore, audit, clock);
             CompileNodeFilterArtifactsUseCase compile = new(
                 auth, nodes, devices, policies, approvals, zones, bindings, observations, snapshots, artifacts, clock);
             CreateDeploymentPlanUseCase createPlan = new(auth, nodes, deployments, idempotency, audit, clock);
@@ -395,7 +397,7 @@ public sealed class IncidentDenyOverlayCompileDeployLivingSpecTests
                 auth,
                 audit,
                 policies,
-                new DeployIncidentDenyOverlayUseCase(auth, policies, approvals, audit, compile, createPlan, start));
+                new DeployIncidentDenyOverlayUseCase(auth, policies, approvals, audit, compile, createPlan, start, feedback));
         }
 
         public static async Task<DeployHarness> CreateReadyAsync()
@@ -409,10 +411,12 @@ public sealed class IncidentDenyOverlayCompileDeployLivingSpecTests
             FakeAuditEventWriter audit = new();
             FakeClock clock = new() { UtcNow = T0 };
             ScriptedDeploymentRuntime runtime = new() { Commit = true };
+            FakeResponseFeedbackEventStore feedbackStore = new();
+            EmitResponseFeedbackUseCase feedback = ResponseFeedbackTestFactory.CreateEmit(auth, feedbackStore, audit, clock);
             CreateDeploymentPlanUseCase createPlan = new(auth, fx.Nodes, deployments, idempotency, audit, clock);
             StartDeploymentUseCase start = new(auth, fx.Nodes, deployments, drift, idempotency, audit, clock, runtime);
             DeployIncidentDenyOverlayUseCase deploy = new(
-                auth, fx.Policies, fx.Approvals, audit, fx.UseCase, createPlan, start);
+                auth, fx.Policies, fx.Approvals, audit, fx.UseCase, createPlan, start, feedback);
             DomainPolicy overlay = (await fx.Policies.ListActiveByOwnerAsync(
                 PolicyKind.IncidentDenyOverlay,
                 fx.NodeId)).Single();

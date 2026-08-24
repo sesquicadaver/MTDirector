@@ -3,8 +3,11 @@ using System.Text;
 using Mfc.Application.Abstractions.Audit;
 using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.ConnectionProfiles;
+using Mfc.Application.Abstractions.Integration;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
+using Mfc.Application.Abstractions.Time;
+using Mfc.Application.Incident;
 using Mfc.Domain;
 using Mfc.Domain.Canonicalization;
 using Mfc.Domain.Capabilities;
@@ -13,6 +16,8 @@ using Mfc.Domain.Deployment.Primitives;
 using Mfc.Domain.Drift;
 using Mfc.Domain.Drift.Primitives;
 using Mfc.Domain.Endpoint;
+using Mfc.Domain.Incident;
+using Mfc.Domain.Incident.Primitives;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
@@ -1378,6 +1383,76 @@ internal sealed class FakeDriftEventStore : IDriftEventStore
 
         return Task.FromResult(false);
     }
+}
+
+internal sealed class FakeResponseFeedbackEventStore : IResponseFeedbackEventStore
+{
+    private readonly Dictionary<Guid, ResponseFeedbackEvent> _byId = [];
+
+    public Task AppendAsync(ResponseFeedbackEvent feedbackEvent, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(feedbackEvent);
+        _byId[feedbackEvent.Id.Value] = feedbackEvent;
+        return Task.CompletedTask;
+    }
+
+    public Task<ResponseFeedbackEvent?> GetAsync(
+        ResponseFeedbackEventId id,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(_byId.TryGetValue(id.Value, out ResponseFeedbackEvent? e) ? e : null);
+
+    public Task<IReadOnlyList<ResponseFeedbackEvent>> ListByIncidentAsync(
+        IncidentId incidentId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<ResponseFeedbackEvent>>(
+            _byId.Values
+                .Where(e => e.IncidentId == incidentId)
+                .OrderByDescending(e => e.CreatedAtUtc)
+                .ThenByDescending(e => e.Id.Value)
+                .ToArray());
+
+    public Task<IReadOnlyList<ResponseFeedbackEvent>> ListByNodeAsync(
+        NodeId nodeId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<ResponseFeedbackEvent>>(
+            _byId.Values
+                .Where(e => e.NodeId == nodeId)
+                .OrderByDescending(e => e.CreatedAtUtc)
+                .ThenByDescending(e => e.Id.Value)
+                .ToArray());
+}
+
+internal sealed class RecordingResponseFeedbackDeliveryPort : IResponseFeedbackDeliveryPort
+{
+    public List<ResponseFeedbackEvent> Delivered { get; } = [];
+
+    public Task<ResponseFeedbackDeliveryResult> DeliverAsync(
+        ResponseFeedbackEvent feedbackEvent,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(feedbackEvent);
+        Delivered.Add(feedbackEvent);
+        return Task.FromResult(new ResponseFeedbackDeliveryResult
+        {
+            Outcome = ResponseFeedbackDeliveryOutcome.Delivered,
+        });
+    }
+}
+
+internal static class ResponseFeedbackTestFactory
+{
+    internal static EmitResponseFeedbackUseCase CreateEmit(
+        FakeAuthorizationBoundary auth,
+        FakeResponseFeedbackEventStore store,
+        FakeAuditEventWriter audit,
+        FakeClock clock,
+        RecordingResponseFeedbackDeliveryPort? delivery = null)
+        => new(
+            auth,
+            store,
+            delivery ?? new RecordingResponseFeedbackDeliveryPort(),
+            audit,
+            clock);
 }
 
 internal sealed class FakeEndpointPresenceStore : IEndpointPresenceStore

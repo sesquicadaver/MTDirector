@@ -41,6 +41,8 @@ public sealed class MfcDbContext : DbContext
 
     public DbSet<DriftEventEntity> DriftEvents => Set<DriftEventEntity>();
 
+    public DbSet<ResponseFeedbackEventEntity> ResponseFeedbackEvents => Set<ResponseFeedbackEventEntity>();
+
     public DbSet<DeviceConnectionProfileEntity> DeviceConnectionProfiles => Set<DeviceConnectionProfileEntity>();
 
     public DbSet<CaptureOperationEntity> CaptureOperations => Set<CaptureOperationEntity>();

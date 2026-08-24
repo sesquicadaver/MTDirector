@@ -5,6 +5,7 @@ using Mfc.Domain.Incident;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Policy;
 using Mfc.Domain.Routing;
+using Mfc.UnitTests.Application.Fakes;
 using Xunit;
 
 namespace Mfc.UnitTests.Incident;
@@ -55,8 +56,11 @@ public sealed class ResponseIntentFeasibilityCoverageTests
     [Fact]
     public async Task UseCaseValidatesNullQuery()
     {
+        FakeAuthorizationBoundary auth = new();
+        FakeAuditEventWriter audit = new();
+        FakeClock clock = new();
         AssessResponseIntentFeasibilityUseCase useCase =
-            new(new Mfc.UnitTests.Application.Fakes.FakeAuthorizationBoundary());
+            new(auth, ResponseFeedbackTestFactory.CreateEmit(auth, new FakeResponseFeedbackEventStore(), audit, clock));
         await Assert.ThrowsAsync<ArgumentNullException>(() =>
             useCase.ExecuteAsync(new AssessResponseIntentFeasibilityCommand
             {

@@ -2483,6 +2483,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~IncidentDenyOverlayRemoval"
 ```
 
+## Living Specification — RESPONSE_* feedback events (M7.4-05)
+
+Issue Set M7.4-05 / next-2. Outbound feedback to external analytics complex. Suite: `ResponseFeedbackLivingSpecTests` + `ResponseFeedbackCoverageTests`.
+
+| AC | Requirement | Module | Test |
+|----|-------------|--------|------|
+| 1 | All eight RESPONSE_* codes stable | `ResponseFeedbackEventCodes` | `Ac1EventCodesMapToAllEightKinds` |
+| 2 | Domain create validates correlation_id | `ResponseFeedbackEvent.Create` | `Ac2DomainCreateRequiresConcreteCorrelationId` |
+| 3 | Emit persists immutable event | `EmitResponseFeedbackUseCase` | `Ac3EmitPersistsImmutableEvent` |
+| 4 | Configured delivery port receives event | `IResponseFeedbackDeliveryPort` | `Ac4ConfiguredDeliveryPortReceivesEvent` |
+| 5 | Not-configured delivery still persists | `NotConfiguredResponseFeedbackDeliveryPort` | `Ac5NotConfiguredDeliveryStillPersistsEvent` |
+| 6 | List requires auth | `ListResponseFeedbackEventsUseCase` | `Ac6ListByIncidentRequiresAuth` |
+| 7 | List returns persisted events | `IResponseFeedbackEventStore` | `Ac7ListByIncidentReturnsPersistedEvents` |
+| 8 | Not-enforceable assess emits BLOCKED | `AssessResponseIntentFeasibilityUseCase` | `Ac8AssessNotEnforceableEmitsBlockedFeedback` |
+| 9 | Emit audit records code + delivery | `EmitResponseFeedbackUseCase` | `Ac9EmitAuditRecordsEventCodeAndDelivery` |
+| 10 | Unauthorized emit rejected | `EmitResponseFeedbackUseCase` | `Ac10EmitRejectsUnauthorizedActor` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ResponseFeedback"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

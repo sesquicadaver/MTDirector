@@ -118,7 +118,11 @@ public sealed class ResponseIntentFeasibilityLivingSpecTests
     public async Task Ac10UseCaseReturnsViewAndRejectsUnauthorized()
     {
         FakeAuthorizationBoundary auth = new();
-        AssessResponseIntentFeasibilityUseCase useCase = new(auth);
+        FakeAuditEventWriter audit = new();
+        FakeClock clock = new() { UtcNow = DateTimeOffset.UtcNow };
+        FakeResponseFeedbackEventStore feedbackStore = new();
+        EmitResponseFeedbackUseCase feedback = ResponseFeedbackTestFactory.CreateEmit(auth, feedbackStore, audit, clock);
+        AssessResponseIntentFeasibilityUseCase useCase = new(auth, feedback);
         ApplicationResult<ResponseIntentFeasibilityView> ok = await useCase.ExecuteAsync(
             new AssessResponseIntentFeasibilityCommand
             {
