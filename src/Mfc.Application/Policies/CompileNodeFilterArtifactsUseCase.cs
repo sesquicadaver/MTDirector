@@ -229,6 +229,23 @@ public sealed class CompileNodeFilterArtifactsUseCase
                 "Logical effective policy hash no longer matches the analysis run.");
         }
 
+        (IReadOnlyList<PolicyLayer>? overlayLayers, ApplicationError? overlayError) =
+            await LoadIncidentOverlaysAsync(node, cancellationToken).ConfigureAwait(false);
+        if (overlayError is not null)
+        {
+            return ApplicationResults.Fail(overlayError);
+        }
+
+        IncidentDenyOverlayCompileMerge.MergeResult mergedRules = IncidentDenyOverlayCompileMerge.Merge(
+            composed.ActiveRules,
+            overlayLayers ?? [],
+            _clock.UtcNow);
+        if (!mergedRules.IsSuccess)
+        {
+            return CompileFail(mergedRules.Code!, mergedRules.Message!);
+        }
+
+        IReadOnlyList<PolicyRule> compileActiveRules = mergedRules.Rules;
         PolicyDocument catalogDocument = new(
             PolicyKind.CompanyBaseline,
             PolicyOwnerScope.Company,
@@ -323,7 +340,7 @@ public sealed class CompileNodeFilterArtifactsUseCase
                 CapabilityCurrent = capabilityCurrent,
                 CompilerProfileSupported = profileSupported,
                 NodeKind = node.DeclaredKind,
-                ActiveRules = composed.ActiveRules,
+                ActiveRules = compileActiveRules,
                 ChainContracts = contracts,
                 Addresses = addresses,
                 Services = services,
@@ -522,6 +539,59 @@ public sealed class CompileNodeFilterArtifactsUseCase
         if (nodeError is not null)
         {
             return (null, nodeError);
+        }
+
+        return (layers, null);
+    }
+
+    private async Task<(IReadOnlyList<PolicyLayer>? Layers, ApplicationError? Error)> LoadIncidentOverlaysAsync(
+        Node node,
+        CancellationToken cancellationToken)
+    {
+        List<PolicyLayer> layers = [];
+        IReadOnlyList<Policy> policies = await _policies
+            .ListActiveByOwnerAsync(PolicyKind.IncidentDenyOverlay, node.Id.Value, cancellationToken)
+            .ConfigureAwait(false);
+        DateTimeOffset now = _clock.UtcNow;
+        foreach (Policy policy in policies.OrderBy(static p => p.Id.Value))
+        {
+            (PolicyLayer? layer, _, ApplicationError? error) =
+                await LoadApprovedLayerAsync(policy, cancellationToken).ConfigureAwait(false);
+            if (error is not null)
+            {
+                return (null, error);
+            }
+
+            if (layer is null)
+            {
+                continue;
+            }
+
+            IncidentDenyOverlayMetadata? metadata = layer.PolicyDocument.IncidentDenyOverlayMetadata;
+            if (metadata is not null && metadata.IsExpired(now))
+            {
+                continue;
+            }
+
+            if (metadata is not null && metadata.NodeId != node.Id.Value)
+            {
+                return (null, new ApplicationError(
+                    IncidentDenyOverlayCodes.OverlayNodeMismatch,
+                    "Incident deny overlay node_id must match the compile target Node."));
+            }
+
+            IReadOnlyList<PolicyDesiredBinding> bindings = await _approvals
+                .ListActiveBindingsAsync(PolicyBindingScope.IncidentDenyOverlay, node.Id.Value, cancellationToken)
+                .ConfigureAwait(false);
+            bool bound = bindings.Any(b =>
+                b.PolicyId == policy.Id
+                && b.State == PolicyBindingState.Active);
+            if (!bound)
+            {
+                continue;
+            }
+
+            layers.Add(layer);
         }
 
         return (layers, null);

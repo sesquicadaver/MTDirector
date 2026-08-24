@@ -2392,7 +2392,7 @@ dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~Incident
 
 ## Living Specification — INCIDENT_PRE_STATE_DENY / INCIDENT_DENY_OVERLAY (M7.4-01)
 
-Issue Set M7.4-01 / next-2. Pipeline stage + overlay kind ONLY; no deploy path yet (M7.4-03). Suite: `IncidentDenyOverlayLivingSpecTests` + `IncidentDenyOverlayCoverageTests`.
+Issue Set M7.4-01 / next-2. Pipeline stage + overlay kind; deploy path in M7.4-03. Suite: `IncidentDenyOverlayLivingSpecTests` + `IncidentDenyOverlayCoverageTests`.
 
 | AC | Requirement | Test |
 |----|-------------|------|
@@ -2434,6 +2434,29 @@ Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ResponseIntentFeasibility"
+```
+
+## Living Specification — incident overlay compile/deploy via M3/M4 (M7.4-03)
+
+Issue Set M7.4-03 / next-2. Bound overlay rules merged at compile; deploy orchestrates existing M3/M4 (one Node). Suite: `IncidentDenyOverlayCompileDeployLivingSpecTests` + `IncidentDenyOverlayCompileDeployCoverageTests`.
+
+| AC | Requirement | Test |
+|----|-------------|------|
+| AC#1 no overlays | `IncidentDenyOverlayCompileMerge` | `Ac1MergeWithoutOverlaysPreservesComposedRules` |
+| AC#2 expired skip | `IncidentDenyOverlayCompileMerge` | `Ac2ExpiredOverlayIsSkippedAtMerge` |
+| AC#3 UUID collision | `IncidentDenyOverlayCompileMerge` | `Ac3RuleUuidCollisionFailsClosed` |
+| AC#4 invalid document | `IncidentDenyOverlayDocumentGuard` | `Ac4InvalidOverlayDocumentFailsMerge` |
+| AC#5 stage order | `IncidentDenyOverlayCompileMerge` | `Ac5MergeOrdersIncidentRulesByPipelineStage` |
+| AC#6 compile merge | `CompileNodeFilterArtifactsUseCase` | `Ac6BoundOverlayIncreasesCompiledRuleCount` |
+| AC#7 node match | `DeployIncidentDenyOverlayUseCase` | `Ac7DeployRejectsOverlayPolicyForWrongNode` |
+| AC#8 overlay kind | `DeployIncidentDenyOverlayUseCase` | `Ac8DeployRequiresIncidentDenyOverlayKind` |
+| AC#9 M3/M4 orchestration | `DeployIncidentDenyOverlayUseCase` | `Ac9DeployOrchestratesCompilePlanAndStartForOneNode` |
+| AC#10 use case + auth | `DeployIncidentDenyOverlayUseCase` | `Ac10DeployUseCaseRejectsUnauthorizedActor` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~IncidentDenyOverlayCompileDeploy"
 ```
 
 ## CHR live matrix

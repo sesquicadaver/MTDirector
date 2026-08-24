@@ -449,7 +449,7 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
         return (useCase, node);
     }
 
-    private static async Task<CompileFixture> SeedApprovedCompanyWithNodeDeviceAsync(
+    internal static async Task<CompileFixture> SeedApprovedCompanyWithNodeDeviceAsync(
         bool withCapabilitySnapshot,
         Hash256? logicalHash = null,
         bool withChainContracts = false,
@@ -635,6 +635,7 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
             Artifacts = artifacts,
             Approvals = approvals,
             Policies = policies,
+            Nodes = nodes,
             NodeId = node.Id.Value,
             SiteId = node.SiteId.Value,
             PolicyId = draft.Value.PolicyId,
@@ -725,7 +726,7 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
     private static Hash256 H(string value)
         => Hash256.Create(SHA256.HashData(Encoding.UTF8.GetBytes(value)));
 
-    private sealed class CompileFixture
+    internal sealed class CompileFixture
     {
         public required CompileNodeFilterArtifactsUseCase UseCase { get; init; }
 
@@ -734,6 +735,8 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
         public required FakePolicyApprovalStore Approvals { get; init; }
 
         public required FakePolicyStore Policies { get; init; }
+
+        public required FakeNodeStore Nodes { get; init; }
 
         public required Guid NodeId { get; init; }
 

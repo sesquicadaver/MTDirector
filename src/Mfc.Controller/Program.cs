@@ -234,6 +234,7 @@ public static class Program
         services.AddScoped<BindIncidentResponseAssessmentUseCase>();
         services.AddScoped<ValidateIncidentDenyOverlayUseCase>();
         services.AddScoped<AssessResponseIntentFeasibilityUseCase>();
+        services.AddScoped<DeployIncidentDenyOverlayUseCase>();
         services.AddScoped<DetectManagedDriftUseCase>();
         services.AddScoped<GetDriftEventUseCase>();
         services.AddScoped<ListDeviceDriftEventsUseCase>();
