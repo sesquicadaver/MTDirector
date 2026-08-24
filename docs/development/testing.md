@@ -2459,6 +2459,30 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~IncidentDenyOverlayCompileDeploy"
 ```
 
+## Living Specification — incident overlay TTL removal plan (M7.4-04)
+
+Issue Set M7.4-04 / next-2. TTL expiry creates mandatory removal plan via M4 without silent RouterOS write. Suite: `IncidentDenyOverlayRemovalLivingSpecTests` + `IncidentDenyOverlayRemovalCoverageTests`.
+
+| AC | Requirement | Module | Test |
+|----|-------------|--------|------|
+| 1 | Expire pending removal requires INCIDENT_DENY_OVERLAY scope | `PolicyDesiredBinding.ExpirePendingRemoval` | `Ac1ExpirePendingRemovalRequiresIncidentOverlayScope` |
+| 2 | Gate rejects binding before valid_until | `PolicyBindingGate.EvaluateIncidentOverlayExpiry` | `Ac2EvaluateIncidentOverlayExpiryRejectsBeforeValidUntil` |
+| 3 | Gate allows past-due ACTIVE binding | `PolicyBindingGate.EvaluateIncidentOverlayExpiry` | `Ac3EvaluateIncidentOverlayExpiryAllowsPastDueBinding` |
+| 4 | Store lists due ACTIVE overlay bindings | `IPolicyApprovalStore.ListDueIncidentDenyOverlayBindingsAsync` | `Ac4ListDueIncidentDenyOverlayBindingsReturnsPastDueActiveOnly` |
+| 5 | Expire use case has zero RouterOS dependencies | `ExpireIncidentDenyOverlayBindingUseCase` | `Ac5ExpireUseCaseHasZeroRouterOsDependencies` |
+| 6 | Expire → EXPIRED_PENDING_RECONCILIATION, no deploy | `ExpireIncidentDenyOverlayBindingUseCase` | `Ac6ExpireTransitionsBindingWithoutDeploymentStart` |
+| 7 | Compile after expire excludes overlay rules | `CompileNodeFilterArtifactsUseCase` | `Ac7CompileAfterExpireExcludesOverlayRules` |
+| 8 | Plan removal creates plan without StartDeployment | `PlanIncidentDenyOverlayRemovalUseCase` | `Ac8PlanRemovalCreatesPlanWithoutStartDeployment` |
+| 9 | Plan audit records deployment_started=false | `PlanIncidentDenyOverlayRemovalUseCase` | `Ac9PlanAuditRecordsDeploymentStartedFalse` |
+| 10 | Unauthorized actor rejected | `PlanIncidentDenyOverlayRemovalUseCase` | `Ac10PlanRejectsUnauthorizedActor` |
+| 11 | Reconcile job expires due bindings without RouterOS | `ReconcileExpiredIncidentDenyOverlayBindingsJobUseCase` | `Ac11ReconcileJobExpiresDueOverlayBindingsWithoutRouterOs` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~IncidentDenyOverlayRemoval"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

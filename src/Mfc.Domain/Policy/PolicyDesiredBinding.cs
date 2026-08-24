@@ -193,6 +193,33 @@ public sealed class PolicyDesiredBinding
         UpdatedAtUtc = now;
     }
 
+    /// <summary>
+    /// Marks an expired INCIDENT_DENY_OVERLAY binding pending mandatory removal deployment (next-2 / M7.4-04).
+    /// Does not write RouterOS or create a deployment plan.
+    /// </summary>
+    public void ExpirePendingRemoval(DateTimeOffset nowUtc)
+    {
+        if (Scope != PolicyBindingScope.IncidentDenyOverlay)
+        {
+            throw new DomainInvariantException("Only INCIDENT_DENY_OVERLAY bindings may expire pending removal.");
+        }
+
+        if (State != PolicyBindingState.Active)
+        {
+            throw new DomainInvariantException("Only ACTIVE incident deny overlay bindings may expire.");
+        }
+
+        DateTimeOffset now = nowUtc.ToUniversalTime();
+        if (ValidUntilUtc is null || now < ValidUntilUtc.Value)
+        {
+            throw new DomainInvariantException("Incident deny overlay binding is not past valid_until.");
+        }
+
+        State = PolicyBindingState.ExpiredPendingReconciliation;
+        RowVersion++;
+        UpdatedAtUtc = now;
+    }
+
     /// <summary>Maps policy kind onto binding scope (Policy Model §10).</summary>
     public static PolicyBindingScope ScopeFor(PolicyKind kind)
         => kind switch

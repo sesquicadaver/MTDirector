@@ -43,6 +43,8 @@ public static class PolicyApprovalCodes
 
     public const string BindingNotException = "POLICY_BINDING_NOT_EXCEPTION";
 
+    public const string BindingNotIncidentOverlay = "POLICY_BINDING_NOT_INCIDENT_OVERLAY";
+
     public const string BindingNotDue = "POLICY_BINDING_NOT_DUE";
 
     /// <summary>Approval/binding blockers that must map to FailedPrecondition.</summary>
