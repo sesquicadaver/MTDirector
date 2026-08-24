@@ -1,6 +1,6 @@
-# Operations manual (MVP)
+# Operations manual (v0.2.0)
 
-Day-2 operator guide for MTDirector after M6 CLOSED. Details for packaging and acceptance live under [`../release/`](../release/).
+Day-2 operator guide for MTDirector after **MVP CLOSED** and **M7 CLOSED** (`v0.2.0`). Packaging and acceptance: [`../release/`](../release/). Production RouterOS read path: **P2 pilot** queue in [`ROADMAP.md`](../../ROADMAP.md) §3.B5.
 
 ## Daily surfaces (Desktop)
 

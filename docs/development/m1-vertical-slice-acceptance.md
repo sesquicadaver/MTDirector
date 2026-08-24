@@ -20,7 +20,7 @@ This document is the Living Specification index for M1 DoD: operator can registe
 | Test filters / Living Spec matrices | [`testing.md`](testing.md) |
 | Recovery / DB restore | [`../operations/recovery.md`](../operations/recovery.md) |
 
-Normative specs remain in the repo root (`Read-Only Vertical Slice — Technical Design v0.1.md`, Canonical Snapshot Spec, RouterOS Read Adapter Spec, Initial Issue Set).
+Normative specs remain in the repository root — index: [`docs/specs/README.md`](specs/README.md) (`Read-Only Vertical Slice — Technical Design v0.1.md`, Canonical Snapshot Spec, RouterOS Read Adapter Spec, Initial Issue Set).
 
 ## Acceptance criteria → evidence
 

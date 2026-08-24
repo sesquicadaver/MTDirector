@@ -7,6 +7,13 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - **N1-07 (#109)** — E2E/drift acceptance for container/VLAN/VETH/HW path classes is DONE (`PathClassE2EDriftLivingSpecTests`). Spine complete: `M6(+N1-07) → MVP CLOSED`.
 - **M7.1…M7.4 (#110–#136)** — Post-MVP routing assurance, endpoint mobility, external correlation, and incident enforcement are DONE. **M7.4 CLOSED**; Post-MVP M7 = **0** open. Release tag **`v0.2.0`** (2026-08-24).
 
+## Production wiring (P2 pilot — OPEN)
+
+- **`IRouterOsReadPort`** defaults to `ProbeOnlyRouterOsReadPort` — live API-SSL inventory probe requires **P2-04** (#280).
+- **`ISnapshotCapturePort`** defaults to `NotConfiguredSnapshotCapturePort` — stable-read capture requires **P2-05** (#281).
+- **`AddRouterOsProductionServices`** + `Mfc:RouterOs:Enabled` gate — **P2-06** (#282).
+- Onboarding/deploy/feedback ports (`NotConfiguredOnboardingRuntime`, `NotConfiguredDeploymentRuntime`, `NotConfiguredResponseFeedbackDeliveryPort`) remain stubs until future P2 write-path queue.
+
 ## Live lab residuals (optional)
 
 - Live CHR matrix is **OFF**. Scripted E2E Living Specs (M6-05…M6-07 + N1-07 + M7.1-11 + M7.2-04 + M7.4-06) are the DoD substitute.

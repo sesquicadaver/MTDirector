@@ -1,5 +1,7 @@
 # Architecture overview
 
+**Release baseline:** `v0.2.0` — MVP + Post-MVP M7 CLOSED in code; **P2 pilot** (production RouterOS read/capture ports) is the active queue — see [`ROADMAP.md`](../../ROADMAP.md) §3.B5.
+
 MTDirector (MikroTik Firewall Controller) is a **modular monolith**: one deployable Controller process, one Desktop client, and clear assembly boundaries.
 
 ```text
@@ -11,7 +13,7 @@ Avalonia Desktop  --gRPC/mTLS-->  ASP.NET Core Controller
                    (pure model)   (PostgreSQL/EF)  (API-SSL only)
 ```
 
-Normative detail lives in `TOR-1.md` and the MVP specifications. This folder records **decisions** (ADRs), not a restatement of the full ТЗ.
+Normative detail lives in [`TOR-1.md`](../../TOR-1.md), the MVP specifications, and [`docs/specs/README.md`](../specs/README.md). This folder records **decisions** (ADRs), not a restatement of the full ТЗ.
 
 ## Domain progress (M1)
 
