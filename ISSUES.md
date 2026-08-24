@@ -140,9 +140,12 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 | `M7.4-04` | #134 | https://github.com/sesquicadaver/MTDirector/issues/134 |
 | `M7.4-05` | #135 | https://github.com/sesquicadaver/MTDirector/issues/135 |
 | `M7.4-06` | #136 | https://github.com/sesquicadaver/MTDirector/issues/136 |
+| `P2-04` | #280 | https://github.com/sesquicadaver/MTDirector/issues/280 |
+| `P2-05` | #281 | https://github.com/sesquicadaver/MTDirector/issues/281 |
+| `P2-06` | #282 | https://github.com/sesquicadaver/MTDirector/issues/282 |
 
-**Total:** 136 issues
+**Total:** 139 issues (136 DONE + 3 OPEN P2)
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 
-Start here (linear queue): [#68 M3-01](https://github.com/sesquicadaver/MTDirector/issues/68) — operating plan [`ROADMAP.md`](ROADMAP.md) §2.4 / §3.
+Start here (linear queue): [#280 P2-04](https://github.com/sesquicadaver/MTDirector/issues/280) — operating plan [`ROADMAP.md`](ROADMAP.md) §3.B5.
