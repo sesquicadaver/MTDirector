@@ -1,14 +1,15 @@
-# Known limitations (MVP CLOSED)
+# Known limitations (MVP CLOSED + M7 CLOSED)
 
-These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They are intentional residuals, not defects against M6-09 / N1-07 DoD.
+These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They are intentional residuals, not defects against M6-09 / N1-07 / M7 DoD.
 
-## Closed with N1-07 / MVP CLOSED
+## Closed milestones
 
 - **N1-07 (#109)** — E2E/drift acceptance for container/VLAN/VETH/HW path classes is DONE (`PathClassE2EDriftLivingSpecTests`). Spine complete: `M6(+N1-07) → MVP CLOSED`.
+- **M7.1…M7.4 (#110–#136)** — Post-MVP routing assurance, endpoint mobility, external correlation, and incident enforcement are DONE. **M7.4 CLOSED**; Post-MVP M7 = **0** open. Release tag **`v0.2.0`** (2026-08-24).
 
 ## Live lab residuals (optional)
 
-- Live CHR matrix is **OFF**. Scripted E2E Living Specs (M6-05…M6-07 + N1-07) are the DoD substitute.
+- Live CHR matrix is **OFF**. Scripted E2E Living Specs (M6-05…M6-07 + N1-07 + M7.1-11 + M7.2-04 + M7.4-06) are the DoD substitute.
 - Live physical CRS hardware exercise is **OFF**. Scripted CRS fixture + `VrrpCrsE2ELivingSpecTests` AC11 are the DoD substitute.
 - Golden live CHR hashes remain env-gated until an isolated runner exists.
 
@@ -18,11 +19,11 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Artifact “signing” for MVP is **cleartext `SHA256SUMS` + documented attestation**; cryptographic GPG/Sigstore is a CI signing gate (see [`RELEASE_SIGNING.md`](RELEASE_SIGNING.md)).
 - CycloneDX CLI is optional; SBOM script falls back to CycloneDX-lite metadata + package inventory.
 
-## Product scope lock (out of MVP)
+## Product scope lock (out of MVP / M7)
 
 - No NAT / RAW / Mangle / routing / VRRP / bridge / VLAN **writes** beyond managed filter/onboarding/deploy allowlists.
 - No campaigns, auto-deploy, auto-fix drift, web/mobile UI, multi-tenant, microservices/Redis/K8s, multi-vendor, SIEM/SOAR in Controller.
-- Post-MVP **M7.*** (#110–#136) continues after MVP CLOSED (**M7.1 CLOSED**; M7.1-11 DONE; NEXT = M7.2-01).
+- `IResponseFeedbackDeliveryPort` defaults to **not configured** until an external analytics complex is wired.
 
 ## Operational notes
 

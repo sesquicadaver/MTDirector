@@ -39,9 +39,9 @@ M0–M6 logical IDs map to GitHub via [`ISSUES.md`](../../ISSUES.md). Acceptance
 | M6 E2E | M6-01…M6-08 | #100–#107 | CLOSED |
 | M6-09 acceptance | M6-09 | #108 | THIS PACKAGE |
 
-N1 weave items N1-01…N1-07 are DONE; **MVP CLOSED**. **M7.1 CLOSED** (M7.1-01…M7.1-11 DONE). Linear queue continues at **M7.2-01 (#121)**.
+N1 weave items N1-01…N1-07 are DONE; **MVP CLOSED**. **M7.1 CLOSED** (M7.1-01…M7.1-11 DONE). **M7.2 CLOSED** (M7.2-01…M7.2-04 DONE). **M7.3 CLOSED** (M7.3-01…M7.3-06 DONE). **M7.4 CLOSED** (M7.4-01…M7.4-06 DONE). Post-MVP M7 = **0** open.
 
-Post-MVP M7.1 progress: **M7.1-03** RouteResolutionTrace DONE; **M7.1-04** ECMP ONE_OF DONE; **M7.1-05** dynamic route origins DONE.
+Post-MVP M7 delivered: routing assurance (M7.1), endpoint mobility (M7.2), external correlation (M7.3), incident enforcement + E2E (M7.4).
 
 Verify closed M6-01…M6-08 (example):
 
@@ -98,4 +98,16 @@ Live CHR / live physical CRS remain **OFF**. Optional residual: env-gated `MFC_C
 
 ## Milestone close statement
 
-With M6-01…M6-09 and N1-07 delivered, **M6 is CLOSED** and **MVP CLOSED**. **M7.1 CLOSED** (M7.1-11 CHR acceptance Living Spec). Linear queue continues at **M7.2-01 (#121)**. Do **not** create a git release tag until acceptance review signs off (AC16).
+With M6-01…M6-09 and N1-07 delivered, **M6 is CLOSED** and **MVP CLOSED**. Post-MVP **M7.1…M7.4 CLOSED** (issues #110–#136). Linear queue is empty; Post-MVP M7 = **0** open.
+
+## Acceptance review (AC16)
+
+| Field | Value |
+|-------|-------|
+| Review date | **2026-08-24** |
+| Scope | MVP (M0–M6 + N1) + Post-MVP M7 (M7.1–M7.4) |
+| Release tag | **`v0.2.0`** |
+| Evidence | [`release-gates.md`](release-gates.md) (all required gates checked) |
+| CI | Green on acceptance branch before tag |
+
+Git tag **`v0.2.0`** marks the first production acceptance baseline covering MVP CLOSED and M7 CLOSED.

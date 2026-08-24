@@ -7,6 +7,18 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-24
+
+First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **Post-MVP M7 CLOSED** (M7.1–M7.4). Git tag `v0.2.0`. Acceptance review signed off 2026-08-24 per [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md).
+
+### Fixed
+
+- Stabilized `StableReadCoordinatorTests.FullCaptureTimeoutCancelsCoordination` — deterministic hang-until-cancel instead of race-prone fixed delay (CI flake on `main`).
+
+### Changed
+
+- Synced release documentation (`known-limitations`, `release-gates`, `mvp-acceptance`, `RELEASE_SIGNING`, ROADMAP §2.1) for M7 CLOSED and acceptance review.
+
 ### Added
 
 - Incident response E2E scripted living spec (M7.4-06 / next-2): `ReportIncidentDeploymentOutcomeUseCase` maps committed/rollback/recovery deployment outcomes to RESPONSE_APPLIED/VERIFIED/ROLLED_BACK/RECOVERY_REQUIRED; partial feasibility emits PLANNED with residual_risk. Living Spec `IncidentResponseE2ELivingSpecTests` AC 1–10 covers enforceable, not-enforceable, rollback, residual risk, TTL removal, and full lifecycle query. ROADMAP marks M7.4-06 DONE and **M7.4 CLOSED**; Post-MVP M7 = 0 open.
