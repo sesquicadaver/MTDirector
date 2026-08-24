@@ -21,6 +21,24 @@ Configuration sources (highest wins last):
 | `Authentication:AllowDevelopmentAuthentication` | Dev-only; loopback bind required |
 | `Database:ConnectionString` | PostgreSQL only |
 
+## RouterOS production ports (P2 pilot)
+
+Until **P2-06** is merged, Controller defaults register **not-configured** stubs for live RouterOS I/O:
+
+| Port | Default (CI / Development) | Production (after P2-06) |
+|------|----------------------------|---------------------------|
+| `IRouterOsReadPort` | `ProbeOnlyRouterOsReadPort` | `RouterOsReadPort` when enabled |
+| `ISnapshotCapturePort` | `NotConfiguredSnapshotCapturePort` | `RouterOsSnapshotCapturePort` when enabled |
+
+Planned config gate (P2-06):
+
+| Key | Purpose |
+|-----|---------|
+| `RouterOs:Enabled` | `false` by default; when `true`, registers production read/capture services |
+| `RouterOs:ProbeTimeoutSeconds` | Bounded API-SSL probe timeout (P2-04) |
+
+With `RouterOs:Enabled=false` (default), `ValidateDeviceConnection` and `StartCapture` remain fail-closed on not-configured ports — CI behaviour unchanged.
+
 ## Examples
 
 ```bash

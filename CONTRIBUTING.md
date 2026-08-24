@@ -4,7 +4,7 @@ MikroTik Firewall Controller (namespace `Mfc`) — monorepo, trunk-based workflo
 
 ## Before you start
 
-1. Pick the next open atomic issue from [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
+1. Pick the next open atomic issue from [`ROADMAP.md`](ROADMAP.md) §3 — currently **P2-04** (#280) pilot RouterOS read path.
 2. One issue → one short-lived branch → one PR.
 3. Do not expand scope without a new issue.
 4. No stubs, `NotImplementedException`, or disabled tests in production code.
@@ -61,4 +61,4 @@ Architecture ADRs: [`docs/architecture/overview.md`](docs/architecture/overview.
 
 ## Architecture constraints
 
-See Repository Bootstrap Plan and ADRs (added in later M0 issues). Forbidden without ADR: microservices, MediatR, AutoMapper, generic Utils/Helpers assemblies, direct Desktop→RouterOS access.
+See [`Repository Bootstrap Plan v0.1.md`](Repository%20Bootstrap%20Plan%20v0.1.md) and ADRs in [`docs/architecture/adr/`](docs/architecture/adr/). Forbidden without ADR: microservices, MediatR, AutoMapper, generic Utils/Helpers assemblies, direct Desktop→RouterOS access.

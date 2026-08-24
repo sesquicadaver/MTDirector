@@ -1,6 +1,6 @@
 # MTDirector — ROADMAP реалізації v0.2
 
-**Дата оновлення:** 24 серпня 2026
+**Дата оновлення:** 24 серпня 2026 (документаційний аудит v0.2.0)
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
 **Базовий коміт аудиту:** `v0.2.0` — M7.4 CLOSED; **NEXT = P2-04** (#280) — production RouterOS read path
@@ -23,6 +23,7 @@
 | `Initial Issue Set v0.1.md` | M0–M1 атомарні issues |
 | `M2–M6 Implementation Issue Set v0.1.md` | M2–M6 атомарні issues |
 | Профільні Specs M1–M5 | hash / adapter / policy / compiler / onboarding / deploy |
+| [`docs/specs/README.md`](docs/specs/README.md) | Індекс нормативних ТЗ (корінь репо) |
 | `next-1.md` | Packet-path (N1 weave у MVP) |
 | `next-2.md`, Network Rule M7.1 | **Post-MVP** |
 

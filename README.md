@@ -2,40 +2,48 @@
 
 MikroTik Firewall Controller — топологічно обізнаний контролер firewall-політик для RouterOS.
 
-## Статус
+## Статус (v0.2.0)
 
-**M1 CLOSED**; M2 through **M2-05** (zones/bindings). Track remaining work in [`ROADMAP.md`](ROADMAP.md) / [`ISSUES.md`](ISSUES.md).
+| Область | Стан |
+|---------|------|
+| MVP (M0–M6 + N1) | **CLOSED** — 109/109 issues |
+| Post-MVP M7 (M7.1–M7.4) | **CLOSED** — 27/27 issues |
+| P2 Pilot (RouterOS wiring) | **OPEN** — P2-04…P2-06 (#280–#282) |
+| Release | [`v0.2.0`](https://github.com/sesquicadaver/MTDirector/releases/tag/v0.2.0) (2026-08-24) |
 
-Acceptance package: [`docs/development/m1-vertical-slice-acceptance.md`](docs/development/m1-vertical-slice-acceptance.md).
+**NEXT:** [P2-04 / #280](https://github.com/sesquicadaver/MTDirector/issues/280) — production `RouterOsReadPort` (live API-SSL probe).
 
-Див. також [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md), [`CHANGELOG.md`](CHANGELOG.md).
+Лінійна черга: [`ROADMAP.md`](ROADMAP.md) §3.B5. Мапінг issues: [`ISSUES.md`](ISSUES.md).
+
+Acceptance: [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md). Known gaps: [`docs/release/known-limitations.md`](docs/release/known-limitations.md).
 
 ## Швидкий старт
 
 1. [`docs/development/local-environment.md`](docs/development/local-environment.md)
 2. [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md)
 3. [`docs/development/testing.md`](docs/development/testing.md)
-4. Architecture decisions: [`docs/architecture/overview.md`](docs/architecture/overview.md)
+4. Architecture: [`docs/architecture/overview.md`](docs/architecture/overview.md)
 
-## Документи
+Повний індекс документації: [`docs/README.md`](docs/README.md).
+
+## Ключові документи
 
 | Документ | Призначення |
 |----------|-------------|
-| [`ROADMAP.md`](ROADMAP.md) | **Єдиний порядок атомарних задач** (M0→M6 + N1 + M7) |
-| [`ISSUES.md`](ISSUES.md) | Мапінг логічних ID → GitHub issues |
-| [`docs/architecture/overview.md`](docs/architecture/overview.md) | Огляд + ADR index |
-| [`docs/development/m1-vertical-slice-acceptance.md`](docs/development/m1-vertical-slice-acceptance.md) | M1 acceptance report + known limitations |
-| [Issues](https://github.com/sesquicadaver/MTDirector/issues) | Трекер реалізації |
-| [`TOR-1.md`](TOR-1.md) | Базове архітектурне рішення |
-| [`TOR-2.md`](TOR-2.md) | Scope MVP / поза MVP |
-
-Нормативні MVP/Issue Set специфікації — у корені репозиторію (не дублюються тут).
+| [`ROADMAP.md`](ROADMAP.md) | Єдиний порядок атомарних задач |
+| [`ISSUES.md`](ISSUES.md) | Logical ID → GitHub |
+| [`docs/specs/README.md`](docs/specs/README.md) | Нормативні ТЗ та Issue Sets (корінь репо) |
+| [`docs/development/testing.md`](docs/development/testing.md) | Living Spec (ТЗ → модуль → тести) |
+| [`TOR-1.md`](TOR-1.md) / [`TOR-2.md`](TOR-2.md) | Архітектура / scope lock |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) / [`SECURITY.md`](SECURITY.md) / [`CHANGELOG.md`](CHANGELOG.md) | Процес / безпека / історія |
 
 ## Критичний шлях
 
 ```text
-M0 → M1 → M2 → M3 → M5 → M4 → M6 → MVP
+M0 → M1 → M2 → M3 → M5 → M4 → M6 → MVP CLOSED
                  (+ N1 packet-path weave)
+→ M7.1…M7.4 → v0.2.0
+→ P2 (production RouterOS read path) → pilot
 ```
 
 ## Стек
@@ -44,8 +52,7 @@ Desktop Avalonia → gRPC/mTLS → ASP.NET Core Controller → PostgreSQL → Ro
 
 ## Toolchain
 
-- SDK: pinned in [`global.json`](global.json) (`.NET 10`, `allowPrerelease: false`)
-- Packages: Central Package Management — [`Directory.Packages.props`](Directory.Packages.props)
-- Build defaults: [`Directory.Build.props`](Directory.Build.props)
+- SDK: [`global.json`](global.json) (.NET 10, `allowPrerelease: false`)
+- Packages: [`Directory.Packages.props`](Directory.Packages.props)
 - Solution: [`MikroTikFirewallController.sln`](MikroTikFirewallController.sln)
 - CI: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)

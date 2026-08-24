@@ -1,0 +1,66 @@
+# MTDirector documentation index
+
+**Release:** `v0.2.0` (2026-08-24) — MVP + Post-MVP M7 CLOSED.  
+**Next delivery:** P2 pilot RouterOS read path (P2-04…P2-06) — see [`ROADMAP.md`](../ROADMAP.md) §3.B5.
+
+## Planning and tracking
+
+| Document | Purpose |
+|----------|---------|
+| [`ROADMAP.md`](../ROADMAP.md) | Linear atomic task queue (normative execution order) |
+| [`ISSUES.md`](../ISSUES.md) | Logical ID → GitHub issue mapping |
+| [`CHANGELOG.md`](../CHANGELOG.md) | Release history |
+
+## Normative specifications
+
+Authoritative ТЗ and Issue Sets live in the repository root and are indexed in [`specs/README.md`](specs/README.md). Do not duplicate normative MUST/SHALL text under `docs/` — link instead.
+
+## Architecture
+
+| Document | Purpose |
+|----------|---------|
+| [`architecture/overview.md`](architecture/overview.md) | Module map + ADR index |
+| [`architecture/adr/README.md`](architecture/adr/README.md) | Architecture Decision Records |
+
+## Development
+
+| Document | Purpose |
+|----------|---------|
+| [`development/local-environment.md`](development/local-environment.md) | Workstation bootstrap |
+| [`development/testing.md`](development/testing.md) | Living Specification matrices (ТЗ → module → tests) |
+| [`development/ci.md`](development/ci.md) | CI workflow and gates |
+| [`development/git-workflow.md`](development/git-workflow.md) | Branch/PR process |
+| [`development/database-migrations.md`](development/database-migrations.md) | EF migrations |
+| [`development/connection-profiles.md`](development/connection-profiles.md) | mTLS / connection profiles |
+| [`development/chr-lab.md`](development/chr-lab.md) | CHR lab isolation |
+| [`development/troubleshooting-read-path.md`](development/troubleshooting-read-path.md) | Read-path diagnostics |
+| [`development/m1-vertical-slice-acceptance.md`](development/m1-vertical-slice-acceptance.md) | M1 acceptance report |
+| [`development/support-manifest.md`](development/support-manifest.md) | Hardware / RouterOS support matrix |
+
+## Operations
+
+| Document | Purpose |
+|----------|---------|
+| [`operations/installation.md`](operations/installation.md) | Controller + Desktop install |
+| [`operations/controller-configuration.md`](operations/controller-configuration.md) | `Mfc` configuration keys |
+| [`operations/prerequisite-checklist.md`](operations/prerequisite-checklist.md) | RouterOS device gates |
+| [`operations/operations-manual.md`](operations/operations-manual.md) | Day-2 operator guide |
+| [`operations/recovery.md`](operations/recovery.md) | Backup / restore / crash recovery |
+| [`operations/database-migrations.md`](operations/database-migrations.md) | Production migration bundle |
+
+## Release and acceptance
+
+| Document | Purpose |
+|----------|---------|
+| [`release/mvp-acceptance.md`](release/mvp-acceptance.md) | M6-09 acceptance package |
+| [`release/release-gates.md`](release/release-gates.md) | Pre-release checklist |
+| [`release/known-limitations.md`](release/known-limitations.md) | Intentional scope residuals |
+| [`release/packaging.md`](release/packaging.md) | Artifact packaging |
+| [`release/RELEASE_SIGNING.md`](release/RELEASE_SIGNING.md) | Signing / attestation policy |
+
+## Test lab
+
+| Path | Purpose |
+|------|---------|
+| [`testlab/postgres/compose.yml`](../testlab/postgres/compose.yml) | Local PostgreSQL |
+| [`testlab/chr/README.md`](../testlab/chr/README.md) | CHR acceptance lab |

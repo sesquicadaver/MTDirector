@@ -7,6 +7,10 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Documentation audit for `v0.2.0`: refreshed [`README.md`](README.md), added [`docs/README.md`](docs/README.md) and [`docs/specs/README.md`](docs/specs/README.md), updated ops/release docs for P2 pilot gaps; removed local agent/build artifacts (`artifacts/`, `TestResults/`, `.omx/` — already gitignored).
+
 ## [0.2.0] - 2026-08-24
 
 First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **Post-MVP M7 CLOSED** (M7.1–M7.4). Git tag `v0.2.0`. Acceptance review signed off 2026-08-24 per [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md).
