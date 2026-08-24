@@ -76,7 +76,10 @@ public sealed class IncidentDenyOverlayRemovalLivingSpecTests
         FakeIdempotencyStore idempotency = new();
         FakeAuditEventWriter audit = new();
         FakeClock clock = new() { UtcNow = T0 };
-        ExpireIncidentDenyOverlayBindingUseCase expire = new(auth, approvals, idempotency, audit, clock);
+        FakePolicyStore policies = new();
+        FakeResponseFeedbackEventStore feedbackStore = new();
+        EmitResponseFeedbackUseCase feedback = ResponseFeedbackTestFactory.CreateEmit(auth, feedbackStore, audit, clock);
+        ExpireIncidentDenyOverlayBindingUseCase expire = new(auth, approvals, idempotency, audit, clock, policies, feedback);
         PolicyDesiredBinding binding = SampleBinding(PolicyBindingScope.IncidentDenyOverlay, ExpiredAt);
         await approvals.AddBindingAsync(binding);
 
@@ -282,10 +285,12 @@ public sealed class IncidentDenyOverlayRemovalLivingSpecTests
             FakeIdempotencyStore idempotency = new();
             FakeAuditEventWriter audit = new();
             FakeClock clock = new() { UtcNow = T0 };
-            ExpireIncidentDenyOverlayBindingUseCase expire = new(auth, fx.Approvals, idempotency, audit, clock);
+            FakeResponseFeedbackEventStore feedbackStore = new();
+            EmitResponseFeedbackUseCase feedback = ResponseFeedbackTestFactory.CreateEmit(auth, feedbackStore, audit, clock);
+            ExpireIncidentDenyOverlayBindingUseCase expire = new(auth, fx.Approvals, idempotency, audit, clock, fx.Policies, feedback);
             CreateDeploymentPlanUseCase createPlan = new(auth, fx.Nodes, deployments, idempotency, audit, clock);
             PlanIncidentDenyOverlayRemovalUseCase plan = new(
-                auth, fx.Policies, fx.Approvals, audit, expire, fx.UseCase, createPlan);
+                auth, fx.Policies, fx.Approvals, audit, expire, fx.UseCase, createPlan, feedback);
             DomainPolicy overlay = (await fx.Policies.ListActiveByOwnerAsync(
                 PolicyKind.IncidentDenyOverlay,
                 fx.NodeId)).Single();

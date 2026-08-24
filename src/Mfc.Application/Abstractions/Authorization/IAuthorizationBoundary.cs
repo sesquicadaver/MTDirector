@@ -87,4 +87,10 @@ public static class ApplicationPermissions
 
     /// <summary>Expire incident overlay bindings and plan TTL removal via M4 (M7.4-04).</summary>
     public const string IncidentOverlayRemove = "incident.overlay.remove";
+
+    /// <summary>Emit RESPONSE_* feedback events to the external analytics complex (M7.4-05).</summary>
+    public const string IncidentFeedbackEmit = "incident.feedback.emit";
+
+    /// <summary>Read persisted RESPONSE_* feedback events (M7.4-05).</summary>
+    public const string IncidentFeedbackRead = "incident.feedback.read";
 }

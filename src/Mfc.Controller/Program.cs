@@ -142,6 +142,9 @@ public static class Program
         builder.Services.TryAddSingleton<Mfc.Application.Abstractions.Onboarding.IOnboardingRuntime, Mfc.Application.Abstractions.Onboarding.NotConfiguredOnboardingRuntime>();
         builder.Services.TryAddSingleton<Mfc.Application.Abstractions.Deployment.IDeploymentRuntime, Mfc.Application.Abstractions.Deployment.NotConfiguredDeploymentRuntime>();
         builder.Services.TryAddSingleton<IWatchdogResidueCleanupPort, NotConfiguredWatchdogResidueCleanupPort>();
+        builder.Services.TryAddSingleton<
+            Mfc.Application.Abstractions.Integration.IResponseFeedbackDeliveryPort,
+            Mfc.Infrastructure.Integration.NotConfiguredResponseFeedbackDeliveryPort>();
         builder.Services.AddSingleton<ValidateDeviceConnectionCoordinator>();
         builder.Services.AddSingleton<CaptureProgressHub>();
         builder.Services.AddSingleton<OnboardingProgressHub>();
@@ -238,6 +241,8 @@ public static class Program
         services.AddScoped<ExpireIncidentDenyOverlayBindingUseCase>();
         services.AddScoped<PlanIncidentDenyOverlayRemovalUseCase>();
         services.AddScoped<ReconcileExpiredIncidentDenyOverlayBindingsJobUseCase>();
+        services.AddScoped<EmitResponseFeedbackUseCase>();
+        services.AddScoped<ListResponseFeedbackEventsUseCase>();
         services.AddScoped<DetectManagedDriftUseCase>();
         services.AddScoped<GetDriftEventUseCase>();
         services.AddScoped<ListDeviceDriftEventsUseCase>();

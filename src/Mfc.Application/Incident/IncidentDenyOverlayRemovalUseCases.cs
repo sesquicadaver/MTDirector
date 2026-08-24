@@ -9,6 +9,7 @@ using Mfc.Application.Models;
 using Mfc.Application.Policies;
 using Mfc.Domain;
 using Mfc.Domain.Deployment;
+using Mfc.Domain.Incident;
 using Mfc.Domain.Policy;
 using Mfc.Domain.Policy.Primitives;
 using Auth = Mfc.Application.Common.AuthorizationGuard;
@@ -37,24 +38,32 @@ public sealed class ExpireIncidentDenyOverlayBindingUseCase
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
     private readonly IClock _clock;
+    private readonly IPolicyStore _policies;
+    private readonly EmitResponseFeedbackUseCase _feedback;
 
     public ExpireIncidentDenyOverlayBindingUseCase(
         IAuthorizationBoundary auth,
         IPolicyApprovalStore approvals,
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
-        IClock clock)
+        IClock clock,
+        IPolicyStore policies,
+        EmitResponseFeedbackUseCase feedback)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(approvals);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(clock);
+        ArgumentNullException.ThrowIfNull(policies);
+        ArgumentNullException.ThrowIfNull(feedback);
         _auth = auth;
         _approvals = approvals;
         _idempotency = idempotency;
         _audit = audit;
         _clock = clock;
+        _policies = policies;
+        _feedback = feedback;
     }
 
     public async Task<ApplicationResult<PolicyBindingView>> ExecuteAsync(
@@ -149,6 +158,24 @@ public sealed class ExpireIncidentDenyOverlayBindingUseCase
                 deployment_started = false,
             }),
             cancellationToken).ConfigureAwait(false);
+
+        Guid? incidentId = await IncidentOverlayFeedbackSupport.TryResolveOverlayIncidentIdAsync(
+            _policies,
+            binding,
+            cancellationToken).ConfigureAwait(false);
+        if (incidentId is not null)
+        {
+            await IncidentOverlayFeedbackSupport.EmitAsync(
+                _feedback,
+                command.Actor,
+                ResponseFeedbackEventKind.Expired,
+                incidentId.Value,
+                binding.ScopeId ?? Guid.Empty,
+                [],
+                command.IdempotencyKey,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+
         return ApplicationResults.Ok(ActivateDesiredBindingUseCase.ToView(binding));
     }
 }
@@ -199,6 +226,7 @@ public sealed class PlanIncidentDenyOverlayRemovalUseCase
     private readonly ExpireIncidentDenyOverlayBindingUseCase _expire;
     private readonly CompileNodeFilterArtifactsUseCase _compile;
     private readonly CreateDeploymentPlanUseCase _createPlan;
+    private readonly EmitResponseFeedbackUseCase _feedback;
 
     public PlanIncidentDenyOverlayRemovalUseCase(
         IAuthorizationBoundary auth,
@@ -207,7 +235,8 @@ public sealed class PlanIncidentDenyOverlayRemovalUseCase
         IAuditEventWriter audit,
         ExpireIncidentDenyOverlayBindingUseCase expire,
         CompileNodeFilterArtifactsUseCase compile,
-        CreateDeploymentPlanUseCase createPlan)
+        CreateDeploymentPlanUseCase createPlan,
+        EmitResponseFeedbackUseCase feedback)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
@@ -216,6 +245,7 @@ public sealed class PlanIncidentDenyOverlayRemovalUseCase
         ArgumentNullException.ThrowIfNull(expire);
         ArgumentNullException.ThrowIfNull(compile);
         ArgumentNullException.ThrowIfNull(createPlan);
+        ArgumentNullException.ThrowIfNull(feedback);
         _auth = auth;
         _policies = policies;
         _approvals = approvals;
@@ -223,6 +253,7 @@ public sealed class PlanIncidentDenyOverlayRemovalUseCase
         _expire = expire;
         _compile = compile;
         _createPlan = createPlan;
+        _feedback = feedback;
     }
 
     public async Task<ApplicationResult<PlanIncidentDenyOverlayRemovalView>> ExecuteAsync(
@@ -331,6 +362,26 @@ public sealed class PlanIncidentDenyOverlayRemovalUseCase
         if (plan.IsFailure)
         {
             return ApplicationResults.Fail(plan.Error!);
+        }
+
+        Guid? incidentId = await IncidentOverlayFeedbackSupport.TryResolveOverlayIncidentIdAsync(
+            _policies,
+            binding,
+            cancellationToken).ConfigureAwait(false);
+        if (incidentId is not null)
+        {
+            Guid[] deviceIds = command.DevicePlans.Select(static p => p.DeviceId.Value).ToArray();
+            await IncidentOverlayFeedbackSupport.EmitAsync(
+                _feedback,
+                command.Actor,
+                ResponseFeedbackEventKind.Planned,
+                incidentId.Value,
+                command.NodeId,
+                deviceIds,
+                command.PlanIdempotencyKey,
+                policyHash: command.LogicalPolicyHash,
+                planHash: plan.Value!.PlanHash,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         await _audit.AppendAsync(

@@ -3,6 +3,7 @@ using Mfc.Infrastructure.Persistence.Deployment;
 using Mfc.Infrastructure.Persistence.Drift;
 using Mfc.Infrastructure.Persistence.Endpoint;
 using Mfc.Infrastructure.Persistence.Hosting;
+using Mfc.Infrastructure.Persistence.Incident;
 using Mfc.Infrastructure.Persistence.Inventory;
 using Mfc.Infrastructure.Persistence.Onboarding;
 using Mfc.Infrastructure.Persistence.Policies;
@@ -46,6 +47,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<IEndpointPresenceStore, EfEndpointPresenceStore>();
         services.AddScoped<IResponseAssessmentStore, EfResponseAssessmentStore>();
         services.AddScoped<IDriftEventStore, EfDriftEventStore>();
+        services.AddScoped<IResponseFeedbackEventStore, EfResponseFeedbackEventStore>();
         services.AddScoped<IConnectionProfileReadStore, EfConnectionProfileReadStore>();
         services.AddScoped<IIdempotencyStore, EfIdempotencyStore>();
         services.AddScoped<ISnapshotStore, EfSnapshotStore>();
