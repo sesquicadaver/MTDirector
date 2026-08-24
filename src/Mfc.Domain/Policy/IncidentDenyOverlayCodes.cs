@@ -28,4 +28,6 @@ public static class IncidentDenyOverlayCodes
     public const string OverlayNotFound = "INCIDENT_DENY_OVERLAY_NOT_FOUND";
 
     public const string OverlayNodeMismatch = "INCIDENT_DENY_OVERLAY_COMPILE_NODE_MISMATCH";
+
+    public const string RemovalPlanRequired = "INCIDENT_DENY_OVERLAY_REMOVAL_PLAN_REQUIRED";
 }

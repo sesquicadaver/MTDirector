@@ -166,6 +166,24 @@ public sealed class ActivateDesiredBindingUseCase
             validFrom = metadata.ValidFrom;
             validUntil = metadata.ValidUntil;
         }
+        else if (policy.Kind == PolicyKind.IncidentDenyOverlay)
+        {
+            ApplicationResult<PolicyDocument> document = PolicyRevisionSupport.ReadDocument(revision);
+            if (document.IsFailure)
+            {
+                return ApplicationResults.Fail(document.Error!);
+            }
+
+            IncidentDenyOverlayMetadata? metadata = document.Value!.IncidentDenyOverlayMetadata;
+            if (metadata is null)
+            {
+                return ApplicationResults.Fail(new ApplicationError(
+                    PolicyApprovalCodes.Blocker,
+                    "INCIDENT_DENY_OVERLAY binding requires overlay metadata with expires_at."));
+            }
+
+            validUntil = metadata.ExpiresAt;
+        }
 
         PolicyDesiredBinding binding;
         try

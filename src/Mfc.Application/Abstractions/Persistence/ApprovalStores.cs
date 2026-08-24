@@ -54,6 +54,14 @@ public interface IPolicyApprovalStore
         DateTimeOffset nowUtc,
         int limit,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// ACTIVE INCIDENT_DENY_OVERLAY bindings past valid_until (M7.4-04 TTL removal plan).
+    /// </summary>
+    Task<IReadOnlyList<PolicyDesiredBinding>> ListDueIncidentDenyOverlayBindingsAsync(
+        DateTimeOffset nowUtc,
+        int limit,
+        CancellationToken cancellationToken = default);
 }
 
 /// <summary>Runs store mutations in one database transaction.</summary>

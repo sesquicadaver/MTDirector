@@ -235,6 +235,9 @@ public static class Program
         services.AddScoped<ValidateIncidentDenyOverlayUseCase>();
         services.AddScoped<AssessResponseIntentFeasibilityUseCase>();
         services.AddScoped<DeployIncidentDenyOverlayUseCase>();
+        services.AddScoped<ExpireIncidentDenyOverlayBindingUseCase>();
+        services.AddScoped<PlanIncidentDenyOverlayRemovalUseCase>();
+        services.AddScoped<ReconcileExpiredIncidentDenyOverlayBindingsJobUseCase>();
         services.AddScoped<DetectManagedDriftUseCase>();
         services.AddScoped<GetDriftEventUseCase>();
         services.AddScoped<ListDeviceDriftEventsUseCase>();
@@ -288,6 +291,7 @@ public static class Program
         services.AddScoped<ApproveRevisionUseCase>();
         services.AddScoped<ActivateDesiredBindingUseCase>();
         services.AddScoped<ExpireExceptionBindingUseCase>();
+        services.AddScoped<ExpireIncidentDenyOverlayBindingUseCase>();
         services.AddScoped<ValidateRevisionUseCase>();
         services.AddScoped<UpsertAddressObjectUseCase>();
         services.AddScoped<UpsertServiceObjectUseCase>();

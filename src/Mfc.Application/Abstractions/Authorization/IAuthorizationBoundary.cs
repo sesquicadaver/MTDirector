@@ -84,4 +84,7 @@ public static class ApplicationPermissions
 
     /// <summary>Compile and deploy incident deny overlay via M3/M4 (M7.4-03).</summary>
     public const string IncidentOverlayDeploy = "incident.overlay.deploy";
+
+    /// <summary>Expire incident overlay bindings and plan TTL removal via M4 (M7.4-04).</summary>
+    public const string IncidentOverlayRemove = "incident.overlay.remove";
 }

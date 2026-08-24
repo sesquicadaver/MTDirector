@@ -1134,6 +1134,25 @@ internal sealed class FakePolicyApprovalStore : IPolicyApprovalStore
                 .ToArray());
     }
 
+    public Task<IReadOnlyList<PolicyDesiredBinding>> ListDueIncidentDenyOverlayBindingsAsync(
+        DateTimeOffset nowUtc,
+        int limit,
+        CancellationToken cancellationToken = default)
+    {
+        DateTimeOffset now = nowUtc.ToUniversalTime();
+        return Task.FromResult<IReadOnlyList<PolicyDesiredBinding>>(
+            _bindings.Values
+                .Where(b => b.Scope == PolicyBindingScope.IncidentDenyOverlay
+                            && b.State == PolicyBindingState.Active
+                            && b.ValidUntilUtc is not null
+                            && now >= b.ValidUntilUtc.Value)
+                .OrderBy(b => b.ValidUntilUtc)
+                .ThenBy(b => b.Id.Value)
+                .Take(Math.Max(0, limit))
+                .Select(CloneBinding)
+                .ToArray());
+    }
+
     private static PolicyAnalysisRun CloneRun(PolicyAnalysisRun run)
         => PolicyAnalysisRun.Reconstitute(
             run.Id,

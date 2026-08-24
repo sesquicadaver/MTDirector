@@ -128,6 +128,37 @@ public static class PolicyBindingGate
         return PolicyBindingEvaluation.Ok();
     }
 
+    /// <summary>Whether an INCIDENT_DENY_OVERLAY binding may move to EXPIRED_PENDING_RECONCILIATION.</summary>
+    public static PolicyBindingEvaluation EvaluateIncidentOverlayExpiry(
+        PolicyDesiredBinding binding,
+        DateTimeOffset nowUtc)
+    {
+        ArgumentNullException.ThrowIfNull(binding);
+        if (binding.Scope != PolicyBindingScope.IncidentDenyOverlay)
+        {
+            return PolicyBindingEvaluation.Reject(
+                PolicyApprovalCodes.BindingNotIncidentOverlay,
+                "Only INCIDENT_DENY_OVERLAY bindings may expire.");
+        }
+
+        if (binding.State != PolicyBindingState.Active)
+        {
+            return PolicyBindingEvaluation.Reject(
+                PolicyApprovalCodes.BindingNotDue,
+                "Only ACTIVE incident deny overlay bindings may expire.");
+        }
+
+        DateTimeOffset now = nowUtc.ToUniversalTime();
+        if (binding.ValidUntilUtc is null || now < binding.ValidUntilUtc.Value)
+        {
+            return PolicyBindingEvaluation.Reject(
+                PolicyApprovalCodes.BindingNotDue,
+                "Incident deny overlay binding is not past valid_until.");
+        }
+
+        return PolicyBindingEvaluation.Ok();
+    }
+
     private static bool NullableEquals(Guid? left, Guid? right)
         => left == right;
 }
