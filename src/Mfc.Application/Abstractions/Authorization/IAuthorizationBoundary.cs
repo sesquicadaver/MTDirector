@@ -81,4 +81,7 @@ public static class ApplicationPermissions
 
     /// <summary>Assess ResponseIntent feasibility matrix (M7.4-02).</summary>
     public const string IncidentResponseAssess = "incident.response.assess";
+
+    /// <summary>Compile and deploy incident deny overlay via M3/M4 (M7.4-03).</summary>
+    public const string IncidentOverlayDeploy = "incident.overlay.deploy";
 }
