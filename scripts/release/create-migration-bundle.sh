@@ -30,13 +30,13 @@ fi
 export PATH="${HOME}/.dotnet:${PATH}"
 cd "$REPO_ROOT"
 dotnet tool restore
+# Framework-dependent bundle (requires .NET runtime on target). EF CLI has no `--self-contained false`.
 dotnet ef migrations bundle \
   --project src/Mfc.Infrastructure/Mfc.Infrastructure.csproj \
   --startup-project src/Mfc.Controller/Mfc.Controller.csproj \
   --configuration "$CONFIG" \
   --output "$BUNDLE" \
-  --force \
-  --self-contained false
+  --force
 
 printf '%s\n' "$BUNDLE" >"$OUT_DIR/migrations.artifact-path.txt"
 echo "migration bundle: $BUNDLE"
