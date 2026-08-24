@@ -64,6 +64,20 @@ public sealed class AssessResponseIntentFeasibilityUseCase
                     residualRisk: result.Feasibility.ToString(),
                     cancellationToken: cancellationToken).ConfigureAwait(false);
             }
+            else if (result.Feasibility is ResponseAssessmentFeasibility.NewConnectionsOnly
+                     or ResponseAssessmentFeasibility.Indeterminate)
+            {
+                await IncidentOverlayFeedbackSupport.EmitAsync(
+                    _feedback,
+                    command.Actor,
+                    ResponseFeedbackEventKind.Planned,
+                    command.Query.Intent.IncidentId.Value,
+                    command.Query.Intent.NodeId.Value,
+                    [],
+                    command.Query.Intent.IdempotencyKey,
+                    residualRisk: result.Feasibility.ToString(),
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
 
             return ApplicationResults.Ok(ResponseIntentFeasibilityView.FromResult(command.Query.Intent, result));
         }

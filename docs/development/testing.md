@@ -2506,6 +2506,29 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~ResponseFeedback"
 ```
 
+## Living Specification — incident response E2E (M7.4-06)
+
+Issue Set M7.4-06 / next-2. Scripted E2E for enforceable / not-enforceable / rollback / residual risk paths. Suite: `IncidentResponseE2ELivingSpecTests` + `IncidentResponseE2ECoverageTests`.
+
+| AC | Requirement | Module | Test |
+|----|-------------|--------|------|
+| 1 | Enforceable assess → FullyEnforceable | `AssessResponseIntentFeasibilityUseCase` | `Ac1EnforceableAssessReturnsFullyEnforceable` |
+| 2 | Deploy emits PLANNED + STARTED feedback | `DeployIncidentDenyOverlayUseCase` | `Ac2EnforceableDeployEmitsPlannedAndStartedFeedback` |
+| 3 | Committed deploy → APPLIED + VERIFIED | `ReportIncidentDeploymentOutcomeUseCase` | `Ac3CommittedDeploymentEmitsAppliedAndVerifiedFeedback` |
+| 4 | Not-enforceable → BLOCKED, no STARTED | `AssessResponseIntentFeasibilityUseCase` | `Ac4NotEnforceableAssessEmitsBlockedWithoutDeploy` |
+| 5 | Rollback → ROLLED_BACK feedback | `ReportIncidentDeploymentOutcomeUseCase` | `Ac5FailedDeploymentRollbackEmitsRolledBackFeedback` |
+| 6 | Recovery → RECOVERY_REQUIRED feedback | `ReportIncidentDeploymentOutcomeUseCase` | `Ac6RecoveryRequiredEmitsRecoveryFeedback` |
+| 7 | Partial enforceability records residual_risk | `AssessResponseIntentFeasibilityUseCase` | `Ac7PartialEnforceabilityRecordsResidualRisk` |
+| 8 | TTL expiry → EXPIRED + removal PLANNED | `PlanIncidentDenyOverlayRemovalUseCase` | `Ac8TtlExpiryEmitsExpiredAndRemovalPlannedFeedback` |
+| 9 | Full lifecycle queryable by incident_id | `ListResponseFeedbackEventsUseCase` | `Ac9FullEnforceableLifecycleQueryableByIncident` |
+| 10 | Unauthorized assess rejected | `AssessResponseIntentFeasibilityUseCase` | `Ac10UnauthorizedAssessRejected` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~IncidentResponseE2E"
+```
+
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.

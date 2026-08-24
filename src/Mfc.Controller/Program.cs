@@ -243,6 +243,7 @@ public static class Program
         services.AddScoped<ReconcileExpiredIncidentDenyOverlayBindingsJobUseCase>();
         services.AddScoped<EmitResponseFeedbackUseCase>();
         services.AddScoped<ListResponseFeedbackEventsUseCase>();
+        services.AddScoped<ReportIncidentDeploymentOutcomeUseCase>();
         services.AddScoped<DetectManagedDriftUseCase>();
         services.AddScoped<GetDriftEventUseCase>();
         services.AddScoped<ListDeviceDriftEventsUseCase>();
