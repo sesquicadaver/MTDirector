@@ -10,7 +10,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 ## Production wiring (P2 pilot — OPEN)
 
 - **`IRouterOsReadPort`** defaults to `ProbeOnlyRouterOsReadPort` — live API-SSL inventory probe requires **P2-04** (#280).
-- **`ISnapshotCapturePort`** defaults to `NotConfiguredSnapshotCapturePort` — stable-read capture requires **P2-05** (#281).
+- **`ISnapshotCapturePort`** — production adapter `RouterOsSnapshotCapturePort` implemented (P2-05 / #281); Controller still defaults to `NotConfiguredSnapshotCapturePort` until **P2-06** (#282) wires DI.
 - **`AddRouterOsProductionServices`** + `Mfc:RouterOs:Enabled` gate — **P2-06** (#282).
 - Onboarding/deploy/feedback ports (`NotConfiguredOnboardingRuntime`, `NotConfiguredDeploymentRuntime`, `NotConfiguredResponseFeedbackDeliveryPort`) remain stubs until future P2 write-path queue.
 

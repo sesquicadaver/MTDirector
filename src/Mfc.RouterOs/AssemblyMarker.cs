@@ -59,6 +59,9 @@ public static class AssemblyMarker
     /// <summary>Roots packet-path classification for architecture scans.</summary>
     public static Type PacketPathClassifierAnchor { get; } = typeof(Discovery.PacketPathClassifier);
 
+    /// <summary>Roots production snapshot capture for architecture scans (P2-05).</summary>
+    public static Type SnapshotCapturePortAnchor { get; } = typeof(Ports.RouterOsSnapshotCapturePort);
+
     /// <summary>Roots the closed onboarding bootstrap writer (M5-05).</summary>
     public static Type OnboardingBootstrapWriterAnchor { get; } = typeof(Onboarding.OnboardingBootstrapWriter);
 }

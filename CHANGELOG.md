@@ -10,6 +10,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ### Added
 
 - Production `RouterOsReadPort` (P2-04 / #280): API-SSL identity probe via `SystemServiceDiscovery` + `CapabilityProfileEvaluator`; `IRouterOsConnectionMaterializer` + `EfRouterOsConnectionMaterializer`; Living Spec `RouterOsReadPortLivingSpecTests`.
+- Production `RouterOsSnapshotCapturePort` (P2-05 / #281): stable-read coordination + discovery reader + canonical/raw `SnapshotCaptureResult` assembly; `RouterOsStableReadCoordinatorPort`; Living Spec + PG integration test (`StartCapture` → persist).
 
 ### Changed
 

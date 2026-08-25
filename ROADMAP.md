@@ -3,7 +3,7 @@
 **Дата оновлення:** 24 серпня 2026 (документаційний аудит v0.2.0)
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** `v0.2.0` — M7.4 CLOSED; **NEXT = P2-05** (#281) — production snapshot capture
+**Базовий коміт аудиту:** `v0.2.0` — M7.4 CLOSED; **NEXT = P2-06** (#282) — production RouterOS DI
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -53,11 +53,11 @@
 | M4 Safe deploy | 13 | 0 | 100% |
 | M6 E2E / drift | 9 | 0 | 100% |
 | M7 Post-MVP | 27 | 0 | 100% |
-| P2 Pilot (RouterOS wiring) | 1 | 2 | 33% |
-| **Разом** | **137** | **2** | **99%** |
+| P2 Pilot (RouterOS wiring) | 1 | 1 | 50% |
+| **Разом** | **137** | **1** | **99%** |
 
 MVP issues (109) = **109 done + 0 remaining** — **MVP CLOSED (100%)**.  
-M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** **M7.2-04 DONE. M7.2 CLOSED.** **M7.3-01 DONE.** **M7.3-02 DONE.** **M7.3-03 DONE.** **M7.3-04 DONE.** **M7.3-05 DONE.** **M7.3-06 DONE. M7.3 CLOSED.** **M7.4-01 DONE.** **M7.4-02 DONE.** **M7.4-03 DONE.** **M7.4-04 DONE.** **M7.4-05 DONE.** **M7.4-06 DONE. M7.4 CLOSED.** Post-MVP M7 = **0** open. Release **`v0.2.0`**. **NEXT = P2-05** (#281).
+M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** **M7.2-04 DONE. M7.2 CLOSED.** **M7.3-01 DONE.** **M7.3-02 DONE.** **M7.3-03 DONE.** **M7.3-04 DONE.** **M7.3-05 DONE.** **M7.3-06 DONE. M7.3 CLOSED.** **M7.4-01 DONE.** **M7.4-02 DONE.** **M7.4-03 DONE.** **M7.4-04 DONE.** **M7.4-05 DONE.** **M7.4-06 DONE. M7.4 CLOSED.** Post-MVP M7 = **0** open. Release **`v0.2.0`**. **NEXT = P2-06** (#282).
 Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий**; multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance **DONE**; **M4 CLOSED**; desired/committed/actual projection **готовий** (M6-01); managed drift detection **готовий** (M6-02); bounded operational jobs **готовий** (M6-03); Desktop MVP workflows **готовий** (M6-04); standalone/dual-stack E2E **готовий** (M6-05); multi-WAN E2E **готовий** (M6-06); VRRP/CRS E2E **готовий** (M6-07); security/backup/restore acceptance **готовий** (M6-08); MVP production acceptance **готовий** (M6-09); **M6 CLOSED**; path-class E2E/drift **готовий** (N1-07); **MVP CLOSED**; routing-assurance read allowlist **готовий** (M7.1-01); RoutingAssuranceState persistence **готовий** (M7.1-02); RouteResolutionTrace **готовий** (M7.1-03); ECMP ONE_OF sets **готовий** (M7.1-04); dynamic route origins **готовий** (M7.1-05); RouteExpectation evaluation **готовий** (M7.1-06); reverse-path symmetry **готовий** (M7.1-07); network path profile latency probes **готовий** (M7.1-08); routing configuration vs operational drift **готовий** (M7.1-09); routing assurance Desktop viewer **готовий** (M7.1-10); routing assurance CHR acceptance **готовий** (M7.1-11); endpoint attribution **готовий** (M7.2-01); endpoint presence **готовий** (M7.2-02); endpoint mobility **готовий** (M7.2-03); endpoint mobility CHR acceptance **готовий** (M7.2-04); incident signal ingress **готовий** (M7.3-01); active-state interval **готовий** (M7.3-02); session context **готовий** (M7.3-03); sensor correlation **готовий** (M7.3-04); assessment quality **готовий** (M7.3-05); incident assessment contract **готовий** (M7.3-06); incident deny overlay **готовий** (M7.4-01); response intent feasibility **готовий** (M7.4-02); overlay compile/deploy **готовий** (M7.4-03); TTL removal plan **готовий** (M7.4-04); RESPONSE_* feedback **готовий** (M7.4-05); incident response E2E **готовий** (M7.4-06); **M7.4 CLOSED**; Post-MVP M7 = **0** open; release tag **`v0.2.0`** (2026-08-24).
 
 ### 2.2 DONE (не в черзі)
@@ -170,7 +170,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 
 | Збірка | Стан |
 |--------|------|
-| `Mfc.RouterOs` | … + `RouterOsReadPort` / `RouterOsSystemProbe` (P2-04); **gap:** `ISnapshotCapturePort` defaults to `NotConfigured` → **P2-05…P2-06** |
+| `Mfc.RouterOs` | … + `RouterOsReadPort` / `RouterOsSystemProbe` (P2-04) + `RouterOsSnapshotCapturePort` (P2-05); **gap:** production DI → **P2-06** |
 | `Mfc.Contracts` | `mfc.v1` inventory (+ workflow status / hash fields + `GetNodeWorkflow`) + snapshot/diff + `ZoneService` + `PolicyService` + `OnboardingService` + `DeploymentService` + `DriftService` + `AuditService` |
 | `Mfc.Application` | inventory/snapshot + … + `ValidateIncidentDenyOverlayUseCase` (M7.4-01) + `AssessResponseIntentFeasibilityUseCase` (M7.4-02) + `DeployIncidentDenyOverlayUseCase` (M7.4-03) + `PlanIncidentDenyOverlayRemovalUseCase` (M7.4-04) |
 | `Mfc.Controller` | health + `InventoryService` (incl. `GetNodeWorkflow`) + `SnapshotService` + `ZoneService` + `PolicyService` + `OnboardingService` + `DeploymentService` + `DriftService` + `AuditService` gRPC |
@@ -431,7 +431,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | 124 | P2-05 | #281 | Production `RouterOsSnapshotCapturePort` (stable-read + canonical capture; replace `NotConfiguredSnapshotCapturePort`) |
 | 125 | P2-06 | #282 | `AddRouterOsProductionServices` DI + `Mfc:RouterOs:Enabled` gate + read-only pilot Living Spec |
 
-**Кінець черги:** 2 відкритих атомарних задачі P2 (read path). **NEXT = P2-05** (#281).
+**Кінець черги:** 1 відкрита атомарна задача P2 (read path). **NEXT = P2-06** (#282).
 
 ---
 
@@ -441,9 +441,9 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 |---------|--------:|----------|
 | До MVP CLOSED | 0 | **MVP CLOSED** (N1-07 DONE) |
 | Post-MVP M7 | 0 | **M7.4 CLOSED** |
-| P2 Pilot (read path) | 2 | **NEXT = P2-05** (#281) |
-| **Нереалізовано разом** | **2** | P2-05 → P2-06 |
-| DONE у коді (§2.2) | 137 | …+P2-04; release **`v0.2.0`** |
+| P2 Pilot (read path) | 1 | **NEXT = P2-06** (#282) |
+| **Нереалізовано разом** | **1** | P2-06 |
+| DONE у коді (§2.2) | 138 | …+P2-05; release **`v0.2.0`** |
 
 GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
@@ -549,7 +549,7 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 | Incident ↔ assessment contract | M7.3-06 | `IncidentResponseAssessmentContract` + `BindIncidentResponseAssessmentUseCase`; Living Spec AC 1–10; **M7.3 CLOSED** | **DONE** |
 | Incident overlay | M7.4 | INCIDENT_PRE_STATE_DENY stage + INCIDENT_DENY_OVERLAY kind | **DONE** (M7.4-01) |
 | Production RouterOS read probe | P2-04 | `RouterOsReadPort` + live API-SSL probe | **DONE** (#280) |
-| Production snapshot capture | P2-05 | `RouterOsSnapshotCapturePort` + stable-read pipeline | OPEN (#281) |
+| Production snapshot capture | P2-05 | `RouterOsSnapshotCapturePort` + stable-read pipeline | **DONE** (#281) |
 | Production RouterOS DI | P2-06 | `AddRouterOsProductionServices` + pilot Living Spec | OPEN (#282) |
 
 Оновлювати рядок **Статус** і зсувати «NEXT» при закритті кожного issue з §3.
@@ -633,8 +633,8 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 59. ~~Відкрити **M7.3-06** → [issue #130](https://github.com/sesquicadaver/MTDirector/issues/130).~~ → **DONE / M7.3 CLOSED**.
 60. ~~Відкрити **M7.4-06** → [issue #136](https://github.com/sesquicadaver/MTDirector/issues/136).~~ → **DONE / M7.4 CLOSED**.
 61. ~~Відкрити **P2-04** → [issue #280](https://github.com/sesquicadaver/MTDirector/issues/280) — production `RouterOsReadPort`.~~ → **DONE**.
-62. **NEXT:** **P2-05** → [issue #281](https://github.com/sesquicadaver/MTDirector/issues/281).
-63. **THEN:** **P2-06** → [issue #282](https://github.com/sesquicadaver/MTDirector/issues/282) after P2-05.
+62. ~~**P2-05** → [issue #281](https://github.com/sesquicadaver/MTDirector/issues/281).~~ → **DONE**.
+63. **NEXT:** **P2-06** → [issue #282](https://github.com/sesquicadaver/MTDirector/issues/282).
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
