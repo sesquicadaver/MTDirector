@@ -37,18 +37,40 @@ public static class SystemServiceDiscovery
         RosReadCommandResult services = await ExecuteRequiredAsync(
             session, RosReadCommandId.IpServices, warnings, cancellationToken).ConfigureAwait(false);
 
-        SystemRouterboardDiscovery routerboard;
         RosReadCommandResult routerboardResult = await RosReadCommandExecutor.ExecuteAsync(
             session,
             RosReadCommandId.SystemRouterboard,
             cancellationToken: cancellationToken).ConfigureAwait(false);
+
+        return BuildResult(identity, resource, packages, clock, services, routerboardResult, warnings);
+    }
+
+    /// <summary>Builds discovery from already-executed command results (unit-testable / capture reader).</summary>
+    public static SystemServiceDiscoveryResult BuildResult(
+        RosReadCommandResult identity,
+        RosReadCommandResult resource,
+        RosReadCommandResult packages,
+        RosReadCommandResult clock,
+        RosReadCommandResult services,
+        RosReadCommandResult routerboardResult,
+        IReadOnlyList<string>? warnings = null)
+    {
+        ArgumentNullException.ThrowIfNull(identity);
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(packages);
+        ArgumentNullException.ThrowIfNull(clock);
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(routerboardResult);
+
+        List<string> effectiveWarnings = warnings is null ? [] : [.. warnings];
+        SystemRouterboardDiscovery routerboard;
         if (routerboardResult.IsSuccess)
         {
             routerboard = MapRouterboard(routerboardResult, available: true);
         }
         else
         {
-            warnings.Add(
+            effectiveWarnings.Add(
                 $"SystemRouterboard unavailable: {routerboardResult.Error?.Code} {routerboardResult.Error?.Message}");
             routerboard = new SystemRouterboardDiscovery
             {
@@ -72,7 +94,7 @@ public static class SystemServiceDiscovery
             Packages = MapPackages(packages),
             Clock = MapClock(clock),
             ApiSsl = MapApiSsl(services),
-            Warnings = warnings,
+            Warnings = effectiveWarnings,
         };
     }
 

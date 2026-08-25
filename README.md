@@ -8,10 +8,10 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 |---------|------|
 | MVP (M0–M6 + N1) | **CLOSED** — 109/109 issues |
 | Post-MVP M7 (M7.1–M7.4) | **CLOSED** — 27/27 issues |
-| P2 Pilot (RouterOS wiring) | **OPEN** — P2-04…P2-06 (#280–#282) |
+| P2 Pilot (RouterOS wiring) | **OPEN** — P2-06 (#282) |
 | Release | [`v0.2.0`](https://github.com/sesquicadaver/MTDirector/releases/tag/v0.2.0) (2026-08-24) |
 
-**NEXT:** [P2-04 / #280](https://github.com/sesquicadaver/MTDirector/issues/280) — production `RouterOsReadPort` (live API-SSL probe).
+**NEXT:** [P2-06 / #282](https://github.com/sesquicadaver/MTDirector/issues/282) — `AddRouterOsProductionServices` + `Mfc:RouterOs:Enabled` gate.
 
 Лінійна черга: [`ROADMAP.md`](ROADMAP.md) §3.B5. Мапінг issues: [`ISSUES.md`](ISSUES.md).
 
