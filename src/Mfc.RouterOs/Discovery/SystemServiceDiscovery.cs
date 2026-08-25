@@ -62,7 +62,7 @@ public static class SystemServiceDiscovery
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(routerboardResult);
 
-        List<string> effectiveWarnings = warnings is null ? [] : [..warnings];
+        List<string> effectiveWarnings = warnings is null ? [] : [.. warnings];
         SystemRouterboardDiscovery routerboard;
         if (routerboardResult.IsSuccess)
         {
