@@ -7,6 +7,10 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Production `RouterOsReadPort` (P2-04 / #280): API-SSL identity probe via `SystemServiceDiscovery` + `CapabilityProfileEvaluator`; `IRouterOsConnectionMaterializer` + `EfRouterOsConnectionMaterializer`; Living Spec `RouterOsReadPortLivingSpecTests`.
+
 ### Changed
 
 - Documentation audit for `v0.2.0`: refreshed [`README.md`](README.md), added [`docs/README.md`](docs/README.md) and [`docs/specs/README.md`](docs/specs/README.md), updated ops/release docs for P2 pilot gaps; removed local agent/build artifacts (`artifacts/`, `TestResults/`, `.omx/` — already gitignored).
