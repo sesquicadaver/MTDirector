@@ -1,7 +1,9 @@
 using Mfc.Application.Abstractions.Audit;
 using Mfc.Application.Abstractions.ConnectionProfiles;
+using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Abstractions.Secrets;
 using Mfc.Infrastructure.Audit;
+using Mfc.Infrastructure.RouterOs;
 using Mfc.Infrastructure.Secrets;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -31,6 +33,8 @@ public static class SecurityServiceCollectionExtensions
         }
 
         services.AddSingleton<ISecretProtector, AesGcmSecretProtector>();
+        services.AddSingleton<IRouterOsTrustedCaStore, NotConfiguredRouterOsTrustedCaStore>();
+        services.AddScoped<IRouterOsConnectionMaterializer, EfRouterOsConnectionMaterializer>();
         services.AddScoped<IAuditEventWriter, EfAuditEventWriter>();
         services.AddScoped<IAuditEventReadStore, EfAuditEventReadStore>();
         services.AddScoped<IConnectionProfileService, ConnectionProfileService>();
