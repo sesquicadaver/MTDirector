@@ -143,11 +143,12 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 | `P2-04` | #280 | https://github.com/sesquicadaver/MTDirector/issues/280 |
 | `P2-05` | #281 | https://github.com/sesquicadaver/MTDirector/issues/281 |
 | `P2-06` | #282 | https://github.com/sesquicadaver/MTDirector/issues/282 |
+| `TRACKER-01` | #289 | https://github.com/sesquicadaver/MTDirector/issues/289 |
+| `PLAN-01` | #290 | https://github.com/sesquicadaver/MTDirector/issues/290 |
 
-**Total:** 139 issues (all DONE in code audit)
-
-**Tracker hygiene:** GitHub may still list some M7 issues (#127–#136) as OPEN while ROADMAP/CHANGELOG mark them DONE — reconcile in a dedicated hygiene PR; does not affect code readiness (see [`docs/release/readiness.md`](docs/release/readiness.md)).
+**Product issues (code):** 139 DONE (§2.2).  
+**Linear queue (§3):** 2 OPEN — **NEXT = [TRACKER-01 / #289](https://github.com/sesquicadaver/MTDirector/issues/289)**.
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 
-Linear queue: [`ROADMAP.md`](ROADMAP.md) — P2 read path CLOSED; next tranche = future P2 write-path queue.
+Start here: [`ROADMAP.md`](ROADMAP.md) §3.B6 → **TRACKER-01** (#289) closes stale GitHub OPEN (#83, #91–#95, #125–#136); then **PLAN-01** (#290) formalizes P2-07+ write-path queue.
