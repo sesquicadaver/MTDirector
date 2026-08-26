@@ -15,6 +15,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Production `RouterOsOnboardingRuntime` (P2-07 / #293): live API-SSL onboarding sessions over closed writers; Living Spec `RouterOsOnboardingRuntimeLivingSpecTests`. Write-path DI gate remains P2-10.
 - Production RouterOS DI gate (P2-06 / #282): `AddMfcRouterOs` + `AddRouterOsProductionServices`; `Mfc:RouterOs:Enabled` fail-closed default; Living Spec `PilotReadinessLivingSpecTests`; read-only pilot runbook.
 - Production `RouterOsReadPort` (P2-04 / #280): API-SSL identity probe via `SystemServiceDiscovery` + `CapabilityProfileEvaluator`; `IRouterOsConnectionMaterializer` + `EfRouterOsConnectionMaterializer`; Living Spec `RouterOsReadPortLivingSpecTests`.
 - Production `RouterOsSnapshotCapturePort` (P2-05 / #281): stable-read coordination + discovery reader + canonical/raw `SnapshotCaptureResult` assembly; `RouterOsStableReadCoordinatorPort`; Living Spec + PG integration test (`StartCapture` → persist).
