@@ -23,7 +23,7 @@ using Mfc.Controller.Jobs;
 using Mfc.Infrastructure.Persistence;
 using Mfc.Infrastructure.Persistence.Logging;
 using Mfc.Infrastructure.Security;
-using Mfc.RouterOs.Ports;
+using Mfc.RouterOs.DependencyInjection;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -137,8 +137,7 @@ public static class Program
         RegisterOnboardingApplication(builder.Services);
         RegisterDeploymentApplication(builder.Services);
         RegisterOperationalJobs(builder.Services, jobOptions);
-        builder.Services.TryAddSingleton<IRouterOsReadPort, ProbeOnlyRouterOsReadPort>();
-        builder.Services.TryAddSingleton<ISnapshotCapturePort, NotConfiguredSnapshotCapturePort>();
+        builder.Services.AddMfcRouterOs(builder.Configuration);
         builder.Services.TryAddSingleton<Mfc.Application.Abstractions.Onboarding.IOnboardingRuntime, Mfc.Application.Abstractions.Onboarding.NotConfiguredOnboardingRuntime>();
         builder.Services.TryAddSingleton<Mfc.Application.Abstractions.Deployment.IDeploymentRuntime, Mfc.Application.Abstractions.Deployment.NotConfiguredDeploymentRuntime>();
         builder.Services.TryAddSingleton<IWatchdogResidueCleanupPort, NotConfiguredWatchdogResidueCleanupPort>();
