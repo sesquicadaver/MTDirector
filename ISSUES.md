@@ -144,7 +144,9 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 | `P2-05` | #281 | https://github.com/sesquicadaver/MTDirector/issues/281 |
 | `P2-06` | #282 | https://github.com/sesquicadaver/MTDirector/issues/282 |
 
-**Total:** 139 issues (all DONE)
+**Total:** 139 issues (all DONE in code audit)
+
+**Tracker hygiene:** GitHub may still list some M7 issues (#127–#136) as OPEN while ROADMAP/CHANGELOG mark them DONE — reconcile in a dedicated hygiene PR; does not affect code readiness (see [`docs/release/readiness.md`](docs/release/readiness.md)).
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 

@@ -15,7 +15,7 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 
 Лінійна черга: [`ROADMAP.md`](ROADMAP.md) §3.B5. Мапінг issues: [`ISSUES.md`](ISSUES.md).
 
-Acceptance: [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md). Known gaps: [`docs/release/known-limitations.md`](docs/release/known-limitations.md).
+Acceptance: [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md). Readiness: [`docs/release/readiness.md`](docs/release/readiness.md). Known gaps: [`docs/release/known-limitations.md`](docs/release/known-limitations.md).
 
 ## Швидкий старт
 
@@ -43,7 +43,8 @@ Acceptance: [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md). 
 M0 → M1 → M2 → M3 → M5 → M4 → M6 → MVP CLOSED
                  (+ N1 packet-path weave)
 → M7.1…M7.4 → v0.2.0
-→ P2 (production RouterOS read path) → pilot
+→ P2 read path (P2-04…P2-06) → **CLOSED**
+→ NEXT: P2 write-path queue (onboarding/deploy runtimes)
 ```
 
 ## Стек

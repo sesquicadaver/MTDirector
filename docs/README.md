@@ -55,6 +55,7 @@ Authoritative ТЗ and Issue Sets live in the repository root and are indexed in
 | [`release/mvp-acceptance.md`](release/mvp-acceptance.md) | M6-09 acceptance package |
 | [`release/release-gates.md`](release/release-gates.md) | Pre-release checklist |
 | [`release/known-limitations.md`](release/known-limitations.md) | Intentional scope residuals |
+| [`release/readiness.md`](release/readiness.md) | Project readiness assessment (milestones + pilot status) |
 | [`release/packaging.md`](release/packaging.md) | Artifact packaging |
 | [`release/RELEASE_SIGNING.md`](release/RELEASE_SIGNING.md) | Signing / attestation policy |
 

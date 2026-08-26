@@ -341,7 +341,7 @@ Issue #67 / PRD rev 2 → module → tests:
 
 Canonical section IDs: `topology.container-veth`, `topology.shared-veth` (configuration). Domain observation DTOs are plain strings only.
 
-**Known residual (tracked, non-blocking for N1-05 library slice):** live `ISnapshotCapturePort` still defaults to `NotConfiguredSnapshotCapturePort`; `DiscoveryCanonicalProjector` (M1-22) is not yet on the production capture path. Marker expansion works whenever LOCK-2 sections are present in a persisted snapshot; assemblers that adopt the projector **must** set `DiscoveryCanonicalInput.PacketPathTopology`. Same seam as M1-22 — not a Domain/App gap.
+**Known residual (N1-05 / zone slice):** With `Mfc:RouterOs:Enabled=false` (default), `ISnapshotCapturePort` resolves to `NotConfiguredSnapshotCapturePort`. With `Enabled=true`, production capture uses `RouterOsSnapshotCapturePort` (P2-05…P2-06). `DiscoveryCanonicalProjector` (M1-22) is on the production capture path via `RouterOsSnapshotCapturePort`. Marker expansion works whenever LOCK-2 sections are present in a persisted snapshot.
 
 Filter: `dotnet test --filter "FullyQualifiedName~ZoneResolve|FullyQualifiedName~SnapshotZoneResolve|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DiscoveryCanonical|FullyQualifiedName~CanonicalSectionIds"`.
 
@@ -2532,3 +2532,24 @@ dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~Incident
 ## CHR live matrix
 
 Not enabled until an isolated self-hosted runner exists. Skeleton contracts run in `routeros-integration` workflow and in `Mfc.RouterOs.IntegrationTests`. For M6-09 / N1-07 DoD, scripted E2E Living Specs replace the live CHR matrix.
+
+## Living Specification — P2 RouterOS read path (P2-04…P2-06)
+
+Production RouterOS probe + capture + Controller DI gate → `Mfc.RouterOs` + `Program.cs`:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Disabled → probe/capture stubs | `AddMfcRouterOs` | `PilotReadinessLivingSpecTests.Ac1DisabledByDefaultResolvesProbeOnlyAndNotConfiguredPorts` |
+| Enabled → production ports (scoped) | `RouterOsReadPort`, `RouterOsSnapshotCapturePort` | `Ac2EnabledResolvesProductionPortsFromScope` |
+| Enabled → stable-read coordinator | `RouterOsStableReadCoordinatorPort` | `Ac3EnabledRegistersStableReadCoordinatorPort` |
+| ROADMAP references production DI | docs | `Ac4RoadmapReferencesAddRouterOsProductionServices` |
+| Config section path | `RouterOsServiceCollectionExtensions.ConfigurationSectionPath` | `Ac5ConfigurationSectionPathIsDocumented` |
+| Pilot runbook present | `docs/operations/pilot-runbook.md` | `Ac6PilotRunbookExists` |
+| Live API-SSL probe | `RouterOsReadPort` | `RouterOsReadPortLivingSpecTests` |
+| Stable-read capture + persist | `RouterOsSnapshotCapturePort` | `RouterOsSnapshotCapturePortLivingSpecTests` + Integration `RouterOsSnapshotCaptureIntegrationTests` |
+
+Filter:
+```bash
+export PATH="$HOME/.dotnet:$PATH"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~PilotReadiness|FullyQualifiedName~RouterOsReadPortLivingSpec|FullyQualifiedName~RouterOsSnapshotCapturePortLivingSpec"
+```

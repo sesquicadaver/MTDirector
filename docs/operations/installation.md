@@ -1,6 +1,6 @@
 # Installation (v0.2.0)
 
-Release **`v0.2.0`** ships MVP + Post-MVP M7 feature-complete **code**. Live RouterOS capture requires **P2 pilot** wiring (`Mfc:RouterOs:Enabled`) — see [`controller-configuration.md`](controller-configuration.md) and [`../release/known-limitations.md`](../release/known-limitations.md).
+Release **`v0.2.0`** ships MVP + Post-MVP M7 + P2 read path feature-complete **code**. Live RouterOS read/capture requires **`Mfc:RouterOs:Enabled=true`** — see [`pilot-runbook.md`](pilot-runbook.md), [`controller-configuration.md`](controller-configuration.md), and [`../release/known-limitations.md`](../release/known-limitations.md).
 
 ## Prerequisites
 
