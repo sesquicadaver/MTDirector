@@ -98,7 +98,7 @@ Live CHR / live physical CRS remain **OFF**. Optional residual: env-gated `MFC_C
 
 ## Milestone close statement
 
-With M6-01…M6-09 and N1-07 delivered, **M6 is CLOSED** and **MVP CLOSED**. Post-MVP **M7.1…M7.4 CLOSED** (issues #110–#136). **TRACKER-01 DONE** (#289); **PLAN-01 DONE** (#290); **P2-07 DONE** (#293); **NEXT = P2-08** (#294).
+With M6-01…M6-09 and N1-07 delivered, **M6 is CLOSED** and **MVP CLOSED**. Post-MVP **M7.1…M7.4 CLOSED** (issues #110–#136). **TRACKER-01 DONE** (#289); **PLAN-01 DONE** (#290); **P2-07 DONE** (#293); **P2-08 DONE** (#294); **NEXT = P2-09** (#295).
 
 ## Acceptance review (AC16)
 

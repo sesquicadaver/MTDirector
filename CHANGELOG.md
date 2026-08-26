@@ -9,14 +9,16 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- **P2-08** (#294) **IN PROGRESS**: production `RouterOsDeploymentRuntime`; DI remains fail-closed until P2-10.
-- **P2-07** (#293) **DONE** (2026-08-26): production `RouterOsOnboardingRuntime`; **NEXT = P2-08** (#294).
+- **P2-08** (#294) **DONE** (2026-08-26): production `RouterOsDeploymentRuntime`; **NEXT = P2-09** (#295).
+- Documentation sync (2026-08-26): queue after P2-08 merge — **NEXT → P2-09** (#295).
+- **P2-07** (#293) **DONE** (2026-08-26): production `RouterOsOnboardingRuntime`.
 - **PLAN-01** (#290) **DONE** (2026-08-26): formalized P2 write-path queue — ROADMAP §3.B7 rows #128–#132; GitHub issues #293–#297.
 - Documentation sync (2026-08-26): added [`docs/release/readiness.md`](docs/release/readiness.md); fixed stale references after P2 read path closure.
 - Linear queue integrity: **TRACKER-01** (#289) **DONE** (2026-08-26).
 
 ### Added
 
+- Production `RouterOsDeploymentRuntime` (P2-08 / #294): live API-SSL deployment sessions over M4 use cases; Living Spec `RouterOsDeploymentRuntimeLivingSpecTests`. Write-path DI gate remains P2-10.
 - Production `RouterOsOnboardingRuntime` (P2-07 / #293): live API-SSL onboarding sessions over closed writers; Living Spec `RouterOsOnboardingRuntimeLivingSpecTests`. Write-path DI gate remains P2-10.
 - Production RouterOS DI gate (P2-06 / #282): `AddMfcRouterOs` + `AddRouterOsProductionServices`; `Mfc:RouterOs:Enabled` fail-closed default; Living Spec `PilotReadinessLivingSpecTests`; read-only pilot runbook.
 - Production `RouterOsReadPort` (P2-04 / #280): API-SSL identity probe via `SystemServiceDiscovery` + `CapabilityProfileEvaluator`; `IRouterOsConnectionMaterializer` + `EfRouterOsConnectionMaterializer`; Living Spec `RouterOsReadPortLivingSpecTests`.

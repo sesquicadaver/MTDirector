@@ -152,9 +152,9 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 | `P2-11` | #297 | https://github.com/sesquicadaver/MTDirector/issues/297 |
 
 **Product issues (code):** 139 DONE (§2.2).  
-**Linear queue (§3):** 4 OPEN — **NEXT = [P2-08 / #294](https://github.com/sesquicadaver/MTDirector/issues/294)**.  
-**TRACKER-01** (#289): **DONE** (2026-08-26). **PLAN-01** (#290): **DONE** (2026-08-26). **P2-07** (#293): **DONE** (2026-08-26).
+**Linear queue (§3):** 3 OPEN — **NEXT = [P2-09 / #295](https://github.com/sesquicadaver/MTDirector/issues/295)**.  
+**TRACKER-01** (#289): **DONE** (2026-08-26). **PLAN-01** (#290): **DONE** (2026-08-26). **P2-07** (#293): **DONE** (2026-08-26). **P2-08** (#294): **DONE** (2026-08-26).
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 
-Start here: [`ROADMAP.md`](ROADMAP.md) §3.B7 → **P2-08** (#294) production deployment runtime.
+Start here: [`ROADMAP.md`](ROADMAP.md) §3.B7 → **P2-09** (#295) watchdog residue cleanup.
