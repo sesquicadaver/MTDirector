@@ -1,7 +1,7 @@
 # MTDirector documentation index
 
 **Release:** `v0.2.0` (2026-08-24) — MVP + Post-MVP M7 CLOSED.  
-**Next delivery:** **PLAN-01** (#290) → P2-07+ write-path — see [`ROADMAP.md`](../ROADMAP.md) §3.B6.
+**Next delivery:** **P2-07** (#293) → P2-08…P2-11 write-path — see [`ROADMAP.md`](../ROADMAP.md) §3.B7.
 
 ## Planning and tracking
 

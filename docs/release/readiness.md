@@ -13,8 +13,8 @@ This document summarizes **code + documentation readiness** against the normativ
 | MVP (M0–M6 + N1) | **100% CLOSED** | 109/109 issues in code audit |
 | Post-MVP M7 (M7.1–M7.4) | **100% CLOSED** | 27/27 issues in code audit |
 | P2 read path (P2-04…P2-06) | **100% CLOSED** | Production probe + capture + DI gate |
-| P2 write path | **NOT STARTED** | Onboarding/deploy runtimes still default stubs |
-| Linear queue (§3) | **1 open** | **NEXT = PLAN-01** (#290) |
+| P2 write path | **PLANNED** | P2-07…P2-11 queued (#293–#297); runtimes still default stubs |
+| Linear queue (§3) | **5 open** | **NEXT = P2-07** (#293) |
 
 **Overall code readiness:** all 139 mapped product issues are **DONE in code**.  
 **Queue integrity:** **TRACKER-01 DONE** (#289, 2026-08-26) — GitHub tracker aligned with ROADMAP §2.2.  
@@ -42,9 +42,14 @@ This document summarizes **code + documentation readiness** against the normativ
 | # | ID | GitHub | Status |
 |--:|----|-------:|--------|
 | 126 | TRACKER-01 | [#289](https://github.com/sesquicadaver/MTDirector/issues/289) | **DONE** (2026-08-26) |
-| 127 | PLAN-01 | [#290](https://github.com/sesquicadaver/MTDirector/issues/290) | **NEXT** — formalize P2-07+ in ROADMAP §3 |
+| 127 | PLAN-01 | [#290](https://github.com/sesquicadaver/MTDirector/issues/290) | **DONE** (2026-08-26) |
+| 128 | P2-07 | [#293](https://github.com/sesquicadaver/MTDirector/issues/293) | **NEXT** — production onboarding runtime |
+| 129 | P2-08 | [#294](https://github.com/sesquicadaver/MTDirector/issues/294) | deployment runtime |
+| 130 | P2-09 | [#295](https://github.com/sesquicadaver/MTDirector/issues/295) | watchdog residue cleanup |
+| 131 | P2-10 | [#296](https://github.com/sesquicadaver/MTDirector/issues/296) | write-path DI gate |
+| 132 | P2-11 | [#297](https://github.com/sesquicadaver/MTDirector/issues/297) | write-path pilot runbook |
 
-No parallel work. P2 write-path **implementation** starts only after PLAN-01 creates atomic P2-07+ rows.
+No parallel work. Linear chain: P2-07 → P2-08 → P2-09 → P2-10 → P2-11.
 
 ## What is production-ready today
 
@@ -75,7 +80,7 @@ Documented in [`known-limitations.md`](known-limitations.md):
 
 | Residual | Impact |
 |----------|--------|
-| Write-path runtimes stubbed | Onboarding/deploy/feedback delivery require P2-07+ (after PLAN-01) |
+| Write-path runtimes stubbed | Onboarding/deploy/feedback delivery require P2-07…P2-11 (#293–#297) |
 | Live CHR matrix OFF | Scripted E2E Living Specs are DoD substitute |
 | Desktop packaging | zip/tar publish, not MSI |
 | Signing | SHA256SUMS attestation; GPG/Sigstore optional |

@@ -8,12 +8,12 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 |---------|------|
 | MVP (M0–M6 + N1) | **CLOSED** — 109/109 issues |
 | Post-MVP M7 (M7.1–M7.4) | **CLOSED** — 27/27 issues |
-| P2 Pilot (RouterOS wiring) | **CLOSED** — read path (P2-04…P2-06) |
+| P2 Pilot (RouterOS wiring) | **CLOSED** — read path (P2-04…P2-06); write path **NEXT** (P2-07…P2-11) |
 | Release | [`v0.2.0`](https://github.com/sesquicadaver/MTDirector/releases/tag/v0.2.0) (2026-08-24) |
 
-**NEXT:** [PLAN-01 / #290](https://github.com/sesquicadaver/MTDirector/issues/290) — formalize P2-07+ write-path queue. Read-only pilot: [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md).
+**NEXT:** [P2-07 / #293](https://github.com/sesquicadaver/MTDirector/issues/293) — production `RouterOsOnboardingRuntime`. Read-only pilot: [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md).
 
-Лінійна черга: [`ROADMAP.md`](ROADMAP.md) §3.B6. Мапінг issues: [`ISSUES.md`](ISSUES.md).
+Лінійна черга: [`ROADMAP.md`](ROADMAP.md) §3.B7. Мапінг issues: [`ISSUES.md`](ISSUES.md).
 
 Acceptance: [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md). Readiness: [`docs/release/readiness.md`](docs/release/readiness.md). Known gaps: [`docs/release/known-limitations.md`](docs/release/known-limitations.md).
 
@@ -45,7 +45,8 @@ M0 → M1 → M2 → M3 → M5 → M4 → M6 → MVP CLOSED
 → M7.1…M7.4 → v0.2.0
 → P2 read path (P2-04…P2-06) → **CLOSED**
 → TRACKER-01 (#289) → **DONE**
-→ **PLAN-01 (#290)** → P2-07+ write-path
+→ PLAN-01 (#290) → **DONE**
+→ **P2-07 (#293)** → P2-08…P2-11 write-path
 ```
 
 ## Стек
