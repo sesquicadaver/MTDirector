@@ -7,11 +7,9 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - **N1-07 (#109)** — E2E/drift acceptance for container/VLAN/VETH/HW path classes is DONE (`PathClassE2EDriftLivingSpecTests`). Spine complete: `M6(+N1-07) → MVP CLOSED`.
 - **M7.1…M7.4 (#110–#136)** — Post-MVP routing assurance, endpoint mobility, external correlation, and incident enforcement are DONE. **M7.4 CLOSED**; Post-MVP M7 = **0** open. Release tag **`v0.2.0`** (2026-08-24).
 
-## Production wiring (P2 pilot — OPEN)
+## Production wiring (P2 pilot)
 
-- **`IRouterOsReadPort`** defaults to `ProbeOnlyRouterOsReadPort` — live API-SSL inventory probe requires **P2-04** (#280).
-- **`ISnapshotCapturePort`** — production adapter `RouterOsSnapshotCapturePort` implemented (P2-05 / #281); Controller still defaults to `NotConfiguredSnapshotCapturePort` until **P2-06** (#282) wires DI.
-- **`AddRouterOsProductionServices`** + `Mfc:RouterOs:Enabled` gate — **P2-06** (#282).
+- **Read path (P2-04…P2-06)** — **DONE**. Enable via `Mfc:RouterOs:Enabled=true`; default remains fail-closed (`ProbeOnlyRouterOsReadPort` / `NotConfiguredSnapshotCapturePort`). Pilot checklist: [`pilot-runbook.md`](../operations/pilot-runbook.md).
 - Onboarding/deploy/feedback ports (`NotConfiguredOnboardingRuntime`, `NotConfiguredDeploymentRuntime`, `NotConfiguredResponseFeedbackDeliveryPort`) remain stubs until future P2 write-path queue.
 
 ## Live lab residuals (optional)

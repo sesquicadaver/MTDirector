@@ -23,21 +23,23 @@ Configuration sources (highest wins last):
 
 ## RouterOS production ports (P2 pilot)
 
-Until **P2-06** is merged, Controller defaults register **not-configured** stubs for live RouterOS I/O:
+Controller registers **fail-closed** stubs by default (`Mfc:RouterOs:Enabled=false`). Set **`Enabled=true`** for production read/capture adapters (read-only pilot).
 
-| Port | Default (CI / Development) | Production (after P2-06) |
-|------|----------------------------|---------------------------|
-| `IRouterOsReadPort` | `ProbeOnlyRouterOsReadPort` | `RouterOsReadPort` when enabled |
-| `ISnapshotCapturePort` | `NotConfiguredSnapshotCapturePort` | `RouterOsSnapshotCapturePort` when enabled |
+| Port | Default (CI / Development) | Production (`RouterOs:Enabled=true`) |
+|------|----------------------------|--------------------------------------|
+| `IRouterOsReadPort` | `ProbeOnlyRouterOsReadPort` | `RouterOsReadPort` |
+| `ISnapshotCapturePort` | `NotConfiguredSnapshotCapturePort` | `RouterOsSnapshotCapturePort` |
 
-Planned config gate (P2-06):
+Registration: `AddMfcRouterOs(IConfiguration)` in `Program.cs` (or explicit `AddRouterOsProductionServices()` for tests).
 
 | Key | Purpose |
 |-----|---------|
 | `RouterOs:Enabled` | `false` by default; when `true`, registers production read/capture services |
-| `RouterOs:ProbeTimeoutSeconds` | Bounded API-SSL probe timeout (P2-04) |
+| `RouterOs:ProbeTimeoutSeconds` | Reserved bounded API-SSL probe timeout (1–600; default 30); connect timeout still comes from the device connection profile |
 
 With `RouterOs:Enabled=false` (default), `ValidateDeviceConnection` and `StartCapture` remain fail-closed on not-configured ports — CI behaviour unchanged.
+
+Pilot checklist: [`pilot-runbook.md`](pilot-runbook.md).
 
 ## Examples
 
