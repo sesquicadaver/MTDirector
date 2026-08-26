@@ -147,8 +147,9 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 | `PLAN-01` | #290 | https://github.com/sesquicadaver/MTDirector/issues/290 |
 
 **Product issues (code):** 139 DONE (§2.2).  
-**Linear queue (§3):** 2 OPEN — **NEXT = [TRACKER-01 / #289](https://github.com/sesquicadaver/MTDirector/issues/289)**.
+**Linear queue (§3):** 1 OPEN — **NEXT = [PLAN-01 / #290](https://github.com/sesquicadaver/MTDirector/issues/290)**.  
+**TRACKER-01** (#289): **DONE** (2026-08-26) — GitHub tracker aligned.
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 
-Start here: [`ROADMAP.md`](ROADMAP.md) §3.B6 → **TRACKER-01** (#289) closes stale GitHub OPEN (#83, #91–#95, #125–#136); then **PLAN-01** (#290) formalizes P2-07+ write-path queue.
+Start here: [`ROADMAP.md`](ROADMAP.md) §3.B6 → **PLAN-01** (#290) formalizes P2-07+ write-path queue.

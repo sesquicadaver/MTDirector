@@ -1,6 +1,6 @@
 # Architecture overview
 
-**Release baseline:** `v0.2.0` + P2 read path CLOSED. **NEXT = TRACKER-01** (#289) — see [`ROADMAP.md`](../../ROADMAP.md) §3.B6.
+**Release baseline:** `v0.2.0` + P2 read path CLOSED. **NEXT = PLAN-01** (#290) — see [`ROADMAP.md`](../../ROADMAP.md) §3.B6.
 
 MTDirector (MikroTik Firewall Controller) is a **modular monolith**: one deployable Controller process, one Desktop client, and clear assembly boundaries.
 
@@ -138,7 +138,7 @@ Normative detail lives in [`TOR-1.md`](../../TOR-1.md), the MVP specifications, 
 | Production RouterOS read probe | Done (P2-04) | `RouterOsReadPort` + API-SSL identity probe; `RouterOsReadPortLivingSpecTests` |
 | Production snapshot capture | Done (P2-05) | `RouterOsSnapshotCapturePort` + stable-read pipeline; integration + Living Spec |
 | Production RouterOS DI gate | Done (P2-06) | `AddMfcRouterOs` + `Mfc:RouterOs:Enabled`; `PilotReadinessLivingSpecTests` |
-| Remaining delivery order | See ROADMAP v0.2 §3 | **NEXT = TRACKER-01** (#289) → PLAN-01 → P2-07+ |
+| Remaining delivery order | See ROADMAP v0.2 §3 | **NEXT = PLAN-01** (#290) → P2-07+ |
 
 ## ADRs
 

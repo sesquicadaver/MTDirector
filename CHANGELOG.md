@@ -10,7 +10,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ### Changed
 
 - Documentation sync (2026-08-26): added [`docs/release/readiness.md`](docs/release/readiness.md); fixed stale references after P2 read path closure.
-- Linear queue integrity: **TRACKER-01** (#289) + **PLAN-01** (#290) in ROADMAP §3.B6; single **NEXT** pointer across README/ISSUES/CONTRIBUTING.
+- Linear queue integrity: **TRACKER-01** (#289) **DONE** (2026-08-26); **NEXT = PLAN-01** (#290).
 
 ### Added
 
