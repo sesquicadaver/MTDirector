@@ -11,7 +11,7 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 | P2 Pilot (RouterOS wiring) | **CLOSED** — read path (P2-04…P2-06) |
 | Release | [`v0.2.0`](https://github.com/sesquicadaver/MTDirector/releases/tag/v0.2.0) (2026-08-24) |
 
-**NEXT:** [TRACKER-01 / #289](https://github.com/sesquicadaver/MTDirector/issues/289) — sync GitHub tracker with ROADMAP §2.2. Read-only pilot: [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md).
+**NEXT:** [PLAN-01 / #290](https://github.com/sesquicadaver/MTDirector/issues/290) — formalize P2-07+ write-path queue. Read-only pilot: [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md).
 
 Лінійна черга: [`ROADMAP.md`](ROADMAP.md) §3.B6. Мапінг issues: [`ISSUES.md`](ISSUES.md).
 
@@ -44,7 +44,8 @@ M0 → M1 → M2 → M3 → M5 → M4 → M6 → MVP CLOSED
                  (+ N1 packet-path weave)
 → M7.1…M7.4 → v0.2.0
 → P2 read path (P2-04…P2-06) → **CLOSED**
-→ TRACKER-01 (#289) → PLAN-01 (#290) → P2-07+ write-path
+→ TRACKER-01 (#289) → **DONE**
+→ **PLAN-01 (#290)** → P2-07+ write-path
 ```
 
 ## Стек

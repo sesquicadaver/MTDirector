@@ -14,10 +14,10 @@ This document summarizes **code + documentation readiness** against the normativ
 | Post-MVP M7 (M7.1–M7.4) | **100% CLOSED** | 27/27 issues in code audit |
 | P2 read path (P2-04…P2-06) | **100% CLOSED** | Production probe + capture + DI gate |
 | P2 write path | **NOT STARTED** | Onboarding/deploy runtimes still default stubs |
-| Linear queue (§3) | **2 open** | **NEXT = TRACKER-01** (#289) |
+| Linear queue (§3) | **1 open** | **NEXT = PLAN-01** (#290) |
 
-**Overall code readiness:** all 139 mapped product issues in [`ISSUES.md`](../../ISSUES.md) are **DONE in code**.  
-**Queue integrity:** GitHub shows **18 stale OPEN** issues on DONE-code — **blocks honest NEXT** until **TRACKER-01** (#289).  
+**Overall code readiness:** all 139 mapped product issues are **DONE in code**.  
+**Queue integrity:** **TRACKER-01 DONE** (#289, 2026-08-26) — GitHub tracker aligned with ROADMAP §2.2.  
 **Production pilot readiness (read-only):** **ready** when `Mfc:RouterOs:Enabled=true` + PostgreSQL + device connection profiles — see [`pilot-runbook.md`](../operations/pilot-runbook.md).  
 **Production pilot readiness (write path):** **not ready** — `NotConfiguredOnboardingRuntime`, `NotConfiguredDeploymentRuntime`, and related ports remain fail-closed by default.
 
@@ -41,8 +41,8 @@ This document summarizes **code + documentation readiness** against the normativ
 
 | # | ID | GitHub | Status |
 |--:|----|-------:|--------|
-| 126 | TRACKER-01 | [#289](https://github.com/sesquicadaver/MTDirector/issues/289) | **NEXT** — close stale OPEN (#83, #91–#95, #125–#136) |
-| 127 | PLAN-01 | [#290](https://github.com/sesquicadaver/MTDirector/issues/290) | After TRACKER-01 — formalize P2-07+ in ROADMAP §3 |
+| 126 | TRACKER-01 | [#289](https://github.com/sesquicadaver/MTDirector/issues/289) | **DONE** (2026-08-26) |
+| 127 | PLAN-01 | [#290](https://github.com/sesquicadaver/MTDirector/issues/290) | **NEXT** — formalize P2-07+ in ROADMAP §3 |
 
 No parallel work. P2 write-path **implementation** starts only after PLAN-01 creates atomic P2-07+ rows.
 
