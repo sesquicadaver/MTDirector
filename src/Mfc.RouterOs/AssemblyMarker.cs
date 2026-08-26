@@ -67,4 +67,7 @@ public static class AssemblyMarker
 
     /// <summary>Roots production onboarding runtime (P2-07).</summary>
     public static Type OnboardingRuntimeAnchor { get; } = typeof(Onboarding.RouterOsOnboardingRuntime);
+
+    /// <summary>Roots production deployment runtime (P2-08).</summary>
+    public static Type DeploymentRuntimeAnchor { get; } = typeof(Deployment.RouterOsDeploymentRuntime);
 }
