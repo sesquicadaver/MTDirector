@@ -1,9 +1,9 @@
 # MTDirector — ROADMAP реалізації v0.2
 
-**Дата оновлення:** 26 серпня 2026 (P2-06 production RouterOS DI)
+**Дата оновлення:** 26 серпня 2026 (TRACKER-01 — linear queue integrity)
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** `v0.2.0` — M7.4 CLOSED; **P2 read path CLOSED** (P2-04…P2-06)
+**Базовий коміт аудиту:** `v0.2.0` — M7.4 CLOSED; P2 read path CLOSED; **NEXT = TRACKER-01** (#289)
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -53,11 +53,13 @@
 | M4 Safe deploy | 13 | 0 | 100% |
 | M6 E2E / drift | 9 | 0 | 100% |
 | M7 Post-MVP | 27 | 0 | 100% |
-| P2 Pilot (RouterOS wiring) | 3 | 0 | 100% |
-| **Разом** | **139** | **0** | **100%** |
+| P2 Pilot (read path) | 3 | 0 | 100% |
+| Queue integrity + planning | 0 | 2 | TRACKER-01, PLAN-01 |
+| **Разом (код)** | **139** | **0** | MVP+M7+P2 read DONE |
+| **Разом (черга §3)** | **137** | **2** | +TRACKER-01, PLAN-01 |
 
 MVP issues (109) = **109 done + 0 remaining** — **MVP CLOSED (100%)**.  
-M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** **M7.2-04 DONE. M7.2 CLOSED.** **M7.3-01 DONE.** **M7.3-02 DONE.** **M7.3-03 DONE.** **M7.3-04 DONE.** **M7.3-05 DONE.** **M7.3-06 DONE. M7.3 CLOSED.** **M7.4-01 DONE.** **M7.4-02 DONE.** **M7.4-03 DONE.** **M7.4-04 DONE.** **M7.4-05 DONE.** **M7.4-06 DONE. M7.4 CLOSED.** Post-MVP M7 = **0** open. Release **`v0.2.0`**. **P2 read path CLOSED** (P2-04…P2-06).
+M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** **M7.2-04 DONE. M7.2 CLOSED.** **M7.3-01 DONE.** **M7.3-02 DONE.** **M7.3-03 DONE.** **M7.3-04 DONE.** **M7.3-05 DONE.** **M7.3-06 DONE. M7.3 CLOSED.** **M7.4-01 DONE.** **M7.4-02 DONE.** **M7.4-03 DONE.** **M7.4-04 DONE.** **M7.4-05 DONE.** **M7.4-06 DONE. M7.4 CLOSED.** Post-MVP M7 = **0** open. Release **`v0.2.0`**. **P2 read path CLOSED** (P2-04…P2-06). **NEXT = TRACKER-01** (#289) — GitHub tracker sync.
 Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий**; multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance **DONE**; **M4 CLOSED**; desired/committed/actual projection **готовий** (M6-01); managed drift detection **готовий** (M6-02); bounded operational jobs **готовий** (M6-03); Desktop MVP workflows **готовий** (M6-04); standalone/dual-stack E2E **готовий** (M6-05); multi-WAN E2E **готовий** (M6-06); VRRP/CRS E2E **готовий** (M6-07); security/backup/restore acceptance **готовий** (M6-08); MVP production acceptance **готовий** (M6-09); **M6 CLOSED**; path-class E2E/drift **готовий** (N1-07); **MVP CLOSED**; routing-assurance read allowlist **готовий** (M7.1-01); RoutingAssuranceState persistence **готовий** (M7.1-02); RouteResolutionTrace **готовий** (M7.1-03); ECMP ONE_OF sets **готовий** (M7.1-04); dynamic route origins **готовий** (M7.1-05); RouteExpectation evaluation **готовий** (M7.1-06); reverse-path symmetry **готовий** (M7.1-07); network path profile latency probes **готовий** (M7.1-08); routing configuration vs operational drift **готовий** (M7.1-09); routing assurance Desktop viewer **готовий** (M7.1-10); routing assurance CHR acceptance **готовий** (M7.1-11); endpoint attribution **готовий** (M7.2-01); endpoint presence **готовий** (M7.2-02); endpoint mobility **готовий** (M7.2-03); endpoint mobility CHR acceptance **готовий** (M7.2-04); incident signal ingress **готовий** (M7.3-01); active-state interval **готовий** (M7.3-02); session context **готовий** (M7.3-03); sensor correlation **готовий** (M7.3-04); assessment quality **готовий** (M7.3-05); incident assessment contract **готовий** (M7.3-06); incident deny overlay **готовий** (M7.4-01); response intent feasibility **готовий** (M7.4-02); overlay compile/deploy **готовий** (M7.4-03); TTL removal plan **готовий** (M7.4-04); RESPONSE_* feedback **готовий** (M7.4-05); incident response E2E **готовий** (M7.4-06); **M7.4 CLOSED**; Post-MVP M7 = **0** open; release tag **`v0.2.0`** (2026-08-24).
 
 ### 2.2 DONE (не в черзі)
@@ -431,7 +433,14 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | 124 | P2-05 | #281 | Production `RouterOsSnapshotCapturePort` (stable-read + canonical capture; replace `NotConfiguredSnapshotCapturePort`) |
 | 125 | P2-06 | #282 | `AddRouterOsProductionServices` DI + `Mfc:RouterOs:Enabled` gate + read-only pilot Living Spec → DONE |
 
-**Кінець черги P2 read path:** **CLOSED** (P2-04…P2-06). **NEXT** = future P2 write-path queue (onboarding/deploy runtimes).
+#### Блок B6 — Queue integrity + P2 write-path planning
+
+| # | ID | GitHub | Задача |
+|--:|----|-------:|--------|
+| 126 | TRACKER-01 | #289 | Close stale OPEN on DONE-code (#83, #91–#95, #125–#136); align GitHub with ROADMAP §2.2 |
+| 127 | PLAN-01 | #290 | Formalize P2 write-path atomic queue (P2-07+) in ROADMAP §3 + ISSUES.md + GitHub issues |
+
+**Кінець черги §3 (наразі):** **NEXT = TRACKER-01** (#289). Після PLAN-01 — **P2-07** (write-path implementation; issues ще не створені).
 
 ---
 
@@ -442,10 +451,11 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | До MVP CLOSED | 0 | **MVP CLOSED** (N1-07 DONE) |
 | Post-MVP M7 | 0 | **M7.4 CLOSED** |
 | P2 Pilot (read path) | 0 | **CLOSED** (P2-04…P2-06) |
-| **Нереалізовано разом** | **0** | — |
+| Queue integrity + planning | 2 | **NEXT = TRACKER-01** (#289) |
+| **Нереалізовано (§3)** | **2** | TRACKER-01, PLAN-01 |
 | DONE у коді (§2.2) | 139 | …+P2-06; release **`v0.2.0`** |
 
-GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
+GitHub-трекер: **18 stale OPEN** (#83, #91–#95, #125–#136) — вирівнюється **TRACKER-01** (#289). Хвиля 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
 
 ---
 
@@ -634,7 +644,9 @@ GitHub-трекер вирівняно хвилею 0 (2026-08-15): #52, #53, #5
 60. ~~Відкрити **M7.4-06** → [issue #136](https://github.com/sesquicadaver/MTDirector/issues/136).~~ → **DONE / M7.4 CLOSED**.
 61. ~~Відкрити **P2-04** → [issue #280](https://github.com/sesquicadaver/MTDirector/issues/280) — production `RouterOsReadPort`.~~ → **DONE**.
 62. ~~**P2-05** → [issue #281](https://github.com/sesquicadaver/MTDirector/issues/281).~~ → **DONE**.
-63. ~~**P2-06** → [issue #282](https://github.com/sesquicadaver/MTDirector/issues/282).~~ → **DONE**. **P2 read path CLOSED**. **NEXT:** future P2 write-path queue.
+63. ~~**P2-06** → [issue #282](https://github.com/sesquicadaver/MTDirector/issues/282).~~ → **DONE**. **P2 read path CLOSED**.
+64. **NEXT:** **TRACKER-01** → [issue #289](https://github.com/sesquicadaver/MTDirector/issues/289) — sync GitHub tracker with ROADMAP §2.2.
+65. Після TRACKER-01: **PLAN-01** → [issue #290](https://github.com/sesquicadaver/MTDirector/issues/290) — formalize P2-07+ write-path queue.
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones

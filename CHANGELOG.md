@@ -9,7 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- Documentation sync (2026-08-26): added [`docs/release/readiness.md`](docs/release/readiness.md); fixed stale references in `CONTRIBUTING.md`, `architecture/overview.md`, `testing.md`, `release-gates.md`, `installation.md`; tracker hygiene note in `ISSUES.md`.
+- Documentation sync (2026-08-26): added [`docs/release/readiness.md`](docs/release/readiness.md); fixed stale references after P2 read path closure.
+- Linear queue integrity: **TRACKER-01** (#289) + **PLAN-01** (#290) in ROADMAP §3.B6; single **NEXT** pointer across README/ISSUES/CONTRIBUTING.
 
 ### Added
 

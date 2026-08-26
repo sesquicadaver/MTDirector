@@ -1,7 +1,7 @@
 # Project readiness assessment
 
 **As of:** 2026-08-26  
-**Baseline commit:** `main` @ P2-06 (`65dd413`)  
+**Baseline commit:** `main` @ docs sync (`d73fcb4`)  
 **Release tag:** [`v0.2.0`](https://github.com/sesquicadaver/MTDirector/releases/tag/v0.2.0) (2026-08-24)
 
 This document summarizes **code + documentation readiness** against the normative queue in [`ROADMAP.md`](../../ROADMAP.md). It is not a substitute for operator acceptance ([`mvp-acceptance.md`](mvp-acceptance.md)) or release gates ([`release-gates.md`](release-gates.md)).
@@ -14,16 +14,17 @@ This document summarizes **code + documentation readiness** against the normativ
 | Post-MVP M7 (M7.1–M7.4) | **100% CLOSED** | 27/27 issues in code audit |
 | P2 read path (P2-04…P2-06) | **100% CLOSED** | Production probe + capture + DI gate |
 | P2 write path | **NOT STARTED** | Onboarding/deploy runtimes still default stubs |
-| Linear queue (§3) | **0 open** | Next tranche = future P2 write-path issues |
+| Linear queue (§3) | **2 open** | **NEXT = TRACKER-01** (#289) |
 
-**Overall code readiness:** all 139 mapped atomic issues in [`ISSUES.md`](../../ISSUES.md) are **DONE in code**.  
+**Overall code readiness:** all 139 mapped product issues in [`ISSUES.md`](../../ISSUES.md) are **DONE in code**.  
+**Queue integrity:** GitHub shows **18 stale OPEN** issues on DONE-code — **blocks honest NEXT** until **TRACKER-01** (#289).  
 **Production pilot readiness (read-only):** **ready** when `Mfc:RouterOs:Enabled=true` + PostgreSQL + device connection profiles — see [`pilot-runbook.md`](../operations/pilot-runbook.md).  
 **Production pilot readiness (write path):** **not ready** — `NotConfiguredOnboardingRuntime`, `NotConfiguredDeploymentRuntime`, and related ports remain fail-closed by default.
 
-## Milestone matrix
+## Milestone matrix (code audit §2.2)
 
-| Segment | Closed | Open | Evidence |
-|---------|-------:|-----:|----------|
+| Segment | Closed | Open (code) | Evidence |
+|---------|-------:|------------:|----------|
 | M0 Bootstrap | 10 | 0 | ROADMAP §2.2, architecture unit tests |
 | M1 Read-only | 34 | 0 | Living Spec M1-01…M1-34 |
 | N1 Packet-path | 7 | 0 | N1-01…N1-07 Living Specs |
@@ -34,7 +35,16 @@ This document summarizes **code + documentation readiness** against the normativ
 | M6 E2E / drift | 9 | 0 | M6-09 acceptance package |
 | M7 Post-MVP | 27 | 0 | M7.1…M7.4 Living Specs |
 | P2 read path | 3 | 0 | P2-04…P2-06 + `PilotReadinessLivingSpecTests` |
-| **Total** | **139** | **0** | ROADMAP §4 |
+| **Product total** | **139** | **0** | ROADMAP §2.2 |
+
+## Linear queue (§3) — current
+
+| # | ID | GitHub | Status |
+|--:|----|-------:|--------|
+| 126 | TRACKER-01 | [#289](https://github.com/sesquicadaver/MTDirector/issues/289) | **NEXT** — close stale OPEN (#83, #91–#95, #125–#136) |
+| 127 | PLAN-01 | [#290](https://github.com/sesquicadaver/MTDirector/issues/290) | After TRACKER-01 — formalize P2-07+ in ROADMAP §3 |
+
+No parallel work. P2 write-path **implementation** starts only after PLAN-01 creates atomic P2-07+ rows.
 
 ## What is production-ready today
 
@@ -65,7 +75,7 @@ Documented in [`known-limitations.md`](known-limitations.md):
 
 | Residual | Impact |
 |----------|--------|
-| Write-path runtimes stubbed | Onboarding/deploy/feedback delivery require future P2 write-path wiring |
+| Write-path runtimes stubbed | Onboarding/deploy/feedback delivery require P2-07+ (after PLAN-01) |
 | Live CHR matrix OFF | Scripted E2E Living Specs are DoD substitute |
 | Desktop packaging | zip/tar publish, not MSI |
 | Signing | SHA256SUMS attestation; GPG/Sigstore optional |
@@ -77,20 +87,6 @@ Local checks on `main`:
 
 - `dotnet build MikroTikFirewallController.sln -c Release` — **pass**
 - `dotnet test tests/Mfc.UnitTests -c Release --filter FullyQualifiedName~LivingSpecTests` — **811 pass**
-- CI (PR #287): Linux validate, Windows Desktop, CHR skeleton contracts, GitGuardian — **pass**
+- CI: Linux validate, Windows Desktop, CHR skeleton contracts, GitGuardian — **pass**
 
 Full release gate checklist: [`release-gates.md`](release-gates.md).
-
-## Tracker hygiene note
-
-[`ISSUES.md`](../../ISSUES.md) maps **139/139 DONE**. Some GitHub issues in the M7 range (#127–#136) may still show **OPEN** in the GitHub UI while code and ROADMAP mark them **DONE** — reconcile the tracker in a dedicated hygiene PR (ROADMAP §6 wave 0 pattern). This does **not** block code readiness.
-
-## Next delivery
-
-**P2 write-path queue** (not yet filed in `ISSUES.md`):
-
-- Wire `IOnboardingRuntime` / `IDeploymentRuntime` production adapters
-- Replace remaining `NotConfigured*` ports in `Program.cs`
-- Live pilot for onboarding → deploy → rollback on lab CHR
-
-Until then, the linear atomic queue in ROADMAP §3 is **empty**.

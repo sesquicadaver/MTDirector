@@ -4,7 +4,7 @@ MikroTik Firewall Controller (namespace `Mfc`) — monorepo, trunk-based workflo
 
 ## Before you start
 
-1. Check [`ROADMAP.md`](ROADMAP.md) §3 for the next atomic issue. As of 2026-08-26 the linear queue is **empty** (139/139 DONE); P2 read path is CLOSED. New work requires opening the **P2 write-path** tranche (onboarding/deploy runtimes) or a new issue.
+1. Pick the next open row from [`ROADMAP.md`](ROADMAP.md) §3 — **NEXT = TRACKER-01** ([#289](https://github.com/sesquicadaver/MTDirector/issues/289)). Do not skip queue order.
 2. One issue → one short-lived branch → one PR.
 3. Do not expand scope without a new issue.
 4. No stubs, `NotImplementedException`, or disabled tests in production code.
