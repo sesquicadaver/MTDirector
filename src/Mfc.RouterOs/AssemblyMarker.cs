@@ -64,4 +64,7 @@ public static class AssemblyMarker
 
     /// <summary>Roots the closed onboarding bootstrap writer (M5-05).</summary>
     public static Type OnboardingBootstrapWriterAnchor { get; } = typeof(Onboarding.OnboardingBootstrapWriter);
+
+    /// <summary>Roots production onboarding runtime (P2-07).</summary>
+    public static Type OnboardingRuntimeAnchor { get; } = typeof(Onboarding.RouterOsOnboardingRuntime);
 }
