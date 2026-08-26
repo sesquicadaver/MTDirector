@@ -1,6 +1,6 @@
 # Architecture overview
 
-**Release baseline:** `v0.2.0` — MVP + Post-MVP M7 CLOSED in code; **P2 pilot** (production RouterOS read/capture ports) is the active queue — see [`ROADMAP.md`](../../ROADMAP.md) §3.B5.
+**Release baseline:** `v0.2.0` + P2 read path — MVP, Post-MVP M7, and P2-04…P2-06 are **CLOSED in code**. Next tranche: future P2 write-path queue — see [`ROADMAP.md`](../../ROADMAP.md) §3.B5.
 
 MTDirector (MikroTik Firewall Controller) is a **modular monolith**: one deployable Controller process, one Desktop client, and clear assembly boundaries.
 
@@ -135,7 +135,10 @@ Normative detail lives in [`TOR-1.md`](../../TOR-1.md), the MVP specifications, 
 | Endpoint presence + routing context | Done (M7.2-02) | `EndpointPresenceInterval` / `EndpointRoutingContext` + EF `endpoint_presence_intervals` / `endpoint_routing_contexts`; Living Spec AC 1–8; no routing writes |
 | Endpoint mobility (assessment invalidation + trace recompute) | Done (M7.2-03) | `EndpointMobilityHandler` + `ResponseAssessment`; Living Spec AC 1–8; no auto-deploy |
 | Endpoint migration CHR acceptance | Done (M7.2-04) | `EndpointMobilityChrAcceptanceLivingSpecTests` AC 1–10; testlab skeleton; **M7.2 CLOSED** |
-| Remaining delivery order | See ROADMAP v0.2 §3 | **M7.4 CLOSED**; Post-MVP M7 = 0 open |
+| Production RouterOS read probe | Done (P2-04) | `RouterOsReadPort` + API-SSL identity probe; `RouterOsReadPortLivingSpecTests` |
+| Production snapshot capture | Done (P2-05) | `RouterOsSnapshotCapturePort` + stable-read pipeline; integration + Living Spec |
+| Production RouterOS DI gate | Done (P2-06) | `AddMfcRouterOs` + `Mfc:RouterOs:Enabled`; `PilotReadinessLivingSpecTests` |
+| Remaining delivery order | See ROADMAP v0.2 §3 | **P2 read path CLOSED**; next = P2 write-path queue |
 
 ## ADRs
 

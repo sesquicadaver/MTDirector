@@ -41,6 +41,14 @@ Execute every gate before requesting acceptance review. Checkboxes are the opera
 - [x] GitHub issues M0–M6 + N1-07 + M7.1…M7.4 closed (#1–#136)
 - [x] Git release tag **`v0.2.0`** created after acceptance review (`git tag v0.2.0`; AC16)
 
+## P2 read path (post-`v0.2.0`)
+
+- [x] P2-04 `RouterOsReadPort` + Living Spec (`RouterOsReadPortLivingSpecTests`)
+- [x] P2-05 `RouterOsSnapshotCapturePort` + integration capture test
+- [x] P2-06 `AddMfcRouterOs` DI gate + `PilotReadinessLivingSpecTests`
+- [x] Read-only pilot runbook ([`pilot-runbook.md`](../operations/pilot-runbook.md))
+- [x] Project readiness assessment ([`readiness.md`](readiness.md))
+
 ## Residual (optional — not MVP/M7 DoD blockers)
 
 - [ ] Live CHR matrix on isolated self-hosted runner (`MFC_CHR_*`)

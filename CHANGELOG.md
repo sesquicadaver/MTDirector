@@ -7,6 +7,10 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Documentation sync (2026-08-26): added [`docs/release/readiness.md`](docs/release/readiness.md); fixed stale references in `CONTRIBUTING.md`, `architecture/overview.md`, `testing.md`, `release-gates.md`, `installation.md`; tracker hygiene note in `ISSUES.md`.
+
 ### Added
 
 - Production RouterOS DI gate (P2-06 / #282): `AddMfcRouterOs` + `AddRouterOsProductionServices`; `Mfc:RouterOs:Enabled` fail-closed default; Living Spec `PilotReadinessLivingSpecTests`; read-only pilot runbook.
