@@ -145,11 +145,16 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 | `P2-06` | #282 | https://github.com/sesquicadaver/MTDirector/issues/282 |
 | `TRACKER-01` | #289 | https://github.com/sesquicadaver/MTDirector/issues/289 |
 | `PLAN-01` | #290 | https://github.com/sesquicadaver/MTDirector/issues/290 |
+| `P2-07` | #293 | https://github.com/sesquicadaver/MTDirector/issues/293 |
+| `P2-08` | #294 | https://github.com/sesquicadaver/MTDirector/issues/294 |
+| `P2-09` | #295 | https://github.com/sesquicadaver/MTDirector/issues/295 |
+| `P2-10` | #296 | https://github.com/sesquicadaver/MTDirector/issues/296 |
+| `P2-11` | #297 | https://github.com/sesquicadaver/MTDirector/issues/297 |
 
 **Product issues (code):** 139 DONE (§2.2).  
-**Linear queue (§3):** 1 OPEN — **NEXT = [PLAN-01 / #290](https://github.com/sesquicadaver/MTDirector/issues/290)**.  
-**TRACKER-01** (#289): **DONE** (2026-08-26) — GitHub tracker aligned.
+**Linear queue (§3):** 5 OPEN — **NEXT = [P2-07 / #293](https://github.com/sesquicadaver/MTDirector/issues/293)**.  
+**TRACKER-01** (#289): **DONE** (2026-08-26). **PLAN-01** (#290): **DONE** (2026-08-26).
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 
-Start here: [`ROADMAP.md`](ROADMAP.md) §3.B6 → **PLAN-01** (#290) formalizes P2-07+ write-path queue.
+Start here: [`ROADMAP.md`](ROADMAP.md) §3.B7 → **P2-07** (#293) production onboarding runtime.

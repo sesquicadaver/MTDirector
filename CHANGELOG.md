@@ -9,8 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **PLAN-01** (#290) **DONE** (2026-08-26): formalized P2 write-path queue — ROADMAP §3.B7 rows #128–#132; GitHub issues #293–#297; **NEXT = P2-07** (#293).
 - Documentation sync (2026-08-26): added [`docs/release/readiness.md`](docs/release/readiness.md); fixed stale references after P2 read path closure.
-- Linear queue integrity: **TRACKER-01** (#289) **DONE** (2026-08-26); **NEXT = PLAN-01** (#290).
+- Linear queue integrity: **TRACKER-01** (#289) **DONE** (2026-08-26).
 
 ### Added
 
