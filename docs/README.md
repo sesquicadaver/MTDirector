@@ -44,7 +44,7 @@ Authoritative ТЗ and Issue Sets live in the repository root and are indexed in
 
 | Document | Purpose |
 |----------|---------|
-| [`operations/installation.md`](operations/installation.md) | Controller + Desktop install |
+| [`operations/installation.md`](operations/installation.md) | Controller + Desktop install (short) |
 | [`operations/controller-configuration.md`](operations/controller-configuration.md) | `Mfc` configuration keys |
 | [`operations/pilot-runbook.md`](operations/pilot-runbook.md) | Lab/production RouterOS read + write pilot |
 | [`operations/prerequisite-checklist.md`](operations/prerequisite-checklist.md) | RouterOS device gates |
@@ -70,8 +70,8 @@ Authoritative ТЗ and Issue Sets live in the repository root and are indexed in
 | [`testlab/postgres/compose.yml`](../testlab/postgres/compose.yml) | Local PostgreSQL |
 | [`testlab/chr/README.md`](../testlab/chr/README.md) | CHR acceptance lab |
 
-## Archive
+## HOWTO
 
-| Path | Purpose |
-|------|---------|
-| [`archive/design-notes/`](archive/design-notes/) | Implemented post-MVP design notes (`next-1` / `next-2`) — not open ТЗ |
+| Document | Purpose |
+|----------|---------|
+| [`howto/build-and-run.md`](howto/build-and-run.md) | Build, package, and run Controller + Desktop on Linux / Windows |

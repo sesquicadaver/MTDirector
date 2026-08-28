@@ -1,5 +1,7 @@
 # Installation (v0.2.0)
 
+Повний HOWTO зі збірки та запуску на **Linux / Windows**: [`../howto/build-and-run.md`](../howto/build-and-run.md).
+
 Release **`v0.2.0`** ships MVP + Post-MVP M7 feature-complete **code**. P2 pilot wiring is **CLOSED** in code:
 
 - Live read/capture: **`Mfc:RouterOs:Enabled=true`**
@@ -18,15 +20,15 @@ See also [`prerequisite-checklist.md`](prerequisite-checklist.md) for RouterOS d
 
 ## Controller
 
-1. Obtain the Controller package from release packaging (`scripts/release/package-controller.sh` → `OUT_DIR/controller`).
+1. Obtain the Controller package from release packaging (`scripts/release/package-controller.sh` → `OUT_DIR/controller`). Use `MFC_RELEASE_RID=linux-x64` (default) or `win-x64`.
 2. Configure `Mfc` settings / env (`MFC__…`) per [`controller-configuration.md`](controller-configuration.md).
 3. Apply schema with the migrations bundle (`OUT_DIR/migrations/mfc-ef-migrations`) **or** Development `--migrate-only`.
 4. Start `Mfc.Controller` and verify gRPC health.
 
 ## Desktop
 
-1. Obtain `Mfc.Desktop-<rid>.zip` (or `.tar.gz`) from `scripts/release/package-desktop.sh`.
-2. Extract and run `Mfc.Desktop`.
+1. Obtain `Mfc.Desktop-<rid>.zip` (or `.tar.gz`) from `scripts/release/package-desktop.sh` (`linux-x64` or `win-x64`).
+2. Extract and run `Mfc.Desktop` / `Mfc.Desktop.exe`.
 3. Point `Desktop:ControllerEndpoint` at the Controller URL.
 4. Connect → Inventory → **Add router** to register Site/Node/Device and connection profile (see [`../development/connection-profiles.md`](../development/connection-profiles.md)).
 

@@ -2,6 +2,8 @@
 
 Reproducible workstation setup (Linux recommended; Desktop UI also builds on Windows). Matches `global.json` SDK and the current `main` feature set (MVP + M7 + P2 gates + Desktop Add router).
 
+**Крос-платформний HOWTO** (збірка / package / запуск Linux+Windows): [`../howto/build-and-run.md`](../howto/build-and-run.md).
+
 ## Prerequisites
 
 | Tool | Notes |

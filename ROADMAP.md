@@ -1,6 +1,6 @@
 # MTDirector — ROADMAP реалізації v0.2
 
-**Дата оновлення:** 28 серпня 2026 (purge obsolete §3 strikethrough + archive next-1/2; **§3 empty**)
+**Дата оновлення:** 28 серпня 2026 (howto build/run; archive deleted; **§3 empty**)
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
 **Базовий коміт аудиту:** `main` @ `985f303` — M7.4 CLOSED; P2 read + write CLOSED; Desktop Add router; **§3 empty**
@@ -24,7 +24,6 @@
 | `M2–M6 Implementation Issue Set v0.1.md` | M2–M6 атомарні issues |
 | Профільні Specs M1–M5 | hash / adapter / policy / compiler / onboarding / deploy |
 | [`docs/specs/README.md`](docs/specs/README.md) | Індекс нормативних ТЗ (корінь репо) |
-| [`docs/archive/design-notes/`](docs/archive/design-notes/) | Історичні design notes N1 / incident (реалізовано) |
 | `Network Rule…М7.1.md` | Routing assurance (M7.1) |
 
 **Spine:** `M0 → … → MVP CLOSED → M7.* → v0.2.0 → P2 (pilot RouterOS wiring) → …`
@@ -365,7 +364,7 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 2. Lab/pilot RouterOS: [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) (`Enabled` / `WriteEnabled`).
 3. Desktop реєстрація пристрою: Inventory **Add router** — [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
 4. Acceptance / readiness: [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md), [`docs/release/readiness.md`](docs/release/readiness.md).
-5. Заархівовані design notes (N1 / incident): [`docs/archive/design-notes/`](docs/archive/design-notes/).
+5. Build / run / package: [`docs/howto/build-and-run.md`](docs/howto/build-and-run.md).
 
 Мапінг ID → GitHub: [`ISSUES.md`](ISSUES.md).  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
