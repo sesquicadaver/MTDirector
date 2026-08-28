@@ -1,9 +1,9 @@
 # MTDirector — ROADMAP реалізації v0.2
 
-**Дата оновлення:** 28 серпня 2026 (howto build/run; archive deleted; **§3 empty**)
+**Дата оновлення:** 28 серпня 2026 (PLAN #314 seed MikroTik neighbors)
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** `main` @ `985f303` — M7.4 CLOSED; P2 read + write CLOSED; Desktop Add router; **§3 empty**
+**Базовий коміт аудиту:** `main` @ `985f303` — M7.4 CLOSED; P2 read + write CLOSED; Desktop Add router; PLAN #314 in flight
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -200,9 +200,13 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 
 ## 3. Лінійна черга (стан)
 
-**Статус:** черга **порожня** (`NEXT = none`). Нові атомарні задачі лише через PLAN issue ([`CONTRIBUTING.md`](CONTRIBUTING.md)).
+**Статус:** PLAN [#314](https://github.com/sesquicadaver/MTDirector/issues/314) — Seed MikroTik neighbor candidates (implementing on feature branch).
 
-Повна історія закритих рядків §3.A / §3.B (M0–M6 + N1 + M7 + P2) збережена в git history (до docs-purge) і зведена в [`ISSUES.md`](ISSUES.md) + §2.2 DONE. Детальний strikethrough-аудит черги більше не дублюється тут.
+| Logical ID | Issue | Scope |
+|------------|------:|-------|
+| PLAN-NBR-01 | #314 | Allowlist `/ip/neighbor/print` + `ListNeighborCandidates` + Desktop Add Router Load/Apply |
+
+Повна історія закритих рядків §3.A / §3.B (M0–M6 + N1 + M7 + P2) збережена в git history (до docs-purge) і зведена в [`ISSUES.md`](ISSUES.md) + §2.2 DONE.
 
 | Сегмент | Підсумок |
 |---------|----------|
@@ -339,8 +343,9 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 | Watchdog residue cleanup | P2-09 | Production `RouterOsWatchdogResidueCleanupPort` | **DONE** (#295) |
 | Write-path DI gate | P2-10 | `AddRouterOsWriteServices` + `WriteEnabled` flag | **DONE** (#296) |
 | Write-path pilot runbook | P2-11 | `WritePathPilotLivingSpecTests` + `pilot-runbook.md` write checklist | **DONE** (#297) |
+| Seed MikroTik neighbor candidates | PLAN-NBR-01 | `NeighborCandidatesLivingSpecTests` + allowlist/use-case/Desktop tests | **IN PROGRESS** (#314) |
 
-Оновлювати рядок **Статус** при закритті issue; §3 зараз empty — NEXT лише після PLAN.
+Оновлювати рядок **Статус** при закритті issue; §3 PLAN #314 in flight.
 
 ---
 

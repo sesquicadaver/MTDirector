@@ -175,6 +175,33 @@ internal static class InventoryProtoMapper
         RouterosMutated = view.RouterOsMutated,
     };
 
+    public static ListNeighborCandidatesResponse ToProto(NeighborCandidatesView view)
+    {
+        ListNeighborCandidatesResponse response = new()
+        {
+            SeedDeviceId = ProtoUuid.FromGuid(view.SeedDeviceId),
+            SeedIdentity = view.SeedIdentity ?? string.Empty,
+            RouterosMutated = view.RouterOsMutated,
+        };
+        foreach (NeighborCandidateView candidate in view.Candidates)
+        {
+            response.Candidates.Add(new NeighborCandidate
+            {
+                Address = candidate.Address,
+                SuggestedPort = candidate.SuggestedPort,
+                Identity = candidate.Identity ?? string.Empty,
+                MacAddress = candidate.MacAddress ?? string.Empty,
+                Platform = candidate.Platform ?? string.Empty,
+                Version = candidate.Version ?? string.Empty,
+                Board = candidate.Board ?? string.Empty,
+                InterfaceName = candidate.Interface ?? string.Empty,
+                Age = candidate.Age ?? string.Empty,
+            });
+        }
+
+        return response;
+    }
+
     public static DomainSiteStatus ToDomain(ProtoSiteStatus status) => status switch
     {
         ProtoSiteStatus.Draft => DomainSiteStatus.Draft,

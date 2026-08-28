@@ -150,12 +150,14 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 | `P2-09` | #295 | https://github.com/sesquicadaver/MTDirector/issues/295 |
 | `P2-10` | #296 | https://github.com/sesquicadaver/MTDirector/issues/296 |
 | `P2-11` | #297 | https://github.com/sesquicadaver/MTDirector/issues/297 |
+| `PLAN-NBR-01` | #314 | https://github.com/sesquicadaver/MTDirector/issues/314 |
 
 **Product issues (code):** 139 DONE (§2.2).  
 **Linear queue (§3):** **0 OPEN** — P2 write-path tranche **CLOSED** (P2-07…P2-11).  
 **TRACKER-01** (#289): **DONE**. **PLAN-01** (#290): **DONE**. **P2-07…P2-11**: **DONE** (2026-08-26…28).  
-**Post-queue UX:** Desktop Add router — [PR #309](https://github.com/sesquicadaver/MTDirector/pull/309) (not a §3 logical ID).
+**Post-queue UX:** Desktop Add router — [PR #309](https://github.com/sesquicadaver/MTDirector/pull/309) (not a §3 logical ID).  
+**PLAN:** Seed MikroTik neighbors — [#314](https://github.com/sesquicadaver/MTDirector/issues/314) (`PLAN-NBR-01`).
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 
-Start here: [`ROADMAP.md`](ROADMAP.md) — queue empty; pilot [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md); Desktop inventory [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
+Start here: [`ROADMAP.md`](ROADMAP.md) — PLAN #314 in flight; pilot [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md); Desktop inventory [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).

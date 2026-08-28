@@ -76,9 +76,15 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
 
     public IReadOnlyList<DeclaredUplinkMode> UplinkModes { get; }
 
+    public ObservableCollection<NeighborCandidateItem> NeighborCandidates { get; } = [];
+
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorText);
 
     public bool HasStatus => !string.IsNullOrWhiteSpace(StatusText);
+
+    public bool HasNeighborCandidates => NeighborCandidates.Count > 0;
+
+    public bool CanLoadNeighborsVisible => TryGetSeedDeviceId() is not null;
 
     public bool ShowExistingSitePicker => UseExistingSite;
 
@@ -156,6 +162,71 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
 
     [ObservableProperty]
     private string _pinnedSpkiSha256Hex = string.Empty;
+
+    [ObservableProperty]
+    private NeighborCandidateItem? _selectedNeighborCandidate;
+
+    [RelayCommand(CanExecute = nameof(CanLoadNeighbors))]
+    private async Task LoadNeighborsAsync()
+    {
+        await RunBusyAsync(async ct =>
+        {
+            Guid? seedId = TryGetSeedDeviceId();
+            if (seedId is null)
+            {
+                throw new InvalidOperationException(
+                    "Select a registered Device in the inventory tree as the seed.");
+            }
+
+            ListNeighborCandidatesResponse response = await Task.Run(
+                    async () => await _client.ListNeighborCandidatesAsync(seedId.Value, ct).ConfigureAwait(false),
+                    ct)
+                .ConfigureAwait(true);
+
+            NeighborCandidates.Clear();
+            SelectedNeighborCandidate = null;
+            foreach (NeighborCandidate candidate in response.Candidates)
+            {
+                NeighborCandidates.Add(new NeighborCandidateItem(
+                    candidate.Address,
+                    candidate.SuggestedPort == 0 ? DefaultManagementPort : candidate.SuggestedPort,
+                    string.IsNullOrWhiteSpace(candidate.Identity) ? null : candidate.Identity,
+                    string.IsNullOrWhiteSpace(candidate.Platform) ? null : candidate.Platform,
+                    string.IsNullOrWhiteSpace(candidate.MacAddress) ? null : candidate.MacAddress,
+                    string.IsNullOrWhiteSpace(candidate.Version) ? null : candidate.Version,
+                    string.IsNullOrWhiteSpace(candidate.Board) ? null : candidate.Board,
+                    string.IsNullOrWhiteSpace(candidate.InterfaceName) ? null : candidate.InterfaceName));
+            }
+
+            OnPropertyChanged(nameof(HasNeighborCandidates));
+            string seedLabel = string.IsNullOrWhiteSpace(response.SeedIdentity)
+                ? seedId.Value.ToString("D")
+                : response.SeedIdentity;
+            StatusText = NeighborCandidates.Count == 0
+                ? $"No MikroTik neighbors from seed '{seedLabel}'."
+                : $"Loaded {NeighborCandidates.Count} MikroTik candidate(s) from seed '{seedLabel}'. Pick one to pre-fill host/port.";
+        }).ConfigureAwait(true);
+    }
+
+    [RelayCommand(CanExecute = nameof(CanApplyNeighbor))]
+    private void ApplyNeighborCandidate()
+    {
+        if (SelectedNeighborCandidate is null)
+        {
+            return;
+        }
+
+        ManagementHost = SelectedNeighborCandidate.Address;
+        ManagementPortText = SelectedNeighborCandidate.SuggestedPort.ToString(
+            System.Globalization.CultureInfo.InvariantCulture);
+        if (!string.IsNullOrWhiteSpace(SelectedNeighborCandidate.Identity))
+        {
+            DeviceDisplayName = SelectedNeighborCandidate.Identity.Trim();
+        }
+
+        StatusText =
+            $"Pre-filled from neighbor '{SelectedNeighborCandidate.DisplayText}'. Enter credentials and submit to register.";
+    }
 
     [RelayCommand(CanExecute = nameof(CanSubmit))]
     private async Task SubmitAsync()
@@ -252,6 +323,23 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
     private bool CanSubmit()
         => !IsBusy && _connection.State == ControllerConnectionState.Connected;
 
+    private bool CanLoadNeighbors()
+        => !IsBusy
+           && _connection.State == ControllerConnectionState.Connected
+           && TryGetSeedDeviceId() is not null;
+
+    private bool CanApplyNeighbor()
+        => !IsBusy && SelectedNeighborCandidate is not null;
+
+    private Guid? TryGetSeedDeviceId()
+    {
+        InventoryNodeViewModel? selected = _inventory.SelectedNode;
+        return selected?.Kind == InventoryTreeKind.Device ? selected.Id : null;
+    }
+
+    partial void OnSelectedNeighborCandidateChanged(NeighborCandidateItem? value)
+        => ApplyNeighborCandidateCommand.NotifyCanExecuteChanged();
+
     private async Task<Guid> ResolveSiteIdAsync(CancellationToken cancellationToken)
     {
         if (UseExistingSite)
@@ -333,6 +421,8 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
 
         IsBusy = true;
         SubmitCommand.NotifyCanExecuteChanged();
+        LoadNeighborsCommand.NotifyCanExecuteChanged();
+        ApplyNeighborCandidateCommand.NotifyCanExecuteChanged();
         ErrorText = null;
         StatusText = null;
         try
@@ -351,6 +441,8 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
         {
             IsBusy = false;
             SubmitCommand.NotifyCanExecuteChanged();
+            LoadNeighborsCommand.NotifyCanExecuteChanged();
+            ApplyNeighborCandidateCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -358,11 +450,11 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
     {
         if (Dispatcher.UIThread.CheckAccess())
         {
-            SubmitCommand.NotifyCanExecuteChanged();
+            NotifySeedCommands();
         }
         else
         {
-            Dispatcher.UIThread.Post(() => SubmitCommand.NotifyCanExecuteChanged());
+            Dispatcher.UIThread.Post(NotifySeedCommands);
         }
     }
 
@@ -406,6 +498,16 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
             RebuildSiteChoices();
             ApplySelectionDefaults();
         }
+
+        OnPropertyChanged(nameof(CanLoadNeighborsVisible));
+        NotifySeedCommands();
+    }
+
+    private void NotifySeedCommands()
+    {
+        SubmitCommand.NotifyCanExecuteChanged();
+        LoadNeighborsCommand.NotifyCanExecuteChanged();
+        ApplyNeighborCandidateCommand.NotifyCanExecuteChanged();
     }
 
     private void RebuildSiteChoices()

@@ -624,9 +624,19 @@ internal sealed class FakeRouterOsReadPort : IRouterOsReadPort
 
     public int ProbeCount { get; private set; }
 
+    public int NeighborListCount { get; private set; }
+
     public TimeSpan ProbeDelay { get; set; }
 
     public Exception? ThrowOnProbe { get; set; }
+
+    public Exception? ThrowOnNeighborList { get; set; }
+
+    public RouterOsNeighborDiscoveryResult NeighborResult { get; set; } = new()
+    {
+        SeedIdentity = "seed-chr",
+        Rows = [],
+    };
 
     public Task<RouterOsProbeResult> ProbeAsync(
         RouterOsReadTarget target,
@@ -644,6 +654,20 @@ internal sealed class FakeRouterOsReadPort : IRouterOsReadPort
         }
 
         return Task.FromResult(CreateResult(target));
+    }
+
+    public Task<RouterOsNeighborDiscoveryResult> ListNeighborRowsAsync(
+        RouterOsReadTarget target,
+        CancellationToken cancellationToken = default)
+    {
+        NeighborListCount++;
+        MutatedRouterOs = false;
+        if (ThrowOnNeighborList is not null)
+        {
+            throw ThrowOnNeighborList;
+        }
+
+        return Task.FromResult(NeighborResult);
     }
 
     private async Task<RouterOsProbeResult> ProbeSlowAsync(

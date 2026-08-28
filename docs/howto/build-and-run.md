@@ -135,7 +135,7 @@ dotnet run --project src/Mfc.Desktop
 ```
 
 1. **Connect** → endpoint з `src/Mfc.Desktop/appsettings.json` (`http://127.0.0.1:5101`).
-2. **Inventory → Add router** — Site → Node → Device + credentials ([`../development/connection-profiles.md`](../development/connection-profiles.md)).
+2. **Inventory → Add router** — Site → Node → Device + credentials ([`../development/connection-profiles.md`](../development/connection-profiles.md)). Optional: select a seed Device → **Load MikroTik neighbors** → Apply → credentials → Submit.
 
 Зупинка Controller (Linux приклад): знайти процес, що слухає `5101`, і завершити його окремо від Desktop.
 

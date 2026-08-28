@@ -263,3 +263,37 @@ public sealed class DeviceDiscoveryView
 
     public required bool RouterOsMutated { get; init; }
 }
+
+/// <summary>One MikroTik neighbor candidate suggested from a seed device (#314).</summary>
+public sealed class NeighborCandidateView
+{
+    public required string Address { get; init; }
+
+    public required ushort SuggestedPort { get; init; }
+
+    public string? Identity { get; init; }
+
+    public string? MacAddress { get; init; }
+
+    public string? Platform { get; init; }
+
+    public string? Version { get; init; }
+
+    public string? Board { get; init; }
+
+    public string? Interface { get; init; }
+
+    public string? Age { get; init; }
+}
+
+/// <summary>On-demand neighbor suggestion result (never mutates inventory).</summary>
+public sealed class NeighborCandidatesView
+{
+    public required Guid SeedDeviceId { get; init; }
+
+    public required string SeedIdentity { get; init; }
+
+    public required IReadOnlyList<NeighborCandidateView> Candidates { get; init; }
+
+    public required bool RouterOsMutated { get; init; }
+}

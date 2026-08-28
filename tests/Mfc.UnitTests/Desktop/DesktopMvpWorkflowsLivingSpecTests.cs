@@ -64,12 +64,15 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("AddRouter.UseExistingSite", axaml, StringComparison.Ordinal);
         Assert.Contains("AddRouter.ManagementHost", axaml, StringComparison.Ordinal);
         Assert.Contains("AddRouter.Password", axaml, StringComparison.Ordinal);
+        Assert.Contains("AddRouter.LoadNeighborsCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("AddRouter.ApplyNeighborCandidateCommand", axaml, StringComparison.Ordinal);
 
         Type inventory = typeof(IInventoryTreeClient);
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.CreateSiteAsync)));
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.CreateNodeAsync)));
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.RegisterDeviceAsync)));
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.UpdateDeviceConnectionAsync)));
+        Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.ListNeighborCandidatesAsync)));
     }
 
     [Fact]
