@@ -449,7 +449,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | 129 | P2-08 | #294 | Production `RouterOsDeploymentRuntime` (`IDeploymentRuntime` over deployment session + writers) → DONE |
 | 130 | P2-09 | #295 | Production `RouterOsWatchdogResidueCleanupPort` (bounded operational job cleanup on RouterOS) → DONE |
 | 131 | P2-10 | #296 | `AddRouterOsWriteServices` DI + `Mfc:RouterOs:WriteEnabled` gate (fail-closed default) → DONE |
-| 132 | P2-11 | #297 | Write-path pilot Living Spec + runbook (onboarding → deploy → rollback on lab CHR) |
+| 132 | P2-11 | #297 | Write-path pilot Living Spec (`WritePathPilotLivingSpecTests`) + runbook (onboarding → deploy → rollback on lab CHR) |
 
 **Кінець черги §3 (наразі):** **NEXT = P2-11** (#297). Лінійний ланцюжок: P2-11 (остання в §3.B7).
 
@@ -577,7 +577,7 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 | Production deployment runtime | P2-08 | `RouterOsDeploymentRuntime` over deployment session | **DONE** (#294) |
 | Watchdog residue cleanup | P2-09 | Production `RouterOsWatchdogResidueCleanupPort` | **DONE** (#295) |
 | Write-path DI gate | P2-10 | `AddRouterOsWriteServices` + `WriteEnabled` flag | **DONE** (#296) |
-| Write-path pilot runbook | P2-11 | Living Spec + `pilot-runbook.md` write checklist | **NEXT** (#297) |
+| Write-path pilot runbook | P2-11 | `WritePathPilotLivingSpecTests` + `pilot-runbook.md` write checklist | **NEXT** (#297) |
 
 Оновлювати рядок **Статус** і зсувати «NEXT» при закритті кожного issue з §3.
 
