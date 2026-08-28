@@ -82,6 +82,9 @@ No database migration rollback required for either gate.
 ## References
 
 - [`controller-configuration.md`](controller-configuration.md) — full config keys (`Enabled`, `WriteEnabled`)
+- [`../development/connection-profiles.md`](../development/connection-profiles.md) — Desktop **Add router** / trust modes
+- [`operations-manual.md`](operations-manual.md) — day-2 Desktop surfaces
 - [`known-limitations.md`](../release/known-limitations.md) — lab residuals
-- [`ROADMAP.md`](../../ROADMAP.md) §3.B7 — P2 write-path queue
-- Living Specs: `PilotReadinessLivingSpecTests` (read), `WritePathReadinessLivingSpecTests` (DI gate), `WritePathPilotLivingSpecTests` (pilot)
+- [`../release/readiness.md`](../release/readiness.md) — readiness baseline
+- [`ROADMAP.md`](../../ROADMAP.md) §3.B7 — P2 write-path queue (**CLOSED** / empty)
+- Living Specs: `PilotReadinessLivingSpecTests` (read), `WritePathReadinessLivingSpecTests` (DI gate), `WritePathPilotLivingSpecTests` (pilot), `AddRouterWizardViewModelTests` / Desktop AC#2b

@@ -11,7 +11,8 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 | P2 Pilot (RouterOS wiring) | read path **CLOSED** (P2-04…P2-06); write path **CLOSED** (P2-07…P2-11) |
 | Release | [`v0.2.0`](https://github.com/sesquicadaver/MTDirector/releases/tag/v0.2.0) (2026-08-24) |
 
-**Queue (§3):** **empty** — P2 write-path tranche CLOSED. Pilot: [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) (`Enabled` / `WriteEnabled`).
+**Queue (§3):** **empty** — P2 write-path tranche CLOSED. Pilot: [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) (`Enabled` / `WriteEnabled`).  
+**Post-queue UX (2026-08-28):** Desktop Inventory **Add router** wizard ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)) — Site→Node→Device + connection profile without raw gRPC.
 
 Лінійна черга: [`ROADMAP.md`](ROADMAP.md) §3.B7. Мапінг issues: [`ISSUES.md`](ISSUES.md).
 
@@ -20,9 +21,10 @@ Acceptance: [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md). 
 ## Швидкий старт
 
 1. [`docs/development/local-environment.md`](docs/development/local-environment.md)
-2. [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md)
-3. [`docs/development/testing.md`](docs/development/testing.md)
-4. Architecture: [`docs/architecture/overview.md`](docs/architecture/overview.md)
+2. [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md) — Desktop **Add router** або gRPC
+3. [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) — lab read/write gates
+4. [`docs/development/testing.md`](docs/development/testing.md)
+5. Architecture: [`docs/architecture/overview.md`](docs/architecture/overview.md)
 
 Повний індекс документації: [`docs/README.md`](docs/README.md).
 
@@ -51,6 +53,7 @@ M0 → M1 → M2 → M3 → M5 → M4 → M6 → MVP CLOSED
 → P2-09 (#295) → **DONE**
 → P2-10 (#296) → **DONE**
 → P2-11 (#297) → **DONE** — **P2 write-path CLOSED**
+→ Desktop Add router UX ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)) → **DONE** (поза §3; docs sync)
 ```
 
 ## Стек

@@ -1,6 +1,6 @@
 # Local development environment
 
-Reproducible M0 bootstrap setup on a developer workstation (Linux recommended; Desktop UI also builds on Windows).
+Reproducible workstation setup (Linux recommended; Desktop UI also builds on Windows). Matches `global.json` SDK and the current `main` feature set (MVP + M7 + P2 gates + Desktop Add router).
 
 ## Prerequisites
 
@@ -30,6 +30,8 @@ dotnet restore MikroTikFirewallController.sln --locked-mode
 docker compose -f testlab/postgres/compose.yml up -d
 ```
 
+Default host port is **`127.0.0.1:5432`** (`mfc-postgres-dev`). If the port is busy, remap in compose or override the connection string.
+
 Default Development connection string is in `src/Mfc.Controller/appsettings.Development.json`. Override with:
 
 ```bash
@@ -52,6 +54,8 @@ dotnet run --project src/Mfc.Controller -- --environment Development
 
 Listens on loopback HTTP only when `AllowInsecureLoopback` + Development are set. Production binds require TLS.
 
+RouterOS adapters stay fail-closed until you set `Mfc:RouterOs:Enabled` / `WriteEnabled` — see [pilot-runbook.md](../operations/pilot-runbook.md).
+
 ## Run Desktop
 
 ```bash
@@ -59,6 +63,12 @@ dotnet run --project src/Mfc.Desktop
 ```
 
 Endpoint comes from `src/Mfc.Desktop/appsettings.json` (`Desktop:ControllerEndpoint`).
+
+1. **Connect** to Controller.
+2. Open **Inventory** → **Add router** to create Site/Node/Device + connection profile ([connection-profiles.md](connection-profiles.md)).
+3. Prefer selecting an existing Site/Node in the tree so pickers pre-fill.
+
+**Lifecycle:** Desktop and Controller are separate OS processes. Closing Desktop does **not** stop Controller — terminate the Controller process (or free its listen port) explicitly.
 
 ## CHR lab (optional)
 

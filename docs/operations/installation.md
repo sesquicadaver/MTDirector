@@ -1,6 +1,11 @@
 # Installation (v0.2.0)
 
-Release **`v0.2.0`** ships MVP + Post-MVP M7 + P2 read path feature-complete **code**. Live RouterOS read/capture requires **`Mfc:RouterOs:Enabled=true`** — see [`pilot-runbook.md`](pilot-runbook.md), [`controller-configuration.md`](controller-configuration.md), and [`../release/known-limitations.md`](../release/known-limitations.md).
+Release **`v0.2.0`** ships MVP + Post-MVP M7 feature-complete **code**. P2 pilot wiring is **CLOSED** in code:
+
+- Live read/capture: **`Mfc:RouterOs:Enabled=true`**
+- Live onboarding/deploy: **`Mfc:RouterOs:WriteEnabled=true`** (lab only)
+
+See [`pilot-runbook.md`](pilot-runbook.md), [`controller-configuration.md`](controller-configuration.md), and [`../release/known-limitations.md`](../release/known-limitations.md).
 
 ## Prerequisites
 
@@ -23,8 +28,11 @@ See also [`prerequisite-checklist.md`](prerequisite-checklist.md) for RouterOS d
 1. Obtain `Mfc.Desktop-<rid>.zip` (or `.tar.gz`) from `scripts/release/package-desktop.sh`.
 2. Extract and run `Mfc.Desktop`.
 3. Point `Desktop:ControllerEndpoint` at the Controller URL.
+4. Connect → Inventory → **Add router** to register Site/Node/Device and connection profile (see [`../development/connection-profiles.md`](../development/connection-profiles.md)).
 
 Native MSI/setup installers are out of MVP scope (zip publish is the installer substitute).
+
+Desktop and Controller are **separate processes** — closing Desktop does not stop Controller.
 
 ## Verify integrity
 

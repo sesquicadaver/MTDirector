@@ -27,6 +27,8 @@ Operator checklist before onboarding / deploy. Typed enforcement lives in `Onboa
 
 - [ ] PostgreSQL backup taken before first manage
 - [ ] Master-key provider is not `Development` outside Development
+- [ ] Device registered via Desktop **Add router** or gRPC (`RegisterDevice` + `UpdateDeviceConnection`)
+- [ ] For live RouterOS: `Enabled` / `WriteEnabled` set per [`pilot-runbook.md`](pilot-runbook.md)
 - [ ] Desktop Operators understand Drift is detect-only (no auto-fix)
 
 Normative codes: Onboarding Spec §58; Living Spec filters in [`../development/testing.md`](../development/testing.md).

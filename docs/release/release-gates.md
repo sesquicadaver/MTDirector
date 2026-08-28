@@ -49,8 +49,15 @@ Execute every gate before requesting acceptance review. Checkboxes are the opera
 - [x] Read-only pilot runbook ([`pilot-runbook.md`](../operations/pilot-runbook.md))
 - [x] Project readiness assessment ([`readiness.md`](readiness.md))
 
+## P2 write path + Desktop UX (post-`v0.2.0`)
+
+- [x] P2-07…P2-11 write runtimes + `WriteEnabled` + pilot Living Spec / runbook
+- [x] Desktop Inventory **Add router** wizard ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)) + Living Spec AC#2b
+- [x] Docs index / readiness / known-limitations / ops manuals synced (2026-08-28)
+
 ## Residual (optional — not MVP/M7 DoD blockers)
 
 - [ ] Live CHR matrix on isolated self-hosted runner (`MFC_CHR_*`)
 - [ ] Live physical CRS lab against `testlab/chr/topologies/crs-switch`
 - [ ] CI cryptographic signing with production GPG/Sigstore key
+- [ ] Native Desktop MSI/AppImage (zip/tar publish remains the installer substitute)
