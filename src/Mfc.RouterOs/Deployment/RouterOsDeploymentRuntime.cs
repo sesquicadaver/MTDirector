@@ -9,7 +9,7 @@ namespace Mfc.RouterOs.Deployment;
 
 /// <summary>
 /// Production <see cref="IDeploymentRuntime"/> over closed deployment writers (P2-08 / #294).
-/// DI registration is gated by write-path enablement in P2-10.
+/// DI registration is gated by <c>Mfc:RouterOs:WriteEnabled</c> via <c>AddRouterOsWriteServices</c> (P2-10).
 /// </summary>
 public sealed class RouterOsDeploymentRuntime : IDeploymentRuntime
 {

@@ -1,6 +1,7 @@
 # Read-only pilot runbook (P2)
 
-Enable production RouterOS **read path** only after connection profiles, secrets, and lab CHR are ready. Onboarding/deploy write paths remain not-configured until a future P2 queue.
+Enable production RouterOS **read path** only after connection profiles, secrets, and lab CHR are ready.
+Write path (`Mfc:RouterOs:WriteEnabled`) is a separate fail-closed gate — see [`controller-configuration.md`](controller-configuration.md). Full write-path pilot checklist is **P2-11**.
 
 ## Prerequisites
 

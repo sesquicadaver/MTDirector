@@ -6,7 +6,8 @@ namespace Mfc.RouterOs.Jobs;
 
 /// <summary>
 /// Production <see cref="IWatchdogResidueCleanupPort"/> — allowlisted script/scheduler remove (P2-09).
-/// DI registration stays fail-closed (<see cref="NotConfiguredWatchdogResidueCleanupPort"/>) until P2-10.
+/// DI registration is gated by <c>Mfc:RouterOs:WriteEnabled</c> via <c>AddRouterOsWriteServices</c> (P2-10).
+/// Default Controller composition remains <see cref="NotConfiguredWatchdogResidueCleanupPort"/> when write gate is off.
 /// </summary>
 public sealed class RouterOsWatchdogResidueCleanupPort : IWatchdogResidueCleanupPort
 {

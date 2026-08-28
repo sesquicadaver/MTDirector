@@ -7,7 +7,7 @@ namespace Mfc.RouterOs.Onboarding;
 
 /// <summary>
 /// Production <see cref="IOnboardingRuntime"/> over closed onboarding writers (P2-07 / #293).
-/// DI registration is gated by write-path enablement in P2-10.
+/// DI registration is gated by <c>Mfc:RouterOs:WriteEnabled</c> via <c>AddRouterOsWriteServices</c> (P2-10).
 /// </summary>
 public sealed class RouterOsOnboardingRuntime : IOnboardingRuntime
 {
