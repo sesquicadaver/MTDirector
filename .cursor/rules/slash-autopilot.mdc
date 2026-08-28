@@ -1,0 +1,20 @@
+---
+description: /autopilot means execute NEXT queue task end-to-end with git/PR automation
+alwaysApply: true
+---
+
+# `/autopilot` — наступна задача
+
+Команда **`/autopilot`** = наказ **виконати наступну задачу** з лінійної черги (`ROADMAP.md` §3 / `NEXT` у README/ISSUES).
+
+## Обовʼязки
+
+1. Взяти **NEXT** (або єдиний відкритий PR цієї задачі) і довести до завершення.
+2. Реалізація + Living Spec + оновлення service docs у тому ж циклі (як у проєкті).
+3. **Не чекати** окремого наказу на `git commit`, `git push`, `gh pr create`, triage CI/review, або **squash-merge** у `main`, коли PR merge-ready (MERGEABLE, CI green, threads triaged).
+4. Після merge задачі — docs sync (NEXT → наступний ID), закрити issue, pull `main`.
+5. Якщо відкритих задач/PR немає — коротко звітувати; інакше не простоювати.
+
+## Пріоритет блокерів на відкритому PR
+
+Конфлікти → review threads → червоний CI (як у Cursor Autopilot skill). Без force-push; хуки не skip.

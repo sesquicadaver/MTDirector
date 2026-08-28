@@ -447,7 +447,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 |--:|----|-------:|--------|
 | 128 | P2-07 | #293 | Production `RouterOsOnboardingRuntime` (`IOnboardingRuntime` over onboarding writers) → DONE |
 | 129 | P2-08 | #294 | Production `RouterOsDeploymentRuntime` (`IDeploymentRuntime` over deployment session + writers) → DONE |
-| 130 | P2-09 | #295 | Production `WatchdogResidueCleanupPort` (bounded operational job cleanup on RouterOS) |
+| 130 | P2-09 | #295 | Production `RouterOsWatchdogResidueCleanupPort` (bounded operational job cleanup on RouterOS) |
 | 131 | P2-10 | #296 | `AddRouterOsWriteServices` DI + `Mfc:RouterOs:WriteEnabled` gate (fail-closed default) |
 | 132 | P2-11 | #297 | Write-path pilot Living Spec + runbook (onboarding → deploy → rollback on lab CHR) |
 
@@ -575,7 +575,7 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 | Production RouterOS DI | P2-06 | `AddRouterOsProductionServices` + pilot Living Spec | **DONE** (#282) |
 | Production onboarding runtime | P2-07 | `RouterOsOnboardingRuntime` over onboarding writers | **DONE** (#293) |
 | Production deployment runtime | P2-08 | `RouterOsDeploymentRuntime` over deployment session | **DONE** (#294) |
-| Watchdog residue cleanup | P2-09 | Production `WatchdogResidueCleanupPort` | **NEXT** (#295) |
+| Watchdog residue cleanup | P2-09 | Production `RouterOsWatchdogResidueCleanupPort` | **NEXT** (#295) |
 | Write-path DI gate | P2-10 | `AddRouterOsWriteServices` + `WriteEnabled` flag | **OPEN** (#296) |
 | Write-path pilot runbook | P2-11 | Living Spec + `pilot-runbook.md` write checklist | **OPEN** (#297) |
 
@@ -666,7 +666,7 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 65. ~~**PLAN-01** → [issue #290](https://github.com/sesquicadaver/MTDirector/issues/290).~~ → **DONE** (2026-08-26).
 66. ~~**P2-07** → [issue #293](https://github.com/sesquicadaver/MTDirector/issues/293).~~ → **DONE** (2026-08-26).
 67. ~~**P2-08** → [issue #294](https://github.com/sesquicadaver/MTDirector/issues/294).~~ → **DONE** (2026-08-26).
-68. **NEXT:** **P2-09** → [issue #295](https://github.com/sesquicadaver/MTDirector/issues/295) — production `WatchdogResidueCleanupPort`.
+68. **NEXT:** **P2-09** → [issue #295](https://github.com/sesquicadaver/MTDirector/issues/295) — production `RouterOsWatchdogResidueCleanupPort`.
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
