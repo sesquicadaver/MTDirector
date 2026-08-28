@@ -24,6 +24,7 @@ Fault-injection matrix: `FullyQualifiedName~FaultInjection`.
 1. Confirm Controller health and `Desktop:ControllerEndpoint`.
 2. Refresh inventory (single-flight cache may keep last good tree on error).
 3. Desktop never talks to RouterOS directly — fix Controller/device path, not Desktop credentials.
+4. To register devices: Inventory **Add router** (CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection) — [`connection-profiles.md`](connection-profiles.md).
 
 ## Diff looks wrong
 

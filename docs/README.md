@@ -1,7 +1,9 @@
 # MTDirector documentation index
 
 **Release:** `v0.2.0` (2026-08-24) — MVP + Post-MVP M7 CLOSED.  
-**Next delivery:** **none** — §3 queue empty (P2 write-path CLOSED). See [`ROADMAP.md`](../ROADMAP.md).
+**Pilot:** P2 read + write path CLOSED — [`operations/pilot-runbook.md`](operations/pilot-runbook.md).  
+**Next delivery (§3):** **none** — queue empty. See [`ROADMAP.md`](../ROADMAP.md).  
+**Post-queue (2026-08-28):** Desktop Inventory **Add router** ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)).
 
 ## Planning and tracking
 
@@ -31,7 +33,8 @@ Authoritative ТЗ and Issue Sets live in the repository root and are indexed in
 | [`development/ci.md`](development/ci.md) | CI workflow and gates |
 | [`development/git-workflow.md`](development/git-workflow.md) | Branch/PR process |
 | [`development/database-migrations.md`](development/database-migrations.md) | EF migrations |
-| [`development/connection-profiles.md`](development/connection-profiles.md) | mTLS / connection profiles |
+| [`development/connection-profiles.md`](development/connection-profiles.md) | Connection profiles + Desktop Add router |
+| [`development/snapshots-and-diff.md`](development/snapshots-and-diff.md) | Snapshot capture / semantic diff operator notes |
 | [`development/chr-lab.md`](development/chr-lab.md) | CHR lab isolation |
 | [`development/troubleshooting-read-path.md`](development/troubleshooting-read-path.md) | Read-path diagnostics |
 | [`development/m1-vertical-slice-acceptance.md`](development/m1-vertical-slice-acceptance.md) | M1 acceptance report |
@@ -43,6 +46,7 @@ Authoritative ТЗ and Issue Sets live in the repository root and are indexed in
 |----------|---------|
 | [`operations/installation.md`](operations/installation.md) | Controller + Desktop install |
 | [`operations/controller-configuration.md`](operations/controller-configuration.md) | `Mfc` configuration keys |
+| [`operations/pilot-runbook.md`](operations/pilot-runbook.md) | Lab/production RouterOS read + write pilot |
 | [`operations/prerequisite-checklist.md`](operations/prerequisite-checklist.md) | RouterOS device gates |
 | [`operations/operations-manual.md`](operations/operations-manual.md) | Day-2 operator guide |
 | [`operations/recovery.md`](operations/recovery.md) | Backup / restore / crash recovery |

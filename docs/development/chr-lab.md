@@ -63,7 +63,7 @@ RouterOS integration workflow (when enabled) must target only an isolated self-h
 2. Copy `manifest.example.json` → `manifest.local.json` and set `imageSha256` / `imagePath`.
 3. Pick a topology under `testlab/chr/topologies/` and follow its `reset` steps.
 4. Run the matching provision script in `testlab/chr/scripts/` (outside `Mfc.RouterOs`).
-5. In Controller (Desktop or gRPC): CreateSite → CreateNode → RegisterDevice with the topology management address → UpdateDeviceConnection (INTERNAL_CA + lab CA ref).
+5. In Desktop **Inventory → Add router** (or gRPC): CreateSite → CreateNode → RegisterDevice with the topology management address → UpdateDeviceConnection (INTERNAL_CA + lab CA ref). See [`connection-profiles.md`](connection-profiles.md).
 6. Run `StartCapture` / acceptance filters; never apply fixtures through product write RPCs.
 
 ## M1 acceptance package

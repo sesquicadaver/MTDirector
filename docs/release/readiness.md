@@ -1,7 +1,7 @@
 # Project readiness assessment
 
 **As of:** 2026-08-28  
-**Baseline commit:** `main` @ P2-11 merge (`02b5d4c`)  
+**Baseline commit:** `main` @ Desktop Add router (`985f303`) — after P2-11 (`02b5d4c`)  
 **Release tag:** [`v0.2.0`](https://github.com/sesquicadaver/MTDirector/releases/tag/v0.2.0) (2026-08-24)
 
 This document summarizes **code + documentation readiness** against the normative queue in [`ROADMAP.md`](../../ROADMAP.md). It is not a substitute for operator acceptance ([`mvp-acceptance.md`](mvp-acceptance.md)) or release gates ([`release-gates.md`](release-gates.md)).
@@ -15,11 +15,13 @@ This document summarizes **code + documentation readiness** against the normativ
 | P2 read path (P2-04…P2-06) | **100% CLOSED** | Production probe + capture + DI gate |
 | P2 write path (P2-07…P2-11) | **100% CLOSED** | Runtimes + WriteEnabled gate + pilot runbook |
 | Linear queue (§3) | **0 open** | **NEXT = none** |
+| Post-queue UX | **Add router DONE** | [#309](https://github.com/sesquicadaver/MTDirector/pull/309) — not a §3 row |
 
 **Overall code readiness:** all 139 mapped product issues are **DONE in code**.  
 **Queue integrity:** **TRACKER-01 DONE** (#289, 2026-08-26) — GitHub tracker aligned with ROADMAP §2.2.  
 **Production pilot readiness (read-only):** **ready** when `Mfc:RouterOs:Enabled=true` + PostgreSQL + device connection profiles — see [`pilot-runbook.md`](../operations/pilot-runbook.md).  
-**Production pilot readiness (write path):** **ready (lab)** — set `Mfc:RouterOs:WriteEnabled=true`; checklist in [`pilot-runbook.md`](../operations/pilot-runbook.md).
+**Production pilot readiness (write path):** **ready (lab)** — set `Mfc:RouterOs:WriteEnabled=true`; checklist in [`pilot-runbook.md`](../operations/pilot-runbook.md).  
+**Desktop inventory registration:** **ready** — Inventory **Add router** wizard (Site→Node→Device + credentials).
 
 ## Milestone matrix (code audit §2.2)
 
@@ -51,6 +53,8 @@ This document summarizes **code + documentation readiness** against the normativ
 
 No parallel work. **§3 queue empty** — open a PLAN issue before new delivery.
 
+Post-queue merge (not in §3): Desktop Add router [#309](https://github.com/sesquicadaver/MTDirector/pull/309) (2026-08-28).
+
 ## What is production-ready today
 
 ### Read-only RouterOS pilot (P2 read path)
@@ -71,7 +75,7 @@ Operator checklist: [`pilot-runbook.md`](../operations/pilot-runbook.md).
 
 - gRPC services: Inventory, Snapshot, Policy, Zone, Onboarding, Deployment, Drift, Audit, Routing assurance, Incident APIs.
 - PostgreSQL persistence with EF migrations bundle.
-- Avalonia Desktop: seven MVP modules + routing assurance viewers.
+- Avalonia Desktop: seven MVP modules + routing assurance viewers + Inventory **Add router** wizard.
 - Bounded operational jobs, drift detection, incident response pipeline (domain + application complete).
 
 ## Intentional residuals (not defects)
@@ -84,14 +88,14 @@ Documented in [`known-limitations.md`](known-limitations.md):
 | Live CHR matrix OFF | Scripted E2E Living Specs are DoD substitute |
 | Desktop packaging | zip/tar publish, not MSI |
 | Signing | SHA256SUMS attestation; GPG/Sigstore optional |
+| Process lifecycle | Desktop and Controller are separate processes; closing Desktop does not stop Controller |
 | Scope lock | No NAT/routing/VRRP writes beyond managed allowlists; no auto-fix drift |
 
-## Verification snapshot (2026-08-26)
+## Verification snapshot (2026-08-28)
 
-Local checks on `main`:
+Local / CI checks on `main` (Add router PR #309):
 
-- `dotnet build MikroTikFirewallController.sln -c Release` — **pass**
-- `dotnet test tests/Mfc.UnitTests -c Release --filter FullyQualifiedName~LivingSpecTests` — **811 pass**
-- CI: Linux validate, Windows Desktop, CHR skeleton contracts, GitGuardian — **pass**
+- `dotnet test` Desktop filters (`AddRouterWizardViewModelTests`, `DesktopMvpWorkflowsLivingSpecTests`, wiring, inventory tree) — **pass**
+- CI: Linux validate, Windows Desktop build, GitGuardian — **pass** on [#309](https://github.com/sesquicadaver/MTDirector/pull/309)
 
 Full release gate checklist: [`release-gates.md`](release-gates.md).

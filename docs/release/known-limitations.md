@@ -12,6 +12,11 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - **Read path (P2-04…P2-06)** — **DONE**. Enable via `Mfc:RouterOs:Enabled=true`; default remains fail-closed (`ProbeOnlyRouterOsReadPort` / `NotConfiguredSnapshotCapturePort`). Pilot checklist: [`pilot-runbook.md`](../operations/pilot-runbook.md).
 - Onboarding/deploy/watchdog-residue: **P2-07…P2-10 DONE** in code; enable via **`Mfc:RouterOs:WriteEnabled=true`**. Operator checklist: [`pilot-runbook.md`](../operations/pilot-runbook.md) (P2-11).
 
+## Desktop inventory registration
+
+- Inventory **Add router** wizard is **DONE** ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)): Site→Node→Device + `UpdateDeviceConnection` from Desktop. gRPC remains available for automation.
+- Closing the Desktop window **does not** stop Controller — stop the Controller process separately (separate OS processes).
+
 ## Live lab residuals (optional)
 
 - Live CHR matrix is **OFF**. Scripted E2E Living Specs (M6-05…M6-07 + N1-07 + M7.1-11 + M7.2-04 + M7.4-06) are the DoD substitute.

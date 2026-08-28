@@ -7,8 +7,21 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Desktop **Add router** wizard ([#309](https://github.com/sesquicadaver/MTDirector/pull/309), 2026-08-28): Inventory panel Site→Node→Device registration + `UpdateDeviceConnection` (`AddRouterWizardViewModel`); Living Spec AC#2b + `AddRouterWizardViewModelTests`.
+- Write-path pilot runbook + Living Spec (P2-11 / #297): `docs/operations/pilot-runbook.md` onboarding→deploy→rollback checklist; `WritePathPilotLivingSpecTests` (NotConfigured vs production Start* DI). Closes P2 write-path tranche.
+- Write-path RouterOS DI gate (P2-10 / #296): `AddRouterOsWriteServices` + `Mfc:RouterOs:WriteEnabled` (fail-closed default); wires onboarding/deploy/watchdog residue production ports; Living Spec `WritePathReadinessLivingSpecTests`.
+- Production `RouterOsWatchdogResidueCleanupPort` (P2-09 / #295): allowlisted `/system/script|scheduler` residue remove; Living Spec `RouterOsWatchdogResidueCleanupLivingSpecTests`. Write-path DI gate remains P2-10.
+- Production `RouterOsDeploymentRuntime` (P2-08 / #294): live API-SSL deployment sessions over M4 use cases; Living Spec `RouterOsDeploymentRuntimeLivingSpecTests`. Write-path DI gate remains P2-10.
+- Production `RouterOsOnboardingRuntime` (P2-07 / #293): live API-SSL onboarding sessions over closed writers; Living Spec `RouterOsOnboardingRuntimeLivingSpecTests`. Write-path DI gate remains P2-10.
+- Production RouterOS DI gate (P2-06 / #282): `AddMfcRouterOs` + `AddRouterOsProductionServices`; `Mfc:RouterOs:Enabled` fail-closed default; Living Spec `PilotReadinessLivingSpecTests`; read-only pilot runbook.
+- Production `RouterOsReadPort` (P2-04 / #280): API-SSL identity probe via `SystemServiceDiscovery` + `CapabilityProfileEvaluator`; `IRouterOsConnectionMaterializer` + `EfRouterOsConnectionMaterializer`; Living Spec `RouterOsReadPortLivingSpecTests`.
+- Production `RouterOsSnapshotCapturePort` (P2-05 / #281): stable-read coordination + discovery reader + canonical/raw `SnapshotCaptureResult` assembly; `RouterOsStableReadCoordinatorPort`; Living Spec + PG integration test (`StartCapture` → persist).
+
 ### Changed
 
+- Documentation sync (2026-08-28): service docs / README / readiness / ops manuals aligned to `main` @ Add Router (`985f303`); §3 remains empty.
 - **P2-11** (#297) **DONE** (2026-08-28): write-path pilot Living Spec + runbook — **P2 write-path tranche CLOSED**.
 - Documentation sync (2026-08-28): queue after P2-11 — **§3 empty** (no NEXT).
 - **P2-10** (#296) **DONE** (2026-08-28): `AddRouterOsWriteServices` + `Mfc:RouterOs:WriteEnabled`.
@@ -21,20 +34,6 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - **PLAN-01** (#290) **DONE** (2026-08-26): formalized P2 write-path queue — ROADMAP §3.B7 rows #128–#132; GitHub issues #293–#297.
 - Documentation sync (2026-08-26): added [`docs/release/readiness.md`](docs/release/readiness.md); fixed stale references after P2 read path closure.
 - Linear queue integrity: **TRACKER-01** (#289) **DONE** (2026-08-26).
-
-### Added
-
-- Write-path pilot runbook + Living Spec (P2-11 / #297): `docs/operations/pilot-runbook.md` onboarding→deploy→rollback checklist; `WritePathPilotLivingSpecTests` (NotConfigured vs production Start* DI). Closes P2 write-path tranche.
-- Write-path RouterOS DI gate (P2-10 / #296): `AddRouterOsWriteServices` + `Mfc:RouterOs:WriteEnabled` (fail-closed default); wires onboarding/deploy/watchdog residue production ports; Living Spec `WritePathReadinessLivingSpecTests`.
-- Production `RouterOsWatchdogResidueCleanupPort` (P2-09 / #295): allowlisted `/system/script|scheduler` residue remove; Living Spec `RouterOsWatchdogResidueCleanupLivingSpecTests`. Write-path DI gate remains P2-10.
-- Production `RouterOsDeploymentRuntime` (P2-08 / #294): live API-SSL deployment sessions over M4 use cases; Living Spec `RouterOsDeploymentRuntimeLivingSpecTests`. Write-path DI gate remains P2-10.
-- Production `RouterOsOnboardingRuntime` (P2-07 / #293): live API-SSL onboarding sessions over closed writers; Living Spec `RouterOsOnboardingRuntimeLivingSpecTests`. Write-path DI gate remains P2-10.
-- Production RouterOS DI gate (P2-06 / #282): `AddMfcRouterOs` + `AddRouterOsProductionServices`; `Mfc:RouterOs:Enabled` fail-closed default; Living Spec `PilotReadinessLivingSpecTests`; read-only pilot runbook.
-- Production `RouterOsReadPort` (P2-04 / #280): API-SSL identity probe via `SystemServiceDiscovery` + `CapabilityProfileEvaluator`; `IRouterOsConnectionMaterializer` + `EfRouterOsConnectionMaterializer`; Living Spec `RouterOsReadPortLivingSpecTests`.
-- Production `RouterOsSnapshotCapturePort` (P2-05 / #281): stable-read coordination + discovery reader + canonical/raw `SnapshotCaptureResult` assembly; `RouterOsStableReadCoordinatorPort`; Living Spec + PG integration test (`StartCapture` → persist).
-
-### Changed
-
 - Documentation audit for `v0.2.0`: refreshed [`README.md`](README.md), added [`docs/README.md`](docs/README.md) and [`docs/specs/README.md`](docs/specs/README.md), updated ops/release docs for P2 pilot gaps; removed local agent/build artifacts (`artifacts/`, `TestResults/`, `.omx/` — already gitignored).
 
 ## [0.2.0] - 2026-08-24

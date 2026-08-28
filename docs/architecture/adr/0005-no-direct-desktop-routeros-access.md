@@ -20,4 +20,4 @@ A Desktop GUI that talks directly to routers would bypass Controller policy, aud
 
 - **Positive:** Single control plane; secrets stay server-side; clear security boundary.
 - **Negative:** Offline Desktop features limited; Controller availability required for management actions.
-- **Follow-up:** Keep Desktop connection shell health-only until authenticated gRPC APIs land in M1+.
+- **Follow-up:** Desktop inventory mutations (Add router) and all RouterOS I/O remain Controller-mediated; never add Desktop→RouterOS clients.

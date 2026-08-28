@@ -46,4 +46,5 @@ These files are the authoritative product and issue-set specifications. They rem
 
 ## Execution index
 
-Live queue and DONE markers: [`ROADMAP.md`](../../ROADMAP.md). GitHub mapping: [`ISSUES.md`](../../ISSUES.md).
+Live queue and DONE markers: [`ROADMAP.md`](../../ROADMAP.md) (**§3 empty**). GitHub mapping: [`ISSUES.md`](../../ISSUES.md).  
+Service docs (ops/dev/release): [`../README.md`](../README.md). Pilot: [`../operations/pilot-runbook.md`](../operations/pilot-runbook.md).
