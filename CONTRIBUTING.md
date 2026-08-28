@@ -4,7 +4,7 @@ MikroTik Firewall Controller (namespace `Mfc`) — monorepo, trunk-based workflo
 
 ## Before you start
 
-1. Pick the next open row from [`ROADMAP.md`](ROADMAP.md) §3 — **NEXT = P2-09** ([#295](https://github.com/sesquicadaver/MTDirector/issues/295)). Do not skip queue order.
+1. Pick the next open row from [`ROADMAP.md`](ROADMAP.md) §3 — **NEXT = P2-10** ([#296](https://github.com/sesquicadaver/MTDirector/issues/296)). Do not skip queue order.
 2. One issue → one short-lived branch → one PR.
 3. Do not expand scope without a new issue.
 4. No stubs, `NotImplementedException`, or disabled tests in production code.

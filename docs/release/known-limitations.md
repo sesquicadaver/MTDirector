@@ -10,7 +10,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 ## Production wiring (P2 pilot)
 
 - **Read path (P2-04…P2-06)** — **DONE**. Enable via `Mfc:RouterOs:Enabled=true`; default remains fail-closed (`ProbeOnlyRouterOsReadPort` / `NotConfiguredSnapshotCapturePort`). Pilot checklist: [`pilot-runbook.md`](../operations/pilot-runbook.md).
-- Onboarding/deploy runtimes: **P2-07…P2-08 DONE** in code; DI wiring at **P2-10**; watchdog cleanup **P2-09** — see ROADMAP §3.B7.
+- Onboarding/deploy/watchdog-residue: **P2-07…P2-09 DONE** in code; DI wiring at **P2-10** — see ROADMAP §3.B7.
 
 ## Live lab residuals (optional)
 

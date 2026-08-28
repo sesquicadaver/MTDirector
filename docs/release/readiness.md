@@ -1,7 +1,7 @@
 # Project readiness assessment
 
-**As of:** 2026-08-26  
-**Baseline commit:** `main` @ P2-08 merge (`e2dc96c`)  
+**As of:** 2026-08-28  
+**Baseline commit:** `main` @ P2-09 merge (`e7cd5de`)  
 **Release tag:** [`v0.2.0`](https://github.com/sesquicadaver/MTDirector/releases/tag/v0.2.0) (2026-08-24)
 
 This document summarizes **code + documentation readiness** against the normative queue in [`ROADMAP.md`](../../ROADMAP.md). It is not a substitute for operator acceptance ([`mvp-acceptance.md`](mvp-acceptance.md)) or release gates ([`release-gates.md`](release-gates.md)).
@@ -13,8 +13,8 @@ This document summarizes **code + documentation readiness** against the normativ
 | MVP (M0–M6 + N1) | **100% CLOSED** | 109/109 issues in code audit |
 | Post-MVP M7 (M7.1–M7.4) | **100% CLOSED** | 27/27 issues in code audit |
 | P2 read path (P2-04…P2-06) | **100% CLOSED** | Production probe + capture + DI gate |
-| P2 write path | **IN PROGRESS** | P2-07…P2-08 **DONE** (#293, #294); watchdog + DI gate remain (P2-09…P2-10) |
-| Linear queue (§3) | **3 open** | **NEXT = P2-09** (#295) |
+| P2 write path | **IN PROGRESS** | P2-07…P2-09 **DONE** (#293–#295); DI gate + runbook remain (P2-10…P2-11) |
+| Linear queue (§3) | **2 open** | **NEXT = P2-10** (#296) |
 
 **Overall code readiness:** all 139 mapped product issues are **DONE in code**.  
 **Queue integrity:** **TRACKER-01 DONE** (#289, 2026-08-26) — GitHub tracker aligned with ROADMAP §2.2.  
@@ -45,11 +45,11 @@ This document summarizes **code + documentation readiness** against the normativ
 | 127 | PLAN-01 | [#290](https://github.com/sesquicadaver/MTDirector/issues/290) | **DONE** (2026-08-26) |
 | 128 | P2-07 | [#293](https://github.com/sesquicadaver/MTDirector/issues/293) | **DONE** (2026-08-26) |
 | 129 | P2-08 | [#294](https://github.com/sesquicadaver/MTDirector/issues/294) | **DONE** (2026-08-26) |
-| 130 | P2-09 | [#295](https://github.com/sesquicadaver/MTDirector/issues/295) | **NEXT** — watchdog residue cleanup |
-| 131 | P2-10 | [#296](https://github.com/sesquicadaver/MTDirector/issues/296) | write-path DI gate |
+| 130 | P2-09 | [#295](https://github.com/sesquicadaver/MTDirector/issues/295) | **DONE** (2026-08-28) |
+| 131 | P2-10 | [#296](https://github.com/sesquicadaver/MTDirector/issues/296) | **NEXT** — write-path DI gate |
 | 132 | P2-11 | [#297](https://github.com/sesquicadaver/MTDirector/issues/297) | write-path pilot runbook |
 
-No parallel work. Linear chain: P2-09 → P2-10 → P2-11.
+No parallel work. Linear chain: P2-10 → P2-11.
 
 ## What is production-ready today
 
@@ -80,7 +80,7 @@ Documented in [`known-limitations.md`](known-limitations.md):
 
 | Residual | Impact |
 |----------|--------|
-| Write-path runtimes stubbed in DI | Onboarding/deploy ports wired at P2-10; implementation P2-07…P2-08 **DONE**, P2-09 open |
+| Write-path runtimes stubbed in DI | Ports wired at P2-10; implementation P2-07…P2-09 **DONE** |
 | Live CHR matrix OFF | Scripted E2E Living Specs are DoD substitute |
 | Desktop packaging | zip/tar publish, not MSI |
 | Signing | SHA256SUMS attestation; GPG/Sigstore optional |
