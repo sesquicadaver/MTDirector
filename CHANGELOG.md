@@ -9,8 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- **P2-11** (#297) **IN PROGRESS**: write-path pilot Living Spec + `pilot-runbook.md` checklist (closes P2 write-path tranche).
-- **P2-10** (#296) **DONE** (2026-08-28): `AddRouterOsWriteServices` + `Mfc:RouterOs:WriteEnabled`; **NEXT = P2-11** (#297).
+- **P2-11** (#297) **DONE** (2026-08-28): write-path pilot Living Spec + runbook — **P2 write-path tranche CLOSED**.
+- Documentation sync (2026-08-28): queue after P2-11 — **§3 empty** (no NEXT).
+- **P2-10** (#296) **DONE** (2026-08-28): `AddRouterOsWriteServices` + `Mfc:RouterOs:WriteEnabled`.
 - Documentation sync (2026-08-28): queue after P2-10 merge — **NEXT → P2-11** (#297).
 - **P2-09** (#295) **DONE** (2026-08-28): production `RouterOsWatchdogResidueCleanupPort`.
 - Documentation sync (2026-08-28): queue after P2-09 merge — **NEXT → P2-10** (#296).

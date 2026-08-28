@@ -152,9 +152,9 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 | `P2-11` | #297 | https://github.com/sesquicadaver/MTDirector/issues/297 |
 
 **Product issues (code):** 139 DONE (§2.2).  
-**Linear queue (§3):** 1 OPEN — **NEXT = [P2-11 / #297](https://github.com/sesquicadaver/MTDirector/issues/297)**.  
-**TRACKER-01** (#289): **DONE** (2026-08-26). **PLAN-01** (#290): **DONE** (2026-08-26). **P2-07** (#293): **DONE** (2026-08-26). **P2-08** (#294): **DONE** (2026-08-26). **P2-09** (#295): **DONE** (2026-08-28). **P2-10** (#296): **DONE** (2026-08-28).
+**Linear queue (§3):** **0 OPEN** — P2 write-path tranche **CLOSED** (P2-07…P2-11).  
+**TRACKER-01** (#289): **DONE**. **PLAN-01** (#290): **DONE**. **P2-07…P2-11**: **DONE** (2026-08-26…28).
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 
-Start here: [`ROADMAP.md`](ROADMAP.md) §3.B7 → **P2-11** (#297) write-path pilot Living Spec + runbook.
+Start here: [`ROADMAP.md`](ROADMAP.md) — queue empty; pilot runbook [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md).
