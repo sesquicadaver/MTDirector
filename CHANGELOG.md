@@ -9,8 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- **P2-09** (#295) **IN PROGRESS**: production `RouterOsWatchdogResidueCleanupPort`; DI remains fail-closed until P2-10.
-- **P2-08** (#294) **DONE** (2026-08-26): production `RouterOsDeploymentRuntime`; **NEXT = P2-09** (#295).
+- **P2-09** (#295) **DONE** (2026-08-28): production `RouterOsWatchdogResidueCleanupPort`; **NEXT = P2-10** (#296).
+- Documentation sync (2026-08-28): queue after P2-09 merge — **NEXT → P2-10** (#296).
+- **P2-08** (#294) **DONE** (2026-08-26): production `RouterOsDeploymentRuntime`.
 - Documentation sync (2026-08-26): queue after P2-08 merge — **NEXT → P2-09** (#295).
 - **P2-07** (#293) **DONE** (2026-08-26): production `RouterOsOnboardingRuntime`.
 - **PLAN-01** (#290) **DONE** (2026-08-26): formalized P2 write-path queue — ROADMAP §3.B7 rows #128–#132; GitHub issues #293–#297.
