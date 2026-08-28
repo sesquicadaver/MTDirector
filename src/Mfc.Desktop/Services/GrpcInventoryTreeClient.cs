@@ -1,3 +1,4 @@
+using Google.Protobuf;
 using Grpc.Core;
 using Grpc.Net.Client;
 using Mfc.Contracts.Mfc.V1;
@@ -75,6 +76,111 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
         InventoryService.InventoryServiceClient client = CreateClient();
         return await client.GetNodeAsync(
                 new GetNodeRequest { NodeId = DesktopProtoUuid.FromGuid(nodeId) },
+                ActorHeaders(),
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<Site> CreateSiteAsync(
+        string code,
+        string name,
+        CancellationToken cancellationToken = default)
+    {
+        InventoryService.InventoryServiceClient client = CreateClient();
+        return await client.CreateSiteAsync(
+                new CreateSiteRequest
+                {
+                    IdempotencyKey = DesktopProtoUuid.FromGuid(Guid.NewGuid()),
+                    Code = code,
+                    Name = name,
+                },
+                ActorHeaders(),
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<Node> CreateNodeAsync(
+        Guid siteId,
+        string name,
+        NodeKind declaredKind,
+        DeclaredUplinkMode declaredUplinkMode,
+        CancellationToken cancellationToken = default)
+    {
+        InventoryService.InventoryServiceClient client = CreateClient();
+        return await client.CreateNodeAsync(
+                new CreateNodeRequest
+                {
+                    IdempotencyKey = DesktopProtoUuid.FromGuid(Guid.NewGuid()),
+                    SiteId = DesktopProtoUuid.FromGuid(siteId),
+                    Name = name,
+                    DeclaredKind = declaredKind,
+                    DeclaredUplinkMode = declaredUplinkMode,
+                },
+                ActorHeaders(),
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<Device> RegisterDeviceAsync(
+        Guid nodeId,
+        string displayName,
+        string managementHost,
+        uint managementPort,
+        DeviceRole role,
+        CancellationToken cancellationToken = default)
+    {
+        InventoryService.InventoryServiceClient client = CreateClient();
+        return await client.RegisterDeviceAsync(
+                new RegisterDeviceRequest
+                {
+                    IdempotencyKey = DesktopProtoUuid.FromGuid(Guid.NewGuid()),
+                    NodeId = DesktopProtoUuid.FromGuid(nodeId),
+                    DisplayName = displayName,
+                    ManagementHost = managementHost,
+                    ManagementPort = managementPort,
+                    Role = role,
+                },
+                ActorHeaders(),
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<DeviceConnectionSummary> UpdateDeviceConnectionAsync(
+        Guid deviceId,
+        string username,
+        ReadOnlyMemory<byte> passwordUtf8,
+        CertificateTrustMode trustMode,
+        string? caProfileRef,
+        Sha256? pinnedSpkiSha256,
+        uint connectTimeoutMs,
+        uint commandTimeoutMs,
+        ulong maxResponseBytes,
+        CancellationToken cancellationToken = default)
+    {
+        InventoryService.InventoryServiceClient client = CreateClient();
+        UpdateDeviceConnectionRequest request = new()
+        {
+            IdempotencyKey = DesktopProtoUuid.FromGuid(Guid.NewGuid()),
+            DeviceId = DesktopProtoUuid.FromGuid(deviceId),
+            Username = username,
+            PasswordUtf8 = ByteString.CopyFrom(passwordUtf8.Span),
+            TrustMode = trustMode,
+            ConnectTimeoutMs = connectTimeoutMs,
+            CommandTimeoutMs = commandTimeoutMs,
+            MaxResponseBytes = maxResponseBytes,
+        };
+        if (!string.IsNullOrWhiteSpace(caProfileRef))
+        {
+            request.CaProfileRef = caProfileRef.Trim();
+        }
+
+        if (pinnedSpkiSha256 is not null)
+        {
+            request.PinnedSpkiSha256 = pinnedSpkiSha256;
+        }
+
+        return await client.UpdateDeviceConnectionAsync(
+                request,
                 ActorHeaders(),
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);

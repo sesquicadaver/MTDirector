@@ -45,6 +45,34 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
     }
 
     [Fact]
+    public void Ac2bInventoryAddRouterWizardCoversCreateRegisterConnectionPath()
+    {
+        Type wizard = typeof(AddRouterWizardViewModel);
+        Assert.NotNull(wizard.GetProperty("SubmitCommand"));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.UseExistingSite)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.UseExistingNode)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.DeviceDisplayName)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.ManagementHost)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.Username)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.Password)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.SelectedTrustMode)));
+        Assert.NotNull(typeof(ShellViewModel).GetProperty(nameof(ShellViewModel.AddRouter)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Add router", axaml, StringComparison.Ordinal);
+        Assert.Contains("AddRouter.SubmitCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("AddRouter.UseExistingSite", axaml, StringComparison.Ordinal);
+        Assert.Contains("AddRouter.ManagementHost", axaml, StringComparison.Ordinal);
+        Assert.Contains("AddRouter.Password", axaml, StringComparison.Ordinal);
+
+        Type inventory = typeof(IInventoryTreeClient);
+        Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.CreateSiteAsync)));
+        Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.CreateNodeAsync)));
+        Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.RegisterDeviceAsync)));
+        Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.UpdateDeviceConnectionAsync)));
+    }
+
+    [Fact]
     public void Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness()
     {
         Type node = typeof(NodeDetailViewModel);

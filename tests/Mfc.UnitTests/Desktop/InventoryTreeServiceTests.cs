@@ -235,5 +235,50 @@ public sealed class InventoryTreeServiceTests
 
             return Task.FromResult(details);
         }
+
+        public Task<Site> CreateSiteAsync(string code, string name, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new NotSupportedException("CreateSite is not used by InventoryTreeService tests.");
+        }
+
+        public Task<Node> CreateNodeAsync(
+            Guid siteId,
+            string name,
+            NodeKind declaredKind,
+            DeclaredUplinkMode declaredUplinkMode,
+            CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new NotSupportedException("CreateNode is not used by InventoryTreeService tests.");
+        }
+
+        public Task<Device> RegisterDeviceAsync(
+            Guid nodeId,
+            string displayName,
+            string managementHost,
+            uint managementPort,
+            DeviceRole role,
+            CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new NotSupportedException("RegisterDevice is not used by InventoryTreeService tests.");
+        }
+
+        public Task<DeviceConnectionSummary> UpdateDeviceConnectionAsync(
+            Guid deviceId,
+            string username,
+            ReadOnlyMemory<byte> passwordUtf8,
+            CertificateTrustMode trustMode,
+            string? caProfileRef,
+            Sha256? pinnedSpkiSha256,
+            uint connectTimeoutMs,
+            uint commandTimeoutMs,
+            ulong maxResponseBytes,
+            CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new NotSupportedException("UpdateDeviceConnection is not used by InventoryTreeService tests.");
+        }
     }
 }

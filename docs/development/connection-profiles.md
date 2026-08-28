@@ -24,7 +24,8 @@ Secrets use AES-256-GCM envelopes under `Security:MasterKeyProvider` (`Developme
 
 - Desktop talks only to Controller Contracts (`mfc.v1`).
 - No RouterOS host credentials in Desktop settings or logs (ADR 0005).
-- Operator pastes credentials once into Controller via gRPC; Desktop never reloads them.
+- Operator enters credentials once via Inventory **Add router** wizard (`UpdateDeviceConnection`); password is cleared from the form after success and never reloaded from Controller.
+- Prefer selecting an existing Site/Node in the tree before opening the wizard so pickers pre-fill.
 
 ## Synthetic lab credentials
 
