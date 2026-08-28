@@ -50,55 +50,42 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         Assert.Contains("M6 CLOSED", roadmap, StringComparison.Ordinal);
         Assert.Contains("MVP CLOSED", roadmap, StringComparison.Ordinal);
         Assert.Contains("M6-09", roadmap, StringComparison.Ordinal);
-        Assert.Contains("#108", roadmap, StringComparison.Ordinal);
         Assert.Contains("N1-07", roadmap, StringComparison.Ordinal);
-        Assert.Contains("#109", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-01", roadmap, StringComparison.Ordinal);
-        Assert.Contains("#110", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-02", roadmap, StringComparison.Ordinal);
-        Assert.Contains("#111", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-03", roadmap, StringComparison.Ordinal);
-        Assert.Contains("#112", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-03 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-04", roadmap, StringComparison.Ordinal);
-        Assert.Contains("#113", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-04 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-05", roadmap, StringComparison.Ordinal);
-        Assert.Contains("#114", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-05 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-06", roadmap, StringComparison.Ordinal);
-        Assert.Contains("#115", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-06 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-07", roadmap, StringComparison.Ordinal);
-        Assert.Contains("#116", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-07 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-08", roadmap, StringComparison.Ordinal);
-        Assert.Contains("#117", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-08 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-09", roadmap, StringComparison.Ordinal);
-        Assert.Contains("#118", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-09 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-10", roadmap, StringComparison.Ordinal);
-        Assert.Contains("#119", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-10 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-11", roadmap, StringComparison.Ordinal);
-        Assert.Contains("#120", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.1-11 DONE", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.1 CLOSED", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.2-01 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.2-02 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.2-03 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.2-04 DONE", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.2 CLOSED", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.3-05 DONE", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.3 CLOSED", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.4-01 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.4-02 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.4-03 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.4-04 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.4-05 DONE", roadmap, StringComparison.Ordinal);
-        Assert.Contains("M7.4-06 DONE", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.4 CLOSED", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3 NEXT = none", roadmap, StringComparison.Ordinal);
+
+        // Logical ID → GitHub mapping lives in ISSUES.md after ROADMAP §3 strikethrough purge.
+        foreach ((string id, string issue) in new[]
+                 {
+                     ("M6-09", "#108"), ("N1-07", "#109"),
+                     ("M7.1-01", "#110"), ("M7.1-02", "#111"), ("M7.1-03", "#112"),
+                     ("M7.1-04", "#113"), ("M7.1-05", "#114"), ("M7.1-06", "#115"),
+                     ("M7.1-07", "#116"), ("M7.1-08", "#117"), ("M7.1-09", "#118"),
+                     ("M7.1-10", "#119"), ("M7.1-11", "#120"),
+                     ("M7.2-01", "#121"), ("M7.2-04", "#124"),
+                     ("M7.3-05", "#129"), ("M7.4-01", "#131"), ("M7.4-06", "#136"),
+                 })
+        {
+            Assert.Contains(id, issues, StringComparison.Ordinal);
+            Assert.Contains(issue, issues, StringComparison.Ordinal);
+            Assert.Contains(id, roadmap, StringComparison.Ordinal);
+        }
+
+        foreach (string doneMarker in new[]
+                 {
+                     "M7.1-03 DONE", "M7.1-04 DONE", "M7.1-05 DONE", "M7.1-06 DONE", "M7.1-07 DONE",
+                     "M7.1-08 DONE", "M7.1-09 DONE", "M7.1-10 DONE", "M7.1-11 DONE",
+                     "M7.2-01 DONE", "M7.2-02 DONE", "M7.2-03 DONE", "M7.2-04 DONE",
+                     "M7.3-05 DONE",
+                     "M7.4-01 DONE", "M7.4-02 DONE", "M7.4-03 DONE", "M7.4-04 DONE",
+                     "M7.4-05 DONE", "M7.4-06 DONE",
+                 })
+        {
+            Assert.Contains(doneMarker, roadmap, StringComparison.Ordinal);
+        }
 
         // Prior M6 E2E issues must appear as DONE in §2.2 / queue strikethroughs.
         foreach (string id in new[]
