@@ -130,6 +130,78 @@
             <TextBlock Text="{Binding Inventory.SelectedNode.ActualHashText, StringFormat=actual: {0}}"
                        FontFamily="Consolas,Menlo,monospace" />
 
+            <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="10" Margin="0,12,0,0">
+              <StackPanel Spacing="8">
+                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Add router" />
+                <TextBlock Opacity="0.8" TextWrapping="Wrap"
+                           Text="Site → Node → Device + API-SSL credentials (RegisterDevice + UpdateDeviceConnection)." />
+                <TextBlock Text="{Binding AddRouter.ErrorText}"
+                           Foreground="#B00020"
+                           TextWrapping="Wrap"
+                           IsVisible="{Binding AddRouter.HasError}" />
+                <TextBlock Text="{Binding AddRouter.StatusText}"
+                           TextWrapping="Wrap"
+                           IsVisible="{Binding AddRouter.HasStatus}" />
+
+                <TextBlock FontWeight="SemiBold" Text="1. Site" />
+                <CheckBox Content="Use existing Site"
+                          IsChecked="{Binding AddRouter.UseExistingSite}" />
+                <ComboBox ItemsSource="{Binding AddRouter.SiteChoices}"
+                          SelectedItem="{Binding AddRouter.SelectedSite, Mode=TwoWay}"
+                          IsVisible="{Binding AddRouter.ShowExistingSitePicker}"
+                          MinWidth="280"
+                          HorizontalAlignment="Left" />
+                <StackPanel Spacing="6" IsVisible="{Binding AddRouter.ShowNewSiteFields}">
+                  <TextBox PlaceholderText="site code" Text="{Binding AddRouter.NewSiteCode}" />
+                  <TextBox PlaceholderText="site name" Text="{Binding AddRouter.NewSiteName}" />
+                </StackPanel>
+
+                <TextBlock FontWeight="SemiBold" Text="2. Node" Margin="0,6,0,0" />
+                <CheckBox Content="Use existing Node"
+                          IsChecked="{Binding AddRouter.UseExistingNode}" />
+                <ComboBox ItemsSource="{Binding AddRouter.NodeChoices}"
+                          SelectedItem="{Binding AddRouter.SelectedNode, Mode=TwoWay}"
+                          IsVisible="{Binding AddRouter.ShowExistingNodePicker}"
+                          MinWidth="280"
+                          HorizontalAlignment="Left" />
+                <StackPanel Spacing="6" IsVisible="{Binding AddRouter.ShowNewNodeFields}">
+                  <TextBox PlaceholderText="node name" Text="{Binding AddRouter.NewNodeName}" />
+                  <ComboBox ItemsSource="{Binding AddRouter.UplinkModes}"
+                            SelectedItem="{Binding AddRouter.SelectedUplinkMode, Mode=TwoWay}"
+                            MinWidth="220"
+                            HorizontalAlignment="Left" />
+                </StackPanel>
+
+                <TextBlock FontWeight="SemiBold" Text="3. Device" Margin="0,6,0,0" />
+                <TextBox PlaceholderText="display name" Text="{Binding AddRouter.DeviceDisplayName}" />
+                <TextBox PlaceholderText="management host (IP or DNS)" Text="{Binding AddRouter.ManagementHost}" />
+                <TextBox PlaceholderText="management port (8729)" Text="{Binding AddRouter.ManagementPortText}" />
+
+                <TextBlock FontWeight="SemiBold" Text="4. Connection profile" Margin="0,6,0,0" />
+                <TextBox PlaceholderText="API username" Text="{Binding AddRouter.Username}" />
+                <TextBox PlaceholderText="API password"
+                         Text="{Binding AddRouter.Password}"
+                         PasswordChar="*" />
+                <ComboBox ItemsSource="{Binding AddRouter.TrustModes}"
+                          SelectedItem="{Binding AddRouter.SelectedTrustMode, Mode=TwoWay}"
+                          MinWidth="220"
+                          HorizontalAlignment="Left" />
+                <TextBox PlaceholderText="CA profile ref"
+                         Text="{Binding AddRouter.CaProfileRef}"
+                         IsVisible="{Binding AddRouter.ShowCaProfile}" />
+                <TextBox PlaceholderText="pinned SPKI SHA-256 (64 hex)"
+                         Text="{Binding AddRouter.PinnedSpkiSha256Hex}"
+                         IsVisible="{Binding AddRouter.ShowSpkiPin}"
+                         FontFamily="Consolas,Menlo,monospace" />
+
+                <Button Content="Create / register"
+                        Command="{Binding AddRouter.SubmitCommand}"
+                        MinWidth="160"
+                        HorizontalAlignment="Left"
+                        Margin="0,4,0,0" />
+              </StackPanel>
+            </Border>
+
             <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8" Margin="0,12,0,0">
               <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,*,Auto,*,Auto,*">
                 <DockPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Margin="0,0,0,8">

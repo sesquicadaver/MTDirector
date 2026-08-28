@@ -31,7 +31,7 @@ With the flag **false** (CI default), `ValidateDeviceConnection` and `StartCaptu
 
 ## Read-only pilot checklist
 
-1. **Inventory** — `CreateSite` → `CreateNode` → `RegisterDevice` → `UpdateDeviceConnection`.
+1. **Inventory** — Desktop **Add router** wizard (`CreateSite` → `CreateNode` → `RegisterDevice` → `UpdateDeviceConnection`) or equivalent gRPC calls.
 2. **Probe** — `ValidateDeviceConnection` returns identity + `SupportState` without RouterOS mutation.
 3. **Capture** — `StartCapture` + `WatchCapture` completes; snapshot persisted in PostgreSQL.
 4. **Diff** — `ListCaptures` → `CompareSnapshots` shows section-grouped semantic diff (no local recompute).

@@ -26,6 +26,7 @@ public sealed class App : Application, IAsyncDisposable
         GrpcInventoryTreeClient inventoryClient = new(connection, options);
         InventoryTreeService inventoryTree = new(inventoryClient);
         InventoryTreeViewModel inventoryVm = new(inventoryTree, connection);
+        AddRouterWizardViewModel addRouterVm = new(inventoryClient, connection, inventoryVm);
         GrpcSnapshotViewerClient snapshotClient = new(connection, options);
         SnapshotViewerService snapshotService = new(snapshotClient);
         SnapshotViewerViewModel snapshotVm = new(snapshotService, connection, inventoryVm);
@@ -52,6 +53,7 @@ public sealed class App : Application, IAsyncDisposable
             connection,
             options,
             inventoryVm,
+            addRouterVm,
             nodeVm,
             snapshotVm,
             diffVm,

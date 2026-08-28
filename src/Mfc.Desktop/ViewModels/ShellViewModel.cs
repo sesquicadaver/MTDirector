@@ -16,6 +16,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
         IControllerConnectionService connection,
         DesktopOptions options,
         InventoryTreeViewModel inventory,
+        AddRouterWizardViewModel addRouter,
         NodeDetailViewModel node,
         SnapshotViewerViewModel snapshot,
         SnapshotDiffViewModel diff,
@@ -30,6 +31,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _options = options ?? throw new ArgumentNullException(nameof(options));
         Inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
+        AddRouter = addRouter ?? throw new ArgumentNullException(nameof(addRouter));
         Node = node ?? throw new ArgumentNullException(nameof(node));
         Snapshot = snapshot ?? throw new ArgumentNullException(nameof(snapshot));
         Diff = diff ?? throw new ArgumentNullException(nameof(diff));
@@ -64,6 +66,8 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
         "Ctrl+5 Operations · Ctrl+6 Drift · Ctrl+7 Audit · F5 Refresh inventory";
 
     public InventoryTreeViewModel Inventory { get; }
+
+    public AddRouterWizardViewModel AddRouter { get; }
 
     public NodeDetailViewModel Node { get; }
 
@@ -218,6 +222,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
         Diff.Dispose();
         Snapshot.Dispose();
         Node.Dispose();
+        AddRouter.Dispose();
         Inventory.Dispose();
         await _connection.DisposeAsync().ConfigureAwait(false);
     }

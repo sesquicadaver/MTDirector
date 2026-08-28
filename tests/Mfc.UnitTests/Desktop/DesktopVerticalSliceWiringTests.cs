@@ -13,6 +13,8 @@ public sealed class DesktopVerticalSliceWiringTests
         System.Reflection.PropertyInfo[] properties = typeof(ShellViewModel).GetProperties();
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Inventory)
                                          && p.PropertyType == typeof(InventoryTreeViewModel));
+        Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.AddRouter)
+                                         && p.PropertyType == typeof(AddRouterWizardViewModel));
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Node)
                                          && p.PropertyType == typeof(NodeDetailViewModel));
         Assert.Contains(properties, p => p.Name == nameof(ShellViewModel.Snapshot)
@@ -50,6 +52,10 @@ public sealed class DesktopVerticalSliceWiringTests
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.ListAllSitesAsync)));
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.ListAllNodesAsync)));
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.GetNodeAsync)));
+        Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.CreateSiteAsync)));
+        Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.CreateNodeAsync)));
+        Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.RegisterDeviceAsync)));
+        Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.UpdateDeviceConnectionAsync)));
 
         Type zones = typeof(IZoneServiceClient);
         Assert.NotNull(zones.GetMethod(nameof(IZoneServiceClient.ListZoneDefinitionsAsync)));
