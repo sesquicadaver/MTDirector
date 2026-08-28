@@ -69,4 +69,7 @@ public enum RosReadCommandId
     /// <summary>On-demand connection-tracking reads (M7.3-03 / next-2 §2).</summary>
     Ipv4FirewallConnections = 53,
     Ipv6FirewallConnections = 54,
+
+    /// <summary>On-demand MNDP/CDP/LLDP neighbor table for seed MikroTik suggestions (#314).</summary>
+    IpNeighbors = 55,
 }

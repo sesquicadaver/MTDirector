@@ -311,5 +311,14 @@ public sealed class InventoryGrpcHostTests
                 SupportState = DomainSupportState.Supported,
             };
         }
+
+        public Task<RouterOsNeighborDiscoveryResult> ListNeighborRowsAsync(
+            RouterOsReadTarget target,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(new RouterOsNeighborDiscoveryResult
+            {
+                SeedIdentity = "chr-lab-25",
+                Rows = [],
+            });
     }
 }

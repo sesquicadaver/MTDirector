@@ -28,6 +28,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
     private readonly UpdateDeviceUseCase _updateDevice;
     private readonly UpdateConnectionProfileUseCase _updateConnection;
     private readonly DiscoverDeviceUseCase _discoverDevice;
+    private readonly ListNeighborCandidatesUseCase _listNeighborCandidates;
     private readonly ValidateDeviceConnectionCoordinator _probeCoordinator;
     private readonly IHostEnvironment _environment;
 
@@ -42,6 +43,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         UpdateDeviceUseCase updateDevice,
         UpdateConnectionProfileUseCase updateConnection,
         DiscoverDeviceUseCase discoverDevice,
+        ListNeighborCandidatesUseCase listNeighborCandidates,
         ValidateDeviceConnectionCoordinator probeCoordinator,
         IHostEnvironment environment)
     {
@@ -55,6 +57,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         ArgumentNullException.ThrowIfNull(updateDevice);
         ArgumentNullException.ThrowIfNull(updateConnection);
         ArgumentNullException.ThrowIfNull(discoverDevice);
+        ArgumentNullException.ThrowIfNull(listNeighborCandidates);
         ArgumentNullException.ThrowIfNull(probeCoordinator);
         ArgumentNullException.ThrowIfNull(environment);
         _listSites = listSites;
@@ -67,6 +70,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         _updateDevice = updateDevice;
         _updateConnection = updateConnection;
         _discoverDevice = discoverDevice;
+        _listNeighborCandidates = listNeighborCandidates;
         _probeCoordinator = probeCoordinator;
         _environment = environment;
     }
@@ -265,6 +269,22 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
                 ct => _discoverDevice.ExecuteAsync(
                     new DiscoverDeviceCommand { Actor = actor, DeviceId = deviceId },
                     ct),
+                context.CancellationToken)
+            .ConfigureAwait(false);
+        return InventoryProtoMapper.ToProto(Unwrap(result));
+    }
+
+    public override async Task<ListNeighborCandidatesResponse> ListNeighborCandidates(
+        ListNeighborCandidatesRequest request,
+        ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        Guid seedDeviceId = ProtoUuid.ToGuid(request.SeedDeviceId);
+        string actor = ResolveActor(context);
+
+        ApplicationResult<NeighborCandidatesView> result = await _listNeighborCandidates
+            .ExecuteAsync(
+                new ListNeighborCandidatesCommand { Actor = actor, SeedDeviceId = seedDeviceId },
                 context.CancellationToken)
             .ConfigureAwait(false);
         return InventoryProtoMapper.ToProto(Unwrap(result));

@@ -280,5 +280,13 @@ public sealed class InventoryTreeServiceTests
             cancellationToken.ThrowIfCancellationRequested();
             throw new NotSupportedException("UpdateDeviceConnection is not used by InventoryTreeService tests.");
         }
+
+        public Task<ListNeighborCandidatesResponse> ListNeighborCandidatesAsync(
+            Guid seedDeviceId,
+            CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new NotSupportedException("ListNeighborCandidates is not used by InventoryTreeService tests.");
+        }
     }
 }

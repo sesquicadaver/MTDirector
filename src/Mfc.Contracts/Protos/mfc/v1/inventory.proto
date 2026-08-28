@@ -20,6 +20,8 @@ service InventoryService {
   rpc UpdateDevice(UpdateDeviceRequest) returns (Device);
   rpc UpdateDeviceConnection(UpdateDeviceConnectionRequest) returns (DeviceConnectionSummary);
   rpc ValidateDeviceConnection(ValidateDeviceConnectionRequest) returns (ValidateDeviceConnectionResponse);
+  // On-demand MikroTik neighbor suggestions from a registered seed device (#314).
+  rpc ListNeighborCandidates(ListNeighborCandidatesRequest) returns (ListNeighborCandidatesResponse);
   // Derived desired/committed/actual projection (M6-01). Status is never stored on Node.
   rpc GetNodeWorkflow(GetNodeWorkflowRequest) returns (NodeWorkflow);
 }
@@ -266,5 +268,28 @@ message ValidateDeviceConnectionResponse {
   Uuid device_id = 1;
   string observed_identity = 2;
   SupportState support_state = 3;
+  bool routeros_mutated = 4;
+}
+
+message ListNeighborCandidatesRequest {
+  Uuid seed_device_id = 1;
+}
+
+message NeighborCandidate {
+  string address = 1;
+  uint32 suggested_port = 2;
+  string identity = 3;
+  string mac_address = 4;
+  string platform = 5;
+  string version = 6;
+  string board = 7;
+  string interface_name = 8;
+  string age = 9;
+}
+
+message ListNeighborCandidatesResponse {
+  Uuid seed_device_id = 1;
+  string seed_identity = 2;
+  repeated NeighborCandidate candidates = 3;
   bool routeros_mutated = 4;
 }

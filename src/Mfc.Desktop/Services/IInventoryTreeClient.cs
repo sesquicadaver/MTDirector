@@ -43,4 +43,12 @@ public interface IInventoryTreeClient
         uint commandTimeoutMs,
         ulong maxResponseBytes,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// On-demand MikroTik neighbor suggestions from a registered seed device (#314).
+    /// Never registers devices; caller pre-fills Add Router fields only.
+    /// </summary>
+    Task<ListNeighborCandidatesResponse> ListNeighborCandidatesAsync(
+        Guid seedDeviceId,
+        CancellationToken cancellationToken = default);
 }

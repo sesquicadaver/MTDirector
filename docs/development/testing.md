@@ -1791,6 +1791,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | AC#1 Єдина навігаційна модель | `ShellNavigationModule` + `ShellViewModel.SelectedModule` | `Ac1SingleNavigationModelExposesExactlySevenModules` |
 | AC#2 Inventory workflow status | `InventoryNodeViewModel.WorkflowStatusText` + MainWindow | `Ac2InventorySurfacesWorkflowStatusVisibly` |
 | AC#2b Inventory Add Router wizard | `AddRouterWizardViewModel` + `IInventoryTreeClient` write RPCs | `Ac2bInventoryAddRouterWizardCoversCreateRegisterConnectionPath` + `AddRouterWizardViewModelTests` |
+| Seed MikroTik neighbors (#314) | `ListNeighborCandidatesUseCase` + `/ip/neighbor` allowlist + Desktop Load/Apply | `NeighborCandidatesLivingSpecTests` + `ListNeighborCandidatesUseCaseTests` + `NeighborDiscoveryAllowlistTests` |
 | AC#3 Node topology/zones/onboarding/readiness | `NodeDetailViewModel` | `Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness` |
 | AC#4 Snapshot configuration/observations | `SnapshotViewerViewModel` | `Ac4SnapshotViewShowsConfigurationAndObservations` |
 | AC#5 Policy authoring/review/binding | `PoliciesViewModel` | `Ac5PolicyViewSupportsAuthoringReviewAndBinding` |

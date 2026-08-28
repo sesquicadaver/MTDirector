@@ -31,11 +31,47 @@ public sealed class RouterOsProbeResult
     public required SupportState SupportState { get; init; }
 }
 
+/// <summary>One row from allowlisted <c>/ip/neighbor/print</c> (pre-filter).</summary>
+public sealed class RouterOsNeighborRow
+{
+    public string? Address { get; init; }
+
+    public string? MacAddress { get; init; }
+
+    public string? Identity { get; init; }
+
+    public string? Platform { get; init; }
+
+    public string? Version { get; init; }
+
+    public string? Board { get; init; }
+
+    public string? Interface { get; init; }
+
+    public string? Age { get; init; }
+}
+
+/// <summary>Seed identity plus raw neighbor rows from a live read session.</summary>
+public sealed class RouterOsNeighborDiscoveryResult
+{
+    public required string SeedIdentity { get; init; }
+
+    public required IReadOnlyList<RouterOsNeighborRow> Rows { get; init; }
+}
+
 /// <summary>Read-only RouterOS operations. Must never mutate device configuration.</summary>
 public interface IRouterOsReadPort
 {
     /// <summary>Lightweight identity/capability probe. Read-only; no RouterOS writes.</summary>
     Task<RouterOsProbeResult> ProbeAsync(
+        RouterOsReadTarget target,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// On-demand <c>/ip/neighbor/print</c> from a seed device (MNDP/CDP/LLDP table).
+    /// Does not filter by platform; Application applies MikroTik-only policy.
+    /// </summary>
+    Task<RouterOsNeighborDiscoveryResult> ListNeighborRowsAsync(
         RouterOsReadTarget target,
         CancellationToken cancellationToken = default);
 }

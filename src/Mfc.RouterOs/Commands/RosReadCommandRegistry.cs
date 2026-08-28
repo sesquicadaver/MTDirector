@@ -229,6 +229,8 @@ public static class RosReadCommandRegistry
                 ConnectionTrackingAllowlistProfiles.Ipv4FirewallConnections),
             Def(RosReadCommandId.Ipv6FirewallConnections, "/ipv6/firewall/connection/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.BothPasses,
                 ConnectionTrackingAllowlistProfiles.Ipv6FirewallConnections),
+            Def(RosReadCommandId.IpNeighbors, "/ip/neighbor/print", RosResultShape.UnorderedCollection, RosRequirement.Conditional, RosPassPolicy.Pass1Only,
+                NeighborDiscoveryAllowlistProfiles.IpNeighbors),
         ];
 
         Dictionary<RosReadCommandId, RosReadCommandDefinition> map = new(all.Length);

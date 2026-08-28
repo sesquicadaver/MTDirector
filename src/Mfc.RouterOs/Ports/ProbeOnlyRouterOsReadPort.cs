@@ -21,4 +21,14 @@ public sealed class ProbeOnlyRouterOsReadPort : IRouterOsReadPort
         cancellationToken.ThrowIfCancellationRequested();
         throw new InvalidOperationException(NotConfiguredMessage);
     }
+
+    /// <inheritdoc />
+    public Task<RouterOsNeighborDiscoveryResult> ListNeighborRowsAsync(
+        RouterOsReadTarget target,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(target);
+        cancellationToken.ThrowIfCancellationRequested();
+        throw new InvalidOperationException(NotConfiguredMessage);
+    }
 }

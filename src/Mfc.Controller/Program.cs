@@ -251,6 +251,7 @@ public static class Program
         services.AddScoped<UpdateDeviceUseCase>();
         services.AddScoped<UpdateConnectionProfileUseCase>();
         services.AddScoped<DiscoverDeviceUseCase>();
+        services.AddScoped<ListNeighborCandidatesUseCase>();
     }
 
     private static void RegisterSnapshotApplication(IServiceCollection services)
