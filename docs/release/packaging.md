@@ -38,6 +38,8 @@ ls -la "$OUT_DIR"
 
 Avalonia Desktop is packaged as a **framework-dependent publish directory archived as zip/tar**. That archive is the MVP **installer substitute** (not MSI/setup.exe). A native MSI/AppImage/setup.exe is a documented residual (see [`known-limitations.md`](known-limitations.md)).
 
+Cross-platform build/run steps: [`../howto/build-and-run.md`](../howto/build-and-run.md) (`linux-x64` default, `win-x64` via `MFC_RELEASE_RID`).
+
 ## Migration bundle
 
 Production schema apply uses the EF Core migrations bundle (`dotnet ef migrations bundle`) produced by `create-migration-bundle.sh`. Local Development may continue using:

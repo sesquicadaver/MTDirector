@@ -21,7 +21,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- Documentation purge (2026-08-28): archived implemented `next-1`/`next-2` → `docs/archive/design-notes/`; compacted obsolete ROADMAP §3 strikethrough queue + §7 open checklist; local `bin`/`obj` cleaned (gitignored).
+- Documentation purge (2026-08-28): removed implemented `next-1`/`next-2` design notes (no archive retained); compacted obsolete ROADMAP §3 strikethrough queue + §7 open checklist; local `bin`/`obj` cleaned (gitignored).
+- Added operator HOWTO: [`docs/howto/build-and-run.md`](docs/howto/build-and-run.md) (Linux / Windows build, package, run).
 - Documentation sync (2026-08-28): service docs / README / readiness / ops manuals aligned to `main` @ Add Router (`985f303`); §3 remains empty.
 - **P2-11** (#297) **DONE** (2026-08-28): write-path pilot Living Spec + runbook — **P2 write-path tranche CLOSED**.
 - Documentation sync (2026-08-28): queue after P2-11 — **§3 empty** (no NEXT).

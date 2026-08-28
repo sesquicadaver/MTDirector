@@ -1940,7 +1940,7 @@ dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~MvpRelea
 
 ## Living Specification — path-class E2E / drift (N1-07 / **MVP CLOSED**)
 
-Issue Set N1-07 + archived design note [`docs/archive/design-notes/next-1-packet-path.md`](../archive/design-notes/next-1-packet-path.md). **MVP CLOSED**. Live CHR matrix OFF — scripted topology/analysis/drift fixtures only.
+Issue Set N1-07 + Living Spec `PathClassE2EDriftLivingSpecTests`. **MVP CLOSED**. Live CHR matrix OFF — scripted topology/analysis/drift fixtures only.
 
 | AC / вимога | Модуль | Тест |
 |-------------|--------|------|

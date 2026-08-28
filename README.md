@@ -20,10 +20,10 @@ Acceptance: [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md). 
 
 ## Швидкий старт
 
-1. [`docs/development/local-environment.md`](docs/development/local-environment.md)
-2. [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md) — Desktop **Add router** або gRPC
-3. [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) — lab read/write gates
-4. [`docs/development/testing.md`](docs/development/testing.md)
+1. [`docs/howto/build-and-run.md`](docs/howto/build-and-run.md) — збірка / запуск Linux і Windows
+2. [`docs/development/local-environment.md`](docs/development/local-environment.md) — деталі Dev PostgreSQL
+3. [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md) — Desktop **Add router** або gRPC
+4. [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) — lab read/write gates
 5. Architecture: [`docs/architecture/overview.md`](docs/architecture/overview.md)
 
 Повний індекс документації: [`docs/README.md`](docs/README.md).
