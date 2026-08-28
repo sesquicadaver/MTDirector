@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **P2-10** (#296) **IN PROGRESS**: `AddRouterOsWriteServices` + `Mfc:RouterOs:WriteEnabled` fail-closed DI gate.
 - **P2-09** (#295) **DONE** (2026-08-28): production `RouterOsWatchdogResidueCleanupPort`; **NEXT = P2-10** (#296).
 - Documentation sync (2026-08-28): queue after P2-09 merge — **NEXT → P2-10** (#296).
 - **P2-08** (#294) **DONE** (2026-08-26): production `RouterOsDeploymentRuntime`.
@@ -20,6 +21,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Write-path RouterOS DI gate (P2-10 / #296): `AddRouterOsWriteServices` + `Mfc:RouterOs:WriteEnabled` (fail-closed default); wires onboarding/deploy/watchdog residue production ports; Living Spec `WritePathReadinessLivingSpecTests`.
 - Production `RouterOsWatchdogResidueCleanupPort` (P2-09 / #295): allowlisted `/system/script|scheduler` residue remove; Living Spec `RouterOsWatchdogResidueCleanupLivingSpecTests`. Write-path DI gate remains P2-10.
 - Production `RouterOsDeploymentRuntime` (P2-08 / #294): live API-SSL deployment sessions over M4 use cases; Living Spec `RouterOsDeploymentRuntimeLivingSpecTests`. Write-path DI gate remains P2-10.
 - Production `RouterOsOnboardingRuntime` (P2-07 / #293): live API-SSL onboarding sessions over closed writers; Living Spec `RouterOsOnboardingRuntimeLivingSpecTests`. Write-path DI gate remains P2-10.

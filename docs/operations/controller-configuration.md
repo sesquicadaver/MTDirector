@@ -23,21 +23,36 @@ Configuration sources (highest wins last):
 
 ## RouterOS production ports (P2 pilot)
 
-Controller registers **fail-closed** stubs by default (`Mfc:RouterOs:Enabled=false`). Set **`Enabled=true`** for production read/capture adapters (read-only pilot).
+Controller registers **fail-closed** stubs by default (`Mfc:RouterOs:Enabled=false`, `Mfc:RouterOs:WriteEnabled=false`).
+
+### Read path (`RouterOs:Enabled`)
+
+Set **`Enabled=true`** for production read/capture adapters (read-only pilot).
 
 | Port | Default (CI / Development) | Production (`RouterOs:Enabled=true`) |
 |------|----------------------------|--------------------------------------|
 | `IRouterOsReadPort` | `ProbeOnlyRouterOsReadPort` | `RouterOsReadPort` |
 | `ISnapshotCapturePort` | `NotConfiguredSnapshotCapturePort` | `RouterOsSnapshotCapturePort` |
 
-Registration: `AddMfcRouterOs(IConfiguration)` in `Program.cs` (or explicit `AddRouterOsProductionServices()` for tests).
+### Write path (`RouterOs:WriteEnabled`)
+
+Set **`WriteEnabled=true`** for production onboarding / deployment / watchdog-residue adapters (P2-10). Independent of `Enabled`.
+
+| Port | Default (CI / Development) | Production (`RouterOs:WriteEnabled=true`) |
+|------|----------------------------|-------------------------------------------|
+| `IOnboardingRuntime` | `NotConfiguredOnboardingRuntime` | `RouterOsOnboardingRuntime` |
+| `IDeploymentRuntime` | `NotConfiguredDeploymentRuntime` | `RouterOsDeploymentRuntime` |
+| `IWatchdogResidueCleanupPort` | `NotConfiguredWatchdogResidueCleanupPort` | `RouterOsWatchdogResidueCleanupPort` |
+
+Registration: `AddMfcRouterOs(IConfiguration)` in `Program.cs` (or explicit `AddRouterOsProductionServices()` / `AddRouterOsWriteServices()` for tests). `Program.cs` keeps `TryAdd` NotConfigured write stubs as fail-closed fallback when `WriteEnabled=false`.
 
 | Key | Purpose |
 |-----|---------|
 | `RouterOs:Enabled` | `false` by default; when `true`, registers production read/capture services |
+| `RouterOs:WriteEnabled` | `false` by default; when `true`, registers production write-path services (P2-10) |
 | `RouterOs:ProbeTimeoutSeconds` | Reserved bounded API-SSL probe timeout (1–600; default 30); connect timeout still comes from the device connection profile |
 
-With `RouterOs:Enabled=false` (default), `ValidateDeviceConnection` and `StartCapture` remain fail-closed on not-configured ports — CI behaviour unchanged.
+With both flags `false` (default), inventory probe/capture and write runtimes remain fail-closed — CI behaviour unchanged.
 
 Pilot checklist: [`pilot-runbook.md`](pilot-runbook.md).
 
