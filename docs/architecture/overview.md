@@ -1,6 +1,6 @@
 # Architecture overview
 
-**Release baseline:** `v0.2.0` + P2 read/write CLOSED + Desktop Add router ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)). **§3 queue empty.**
+**Release baseline:** `v0.2.0` + P2 read/write CLOSED + Desktop Add router ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)) + seed MikroTik neighbors ([#315](https://github.com/sesquicadaver/MTDirector/pull/315)). **§3 queue empty.**
 
 MTDirector (MikroTik Firewall Controller) is a **modular monolith**: one deployable Controller process, one Desktop client, and clear assembly boundaries.
 

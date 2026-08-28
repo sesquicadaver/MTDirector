@@ -9,7 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- Seed **MikroTik neighbor candidates** ([#314](https://github.com/sesquicadaver/MTDirector/issues/314)): allowlisted `/ip/neighbor/print` (`RosReadCommandId.IpNeighbors`); `ListNeighborCandidates` Inventory RPC + use case (MikroTik-only filter); Desktop Add Router Load/Apply pre-fill. No auto-register; no Desktop→RouterOS; distinct from M7.2 `/ipv6/neighbor`.
+- Seed **MikroTik neighbor candidates** ([#314](https://github.com/sesquicadaver/MTDirector/issues/314) / [#315](https://github.com/sesquicadaver/MTDirector/pull/315)): allowlisted `/ip/neighbor/print` (`RosReadCommandId.IpNeighbors`); `ListNeighborCandidates` Inventory RPC + use case (MikroTik-only filter); Desktop Add Router Load/Apply pre-fill. No auto-register; no Desktop→RouterOS; distinct from M7.2 `/ipv6/neighbor`.
 - Desktop **Add router** wizard ([#309](https://github.com/sesquicadaver/MTDirector/pull/309), 2026-08-28): Inventory panel Site→Node→Device registration + `UpdateDeviceConnection` (`AddRouterWizardViewModel`); Living Spec AC#2b + `AddRouterWizardViewModelTests`.
 - Write-path pilot runbook + Living Spec (P2-11 / #297): `docs/operations/pilot-runbook.md` onboarding→deploy→rollback checklist; `WritePathPilotLivingSpecTests` (NotConfigured vs production Start* DI). Closes P2 write-path tranche.
 - Write-path RouterOS DI gate (P2-10 / #296): `AddRouterOsWriteServices` + `Mfc:RouterOs:WriteEnabled` (fail-closed default); wires onboarding/deploy/watchdog residue production ports; Living Spec `WritePathReadinessLivingSpecTests`.
