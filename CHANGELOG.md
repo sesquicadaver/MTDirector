@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **P2-11** (#297) **IN PROGRESS**: write-path pilot Living Spec + `pilot-runbook.md` checklist (closes P2 write-path tranche).
 - **P2-10** (#296) **DONE** (2026-08-28): `AddRouterOsWriteServices` + `Mfc:RouterOs:WriteEnabled`; **NEXT = P2-11** (#297).
 - Documentation sync (2026-08-28): queue after P2-10 merge — **NEXT → P2-11** (#297).
 - **P2-09** (#295) **DONE** (2026-08-28): production `RouterOsWatchdogResidueCleanupPort`.
@@ -22,6 +23,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Write-path pilot runbook + Living Spec (P2-11 / #297): `docs/operations/pilot-runbook.md` onboarding→deploy→rollback checklist; `WritePathPilotLivingSpecTests` (NotConfigured vs production Start* DI). Closes P2 write-path tranche.
 - Write-path RouterOS DI gate (P2-10 / #296): `AddRouterOsWriteServices` + `Mfc:RouterOs:WriteEnabled` (fail-closed default); wires onboarding/deploy/watchdog residue production ports; Living Spec `WritePathReadinessLivingSpecTests`.
 - Production `RouterOsWatchdogResidueCleanupPort` (P2-09 / #295): allowlisted `/system/script|scheduler` residue remove; Living Spec `RouterOsWatchdogResidueCleanupLivingSpecTests`. Write-path DI gate remains P2-10.
 - Production `RouterOsDeploymentRuntime` (P2-08 / #294): live API-SSL deployment sessions over M4 use cases; Living Spec `RouterOsDeploymentRuntimeLivingSpecTests`. Write-path DI gate remains P2-10.
