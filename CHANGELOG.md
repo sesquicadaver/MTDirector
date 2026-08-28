@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **P2-09** (#295) **IN PROGRESS**: production `RouterOsWatchdogResidueCleanupPort`; DI remains fail-closed until P2-10.
 - **P2-08** (#294) **DONE** (2026-08-26): production `RouterOsDeploymentRuntime`; **NEXT = P2-09** (#295).
 - Documentation sync (2026-08-26): queue after P2-08 merge — **NEXT → P2-09** (#295).
 - **P2-07** (#293) **DONE** (2026-08-26): production `RouterOsOnboardingRuntime`.
@@ -18,6 +19,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Production `RouterOsWatchdogResidueCleanupPort` (P2-09 / #295): allowlisted `/system/script|scheduler` residue remove; Living Spec `RouterOsWatchdogResidueCleanupLivingSpecTests`. Write-path DI gate remains P2-10.
 - Production `RouterOsDeploymentRuntime` (P2-08 / #294): live API-SSL deployment sessions over M4 use cases; Living Spec `RouterOsDeploymentRuntimeLivingSpecTests`. Write-path DI gate remains P2-10.
 - Production `RouterOsOnboardingRuntime` (P2-07 / #293): live API-SSL onboarding sessions over closed writers; Living Spec `RouterOsOnboardingRuntimeLivingSpecTests`. Write-path DI gate remains P2-10.
 - Production RouterOS DI gate (P2-06 / #282): `AddMfcRouterOs` + `AddRouterOsProductionServices`; `Mfc:RouterOs:Enabled` fail-closed default; Living Spec `PilotReadinessLivingSpecTests`; read-only pilot runbook.

@@ -70,4 +70,8 @@ public static class AssemblyMarker
 
     /// <summary>Roots production deployment runtime (P2-08).</summary>
     public static Type DeploymentRuntimeAnchor { get; } = typeof(Deployment.RouterOsDeploymentRuntime);
+
+    /// <summary>Roots production watchdog residue cleanup port (P2-09).</summary>
+    public static Type WatchdogResidueCleanupPortAnchor { get; } =
+        typeof(Jobs.RouterOsWatchdogResidueCleanupPort);
 }
