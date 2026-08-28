@@ -9,8 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- **P2-10** (#296) **IN PROGRESS**: `AddRouterOsWriteServices` + `Mfc:RouterOs:WriteEnabled` fail-closed DI gate.
-- **P2-09** (#295) **DONE** (2026-08-28): production `RouterOsWatchdogResidueCleanupPort`; **NEXT = P2-10** (#296).
+- **P2-10** (#296) **DONE** (2026-08-28): `AddRouterOsWriteServices` + `Mfc:RouterOs:WriteEnabled`; **NEXT = P2-11** (#297).
+- Documentation sync (2026-08-28): queue after P2-10 merge — **NEXT → P2-11** (#297).
+- **P2-09** (#295) **DONE** (2026-08-28): production `RouterOsWatchdogResidueCleanupPort`.
 - Documentation sync (2026-08-28): queue after P2-09 merge — **NEXT → P2-10** (#296).
 - **P2-08** (#294) **DONE** (2026-08-26): production `RouterOsDeploymentRuntime`.
 - Documentation sync (2026-08-26): queue after P2-08 merge — **NEXT → P2-09** (#295).

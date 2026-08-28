@@ -1,9 +1,9 @@
 # MTDirector — ROADMAP реалізації v0.2
 
-**Дата оновлення:** 28 серпня 2026 (P2-09 DONE; **NEXT = P2-10**)
+**Дата оновлення:** 28 серпня 2026 (P2-10 DONE; **NEXT = P2-11**)
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** `v0.2.0` — M7.4 CLOSED; P2 read path CLOSED; **NEXT = P2-10** (#296)
+**Базовий коміт аудиту:** `v0.2.0` — M7.4 CLOSED; P2 read path CLOSED; **NEXT = P2-11** (#297)
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -55,12 +55,12 @@
 | M7 Post-MVP | 27 | 0 | 100% |
 | P2 Pilot (read path) | 3 | 0 | 100% |
 | Queue integrity + planning | 2 | 0 | TRACKER-01 + PLAN-01 DONE |
-| P2 Pilot (write path) | 3 | 2 | **NEXT = P2-10** (#296) |
+| P2 Pilot (write path) | 4 | 1 | **NEXT = P2-11** (#297) |
 | **Разом (код)** | **139** | **0** | MVP+M7+P2 read DONE |
-| **Разом (черга §3)** | **128** | **2** | P2-10…P2-11 open |
+| **Разом (черга §3)** | **128** | **1** | P2-11 open |
 
 MVP issues (109) = **109 done + 0 remaining** — **MVP CLOSED (100%)**.  
-M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** **M7.2-04 DONE. M7.2 CLOSED.** **M7.3-01 DONE.** **M7.3-02 DONE.** **M7.3-03 DONE.** **M7.3-04 DONE.** **M7.3-05 DONE.** **M7.3-06 DONE. M7.3 CLOSED.** **M7.4-01 DONE.** **M7.4-02 DONE.** **M7.4-03 DONE.** **M7.4-04 DONE.** **M7.4-05 DONE.** **M7.4-06 DONE. M7.4 CLOSED.** Post-MVP M7 = **0** open. Release **`v0.2.0`**. **P2 read path CLOSED** (P2-04…P2-06). **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **P2-07 DONE** (#293). **P2-08 DONE** (#294). **P2-09 DONE** (#295). **NEXT = P2-10** (#296).
+M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** **M7.2-04 DONE. M7.2 CLOSED.** **M7.3-01 DONE.** **M7.3-02 DONE.** **M7.3-03 DONE.** **M7.3-04 DONE.** **M7.3-05 DONE.** **M7.3-06 DONE. M7.3 CLOSED.** **M7.4-01 DONE.** **M7.4-02 DONE.** **M7.4-03 DONE.** **M7.4-04 DONE.** **M7.4-05 DONE.** **M7.4-06 DONE. M7.4 CLOSED.** Post-MVP M7 = **0** open. Release **`v0.2.0`**. **P2 read path CLOSED** (P2-04…P2-06). **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **P2-07 DONE** (#293). **P2-08 DONE** (#294). **P2-09 DONE** (#295). **P2-10 DONE** (#296). **NEXT = P2-11** (#297).
 Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий**; multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance **DONE**; **M4 CLOSED**; desired/committed/actual projection **готовий** (M6-01); managed drift detection **готовий** (M6-02); bounded operational jobs **готовий** (M6-03); Desktop MVP workflows **готовий** (M6-04); standalone/dual-stack E2E **готовий** (M6-05); multi-WAN E2E **готовий** (M6-06); VRRP/CRS E2E **готовий** (M6-07); security/backup/restore acceptance **готовий** (M6-08); MVP production acceptance **готовий** (M6-09); **M6 CLOSED**; path-class E2E/drift **готовий** (N1-07); **MVP CLOSED**; routing-assurance read allowlist **готовий** (M7.1-01); RoutingAssuranceState persistence **готовий** (M7.1-02); RouteResolutionTrace **готовий** (M7.1-03); ECMP ONE_OF sets **готовий** (M7.1-04); dynamic route origins **готовий** (M7.1-05); RouteExpectation evaluation **готовий** (M7.1-06); reverse-path symmetry **готовий** (M7.1-07); network path profile latency probes **готовий** (M7.1-08); routing configuration vs operational drift **готовий** (M7.1-09); routing assurance Desktop viewer **готовий** (M7.1-10); routing assurance CHR acceptance **готовий** (M7.1-11); endpoint attribution **готовий** (M7.2-01); endpoint presence **готовий** (M7.2-02); endpoint mobility **готовий** (M7.2-03); endpoint mobility CHR acceptance **готовий** (M7.2-04); incident signal ingress **готовий** (M7.3-01); active-state interval **готовий** (M7.3-02); session context **готовий** (M7.3-03); sensor correlation **готовий** (M7.3-04); assessment quality **готовий** (M7.3-05); incident assessment contract **готовий** (M7.3-06); incident deny overlay **готовий** (M7.4-01); response intent feasibility **готовий** (M7.4-02); overlay compile/deploy **готовий** (M7.4-03); TTL removal plan **готовий** (M7.4-04); RESPONSE_* feedback **готовий** (M7.4-05); incident response E2E **готовий** (M7.4-06); **M7.4 CLOSED**; Post-MVP M7 = **0** open; release tag **`v0.2.0`** (2026-08-24).
 
 ### 2.2 DONE (не в черзі)
@@ -448,10 +448,10 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | 128 | P2-07 | #293 | Production `RouterOsOnboardingRuntime` (`IOnboardingRuntime` over onboarding writers) → DONE |
 | 129 | P2-08 | #294 | Production `RouterOsDeploymentRuntime` (`IDeploymentRuntime` over deployment session + writers) → DONE |
 | 130 | P2-09 | #295 | Production `RouterOsWatchdogResidueCleanupPort` (bounded operational job cleanup on RouterOS) → DONE |
-| 131 | P2-10 | #296 | `AddRouterOsWriteServices` DI + `Mfc:RouterOs:WriteEnabled` gate (fail-closed default) |
+| 131 | P2-10 | #296 | `AddRouterOsWriteServices` DI + `Mfc:RouterOs:WriteEnabled` gate (fail-closed default) → DONE |
 | 132 | P2-11 | #297 | Write-path pilot Living Spec + runbook (onboarding → deploy → rollback on lab CHR) |
 
-**Кінець черги §3 (наразі):** **NEXT = P2-10** (#296). Лінійний ланцюжок: P2-10 → P2-11.
+**Кінець черги §3 (наразі):** **NEXT = P2-11** (#297). Лінійний ланцюжок: P2-11 (остання в §3.B7).
 
 ---
 
@@ -463,8 +463,8 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | Post-MVP M7 | 0 | **M7.4 CLOSED** |
 | P2 Pilot (read path) | 0 | **CLOSED** (P2-04…P2-06) |
 | Queue integrity + planning | 0 | TRACKER-01 + PLAN-01 **DONE** |
-| P2 Pilot (write path) | 2 | **NEXT = P2-10** (#296) |
-| **Нереалізовано (§3)** | **2** | P2-10…P2-11 |
+| P2 Pilot (write path) | 1 | **NEXT = P2-11** (#297) |
+| **Нереалізовано (§3)** | **1** | P2-11 |
 | DONE у коді (§2.2) | 139 | …+P2-06; release **`v0.2.0`** |
 
 GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale OPEN #91–#95, #125–#136 closed. Хвиля 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
@@ -576,8 +576,8 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 | Production onboarding runtime | P2-07 | `RouterOsOnboardingRuntime` over onboarding writers | **DONE** (#293) |
 | Production deployment runtime | P2-08 | `RouterOsDeploymentRuntime` over deployment session | **DONE** (#294) |
 | Watchdog residue cleanup | P2-09 | Production `RouterOsWatchdogResidueCleanupPort` | **DONE** (#295) |
-| Write-path DI gate | P2-10 | `AddRouterOsWriteServices` + `WriteEnabled` flag | **NEXT** (#296) |
-| Write-path pilot runbook | P2-11 | Living Spec + `pilot-runbook.md` write checklist | **OPEN** (#297) |
+| Write-path DI gate | P2-10 | `AddRouterOsWriteServices` + `WriteEnabled` flag | **DONE** (#296) |
+| Write-path pilot runbook | P2-11 | Living Spec + `pilot-runbook.md` write checklist | **NEXT** (#297) |
 
 Оновлювати рядок **Статус** і зсувати «NEXT» при закритті кожного issue з §3.
 
@@ -667,7 +667,8 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 66. ~~**P2-07** → [issue #293](https://github.com/sesquicadaver/MTDirector/issues/293).~~ → **DONE** (2026-08-26).
 67. ~~**P2-08** → [issue #294](https://github.com/sesquicadaver/MTDirector/issues/294).~~ → **DONE** (2026-08-26).
 68. ~~**P2-09** → [issue #295](https://github.com/sesquicadaver/MTDirector/issues/295).~~ → **DONE** (2026-08-28).
-69. **NEXT:** **P2-10** → [issue #296](https://github.com/sesquicadaver/MTDirector/issues/296) — `AddRouterOsWriteServices` + `WriteEnabled` gate.
+69. ~~**P2-10** → [issue #296](https://github.com/sesquicadaver/MTDirector/issues/296).~~ → **DONE** (2026-08-28).
+70. **NEXT:** **P2-11** → [issue #297](https://github.com/sesquicadaver/MTDirector/issues/297) — write-path pilot Living Spec + runbook.
 
 Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
