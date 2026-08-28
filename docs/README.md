@@ -69,3 +69,9 @@ Authoritative ТЗ and Issue Sets live in the repository root and are indexed in
 |------|---------|
 | [`testlab/postgres/compose.yml`](../testlab/postgres/compose.yml) | Local PostgreSQL |
 | [`testlab/chr/README.md`](../testlab/chr/README.md) | CHR acceptance lab |
+
+## Archive
+
+| Path | Purpose |
+|------|---------|
+| [`archive/design-notes/`](archive/design-notes/) | Implemented post-MVP design notes (`next-1` / `next-2`) — not open ТЗ |

@@ -1,3 +1,5 @@
+> **ARCHIVED / IMPLEMENTED** — next-1 (packet-path / N1). Не відкритий блок ТЗ. Див. [`README.md`](README.md). Оригінальний шлях у корені видалено.
+
 Зафіксовано. Контейнери, VLAN, VETH, bridge, VRF та hardware offload мають входити до topology- і packet-path analysis, але не стають окремими керованими підсистемами.
 
 Оновлений шлях аналізу

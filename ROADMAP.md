@@ -1,6 +1,6 @@
 # MTDirector — ROADMAP реалізації v0.2
 
-**Дата оновлення:** 28 серпня 2026 (docs sync після Desktop Add router [#309]; P2-11 DONE; **§3 queue empty**)
+**Дата оновлення:** 28 серпня 2026 (purge obsolete §3 strikethrough + archive next-1/2; **§3 empty**)
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
 **Базовий коміт аудиту:** `main` @ `985f303` — M7.4 CLOSED; P2 read + write CLOSED; Desktop Add router; **§3 empty**
@@ -24,8 +24,8 @@
 | `M2–M6 Implementation Issue Set v0.1.md` | M2–M6 атомарні issues |
 | Профільні Specs M1–M5 | hash / adapter / policy / compiler / onboarding / deploy |
 | [`docs/specs/README.md`](docs/specs/README.md) | Індекс нормативних ТЗ (корінь репо) |
-| `next-1.md` | Packet-path (N1 weave у MVP) |
-| `next-2.md`, Network Rule M7.1 | **Post-MVP** |
+| [`docs/archive/design-notes/`](docs/archive/design-notes/) | Історичні design notes N1 / incident (реалізовано) |
+| `Network Rule…М7.1.md` | Routing assurance (M7.1) |
 
 **Spine:** `M0 → … → MVP CLOSED → M7.* → v0.2.0 → P2 (pilot RouterOS wiring) → …`
 
@@ -169,7 +169,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | N1-07 | #109 | Path-class E2E/drift Living Spec AC 1–12 + DriftFindingKind path-class kinds; **MVP CLOSED** |
 | M7.1-01 | #110 | Routing-assurance read allowlist (`RoutingAssuranceAllowlist` + `RoutingSettings` / filter-rule command ids) |
 
-### 2.3 Поточні прогалини (код)
+### 2.3 Зрізи коду (стан після P2 + Add router)
 
 | Збірка | Стан |
 |--------|------|
@@ -177,7 +177,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | `Mfc.Contracts` | `mfc.v1` inventory (+ workflow status / hash fields + `GetNodeWorkflow`) + snapshot/diff + `ZoneService` + `PolicyService` + `OnboardingService` + `DeploymentService` + `DriftService` + `AuditService` |
 | `Mfc.Application` | inventory/snapshot + … + `ValidateIncidentDenyOverlayUseCase` (M7.4-01) + `AssessResponseIntentFeasibilityUseCase` (M7.4-02) + `DeployIncidentDenyOverlayUseCase` (M7.4-03) + `PlanIncidentDenyOverlayRemovalUseCase` (M7.4-04) |
 | `Mfc.Controller` | health + `InventoryService` (incl. `GetNodeWorkflow`) + `SnapshotService` + `ZoneService` + `PolicyService` + `OnboardingService` + `DeploymentService` + `DriftService` + `AuditService` gRPC |
-| `Mfc.Desktop` | seven MVP modules (Inventory/Node/Snapshots/Policies/Operations/Drift/Audit); Contracts-only; cached inventory badge; no auto-fix drift |
+| `Mfc.Desktop` | seven MVP modules + Inventory **Add router** wizard; Contracts-only; cached inventory badge; no auto-fix drift |
 | Persistence | inventory + snapshot CAS + policy lifecycle + zones + approvals/bindings + filter_artifacts + onboarding_* + deployment_* + `device_hash_states` (M6-01) + `drift_events` (M6-02) + `routing_assurance_states` (M7.1-02) + `endpoint_presence_intervals` / `endpoint_routing_contexts` (M7.2-02) + audit read store (M6-04) |
 | `Mfc.Domain.Workflow` | `DeviceHashState` + classifier + `NodeWorkflowStatusProjector` (derived status; never persisted on Node) |
 | `Mfc.Domain.Endpoint` | `EndpointAttributionResolver` + snapshot facts + hop chain + certainty (M7.2-01) + `EndpointPresenceInterval` / `EndpointRoutingContext` + builders + migration open/close (M7.2-02) + `EndpointMobilityHandler` / `ResponseAssessment` (M7.2-03) + `ResponseAssessmentQualityEvaluator` (M7.3-05) |
@@ -189,273 +189,34 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 
 **M7.4 CLOSED.** Post-MVP M7 incident response pipeline complete (M7.4-01…06). **P2 pilot read-path** (P2-04…P2-06) — production RouterOS probe + capture + DI; see §3.B5.
 
-### 2.4 Операційний план до MVP CLOSED (2026-08-15)
+### 2.4 Операційний план до MVP CLOSED (історичний)
 
-Горизонт: **закрито** — **MVP CLOSED** після N1-07. Порядок був **строго лінійний** (§3). Далі лише Post-MVP M7 (§3.B).
+Горизонт **закрито** (2026-08-15…24): хвилі 0–7 (M2 analysis → M6 + N1-07) → **MVP CLOSED**. Далі M7 → `v0.2.0` → P2 read/write → **§3 empty**.
 
-**Хвиля 0 — гігієна трекера (DONE 2026-08-15):** CLOSED #52 M2-05, #53 M2-06, #56 M2-09, #67 N1-05. Не відкривати M3, доки черга A6 не закрита.
-
-**Хвиля 1 — M2 analysis (черга #44–#47):**
-
-| # | ID | GitHub | Результат | Жорсткі lock-и з аудиту |
-|--:|----|-------:|-----------|-------------------------|
-| ~~44~~ | ~~M2-10~~ | ~~#57~~ | ~~Structural + satisfiability blockers **до** sequence analysis~~ → DONE (`PolicyAnalysisEngine`; `RULE_*` compose gate; sequence not invoked on blockers) |
-| ~~45~~ | ~~M2-11~~ | ~~#58~~ | ~~Duplicate / shadow / overlap + bounded residual + witness~~ → DONE (`PolicySequenceAnalysis`; fail-closed equal; INDETERMINATE ≠ FULLY_SHADOWED) |
-| ~~46~~ | ~~M2-12~~ | ~~#59~~ | ~~Actual RouterOS filter-context (anchors, jumps, unmanaged)~~ → DONE (`ActualFilterAnalysis`; CFG limits; implicit accept ≠ managed default) |
-| ~~47~~ | ~~N1-04~~ | ~~#66~~ | ~~`PACKET_PATH_BYPASSES_IP_FIREWALL` / `PACKET_PATH_NOT_PROVEN`~~ → DONE (`PacketPathAnalysis`; HW/INDETERMINATE BLOCKERs; MIXED not those codes) |
-
-**Хвиля 2 — M2 safety (черга #48–#51):** ~~M2-13 management-path (#60)~~ → ~~M2-14 VRRP/multi-WAN/RAW/NAT deps (#61)~~ → ~~M2-15 FastTrack (#62)~~ → ~~M2-16 tests/diff/risk (#63)~~. Усі risk:high, крім M2-16.
-
-**Хвиля 3 — M2 CLOSED (черга #52–#53):** ~~M2-17 approval + desired-binding (#64)~~ → ~~M2-18 Desktop authoring/review (#65)~~ → **M2 CLOSED**.
-
-**Хвиля 4 — M3 Compiler (черга #54–#61, #68–#75):** артефакт → namespace → address-lists → zones/services → matchers → FastTrack/terminal → per-Device orchestration → **M3 CLOSED**. Заборона: compile без актуального analysis (§6).
-
-**Хвиля 5 — M5 Onboarding перед M4 (черга #62–#71, #76–#85):** domain → prerequisites → guard → anchor plan → write adapter → scheduler/watchdog → execute → rollback → API/Desktop → **M5 CLOSED**.
-
-**Хвиля 6 — M4 Safe deploy + N1-06 (черга #72–#85, #86–#99):** N1-06 блокує deploy при packet-path blockers. Далі plan/writer/staging/watchdog/VRRP/rollback/API → **M4 CLOSED**. Заборона: Safe Mode замість watchdog; partial VRRP.
-
-**Хвиля 7 — M6 E2E + N1-07 → MVP CLOSED (черга #86–#95, #100–#109):** desired/committed/actual → drift → jobs → Desktop → CHR suites (standalone, multi-WAN, VRRP/CRS) → security/backup → ~~**M6-09 M6 CLOSED**~~ → ~~**N1-07 → MVP CLOSED**~~. Live CHR matrix увімкнути лише на isolated runner (зараз OFF).
-
-**Поза планом до MVP CLOSED:** ~~M7.* (#110–#136)~~ → тепер **єдина відкрита черга** (§3.B).
+Детальний strikethrough план хвиль і відкритих кроків прибрано (див. git history). Актуальний стан: §3 + [`docs/release/readiness.md`](docs/release/readiness.md).
 
 **DoD кожного PR:** AC issue set; Living Spec рядок; CHANGELOG; CI Linux validate + Windows Desktop; без `pass`/`NotImplemented`; Domain/App ↛ RouterOs.
 
 ---
 
-## 3. Лінійна черга нереалізованого (єдиний порядок)
+## 3. Лінійна черга (стан)
 
-Виконувати **строго зверху вниз**. Колонка `#` — позиція в черзі.  
-Залежності задовольняються попередніми рядками (топологічний порядок).  
-Паралель **не** відкривати, доки не змінено цю політику окремим рішенням.
+**Статус:** черга **порожня** (`NEXT = none`). Нові атомарні задачі лише через PLAN issue ([`CONTRIBUTING.md`](CONTRIBUTING.md)).
 
-### 3.A — До MVP CLOSED (95 атомарних задач)
+Повна історія закритих рядків §3.A / §3.B (M0–M6 + N1 + M7 + P2) збережена в git history (до docs-purge) і зведена в [`ISSUES.md`](ISSUES.md) + §2.2 DONE. Детальний strikethrough-аудит черги більше не дублюється тут.
 
-#### Блок A1 — M1 Application + RouterOS protocol
+| Сегмент | Підсумок |
+|---------|----------|
+| §3.A До MVP CLOSED | 95 атомарних задач — **усі DONE** → **MVP CLOSED** (N1-07) |
+| §3.B1–B4 Post-MVP M7 | 27 задач — **усі DONE** → **M7.4 CLOSED** / `v0.2.0` |
+| §3.B5 P2 read path | P2-04…P2-06 — **CLOSED** |
+| §3.B6 Tracker / plan | TRACKER-01 (#289), PLAN-01 (#290) — **DONE** |
+| §3.B7 P2 write path | P2-07…P2-11 — **CLOSED** |
+| Поза чергою | Desktop Add router — [PR #309](https://github.com/sesquicadaver/MTDirector/pull/309) |
 
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| ~~1~~ | ~~M1-05~~ | ~~#15~~ | ~~Define read-only application ports and use cases~~ → §2.2 DONE |
-| ~~2~~ | ~~M1-06~~ | ~~#16~~ | ~~Implement RouterOS word-length codec~~ → §2.2 DONE |
-| ~~3~~ | ~~M1-07~~ | ~~#17~~ | ~~Implement RouterOS sentence encoder and parser~~ → §2.2 DONE |
-| ~~4~~ | ~~M1-08~~ | ~~#18~~ | ~~Implement asynchronous tagged RouterOS session~~ → §2.2 DONE |
-| ~~5~~ | ~~M1-09~~ | ~~#19~~ | ~~Implement authenticated TLS RouterOS connection~~ → §2.2 DONE |
-| ~~6~~ | ~~M1-10~~ | ~~#20~~ | ~~Add typed allowlisted RouterOS read executor~~ → §2.2 DONE |
-
-#### Блок A2 — M1 Discovery
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| ~~7~~ | ~~M1-11~~ | ~~#21~~ | ~~Implement system and service discovery~~ → §2.2 DONE |
-| ~~8~~ | ~~M1-12~~ | ~~#22~~ | ~~Implement interface and address discovery~~ → §2.2 DONE |
-| ~~9~~ | ~~M1-13~~ | ~~#23~~ | ~~Implement firewall and address-list discovery~~ → §2.2 DONE |
-| ~~10~~ | ~~M1-14~~ | ~~#24~~ | ~~Implement routing and firewall-dependency discovery~~ → §2.2 DONE |
-| ~~11~~ | ~~M1-15~~ | ~~#25~~ | ~~Implement VRRP discovery~~ → §2.2 DONE |
-| ~~12~~ | ~~M1-16~~ | ~~#26~~ | ~~Implement bridge, VLAN and switch metadata discovery~~ → §2.2 DONE |
-
-#### Блок A3 — N1 (M1 weave) + capabilities / topology
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| ~~13~~ | ~~N1-01~~ | ~~#45~~ | ~~Extend read allowlist: `/container`, `/app`, `/interface/veth`, `/ip/vrf`~~ → §2.2 DONE |
-| ~~14~~ | ~~M1-17~~ | ~~#27~~ | ~~Implement RouterOS capability profile~~ → §2.2 DONE |
-| ~~15~~ | ~~N1-02~~ | ~~#46~~ | ~~Project Container/App→VETH→Bridge→VLAN→VRF topology graph~~ → §2.2 DONE |
-| ~~16~~ | ~~N1-03~~ | ~~#47~~ | ~~Classify packet path CPU / HW-offload / MIXED / INDETERMINATE~~ → §2.2 DONE |
-| ~~17~~ | ~~M1-18~~ | ~~#28~~ | ~~Implement node topology validation~~ → §2.2 DONE |
-
-#### Блок A4 — M1 Snapshots / canonical / diff
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| ~~18~~ | ~~M1-19~~ | ~~#29~~ | ~~Implement stable-read snapshot coordinator~~ → §2.2 DONE |
-| ~~19~~ | ~~M1-20~~ | ~~#30~~ | ~~Implement raw snapshot assembly and redaction~~ → §2.2 DONE |
-| ~~20~~ | ~~M1-21~~ | ~~#31~~ | ~~Implement canonicalization primitives~~ → §2.2 DONE |
-| ~~21~~ | ~~M1-22~~ | ~~#32~~ | ~~Implement menu-specific canonical snapshots~~ → §2.2 DONE |
-| ~~22~~ | ~~M1-23~~ | ~~#33~~ | ~~Persist snapshots and detect identical captures~~ → §2.2 DONE |
-| ~~23~~ | ~~M1-24~~ | ~~#34~~ | ~~Implement deterministic semantic snapshot diff~~ → §2.2 DONE |
-
-#### Блок A5 — M1 API / Desktop / acceptance gate
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| ~~24~~ | ~~M1-25~~ | ~~#35~~ | ~~Add inventory and discovery gRPC services~~ → §2.2 DONE (VS §9.2 names; Issue Set DiscoverDevice→ValidateDeviceConnection) |
-| ~~25~~ | ~~M1-26~~ | ~~#36~~ | ~~Add snapshot and diff gRPC services~~ → §2.2 DONE (VS §9.3; Issue Set CaptureSnapshot→StartCapture, WatchSnapshotCapture→WatchCapture, ListSnapshots→ListCaptures; Diff = Canonical Spec §30) |
-| ~~26~~ | ~~M1-27~~ | ~~#37~~ | ~~Add desktop inventory tree~~ → §2.2 DONE (`ListNodes` + Avalonia Site→Node→Device tree; cached single-flight refresh) |
-| ~~27~~ | ~~M1-28~~ | ~~#38~~ | ~~Add desktop snapshot viewer~~ → §2.2 DONE (read-only Avalonia viewer; `SnapshotSummary.sections`; sanitized export) |
-| ~~28~~ | ~~M1-29~~ | ~~#39~~ | ~~Add desktop semantic diff viewer~~ → §2.2 DONE (CompareSnapshots UI; section groups; no local recompute) |
-| ~~29~~ | ~~M1-30~~ | ~~#40~~ | ~~Add standalone CHR vertical-slice acceptance test~~ → §2.2 DONE |
-| ~~30~~ | ~~M1-31~~ | ~~#41~~ | ~~Add multi-WAN CHR vertical-slice acceptance test~~ → §2.2 DONE |
-| ~~31~~ | ~~M1-32~~ | ~~#42~~ | ~~Add VRRP CHR vertical-slice acceptance test~~ → §2.2 DONE |
-| ~~32~~ | ~~M1-33~~ | ~~#43~~ | ~~Add protocol and snapshot fault-injection suite~~ → §2.2 DONE |
-| ~~33~~ | ~~M1-34~~ | ~~#44~~ | ~~Complete read-only vertical-slice acceptance (**M1 CLOSED**)~~ → §2.2 DONE |
-
-#### Блок A6 — M2 Policy core (+ N1)
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| ~~34~~ | ~~M2-01~~ | ~~#48~~ | ~~Implement policy document lifecycle and persistence~~ → §2.2 DONE |
-| ~~35~~ | ~~M2-02~~ | ~~#49~~ | ~~Implement fixed Policy Pipeline v1 and chain contracts~~ → §2.2 DONE |
-| ~~36~~ | ~~M2-03~~ | ~~#50~~ | ~~Implement address objects and selectors~~ → §2.2 DONE |
-| ~~37~~ | ~~M2-04~~ | ~~#51~~ | ~~Implement service objects and selectors~~ → §2.2 DONE |
-| ~~38~~ | ~~M2-05~~ | ~~#52~~ | ~~Implement logical zones and Node bindings~~ → §2.2 (catalog SoT + ZoneService + Desktop; AC#10–11 → M2-06) |
-| ~~39~~ | ~~N1-05~~ | ~~#67~~ | ~~Bind zones to VETH/VLAN/bridge without ContainerPolicy entities~~ → §2.2 (canonical membership + marker expand) |
-| ~~40~~ | ~~M2-06~~ | ~~#53~~ | ~~Implement policy rules, predicates and effects~~ → DONE (typed rules + App CAS + PolicyService + thin Desktop) |
-| ~~41~~ | ~~M2-07~~ | ~~#54~~ | ~~Implement deterministic policy composition~~ → DONE (logical compose + `ComposeEffectivePolicy` + IncrementalHash) |
-| ~~42~~ | ~~M2-08~~ | ~~#55~~ | ~~Implement temporary deny-stage exceptions~~ → DONE (typed metadata + compose insert + exception hash slot) |
-| ~~43~~ | ~~M2-09~~ | ~~#56~~ | ~~Implement normalized predicate algebra~~ → DONE (bounded cubes + exception interval proofs) |
-| ~~44~~ | ~~M2-10~~ | ~~#57~~ | ~~Implement structural and satisfiability analysis~~ → §2.2 DONE |
-| ~~45~~ | ~~M2-11~~ | ~~#58~~ | ~~Implement duplicate, shadow and overlap analysis~~ → §2.2 DONE |
-| ~~46~~ | ~~M2-12~~ | ~~#59~~ | ~~Implement actual RouterOS filter-context analysis~~ → §2.2 DONE |
-| ~~47~~ | ~~N1-04~~ | ~~#66~~ | ~~Emit `PACKET_PATH_BYPASSES_IP_FIREWALL` / `PACKET_PATH_NOT_PROVEN` blockers~~ → §2.2 DONE |
-| ~~48~~ | ~~M2-13~~ | ~~#60~~ | ~~Implement management-path safety validation~~ → §2.2 DONE (`ManagementPathAnalysis`; API-SSL/source/guard; SYSTEM tests) |
-| ~~49~~ | ~~M2-14~~ | ~~#61~~ | ~~Implement topology and dependency safety validation~~ → §2.2 DONE (`TopologyDependencyAnalysis`; VRRP/multi-WAN/RAW/NAT/Mangle/SWITCH) |
-| ~~50~~ | ~~M2-15~~ | ~~#62~~ | ~~Implement FastTrack policy validation~~ → §2.2 DONE (`FastTrackAnalysis`; IPv4 FORWARD STATE_PRELUDE TCP/UDP; topology fail-closed; fallback flag; risk HIGH) |
-| ~~51~~ | ~~M2-16~~ | ~~#63~~ | ~~Implement policy tests, semantic diff and risk classification~~ → §2.2 DONE (`PolicyEvidenceAnalysis`; MANAGED_ONLY/NODE_EFFECTIVE; UUID diff; risk floor; 6-arg hash isolation) |
-| ~~52~~ | ~~M2-17~~ | ~~#64~~ | ~~Implement approval and desired-binding workflow~~ → §2.2 DONE (`PolicyApprovalGate`; immutable analysis run; binding ≠ deploy) |
-| ~~53~~ | ~~M2-18~~ | ~~#65~~ | ~~Add policy authoring and review desktop workflow (**M2 CLOSED**)~~ → §2.2 DONE |
-
-#### Блок A7 — M3 Compiler
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| ~~54~~ | ~~M3-01~~ | ~~#68~~ | ~~Implement RouterOS filter artifact model~~ → DONE (`RouterOsFilterArtifact`; MFC-CJ1; golden vectors) |
-| ~~55~~ | ~~M3-02~~ | ~~#69~~ | ~~Implement managed chain namespace and layout~~ → DONE (`ManagedChainNamespace` + `ManagedChainLayoutBuilder`) |
-| ~~56~~ | ~~M3-03~~ | ~~#70~~ | ~~Compile content-addressed address lists~~ → DONE (`AddressListCompileSession` + `AddressPrefixEncoder`; intern; limits) |
-| ~~57~~ | ~~M3-04~~ | ~~#71~~ | ~~Compile zones and service variants~~ → DONE (`ZoneServiceVariantCompiler` + `PortMatcherEncoder`) |
-| ~~58~~ | ~~M3-05~~ | ~~#72~~ | ~~Compile supported matchers and regular effects~~ → DONE (`FilterMatcherEffectCompiler` + `RouterOsCompilerProfile`) |
-| ~~59~~ | ~~M3-06~~ | ~~#73~~ | ~~Compile FastTrack and terminal rules~~ → DONE (FastTrack pair + `ChainTerminalCompiler`) |
-| ~~60~~ | ~~M3-07~~ | ~~#74~~ | ~~Implement per-Device compiler orchestration and artifact storage~~ → DONE (`DeviceFilterCompiler` + `filter_artifacts`) |
-| ~~61~~ | ~~M3-08~~ | ~~#75~~ | ~~Complete compiler integration and acceptance (**M3 CLOSED**)~~ → DONE (`DeviceFilterCompilerAcceptanceTests` + Switch FORWARD gate) |
-
-#### Блок A8 — M5 Onboarding (перед M4)
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| ~~62~~ | ~~M5-01~~ | ~~#76~~ | ~~Implement onboarding domain model and persistence~~ → DONE (plans/ops/steps + `ManagementState` + `OnboardingSchemaM501`) |
-| ~~63~~ | ~~M5-02~~ | ~~#77~~ | ~~Implement onboarding prerequisite validation~~ → DONE (`OnboardingPrerequisiteValidator` + Living Spec AC 1–12) |
-| ~~64~~ | ~~M5-03~~ | ~~#78~~ | ~~Implement management guard verification~~ → DONE (`GuardProfile` + `OnboardingGuardVerifier` + Living Spec AC 1–10) |
-| ~~65~~ | ~~M5-04~~ | ~~#79~~ | ~~Implement explicit anchor placement planning~~ → DONE (`AnchorPlacementPlanner` + Living Spec AC 1–10) |
-| ~~66~~ | ~~M5-05~~ | ~~#80~~ | ~~Implement onboarding write adapter and bootstrap artifact~~ → DONE (`OnboardingBootstrapWriter` + Living Spec AC 1–12) |
-| ~~67~~ | ~~M5-06~~ | ~~#81~~ | ~~Implement scheduler proof and onboarding watchdog~~ → DONE (`OnboardingWatchdogWriter` + Living Spec AC 1–12) |
-| ~~68~~ | ~~M5-07~~ | ~~#82~~ | ~~Implement onboarding execution and verification~~ → DONE (`ExecuteOnboardingBootstrapUseCase` + Living Spec AC 1–13) |
-| ~~69~~ | ~~M5-08~~ | ~~#83~~ | ~~Implement onboarding rollback and crash recovery~~ → DONE (`RollbackOnboardingBootstrapUseCase` + `RecoverOnboardingUseCase` + Spec §46 table) |
-| ~~70~~ | ~~M5-09~~ | ~~#84~~ | ~~Expose onboarding API and desktop workflow~~ → DONE (`OnboardingService` + Desktop panel; plan_hash; no script source) |
-| ~~71~~ | ~~M5-10~~ | ~~#85~~ | ~~Complete onboarding integration acceptance (**M5 CLOSED**)~~ → DONE (Living Spec AC 1–12 + testlab dual-stack/CRS + gRPC topology host) |
-
-#### Блок A9 — M4 Safe deployment (+ N1-06)
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| ~~72~~ | ~~M4-01~~ | ~~#86~~ | ~~Implement deployment plan, states and persistence~~ → DONE (`DeploymentPlan` + SM + lock + journal + `DeploymentSchemaM401`) |
-| ~~73~~ | ~~N1-06~~ | ~~#99~~ | ~~Block deploy when packet-path blockers present~~ → DONE (`DeploymentPacketPathGate` + PRECHECKING → BLOCKED) |
-| ~~74~~ | ~~M4-02~~ | ~~#87~~ | ~~Implement restricted deployment writer and managed-state reader~~ → DONE (`RouterOsDeploymentSession` + Living Spec AC 1–12) |
-| ~~75~~ | ~~M4-03~~ | ~~#88~~ | ~~Implement address-list create-or-verify staging~~ → DONE (`AddressListCreateOrVerify` + `StageAddressListUseCase`) |
-| ~~76~~ | ~~M4-04~~ | ~~#89~~ | ~~Implement detached chain staging and verification~~ → DONE (`FilterChainCreateOrVerify` + `StageDetachedChainsUseCase`) |
-| ~~77~~ | ~~M4-05~~ | ~~#90~~ | ~~Implement production rollback watchdog~~ → DONE (`DeploymentWatchdogScript` + `DeploymentWatchdogWriter`) |
-| ~~78~~ | ~~M4-06~~ | ~~#91~~ | ~~Implement transition-state validation and anchor activation~~ → DONE (`TransitionStateValidator` + `ActivateAnchorsUseCase`) |
-| ~~79~~ | ~~M4-07~~ | ~~#92~~ | ~~Implement deployment probes and post-activation verification~~ → DONE (`PostActivationVerification` + `VerifyDeploymentActivationUseCase`) |
-| ~~80~~ | ~~M4-08~~ | ~~#93~~ | ~~Implement standalone Node deployment coordinator~~ → DONE (`ExecuteStandaloneDeploymentUseCase`) |
-| ~~81~~ | ~~M4-09~~ | ~~#94~~ | ~~Implement multi-WAN deployment verification~~ → DONE (`VerifyMultiWanDeploymentUseCase`) |
-| ~~82~~ | ~~M4-10~~ | ~~#95~~ | ~~Implement VRRP deployment coordinator~~ → DONE (`ExecuteVrrpDeploymentUseCase`) |
-| ~~83~~ | ~~M4-11~~ | ~~#96~~ | ~~Implement rollback and crash recovery~~ → DONE (`RecoverDeploymentUseCase`) |
-| ~~84~~ | ~~M4-12~~ | ~~#97~~ | ~~Expose deployment API and desktop operation workflow~~ → DONE (`DeploymentService` + Desktop Deploy) |
-| ~~85~~ | ~~M4-13~~ | ~~#98~~ | ~~Complete deployment fault and security acceptance (**M4 CLOSED**)~~ → DONE (`DeploymentFaultSecurityAcceptanceLivingSpecTests` AC 1–13 all passed; `DeploymentAcceptanceHarness` shared infra) |
-
-#### Блок A10 — M6 E2E (+ N1-07) → MVP CLOSED
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| ~~86~~ | ~~M6-01~~ | ~~#100~~ | ~~Implement desired, committed and actual state projection~~ → DONE (`DeviceHashState` + projector + `device_hash_states` + Desktop hashes) |
-| ~~87~~ | ~~M6-02~~ | ~~#101~~ | ~~Implement managed drift detection~~ → DONE (`ManagedDriftDetector` + `drift_events` + deploy gate; no auto-repair) |
-| ~~88~~ | ~~N1-07~~ | ~~#109~~ | ~~E2E/drift acceptance for container/VLAN/VETH/HW path classes~~ → DONE (`PathClassE2EDriftLivingSpecTests` AC 1–12; path-class `DriftFindingKind` + `PathClassConfigDriftVoiding`; **MVP CLOSED**) |
-| ~~89~~ | ~~M6-03~~ | ~~#102~~ | ~~Implement bounded operational background jobs~~ → DONE (`OperationalJobSchedulerHostedService` + bounded queues; no broker) |
-| ~~90~~ | ~~M6-04~~ | ~~#103~~ | ~~Integrate final desktop workflows~~ → DONE (seven modules + Drift/Audit gRPC; Living Spec AC 1–12) |
-| ~~91~~ | ~~M6-05~~ | ~~#104~~ | ~~Complete standalone and dual-stack end-to-end acceptance~~ → DONE (Living Spec AC 1–10 + Integration inventory→capture→onboarding; Live CHR OFF) |
-| ~~92~~ | ~~M6-06~~ | ~~#105~~ | ~~Complete multi-WAN end-to-end acceptance~~ → DONE (Living Spec AC 1–10; scripted runtimes; Live CHR OFF) |
-| ~~93~~ | ~~M6-07~~ | ~~#106~~ | ~~Complete VRRP and CRS end-to-end acceptance~~ → DONE (Living Spec AC 1–11; scripted fixtures; Live CHR OFF) |
-| ~~94~~ | ~~M6-08~~ | ~~#107~~ | ~~Complete security, backup and restore acceptance~~ → DONE (Living Spec AC 1–10; Integration pg_dump/restore AC 11–14) |
-| ~~95~~ | ~~M6-09~~ | ~~#108~~ | ~~Complete MVP release acceptance (**M6 CLOSED**; MVP CLOSED after N1-07)~~ → DONE (`docs/release/*` + `scripts/release/*` + `MvpReleaseAcceptanceLivingSpecTests` AC 1–16) |
+**Кінець черги §3:** empty. Pilot: [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md).
 
 ---
-
-### 3.B — Post-MVP M7 (27 атомарних задач; після MVP CLOSED)
-
-#### Блок B1 — M7.1 Routing / path assurance
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| ~~96~~ | ~~M7.1-01~~ | ~~#110~~ | ~~Extend read allowlist: routing tables/settings/rules, VRF, route filters~~ → DONE (`RoutingAssuranceAllowlist` + `RoutingSettings` / `RoutingFilterRules` / `RoutingFilterSelectRules`; no routing writes) |
-| ~~97~~ | ~~M7.1-02~~ | ~~#111~~ | ~~Persist RoutingAssuranceState (config + operational)~~ → DONE (`routing_assurance_states` + Domain RoutingAssuranceState; config≠ops hashes; no routing writes) |
-| ~~98~~ | ~~M7.1-03~~ | ~~#112~~ | ~~Implement RouteResolutionTrace~~ → DONE (`RouteResolutionTraceEngine` + Living Spec AC 1–10; upsert computes traces from `TraceQueries`; no routing writes) |
-| ~~99~~ | ~~M7.1-04~~ | ~~#113~~ | ~~Model ECMP as ONE_OF bounded next-hop sets~~ → DONE (`EcmpRouteSet` + `EcmpRouteSetBuilder`; Living Spec AC 1–9; persistence round-trip; no routing writes) |
-| ~~100~~ | ~~M7.1-05~~ | ~~#114~~ | ~~Analyze dynamic route origins (read-only)~~ → DONE (`RouteOriginClassifier` + `DynamicRouteOriginAnalysis`; Living Spec AC 1–8; operational snapshot persistence; no routing writes) |
-| ~~101~~ | ~~M7.1-06~~ | ~~#115~~ | ~~Implement RouteExpectation declarations and evaluation~~ → DONE (`RouteExpectationEvaluator` + `RouteExpectationCodes`; upsert evaluates expectations against traces; Living Spec AC 1–10; no routing writes) |
-| ~~102~~ | ~~M7.1-07~~ | ~~#116~~ | ~~Implement reverse-path symmetry analysis~~ → DONE (`ReversePathSymmetryAnalyzer` + `ReversePathSymmetryResults`; table/VRF/egress/decision compare; `RouteResolutionTrace.ReversePathSymmetry`; evaluator delegates; Living Spec AC 1–8; no routing writes) |
-| ~~103~~ | ~~M7.1-08~~ | ~~#117~~ | ~~Bind NetworkPathProfile latency probes to routing result~~ → DONE (`NetworkPathProfileBinder` + `NetworkPathLatencyEvaluator`; trace-bound probes; `ROUTE_PATH_CHANGED_WITH_LATENCY_REGRESSION`; Living Spec AC 1–8; no routing writes) |
-| ~~104~~ | ~~M7.1-09~~ | ~~#118~~ | ~~Classify routing configuration vs operational drift~~ → DONE (`RoutingDriftAnalyzer` + `RoutingDriftClassifier` + `RoutingDriftCodes`; upsert auto-merge drift findings; Living Spec AC 1–8; no routing writes) |
-| ~~105~~ | ~~M7.1-10~~ | ~~#119~~ | ~~Desktop: routing assurance / expectation viewers~~ → DONE (`RoutingAssuranceService` gRPC + `RoutingAssuranceViewModel` Node sub-panel; bounded trace summaries; Living Spec AC 1–8; read-only Desktop) |
-| ~~106~~ | ~~M7.1-11~~ | ~~#120~~ | ~~CHR acceptance: multi-WAN recursive, ECMP, VRF~~ → DONE (`RoutingAssuranceChrAcceptanceLivingSpecTests` AC 1–10; scripted upsert chain; testlab skeleton; live CHR OFF; **M7.1 CLOSED**) |
-
-#### Блок B2 — M7.2 Endpoint presence
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| 107 | M7.2-01 | #121 | Endpoint attribution resolver → DONE (`EndpointAttributionResolver` + `EndpointAttributionAllowlist`; Living Spec AC 1–8; no routing/firewall writes) |
-| 108 | M7.2-02 | #122 | EndpointPresenceInterval and EndpointRoutingContext → DONE (`EndpointPresenceInterval` + `EndpointRoutingContext` + EF persistence; Living Spec AC 1–8; no routing writes) |
-| 109 | M7.2-03 | #123 | Mobility: invalidate assessment, recompute traces → DONE (`EndpointMobilityHandler` + `ResponseAssessment`; Living Spec AC 1–8; no auto-deploy) |
-| 110 | M7.2-04 | #124 | CHR/fixture acceptance for migration → DONE (`EndpointMobilityChrAcceptanceLivingSpecTests` AC 1–10; testlab skeleton; **M7.2 CLOSED**) |
-
-#### Блок B3 — M7.3 External correlation contract
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| 111 | M7.3-01 | #125 | Define IncidentSignal ingress contract → DONE (`IncidentSignal` + `IncidentSignalIngressGuard` + `IngestIncidentSignalUseCase`; Living Spec AC 1–10; no raw syslog store) |
-| 112 | M7.3-02 | #126 | Historical ActiveStateInterval resolver by occurred_at → DONE (`ActiveStateIntervalResolver` + `ResolveActiveStateIntervalUseCase`; Living Spec AC 1–10; scripted timeline only) |
-| 113 | M7.3-03 | #127 | On-demand connection-tracking / session context → DONE (`IncidentSessionContextResolver` + `ConnectionTrackingAllowlist`; Living Spec AC 1–10; on-demand only) |
-| 114 | M7.3-04 | #128 | Correlate sensor observation with RouteResolutionTrace → DONE (`SensorObservationCorrelationResolver` + `CorrelateSensorObservationUseCase`; Living Spec AC 1–10; scripted trace only) |
-| 115 | M7.3-05 | #129 | Emit visibility_status / confidence on every assessment → DONE (`ResponseAssessmentQualityEvaluator` + `EvaluateResponseAssessmentQualityUseCase`; Living Spec AC 1–10; persistence columns) |
-| 116 | M7.3-06 | #130 | Contract tests IncidentSignal ↔ ResponseAssessment → DONE (`IncidentResponseAssessmentContract` + `BindIncidentResponseAssessmentUseCase`; Living Spec AC 1–10; **M7.3 CLOSED**) |
-
-#### Блок B4 — M7.4 Incident enforcement
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| 117 | M7.4-01 | #131 | Add INCIDENT_PRE_STATE_DENY / INCIDENT_DENY_OVERLAY to pipeline → DONE (`PolicyPipelineStage.IncidentPreStateDeny` + `PolicyKind.IncidentDenyOverlay` + `IncidentDenyOverlayMetadata`; Living Spec AC 1–10) |
-| 118 | M7.4-02 | #132 | ResponseIntent → ResponseAssessment feasibility matrix → DONE (`ResponseIntent` + `ResponseIntentFeasibilityMatrix`; Living Spec AC 1–10) |
-| 119 | M7.4-03 | #133 | Compile/deploy overlay via existing M3/M4 → DONE (`IncidentDenyOverlayCompileMerge` + `DeployIncidentDenyOverlayUseCase`; Living Spec AC 1–10) |
-| 120 | M7.4-04 | #134 | TTL expiry → mandatory removal plan → DONE (`ExpireIncidentDenyOverlayBindingUseCase` + `PlanIncidentDenyOverlayRemovalUseCase`; Living Spec AC 1–11) |
-| 121 | M7.4-05 | #135 | Feedback events RESPONSE_* to external complex → DONE (`ResponseFeedbackEvent` + emit/list + delivery port; Living Spec AC 1–10) |
-| 122 | M7.4-06 | #136 | E2E: enforceable / not-enforceable / rollback / residual risk → DONE (`IncidentResponseE2ELivingSpecTests` AC 1–10; **M7.4 CLOSED**) |
-
-#### Блок B5 — P2 Pilot RouterOS read path (post-`v0.2.0`)
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| 123 | P2-04 | #280 | Production `RouterOsReadPort` (live API-SSL probe; replace `ProbeOnlyRouterOsReadPort`) |
-| 124 | P2-05 | #281 | Production `RouterOsSnapshotCapturePort` (stable-read + canonical capture; replace `NotConfiguredSnapshotCapturePort`) |
-| 125 | P2-06 | #282 | `AddRouterOsProductionServices` DI + `Mfc:RouterOs:Enabled` gate + read-only pilot Living Spec → DONE |
-
-#### Блок B6 — Queue integrity + P2 write-path planning
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| 126 | TRACKER-01 | #289 | Close stale OPEN on DONE-code (#83, #91–#95, #125–#136); align GitHub with ROADMAP §2.2 → DONE |
-| 127 | PLAN-01 | #290 | Formalize P2 write-path atomic queue (P2-07+) in ROADMAP §3 + ISSUES.md + GitHub issues → DONE |
-
-#### Блок B7 — P2 Pilot RouterOS write path
-
-| # | ID | GitHub | Задача |
-|--:|----|-------:|--------|
-| 128 | P2-07 | #293 | Production `RouterOsOnboardingRuntime` (`IOnboardingRuntime` over onboarding writers) → DONE |
-| 129 | P2-08 | #294 | Production `RouterOsDeploymentRuntime` (`IDeploymentRuntime` over deployment session + writers) → DONE |
-| 130 | P2-09 | #295 | Production `RouterOsWatchdogResidueCleanupPort` (bounded operational job cleanup on RouterOS) → DONE |
-| 131 | P2-10 | #296 | `AddRouterOsWriteServices` DI + `Mfc:RouterOs:WriteEnabled` gate (fail-closed default) → DONE |
-| 132 | P2-11 | #297 | Write-path pilot Living Spec (`WritePathPilotLivingSpecTests`) + runbook (onboarding → deploy → rollback on lab CHR) → DONE |
-
-**Кінець черги §3 (наразі):** **empty** — P2 write-path tranche CLOSED. Нові атомарні задачі лише через PLAN issue.  
-**Поза чергою (2026-08-28):** Desktop Inventory Add router UX — [PR #309](https://github.com/sesquicadaver/MTDirector/pull/309) (не рядок §3).
-
----
-
 ## 4. Підсумок лічильників
 
 | Сегмент | У черзі | Примітка |
@@ -580,7 +341,7 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 | Write-path DI gate | P2-10 | `AddRouterOsWriteServices` + `WriteEnabled` flag | **DONE** (#296) |
 | Write-path pilot runbook | P2-11 | `WritePathPilotLivingSpecTests` + `pilot-runbook.md` write checklist | **DONE** (#297) |
 
-Оновлювати рядок **Статус** і зсувати «NEXT» при закритті кожного issue з §3.
+Оновлювати рядок **Статус** при закритті issue; §3 зараз empty — NEXT лише після PLAN.
 
 ---
 
@@ -600,76 +361,11 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 
 ## 7. Операційний старт
 
-1. Хвиля 0: stale OPEN на DONE-коді (#52, #53, #56, #67) — **DONE** 2026-08-15.
-2. ~~Відкрити **M2-18** → [issue #65](https://github.com/sesquicadaver/MTDirector/issues/65).~~ → **DONE / M2 CLOSED**.
-3. ~~Відкрити **M3-01** → [issue #68](https://github.com/sesquicadaver/MTDirector/issues/68).~~ → **DONE**.
-4. ~~Відкрити **M3-02** → [issue #69](https://github.com/sesquicadaver/MTDirector/issues/69).~~ → **DONE**.
-5. ~~Відкрити **M3-03** → [issue #70](https://github.com/sesquicadaver/MTDirector/issues/70).~~ → **DONE**.
-6. ~~Відкрити **M3-04** → [issue #71](https://github.com/sesquicadaver/MTDirector/issues/71).~~ → **DONE**.
-7. ~~Відкрити **M3-05** → [issue #72](https://github.com/sesquicadaver/MTDirector/issues/72).~~ → **DONE**.
-8. ~~Відкрити **M3-06** → [issue #73](https://github.com/sesquicadaver/MTDirector/issues/73).~~ → **DONE**.
-9. ~~Відкрити **M3-07** → [issue #74](https://github.com/sesquicadaver/MTDirector/issues/74).~~ → **DONE**.
-10. ~~Відкрити **M3-08** → [issue #75](https://github.com/sesquicadaver/MTDirector/issues/75).~~ → **DONE / M3 CLOSED**.
-11. ~~Відкрити **M5-01** → [issue #76](https://github.com/sesquicadaver/MTDirector/issues/76).~~ → **DONE**.
-12. ~~Відкрити **M5-02** → [issue #77](https://github.com/sesquicadaver/MTDirector/issues/77).~~ → **DONE**.
-13. ~~Відкрити **M5-03** → [issue #78](https://github.com/sesquicadaver/MTDirector/issues/78).~~ → **DONE**.
-14. ~~Відкрити **M5-04** → [issue #79](https://github.com/sesquicadaver/MTDirector/issues/79).~~ → **DONE**.
-15. ~~Відкрити **M5-05** → [issue #80](https://github.com/sesquicadaver/MTDirector/issues/80).~~ → **DONE**.
-16. ~~Відкрити **M5-06** → [issue #81](https://github.com/sesquicadaver/MTDirector/issues/81).~~ → **DONE**.
-17. ~~Відкрити **M5-07** → [issue #82](https://github.com/sesquicadaver/MTDirector/issues/82).~~ → **DONE**.
-18. ~~Відкрити **M5-08** → [issue #83](https://github.com/sesquicadaver/MTDirector/issues/83).~~ → **DONE**.
-19. ~~Відкрити **M5-09** → [issue #84](https://github.com/sesquicadaver/MTDirector/issues/84).~~ → **DONE**.
-20. ~~Відкрити **M5-10** → [issue #85](https://github.com/sesquicadaver/MTDirector/issues/85).~~ → **DONE / M5 CLOSED**.
-21. ~~Відкрити **M4-01** → [issue #86](https://github.com/sesquicadaver/MTDirector/issues/86).~~ → **DONE**.
-22. ~~Відкрити **N1-06** → [issue #99](https://github.com/sesquicadaver/MTDirector/issues/99).~~ → **DONE**.
-23. ~~Відкрити **M4-02** → [issue #87](https://github.com/sesquicadaver/MTDirector/issues/87).~~ → **DONE**.
-24. ~~Відкрити **M4-03** → [issue #88](https://github.com/sesquicadaver/MTDirector/issues/88).~~ → **DONE**.
-25. ~~Відкрити **M4-04** → [issue #89](https://github.com/sesquicadaver/MTDirector/issues/89).~~ → **DONE**.
-26. ~~Відкрити **M4-05** → [issue #90](https://github.com/sesquicadaver/MTDirector/issues/90).~~ → **DONE**.
-27. ~~Відкрити **M4-06** → [issue #91](https://github.com/sesquicadaver/MTDirector/issues/91).~~ → **DONE**.
-28. ~~Відкрити **M4-07** → [issue #92](https://github.com/sesquicadaver/MTDirector/issues/92).~~ → **DONE**.
-29. ~~Відкрити **M4-08** → [issue #93](https://github.com/sesquicadaver/MTDirector/issues/93).~~ → **DONE**.
-30. ~~Відкрити **M4-09** → [issue #94](https://github.com/sesquicadaver/MTDirector/issues/94).~~ → **DONE**.
-31. ~~Відкрити **M4-10** → [issue #95](https://github.com/sesquicadaver/MTDirector/issues/95).~~ → **DONE**.
-32. ~~Відкрити **M4-11** → [issue #96](https://github.com/sesquicadaver/MTDirector/issues/96).~~ → **DONE**.
-33. ~~Відкрити **M4-12** → [issue #97](https://github.com/sesquicadaver/MTDirector/issues/97).~~ → **DONE**.
-34. ~~Відкрити **M4-13** → [issue #98](https://github.com/sesquicadaver/MTDirector/issues/98).~~ → **DONE / M4 CLOSED**.
-35. ~~Відкрити **M6-01** → [issue #100](https://github.com/sesquicadaver/MTDirector/issues/100).~~ → **DONE**.
-36. ~~Відкрити **M6-02** → [issue #101](https://github.com/sesquicadaver/MTDirector/issues/101).~~ → **DONE**.
-37. ~~Відкрити **M6-03** → [issue #102](https://github.com/sesquicadaver/MTDirector/issues/102).~~ → **DONE**.
-38. ~~Відкрити **M6-04** → [issue #103](https://github.com/sesquicadaver/MTDirector/issues/103).~~ → **DONE**.
-39. ~~Відкрити **M6-05** → [issue #104](https://github.com/sesquicadaver/MTDirector/issues/104).~~ → **DONE**.
-40. ~~Відкрити **M6-06** → [issue #105](https://github.com/sesquicadaver/MTDirector/issues/105).~~ → **DONE**.
-41. ~~Відкрити **M6-07** → [issue #106](https://github.com/sesquicadaver/MTDirector/issues/106).~~ → **DONE**.
-42. ~~Відкрити **M6-08** → [issue #107](https://github.com/sesquicadaver/MTDirector/issues/107).~~ → **DONE**.
-43. ~~Відкрити **M6-09** → [issue #108](https://github.com/sesquicadaver/MTDirector/issues/108).~~ → **DONE / M6 CLOSED**.
-44. ~~Відкрити **N1-07** → [issue #109](https://github.com/sesquicadaver/MTDirector/issues/109).~~ → **DONE / MVP CLOSED**.
-45. ~~Відкрити **M7.1-01** → [issue #110](https://github.com/sesquicadaver/MTDirector/issues/110).~~ → **DONE**.
-46. ~~Відкрити **M7.1-02** → [issue #111](https://github.com/sesquicadaver/MTDirector/issues/111).~~ → **DONE**.
-47. ~~Відкрити **M7.1-03** → [issue #112](https://github.com/sesquicadaver/MTDirector/issues/112).~~ → **DONE**.
-48. ~~Відкрити **M7.1-04** → [issue #113](https://github.com/sesquicadaver/MTDirector/issues/113).~~ → **DONE**.
-49. ~~Відкрити **M7.1-05** → [issue #114](https://github.com/sesquicadaver/MTDirector/issues/114).~~ → **DONE**.
-50. ~~Відкрити **M7.1-06** → [issue #115](https://github.com/sesquicadaver/MTDirector/issues/115).~~ → **DONE**.
-51. ~~Відкрити **M7.1-07** → [issue #116](https://github.com/sesquicadaver/MTDirector/issues/116).~~ → **DONE**.
-52. ~~Відкрити **M7.2-03** → [issue #123](https://github.com/sesquicadaver/MTDirector/issues/123).~~ → **DONE**.
-53. ~~Відкрити **M7.2-04** → [issue #124](https://github.com/sesquicadaver/MTDirector/issues/124).~~ → **DONE** (**M7.2 CLOSED**).
-54. ~~Відкрити **M7.3-01** → [issue #125](https://github.com/sesquicadaver/MTDirector/issues/125).~~ → **DONE**.
-55. ~~Відкрити **M7.3-02** → [issue #126](https://github.com/sesquicadaver/MTDirector/issues/126).~~ → **DONE**.
-56. ~~Відкрити **M7.3-03** → [issue #127](https://github.com/sesquicadaver/MTDirector/issues/127).~~ → **DONE**.
-57. ~~Відкрити **M7.3-04** → [issue #128](https://github.com/sesquicadaver/MTDirector/issues/128).~~ → **DONE**.
-58. ~~Відкрити **M7.3-05** → [issue #129](https://github.com/sesquicadaver/MTDirector/issues/129).~~ → **DONE**.
-59. ~~Відкрити **M7.3-06** → [issue #130](https://github.com/sesquicadaver/MTDirector/issues/130).~~ → **DONE / M7.3 CLOSED**.
-60. ~~Відкрити **M7.4-06** → [issue #136](https://github.com/sesquicadaver/MTDirector/issues/136).~~ → **DONE / M7.4 CLOSED**.
-61. ~~Відкрити **P2-04** → [issue #280](https://github.com/sesquicadaver/MTDirector/issues/280) — production `RouterOsReadPort`.~~ → **DONE**.
-62. ~~**P2-05** → [issue #281](https://github.com/sesquicadaver/MTDirector/issues/281).~~ → **DONE**.
-63. ~~**P2-06** → [issue #282](https://github.com/sesquicadaver/MTDirector/issues/282).~~ → **DONE**. **P2 read path CLOSED**.
-64. ~~**TRACKER-01** → [issue #289](https://github.com/sesquicadaver/MTDirector/issues/289).~~ → **DONE** (2026-08-26).
-65. ~~**PLAN-01** → [issue #290](https://github.com/sesquicadaver/MTDirector/issues/290).~~ → **DONE** (2026-08-26).
-66. ~~**P2-07** → [issue #293](https://github.com/sesquicadaver/MTDirector/issues/293).~~ → **DONE** (2026-08-26).
-67. ~~**P2-08** → [issue #294](https://github.com/sesquicadaver/MTDirector/issues/294).~~ → **DONE** (2026-08-26).
-68. ~~**P2-09** → [issue #295](https://github.com/sesquicadaver/MTDirector/issues/295).~~ → **DONE** (2026-08-28).
-69. ~~**P2-10** → [issue #296](https://github.com/sesquicadaver/MTDirector/issues/296).~~ → **DONE** (2026-08-28).
-70. ~~**P2-11** → [issue #297](https://github.com/sesquicadaver/MTDirector/issues/297).~~ → **DONE** (2026-08-28). **P2 write-path CLOSED.** **§3 empty.**
+1. Черга §3 **порожня** — не відкривати довільні гілки без PLAN issue.
+2. Lab/pilot RouterOS: [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) (`Enabled` / `WriteEnabled`).
+3. Desktop реєстрація пристрою: Inventory **Add router** — [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
+4. Acceptance / readiness: [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md), [`docs/release/readiness.md`](docs/release/readiness.md).
+5. Заархівовані design notes (N1 / incident): [`docs/archive/design-notes/`](docs/archive/design-notes/).
 
-Деталі acceptance: `Initial Issue Set v0.1.md`, `M2–M6 Implementation Issue Set v0.1.md`.  
+Мапінг ID → GitHub: [`ISSUES.md`](ISSUES.md).  
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones

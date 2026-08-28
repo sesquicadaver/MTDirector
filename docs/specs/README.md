@@ -36,13 +36,15 @@ These files are the authoritative product and issue-set specifications. They rem
 | [`Managed Device Onboarding and Anchor Bootstrap Specification v0.1.md`](../../Managed%20Device%20Onboarding%20and%20Anchor%20Bootstrap%20Specification%20v0.1.md) | M5 onboarding |
 | [`Safe Deployment and Rollback Specification v0.1.md`](../../Safe%20Deployment%20and%20Rollback%20Specification%20v0.1.md) | M4 deploy |
 
-## Post-MVP design notes (implemented in M7)
+## Post-MVP design notes (implemented — archived)
 
 | File | Role |
 |------|------|
-| [`next-1.md`](../../next-1.md) | Packet-path / container topology (N1 weave) |
-| [`next-2.md`](../../next-2.md) | External correlation + incident response (M7.2–M7.4) |
-| [`Network Rule, Routing and Path Assurance.М7.1.md`](../../Network%20Rule%2C%20Routing%20and%20Path%20Assurance.%D0%9C7.1.md) | Routing assurance (M7.1) |
+| [`../archive/design-notes/next-1-packet-path.md`](../archive/design-notes/next-1-packet-path.md) | Packet-path / container topology (N1) — **ARCHIVED / IMPLEMENTED** |
+| [`../archive/design-notes/next-2-incident-correlation.md`](../archive/design-notes/next-2-incident-correlation.md) | External correlation + incident response (M7.2–M7.4) — **ARCHIVED / IMPLEMENTED** |
+| [`Network Rule, Routing and Path Assurance.М7.1.md`](../../Network%20Rule%2C%20Routing%20and%20Path%20Assurance.%D0%9C7.1.md) | Routing assurance (M7.1) — still normative |
+
+> Root `next-1.md` / `next-2.md` removed. Do **not** treat archive notes as open queue work.
 
 ## Execution index
 
