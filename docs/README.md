@@ -1,7 +1,7 @@
 # MTDirector documentation index
 
 **Release:** `v0.2.0` (2026-08-24) — MVP + Post-MVP M7 CLOSED.  
-**Next delivery:** **P2-11** (#297) write-path pilot — see [`ROADMAP.md`](../ROADMAP.md) §3.B7.
+**Next delivery:** **none** — §3 queue empty (P2 write-path CLOSED). See [`ROADMAP.md`](../ROADMAP.md).
 
 ## Planning and tracking
 

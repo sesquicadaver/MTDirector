@@ -1,7 +1,7 @@
 # Project readiness assessment
 
 **As of:** 2026-08-28  
-**Baseline commit:** `main` @ P2-10 merge (`ed75769`)  
+**Baseline commit:** `main` @ P2-11 merge (`02b5d4c`)  
 **Release tag:** [`v0.2.0`](https://github.com/sesquicadaver/MTDirector/releases/tag/v0.2.0) (2026-08-24)
 
 This document summarizes **code + documentation readiness** against the normative queue in [`ROADMAP.md`](../../ROADMAP.md). It is not a substitute for operator acceptance ([`mvp-acceptance.md`](mvp-acceptance.md)) or release gates ([`release-gates.md`](release-gates.md)).
@@ -13,13 +13,13 @@ This document summarizes **code + documentation readiness** against the normativ
 | MVP (M0–M6 + N1) | **100% CLOSED** | 109/109 issues in code audit |
 | Post-MVP M7 (M7.1–M7.4) | **100% CLOSED** | 27/27 issues in code audit |
 | P2 read path (P2-04…P2-06) | **100% CLOSED** | Production probe + capture + DI gate |
-| P2 write path | **IN PROGRESS** | P2-07…P2-10 **DONE** (#293–#296); pilot runbook remains (P2-11) |
-| Linear queue (§3) | **1 open** | **NEXT = P2-11** (#297) |
+| P2 write path (P2-07…P2-11) | **100% CLOSED** | Runtimes + WriteEnabled gate + pilot runbook |
+| Linear queue (§3) | **0 open** | **NEXT = none** |
 
 **Overall code readiness:** all 139 mapped product issues are **DONE in code**.  
 **Queue integrity:** **TRACKER-01 DONE** (#289, 2026-08-26) — GitHub tracker aligned with ROADMAP §2.2.  
 **Production pilot readiness (read-only):** **ready** when `Mfc:RouterOs:Enabled=true` + PostgreSQL + device connection profiles — see [`pilot-runbook.md`](../operations/pilot-runbook.md).  
-**Production pilot readiness (write path):** **gated** — set `Mfc:RouterOs:WriteEnabled=true` after lab readiness; operator checklist lands in **P2-11**.
+**Production pilot readiness (write path):** **ready (lab)** — set `Mfc:RouterOs:WriteEnabled=true`; checklist in [`pilot-runbook.md`](../operations/pilot-runbook.md).
 
 ## Milestone matrix (code audit §2.2)
 
@@ -47,9 +47,9 @@ This document summarizes **code + documentation readiness** against the normativ
 | 129 | P2-08 | [#294](https://github.com/sesquicadaver/MTDirector/issues/294) | **DONE** (2026-08-26) |
 | 130 | P2-09 | [#295](https://github.com/sesquicadaver/MTDirector/issues/295) | **DONE** (2026-08-28) |
 | 131 | P2-10 | [#296](https://github.com/sesquicadaver/MTDirector/issues/296) | **DONE** (2026-08-28) |
-| 132 | P2-11 | [#297](https://github.com/sesquicadaver/MTDirector/issues/297) | **NEXT** — write-path pilot Living Spec + runbook |
+| 132 | P2-11 | [#297](https://github.com/sesquicadaver/MTDirector/issues/297) | **DONE** (2026-08-28) |
 
-No parallel work. Linear chain: P2-11 (final §3.B7 row).
+No parallel work. **§3 queue empty** — open a PLAN issue before new delivery.
 
 ## What is production-ready today
 
@@ -80,7 +80,7 @@ Documented in [`known-limitations.md`](known-limitations.md):
 
 | Residual | Impact |
 |----------|--------|
-| Write-path DI fail-closed by default | Opt-in via `Mfc:RouterOs:WriteEnabled=true` (P2-10 **DONE**); write pilot runbook is P2-11 |
+| Write-path DI fail-closed by default | Opt-in via `Mfc:RouterOs:WriteEnabled=true`; pilot checklist in `pilot-runbook.md` (P2-11 **DONE**) |
 | Live CHR matrix OFF | Scripted E2E Living Specs are DoD substitute |
 | Desktop packaging | zip/tar publish, not MSI |
 | Signing | SHA256SUMS attestation; GPG/Sigstore optional |

@@ -8,10 +8,10 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 |---------|------|
 | MVP (M0–M6 + N1) | **CLOSED** — 109/109 issues |
 | Post-MVP M7 (M7.1–M7.4) | **CLOSED** — 27/27 issues |
-| P2 Pilot (RouterOS wiring) | read path **CLOSED** (P2-04…P2-06); write path **NEXT** (P2-11); P2-07…P2-10 **DONE** |
+| P2 Pilot (RouterOS wiring) | read path **CLOSED** (P2-04…P2-06); write path **CLOSED** (P2-07…P2-11) |
 | Release | [`v0.2.0`](https://github.com/sesquicadaver/MTDirector/releases/tag/v0.2.0) (2026-08-24) |
 
-**NEXT:** [P2-11 / #297](https://github.com/sesquicadaver/MTDirector/issues/297) — write-path pilot Living Spec + runbook. Read-only pilot: [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md). Write gate: `Mfc:RouterOs:WriteEnabled`.
+**Queue (§3):** **empty** — P2 write-path tranche CLOSED. Pilot: [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) (`Enabled` / `WriteEnabled`).
 
 Лінійна черга: [`ROADMAP.md`](ROADMAP.md) §3.B7. Мапінг issues: [`ISSUES.md`](ISSUES.md).
 
@@ -50,7 +50,7 @@ M0 → M1 → M2 → M3 → M5 → M4 → M6 → MVP CLOSED
 → P2-08 (#294) → **DONE**
 → P2-09 (#295) → **DONE**
 → P2-10 (#296) → **DONE**
-→ **P2-11 (#297)** write-path pilot runbook
+→ P2-11 (#297) → **DONE** — **P2 write-path CLOSED**
 ```
 
 ## Стек
