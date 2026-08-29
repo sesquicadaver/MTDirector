@@ -114,7 +114,7 @@ Normative detail lives in [`TOR-1.md`](../../TOR-1.md), the MVP specifications, 
 | Desired / committed / actual projection | Done (M6-01) | `DeviceHashState` + classifier + `NodeWorkflowStatusProjector`; EF `device_hash_states`; `GetNodeWorkflow`; Desktop desired/committed/actual hashes |
 | Managed drift detection | Done (M6-02) | `ManagedDriftDetector` + `DriftEvent` (immutable); EF `drift_events`; deploy gate blocks Critical; no auto-repair; Living Spec AC 1–12 |
 | Bounded operational jobs | Done (M6-03) | `OperationalJobSchedulerHostedService` + bounded priority bag; recovery > drift; expired-exception DB-only; restricted watchdog cleanup; no broker; Living Spec AC 1–10 |
-| Desktop MVP workflows | Done (M6-04) | Seven modules + `DriftService`/`AuditService` read paths; Shell nav; no auto-fix; Living Spec AC 1–12 (+ AC#2b Add router) |
+| Desktop MVP workflows | Done (M6-04) | Seven modules + `DriftService`/`AuditService` read paths; Shell nav; no auto-fix; Living Spec AC 1–12 (+ AC#2b Add router); shared `mfc-*` shell styles + wrap toolbars (overlap/readability polish 2026-08-29) |
 | Standalone / dual-stack E2E | Done (M6-05) | Living Spec AC 1–10 + Integration inventory→capture→onboarding; scripted runtimes; Live CHR OFF |
 | Multi-WAN E2E | Done (M6-06) | Living Spec AC 1–10; failover/PCC/probes/FastTrack/drift; scripted runtimes; Live CHR OFF |
 | VRRP / CRS E2E | Done (M6-07) | Living Spec AC 1–11; VRRP coordinator + Switch FORWARD gate + CRS fixtures; Live CHR OFF |
