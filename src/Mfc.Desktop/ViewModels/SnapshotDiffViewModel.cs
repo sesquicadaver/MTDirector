@@ -67,6 +67,9 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
 
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorText);
 
+    /// <summary>True when CompareSnapshots returned one or more warning strings.</summary>
+    public bool HasWarnings => Warnings.Count > 0;
+
     [RelayCommand(CanExecute = nameof(CanReloadCaptures))]
     private async Task ReloadCapturesAsync()
     {
@@ -253,6 +256,7 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
         SectionGroups.Clear();
         VisibleEntries.Clear();
         Warnings.Clear();
+        OnPropertyChanged(nameof(HasWarnings));
         IsNoDifferences = false;
         BaseCapture = null;
         TargetCapture = null;
@@ -276,6 +280,7 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
             Warnings.Add(warning);
         }
 
+        OnPropertyChanged(nameof(HasWarnings));
         IsNoDifferences = result.IsNoDifferences;
         ErrorText = result.Error;
         StatusText = result.IsNoDifferences

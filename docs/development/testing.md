@@ -1794,6 +1794,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | Seed MikroTik neighbors (#314) | `ListNeighborCandidatesUseCase` + `/ip/neighbor` allowlist + Desktop Load/Apply | `NeighborCandidatesLivingSpecTests` + `ListNeighborCandidatesUseCaseTests` + `NeighborDiscoveryAllowlistTests` |
 | AC#3 Node topology/zones/onboarding/readiness | `NodeDetailViewModel` | `Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness` |
 | AC#4 Snapshot configuration/observations | `SnapshotViewerViewModel` | `Ac4SnapshotViewShowsConfigurationAndObservations` |
+| W1.1 Diff FieldLines + Warnings | `SnapshotDiffViewModel` + MainWindow Semantic diff | `Ac4bSemanticDiffShowsFieldLinesAndWarnings` + `SnapshotDiffServiceTests` |
 | AC#5 Policy authoring/review/binding | `PoliciesViewModel` | `Ac5PolicyViewSupportsAuthoringReviewAndBinding` |
 | AC#6 Operations onboarding/deploy/recovery | Onboarding + Deployment VMs | `Ac6OperationsViewSupportsOnboardingDeploymentAndRecovery` |
 | AC#7 Drift без automatic fix | `DriftViewModel` + `DriftService` | `Ac7DriftViewHasNoAutomaticFix` |

@@ -30,6 +30,7 @@ Canonical section ids live in `Mfc.Domain.Canonicalization.CanonicalSectionIds` 
 - DiffEntry carries `DiffChange` set (ADDED/REMOVED/MODIFIED/MOVED/STATE_CHANGED) and field diffs.
 - Managed rules use `fwc:rule:{uuid}:{rev}` markers for stable MODIFIED matching.
 - Empty result → Desktop **No differences** state.
+- Desktop Semantic diff (W1.1): binds `FieldLines.Summary` per entry + Compare `Warnings` (`HasWarnings`); does not re-run local SemanticDiffEngine.
 
 ## Schema version
 
