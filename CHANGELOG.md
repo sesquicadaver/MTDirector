@@ -22,6 +22,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Docs: Desktop UI ↔ backend alignment plan (`docs/development/desktop-ui-backend-alignment.md`) — phased P0–P3 wire-up of existing Contracts/VM data (Diff FieldLines, Policies lists, VRRP, capture glue).
 - Desktop shell UI polish (2026-08-29): shared `mfc-*` Fluent styles in `App.axaml`; compact chrome; `WrapPanel` toolbars; inventory tree `TextTrimming`; zones layout without wasted `*` rows; `ClipToBounds` on module content — fixes overlapping controls in narrow columns. Living Spec Desktop AC strings preserved (`DesktopMvpWorkflowsLivingSpecTests` / routing assurance).
 - Documentation purge (2026-08-28): removed implemented `next-1`/`next-2` design notes (no archive retained); compacted obsolete ROADMAP §3 strikethrough queue + §7 open checklist; local `bin`/`obj` cleaned (gitignored).
 - Added operator HOWTO: [`docs/howto/build-and-run.md`](docs/howto/build-and-run.md) (Linux / Windows build, package, run).
