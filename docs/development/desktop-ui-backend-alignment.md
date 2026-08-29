@@ -21,12 +21,12 @@
 
 ## Хвиля 1 — P0 «показати те, що вже в памʼяті» (найвищий ROI)
 
-### W1.1 Diff: field-level changes *(блокер скарги «лише хеші»)*
-- **Дані:** `SnapshotDiffEntryItem.FieldLines`, `SnapshotDiffViewModel.Warnings`
-- **Зробити:** у Semantic diff ItemTemplate — список `FieldLines.Summary`; блок Warnings
-- **Не чіпати:** local SemanticDiffEngine
-- **Перевірка:** Compare seed captures після day-1 tweak → видно `comment: … → …` / field diffs, не лише `RecordKey`
-- **Файли:** `MainWindow.axaml`, опційно Living Spec string AC
+### W1.1 Diff: field-level changes *(блокер скарги «лише хеші»)* — **DONE**
+- **Дані:** `SnapshotDiffEntryItem.FieldLines`, `SnapshotDiffViewModel.Warnings` / `HasWarnings`
+- **Зроблено:** Semantic diff ItemTemplate — `ItemsControl` → `FieldLines.Summary`; блок «Compare warnings»
+- **Не чіпали:** local SemanticDiffEngine
+- **Перевірка:** Living Spec `Ac4bSemanticDiffShowsFieldLinesAndWarnings`; unit `SnapshotDiffServiceTests` (field Summary); lab Compare seed → field lines visible
+- **Файли:** `MainWindow.axaml`, `SnapshotDiffViewModel.cs`, `DesktopMvpWorkflowsLivingSpecTests`
 
 ### W1.2 Snapshots: повні поля запису
 - **Дані:** `SnapshotRecordListItem.Fields` (зараз UI = `SummaryLine` ≤4)
@@ -142,7 +142,8 @@ W4  VRRP Node shell
 
 | Хвиля | Статус |
 |-------|--------|
-| W1.1–W1.6 | **TODO** |
+| W1.1 | **DONE** (FieldLines + Warnings UI) |
+| W1.2–W1.6 | **TODO** |
 | W2–W5 | **TODO** |
 
-Lab read-path (captures/Diff RPC) уже дає дані для **W1.1** на seed — блокер лише UI.
+**NEXT (alignment):** W1.2 Snapshots — повні поля запису.

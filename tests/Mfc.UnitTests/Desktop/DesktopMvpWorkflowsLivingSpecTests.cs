@@ -100,6 +100,24 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("IsSnapshotsSelected", axaml, StringComparison.Ordinal);
     }
 
+    /// <summary>W1.1: Semantic diff binds FieldLines + Compare warnings (not RecordKey-only).</summary>
+    [Fact]
+    public void Ac4bSemanticDiffShowsFieldLinesAndWarnings()
+    {
+        Type diff = typeof(SnapshotDiffViewModel);
+        Assert.NotNull(diff.GetProperty(nameof(SnapshotDiffViewModel.Warnings)));
+        Assert.NotNull(diff.GetProperty(nameof(SnapshotDiffViewModel.HasWarnings)));
+        Assert.NotNull(typeof(SnapshotDiffEntryItem).GetProperty(nameof(SnapshotDiffEntryItem.FieldLines)));
+        Assert.NotNull(typeof(SnapshotDiffFieldLine).GetProperty(nameof(SnapshotDiffFieldLine.Summary)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Semantic diff", axaml, StringComparison.Ordinal);
+        Assert.Contains("FieldLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("Compare warnings", axaml, StringComparison.Ordinal);
+        Assert.Contains("Diff.HasWarnings", axaml, StringComparison.Ordinal);
+        Assert.Contains("Diff.Warnings", axaml, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac5PolicyViewSupportsAuthoringReviewAndBinding()
     {

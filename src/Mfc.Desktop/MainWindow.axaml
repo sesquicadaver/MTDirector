@@ -641,6 +641,19 @@
                 <TextBlock Classes="mfc-error"
                            Text="{Binding Diff.ErrorText}"
                            IsVisible="{Binding Diff.HasError}" />
+                <StackPanel Spacing="4" IsVisible="{Binding Diff.HasWarnings}">
+                  <TextBlock Classes="mfc-label" Text="Compare warnings" />
+                  <ItemsControl ItemsSource="{Binding Diff.Warnings}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <TextBlock Classes="mfc-warning"
+                                   Text="{Binding}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,2" />
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </StackPanel>
               </StackPanel>
 
               <Border Grid.Column="0"
@@ -677,9 +690,19 @@
                   </ListBox.ItemsPanel>
                   <ListBox.ItemTemplate>
                     <DataTemplate DataType="svc:SnapshotDiffEntryItem">
-                      <StackPanel Spacing="2" Margin="4">
+                      <StackPanel Spacing="4" Margin="4">
                         <TextBlock Text="{Binding HeaderLine}" FontWeight="SemiBold" TextWrapping="Wrap" />
                         <TextBlock Text="{Binding ConfidenceText, StringFormat=Confidence: {0}}" Opacity="0.75" />
+                        <ItemsControl ItemsSource="{Binding FieldLines}">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="svc:SnapshotDiffFieldLine">
+                              <TextBlock Text="{Binding Summary}"
+                                         Classes="mfc-muted"
+                                         TextWrapping="Wrap"
+                                         Margin="8,0,0,2" />
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                       </StackPanel>
                     </DataTemplate>
                   </ListBox.ItemTemplate>
