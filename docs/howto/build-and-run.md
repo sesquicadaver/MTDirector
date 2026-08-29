@@ -134,6 +134,8 @@ Checklist: [`../operations/pilot-runbook.md`](../operations/pilot-runbook.md).
 dotnet run --project src/Mfc.Desktop
 ```
 
+Стилі оболонки: `App.axaml` (`mfc-panel` / `mfc-toolbar` / …). Розмітка модулів — `MainWindow.axaml` (WrapPanel для тулбарів; вузькі колонки з ellipsis).
+
 1. **Connect** → endpoint з `src/Mfc.Desktop/appsettings.json` (`http://127.0.0.1:5101`).
 2. **Inventory → Add router** — Site → Node → Device + credentials ([`../development/connection-profiles.md`](../development/connection-profiles.md)). Optional: select a seed Device → **Load MikroTik neighbors** → Apply → credentials → Submit.
 

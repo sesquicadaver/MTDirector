@@ -2,7 +2,95 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Mfc.Desktop.App"
              RequestedThemeVariant="Default">
+  <Application.Resources>
+    <SolidColorBrush x:Key="Mfc.BorderBrush" Color="#D0D5DD" />
+    <SolidColorBrush x:Key="Mfc.MutedBrush" Color="#667085" />
+    <SolidColorBrush x:Key="Mfc.ErrorBrush" Color="#B00020" />
+    <SolidColorBrush x:Key="Mfc.WarningBrush" Color="#8A5A00" />
+    <SolidColorBrush x:Key="Mfc.BadgeBrush" Color="#E8EEF5" />
+    <x:Double x:Key="Mfc.SectionTitleSize">15</x:Double>
+    <x:Double x:Key="Mfc.ModuleTitleSize">16</x:Double>
+  </Application.Resources>
   <Application.Styles>
     <FluentTheme />
+
+    <Style Selector="Border.mfc-panel">
+      <Setter Property="BorderBrush" Value="{StaticResource Mfc.BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="8" />
+      <Setter Property="CornerRadius" Value="2" />
+    </Style>
+
+    <Style Selector="Border.mfc-list-frame">
+      <Setter Property="BorderBrush" Value="{StaticResource Mfc.BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="4" />
+      <Setter Property="CornerRadius" Value="2" />
+    </Style>
+
+    <Style Selector="Border.mfc-badge">
+      <Setter Property="Background" Value="{StaticResource Mfc.BadgeBrush}" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="Padding" Value="8,2" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.mfc-brand">
+      <Setter Property="FontSize" Value="20" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TextBlock.mfc-module-title">
+      <Setter Property="FontSize" Value="{StaticResource Mfc.ModuleTitleSize}" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TextBlock.mfc-section-title">
+      <Setter Property="FontSize" Value="{StaticResource Mfc.SectionTitleSize}" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TextBlock.mfc-label">
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TextBlock.mfc-muted">
+      <Setter Property="Opacity" Value="0.85" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style Selector="TextBlock.mfc-error">
+      <Setter Property="Foreground" Value="{StaticResource Mfc.ErrorBrush}" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style Selector="TextBlock.mfc-warning">
+      <Setter Property="Foreground" Value="{StaticResource Mfc.WarningBrush}" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style Selector="TextBlock.mfc-mono">
+      <Setter Property="FontFamily" Value="Consolas,Menlo,monospace" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style Selector="Button.mfc-action">
+      <Setter Property="MinWidth" Value="80" />
+      <Setter Property="MinHeight" Value="32" />
+      <Setter Property="Padding" Value="12,6" />
+    </Style>
+
+    <Style Selector="TextBox.mfc-field">
+      <Setter Property="MinHeight" Value="32" />
+    </Style>
+
+    <Style Selector="ComboBox.mfc-field">
+      <Setter Property="MinHeight" Value="32" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="WrapPanel.mfc-toolbar">
+      <Setter Property="Orientation" Value="Horizontal" />
+    </Style>
   </Application.Styles>
 </Application>

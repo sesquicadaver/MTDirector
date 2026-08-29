@@ -21,58 +21,92 @@
     <KeyBinding Gesture="F5" Command="{Binding Inventory.RefreshCommand}" />
   </Window.KeyBindings>
 
-  <DockPanel Margin="16">
-    <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,10">
-      <TextBlock FontSize="22" FontWeight="SemiBold" Text="MTDirector" />
-      <TextBlock Opacity="0.8"
-                 Text="Inventory · Node · Snapshots · Policies · Operations · Drift · Audit" />
-      <TextBlock Text="{Binding ControllerEndpoint, StringFormat=Endpoint: {0}}" />
-      <TextBlock FontSize="16" Text="{Binding StatusText, StringFormat=Status: {0}}" FontWeight="Bold" />
-      <TextBlock Text="{Binding HotKeysText}" Opacity="0.7" FontSize="12" TextWrapping="Wrap" />
-      <TextBlock Text="{Binding ErrorText}"
-                 TextWrapping="Wrap"
-                 IsVisible="{Binding HasError}"
-                 Foreground="#B00020" />
-      <StackPanel Orientation="Horizontal" Spacing="12">
-        <Button Content="Connect" Command="{Binding ConnectCommand}" MinWidth="120" />
-        <Button Content="Disconnect" Command="{Binding DisconnectCommand}" MinWidth="120" />
+  <DockPanel Margin="12">
+    <!-- Compact chrome: brand + actions on one row; status below -->
+    <Border DockPanel.Dock="Top"
+            Classes="mfc-panel"
+            Margin="0,0,0,10"
+            Padding="12,10">
+      <StackPanel Spacing="6">
+        <DockPanel LastChildFill="True">
+          <StackPanel DockPanel.Dock="Right"
+                      Orientation="Horizontal"
+                      Spacing="8"
+                      VerticalAlignment="Center"
+                      Margin="12,0,0,0">
+            <Button Classes="mfc-action" Content="Connect" Command="{Binding ConnectCommand}" MinWidth="120" />
+            <Button Classes="mfc-action" Content="Disconnect" Command="{Binding DisconnectCommand}" MinWidth="120" />
+          </StackPanel>
+          <StackPanel Spacing="2" VerticalAlignment="Center">
+            <TextBlock Classes="mfc-brand" Text="MTDirector" />
+            <TextBlock Classes="mfc-muted"
+                       Opacity="0.75"
+                       Text="Inventory · Node · Snapshots · Policies · Operations · Drift · Audit" />
+          </StackPanel>
+        </DockPanel>
+        <WrapPanel Classes="mfc-toolbar" ItemSpacing="16" ItemHeight="22">
+          <TextBlock VerticalAlignment="Center"
+                     Text="{Binding ControllerEndpoint, StringFormat=Endpoint: {0}}" />
+          <TextBlock VerticalAlignment="Center"
+                     FontWeight="SemiBold"
+                     Text="{Binding StatusText, StringFormat=Status: {0}}" />
+          <TextBlock VerticalAlignment="Center"
+                     Classes="mfc-muted"
+                     Opacity="0.7"
+                     FontSize="12"
+                     Text="{Binding HotKeysText}" />
+        </WrapPanel>
+        <TextBlock Classes="mfc-error"
+                   Text="{Binding ErrorText}"
+                   IsVisible="{Binding HasError}" />
       </StackPanel>
-    </StackPanel>
+    </Border>
 
-    <Grid ColumnDefinitions="240,12,150,12,*" RowDefinitions="Auto,*,Auto">
+    <Grid ColumnDefinitions="260,12,150,12,*" RowDefinitions="Auto,*,Auto">
       <!-- Inventory tree (always visible) -->
-      <DockPanel Grid.Column="0" Grid.Row="0" Margin="0,0,0,8">
-        <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
-          <Border Background="#E8EEF5"
-                  CornerRadius="4"
-                  Padding="8,2"
-                  IsVisible="{Binding Inventory.IsCached}">
+      <StackPanel Grid.Column="0" Grid.Row="0" Spacing="6" Margin="0,0,0,8">
+        <TextBlock Classes="mfc-section-title" Text="Inventory" />
+        <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+          <Border Classes="mfc-badge" IsVisible="{Binding Inventory.IsCached}">
             <TextBlock Text="{Binding Inventory.CachedBadgeText}" FontWeight="SemiBold" />
           </Border>
-          <Button Content="Refresh"
-                  Command="{Binding Inventory.RefreshCommand}"
-                  MinWidth="80" />
-        </StackPanel>
-        <TextBlock FontSize="15" FontWeight="SemiBold" Text="Inventory" VerticalAlignment="Center" />
-      </DockPanel>
+          <Button Classes="mfc-action"
+                  Content="Refresh"
+                  Command="{Binding Inventory.RefreshCommand}" />
+        </WrapPanel>
+      </StackPanel>
 
       <Border Grid.Column="0"
               Grid.Row="1"
-              BorderBrush="#D0D5DD"
-              BorderThickness="1"
-              Padding="4">
+              Classes="mfc-list-frame"
+              ClipToBounds="True">
         <TreeView ItemsSource="{Binding Inventory.Roots}"
                   SelectedItem="{Binding Inventory.SelectedNode, Mode=TwoWay}">
           <TreeView.ItemTemplate>
             <TreeDataTemplate DataType="vm:InventoryNodeViewModel"
                               ItemsSource="{Binding Children}">
-              <StackPanel Orientation="Horizontal" Spacing="6" ToolTip.Tip="{Binding DetailSummary}">
-                <TextBlock Text="{Binding KindLabel}" Opacity="0.65" Width="48" />
-                <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" />
-                <TextBlock Text="{Binding WorkflowStatusText}"
+              <Grid ColumnDefinitions="44,*,Auto"
+                    MinWidth="0"
+                    ToolTip.Tip="{Binding DetailSummary}">
+                <TextBlock Grid.Column="0"
+                           Text="{Binding KindLabel}"
+                           Opacity="0.65"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="1"
+                           Text="{Binding DisplayName}"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           Margin="4,0" />
+                <TextBlock Grid.Column="2"
+                           Text="{Binding WorkflowStatusText}"
                            Opacity="0.8"
-                           FontSize="11" />
-              </StackPanel>
+                           FontSize="11"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           MaxWidth="90" />
+              </Grid>
             </TreeDataTemplate>
           </TreeView.ItemTemplate>
         </TreeView>
@@ -81,23 +115,21 @@
       <TextBlock Grid.Column="0"
                  Grid.Row="2"
                  Margin="0,8,0,0"
-                 TextWrapping="Wrap"
-                 Foreground="#B00020"
+                 Classes="mfc-error"
                  Text="{Binding Inventory.ErrorText}"
                  IsVisible="{Binding Inventory.HasError}" />
 
       <!-- Module navigation -->
       <TextBlock Grid.Column="2" Grid.Row="0"
-                 FontSize="15" FontWeight="SemiBold"
+                 Classes="mfc-section-title"
                  Text="Modules"
                  Margin="0,0,0,8"
                  VerticalAlignment="Center" />
       <Border Grid.Column="2"
               Grid.Row="1"
               Grid.RowSpan="2"
-              BorderBrush="#D0D5DD"
-              BorderThickness="1"
-              Padding="4">
+              Classes="mfc-list-frame"
+              ClipToBounds="True">
         <ListBox ItemsSource="{Binding Modules}"
                  SelectedItem="{Binding SelectedModule, Mode=TwoWay}"
                  Name="ModuleNavList">
@@ -109,116 +141,135 @@
         </ListBox>
       </Border>
 
-      <!-- Module content -->
-      <Panel Grid.Column="4" Grid.Row="0" Grid.RowSpan="3">
+      <!-- Module content: single cell, ClipToBounds; only one IsVisible at a time -->
+      <Border Grid.Column="4"
+              Grid.Row="0"
+              Grid.RowSpan="3"
+              Classes="mfc-panel"
+              Padding="10"
+              ClipToBounds="True">
+        <Grid>
         <!-- Inventory detail + Zones -->
-        <ScrollViewer IsVisible="{Binding IsInventorySelected}" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer IsVisible="{Binding IsInventorySelected}"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
           <StackPanel Spacing="10" Margin="0,0,0,8">
-            <TextBlock FontSize="16" FontWeight="SemiBold" Text="Inventory detail" />
+            <TextBlock Classes="mfc-module-title" Text="Inventory detail" />
             <TextBlock Text="{Binding Inventory.SelectedNode.DetailSummary}"
-                       TextWrapping="Wrap"
-                       Opacity="0.9" />
-            <TextBlock FontWeight="SemiBold" Text="Workflow status" />
+                       Classes="mfc-muted" />
+            <TextBlock Classes="mfc-label" Text="Workflow status" />
             <TextBlock Text="{Binding Inventory.SelectedNode.WorkflowStatusText}"
                        FontSize="18"
-                       FontWeight="Bold" />
-            <TextBlock FontWeight="SemiBold" Text="Device hashes" />
+                       FontWeight="Bold"
+                       TextWrapping="Wrap" />
+            <TextBlock Classes="mfc-label" Text="Device hashes" />
             <TextBlock Text="{Binding Inventory.SelectedNode.DesiredHashText, StringFormat=desired: {0}}"
-                       FontFamily="Consolas,Menlo,monospace" />
+                       Classes="mfc-mono" />
             <TextBlock Text="{Binding Inventory.SelectedNode.CommittedHashText, StringFormat=committed: {0}}"
-                       FontFamily="Consolas,Menlo,monospace" />
+                       Classes="mfc-mono" />
             <TextBlock Text="{Binding Inventory.SelectedNode.ActualHashText, StringFormat=actual: {0}}"
-                       FontFamily="Consolas,Menlo,monospace" />
+                       Classes="mfc-mono" />
 
-            <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="10" Margin="0,12,0,0">
+            <Border Classes="mfc-panel" Margin="0,12,0,0">
               <StackPanel Spacing="8">
-                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Add router" />
-                <TextBlock Opacity="0.8" TextWrapping="Wrap"
+                <TextBlock Classes="mfc-section-title" Text="Add router" />
+                <TextBlock Classes="mfc-muted"
                            Text="Site → Node → Device + API-SSL credentials (RegisterDevice + UpdateDeviceConnection)." />
-                <TextBlock Text="{Binding AddRouter.ErrorText}"
-                           Foreground="#B00020"
-                           TextWrapping="Wrap"
+                <TextBlock Classes="mfc-error"
+                           Text="{Binding AddRouter.ErrorText}"
                            IsVisible="{Binding AddRouter.HasError}" />
                 <TextBlock Text="{Binding AddRouter.StatusText}"
                            TextWrapping="Wrap"
                            IsVisible="{Binding AddRouter.HasStatus}" />
 
-                <TextBlock FontWeight="SemiBold" Text="1. Site" />
+                <TextBlock Classes="mfc-label" Text="1. Site" />
                 <CheckBox Content="Use existing Site"
                           IsChecked="{Binding AddRouter.UseExistingSite}" />
-                <ComboBox ItemsSource="{Binding AddRouter.SiteChoices}"
+                <ComboBox Classes="mfc-field"
+                          ItemsSource="{Binding AddRouter.SiteChoices}"
                           SelectedItem="{Binding AddRouter.SelectedSite, Mode=TwoWay}"
                           IsVisible="{Binding AddRouter.ShowExistingSitePicker}"
-                          MinWidth="280"
+                          MaxWidth="420"
                           HorizontalAlignment="Left" />
                 <StackPanel Spacing="6" IsVisible="{Binding AddRouter.ShowNewSiteFields}">
-                  <TextBox PlaceholderText="site code" Text="{Binding AddRouter.NewSiteCode}" />
-                  <TextBox PlaceholderText="site name" Text="{Binding AddRouter.NewSiteName}" />
+                  <TextBox Classes="mfc-field" PlaceholderText="site code" Text="{Binding AddRouter.NewSiteCode}" />
+                  <TextBox Classes="mfc-field" PlaceholderText="site name" Text="{Binding AddRouter.NewSiteName}" />
                 </StackPanel>
 
-                <TextBlock FontWeight="SemiBold" Text="2. Node" Margin="0,6,0,0" />
+                <TextBlock Classes="mfc-label" Text="2. Node" Margin="0,6,0,0" />
                 <CheckBox Content="Use existing Node"
                           IsChecked="{Binding AddRouter.UseExistingNode}" />
-                <ComboBox ItemsSource="{Binding AddRouter.NodeChoices}"
+                <ComboBox Classes="mfc-field"
+                          ItemsSource="{Binding AddRouter.NodeChoices}"
                           SelectedItem="{Binding AddRouter.SelectedNode, Mode=TwoWay}"
                           IsVisible="{Binding AddRouter.ShowExistingNodePicker}"
-                          MinWidth="280"
+                          MaxWidth="420"
                           HorizontalAlignment="Left" />
                 <StackPanel Spacing="6" IsVisible="{Binding AddRouter.ShowNewNodeFields}">
-                  <TextBox PlaceholderText="node name" Text="{Binding AddRouter.NewNodeName}" />
-                  <ComboBox ItemsSource="{Binding AddRouter.UplinkModes}"
+                  <TextBox Classes="mfc-field" PlaceholderText="node name" Text="{Binding AddRouter.NewNodeName}" />
+                  <ComboBox Classes="mfc-field"
+                            ItemsSource="{Binding AddRouter.UplinkModes}"
                             SelectedItem="{Binding AddRouter.SelectedUplinkMode, Mode=TwoWay}"
-                            MinWidth="220"
+                            MaxWidth="280"
                             HorizontalAlignment="Left" />
                 </StackPanel>
 
-                <TextBlock FontWeight="SemiBold" Text="3. Device" Margin="0,6,0,0" />
-                <TextBlock Opacity="0.75" TextWrapping="Wrap"
+                <TextBlock Classes="mfc-label" Text="3. Device" Margin="0,6,0,0" />
+                <TextBlock Classes="mfc-muted"
+                           Opacity="0.75"
                            Text="Optional: select a registered Device in the tree as seed, load MikroTik neighbors via Controller, then apply to pre-fill host/port. Credentials stay manual." />
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                  <Button Content="Load MikroTik neighbors"
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <Button Classes="mfc-action"
+                          Content="Load MikroTik neighbors"
                           Command="{Binding AddRouter.LoadNeighborsCommand}"
                           MinWidth="180"
                           IsVisible="{Binding AddRouter.CanLoadNeighborsVisible}" />
-                </StackPanel>
-                <ComboBox ItemsSource="{Binding AddRouter.NeighborCandidates}"
+                </WrapPanel>
+                <ComboBox Classes="mfc-field"
+                          ItemsSource="{Binding AddRouter.NeighborCandidates}"
                           SelectedItem="{Binding AddRouter.SelectedNeighborCandidate, Mode=TwoWay}"
                           IsVisible="{Binding AddRouter.HasNeighborCandidates}"
-                          MinWidth="360"
+                          MaxWidth="520"
                           HorizontalAlignment="Left">
                   <ComboBox.ItemTemplate>
                     <DataTemplate>
-                      <TextBlock Text="{Binding DisplayText}" />
+                      <TextBlock Text="{Binding DisplayText}" TextTrimming="CharacterEllipsis" />
                     </DataTemplate>
                   </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Button Content="Apply selected neighbor"
+                <Button Classes="mfc-action"
+                        Content="Apply selected neighbor"
                         Command="{Binding AddRouter.ApplyNeighborCandidateCommand}"
                         MinWidth="180"
                         HorizontalAlignment="Left"
                         IsVisible="{Binding AddRouter.HasNeighborCandidates}" />
-                <TextBox PlaceholderText="display name" Text="{Binding AddRouter.DeviceDisplayName}" />
-                <TextBox PlaceholderText="management host (IP or DNS)" Text="{Binding AddRouter.ManagementHost}" />
-                <TextBox PlaceholderText="management port (8729)" Text="{Binding AddRouter.ManagementPortText}" />
+                <TextBox Classes="mfc-field" PlaceholderText="display name" Text="{Binding AddRouter.DeviceDisplayName}" />
+                <TextBox Classes="mfc-field" PlaceholderText="management host (IP or DNS)" Text="{Binding AddRouter.ManagementHost}" />
+                <TextBox Classes="mfc-field" PlaceholderText="management port (8729)" Text="{Binding AddRouter.ManagementPortText}" />
 
-                <TextBlock FontWeight="SemiBold" Text="4. Connection profile" Margin="0,6,0,0" />
-                <TextBox PlaceholderText="API username" Text="{Binding AddRouter.Username}" />
-                <TextBox PlaceholderText="API password"
+                <TextBlock Classes="mfc-label" Text="4. Connection profile" Margin="0,6,0,0" />
+                <TextBox Classes="mfc-field" PlaceholderText="API username" Text="{Binding AddRouter.Username}" />
+                <TextBox Classes="mfc-field"
+                         PlaceholderText="API password"
                          Text="{Binding AddRouter.Password}"
                          PasswordChar="*" />
-                <ComboBox ItemsSource="{Binding AddRouter.TrustModes}"
+                <ComboBox Classes="mfc-field"
+                          ItemsSource="{Binding AddRouter.TrustModes}"
                           SelectedItem="{Binding AddRouter.SelectedTrustMode, Mode=TwoWay}"
-                          MinWidth="220"
+                          MaxWidth="280"
                           HorizontalAlignment="Left" />
-                <TextBox PlaceholderText="CA profile ref"
+                <TextBox Classes="mfc-field"
+                         PlaceholderText="CA profile ref"
                          Text="{Binding AddRouter.CaProfileRef}"
                          IsVisible="{Binding AddRouter.ShowCaProfile}" />
-                <TextBox PlaceholderText="pinned SPKI SHA-256 (64 hex)"
+                <TextBox Classes="mfc-field"
+                         PlaceholderText="pinned SPKI SHA-256 (64 hex)"
                          Text="{Binding AddRouter.PinnedSpkiSha256Hex}"
                          IsVisible="{Binding AddRouter.ShowSpkiPin}"
                          FontFamily="Consolas,Menlo,monospace" />
 
-                <Button Content="Create / register"
+                <Button Classes="mfc-action"
+                        Content="Create / register"
                         Command="{Binding AddRouter.SubmitCommand}"
                         MinWidth="160"
                         HorizontalAlignment="Left"
@@ -226,86 +277,85 @@
               </StackPanel>
             </Border>
 
-            <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8" Margin="0,12,0,0">
-              <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,*,Auto,*,Auto,*">
-                <DockPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Margin="0,0,0,8">
-                  <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
-                    <Button Content="Refresh" Command="{Binding Zones.RefreshCommand}" MinWidth="80" />
-                    <Button Content="Resolve node" Command="{Binding Zones.ResolveCommand}" MinWidth="110" />
-                  </StackPanel>
+            <Border Classes="mfc-panel" Margin="0,12,0,0">
+              <StackPanel Spacing="10">
+                <DockPanel LastChildFill="True">
+                  <WrapPanel DockPanel.Dock="Right"
+                             Classes="mfc-toolbar"
+                             ItemSpacing="8"
+                             Margin="8,0,0,0">
+                    <Button Classes="mfc-action" Content="Refresh" Command="{Binding Zones.RefreshCommand}" />
+                    <Button Classes="mfc-action" Content="Resolve node" Command="{Binding Zones.ResolveCommand}" MinWidth="110" />
+                  </WrapPanel>
                   <StackPanel Spacing="2">
-                    <TextBlock FontSize="15" FontWeight="SemiBold" Text="Logical zones &amp; Node bindings" />
-                    <TextBlock Text="{Binding Zones.SelectedNodeHint}" Opacity="0.8" TextWrapping="Wrap" />
-                    <TextBlock Text="{Binding Zones.ErrorText}"
-                               Foreground="#B00020"
-                               TextWrapping="Wrap"
+                    <TextBlock Classes="mfc-section-title" Text="Logical zones &amp; Node bindings" />
+                    <TextBlock Text="{Binding Zones.SelectedNodeHint}" Classes="mfc-muted" />
+                    <TextBlock Classes="mfc-error"
+                               Text="{Binding Zones.ErrorText}"
                                IsVisible="{Binding Zones.HasError}" />
                   </StackPanel>
                 </DockPanel>
 
-                <Border Grid.Column="0" Grid.Row="1" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
-                  <DockPanel>
-                    <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
-                      <TextBlock FontWeight="SemiBold" Text="Company zones" />
-                      <TextBox PlaceholderText="key" Text="{Binding Zones.NewZoneKey}" />
-                      <TextBox PlaceholderText="name" Text="{Binding Zones.NewZoneName}" />
-                      <TextBox PlaceholderText="description (optional)" Text="{Binding Zones.NewZoneDescription}" />
-                      <StackPanel Orientation="Horizontal" Spacing="8">
-                        <Button Content="Create" Command="{Binding Zones.CreateZoneCommand}" MinWidth="90" />
-                        <Button Content="Delete" Command="{Binding Zones.DeleteZoneCommand}" MinWidth="90" />
-                      </StackPanel>
+                <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,Auto">
+                  <Border Grid.Column="0" Grid.Row="0" Classes="mfc-panel">
+                    <StackPanel Spacing="6">
+                      <TextBlock Classes="mfc-label" Text="Company zones" />
+                      <TextBox Classes="mfc-field" PlaceholderText="key" Text="{Binding Zones.NewZoneKey}" />
+                      <TextBox Classes="mfc-field" PlaceholderText="name" Text="{Binding Zones.NewZoneName}" />
+                      <TextBox Classes="mfc-field" PlaceholderText="description (optional)" Text="{Binding Zones.NewZoneDescription}" />
+                      <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                        <Button Classes="mfc-action" Content="Create" Command="{Binding Zones.CreateZoneCommand}" MinWidth="90" />
+                        <Button Classes="mfc-action" Content="Delete" Command="{Binding Zones.DeleteZoneCommand}" MinWidth="90" />
+                      </WrapPanel>
+                      <ListBox ItemsSource="{Binding Zones.Zones}"
+                               SelectedItem="{Binding Zones.SelectedZone, Mode=TwoWay}"
+                               MaxHeight="220">
+                        <ListBox.ItemsPanel>
+                          <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                          </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                          <DataTemplate DataType="svc:ZoneDefinitionListItem">
+                            <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
+                          </DataTemplate>
+                        </ListBox.ItemTemplate>
+                      </ListBox>
                     </StackPanel>
-                    <ListBox ItemsSource="{Binding Zones.Zones}"
-                             SelectedItem="{Binding Zones.SelectedZone, Mode=TwoWay}"
-                             MaxHeight="220">
-                      <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                          <VirtualizingStackPanel />
-                        </ItemsPanelTemplate>
-                      </ListBox.ItemsPanel>
-                      <ListBox.ItemTemplate>
-                        <DataTemplate DataType="svc:ZoneDefinitionListItem">
-                          <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
-                        </DataTemplate>
-                      </ListBox.ItemTemplate>
-                    </ListBox>
-                  </DockPanel>
-                </Border>
+                  </Border>
 
-                <Border Grid.Column="2" Grid.Row="1" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
-                  <DockPanel>
-                    <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8">
-                      <TextBlock FontWeight="SemiBold" Text="Node bindings" />
-                      <ComboBox ItemsSource="{Binding Zones.BindingKinds}"
-                                SelectedItem="{Binding Zones.SelectedBindingKind, Mode=TwoWay}"
-                                MinWidth="220" />
-                      <TextBox PlaceholderText="values (comma-separated)" Text="{Binding Zones.BindingValuesText}" />
-                      <StackPanel Orientation="Horizontal" Spacing="8">
-                        <Button Content="Upsert binding" Command="{Binding Zones.UpsertBindingCommand}" MinWidth="120" />
-                        <Button Content="Delete binding" Command="{Binding Zones.DeleteBindingCommand}" MinWidth="120" />
-                      </StackPanel>
+                  <Border Grid.Column="2" Grid.Row="0" Classes="mfc-panel">
+                    <StackPanel Spacing="6">
+                      <TextBlock Classes="mfc-label" Text="Node bindings" />
+                      <ComboBox Classes="mfc-field"
+                                ItemsSource="{Binding Zones.BindingKinds}"
+                                SelectedItem="{Binding Zones.SelectedBindingKind, Mode=TwoWay}" />
+                      <TextBox Classes="mfc-field" PlaceholderText="values (comma-separated)" Text="{Binding Zones.BindingValuesText}" />
+                      <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                        <Button Classes="mfc-action" Content="Upsert binding" Command="{Binding Zones.UpsertBindingCommand}" MinWidth="120" />
+                        <Button Classes="mfc-action" Content="Delete binding" Command="{Binding Zones.DeleteBindingCommand}" MinWidth="120" />
+                      </WrapPanel>
+                      <ListBox ItemsSource="{Binding Zones.Bindings}"
+                               SelectedItem="{Binding Zones.SelectedBinding, Mode=TwoWay}"
+                               MaxHeight="220">
+                        <ListBox.ItemsPanel>
+                          <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                          </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                          <DataTemplate DataType="svc:NodeZoneBindingListItem">
+                            <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
+                          </DataTemplate>
+                        </ListBox.ItemTemplate>
+                      </ListBox>
                     </StackPanel>
-                    <ListBox ItemsSource="{Binding Zones.Bindings}"
-                             SelectedItem="{Binding Zones.SelectedBinding, Mode=TwoWay}"
-                             MaxHeight="220">
-                      <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                          <VirtualizingStackPanel />
-                        </ItemsPanelTemplate>
-                      </ListBox.ItemsPanel>
-                      <ListBox.ItemTemplate>
-                        <DataTemplate DataType="svc:NodeZoneBindingListItem">
-                          <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
-                        </DataTemplate>
-                      </ListBox.ItemTemplate>
-                    </ListBox>
-                  </DockPanel>
-                </Border>
+                  </Border>
 
-                <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
-                           Margin="0,12,0,4" FontWeight="SemiBold" Text="Resolve results / blockers" />
-                <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3"
-                        BorderBrush="#D0D5DD" BorderThickness="1" Padding="4" MinHeight="120">
+                  <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
+                             Margin="0,12,0,4" Classes="mfc-label" Text="Resolve results / blockers" />
+                </Grid>
+                <Border Classes="mfc-list-frame" MinHeight="120" MaxHeight="240">
                   <ListBox ItemsSource="{Binding Zones.ResolveResults}">
                     <ListBox.ItemsPanel>
                       <ItemsPanelTemplate>
@@ -320,27 +370,33 @@
                     </ListBox.ItemTemplate>
                   </ListBox>
                 </Border>
-              </Grid>
+              </StackPanel>
             </Border>
           </StackPanel>
         </ScrollViewer>
 
         <!-- Node -->
-        <ScrollViewer IsVisible="{Binding IsNodeSelected}" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer IsVisible="{Binding IsNodeSelected}"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
           <StackPanel Spacing="10" Margin="0,0,0,8">
-            <DockPanel>
-              <Button Content="Refresh" Command="{Binding Node.RefreshCommand}" DockPanel.Dock="Right" MinWidth="80" />
-              <TextBlock FontSize="16" FontWeight="SemiBold" Text="Node" VerticalAlignment="Center" />
+            <DockPanel LastChildFill="True">
+              <Button Classes="mfc-action"
+                      Content="Refresh"
+                      Command="{Binding Node.RefreshCommand}"
+                      DockPanel.Dock="Right"
+                      Margin="8,0,0,0" />
+              <TextBlock Classes="mfc-module-title" Text="Node" VerticalAlignment="Center" />
             </DockPanel>
-            <TextBlock Text="{Binding Node.SelectionHint}" Opacity="0.85" TextWrapping="Wrap" />
-            <TextBlock FontWeight="SemiBold" Text="Topology" />
+            <TextBlock Text="{Binding Node.SelectionHint}" Classes="mfc-muted" />
+            <TextBlock Classes="mfc-label" Text="Topology" />
             <TextBlock Text="{Binding Node.TopologyText}" TextWrapping="Wrap" />
-            <TextBlock FontWeight="SemiBold" Text="Workflow / readiness" />
-            <TextBlock Text="{Binding Node.WorkflowStatusText}" FontSize="18" FontWeight="Bold" />
-            <TextBlock Text="{Binding Node.DeploymentReadinessText}" TextWrapping="Wrap" Opacity="0.9" />
-            <TextBlock FontWeight="SemiBold" Text="Onboarding readiness" />
+            <TextBlock Classes="mfc-label" Text="Workflow / readiness" />
+            <TextBlock Text="{Binding Node.WorkflowStatusText}" FontSize="18" FontWeight="Bold" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding Node.DeploymentReadinessText}" Classes="mfc-muted" />
+            <TextBlock Classes="mfc-label" Text="Onboarding readiness" />
             <TextBlock Text="{Binding Node.OnboardingReadinessText}" TextWrapping="Wrap" />
-            <TextBlock FontWeight="SemiBold" Text="Zones summary" />
+            <TextBlock Classes="mfc-label" Text="Zones summary" />
             <ListBox ItemsSource="{Binding Node.ZoneSummaryLines}" MaxHeight="160">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -348,7 +404,7 @@
                 </ItemsPanelTemplate>
               </ListBox.ItemsPanel>
             </ListBox>
-            <TextBlock FontWeight="SemiBold" Text="Device hashes" />
+            <TextBlock Classes="mfc-label" Text="Device hashes" />
             <ListBox ItemsSource="{Binding Node.DeviceHashLines}" MaxHeight="200">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -357,27 +413,25 @@
               </ListBox.ItemsPanel>
             </ListBox>
 
-            <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8" Margin="0,12,0,0">
+            <Border Classes="mfc-panel" Margin="0,12,0,0">
               <StackPanel Spacing="8">
-                <DockPanel>
-                  <Button Content="Refresh"
+                <DockPanel LastChildFill="True">
+                  <Button Classes="mfc-action"
+                          Content="Refresh"
                           Command="{Binding RoutingAssurance.RefreshCommand}"
                           DockPanel.Dock="Right"
-                          MinWidth="80" />
-                  <TextBlock FontWeight="SemiBold" Text="Routing assurance (read-only)" VerticalAlignment="Center" />
+                          Margin="8,0,0,0" />
+                  <TextBlock Classes="mfc-label" Text="Routing assurance (read-only)" VerticalAlignment="Center" TextWrapping="Wrap" />
                 </DockPanel>
-                <TextBlock Text="{Binding RoutingAssurance.StatusText}" Opacity="0.85" TextWrapping="Wrap" />
-                <TextBlock Text="{Binding RoutingAssurance.ErrorText}"
-                           Foreground="#B00020"
-                           TextWrapping="Wrap"
+                <TextBlock Text="{Binding RoutingAssurance.StatusText}" Classes="mfc-muted" />
+                <TextBlock Classes="mfc-error"
+                           Text="{Binding RoutingAssurance.ErrorText}"
                            IsVisible="{Binding RoutingAssurance.HasError}" />
                 <TextBlock Text="{Binding RoutingAssurance.ConfigurationHashText, StringFormat=configuration_hash: {0}}"
-                           FontFamily="Consolas,Menlo,monospace"
-                           TextWrapping="Wrap" />
+                           Classes="mfc-mono" />
                 <TextBlock Text="{Binding RoutingAssurance.OperationalHashText, StringFormat=operational_hash: {0}}"
-                           FontFamily="Consolas,Menlo,monospace"
-                           TextWrapping="Wrap" />
-                <TextBlock FontWeight="SemiBold" Text="Route expectations" />
+                           Classes="mfc-mono" />
+                <TextBlock Classes="mfc-label" Text="Route expectations" />
                 <ListBox ItemsSource="{Binding RoutingAssurance.ExpectationLines}" MaxHeight="120">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -385,7 +439,7 @@
                     </ItemsPanelTemplate>
                   </ListBox.ItemsPanel>
                 </ListBox>
-                <TextBlock FontWeight="SemiBold" Text="Route findings" />
+                <TextBlock Classes="mfc-label" Text="Route findings" />
                 <ListBox ItemsSource="{Binding RoutingAssurance.FindingLines}" MaxHeight="120">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -393,7 +447,7 @@
                     </ItemsPanelTemplate>
                   </ListBox.ItemsPanel>
                 </ListBox>
-                <TextBlock FontWeight="SemiBold" Text="Trace summaries" />
+                <TextBlock Classes="mfc-label" Text="Trace summaries" />
                 <ListBox ItemsSource="{Binding RoutingAssurance.TraceSummaryLines}" MaxHeight="160">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -410,22 +464,22 @@
         <TabControl IsVisible="{Binding IsSnapshotsSelected}">
           <TabItem Header="Snapshot">
             <Grid ColumnDefinitions="220,12,*" RowDefinitions="Auto,*,Auto" Margin="0,8,0,0">
-              <DockPanel Grid.Column="0" Grid.Row="0" Margin="0,0,0,8">
-                <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
+              <StackPanel Grid.Column="0" Grid.Row="0" Spacing="6" Margin="0,0,0,8">
+                <TextBlock Classes="mfc-section-title" Text="Sections" />
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <CheckBox Content="Technical"
-                            IsChecked="{Binding Snapshot.ShowTechnicalView}" />
-                  <Button Content="Reload"
-                          Command="{Binding Snapshot.ReloadCommand}"
-                          MinWidth="80" />
-                </StackPanel>
-                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Sections" VerticalAlignment="Center" />
-              </DockPanel>
+                            IsChecked="{Binding Snapshot.ShowTechnicalView}"
+                            VerticalAlignment="Center" />
+                  <Button Classes="mfc-action"
+                          Content="Reload"
+                          Command="{Binding Snapshot.ReloadCommand}" />
+                </WrapPanel>
+              </StackPanel>
 
               <Border Grid.Column="0"
                       Grid.Row="1"
-                      BorderBrush="#D0D5DD"
-                      BorderThickness="1"
-                      Padding="4">
+                      Classes="mfc-list-frame"
+                      ClipToBounds="True">
                 <ListBox ItemsSource="{Binding Snapshot.VisibleSections}"
                          SelectedItem="{Binding Snapshot.SelectedSection, Mode=TwoWay}">
                   <ListBox.ItemsPanel>
@@ -447,42 +501,44 @@
               <TextBlock Grid.Column="0"
                          Grid.Row="2"
                          Margin="0,8,0,0"
-                         TextWrapping="Wrap"
-                         Foreground="#B00020"
+                         Classes="mfc-error"
                          Text="{Binding Snapshot.ErrorText}"
                          IsVisible="{Binding Snapshot.HasError}" />
 
-              <DockPanel Grid.Column="2" Grid.Row="0" Margin="0,0,0,8">
-                <Button Content="Copy sanitized"
+              <DockPanel Grid.Column="2" Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
+                <Button Classes="mfc-action"
+                        Content="Copy sanitized"
                         Command="{Binding Snapshot.CopySanitizedCommand}"
                         DockPanel.Dock="Right"
-                        MinWidth="120" />
-                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Snapshot (configuration / observations)" VerticalAlignment="Center" />
+                        MinWidth="120"
+                        Margin="8,0,0,0" />
+                <TextBlock Classes="mfc-section-title"
+                           Text="Snapshot (configuration / observations)"
+                           VerticalAlignment="Center"
+                           TextWrapping="Wrap" />
               </DockPanel>
 
               <Border Grid.Column="2"
                       Grid.Row="1"
                       Grid.RowSpan="2"
-                      BorderBrush="#D0D5DD"
-                      BorderThickness="1"
-                      Padding="10">
-                <Grid RowDefinitions="Auto,Auto,*,*">
+                      Classes="mfc-panel"
+                      ClipToBounds="True">
+                <Grid RowDefinitions="Auto,Auto,*,Auto,*">
                   <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,8">
-                    <TextBlock Text="{Binding Snapshot.HintText}" TextWrapping="Wrap" Opacity="0.85" />
-                    <TextBlock Text="{Binding Snapshot.StatusText, StringFormat=Capture status: {0}}" />
-                    <TextBlock Text="{Binding Snapshot.SchemaVersionText, StringFormat=Schema version: {0}}" />
+                    <TextBlock Text="{Binding Snapshot.HintText}" Classes="mfc-muted" />
+                    <TextBlock Text="{Binding Snapshot.StatusText, StringFormat=Capture status: {0}}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Snapshot.SchemaVersionText, StringFormat=Schema version: {0}}" TextWrapping="Wrap" />
                     <TextBlock Text="{Binding Snapshot.ConfigurationHashText, StringFormat=configuration_hash: {0}}"
-                               FontFamily="Consolas,Menlo,monospace"
-                               TextWrapping="Wrap" />
+                               Classes="mfc-mono" />
                     <TextBlock Text="{Binding Snapshot.ObservationHashText, StringFormat=observation_hash: {0}}"
-                               FontFamily="Consolas,Menlo,monospace"
-                               TextWrapping="Wrap" />
+                               Classes="mfc-mono" />
                     <TextBlock Text="{Binding Snapshot.CapabilityHashText, StringFormat=capability_hash: {0}}"
-                               FontFamily="Consolas,Menlo,monospace"
-                               TextWrapping="Wrap" />
-                    <ComboBox ItemsSource="{Binding Snapshot.Captures}"
+                               Classes="mfc-mono" />
+                    <ComboBox Classes="mfc-field"
+                              ItemsSource="{Binding Snapshot.Captures}"
                               SelectedItem="{Binding Snapshot.SelectedCapture, Mode=TwoWay}"
-                              MinWidth="280"
+                              MaxWidth="420"
+                              HorizontalAlignment="Left"
                               PlaceholderText="Captures">
                       <ComboBox.ItemTemplate>
                         <DataTemplate DataType="svc:SnapshotCaptureListItem">
@@ -492,8 +548,11 @@
                     </ComboBox>
                   </StackPanel>
 
-                  <TextBlock Grid.Row="1" Margin="0,4,0,4" FontWeight="SemiBold" Text="Configuration records" />
-                  <ListBox Grid.Row="2" ItemsSource="{Binding Snapshot.ConfigurationRecords}" Margin="0,0,0,8">
+                  <TextBlock Grid.Row="1" Margin="0,4,0,4" Classes="mfc-label" Text="Configuration records" />
+                  <ListBox Grid.Row="2"
+                           ItemsSource="{Binding Snapshot.ConfigurationRecords}"
+                           Margin="0,0,0,8"
+                           MinHeight="100">
                     <ListBox.ItemsPanel>
                       <ItemsPanelTemplate>
                         <VirtualizingStackPanel />
@@ -506,21 +565,21 @@
                     </ListBox.ItemTemplate>
                   </ListBox>
 
-                  <DockPanel Grid.Row="3">
-                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,4" FontWeight="SemiBold" Text="Observation records" />
-                    <ListBox ItemsSource="{Binding Snapshot.ObservationRecords}">
-                      <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                          <VirtualizingStackPanel />
-                        </ItemsPanelTemplate>
-                      </ListBox.ItemsPanel>
-                      <ListBox.ItemTemplate>
-                        <DataTemplate DataType="svc:SnapshotRecordListItem">
-                          <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
-                        </DataTemplate>
-                      </ListBox.ItemTemplate>
-                    </ListBox>
-                  </DockPanel>
+                  <TextBlock Grid.Row="3" Margin="0,0,0,4" Classes="mfc-label" Text="Observation records" />
+                  <ListBox Grid.Row="4"
+                           ItemsSource="{Binding Snapshot.ObservationRecords}"
+                           MinHeight="100">
+                    <ListBox.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                      </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                      <DataTemplate DataType="svc:SnapshotRecordListItem">
+                        <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
                 </Grid>
               </Border>
             </Grid>
@@ -529,14 +588,14 @@
           <TabItem Header="Semantic diff">
             <Grid ColumnDefinitions="220,12,*" RowDefinitions="Auto,*" Margin="0,8,0,0">
               <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Spacing="8" Margin="0,0,0,10">
-                <TextBlock FontSize="15" FontWeight="SemiBold" Text="Compare snapshots (server-side)" />
-                <TextBlock Text="{Binding Diff.StatusText}" TextWrapping="Wrap" Opacity="0.85" />
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                  <StackPanel Spacing="4">
-                    <TextBlock Text="Base" FontWeight="SemiBold" />
-                    <ComboBox ItemsSource="{Binding Diff.Captures}"
+                <TextBlock Classes="mfc-section-title" Text="Compare snapshots (server-side)" />
+                <TextBlock Text="{Binding Diff.StatusText}" Classes="mfc-muted" />
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="12">
+                  <StackPanel Spacing="4" MinWidth="200" MaxWidth="360">
+                    <TextBlock Text="Base" Classes="mfc-label" />
+                    <ComboBox Classes="mfc-field"
+                              ItemsSource="{Binding Diff.Captures}"
                               SelectedItem="{Binding Diff.BaseCapture, Mode=TwoWay}"
-                              MinWidth="260"
                               PlaceholderText="Base capture">
                       <ComboBox.ItemTemplate>
                         <DataTemplate DataType="svc:SnapshotCaptureListItem">
@@ -545,11 +604,11 @@
                       </ComboBox.ItemTemplate>
                     </ComboBox>
                   </StackPanel>
-                  <StackPanel Spacing="4">
-                    <TextBlock Text="Target" FontWeight="SemiBold" />
-                    <ComboBox ItemsSource="{Binding Diff.Captures}"
+                  <StackPanel Spacing="4" MinWidth="200" MaxWidth="360">
+                    <TextBlock Text="Target" Classes="mfc-label" />
+                    <ComboBox Classes="mfc-field"
+                              ItemsSource="{Binding Diff.Captures}"
                               SelectedItem="{Binding Diff.TargetCapture, Mode=TwoWay}"
-                              MinWidth="260"
                               PlaceholderText="Target capture">
                       <ComboBox.ItemTemplate>
                         <DataTemplate DataType="svc:SnapshotCaptureListItem">
@@ -558,36 +617,36 @@
                       </ComboBox.ItemTemplate>
                     </ComboBox>
                   </StackPanel>
-                  <Button Content="Compare"
+                  <Button Classes="mfc-action"
+                          Content="Compare"
                           Command="{Binding Diff.CompareCommand}"
                           VerticalAlignment="Bottom"
                           MinWidth="100" />
-                  <Button Content="Reload captures"
+                  <Button Classes="mfc-action"
+                          Content="Reload captures"
                           Command="{Binding Diff.ReloadCapturesCommand}"
                           VerticalAlignment="Bottom"
                           MinWidth="120" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="16">
+                </WrapPanel>
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="16">
                   <CheckBox Content="Configuration only"
                             IsChecked="{Binding Diff.ShowConfigurationOnly}" />
                   <CheckBox Content="Observations only"
                             IsChecked="{Binding Diff.ShowObservationOnly}" />
-                </StackPanel>
+                </WrapPanel>
                 <TextBlock Text="No differences"
                            FontSize="18"
                            FontWeight="Bold"
                            IsVisible="{Binding Diff.IsNoDifferences}" />
-                <TextBlock Text="{Binding Diff.ErrorText}"
-                           TextWrapping="Wrap"
-                           Foreground="#B00020"
+                <TextBlock Classes="mfc-error"
+                           Text="{Binding Diff.ErrorText}"
                            IsVisible="{Binding Diff.HasError}" />
               </StackPanel>
 
               <Border Grid.Column="0"
                       Grid.Row="1"
-                      BorderBrush="#D0D5DD"
-                      BorderThickness="1"
-                      Padding="4">
+                      Classes="mfc-list-frame"
+                      ClipToBounds="True">
                 <ListBox ItemsSource="{Binding Diff.SectionGroups}"
                          SelectedItem="{Binding Diff.SelectedSectionGroup, Mode=TwoWay}">
                   <ListBox.ItemsPanel>
@@ -608,9 +667,8 @@
 
               <Border Grid.Column="2"
                       Grid.Row="1"
-                      BorderBrush="#D0D5DD"
-                      BorderThickness="1"
-                      Padding="4">
+                      Classes="mfc-list-frame"
+                      ClipToBounds="True">
                 <ListBox ItemsSource="{Binding Diff.VisibleEntries}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -632,69 +690,83 @@
         </TabControl>
 
         <!-- Policies -->
-        <ScrollViewer IsVisible="{Binding IsPoliciesSelected}" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer IsVisible="{Binding IsPoliciesSelected}"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
           <StackPanel Spacing="10">
             <StackPanel Spacing="2">
-              <TextBlock FontSize="15" FontWeight="SemiBold" Text="Policy authoring / review / binding" />
-              <TextBlock Text="{Binding Policies.ReadOnlyBannerText}"
-                         Foreground="#8A5A00"
-                         TextWrapping="Wrap"
+              <TextBlock Classes="mfc-section-title" Text="Policy authoring / review / binding" />
+              <TextBlock Classes="mfc-warning"
+                         Text="{Binding Policies.ReadOnlyBannerText}"
                          IsVisible="{Binding Policies.IsReadOnlyBannerVisible}" />
-              <TextBlock Text="{Binding Policies.ErrorText}"
-                         Foreground="#B00020"
-                         TextWrapping="Wrap"
+              <TextBlock Classes="mfc-error"
+                         Text="{Binding Policies.ErrorText}"
                          IsVisible="{Binding Policies.HasError}" />
             </StackPanel>
 
-            <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+            <Border Classes="mfc-panel">
               <StackPanel Spacing="6">
-                <TextBlock FontWeight="SemiBold" Text="Revision" />
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                  <TextBox PlaceholderText="revision UUID"
+                <TextBlock Classes="mfc-label" Text="Revision" />
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <TextBox Classes="mfc-field"
+                           PlaceholderText="revision UUID"
                            Text="{Binding Policies.RevisionIdText}"
-                           MinWidth="280" />
-                  <Button Content="Load" Command="{Binding Policies.LoadCommand}" MinWidth="80" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                  <TextBox PlaceholderText="draft name (CompanyBaseline)"
+                           MinWidth="240"
+                           Width="320" />
+                  <Button Classes="mfc-action" Content="Load" Command="{Binding Policies.LoadCommand}" />
+                </WrapPanel>
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <TextBox Classes="mfc-field"
+                           PlaceholderText="draft name (CompanyBaseline)"
                            Text="{Binding Policies.DraftNameText}"
-                           MinWidth="280" />
-                  <Button Content="Create draft" Command="{Binding Policies.CreateDraftCommand}" MinWidth="110" />
-                </StackPanel>
-                <TextBlock Text="{Binding Policies.StateText, StringFormat=State: {0}}" />
+                           MinWidth="240"
+                           Width="320" />
+                  <Button Classes="mfc-action" Content="Create draft" Command="{Binding Policies.CreateDraftCommand}" MinWidth="110" />
+                </WrapPanel>
+                <TextBlock Text="{Binding Policies.StateText, StringFormat=State: {0}}" TextWrapping="Wrap" />
                 <TextBlock Text="{Binding Policies.ContentHashText, StringFormat=Content hash: {0}}"
-                           FontFamily="Consolas,Menlo,monospace"
-                           TextWrapping="Wrap" />
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                  <Button Content="Validate" Command="{Binding Policies.ValidateCommand}" MinWidth="90" />
-                  <Button Content="Submit for review" Command="{Binding Policies.SubmitCommand}" MinWidth="130" />
-                  <Button Content="Approve" Command="{Binding Policies.ApproveCommand}" MinWidth="90" />
-                  <Button Content="Bind" Command="{Binding Policies.BindCommand}" MinWidth="80" />
-                  <Button Content="Deploy" Command="{Binding Policies.DeployCommand}" MinWidth="90"
+                           Classes="mfc-mono" />
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <Button Classes="mfc-action" Content="Validate" Command="{Binding Policies.ValidateCommand}" MinWidth="90" />
+                  <Button Classes="mfc-action" Content="Submit for review" Command="{Binding Policies.SubmitCommand}" MinWidth="130" />
+                  <Button Classes="mfc-action" Content="Approve" Command="{Binding Policies.ApproveCommand}" MinWidth="90" />
+                  <Button Classes="mfc-action" Content="Bind" Command="{Binding Policies.BindCommand}" />
+                  <Button Classes="mfc-action"
+                          Content="Deploy"
+                          Command="{Binding Policies.DeployCommand}"
+                          MinWidth="90"
                           ToolTip.Tip="Deploy blocked from authoring (no Save and Deploy). Use Operations → Deploy." />
-                </StackPanel>
+                </WrapPanel>
               </StackPanel>
             </Border>
 
-            <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+            <Border Classes="mfc-panel">
               <StackPanel Spacing="6">
-                <TextBlock FontWeight="SemiBold" Text="Rules" />
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                  <ComboBox ItemsSource="{Binding Policies.Families}"
+                <TextBlock Classes="mfc-label" Text="Rules" />
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <ComboBox Classes="mfc-field"
+                            ItemsSource="{Binding Policies.Families}"
                             SelectedItem="{Binding Policies.SelectedFamily, Mode=TwoWay}"
-                            MinWidth="100" />
-                  <ComboBox ItemsSource="{Binding Policies.Chains}"
+                            MinWidth="100"
+                            Width="120" />
+                  <ComboBox Classes="mfc-field"
+                            ItemsSource="{Binding Policies.Chains}"
                             SelectedItem="{Binding Policies.SelectedChain, Mode=TwoWay}"
-                            MinWidth="120" />
-                  <ComboBox ItemsSource="{Binding Policies.Stages}"
+                            MinWidth="120"
+                            Width="140" />
+                  <ComboBox Classes="mfc-field"
+                            ItemsSource="{Binding Policies.Stages}"
                             SelectedItem="{Binding Policies.SelectedStage, Mode=TwoWay}"
-                            MinWidth="180" />
-                  <ComboBox ItemsSource="{Binding Policies.Effects}"
+                            MinWidth="160"
+                            Width="200" />
+                  <ComboBox Classes="mfc-field"
+                            ItemsSource="{Binding Policies.Effects}"
                             SelectedItem="{Binding Policies.SelectedEffect, Mode=TwoWay}"
-                            MinWidth="140" />
-                </StackPanel>
-                <TextBox PlaceholderText="description" Text="{Binding Policies.RuleDescriptionText}" />
-                <Button Content="Add rule" Command="{Binding Policies.AddRuleCommand}" MinWidth="100" HorizontalAlignment="Left" />
+                            MinWidth="120"
+                            Width="160" />
+                </WrapPanel>
+                <TextBox Classes="mfc-field" PlaceholderText="description" Text="{Binding Policies.RuleDescriptionText}" />
+                <Button Classes="mfc-action" Content="Add rule" Command="{Binding Policies.AddRuleCommand}" MinWidth="100" HorizontalAlignment="Left" />
                 <ListBox ItemsSource="{Binding Policies.Rules}" MaxHeight="180">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -711,21 +783,25 @@
               </StackPanel>
             </Border>
 
-            <Border BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
+            <Border Classes="mfc-panel">
               <StackPanel Spacing="6">
-                <TextBlock FontWeight="SemiBold" Text="Review: compose / diff / analysis risk" />
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                  <TextBox PlaceholderText="compose node UUID"
+                <TextBlock Classes="mfc-label" Text="Review: compose / diff / analysis risk" />
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <TextBox Classes="mfc-field"
+                           PlaceholderText="compose node UUID"
                            Text="{Binding Policies.ComposeNodeIdText}"
-                           MinWidth="280" />
-                  <Button Content="Compose findings" Command="{Binding Policies.ComposeCommand}" MinWidth="130" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                  <TextBox PlaceholderText="baseline revision UUID"
+                           MinWidth="240"
+                           Width="320" />
+                  <Button Classes="mfc-action" Content="Compose findings" Command="{Binding Policies.ComposeCommand}" MinWidth="130" />
+                </WrapPanel>
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <TextBox Classes="mfc-field"
+                           PlaceholderText="baseline revision UUID"
                            Text="{Binding Policies.DiffBaselineRevisionIdText}"
-                           MinWidth="280" />
-                  <Button Content="Semantic diff" Command="{Binding Policies.DiffCommand}" MinWidth="120" />
-                </StackPanel>
+                           MinWidth="240"
+                           Width="320" />
+                  <Button Classes="mfc-action" Content="Semantic diff" Command="{Binding Policies.DiffCommand}" MinWidth="120" />
+                </WrapPanel>
                 <ListBox ItemsSource="{Binding Policies.Findings}" MaxHeight="120">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -747,24 +823,25 @@
         <!-- Operations: Onboarding + Deploy + recovery -->
         <TabControl IsVisible="{Binding IsOperationsSelected}">
           <TabItem Header="Onboarding">
-            <ScrollViewer Margin="0,8,0,0" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Margin="0,8,0,0"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
               <StackPanel Spacing="10">
                 <StackPanel Spacing="2">
-                  <TextBlock FontSize="15" FontWeight="SemiBold" Text="Managed-device onboarding" />
-                  <TextBlock Text="{Binding Onboarding.StatusText}" Opacity="0.85" TextWrapping="Wrap" />
-                  <TextBlock Text="{Binding Onboarding.ErrorText}"
-                             Foreground="#B00020"
-                             TextWrapping="Wrap"
+                  <TextBlock Classes="mfc-section-title" Text="Managed-device onboarding" />
+                  <TextBlock Text="{Binding Onboarding.StatusText}" Classes="mfc-muted" />
+                  <TextBlock Classes="mfc-error"
+                             Text="{Binding Onboarding.ErrorText}"
                              IsVisible="{Binding Onboarding.HasError}" />
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                  <Button Content="Validate prerequisites" Command="{Binding Onboarding.ValidateCommand}" MinWidth="160" />
-                  <Button Content="Create plan" Command="{Binding Onboarding.CreatePlanCommand}" MinWidth="110" />
-                  <Button Content="Start" Command="{Binding Onboarding.StartCommand}" MinWidth="80" />
-                  <Button Content="Rollback" Command="{Binding Onboarding.RollbackCommand}" MinWidth="90" />
-                  <Button Content="Recovery status" Command="{Binding Onboarding.RecoveryCommand}" MinWidth="130" />
-                </StackPanel>
-                <TextBlock FontWeight="SemiBold" Text="Prerequisite checklist" />
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <Button Classes="mfc-action" Content="Validate prerequisites" Command="{Binding Onboarding.ValidateCommand}" MinWidth="160" />
+                  <Button Classes="mfc-action" Content="Create plan" Command="{Binding Onboarding.CreatePlanCommand}" MinWidth="110" />
+                  <Button Classes="mfc-action" Content="Start" Command="{Binding Onboarding.StartCommand}" />
+                  <Button Classes="mfc-action" Content="Rollback" Command="{Binding Onboarding.RollbackCommand}" MinWidth="90" />
+                  <Button Classes="mfc-action" Content="Recovery status" Command="{Binding Onboarding.RecoveryCommand}" MinWidth="130" />
+                </WrapPanel>
+                <TextBlock Classes="mfc-label" Text="Prerequisite checklist" />
                 <ListBox ItemsSource="{Binding Onboarding.Findings}" MaxHeight="140">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -778,11 +855,10 @@
                     </DataTemplate>
                   </ListBox.ItemTemplate>
                 </ListBox>
-                <TextBlock FontWeight="SemiBold" Text="Recovery facts" />
+                <TextBlock Classes="mfc-label" Text="Recovery facts" />
                 <TextBlock Text="{Binding Onboarding.RecoveryFactsText}"
-                           TextWrapping="Wrap"
-                           FontFamily="Consolas,Menlo,monospace" />
-                <TextBlock FontWeight="SemiBold" Text="Progress" />
+                           Classes="mfc-mono" />
+                <TextBlock Classes="mfc-label" Text="Progress" />
                 <ListBox ItemsSource="{Binding Onboarding.ProgressLines}" MaxHeight="120">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -795,23 +871,24 @@
           </TabItem>
 
           <TabItem Header="Deploy">
-            <ScrollViewer Margin="0,8,0,0" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Margin="0,8,0,0"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
               <StackPanel Spacing="10">
                 <StackPanel Spacing="2">
-                  <TextBlock FontSize="15" FontWeight="SemiBold" Text="Safe deployment" />
-                  <TextBlock Text="{Binding Deployment.StatusText}" Opacity="0.85" TextWrapping="Wrap" />
-                  <TextBlock Text="{Binding Deployment.ErrorText}"
-                             Foreground="#B00020"
-                             TextWrapping="Wrap"
+                  <TextBlock Classes="mfc-section-title" Text="Safe deployment" />
+                  <TextBlock Text="{Binding Deployment.StatusText}" Classes="mfc-muted" />
+                  <TextBlock Classes="mfc-error"
+                             Text="{Binding Deployment.ErrorText}"
                              IsVisible="{Binding Deployment.HasError}" />
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                  <Button Content="Create plan" Command="{Binding Deployment.CreatePlanCommand}" MinWidth="110" />
-                  <Button Content="Start" Command="{Binding Deployment.StartCommand}" MinWidth="80" />
-                  <Button Content="Rollback" Command="{Binding Deployment.RollbackCommand}" MinWidth="90" />
-                  <Button Content="Recovery status" Command="{Binding Deployment.RecoveryCommand}" MinWidth="130" />
-                </StackPanel>
-                <TextBlock FontWeight="SemiBold" Text="Semantic diff" />
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <Button Classes="mfc-action" Content="Create plan" Command="{Binding Deployment.CreatePlanCommand}" MinWidth="110" />
+                  <Button Classes="mfc-action" Content="Start" Command="{Binding Deployment.StartCommand}" />
+                  <Button Classes="mfc-action" Content="Rollback" Command="{Binding Deployment.RollbackCommand}" MinWidth="90" />
+                  <Button Classes="mfc-action" Content="Recovery status" Command="{Binding Deployment.RecoveryCommand}" MinWidth="130" />
+                </WrapPanel>
+                <TextBlock Classes="mfc-label" Text="Semantic diff" />
                 <ListBox ItemsSource="{Binding Deployment.SemanticDiffLines}" MaxHeight="100">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -819,11 +896,10 @@
                     </ItemsPanelTemplate>
                   </ListBox.ItemsPanel>
                 </ListBox>
-                <TextBlock FontWeight="SemiBold" Text="Recovery facts" />
+                <TextBlock Classes="mfc-label" Text="Recovery facts" />
                 <TextBlock Text="{Binding Deployment.RecoveryFactsText}"
-                           TextWrapping="Wrap"
-                           FontFamily="Consolas,Menlo,monospace" />
-                <TextBlock FontWeight="SemiBold" Text="Progress" />
+                           Classes="mfc-mono" />
+                <TextBlock Classes="mfc-label" Text="Progress" />
                 <ListBox ItemsSource="{Binding Deployment.ProgressLines}" MaxHeight="120">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -837,23 +913,22 @@
         </TabControl>
 
         <!-- Drift (no automatic fix) -->
-        <Grid IsVisible="{Binding IsDriftSelected}" RowDefinitions="Auto,*,*" Margin="0,0,0,0">
-          <DockPanel Grid.Row="0" Margin="0,0,0,8">
-            <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
-              <Button Content="Refresh" Command="{Binding Drift.RefreshCommand}" MinWidth="80" />
-            </StackPanel>
+        <Grid IsVisible="{Binding IsDriftSelected}" RowDefinitions="Auto,*,*" ClipToBounds="True">
+          <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
+            <WrapPanel DockPanel.Dock="Right" Classes="mfc-toolbar" ItemSpacing="8" Margin="8,0,0,0">
+              <Button Classes="mfc-action" Content="Refresh" Command="{Binding Drift.RefreshCommand}" />
+            </WrapPanel>
             <StackPanel Spacing="2">
-              <TextBlock FontSize="16" FontWeight="SemiBold" Text="Drift" />
-              <TextBlock Text="Read-only drift events. Restoration is via Operations → Deploy (no automatic fix)."
-                         Opacity="0.8" TextWrapping="Wrap" />
-              <TextBlock Text="{Binding Drift.StatusText}" Opacity="0.85" TextWrapping="Wrap" />
-              <TextBlock Text="{Binding Drift.ErrorText}"
-                         Foreground="#B00020"
-                         TextWrapping="Wrap"
+              <TextBlock Classes="mfc-module-title" Text="Drift" />
+              <TextBlock Classes="mfc-muted"
+                         Text="Read-only drift events. Restoration is via Operations → Deploy (no automatic fix)." />
+              <TextBlock Text="{Binding Drift.StatusText}" Classes="mfc-muted" />
+              <TextBlock Classes="mfc-error"
+                         Text="{Binding Drift.ErrorText}"
                          IsVisible="{Binding Drift.HasError}" />
             </StackPanel>
           </DockPanel>
-          <Border Grid.Row="1" BorderBrush="#D0D5DD" BorderThickness="1" Padding="4" Margin="0,0,0,8">
+          <Border Grid.Row="1" Classes="mfc-list-frame" Margin="0,0,0,8" ClipToBounds="True">
             <ListBox ItemsSource="{Binding Drift.Events}"
                      SelectedItem="{Binding Drift.SelectedEvent, Mode=TwoWay}"
                      Name="DriftEventsList">
@@ -868,18 +943,20 @@
                     <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" FontWeight="SemiBold" />
                     <TextBlock Opacity="0.75"
                                Text="{Binding BaselineHashText, StringFormat=baseline: {0}}"
-                               FontFamily="Consolas,Menlo,monospace" />
+                               FontFamily="Consolas,Menlo,monospace"
+                               TextTrimming="CharacterEllipsis" />
                     <TextBlock Opacity="0.75"
                                Text="{Binding ActualHashText, StringFormat=actual: {0}}"
-                               FontFamily="Consolas,Menlo,monospace" />
+                               FontFamily="Consolas,Menlo,monospace"
+                               TextTrimming="CharacterEllipsis" />
                   </StackPanel>
                 </DataTemplate>
               </ListBox.ItemTemplate>
             </ListBox>
           </Border>
-          <Border Grid.Row="2" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
-            <DockPanel>
-              <TextBlock DockPanel.Dock="Top" FontWeight="SemiBold" Text="Semantic diff" Margin="0,0,0,6" />
+          <Border Grid.Row="2" Classes="mfc-panel" ClipToBounds="True">
+            <DockPanel LastChildFill="True">
+              <TextBlock DockPanel.Dock="Top" Classes="mfc-label" Text="Semantic diff" Margin="0,0,0,6" />
               <TextBox Text="{Binding Drift.SemanticDiffText}"
                        IsReadOnly="True"
                        AcceptsReturn="True"
@@ -890,23 +967,22 @@
         </Grid>
 
         <!-- Audit (read-only) -->
-        <Grid IsVisible="{Binding IsAuditSelected}" RowDefinitions="Auto,*,*" Margin="0,0,0,0">
-          <DockPanel Grid.Row="0" Margin="0,0,0,8">
-            <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
-              <Button Content="Refresh" Command="{Binding Audit.RefreshCommand}" MinWidth="80" />
-            </StackPanel>
+        <Grid IsVisible="{Binding IsAuditSelected}" RowDefinitions="Auto,*,*" ClipToBounds="True">
+          <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
+            <WrapPanel DockPanel.Dock="Right" Classes="mfc-toolbar" ItemSpacing="8" Margin="8,0,0,0">
+              <Button Classes="mfc-action" Content="Refresh" Command="{Binding Audit.RefreshCommand}" />
+            </WrapPanel>
             <StackPanel Spacing="2">
-              <TextBlock FontSize="16" FontWeight="SemiBold" Text="Audit" />
-              <TextBlock Text="Read-only append-only events (newest first). No mutate actions."
-                         Opacity="0.8" TextWrapping="Wrap" />
-              <TextBlock Text="{Binding Audit.StatusText}" Opacity="0.85" TextWrapping="Wrap" />
-              <TextBlock Text="{Binding Audit.ErrorText}"
-                         Foreground="#B00020"
-                         TextWrapping="Wrap"
+              <TextBlock Classes="mfc-module-title" Text="Audit" />
+              <TextBlock Classes="mfc-muted"
+                         Text="Read-only append-only events (newest first). No mutate actions." />
+              <TextBlock Text="{Binding Audit.StatusText}" Classes="mfc-muted" />
+              <TextBlock Classes="mfc-error"
+                         Text="{Binding Audit.ErrorText}"
                          IsVisible="{Binding Audit.HasError}" />
             </StackPanel>
           </DockPanel>
-          <Border Grid.Row="1" BorderBrush="#D0D5DD" BorderThickness="1" Padding="4" Margin="0,0,0,8">
+          <Border Grid.Row="1" Classes="mfc-list-frame" Margin="0,0,0,8" ClipToBounds="True">
             <ListBox ItemsSource="{Binding Audit.Events}"
                      SelectedItem="{Binding Audit.SelectedEvent, Mode=TwoWay}"
                      Name="AuditEventsList">
@@ -922,9 +998,9 @@
               </ListBox.ItemTemplate>
             </ListBox>
           </Border>
-          <Border Grid.Row="2" BorderBrush="#D0D5DD" BorderThickness="1" Padding="8">
-            <DockPanel>
-              <TextBlock DockPanel.Dock="Top" FontWeight="SemiBold" Text="Payload (JSON)" Margin="0,0,0,6" />
+          <Border Grid.Row="2" Classes="mfc-panel" ClipToBounds="True">
+            <DockPanel LastChildFill="True">
+              <TextBlock DockPanel.Dock="Top" Classes="mfc-label" Text="Payload (JSON)" Margin="0,0,0,6" />
               <TextBox Text="{Binding Audit.SelectedEvent.PayloadJson}"
                        IsReadOnly="True"
                        AcceptsReturn="True"
@@ -933,7 +1009,8 @@
             </DockPanel>
           </Border>
         </Grid>
-      </Panel>
+        </Grid>
+      </Border>
     </Grid>
   </DockPanel>
 </Window>
