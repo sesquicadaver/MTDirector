@@ -97,7 +97,7 @@
 | W3.2 | `ValidateDeviceConnection` | Add router / Inventory «Probe» — **DONE** |
 | W3.3 | Onboarding/Deploy `Watch` streams | Progress live, не лише snapshot після Start — **DONE** |
 | W3.4 | `GetNodeWorkflow` | Node/Inventory workflow без дублювання ad-hoc — **DONE** |
-| W3.5 | Zones `UpdateZoneDefinition`, `ResolveZonesForDevice` | Edit zone; resolve device |
+| W3.5 | Zones `UpdateZoneDefinition`, `ResolveZonesForDevice` | Edit zone; resolve device — **DONE** |
 | W3.6 | Policy: `UpdateRule`/`DeleteRule`/`AcknowledgeWarning`/`CompileNodeFilterArtifacts` | за пріоритетом review/deploy loop |
 | W3.7 | Drift `GetDriftEvent` | якщо list недостатній для payload |
 
@@ -139,7 +139,8 @@ W3.1 StartCapture Desktop          ← DONE
 W3.2 ValidateConnection            ← DONE
 W3.3 Watch streams                 ← DONE
 W3.4 GetNodeWorkflow               ← DONE
-W3.5 Zones Update/ResolveDevice
+W3.5 Zones Update/ResolveDevice    ← DONE
+W3.6 Policy mutate RPCs
 W4  VRRP Node shell
 ```
 
@@ -167,7 +168,8 @@ W4  VRRP Node shell
 | W3.2 | **DONE** (Desktop ValidateDeviceConnection Probe) |
 | W3.3 | **DONE** (Onboarding/Deploy Start + Watch progress) |
 | W3.4 | **DONE** (Node GetNodeWorkflow + device contributing/sync) |
-| W2.1–W2.2, W3.5–W5 | **TODO** |
+| W3.5 | **DONE** (Zones Update zone + Resolve device) |
+| W2.1–W2.2, W3.6–W5 | **TODO** |
 
 ### W3.1 Snapshots: Capture + progress — **DONE**
 - **Дані:** SnapshotService `StartCapture` / `WatchCapture` (device_id only; Controller M1-26)
@@ -197,4 +199,11 @@ W4  VRRP Node shell
 - **Перевірка:** Living Spec `Ac3cNodeLoadsGetNodeWorkflowInsteadOfAdHocReadinessMashup`; `NodeDetailViewModelTests`
 - **Файли:** `IInventoryTreeClient`, `GrpcInventoryTreeClient`, `NodeDetailViewModel`, `MainWindow.axaml`, `App.axaml.cs`
 
-**NEXT (alignment):** W3.5 Zones `UpdateZoneDefinition` / `ResolveZonesForDevice`.
+### W3.5 Zones: Update definition + Resolve device — **DONE**
+- **Дані:** ZoneService `UpdateZoneDefinition` (name/description + row_version) / `ResolveZonesForDevice` (selected Device)
+- **Зроблено:** Zones panel «Update zone» (edit fields from selection; empty description → reset) і «Resolve device»; RPC off UI thread (`Task.Run`). Existing «Resolve node» unchanged.
+- **Не чіпали:** WriteEnabled; Policy mutate (W3.6); local SemanticDiffEngine; Rollback Watch
+- **Перевірка:** Living Spec `Ac2dZonesEditDefinitionAndResolveDevice`; `ZonesViewModelTests`; `ZonesDesktopServiceTests`
+- **Файли:** `ZonePanelService`, `ZonesViewModel`, `MainWindow.axaml`
+
+**NEXT (alignment):** W3.6 Policy `UpdateRule` / `DeleteRule` / `AcknowledgeWarning` / `CompileNodeFilterArtifacts`.

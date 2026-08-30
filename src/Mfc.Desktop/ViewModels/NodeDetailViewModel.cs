@@ -139,6 +139,7 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
 
     private void RefreshPresentation()
     {
+        Interlocked.Increment(ref _workflowEpoch);
         InventoryNodeViewModel? selected = _inventory.SelectedNode;
         InventoryNodeViewModel? node = ResolveNode(selected);
         DeviceHashLines.Clear();

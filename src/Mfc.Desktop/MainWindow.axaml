@@ -314,6 +314,7 @@
                              Margin="8,0,0,0">
                     <Button Classes="mfc-action" Content="Refresh" Command="{Binding Zones.RefreshCommand}" />
                     <Button Classes="mfc-action" Content="Resolve node" Command="{Binding Zones.ResolveCommand}" MinWidth="110" />
+                    <Button Classes="mfc-action" Content="Resolve device" Command="{Binding Zones.ResolveDeviceCommand}" MinWidth="120" />
                   </WrapPanel>
                   <StackPanel Spacing="2">
                     <TextBlock Classes="mfc-section-title" Text="Logical zones &amp; Node bindings" />
@@ -335,6 +336,14 @@
                         <Button Classes="mfc-action" Content="Create" Command="{Binding Zones.CreateZoneCommand}" MinWidth="90" />
                         <Button Classes="mfc-action" Content="Delete" Command="{Binding Zones.DeleteZoneCommand}" MinWidth="90" />
                       </WrapPanel>
+                      <TextBlock Classes="mfc-label" Text="Edit selected zone" />
+                      <TextBox Classes="mfc-field" PlaceholderText="name" Text="{Binding Zones.EditZoneName}" />
+                      <TextBox Classes="mfc-field" PlaceholderText="description (empty clears)" Text="{Binding Zones.EditZoneDescription}" />
+                      <Button Classes="mfc-action"
+                              Content="Update zone"
+                              Command="{Binding Zones.UpdateZoneCommand}"
+                              MinWidth="120"
+                              HorizontalAlignment="Left" />
                       <ListBox ItemsSource="{Binding Zones.Zones}"
                                SelectedItem="{Binding Zones.SelectedZone, Mode=TwoWay}"
                                MaxHeight="220">

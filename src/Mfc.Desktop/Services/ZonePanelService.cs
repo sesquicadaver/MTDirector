@@ -78,6 +78,13 @@ public interface IZonePanelService
         string? description,
         CancellationToken cancellationToken = default);
 
+    Task<ZoneDefinitionListItem> UpdateZoneAsync(
+        ZoneDefinitionListItem zone,
+        string name,
+        string? description,
+        bool resetDescription,
+        CancellationToken cancellationToken = default);
+
     Task DeleteZoneAsync(
         ZoneDefinitionListItem zone,
         CancellationToken cancellationToken = default);
@@ -100,6 +107,10 @@ public interface IZonePanelService
 
     Task<IReadOnlyList<ZoneResolveResultListItem>> ResolveForNodeAsync(
         Guid nodeId,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<ZoneResolveResultListItem>> ResolveForDeviceAsync(
+        Guid deviceId,
         CancellationToken cancellationToken = default);
 }
 
@@ -137,6 +148,25 @@ public sealed class ZonePanelService : IZonePanelService
                 cancellationToken)
             .ConfigureAwait(false);
         return ToItem(zone);
+    }
+
+    public async Task<ZoneDefinitionListItem> UpdateZoneAsync(
+        ZoneDefinitionListItem zone,
+        string name,
+        string? description,
+        bool resetDescription,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(zone);
+        ZoneDefinition updated = await _client.UpdateZoneDefinitionAsync(
+                zone.Id,
+                zone.RowVersion,
+                name,
+                description,
+                resetDescription,
+                cancellationToken)
+            .ConfigureAwait(false);
+        return ToItem(updated);
     }
 
     public Task DeleteZoneAsync(ZoneDefinitionListItem zone, CancellationToken cancellationToken = default)
@@ -189,7 +219,21 @@ public sealed class ZonePanelService : IZonePanelService
         ZoneResolveBatch batch = await _client
             .ResolveZonesForNodeAsync(nodeId, cancellationToken)
             .ConfigureAwait(false);
-        return batch.Results.Select(r => new ZoneResolveResultListItem
+        return ToResolveItems(batch);
+    }
+
+    public async Task<IReadOnlyList<ZoneResolveResultListItem>> ResolveForDeviceAsync(
+        Guid deviceId,
+        CancellationToken cancellationToken = default)
+    {
+        ZoneResolveBatch batch = await _client
+            .ResolveZonesForDeviceAsync(deviceId, cancellationToken)
+            .ConfigureAwait(false);
+        return ToResolveItems(batch);
+    }
+
+    private static ZoneResolveResultListItem[] ToResolveItems(ZoneResolveBatch batch)
+        => batch.Results.Select(r => new ZoneResolveResultListItem
         {
             DeviceId = DesktopProtoUuid.ToGuid(r.DeviceId),
             ZoneId = DesktopProtoUuid.ToGuid(r.ZoneId),
@@ -199,7 +243,6 @@ public sealed class ZonePanelService : IZonePanelService
                 .Select(b => string.IsNullOrWhiteSpace(b.Subject) ? $"{b.Code}: {b.Message}" : $"{b.Code}({b.Subject}): {b.Message}")
                 .ToArray(),
         }).ToArray();
-    }
 
     private static ZoneDefinitionListItem ToItem(ZoneDefinition zone) => new()
     {

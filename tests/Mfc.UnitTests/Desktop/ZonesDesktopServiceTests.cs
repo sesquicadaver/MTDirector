@@ -72,6 +72,58 @@ public sealed class ZonesDesktopServiceTests
         Assert.True(results[0].AnalysisStale);
     }
 
+    [Fact]
+    public async Task UpdateZoneChangesNameAndClearsDescription()
+    {
+        FakeZoneServiceClient client = new();
+        ZonePanelService service = new(client);
+        ZoneDefinitionListItem created = await service.CreateCompanyZoneAsync("lan", "LAN", "corp");
+
+        ZoneDefinitionListItem updated = await service.UpdateZoneAsync(
+            created,
+            "LAN-core",
+            description: null,
+            resetDescription: true);
+
+        Assert.Equal("LAN-core", updated.Name);
+        Assert.Null(updated.Description);
+        Assert.Equal(created.RowVersion + 1, updated.RowVersion);
+        Assert.Equal("LAN-core", Assert.Single(await service.ListZonesAsync()).Name);
+    }
+
+    [Fact]
+    public async Task ResolveForDeviceSurfacesBlockersFromDeviceRpc()
+    {
+        FakeZoneServiceClient client = new();
+        ZonePanelService service = new(client);
+        ZoneDefinitionListItem zone = await service.CreateCompanyZoneAsync("wan", "WAN", null);
+        Guid deviceId = Guid.Parse("99999999-8888-7777-6666-555555555555");
+        client.ResolveBatch = new ZoneResolveBatch
+        {
+            Results =
+            {
+                new ZoneBindingResolveResult
+                {
+                    BindingId = ToUuid(Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")),
+                    ZoneId = ToUuid(zone.Id),
+                    DeviceId = ToUuid(deviceId),
+                    FreshDependencyHash = new Sha256 { Value = ByteString.CopyFrom(new byte[32]) },
+                    AnalysisStale = false,
+                    Blockers =
+                    {
+                        new ZoneResolveBlocker { Code = "ZONE_OBSERVATION_UNAVAILABLE", Message = "no capture" },
+                    },
+                },
+            },
+        };
+
+        IReadOnlyList<ZoneResolveResultListItem> results = await service.ResolveForDeviceAsync(deviceId);
+        Assert.Equal(deviceId, client.LastResolveDeviceId);
+        ZoneResolveResultListItem row = Assert.Single(results);
+        Assert.Equal(deviceId, row.DeviceId);
+        Assert.Contains("ZONE_OBSERVATION_UNAVAILABLE", row.BlockerLines[0], StringComparison.Ordinal);
+    }
+
     private static Uuid ToUuid(Guid value)
         => new() { Value = ByteString.CopyFrom(value.ToByteArray(bigEndian: true)) };
 
@@ -84,6 +136,8 @@ public sealed class ZonesDesktopServiceTests
         private readonly Dictionary<Guid, NodeZoneBinding> _bindings = [];
 
         public ZoneResolveBatch ResolveBatch { get; set; } = new();
+
+        public Guid? LastResolveDeviceId { get; private set; }
 
         public Task<IReadOnlyList<ZoneDefinition>> ListZoneDefinitionsAsync(
             PolicyOwnerScope? ownerScope = null,
@@ -123,7 +177,34 @@ public sealed class ZonesDesktopServiceTests
             string? description,
             bool resetDescription,
             CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
+        {
+            if (!_zones.TryGetValue(zoneId, out ZoneDefinition? zone))
+            {
+                throw new InvalidOperationException($"Zone '{zoneId:D}' not found.");
+            }
+
+            if (zone.RowVersion != expectedRowVersion)
+            {
+                throw new InvalidOperationException("Zone row_version mismatch.");
+            }
+
+            if (name is not null)
+            {
+                zone.Name = name;
+            }
+
+            if (resetDescription)
+            {
+                zone.ClearDescription();
+            }
+            else if (description is not null)
+            {
+                zone.Description = description;
+            }
+
+            zone.RowVersion++;
+            return Task.FromResult(zone);
+        }
 
         public Task DeleteZoneDefinitionAsync(
             Guid zoneId,
@@ -198,6 +279,9 @@ public sealed class ZonesDesktopServiceTests
         public Task<ZoneResolveBatch> ResolveZonesForDeviceAsync(
             Guid deviceId,
             CancellationToken cancellationToken = default)
-            => Task.FromResult(ResolveBatch);
+        {
+            LastResolveDeviceId = deviceId;
+            return Task.FromResult(ResolveBatch);
+        }
     }
 }

@@ -87,6 +87,12 @@ public sealed partial class ZonesViewModel : ObservableObject, IDisposable
     private string _newZoneDescription = string.Empty;
 
     [ObservableProperty]
+    private string _editZoneName = string.Empty;
+
+    [ObservableProperty]
+    private string _editZoneDescription = string.Empty;
+
+    [ObservableProperty]
     private NodeZoneBindingKind _selectedBindingKind;
 
     [ObservableProperty]
@@ -135,6 +141,42 @@ public sealed partial class ZonesViewModel : ObservableObject, IDisposable
             NewZoneKey = string.Empty;
             NewZoneName = string.Empty;
             NewZoneDescription = string.Empty;
+        }).ConfigureAwait(true);
+    }
+
+    [RelayCommand(CanExecute = nameof(CanOperate))]
+    private async Task UpdateZoneAsync()
+    {
+        if (SelectedZone is null)
+        {
+            ErrorText = "Select a zone to update.";
+            return;
+        }
+
+        string name = EditZoneName.Trim();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            ErrorText = "Zone name is required.";
+            return;
+        }
+
+        bool resetDescription = string.IsNullOrWhiteSpace(EditZoneDescription);
+        string? description = resetDescription ? null : EditZoneDescription.Trim();
+        ZoneDefinitionListItem zone = SelectedZone;
+        await RunBusyAsync(async ct =>
+        {
+            ZoneDefinitionListItem updated = await Task.Run(
+                    async () => await _zones.UpdateZoneAsync(zone, name, description, resetDescription, ct)
+                        .ConfigureAwait(false),
+                    ct)
+                .ConfigureAwait(true);
+            int index = Zones.IndexOf(zone);
+            if (index >= 0)
+            {
+                Zones[index] = updated;
+            }
+
+            SelectedZone = updated;
         }).ConfigureAwait(true);
     }
 
@@ -248,20 +290,53 @@ public sealed partial class ZonesViewModel : ObservableObject, IDisposable
             IReadOnlyList<ZoneResolveResultListItem> results = await _zones
                 .ResolveForNodeAsync(nodeId.Value, ct)
                 .ConfigureAwait(true);
-            ResolveResults.Clear();
-            foreach (ZoneResolveResultListItem item in results)
-            {
-                ResolveResults.Add(item);
-            }
+            ApplyResolveResults(results);
+            await ReloadBindingsAsync(nodeId.Value, ct).ConfigureAwait(true);
+        }).ConfigureAwait(true);
+    }
 
-            // Refresh bindings so AnalysisStale / RowVersion reflect RecordResolve.
-            Bindings.Clear();
-            foreach (NodeZoneBindingListItem binding in await _zones.ListBindingsAsync(nodeId.Value, ct)
-                         .ConfigureAwait(true))
+    [RelayCommand(CanExecute = nameof(CanOperate))]
+    private async Task ResolveDeviceAsync()
+    {
+        Guid? deviceId = TryGetSelectedDeviceId();
+        if (deviceId is null)
+        {
+            ErrorText = "Select a Device in the inventory tree.";
+            return;
+        }
+
+        Guid? nodeId = TryGetSelectedNodeId();
+        await RunBusyAsync(async ct =>
+        {
+            IReadOnlyList<ZoneResolveResultListItem> results = await Task.Run(
+                    async () => await _zones.ResolveForDeviceAsync(deviceId.Value, ct).ConfigureAwait(false),
+                    ct)
+                .ConfigureAwait(true);
+            ApplyResolveResults(results);
+            if (nodeId is Guid id)
             {
-                Bindings.Add(binding);
+                await ReloadBindingsAsync(id, ct).ConfigureAwait(true);
             }
         }).ConfigureAwait(true);
+    }
+
+    private void ApplyResolveResults(IReadOnlyList<ZoneResolveResultListItem> results)
+    {
+        ResolveResults.Clear();
+        foreach (ZoneResolveResultListItem item in results)
+        {
+            ResolveResults.Add(item);
+        }
+    }
+
+    private async Task ReloadBindingsAsync(Guid nodeId, CancellationToken cancellationToken)
+    {
+        Bindings.Clear();
+        foreach (NodeZoneBindingListItem binding in await _zones.ListBindingsAsync(nodeId, cancellationToken)
+                     .ConfigureAwait(true))
+        {
+            Bindings.Add(binding);
+        }
     }
 
     private bool CanOperate()
@@ -275,18 +350,28 @@ public sealed partial class ZonesViewModel : ObservableObject, IDisposable
             return null;
         }
 
-        if (string.Equals(selected.KindLabel, "Node", StringComparison.Ordinal))
+        if (selected.Kind == InventoryTreeKind.Node)
         {
             return selected.Id;
         }
 
-        if (string.Equals(selected.KindLabel, "Device", StringComparison.Ordinal)
-            && selected.ParentId is Guid parent)
+        if (selected.Kind == InventoryTreeKind.Device && selected.ParentId is Guid parent)
         {
             return parent;
         }
 
         return null;
+    }
+
+    private Guid? TryGetSelectedDeviceId()
+    {
+        InventoryNodeViewModel? selected = _inventory.SelectedNode;
+        if (selected is null || selected.Kind != InventoryTreeKind.Device)
+        {
+            return null;
+        }
+
+        return selected.Id;
     }
 
     private async Task RunBusyAsync(Func<CancellationToken, Task> action)
@@ -324,10 +409,18 @@ public sealed partial class ZonesViewModel : ObservableObject, IDisposable
     {
         RefreshCommand.NotifyCanExecuteChanged();
         CreateZoneCommand.NotifyCanExecuteChanged();
+        UpdateZoneCommand.NotifyCanExecuteChanged();
         DeleteZoneCommand.NotifyCanExecuteChanged();
         UpsertBindingCommand.NotifyCanExecuteChanged();
         DeleteBindingCommand.NotifyCanExecuteChanged();
         ResolveCommand.NotifyCanExecuteChanged();
+        ResolveDeviceCommand.NotifyCanExecuteChanged();
+    }
+
+    partial void OnSelectedZoneChanged(ZoneDefinitionListItem? value)
+    {
+        EditZoneName = value?.Name ?? string.Empty;
+        EditZoneDescription = value?.Description ?? string.Empty;
     }
 
     private void OnConnectionStateChanged(object? sender, EventArgs e)
@@ -349,10 +442,15 @@ public sealed partial class ZonesViewModel : ObservableObject, IDisposable
             if (Dispatcher.UIThread.CheckAccess())
             {
                 OnPropertyChanged(nameof(SelectedNodeHint));
+                NotifyCommands();
             }
             else
             {
-                Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(SelectedNodeHint)));
+                Dispatcher.UIThread.Post(() =>
+                {
+                    OnPropertyChanged(nameof(SelectedNodeHint));
+                    NotifyCommands();
+                });
             }
         }
     }

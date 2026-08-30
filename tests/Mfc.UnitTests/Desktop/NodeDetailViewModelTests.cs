@@ -347,6 +347,19 @@ public sealed class NodeDetailViewModelTests
             Guid nodeId,
             CancellationToken cancellationToken = default)
             => Task.FromResult<IReadOnlyList<ZoneResolveResultListItem>>([]);
+
+        public Task<ZoneDefinitionListItem> UpdateZoneAsync(
+            ZoneDefinitionListItem zone,
+            string name,
+            string? description,
+            bool resetDescription,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<IReadOnlyList<ZoneResolveResultListItem>> ResolveForDeviceAsync(
+            Guid deviceId,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult<IReadOnlyList<ZoneResolveResultListItem>>([]);
     }
 
     private sealed class StubOnboarding : IOnboardingServiceClient
