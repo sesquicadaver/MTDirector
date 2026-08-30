@@ -1185,6 +1185,10 @@
                 <StackPanel Spacing="2">
                   <TextBlock Classes="mfc-section-title" Text="Managed-device onboarding" />
                   <TextBlock Text="{Binding Onboarding.StatusText}" Classes="mfc-muted" />
+                  <TextBlock Text="{Binding Onboarding.TargetHint}"
+                             Classes="mfc-muted"
+                             TextWrapping="Wrap"
+                             IsVisible="{Binding Onboarding.HasVrrpPairTarget}" />
                   <TextBlock Classes="mfc-error"
                              Text="{Binding Onboarding.ErrorText}"
                              IsVisible="{Binding Onboarding.HasError}" />
@@ -1247,6 +1251,10 @@
                 <StackPanel Spacing="2">
                   <TextBlock Classes="mfc-section-title" Text="Safe deployment" />
                   <TextBlock Text="{Binding Deployment.StatusText}" Classes="mfc-muted" />
+                  <TextBlock Text="{Binding Deployment.TargetHint}"
+                             Classes="mfc-muted"
+                             TextWrapping="Wrap"
+                             IsVisible="{Binding Deployment.HasVrrpPairTarget}" />
                   <TextBlock Classes="mfc-error"
                              Text="{Binding Deployment.ErrorText}"
                              IsVisible="{Binding Deployment.HasError}" />

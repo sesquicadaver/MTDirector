@@ -32,6 +32,7 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
         _inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
         _connection.StateChanged += OnConnectionStateChanged;
         _inventory.PropertyChanged += OnInventoryPropertyChanged;
+        RefreshTargetHint();
     }
 
     public ObservableCollection<string> SemanticDiffLines { get; } = [];
@@ -75,6 +76,12 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
     private string _statusText = "Select a Node, then create a deployment plan.";
 
     [ObservableProperty]
+    private string _targetHint = InventoryOpsSelection.FormatTargetHint(null, []);
+
+    [ObservableProperty]
+    private bool _hasVrrpPairTarget;
+
+    [ObservableProperty]
     private string _recoveryFactsText = string.Empty;
 
     [ObservableProperty]
@@ -91,15 +98,18 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
     {
         await RunAsync(async () =>
         {
-            Guid nodeId = RequireNodeId();
-            Guid deviceId = RequireDeviceId();
+            InventoryNodeViewModel node = InventoryOpsSelection.RequireNode(
+                _inventory.SelectedNode,
+                _inventory.Roots);
+            Guid nodeId = node.Id;
+            IReadOnlyList<Guid> deviceIds = InventoryOpsSelection.RequireDeviceIds(node);
             Sha256 hash = Utf8Sha256("deployment-desktop");
             DeploymentPlanSummary plan = await _client.CreatePlanAsync(
                 nodeId,
                 hash,
                 hash,
                 hash,
-                [DefaultDevicePlan(deviceId)],
+                deviceIds.Select(DefaultDevicePlan).ToList(),
                 CancellationToken.None).ConfigureAwait(true);
             PlanId = DesktopProtoUuid.ToGuid(plan.PlanId);
             PlanHash = plan.PlanHash;
@@ -216,37 +226,7 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
     }
 
     private Guid RequireNodeId()
-    {
-        InventoryNodeViewModel? selected = _inventory.SelectedNode;
-        if (selected is null || selected.KindLabel is not ("Node" or "Device"))
-        {
-            throw new InvalidOperationException("Select a Node in the inventory tree.");
-        }
-
-        return selected.KindLabel == "Node" ? selected.Id : selected.ParentId ?? selected.Id;
-    }
-
-    private Guid RequireDeviceId()
-    {
-        InventoryNodeViewModel? selected = _inventory.SelectedNode;
-        if (selected is null)
-        {
-            throw new InvalidOperationException("Select a Node or Device in the inventory tree.");
-        }
-
-        if (selected.KindLabel == "Device")
-        {
-            return selected.Id;
-        }
-
-        InventoryNodeViewModel? device = selected.Children.FirstOrDefault(static c => c.KindLabel == "Device");
-        if (device is null)
-        {
-            throw new InvalidOperationException("Selected Node has no Device child.");
-        }
-
-        return device.Id;
-    }
+        => InventoryOpsSelection.RequireNode(_inventory.SelectedNode, _inventory.Roots).Id;
 
     private async Task<StartWatchOutcome> StartAndWatchAsync(
         Guid planId,
@@ -325,8 +305,15 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
     {
         if (e.PropertyName == nameof(InventoryTreeViewModel.SelectedNode))
         {
+            RefreshTargetHint();
             Dispatcher.UIThread.Post(() => StatusText = "Node selection changed.");
         }
+    }
+
+    private void RefreshTargetHint()
+    {
+        TargetHint = InventoryOpsSelection.FormatTargetHint(_inventory.SelectedNode, _inventory.Roots);
+        HasVrrpPairTarget = InventoryOpsSelection.IsVrrpPair(_inventory.SelectedNode, _inventory.Roots);
     }
 
     private static DeploymentDevicePlanInput DefaultDevicePlan(Guid deviceId)

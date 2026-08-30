@@ -1820,6 +1820,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | AC#6 Operations onboarding/deploy/recovery | Onboarding + Deployment VMs | `Ac6OperationsViewSupportsOnboardingDeploymentAndRecovery` |
 | W1.4 Deploy/Onboarding plan collections | `ArtifactLines` / `OrderLines` / `ProbeAndWatchdogLines` / `Placements` | `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta` |
 | W3.3 Onboarding/Deploy Watch | Start + Watch → `ProgressLines` | `Ac6cOperationsStartWatchesOnboardingAndDeploymentProgress` + `OnboardingViewModelTests` + `DeploymentViewModelTests` |
+| W4.2 VRRP ops not silent first Device | Create plan / Validate all Node members | `Ac6dOperationsTargetVrrpNodePairNotSilentFirstDevice` + `InventoryOpsSelectionTests` + `DeploymentViewModelTests` + `OnboardingViewModelTests` |
 | AC#7 Drift без automatic fix | `DriftViewModel` + `DriftService` | `Ac7DriftViewHasNoAutomaticFix` |
 | W1.5 Drift findings зі list | `DriftEventListItem.Findings` + `SelectedEventFindings` | `Ac7bDriftShowsFindingsFromListResponseNotOnlySemanticDiff` + `DriftViewModelTests` |
 | W3.7 Drift GetDriftEvent | selection loads full hashes / desired / semantic_diff_hash | `Ac7cDriftLoadsGetDriftEventForSelectedPayload` + `DriftViewModelTests` |
@@ -1832,7 +1833,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
-dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopMvpWorkflowsLivingSpecTests|FullyQualifiedName~AddRouterWizardViewModelTests|FullyQualifiedName~PoliciesViewModelTests|FullyQualifiedName~PolicyDesktopServiceTests|FullyQualifiedName~DriftViewModelTests|FullyQualifiedName~InventoryNodeViewModelTests|FullyQualifiedName~NodeDetailViewModelTests|FullyQualifiedName~SnapshotViewerViewModelTests|FullyQualifiedName~OnboardingViewModelTests|FullyQualifiedName~DeploymentViewModelTests|FullyQualifiedName~ZonesViewModelTests|FullyQualifiedName~ZonesDesktopServiceTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DriftProtoContractTests|FullyQualifiedName~AuditProtoContractTests"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopMvpWorkflowsLivingSpecTests|FullyQualifiedName~AddRouterWizardViewModelTests|FullyQualifiedName~PoliciesViewModelTests|FullyQualifiedName~PolicyDesktopServiceTests|FullyQualifiedName~DriftViewModelTests|FullyQualifiedName~InventoryNodeViewModelTests|FullyQualifiedName~NodeDetailViewModelTests|FullyQualifiedName~InventoryOpsSelectionTests|FullyQualifiedName~SnapshotViewerViewModelTests|FullyQualifiedName~OnboardingViewModelTests|FullyQualifiedName~DeploymentViewModelTests|FullyQualifiedName~ZonesViewModelTests|FullyQualifiedName~ZonesDesktopServiceTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DriftProtoContractTests|FullyQualifiedName~AuditProtoContractTests"
 ```
 
 ## Living Specification — standalone / dual-stack E2E (M6-05)

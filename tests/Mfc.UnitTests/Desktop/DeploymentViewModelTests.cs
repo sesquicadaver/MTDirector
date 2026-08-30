@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Mfc.UnitTests.Desktop;
 
-/// <summary>W3.3: Deployment Start consumes Watch stream, not only Start.Timeline.</summary>
+/// <summary>W3.3 Watch + W4.2 VRRP pair Create plan (not silent first Device).</summary>
 public sealed class DeploymentViewModelTests
 {
     [Fact]
@@ -62,6 +62,113 @@ public sealed class DeploymentViewModelTests
         Assert.DoesNotContain("from-start-only", vm.ProgressLines);
     }
 
+    [Fact]
+    public async Task CreatePlanIncludesAllVrrpMembersNotSilentFirstChild()
+    {
+        Guid nodeId = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff");
+        Guid deviceA = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid deviceB = Guid.Parse("22222222-3333-4444-5555-666666666666");
+        FakeConnection connection = new();
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        InventoryNodeViewModel site = new(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Site,
+            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            DisplayName = "LAB",
+            Children =
+            [
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeId,
+                    DisplayName = "edge-pair",
+                    NodeKindText = "Vrrp",
+                    Children =
+                    [
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceA,
+                            DisplayName = "r1",
+                        },
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceB,
+                            DisplayName = "r2",
+                        },
+                    ],
+                },
+            ],
+        });
+        inventory.Roots.Add(site);
+        inventory.SelectedNode = site.Children[0];
+        FakeDeploymentClient client = new();
+        using DeploymentViewModel vm = new(client, connection, inventory);
+
+        Assert.True(vm.HasVrrpPairTarget);
+        Assert.Equal(InventoryOpsSelection.VrrpPairHint, vm.TargetHint);
+
+        await vm.CreatePlanCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Equal(nodeId, client.LastNodeId);
+        Assert.Equal([deviceA, deviceB], client.LastDeviceIds);
+        Assert.NotEqual(deviceA, deviceB);
+        Assert.Equal(2, client.LastDeviceIds.Count);
+    }
+
+    [Fact]
+    public async Task CreatePlanWhenVrrpMemberSelectedStillUsesPair()
+    {
+        Guid nodeId = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff");
+        Guid deviceA = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid deviceB = Guid.Parse("22222222-3333-4444-5555-666666666666");
+        FakeConnection connection = new();
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        InventoryNodeViewModel site = new(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Site,
+            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            DisplayName = "LAB",
+            Children =
+            [
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeId,
+                    DisplayName = "edge-pair",
+                    NodeKindText = "Vrrp",
+                    Children =
+                    [
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceA,
+                            DisplayName = "r1",
+                        },
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceB,
+                            DisplayName = "r2",
+                        },
+                    ],
+                },
+            ],
+        });
+        inventory.Roots.Add(site);
+        inventory.SelectedNode = site.Children[0].Children[1];
+        FakeDeploymentClient client = new();
+        using DeploymentViewModel vm = new(client, connection, inventory);
+
+        await vm.CreatePlanCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Equal(nodeId, client.LastNodeId);
+        Assert.Equal([deviceA, deviceB], client.LastDeviceIds);
+    }
+
     private static Sha256 Hash(string seed)
         => new() { Value = ByteString.CopyFrom(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(seed))) };
 
@@ -112,6 +219,10 @@ public sealed class DeploymentViewModelTests
 
         public Guid WatchedOperationId { get; private set; }
 
+        public Guid LastNodeId { get; private set; }
+
+        public List<Guid> LastDeviceIds { get; private set; } = [];
+
         public Task<DeploymentPlanSummary> CreatePlanAsync(
             Guid nodeId,
             Sha256 logicalPolicyHash,
@@ -119,7 +230,15 @@ public sealed class DeploymentViewModelTests
             Sha256 topologyHash,
             IReadOnlyList<DeploymentDevicePlanInput> devices,
             CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
+        {
+            LastNodeId = nodeId;
+            LastDeviceIds = devices.Select(d => DesktopProtoUuid.ToGuid(d.DeviceId)).ToList();
+            return Task.FromResult(new DeploymentPlanSummary
+            {
+                PlanId = DesktopProtoUuid.FromGuid(Guid.Parse("dddddddd-eeee-ffff-aaaa-111111111111")),
+                PlanHash = logicalPolicyHash,
+            });
+        }
 
         public Task<DeploymentOperationSummary> StartAsync(
             Guid planId,
