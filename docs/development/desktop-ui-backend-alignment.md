@@ -42,10 +42,12 @@
 - **Перевірка:** Living Spec `Ac5bPoliciesBindCatalogListsAndComposeFromSelectedNode`; `PoliciesViewModelTests` (Node/Device → Compose; Create draft → revision id)
 - **Файли:** `MainWindow.axaml`, `PoliciesViewModel.cs`, `App.axaml.cs`, `DesktopMvpWorkflowsLivingSpecTests`
 
-### W1.4 Deploy / Onboarding: приховані колекції
-- Deploy: bind `ArtifactLines`, `OrderLines`, `ProbeAndWatchdogLines` (зараз лише слабкі `SemanticDiffLines`)
-- Onboarding: bind `Placements`
-- Підпис SemanticDiffLines чесно: «artifact hash delta», доки немає багатшого Contracts diff
+### W1.4 Deploy / Onboarding: приховані колекції — **DONE**
+- **Дані:** Deploy `ArtifactLines` / `OrderLines` / `ProbeAndWatchdogLines` / `SemanticDiffLines`; Onboarding `Placements`
+- **Зроблено:** Operations axaml біндить усі чотири Deploy-списки; Onboarding — Anchor placements; підпис SemanticDiffLines = «Artifact hash delta»
+- **Не чіпали:** Watch streams (W3.3); багатший Contracts policy diff (P3)
+- **Перевірка:** Living Spec `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta`
+- **Файли:** `MainWindow.axaml`, `DesktopMvpWorkflowsLivingSpecTests`
 
 ### W1.5 Drift: findings зі list response
 - Не губити `DriftFinding` у DTO; показати list під подією (kind/severity/detail)
@@ -120,7 +122,7 @@
 W1.1 Diff FieldLines     ← DONE
 W1.2 Snapshot Fields      ← DONE
 W1.3 Policies bind+Compose selection  ← DONE
-W1.4 Deploy/Onboarding collections
+W1.4 Deploy/Onboarding collections  ← DONE
 W1.5 Drift findings
 W1.6 Inventory device fields
 W2.3 VRRP labels audit → fix or PLAN
@@ -146,7 +148,8 @@ W4  VRRP Node shell
 | W1.1 | **DONE** (FieldLines + Warnings UI) |
 | W1.2 | **DONE** (selected-record Fields detail) |
 | W1.3 | **DONE** (catalog lists + Compose ← Node) |
-| W1.4–W1.6 | **TODO** |
+| W1.4 | **DONE** (Deploy/Onboarding plan collections) |
+| W1.5–W1.6 | **TODO** |
 | W2–W5 | **TODO** |
 
-**NEXT (alignment):** W1.4 Deploy/Onboarding — bind ArtifactLines / OrderLines / ProbeAndWatchdogLines / Placements.
+**NEXT (alignment):** W1.5 Drift — findings зі list response.
