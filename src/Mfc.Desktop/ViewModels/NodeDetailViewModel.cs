@@ -34,7 +34,14 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
 
     public ObservableCollection<string> DeviceHashLines { get; } = [];
 
+    /// <summary>Device children of the resolved Node — explicit fields, not DetailSummary.</summary>
+    public ObservableCollection<InventoryNodeViewModel> DeviceMembers { get; } = [];
+
     public ObservableCollection<string> ZoneSummaryLines { get; } = [];
+
+    public bool HasDeviceMembers => DeviceMembers.Count > 0;
+
+    public bool HasNoDeviceMembers => DeviceMembers.Count == 0;
 
     [ObservableProperty]
     private string _topologyText = "Select a Node in the inventory tree.";
@@ -99,6 +106,7 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         InventoryNodeViewModel? selected = _inventory.SelectedNode;
         InventoryNodeViewModel? node = ResolveNode(selected);
         DeviceHashLines.Clear();
+        DeviceMembers.Clear();
         ZoneSummaryLines.Clear();
 
         if (node is null)
@@ -108,6 +116,7 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
             WorkflowStatusText = "—";
             OnboardingReadinessText = _onboarding.StatusText;
             DeploymentReadinessText = "Select a Node to assess readiness.";
+            NotifyDeviceMembersChanged();
             return;
         }
 
@@ -124,11 +133,14 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
 
         foreach (InventoryNodeViewModel device in node.Children.Where(static c => c.Kind == InventoryTreeKind.Device))
         {
+            DeviceMembers.Add(device);
             DeviceHashLines.Add(
                 $"{device.DisplayName}: desired={OrDash(device.DesiredHashText)} " +
                 $"committed={OrDash(device.CommittedHashText)} actual={OrDash(device.ActualHashText)} " +
                 $"({OrDash(device.SupportStateText)} / {OrDash(device.ReachabilityText)})");
         }
+
+        NotifyDeviceMembersChanged();
 
         ZoneSummaryLines.Add(_zones.SelectedNodeHint);
         foreach (NodeZoneBindingListItem binding in _zones.Bindings.Take(32))
@@ -170,6 +182,12 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         }
 
         return null;
+    }
+
+    private void NotifyDeviceMembersChanged()
+    {
+        OnPropertyChanged(nameof(HasDeviceMembers));
+        OnPropertyChanged(nameof(HasNoDeviceMembers));
     }
 
     private static string OrDash(string? value)

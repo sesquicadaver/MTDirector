@@ -1,4 +1,5 @@
 using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 using Mfc.Contracts.Mfc.V1;
 using Mfc.Desktop.Services;
 using Xunit;
@@ -92,6 +93,86 @@ public sealed class InventoryTreeServiceTests
         Assert.Equal("—", device.RouterOsVersionText);
         Assert.Equal("—", device.ModelText);
         Assert.Equal("—", device.VrrpRolesText);
+    }
+
+    [Fact]
+    public async Task MapDeviceKeepsReachabilityModelVersionVrrpAndLastSnapshot()
+    {
+        Guid siteId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+        Guid nodeId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid deviceId = Guid.Parse("99999999-8888-7777-6666-555555555555");
+        DateTime snapshotUtc = new(2026, 8, 30, 10, 0, 0, DateTimeKind.Utc);
+        FakeInventoryTreeClient client = new()
+        {
+            Sites =
+            [
+                new Site
+                {
+                    Id = ToUuid(siteId),
+                    Code = "LAB",
+                    Name = "Lab",
+                    Status = SiteStatus.Active,
+                },
+            ],
+            NodesBySite =
+            {
+                [siteId] =
+                [
+                    new Node
+                    {
+                        Id = ToUuid(nodeId),
+                        SiteId = ToUuid(siteId),
+                        Name = "pair",
+                        DeclaredKind = NodeKind.Vrrp,
+                        DeclaredUplinkMode = DeclaredUplinkMode.One,
+                        Status = NodeStatus.Active,
+                    },
+                ],
+            },
+            NodeDetailsById =
+            {
+                [nodeId] = new NodeDetails
+                {
+                    Node = new Node
+                    {
+                        Id = ToUuid(nodeId),
+                        SiteId = ToUuid(siteId),
+                        Name = "pair",
+                        DeclaredKind = NodeKind.Vrrp,
+                        DeclaredUplinkMode = DeclaredUplinkMode.One,
+                        Status = NodeStatus.Active,
+                    },
+                    Devices =
+                    {
+                        new Device
+                        {
+                            Id = ToUuid(deviceId),
+                            NodeId = ToUuid(nodeId),
+                            DisplayName = "r1",
+                            ManagementHost = "192.0.2.1",
+                            ManagementPort = 8729,
+                            Enabled = true,
+                            LastSupportState = SupportState.Supported,
+                            Reachability = "Reachable",
+                            RouterosVersion = "7.16.2",
+                            Model = "CHR",
+                            LastSnapshotAt = Timestamp.FromDateTime(snapshotUtc),
+                            VrrpRoleLabels = { "master" },
+                        },
+                    },
+                },
+            },
+        };
+
+        InventoryTreeService service = new(client);
+        InventoryTreeLoadResult result = await service.RefreshAsync();
+
+        InventoryTreeItem device = Assert.Single(Assert.Single(result.Roots).Children[0].Children);
+        Assert.Equal("Reachable", device.ReachabilityText);
+        Assert.Equal("CHR", device.ModelText);
+        Assert.Equal("7.16.2", device.RouterOsVersionText);
+        Assert.Equal("master", device.VrrpRolesText);
+        Assert.Equal("2026-08-30 10:00:00Z", device.LastSnapshotText);
     }
 
     [Fact]

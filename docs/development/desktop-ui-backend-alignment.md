@@ -56,8 +56,12 @@
 - **Перевірка:** Living Spec `Ac7bDriftShowsFindingsFromListResponseNotOnlySemanticDiff`; `DriftViewModelTests.FromProtoKeepsFindingKindSeverityAndDetail`
 - **Файли:** `MainWindow.axaml`, `DriftViewModel.cs`, `DesktopMvpWorkflowsLivingSpecTests`
 
-### W1.6 Inventory/Node: явні device поля
-- Окремо (не лише `DetailSummary`): reachability, model, ROS version, **VRRP roles** (коли непорожні), last snapshot
+### W1.6 Inventory/Node: явні device поля — **DONE**
+- **Дані:** `InventoryNodeViewModel` уже має `ReachabilityText` / `ModelText` / `RouterOsVersionText` / `VrrpRolesText` / `LastSnapshotText` (мапинг з `Device` proto)
+- **Зроблено:** Inventory detail біндить поля окремо (не лише `DetailSummary`); VRRP лише коли `HasVrrpRoles`; Node — список `DeviceMembers` з тими ж полями
+- **Не чіпали:** фейкові VRRP лейбли (W2.3 audit); GetNode RPC glue; WriteEnabled
+- **Перевірка:** Living Spec `Ac3bInventoryAndNodeShowExplicitDeviceFields`; `InventoryNodeViewModelTests`; `NodeDetailViewModelTests`; `InventoryTreeServiceTests.MapDeviceKeepsReachabilityModelVersionVrrpAndLastSnapshot`
+- **Файли:** `MainWindow.axaml`, `InventoryNodeViewModel.cs`, `NodeDetailViewModel.cs`, `DesktopMvpWorkflowsLivingSpecTests`
 
 **Exit W1:** оператор на GNS3 seed бачить зміну правила в Diff як поля; Policies не «порожня форма»; Deploy/Onboarding показують plan details.
 
@@ -127,7 +131,7 @@ W1.2 Snapshot Fields      ← DONE
 W1.3 Policies bind+Compose selection  ← DONE
 W1.4 Deploy/Onboarding collections  ← DONE
 W1.5 Drift findings               ← DONE
-W1.6 Inventory device fields
+W1.6 Inventory device fields      ← DONE
 W2.3 VRRP labels audit → fix or PLAN
 W3.1 StartCapture Desktop
 W3.2 ValidateConnection
@@ -153,7 +157,7 @@ W4  VRRP Node shell
 | W1.3 | **DONE** (catalog lists + Compose ← Node) |
 | W1.4 | **DONE** (Deploy/Onboarding plan collections) |
 | W1.5 | **DONE** (Drift findings from list response) |
-| W1.6 | **TODO** |
+| W1.6 | **DONE** (explicit Inventory/Node device fields) |
 | W2–W5 | **TODO** |
 
-**NEXT (alignment):** W1.6 Inventory/Node — явні device поля (reachability, model, ROS version, VRRP roles коли непорожні, last snapshot).
+**NEXT (alignment):** W2.3 VRRP labels audit — трасувати `GetNode` / `vrrp_role_labels`; UI badge уже є (W1.6), порожні лейбли не маскувати.

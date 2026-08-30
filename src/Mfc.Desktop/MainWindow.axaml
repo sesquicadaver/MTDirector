@@ -162,6 +162,20 @@
                        FontSize="18"
                        FontWeight="Bold"
                        TextWrapping="Wrap" />
+            <StackPanel Spacing="6" IsVisible="{Binding Inventory.SelectedNode.IsDevice}">
+              <TextBlock Classes="mfc-label" Text="Reachability" />
+              <TextBlock Text="{Binding Inventory.SelectedNode.ReachabilityText}" TextWrapping="Wrap" />
+              <TextBlock Classes="mfc-label" Text="Model" />
+              <TextBlock Text="{Binding Inventory.SelectedNode.ModelText}" TextWrapping="Wrap" />
+              <TextBlock Classes="mfc-label" Text="RouterOS version" />
+              <TextBlock Text="{Binding Inventory.SelectedNode.RouterOsVersionText}" TextWrapping="Wrap" />
+              <StackPanel Spacing="6" IsVisible="{Binding Inventory.SelectedNode.HasVrrpRoles}">
+                <TextBlock Classes="mfc-label" Text="VRRP roles" />
+                <TextBlock Text="{Binding Inventory.SelectedNode.VrrpRolesText}" TextWrapping="Wrap" />
+              </StackPanel>
+              <TextBlock Classes="mfc-label" Text="Last snapshot" />
+              <TextBlock Text="{Binding Inventory.SelectedNode.LastSnapshotText}" TextWrapping="Wrap" />
+            </StackPanel>
             <TextBlock Classes="mfc-label" Text="Device hashes" />
             <TextBlock Text="{Binding Inventory.SelectedNode.DesiredHashText, StringFormat=desired: {0}}"
                        Classes="mfc-mono" />
@@ -403,6 +417,33 @@
                   <VirtualizingStackPanel />
                 </ItemsPanelTemplate>
               </ListBox.ItemsPanel>
+            </ListBox>
+            <TextBlock Classes="mfc-label" Text="Devices" />
+            <TextBlock Classes="mfc-muted"
+                       Text="No devices on this Node."
+                       IsVisible="{Binding Node.HasNoDeviceMembers}" />
+            <ListBox ItemsSource="{Binding Node.DeviceMembers}"
+                     MaxHeight="280"
+                     IsVisible="{Binding Node.HasDeviceMembers}">
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="vm:InventoryNodeViewModel">
+                  <StackPanel Spacing="2" Margin="4">
+                    <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding ReachabilityText, StringFormat=Reachability: {0}}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding ModelText, StringFormat=Model: {0}}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding RouterOsVersionText, StringFormat=RouterOS version: {0}}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding VrrpRolesText, StringFormat=VRRP roles: {0}}"
+                               TextWrapping="Wrap"
+                               IsVisible="{Binding HasVrrpRoles}" />
+                    <TextBlock Text="{Binding LastSnapshotText, StringFormat=Last snapshot: {0}}" TextWrapping="Wrap" />
+                  </StackPanel>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
             </ListBox>
             <TextBlock Classes="mfc-label" Text="Device hashes" />
             <ListBox ItemsSource="{Binding Node.DeviceHashLines}" MaxHeight="200">
