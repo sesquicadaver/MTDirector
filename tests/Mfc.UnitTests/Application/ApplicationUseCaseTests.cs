@@ -6,6 +6,7 @@ using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Common;
 using Mfc.Application.Inventory;
 using Mfc.Application.Models;
+using Mfc.Domain.Canonicalization;
 using Mfc.Application.Snapshots;
 using Mfc.Application.Workflow;
 using Mfc.Domain.Capabilities;
@@ -1207,6 +1208,101 @@ public sealed class SnapshotUseCaseTests
             .ExecuteAsync(new GetNodeQuery { Actor = "a", NodeId = node.Id });
         Assert.True(details.IsSuccess);
         Assert.Equal(completedAt, details.Value!.Devices[0].LastSnapshotAtUtc);
+        Assert.Empty(details.Value.Devices[0].VrrpRoleLabels);
+    }
+
+    [Fact]
+    public async Task GetNodeMapsVrrpRoleLabelsFromLastCaptureObservations()
+    {
+        FakeAuthorizationBoundary auth = new();
+        FakeSiteStore sites = new();
+        FakeNodeStore nodes = new();
+        FakeDeviceStore devices = new();
+        FakeSnapshotStore snapshots = new();
+        ProjectNodeWorkflowUseCase projectWorkflow = new(
+            auth,
+            nodes,
+            devices,
+            new FakeDeviceHashStateStore(),
+            new FakeConnectionProfileReadStore(),
+            new FakeOnboardingStore(),
+            new FakeDeploymentStore(),
+            new FakePolicyApprovalStore());
+
+        SiteView site = (await CreateSite(auth, sites).ExecuteAsync(
+            new CreateSiteCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = "GN03",
+                Name = "GetNode3",
+            })).Value!;
+        NodeView node = (await CreateNode(auth, sites, nodes).ExecuteAsync(
+            new CreateNodeCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                SiteId = site.Id,
+                Name = "pair",
+                DeclaredKind = NodeKind.Vrrp,
+                DeclaredUplinkMode = DeclaredUplinkMode.One,
+            })).Value!;
+        DeviceView device = (await RegisterDevice(auth, nodes, devices).ExecuteAsync(
+            new RegisterDeviceCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                NodeId = node.Id,
+                DisplayName = "r1",
+                ManagementHost = "192.0.2.23",
+                Role = DeviceRole.Router,
+            })).Value!;
+
+        DateTimeOffset completedAt = DateTimeOffset.UtcNow;
+        StoredSnapshot stored = new()
+        {
+            Metadata = SnapshotMetadata.CreateCompleted(
+                new DeviceId(device.Id),
+                ConfigurationHash.FromDigest(Hash256.Create(Enumerable.Repeat((byte)7, 32).ToArray())),
+                ObservationHash.FromDigest(Hash256.Create(Enumerable.Repeat((byte)8, 32).ToArray())),
+                CapabilityHash.FromDigest(Hash256.Create(Enumerable.Repeat((byte)9, 32).ToArray())),
+                SnapshotHash.FromDigest(Hash256.Create(Enumerable.Repeat((byte)10, 32).ToArray())),
+                completedAt),
+            SchemaVersion = 1,
+        };
+        await snapshots.AddAsync(stored);
+        snapshots.SectionsBySnapshot[stored.Metadata.Id.Value] =
+        [
+            new CanonicalSection(
+                CanonicalDomain.Observations,
+                CanonicalSectionIds.HaVrrp,
+                ordered: false,
+                [
+                    new CanonicalRecord(new Dictionary<string, string>(StringComparer.Ordinal)
+                    {
+                        ["group"] = "Ipv4/vrid=10/if=ether1",
+                        ["role"] = "Master",
+                    }),
+                    new CanonicalRecord(new Dictionary<string, string>(StringComparer.Ordinal)
+                    {
+                        ["group"] = "Ipv4/vrid=20/if=ether2",
+                        ["role"] = "Backup",
+                    }),
+                ]),
+        ];
+
+        Device? persisted = await devices.GetAsync(new DeviceId(device.Id));
+        Assert.NotNull(persisted);
+        persisted!.RecordCompletedCapture(stored.Metadata.Id.Value);
+        await devices.UpdateAsync(persisted);
+
+        ApplicationResult<NodeDetailsView> details = await new GetNodeUseCase(
+                auth, nodes, devices, snapshots, projectWorkflow)
+            .ExecuteAsync(new GetNodeQuery { Actor = "a", NodeId = node.Id });
+        Assert.True(details.IsSuccess);
+        Assert.Equal(
+            ["Backup · Ipv4/vrid=20/if=ether2", "Master · Ipv4/vrid=10/if=ether1"],
+            details.Value!.Devices[0].VrrpRoleLabels);
     }
 
     private sealed class ThrowingSnapshotCapturePort(Exception ex) : ISnapshotCapturePort

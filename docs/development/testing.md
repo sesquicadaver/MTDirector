@@ -72,6 +72,7 @@ Initial Issue Set M1-27 AC → module → tests:
 | Tree uses server data | `InventoryTreeService` + `IInventoryTreeClient` | `RefreshBuildsSiteNodeDeviceHierarchy` |
 | UI/VM without Domain objects | Desktop → Contracts only | `InventoryTreeViewModelAssemblyHasNoDomainOrRouterOsReferences` + architecture |
 | Display fields (reachability/version/model/support/kind/uplink/VRRP/last snapshot) | Device proto + `InventoryNodeViewModel` | hierarchy test + host GetNode observation defaults |
+| W2.3 VRRP labels from last capture | `GetNodeUseCase` + `DeviceVrrpRoleLabelProjector` | `VrrpRoleLabelsLivingSpecTests` + `GetNodeMapsVrrpRoleLabelsFromLastCaptureObservations` |
 | Refresh cancellation | `InventoryTreeService.RefreshAsync` | `CancellationStopsRefresh` |
 | No parallel overlapping refresh | single-flight coalesce | `ParallelRefreshDoesNotStartTwoOverlappingLoads` |
 | Large inventory paged | `ListSites`/`ListNodes` page loops | `ListNodesPaginates…` + `GrpcInventoryTreeClient` |

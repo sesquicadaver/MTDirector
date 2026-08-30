@@ -50,7 +50,7 @@ Normative detail lives in [`TOR-1.md`](../../TOR-1.md), the MVP specifications, 
 | Semantic snapshot diff | Done (M1-24) | `src/Mfc.Domain/Diff/`, `CompareSnapshotsUseCase`, `LoadCanonicalSectionsAsync` |
 | Inventory/discovery gRPC | Done (M1-25) + #314 | `inventory.proto` / `InventoryGrpcService` (ValidateDeviceConnection ← DiscoverDeviceUseCase; `ListNeighborCandidates` seed MikroTik suggest) |
 | Snapshot/diff gRPC | Done (M1-26) | `Protos/mfc/v1/snapshots.proto`, `SnapshotGrpcService` (VS §9.3; DiffEntry = Canonical Spec §30; Issue Set CaptureSnapshot→StartCapture) |
-| Desktop inventory tree | Done (M1-27) | Avalonia Site→Node→Device tree; `ListNodes` RPC; Contracts-only Desktop client; cached-on-error refresh |
+| Desktop inventory tree | Done (M1-27) + W1.6 + W2.3 | Avalonia Site→Node→Device tree; `ListNodes`/`GetNode` RPC; Contracts-only Desktop client; cached-on-error refresh; explicit device fields; VRRP labels from last `ha.vrrp` observations |
 | Desktop Add router wizard | Done ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)) | Inventory panel: CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection; password cleared after success |
 | Desktop snapshot viewer | Done (M1-28) + W1.2 | Read-only Avalonia viewer; `SnapshotSummary.sections` statuses; config/obs split; selected-record `Fields` detail; sanitized export |
 | Desktop semantic diff viewer | Done (M1-29) | Avalonia CompareSnapshots UI; section-grouped DiffEntry rows; no local recompute |

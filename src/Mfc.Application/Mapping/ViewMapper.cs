@@ -28,7 +28,10 @@ internal static class ViewMapper
         RowVersion = node.RowVersion,
     };
 
-    public static DeviceView ToView(Device device, DateTimeOffset? lastSnapshotAtUtc = null) => new()
+    public static DeviceView ToView(
+        Device device,
+        DateTimeOffset? lastSnapshotAtUtc = null,
+        IReadOnlyList<string>? vrrpRoleLabels = null) => new()
     {
         Id = device.Id.Value,
         NodeId = device.NodeId.Value,
@@ -40,11 +43,11 @@ internal static class ViewMapper
         LastSupportState = device.LastSupportState,
         LastCompletedCaptureId = device.LastCompletedCaptureId,
         RowVersion = device.RowVersion,
-        // Observation fields stay unset until discovery/topology probes populate them.
+        // Version/model/reachability stay unset until a dedicated observation projector exists.
         RouterOsVersion = null,
         Model = null,
         Reachability = "Unknown",
-        VrrpRoleLabels = [],
+        VrrpRoleLabels = vrrpRoleLabels is { Count: > 0 } ? vrrpRoleLabels : [],
         LastSnapshotAtUtc = lastSnapshotAtUtc,
     };
 

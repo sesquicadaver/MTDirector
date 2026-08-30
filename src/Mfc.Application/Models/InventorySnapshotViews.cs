@@ -80,7 +80,9 @@ public sealed class DeviceView
     /// <summary>Unknown / Reachable / Unreachable. Defaults to Unknown until probe wiring.</summary>
     public string Reachability { get; init; } = "Unknown";
 
-    /// <summary>VRRP role labels when topology observation is wired; empty until then.</summary>
+    /// <summary>
+    /// VRRP role labels from last completed capture <c>ha.vrrp</c> observations; empty when none.
+    /// </summary>
     public IReadOnlyList<string> VrrpRoleLabels { get; init; } = [];
 
     /// <summary>CompletedAtUtc of last completed capture when resolvable.</summary>
