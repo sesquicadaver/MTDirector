@@ -3,6 +3,8 @@ using System.ComponentModel;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Grpc.Core;
+using Mfc.Contracts.Mfc.V1;
 using Mfc.Desktop.Services;
 
 namespace Mfc.Desktop.ViewModels;
@@ -10,26 +12,36 @@ namespace Mfc.Desktop.ViewModels;
 /// <summary>
 /// Node module: topology, zones summary, onboarding readiness, workflow, device hashes.
 /// Composes Contracts-backed Inventory / Zones / Onboarding presentation — no Domain/SQL.
+/// Canonical workflow comes from GetNodeWorkflow, not an ad-hoc Zones+Onboarding mashup.
 /// </summary>
 public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
 {
     private readonly InventoryTreeViewModel _inventory;
     private readonly ZonesViewModel _zones;
     private readonly OnboardingViewModel _onboarding;
+    private readonly IInventoryTreeClient _inventoryClient;
+    private readonly IControllerConnectionService _connection;
+    private int _workflowEpoch;
     private bool _disposed;
 
     public NodeDetailViewModel(
         InventoryTreeViewModel inventory,
         ZonesViewModel zones,
-        OnboardingViewModel onboarding)
+        OnboardingViewModel onboarding,
+        IInventoryTreeClient inventoryClient,
+        IControllerConnectionService connection)
     {
         _inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
         _zones = zones ?? throw new ArgumentNullException(nameof(zones));
         _onboarding = onboarding ?? throw new ArgumentNullException(nameof(onboarding));
+        _inventoryClient = inventoryClient ?? throw new ArgumentNullException(nameof(inventoryClient));
+        _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _inventory.PropertyChanged += OnInventoryPropertyChanged;
         _zones.PropertyChanged += OnZonesPropertyChanged;
         _onboarding.PropertyChanged += OnOnboardingPropertyChanged;
+        _connection.StateChanged += OnConnectionStateChanged;
         RefreshPresentation();
+        _ = LoadNodeWorkflowAsync();
     }
 
     public ObservableCollection<string> DeviceHashLines { get; } = [];
@@ -39,9 +51,18 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
 
     public ObservableCollection<string> ZoneSummaryLines { get; } = [];
 
+    /// <summary>Per-device contributing/sync lines from GetNodeWorkflow.</summary>
+    public ObservableCollection<string> WorkflowDeviceLines { get; } = [];
+
     public bool HasDeviceMembers => DeviceMembers.Count > 0;
 
     public bool HasNoDeviceMembers => DeviceMembers.Count == 0;
+
+    public bool HasWorkflowDeviceLines => WorkflowDeviceLines.Count > 0;
+
+    public bool HasNoWorkflowDeviceLines => WorkflowDeviceLines.Count == 0;
+
+    public bool HasError => !string.IsNullOrWhiteSpace(ErrorText);
 
     [ObservableProperty]
     private string _topologyText = "Select a Node in the inventory tree.";
@@ -58,8 +79,21 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private string _selectionHint = "No Node selected.";
 
-    [RelayCommand]
-    private void Refresh() => RefreshPresentation();
+    [ObservableProperty]
+    private string? _errorText;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RefreshCommand))]
+    private bool _isBusy;
+
+    [RelayCommand(CanExecute = nameof(CanRefresh))]
+    private async Task RefreshAsync()
+    {
+        RefreshPresentation();
+        await LoadNodeWorkflowAsync().ConfigureAwait(true);
+    }
+
+    private bool CanRefresh() => !IsBusy;
 
     private void OnInventoryPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -89,15 +123,17 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         }
     }
 
+    private void OnConnectionStateChanged(object? sender, EventArgs e) => PostRefresh();
+
     private void PostRefresh()
     {
         if (Dispatcher.UIThread.CheckAccess())
         {
-            RefreshPresentation();
+            _ = RefreshAsync();
         }
         else
         {
-            Dispatcher.UIThread.Post(RefreshPresentation);
+            Dispatcher.UIThread.Post(() => _ = RefreshAsync());
         }
     }
 
@@ -108,6 +144,9 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         DeviceHashLines.Clear();
         DeviceMembers.Clear();
         ZoneSummaryLines.Clear();
+        WorkflowDeviceLines.Clear();
+        NotifyWorkflowDeviceLinesChanged();
+        ErrorText = null;
 
         if (node is null)
         {
@@ -115,7 +154,7 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
             TopologyText = "Topology: —";
             WorkflowStatusText = "—";
             OnboardingReadinessText = _onboarding.StatusText;
-            DeploymentReadinessText = "Select a Node to assess readiness.";
+            DeploymentReadinessText = "Select a Node to load GetNodeWorkflow.";
             NotifyDeviceMembersChanged();
             return;
         }
@@ -127,9 +166,9 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         OnboardingReadinessText = string.IsNullOrWhiteSpace(_onboarding.StatusText)
             ? "—"
             : _onboarding.StatusText;
-        DeploymentReadinessText =
-            $"Workflow={WorkflowStatusText}; Zones hint={_zones.SelectedNodeHint}; " +
-            $"Onboarding={OnboardingReadinessText}";
+        DeploymentReadinessText = _connection.State == ControllerConnectionState.Connected
+            ? "Loading GetNodeWorkflow…"
+            : "Connect to Controller to load GetNodeWorkflow.";
 
         foreach (InventoryNodeViewModel device in node.Children.Where(static c => c.Kind == InventoryTreeKind.Device))
         {
@@ -152,6 +191,87 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         {
             ZoneSummaryLines.Add(
                 "No zone bindings loaded for the selected Node (refresh Zones while a Node is selected).");
+        }
+    }
+
+    private async Task LoadNodeWorkflowAsync()
+    {
+        int epoch = Interlocked.Increment(ref _workflowEpoch);
+        InventoryNodeViewModel? node = ResolveNode(_inventory.SelectedNode);
+        if (node is null)
+        {
+            return;
+        }
+
+        if (_connection.State != ControllerConnectionState.Connected)
+        {
+            DeploymentReadinessText = "Connect to Controller to load GetNodeWorkflow.";
+            return;
+        }
+
+        IsBusy = true;
+        Guid nodeId = node.Id;
+        try
+        {
+            NodeWorkflow workflow = await Task.Run(
+                    async () => await _inventoryClient.GetNodeWorkflowAsync(nodeId).ConfigureAwait(false))
+                .ConfigureAwait(true);
+            if (epoch != Volatile.Read(ref _workflowEpoch))
+            {
+                return;
+            }
+
+            WorkflowStatusText = FormatEnum(workflow.WorkflowStatus);
+            DeploymentReadinessText = WorkflowStatusText;
+            WorkflowDeviceLines.Clear();
+            foreach (DeviceWorkflowProjection device in workflow.Devices)
+            {
+                Guid deviceId = DesktopProtoUuid.ToGuid(device.DeviceId);
+                string name = DeviceMembers.FirstOrDefault(member => member.Id == deviceId)?.DisplayName
+                    ?? deviceId.ToString("D");
+                WorkflowDeviceLines.Add(
+                    $"{name}: contributing={FormatEnum(device.ContributingStatus)}; " +
+                    $"sync={FormatEnum(device.SyncClassification)}");
+            }
+
+            NotifyWorkflowDeviceLinesChanged();
+            ErrorText = null;
+        }
+        catch (OperationCanceledException)
+        {
+            if (epoch != Volatile.Read(ref _workflowEpoch))
+            {
+                return;
+            }
+
+            DeploymentReadinessText = "GetNodeWorkflow cancelled.";
+        }
+        catch (RpcException ex)
+        {
+            if (epoch != Volatile.Read(ref _workflowEpoch))
+            {
+                return;
+            }
+
+            ErrorText = ex.Status.Detail;
+            DeploymentReadinessText = "GetNodeWorkflow failed.";
+        }
+        catch (Exception ex)
+        {
+            if (epoch != Volatile.Read(ref _workflowEpoch))
+            {
+                return;
+            }
+
+            ErrorText = ex.Message;
+            DeploymentReadinessText = "GetNodeWorkflow failed.";
+        }
+        finally
+        {
+            if (epoch == Volatile.Read(ref _workflowEpoch))
+            {
+                IsBusy = false;
+            }
         }
     }
 
@@ -190,8 +310,28 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         OnPropertyChanged(nameof(HasNoDeviceMembers));
     }
 
+    private void NotifyWorkflowDeviceLinesChanged()
+    {
+        OnPropertyChanged(nameof(HasWorkflowDeviceLines));
+        OnPropertyChanged(nameof(HasNoWorkflowDeviceLines));
+    }
+
+    partial void OnErrorTextChanged(string? value) => OnPropertyChanged(nameof(HasError));
+
     private static string OrDash(string? value)
         => string.IsNullOrWhiteSpace(value) ? "—" : value;
+
+    private static string FormatEnum<TEnum>(TEnum value)
+        where TEnum : struct, Enum
+    {
+        string raw = value.ToString();
+        if (string.IsNullOrWhiteSpace(raw) || raw.EndsWith("Unspecified", StringComparison.Ordinal))
+        {
+            return "—";
+        }
+
+        return raw;
+    }
 
     public void Dispose()
     {
@@ -201,8 +341,10 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         }
 
         _disposed = true;
+        Interlocked.Increment(ref _workflowEpoch);
         _inventory.PropertyChanged -= OnInventoryPropertyChanged;
         _zones.PropertyChanged -= OnZonesPropertyChanged;
         _onboarding.PropertyChanged -= OnOnboardingPropertyChanged;
+        _connection.StateChanged -= OnConnectionStateChanged;
     }
 }

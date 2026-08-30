@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Mfc.UnitTests.Desktop;
 
-/// <summary>W1.6: Node module lists device members with explicit fields from inventory tree.</summary>
+/// <summary>W1.6 device members + W3.4 GetNodeWorkflow on the Node module.</summary>
 public sealed class NodeDetailViewModelTests
 {
     [Fact]
@@ -56,7 +56,8 @@ public sealed class NodeDetailViewModelTests
         inventory.Roots.Add(site);
         inventory.SelectedNode = site.Children[0];
 
-        using NodeDetailViewModel vm = new(inventory, new ZonesViewModel(new StubZones(), connection, inventory), new OnboardingViewModel(new StubOnboarding(), connection, inventory));
+        RecordingInventoryClient client = new();
+        using NodeDetailViewModel vm = CreateVm(inventory, connection, client);
 
         InventoryNodeViewModel member = Assert.Single(vm.DeviceMembers);
         Assert.Equal("chr-seed", member.DisplayName);
@@ -68,6 +69,9 @@ public sealed class NodeDetailViewModelTests
         Assert.True(vm.HasDeviceMembers);
         Assert.False(vm.HasNoDeviceMembers);
         Assert.Contains("chr-seed", Assert.Single(vm.DeviceHashLines), StringComparison.Ordinal);
+        Assert.Equal(0, client.GetNodeWorkflowCalls);
+        Assert.Contains("Connect to Controller", vm.DeploymentReadinessText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Zones hint=", vm.DeploymentReadinessText, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -105,11 +109,166 @@ public sealed class NodeDetailViewModelTests
         inventory.Roots.Add(site);
         inventory.SelectedNode = site.Children[0];
 
-        using NodeDetailViewModel vm = new(inventory, new ZonesViewModel(new StubZones(), connection, inventory), new OnboardingViewModel(new StubOnboarding(), connection, inventory));
+        using NodeDetailViewModel vm = CreateVm(inventory, connection);
 
         InventoryNodeViewModel member = Assert.Single(vm.DeviceMembers);
         Assert.True(member.HasVrrpRoles);
         Assert.Equal("master", member.VrrpRolesText);
+    }
+
+    [Fact]
+    public async Task RefreshLoadsGetNodeWorkflowDeviceContributingStatus()
+    {
+        Guid nodeId = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff");
+        Guid deviceId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        InventoryNodeViewModel site = new(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Site,
+            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            DisplayName = "LAB",
+            Children =
+            [
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeId,
+                    DisplayName = "core",
+                    WorkflowStatusText = "Synchronized",
+                    Children =
+                    [
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceId,
+                            DisplayName = "chr-seed",
+                        },
+                    ],
+                },
+            ],
+        });
+        inventory.Roots.Add(site);
+        inventory.SelectedNode = site.Children[0];
+
+        RecordingInventoryClient client = new()
+        {
+            Workflow = new NodeWorkflow
+            {
+                NodeId = DesktopProtoUuid.FromGuid(nodeId),
+                WorkflowStatus = NodeWorkflowStatus.Drifted,
+                Devices =
+                {
+                    new DeviceWorkflowProjection
+                    {
+                        DeviceId = DesktopProtoUuid.FromGuid(deviceId),
+                        SyncClassification = DeviceSyncClassification.Drifted,
+                        ContributingStatus = NodeWorkflowStatus.CaptureRequired,
+                    },
+                },
+            },
+        };
+
+        using NodeDetailViewModel vm = CreateVm(inventory, connection, client);
+        await vm.RefreshCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.True(client.GetNodeWorkflowCalls >= 1);
+        Assert.Equal(nodeId, client.LastWorkflowNodeId);
+        Assert.Equal("Drifted", vm.WorkflowStatusText);
+        Assert.Equal("Drifted", vm.DeploymentReadinessText);
+        Assert.DoesNotContain("Zones hint=", vm.DeploymentReadinessText, StringComparison.Ordinal);
+        string line = Assert.Single(vm.WorkflowDeviceLines);
+        Assert.Contains("chr-seed", line, StringComparison.Ordinal);
+        Assert.Contains("CaptureRequired", line, StringComparison.Ordinal);
+        Assert.Contains("Drifted", line, StringComparison.Ordinal);
+        Assert.True(vm.HasWorkflowDeviceLines);
+        Assert.False(vm.HasNoWorkflowDeviceLines);
+    }
+
+    private static NodeDetailViewModel CreateVm(
+        InventoryTreeViewModel inventory,
+        FakeConnection connection,
+        IInventoryTreeClient? client = null)
+    {
+        return new NodeDetailViewModel(
+            inventory,
+            new ZonesViewModel(new StubZones(), connection, inventory),
+            new OnboardingViewModel(new StubOnboarding(), connection, inventory),
+            client ?? new RecordingInventoryClient(),
+            connection);
+    }
+
+    private sealed class RecordingInventoryClient : IInventoryTreeClient
+    {
+        public NodeWorkflow Workflow { get; init; } = new();
+
+        public int GetNodeWorkflowCalls { get; private set; }
+
+        public Guid LastWorkflowNodeId { get; private set; }
+
+        public Task<IReadOnlyList<Site>> ListAllSitesAsync(CancellationToken cancellationToken = default)
+            => Task.FromResult<IReadOnlyList<Site>>([]);
+
+        public Task<IReadOnlyList<Node>> ListAllNodesAsync(
+            Guid siteId,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult<IReadOnlyList<Node>>([]);
+
+        public Task<NodeDetails> GetNodeAsync(Guid nodeId, CancellationToken cancellationToken = default)
+            => Task.FromResult(new NodeDetails());
+
+        public Task<NodeWorkflow> GetNodeWorkflowAsync(
+            Guid nodeId,
+            CancellationToken cancellationToken = default)
+        {
+            GetNodeWorkflowCalls++;
+            LastWorkflowNodeId = nodeId;
+            return Task.FromResult(Workflow);
+        }
+
+        public Task<Site> CreateSiteAsync(string code, string name, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<Node> CreateNodeAsync(
+            Guid siteId,
+            string name,
+            NodeKind declaredKind,
+            DeclaredUplinkMode declaredUplinkMode,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<Device> RegisterDeviceAsync(
+            Guid nodeId,
+            string displayName,
+            string managementHost,
+            uint managementPort,
+            DeviceRole role,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<DeviceConnectionSummary> UpdateDeviceConnectionAsync(
+            Guid deviceId,
+            string username,
+            ReadOnlyMemory<byte> passwordUtf8,
+            CertificateTrustMode trustMode,
+            string? caProfileRef,
+            Sha256? pinnedSpkiSha256,
+            uint connectTimeoutMs,
+            uint commandTimeoutMs,
+            ulong maxResponseBytes,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<ValidateDeviceConnectionResponse> ValidateDeviceConnectionAsync(
+            Guid deviceId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<ListNeighborCandidatesResponse> ListNeighborCandidatesAsync(
+            Guid seedDeviceId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
     }
 
     private sealed class FakeConnection : IControllerConnectionService

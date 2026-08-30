@@ -15,6 +15,12 @@ public interface IInventoryTreeClient
 
     Task<NodeDetails> GetNodeAsync(Guid nodeId, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Canonical Node workflow projection (status + per-device contributing/sync).
+    /// Distinct from GetNode, which still supplies the compact Inventory tree label.
+    /// </summary>
+    Task<NodeWorkflow> GetNodeWorkflowAsync(Guid nodeId, CancellationToken cancellationToken = default);
+
     Task<Site> CreateSiteAsync(string code, string name, CancellationToken cancellationToken = default);
 
     Task<Node> CreateNodeAsync(

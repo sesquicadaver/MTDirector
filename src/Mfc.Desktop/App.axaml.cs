@@ -42,7 +42,7 @@ public sealed class App : Application, IAsyncDisposable
         OnboardingViewModel onboardingVm = new(onboardingClient, connection, inventoryVm);
         GrpcDeploymentServiceClient deploymentClient = new(connection, options);
         DeploymentViewModel deploymentVm = new(deploymentClient, connection, inventoryVm);
-        NodeDetailViewModel nodeVm = new(inventoryVm, zonesVm, onboardingVm);
+        NodeDetailViewModel nodeVm = new(inventoryVm, zonesVm, onboardingVm, inventoryClient, connection);
         GrpcDriftServiceClient driftClient = new(connection, options);
         DriftViewModel driftVm = new(driftClient, connection, inventoryVm);
         GrpcRoutingAssuranceServiceClient routingAssuranceClient = new(connection, options);

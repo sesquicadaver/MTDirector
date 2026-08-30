@@ -22,6 +22,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **W3.4** Desktop Node tab calls `GetNodeWorkflow` (status + per-device contributing/sync); `DeploymentReadinessText` is canonical workflow, not a Zones+Onboarding mashup (`NodeDetailViewModel`, Living Spec `Ac3c`).
 - **W3.3** Desktop Operations Start consumes Onboarding/Deploy `Watch` streams into `ProgressLines` (not Start.Timeline only); `Task.Run` (`OnboardingViewModel` / `DeploymentViewModel`, Living Spec `Ac6c`).
 - **W3.2** Desktop Inventory/Add router Probe calls `ValidateDeviceConnection` (identity / support / mutated); selected device or last registered (`AddRouterWizardViewModel`, Living Spec `Ac2c`).
 - **W3.1** Desktop Snapshots: Capture button calls `StartCapture` + `WatchCapture` (device_id); progress binds stage/`current_section`; reload after COMPLETED (`SnapshotViewerViewModel`, Living Spec `Ac4d`).
@@ -32,7 +33,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - **W1.3** Desktop Policies: bind address/service/contracts lists + `DiffLines`; Compose node UUID defaults from inventory Node selection (`MainWindow.axaml`, Living Spec `Ac5b`).
 - **W1.2** Desktop Snapshot viewer: selected-record detail binds all `SnapshotRecordListItem.Fields` (`DisplayLine`); list `SummaryLine` stays compact (≤4 + ellipsis) (`MainWindow.axaml`, Living Spec `Ac4c`).
 - **W1.1** Desktop Semantic diff: bind `FieldLines.Summary` + Compare `Warnings` (`HasWarnings`) so operators see field-level changes, not only `RecordKey` hashes (`MainWindow.axaml`, Living Spec `Ac4b`).
-- Docs: Desktop UI ↔ backend alignment plan (`docs/development/desktop-ui-backend-alignment.md`) — phased P0–P3 wire-up of existing Contracts/VM data (Diff FieldLines, Policies lists, VRRP, capture glue); W1.1–W1.6, W2.3, W3.1–W3.3 marked DONE.
+- Docs: Desktop UI ↔ backend alignment plan (`docs/development/desktop-ui-backend-alignment.md`) — phased P0–P3 wire-up of existing Contracts/VM data (Diff FieldLines, Policies lists, VRRP, capture glue); W1.1–W1.6, W2.3, W3.1–W3.4 marked DONE.
 - Desktop shell UI polish (2026-08-29): shared `mfc-*` Fluent styles in `App.axaml`; compact chrome; `WrapPanel` toolbars; inventory tree `TextTrimming`; zones layout without wasted `*` rows; `ClipToBounds` on module content — fixes overlapping controls in narrow columns. Living Spec Desktop AC strings preserved (`DesktopMvpWorkflowsLivingSpecTests` / routing assurance).
 - Documentation purge (2026-08-28): removed implemented `next-1`/`next-2` design notes (no archive retained); compacted obsolete ROADMAP §3 strikethrough queue + §7 open checklist; local `bin`/`obj` cleaned (gitignored).
 - Added operator HOWTO: [`docs/howto/build-and-run.md`](docs/howto/build-and-run.md) (Linux / Windows build, package, run).

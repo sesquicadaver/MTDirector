@@ -1803,6 +1803,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | Seed MikroTik neighbors (#314) | `ListNeighborCandidatesUseCase` + `/ip/neighbor` allowlist + Desktop Load/Apply | `NeighborCandidatesLivingSpecTests` + `ListNeighborCandidatesUseCaseTests` + `NeighborDiscoveryAllowlistTests` |
 | AC#3 Node topology/zones/onboarding/readiness | `NodeDetailViewModel` | `Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness` |
 | W1.6 Inventory/Node device fields | reachability/model/ROS/VRRP(when present)/last snapshot | `Ac3bInventoryAndNodeShowExplicitDeviceFields` + `InventoryNodeViewModelTests` + `NodeDetailViewModelTests` |
+| W3.4 GetNodeWorkflow | Node `WorkflowDeviceLines` + canonical readiness | `Ac3cNodeLoadsGetNodeWorkflowInsteadOfAdHocReadinessMashup` + `NodeDetailViewModelTests` |
 | AC#4 Snapshot configuration/observations | `SnapshotViewerViewModel` | `Ac4SnapshotViewShowsConfigurationAndObservations` |
 | W1.1 Diff FieldLines + Warnings | `SnapshotDiffViewModel` + MainWindow Semantic diff | `Ac4bSemanticDiffShowsFieldLinesAndWarnings` + `SnapshotDiffServiceTests` |
 | W1.2 Snapshot record Fields | `SnapshotViewerViewModel` selected-record detail + `Fields.DisplayLine` | `Ac4cSnapshotRecordDetailShowsAllFields` + `SnapshotViewerServiceTests` |

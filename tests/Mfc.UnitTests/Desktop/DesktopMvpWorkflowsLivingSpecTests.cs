@@ -140,6 +140,31 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("Reachability", axaml, StringComparison.Ordinal);
     }
 
+    /// <summary>W3.4: Node module calls GetNodeWorkflow instead of inventing readiness from Zones+Onboarding.</summary>
+    [Fact]
+    public void Ac3cNodeLoadsGetNodeWorkflowInsteadOfAdHocReadinessMashup()
+    {
+        Type node = typeof(NodeDetailViewModel);
+        Assert.NotNull(node.GetProperty(nameof(NodeDetailViewModel.WorkflowDeviceLines)));
+        Assert.NotNull(node.GetProperty(nameof(NodeDetailViewModel.HasWorkflowDeviceLines)));
+        Assert.NotNull(node.GetProperty(nameof(NodeDetailViewModel.HasNoWorkflowDeviceLines)));
+        Assert.NotNull(typeof(IInventoryTreeClient).GetMethod(nameof(IInventoryTreeClient.GetNodeWorkflowAsync)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Node.WorkflowDeviceLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("Device workflow (GetNodeWorkflow)", axaml, StringComparison.Ordinal);
+        Assert.Contains("Node.HasNoWorkflowDeviceLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("Node.HasWorkflowDeviceLines", axaml, StringComparison.Ordinal);
+
+        string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/NodeDetailViewModel.cs");
+        Assert.Contains("GetNodeWorkflowAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("Task.Run", vmSource, StringComparison.Ordinal);
+        Assert.Contains("ContributingStatus", vmSource, StringComparison.Ordinal);
+        Assert.Contains("SyncClassification", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("Zones hint=", vmSource, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac4SnapshotViewShowsConfigurationAndObservations()
     {

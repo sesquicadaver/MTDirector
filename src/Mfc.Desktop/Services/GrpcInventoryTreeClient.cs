@@ -81,6 +81,18 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
             .ConfigureAwait(false);
     }
 
+    public async Task<NodeWorkflow> GetNodeWorkflowAsync(
+        Guid nodeId,
+        CancellationToken cancellationToken = default)
+    {
+        InventoryService.InventoryServiceClient client = CreateClient();
+        return await client.GetNodeWorkflowAsync(
+                new GetNodeWorkflowRequest { NodeId = DesktopProtoUuid.FromGuid(nodeId) },
+                ActorHeaders(),
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     public async Task<Site> CreateSiteAsync(
         string code,
         string name,
