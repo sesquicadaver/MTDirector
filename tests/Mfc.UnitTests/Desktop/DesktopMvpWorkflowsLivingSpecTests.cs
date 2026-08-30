@@ -478,11 +478,42 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("KindText", axaml, StringComparison.Ordinal);
         Assert.Contains("SeverityText", axaml, StringComparison.Ordinal);
         Assert.Contains("Drift.SemanticDiffText", axaml, StringComparison.Ordinal);
-        Assert.DoesNotContain("GetDriftEvent", axaml, StringComparison.Ordinal);
 
         string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/DriftViewModel.cs");
         Assert.Contains("evt.Findings.Select(DriftFindingListItem.FromProto)", vmSource, StringComparison.Ordinal);
-        Assert.DoesNotContain("GetDriftEventAsync", vmSource, StringComparison.Ordinal);
+    }
+
+    /// <summary>W3.7: selecting a drift event loads GetDriftEvent for the full payload (not truncated list hashes).</summary>
+    [Fact]
+    public void Ac7cDriftLoadsGetDriftEventForSelectedPayload()
+    {
+        Type drift = typeof(DriftViewModel);
+        Assert.NotNull(drift.GetProperty(nameof(DriftViewModel.DetailNodeIdText)));
+        Assert.NotNull(drift.GetProperty(nameof(DriftViewModel.DetailBaselineHashText)));
+        Assert.NotNull(drift.GetProperty(nameof(DriftViewModel.DetailActualHashText)));
+        Assert.NotNull(drift.GetProperty(nameof(DriftViewModel.DetailDesiredHashText)));
+        Assert.NotNull(drift.GetProperty(nameof(DriftViewModel.DetailSemanticDiffHashText)));
+        Assert.NotNull(drift.GetProperty(nameof(DriftViewModel.DetailImmutableText)));
+        Assert.NotNull(drift.GetProperty(nameof(DriftViewModel.HasSelectedEventDetail)));
+        Assert.NotNull(drift.GetProperty(nameof(DriftViewModel.HasNoSelectedEventDetail)));
+        Assert.NotNull(typeof(IDriftServiceClient).GetMethod(nameof(IDriftServiceClient.GetDriftEventAsync)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Event detail (GetDriftEvent)", axaml, StringComparison.Ordinal);
+        Assert.Contains("Drift.DetailNodeIdText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Drift.DetailBaselineHashText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Drift.DetailActualHashText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Drift.DetailDesiredHashText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Drift.DetailSemanticDiffHashText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Drift.DetailImmutableText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Drift.HasSelectedEventDetail", axaml, StringComparison.Ordinal);
+        Assert.Contains("Drift.HasNoSelectedEventDetail", axaml, StringComparison.Ordinal);
+
+        string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/DriftViewModel.cs");
+        Assert.Contains("GetDriftEventAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("Task.Run", vmSource, StringComparison.Ordinal);
+        Assert.Contains("_detailEpoch", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
     }
 
     [Fact]

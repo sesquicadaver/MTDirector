@@ -1312,7 +1312,7 @@
               <StackPanel DockPanel.Dock="Top" Spacing="2" Margin="0,0,0,6">
                 <TextBlock Classes="mfc-label" Text="Drift findings" />
                 <TextBlock Classes="mfc-muted"
-                           Text="Select an event to see kind / severity / detail from the list response."
+                           Text="Select an event: list findings show immediately; GetDriftEvent replaces them with the canonical payload."
                            IsVisible="{Binding Drift.HasNoSelectedEventFindings}" />
               </StackPanel>
               <ListBox ItemsSource="{Binding Drift.SelectedEventFindings}"
@@ -1339,7 +1339,21 @@
           </Border>
           <Border Grid.Row="3" Classes="mfc-panel" ClipToBounds="True">
             <DockPanel LastChildFill="True">
-              <TextBlock DockPanel.Dock="Top" Classes="mfc-label" Text="Semantic diff" Margin="0,0,0,6" />
+              <StackPanel DockPanel.Dock="Top" Spacing="2" Margin="0,0,0,6">
+                <TextBlock Classes="mfc-label" Text="Event detail (GetDriftEvent)" />
+                <TextBlock Classes="mfc-muted"
+                           Text="List hashes stay truncated; GetDriftEvent fills full hashes, desired (ignored for baseline), semantic_diff_hash, node id, immutable."
+                           IsVisible="{Binding Drift.HasNoSelectedEventDetail}" />
+                <StackPanel IsVisible="{Binding Drift.HasSelectedEventDetail}" Spacing="2">
+                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailNodeIdText, StringFormat=node: {0}}" TextWrapping="Wrap" />
+                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailBaselineHashText, StringFormat=baseline: {0}}" TextWrapping="Wrap" />
+                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailActualHashText, StringFormat=actual: {0}}" TextWrapping="Wrap" />
+                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailDesiredHashText, StringFormat=desired (ignored for baseline): {0}}" TextWrapping="Wrap" />
+                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailSemanticDiffHashText, StringFormat=semantic_diff_hash: {0}}" TextWrapping="Wrap" />
+                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailImmutableText}" />
+                </StackPanel>
+                <TextBlock Classes="mfc-label" Text="Semantic diff" Margin="0,8,0,0" />
+              </StackPanel>
               <TextBox Text="{Binding Drift.SemanticDiffText}"
                        IsReadOnly="True"
                        AcceptsReturn="True"
