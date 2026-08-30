@@ -421,7 +421,24 @@
             <TextBlock Text="{Binding Node.TopologyText}" TextWrapping="Wrap" />
             <TextBlock Classes="mfc-label" Text="Workflow / readiness" />
             <TextBlock Text="{Binding Node.WorkflowStatusText}" FontSize="18" FontWeight="Bold" TextWrapping="Wrap" />
-            <TextBlock Text="{Binding Node.DeploymentReadinessText}" Classes="mfc-muted" />
+            <TextBlock Text="{Binding Node.DeploymentReadinessText}" Classes="mfc-muted" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding Node.ErrorText}"
+                       Classes="mfc-muted"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding Node.HasError}" />
+            <TextBlock Classes="mfc-label" Text="Device workflow (GetNodeWorkflow)" />
+            <TextBlock Classes="mfc-muted"
+                       Text="No device workflow projections."
+                       IsVisible="{Binding Node.HasNoWorkflowDeviceLines}" />
+            <ListBox ItemsSource="{Binding Node.WorkflowDeviceLines}"
+                     MaxHeight="160"
+                     IsVisible="{Binding Node.HasWorkflowDeviceLines}">
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
+            </ListBox>
             <TextBlock Classes="mfc-label" Text="Onboarding readiness" />
             <TextBlock Text="{Binding Node.OnboardingReadinessText}" TextWrapping="Wrap" />
             <TextBlock Classes="mfc-label" Text="Zones summary" />

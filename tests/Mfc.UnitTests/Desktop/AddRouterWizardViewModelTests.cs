@@ -361,6 +361,11 @@ public sealed class AddRouterWizardViewModelTests
                 },
             });
 
+        public Task<NodeWorkflow> GetNodeWorkflowAsync(
+            Guid nodeId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
         public Task<Site> CreateSiteAsync(string code, string name, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
@@ -470,6 +475,11 @@ public sealed class AddRouterWizardViewModelTests
                 },
             });
 
+        public Task<NodeWorkflow> GetNodeWorkflowAsync(
+            Guid nodeId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
         public Task<Site> CreateSiteAsync(string code, string name, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
@@ -573,6 +583,11 @@ public sealed class AddRouterWizardViewModelTests
 
         public Task<NodeDetails> GetNodeAsync(Guid nodeId, CancellationToken cancellationToken = default)
             => Task.FromResult(new NodeDetails());
+
+        public Task<NodeWorkflow> GetNodeWorkflowAsync(
+            Guid nodeId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
 
         public Task<Site> CreateSiteAsync(string code, string name, CancellationToken cancellationToken = default)
         {

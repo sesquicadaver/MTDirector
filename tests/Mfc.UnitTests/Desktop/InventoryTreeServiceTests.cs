@@ -317,6 +317,14 @@ public sealed class InventoryTreeServiceTests
             return Task.FromResult(details);
         }
 
+        public Task<NodeWorkflow> GetNodeWorkflowAsync(
+            Guid nodeId,
+            CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new NotSupportedException("GetNodeWorkflow is not used by InventoryTreeService tests.");
+        }
+
         public Task<Site> CreateSiteAsync(string code, string name, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();

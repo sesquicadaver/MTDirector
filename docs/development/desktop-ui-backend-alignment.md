@@ -96,7 +96,7 @@
 | W3.1 | `StartCapture` + `WatchCapture` | Snapshots: кнопка Capture + progress — **DONE** |
 | W3.2 | `ValidateDeviceConnection` | Add router / Inventory «Probe» — **DONE** |
 | W3.3 | Onboarding/Deploy `Watch` streams | Progress live, не лише snapshot після Start — **DONE** |
-| W3.4 | `GetNodeWorkflow` | Node/Inventory workflow без дублювання ad-hoc |
+| W3.4 | `GetNodeWorkflow` | Node/Inventory workflow без дублювання ad-hoc — **DONE** |
 | W3.5 | Zones `UpdateZoneDefinition`, `ResolveZonesForDevice` | Edit zone; resolve device |
 | W3.6 | Policy: `UpdateRule`/`DeleteRule`/`AcknowledgeWarning`/`CompileNodeFilterArtifacts` | за пріоритетом review/deploy loop |
 | W3.7 | Drift `GetDriftEvent` | якщо list недостатній для payload |
@@ -138,7 +138,8 @@ W2.3 VRRP labels from last capture ← DONE
 W3.1 StartCapture Desktop          ← DONE
 W3.2 ValidateConnection            ← DONE
 W3.3 Watch streams                 ← DONE
-W3.4 GetNodeWorkflow
+W3.4 GetNodeWorkflow               ← DONE
+W3.5 Zones Update/ResolveDevice
 W4  VRRP Node shell
 ```
 
@@ -165,7 +166,8 @@ W4  VRRP Node shell
 | W3.1 | **DONE** (Desktop StartCapture + WatchCapture + Capture progress) |
 | W3.2 | **DONE** (Desktop ValidateDeviceConnection Probe) |
 | W3.3 | **DONE** (Onboarding/Deploy Start + Watch progress) |
-| W2.1–W2.2, W3.4–W5 | **TODO** |
+| W3.4 | **DONE** (Node GetNodeWorkflow + device contributing/sync) |
+| W2.1–W2.2, W3.5–W5 | **TODO** |
 
 ### W3.1 Snapshots: Capture + progress — **DONE**
 - **Дані:** SnapshotService `StartCapture` / `WatchCapture` (device_id only; Controller M1-26)
@@ -188,4 +190,11 @@ W4  VRRP Node shell
 - **Перевірка:** Living Spec `Ac6cOperationsStartWatchesOnboardingAndDeploymentProgress`; `OnboardingViewModelTests`; `DeploymentViewModelTests`
 - **Файли:** `OnboardingViewModel.cs`, `DeploymentViewModel.cs`
 
-**NEXT (alignment):** W3.4 GetNodeWorkflow (Node/Inventory workflow).
+### W3.4 Node: GetNodeWorkflow — **DONE**
+- **Дані:** InventoryService `GetNodeWorkflow` → `NodeWorkflow.workflow_status` + `DeviceWorkflowProjection` (contributing_status / sync_classification)
+- **Зроблено:** Desktop client + Node tab loads workflow off UI thread; `WorkflowDeviceLines` bind projections; `DeploymentReadinessText` = canonical workflow status (не mashup Zones+Onboarding). Inventory tree label лишається з `GetNode.workflow_status` (той самий projector, без N+1 на refresh).
+- **Не чіпали:** WriteEnabled; Zones mutate (W3.5); Rollback Watch; local SemanticDiffEngine
+- **Перевірка:** Living Spec `Ac3cNodeLoadsGetNodeWorkflowInsteadOfAdHocReadinessMashup`; `NodeDetailViewModelTests`
+- **Файли:** `IInventoryTreeClient`, `GrpcInventoryTreeClient`, `NodeDetailViewModel`, `MainWindow.axaml`, `App.axaml.cs`
+
+**NEXT (alignment):** W3.5 Zones `UpdateZoneDefinition` / `ResolveZonesForDevice`.

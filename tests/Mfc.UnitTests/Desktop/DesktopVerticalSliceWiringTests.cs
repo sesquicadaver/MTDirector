@@ -54,6 +54,7 @@ public sealed class DesktopVerticalSliceWiringTests
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.ListAllSitesAsync)));
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.ListAllNodesAsync)));
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.GetNodeAsync)));
+        Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.GetNodeWorkflowAsync)));
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.CreateSiteAsync)));
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.CreateNodeAsync)));
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.RegisterDeviceAsync)));
