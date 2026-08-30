@@ -19,6 +19,39 @@ public sealed class GrpcSnapshotViewerClient : ISnapshotViewerClient
         _options = options ?? throw new ArgumentNullException(nameof(options));
     }
 
+    public async Task<StartCaptureResponse> StartCaptureAsync(
+        Guid deviceId,
+        Guid idempotencyKey,
+        CancellationToken cancellationToken = default)
+    {
+        SnapshotService.SnapshotServiceClient client = CreateClient();
+        return await client.StartCaptureAsync(
+                new StartCaptureRequest
+                {
+                    DeviceId = DesktopProtoUuid.FromGuid(deviceId),
+                    IdempotencyKey = DesktopProtoUuid.FromGuid(idempotencyKey),
+                },
+                ActorHeaders(),
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    public async IAsyncEnumerable<CaptureProgress> WatchCaptureAsync(
+        Guid operationId,
+        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        SnapshotService.SnapshotServiceClient client = CreateClient();
+        using AsyncServerStreamingCall<CaptureProgress> call = client.WatchCapture(
+            new WatchCaptureRequest { OperationId = DesktopProtoUuid.FromGuid(operationId) },
+            ActorHeaders(),
+            cancellationToken: cancellationToken);
+        await foreach (CaptureProgress progress in call.ResponseStream.ReadAllAsync(cancellationToken)
+                           .ConfigureAwait(false))
+        {
+            yield return progress;
+        }
+    }
+
     public async Task<IReadOnlyList<SnapshotSummary>> ListCapturesAsync(
         Guid deviceId,
         CancellationToken cancellationToken = default)

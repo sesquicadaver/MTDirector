@@ -8,7 +8,7 @@ Operator-facing summary of the M1 read-path data model. Normative detail: `Canon
 2. Menu projector builds canonical **configuration** and **observation** sections.
 3. Hashes: `configuration_hash`, `observation_hash`, `capability_hash`, `snapshot_hash` (schema version included).
 4. Persist CAS payloads + `snapshot_capture_sections` atomically; identical `snapshot_hash` deduplicates.
-5. Desktop loads `GetSnapshotSummary` / `GetSnapshotSection` / `CompareSnapshots` only (no local recompute).
+5. Desktop Capture (W3.1) calls `StartCapture` + `WatchCapture` (device_id); viewer then loads `GetSnapshotSummary` / `GetSnapshotSection` / `CompareSnapshots` (no local recompute).
 
 ## Domains
 
@@ -26,8 +26,9 @@ Canonical section ids live in `Mfc.Domain.Canonicalization.CanonicalSectionIds` 
 
 ## Desktop snapshot viewer
 
-- Read-only: `GetSnapshotSummary` / `GetSnapshotSection`; copy is sanitized (no credential field values).
+- Record lists stay read-only: `GetSnapshotSummary` / `GetSnapshotSection`; copy is sanitized (no credential field values).
 - W1.2: selected record detail binds all `SnapshotRecordListItem.Fields` (`DisplayLine`); list `SummaryLine` stays compact (≤4 + ellipsis).
+- W3.1: Capture button → `StartCapture` + `WatchCapture` (device_id only; `node_id` deferred in M1-26); progress shows stage / `current_section`; COMPLETED reloads the device list. Not a Desktop→RouterOS write and not WriteEnabled.
 
 ## Semantic diff
 

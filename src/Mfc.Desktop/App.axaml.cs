@@ -29,7 +29,7 @@ public sealed class App : Application, IAsyncDisposable
         AddRouterWizardViewModel addRouterVm = new(inventoryClient, connection, inventoryVm);
         GrpcSnapshotViewerClient snapshotClient = new(connection, options);
         SnapshotViewerService snapshotService = new(snapshotClient);
-        SnapshotViewerViewModel snapshotVm = new(snapshotService, connection, inventoryVm);
+        SnapshotViewerViewModel snapshotVm = new(snapshotService, snapshotClient, connection, inventoryVm);
         SnapshotDiffService diffService = new(snapshotClient);
         SnapshotDiffViewModel diffVm = new(diffService, connection, inventoryVm);
         GrpcZoneServiceClient zoneClient = new(connection, options);

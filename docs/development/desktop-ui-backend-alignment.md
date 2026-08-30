@@ -31,7 +31,7 @@
 ### W1.2 Snapshots: повні поля запису — **DONE**
 - **Дані:** `SnapshotRecordListItem.Fields` (список лишає `SummaryLine` ≤4 + ellipsis)
 - **Зроблено:** Snapshot tab — select configuration/observation record → detail «Selected record fields» з усіма `Fields.DisplayLine`
-- **Не чіпали:** local SemanticDiffEngine; capture RPC (W3.1)
+- **Не чіпали:** local SemanticDiffEngine
 - **Перевірка:** Living Spec `Ac4cSnapshotRecordDetailShowsAllFields`; unit `LoadSectionMapsAllRecordFieldsNotOnlySummaryLine` (chain/action/comment + поля поза SummaryLine)
 - **Файли:** `MainWindow.axaml`, `SnapshotViewerViewModel.cs`, `SnapshotViewerModels.cs`, `DesktopMvpWorkflowsLivingSpecTests`
 
@@ -93,7 +93,7 @@
 
 | Крок | RPC / client | UI |
 |------|----------------|-----|
-| W3.1 | `StartCapture` + `WatchCapture` | Snapshots: кнопка Capture + progress |
+| W3.1 | `StartCapture` + `WatchCapture` | Snapshots: кнопка Capture + progress — **DONE** |
 | W3.2 | `ValidateDeviceConnection` | Add router / Inventory «Probe» |
 | W3.3 | Onboarding/Deploy `Watch` streams | Progress live, не лише snapshot після Start |
 | W3.4 | `GetNodeWorkflow` | Node/Inventory workflow без дублювання ad-hoc |
@@ -135,7 +135,7 @@ W1.4 Deploy/Onboarding collections  ← DONE
 W1.5 Drift findings               ← DONE
 W1.6 Inventory device fields      ← DONE
 W2.3 VRRP labels from last capture ← DONE
-W3.1 StartCapture Desktop
+W3.1 StartCapture Desktop          ← DONE
 W3.2 ValidateConnection
 W3.3 Watch streams
 W4  VRRP Node shell
@@ -161,6 +161,14 @@ W4  VRRP Node shell
 | W1.5 | **DONE** (Drift findings from list response) |
 | W1.6 | **DONE** (explicit Inventory/Node device fields) |
 | W2.3 | **DONE** (GetNode fills VRRP labels from last capture) |
-| W2.1–W2.2, W3–W5 | **TODO** |
+| W3.1 | **DONE** (Desktop StartCapture + WatchCapture + Capture progress) |
+| W2.1–W2.2, W3.2–W5 | **TODO** |
 
-**NEXT (alignment):** W3.1 StartCapture + WatchCapture з Desktop.
+### W3.1 Snapshots: Capture + progress — **DONE**
+- **Дані:** SnapshotService `StartCapture` / `WatchCapture` (device_id only; Controller M1-26)
+- **Зроблено:** Desktop client + Snapshots кнопка Capture; `CaptureProgressText` зі stage / `current_section`; після COMPLETED — Reload list; FAILED показує sanitized error. Capture RPC off UI thread (`Task.Run`).
+- **Не чіпали:** `node_id` StartCapture (deferred); Onboarding/Deploy Watch (W3.3); `ValidateDeviceConnection` (W3.2); WriteEnabled; local SemanticDiffEngine
+- **Перевірка:** Living Spec `Ac4dSnapshotCaptureStartsAndWatchesProgress`; `SnapshotViewerViewModelTests`
+- **Файли:** `ISnapshotViewerClient`, `GrpcSnapshotViewerClient`, `SnapshotViewerViewModel`, `MainWindow.axaml`, `App.axaml.cs`
+
+**NEXT (alignment):** W3.2 ValidateDeviceConnection (Add router / Probe).

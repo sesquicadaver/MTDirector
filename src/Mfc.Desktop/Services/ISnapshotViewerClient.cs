@@ -3,11 +3,20 @@ using Mfc.Contracts.Mfc.V1;
 namespace Mfc.Desktop.Services;
 
 /// <summary>
-/// Abstraction over SnapshotService RPCs needed for the read-only snapshot viewer.
-/// Unit tests substitute a fake without live gRPC.
+/// Abstraction over SnapshotService RPCs for the snapshot viewer (list/get/compare)
+/// and device capture (StartCapture + WatchCapture). Unit tests substitute a fake without live gRPC.
 /// </summary>
 public interface ISnapshotViewerClient
 {
+    Task<StartCaptureResponse> StartCaptureAsync(
+        Guid deviceId,
+        Guid idempotencyKey,
+        CancellationToken cancellationToken = default);
+
+    IAsyncEnumerable<CaptureProgress> WatchCaptureAsync(
+        Guid operationId,
+        CancellationToken cancellationToken = default);
+
     Task<IReadOnlyList<SnapshotSummary>> ListCapturesAsync(
         Guid deviceId,
         CancellationToken cancellationToken = default);
