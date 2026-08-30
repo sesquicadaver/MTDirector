@@ -80,6 +80,7 @@ Initial Issue Set M1-27 AC → module → tests:
 | Cached state marked | `IsCached` / UI badge | failed-refresh test + MainWindow badge |
 | No RouterOS/SQL in ViewModel | presentation DTOs only | assembly + architecture Desktop bans |
 | GUI/state tests | unit (no Avalonia headless) | `InventoryTreeServiceTests` |
+| W3.2 ValidateDeviceConnection Probe | Desktop Inventory/Add router | `Ac2cInventoryAndAddRouterProbeValidateDeviceConnection` + `AddRouterWizardViewModelTests` |
 
 Filter: `dotnet test --filter FullyQualifiedName~InventoryTree`.
 
@@ -1798,6 +1799,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | AC#1 Єдина навігаційна модель | `ShellNavigationModule` + `ShellViewModel.SelectedModule` | `Ac1SingleNavigationModelExposesExactlySevenModules` |
 | AC#2 Inventory workflow status | `InventoryNodeViewModel.WorkflowStatusText` + MainWindow | `Ac2InventorySurfacesWorkflowStatusVisibly` |
 | AC#2b Inventory Add Router wizard | `AddRouterWizardViewModel` + `IInventoryTreeClient` write RPCs | `Ac2bInventoryAddRouterWizardCoversCreateRegisterConnectionPath` + `AddRouterWizardViewModelTests` |
+| W3.2 ValidateDeviceConnection Probe | Inventory/Add router Probe + `ProbeResultText` | `Ac2cInventoryAndAddRouterProbeValidateDeviceConnection` + `AddRouterWizardViewModelTests` |
 | Seed MikroTik neighbors (#314) | `ListNeighborCandidatesUseCase` + `/ip/neighbor` allowlist + Desktop Load/Apply | `NeighborCandidatesLivingSpecTests` + `ListNeighborCandidatesUseCaseTests` + `NeighborDiscoveryAllowlistTests` |
 | AC#3 Node topology/zones/onboarding/readiness | `NodeDetailViewModel` | `Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness` |
 | W1.6 Inventory/Node device fields | reachability/model/ROS/VRRP(when present)/last snapshot | `Ac3bInventoryAndNodeShowExplicitDeviceFields` + `InventoryNodeViewModelTests` + `NodeDetailViewModelTests` |

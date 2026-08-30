@@ -51,7 +51,7 @@ Normative detail lives in [`TOR-1.md`](../../TOR-1.md), the MVP specifications, 
 | Inventory/discovery gRPC | Done (M1-25) + #314 | `inventory.proto` / `InventoryGrpcService` (ValidateDeviceConnection ← DiscoverDeviceUseCase; `ListNeighborCandidates` seed MikroTik suggest) |
 | Snapshot/diff gRPC | Done (M1-26) | `Protos/mfc/v1/snapshots.proto`, `SnapshotGrpcService` (VS §9.3; DiffEntry = Canonical Spec §30; Issue Set CaptureSnapshot→StartCapture) |
 | Desktop inventory tree | Done (M1-27) + W1.6 + W2.3 | Avalonia Site→Node→Device tree; `ListNodes`/`GetNode` RPC; Contracts-only Desktop client; cached-on-error refresh; explicit device fields; VRRP labels from last `ha.vrrp` observations |
-| Desktop Add router wizard | Done ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)) | Inventory panel: CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection; password cleared after success |
+| Desktop Add router wizard | Done ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)) + W3.2 | Inventory panel: CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection; **Probe** via `ValidateDeviceConnection`; password cleared after success |
 | Desktop snapshot viewer | Done (M1-28) + W1.2 + W3.1 | Avalonia viewer; `SnapshotSummary.sections`; config/obs split; selected-record `Fields`; sanitized export; Capture via `StartCapture`/`WatchCapture` (device_id) |
 | Desktop semantic diff viewer | Done (M1-29) | Avalonia CompareSnapshots UI; section-grouped DiffEntry rows; no local recompute |
 | Standalone CHR acceptance | Done (M1-30) | In-process vertical-slice suite + live CHR TLS gate + lab provision script |

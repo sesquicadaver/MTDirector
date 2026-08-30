@@ -94,7 +94,7 @@
 | Крок | RPC / client | UI |
 |------|----------------|-----|
 | W3.1 | `StartCapture` + `WatchCapture` | Snapshots: кнопка Capture + progress — **DONE** |
-| W3.2 | `ValidateDeviceConnection` | Add router / Inventory «Probe» |
+| W3.2 | `ValidateDeviceConnection` | Add router / Inventory «Probe» — **DONE** |
 | W3.3 | Onboarding/Deploy `Watch` streams | Progress live, не лише snapshot після Start |
 | W3.4 | `GetNodeWorkflow` | Node/Inventory workflow без дублювання ad-hoc |
 | W3.5 | Zones `UpdateZoneDefinition`, `ResolveZonesForDevice` | Edit zone; resolve device |
@@ -136,7 +136,7 @@ W1.5 Drift findings               ← DONE
 W1.6 Inventory device fields      ← DONE
 W2.3 VRRP labels from last capture ← DONE
 W3.1 StartCapture Desktop          ← DONE
-W3.2 ValidateConnection
+W3.2 ValidateConnection            ← DONE
 W3.3 Watch streams
 W4  VRRP Node shell
 ```
@@ -162,13 +162,21 @@ W4  VRRP Node shell
 | W1.6 | **DONE** (explicit Inventory/Node device fields) |
 | W2.3 | **DONE** (GetNode fills VRRP labels from last capture) |
 | W3.1 | **DONE** (Desktop StartCapture + WatchCapture + Capture progress) |
-| W2.1–W2.2, W3.2–W5 | **TODO** |
+| W3.2 | **DONE** (Desktop ValidateDeviceConnection Probe) |
+| W2.1–W2.2, W3.3–W5 | **TODO** |
 
 ### W3.1 Snapshots: Capture + progress — **DONE**
 - **Дані:** SnapshotService `StartCapture` / `WatchCapture` (device_id only; Controller M1-26)
 - **Зроблено:** Desktop client + Snapshots кнопка Capture; `CaptureProgressText` зі stage / `current_section`; після COMPLETED — Reload list; FAILED показує sanitized error. Capture RPC off UI thread (`Task.Run`).
-- **Не чіпали:** `node_id` StartCapture (deferred); Onboarding/Deploy Watch (W3.3); `ValidateDeviceConnection` (W3.2); WriteEnabled; local SemanticDiffEngine
+- **Не чіпали:** `node_id` StartCapture (deferred); Onboarding/Deploy Watch (W3.3); WriteEnabled; local SemanticDiffEngine
 - **Перевірка:** Living Spec `Ac4dSnapshotCaptureStartsAndWatchesProgress`; `SnapshotViewerViewModelTests`
 - **Файли:** `ISnapshotViewerClient`, `GrpcSnapshotViewerClient`, `SnapshotViewerViewModel`, `MainWindow.axaml`, `App.axaml.cs`
 
-**NEXT (alignment):** W3.2 ValidateDeviceConnection (Add router / Probe).
+### W3.2 Inventory/Add router: Probe — **DONE**
+- **Дані:** InventoryService `ValidateDeviceConnection` → DiscoverDeviceUseCase (read-only Controller probe)
+- **Зроблено:** Desktop client + кнопка Probe на Inventory device detail і в Add router; `ProbeResultText` = observed identity / support / mutated; target = selected Device або last registered
+- **Не чіпали:** Onboarding/Deploy Watch (W3.3); WriteEnabled; local SemanticDiffEngine
+- **Перевірка:** Living Spec `Ac2cInventoryAndAddRouterProbeValidateDeviceConnection`; `AddRouterWizardViewModelTests`
+- **Файли:** `IInventoryTreeClient`, `GrpcInventoryTreeClient`, `AddRouterWizardViewModel`, `MainWindow.axaml`
+
+**NEXT (alignment):** W3.3 Onboarding/Deploy Watch streams.

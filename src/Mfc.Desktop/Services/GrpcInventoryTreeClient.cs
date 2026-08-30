@@ -186,6 +186,18 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
             .ConfigureAwait(false);
     }
 
+    public async Task<ValidateDeviceConnectionResponse> ValidateDeviceConnectionAsync(
+        Guid deviceId,
+        CancellationToken cancellationToken = default)
+    {
+        InventoryService.InventoryServiceClient client = CreateClient();
+        return await client.ValidateDeviceConnectionAsync(
+                new ValidateDeviceConnectionRequest { DeviceId = DesktopProtoUuid.FromGuid(deviceId) },
+                ActorHeaders(),
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     public async Task<ListNeighborCandidatesResponse> ListNeighborCandidatesAsync(
         Guid seedDeviceId,
         CancellationToken cancellationToken = default)
