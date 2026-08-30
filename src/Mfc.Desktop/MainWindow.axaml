@@ -514,7 +514,13 @@
                   <Button Classes="mfc-action"
                           Content="Reload"
                           Command="{Binding Snapshot.ReloadCommand}" />
+                  <Button Classes="mfc-action"
+                          Content="Capture"
+                          Command="{Binding Snapshot.CaptureCommand}" />
                 </WrapPanel>
+                <TextBlock Classes="mfc-muted"
+                           Text="{Binding Snapshot.CaptureProgressText, StringFormat=Capture progress: {0}}"
+                           TextWrapping="Wrap" />
               </StackPanel>
 
               <Border Grid.Column="0"

@@ -96,7 +96,8 @@ Initial Issue Set M1-28 AC → module → tests:
 | No credentials in copy/export | field filter + export | domain test strips `password` |
 | W1.2 full record fields | `SnapshotRecordListItem.Fields` + selected-record detail | `Ac4cSnapshotRecordDetailShowsAllFields` + `LoadSectionMapsAllRecordFieldsNotOnlySummaryLine` |
 | Virtualization / off-UI load | ListBox `VirtualizingStackPanel` + `Task.Run` | UI wiring + service loads on background |
-| Read-only viewer | no mutation RPCs from Desktop client | `ISnapshotViewerClient` surface |
+| Record lists stay read-only | no Desktop edit of snapshot records | viewer load/export surface |
+| W3.1 StartCapture + WatchCapture | Snapshots Capture + `CaptureProgressText` | `Ac4dSnapshotCaptureStartsAndWatchesProgress` + `SnapshotViewerViewModelTests` |
 
 Filter: `dotnet test --filter FullyQualifiedName~SnapshotViewer`.
 
@@ -1803,6 +1804,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | AC#4 Snapshot configuration/observations | `SnapshotViewerViewModel` | `Ac4SnapshotViewShowsConfigurationAndObservations` |
 | W1.1 Diff FieldLines + Warnings | `SnapshotDiffViewModel` + MainWindow Semantic diff | `Ac4bSemanticDiffShowsFieldLinesAndWarnings` + `SnapshotDiffServiceTests` |
 | W1.2 Snapshot record Fields | `SnapshotViewerViewModel` selected-record detail + `Fields.DisplayLine` | `Ac4cSnapshotRecordDetailShowsAllFields` + `SnapshotViewerServiceTests` |
+| W3.1 StartCapture + WatchCapture | Snapshots Capture button + progress | `Ac4dSnapshotCaptureStartsAndWatchesProgress` + `SnapshotViewerViewModelTests` |
 | AC#5 Policy authoring/review/binding | `PoliciesViewModel` | `Ac5PolicyViewSupportsAuthoringReviewAndBinding` |
 | W1.3 Policies catalog lists + Compose selection | `PoliciesViewModel` Address/Service/Contracts/`DiffLines` + Compose ← Node | `Ac5bPoliciesBindCatalogListsAndComposeFromSelectedNode` + `PoliciesViewModelTests` |
 | AC#6 Operations onboarding/deploy/recovery | Onboarding + Deployment VMs | `Ac6OperationsViewSupportsOnboardingDeploymentAndRecovery` |
@@ -1818,7 +1820,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
-dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopMvpWorkflowsLivingSpecTests|FullyQualifiedName~AddRouterWizardViewModelTests|FullyQualifiedName~PoliciesViewModelTests|FullyQualifiedName~DriftViewModelTests|FullyQualifiedName~InventoryNodeViewModelTests|FullyQualifiedName~NodeDetailViewModelTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DriftProtoContractTests|FullyQualifiedName~AuditProtoContractTests"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopMvpWorkflowsLivingSpecTests|FullyQualifiedName~AddRouterWizardViewModelTests|FullyQualifiedName~PoliciesViewModelTests|FullyQualifiedName~DriftViewModelTests|FullyQualifiedName~InventoryNodeViewModelTests|FullyQualifiedName~NodeDetailViewModelTests|FullyQualifiedName~SnapshotViewerViewModelTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DriftProtoContractTests|FullyQualifiedName~AuditProtoContractTests"
 ```
 
 ## Living Specification — standalone / dual-stack E2E (M6-05)

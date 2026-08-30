@@ -153,6 +153,33 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("Select a record to see all fields.", axaml, StringComparison.Ordinal);
     }
 
+    /// <summary>W3.1: Snapshots Capture starts device capture and binds WatchCapture progress.</summary>
+    [Fact]
+    public void Ac4dSnapshotCaptureStartsAndWatchesProgress()
+    {
+        Type snapshot = typeof(SnapshotViewerViewModel);
+        Assert.NotNull(snapshot.GetProperty("CaptureCommand"));
+        Assert.NotNull(snapshot.GetProperty(nameof(SnapshotViewerViewModel.CaptureProgressText)));
+        Assert.NotNull(snapshot.GetProperty(nameof(SnapshotViewerViewModel.IsCapturing)));
+
+        Type client = typeof(ISnapshotViewerClient);
+        Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.StartCaptureAsync)));
+        Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.WatchCaptureAsync)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Snapshot.CaptureCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Snapshot.CaptureProgressText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Content=\"Capture\"", axaml, StringComparison.Ordinal);
+        Assert.Contains("Capture progress:", axaml, StringComparison.Ordinal);
+
+        string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/SnapshotViewerViewModel.cs");
+        Assert.Contains("StartCaptureAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("WatchCaptureAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("Task.Run", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("node_id", vmSource, StringComparison.OrdinalIgnoreCase);
+    }
+
     /// <summary>W1.1: Semantic diff binds FieldLines + Compare warnings (not RecordKey-only).</summary>
     [Fact]
     public void Ac4bSemanticDiffShowsFieldLinesAndWarnings()

@@ -314,5 +314,16 @@ public sealed class SnapshotViewerServiceTests
             cancellationToken.ThrowIfCancellationRequested();
             return Task.FromResult(new DiffPage { Identical = true });
         }
+
+        public Task<StartCaptureResponse> StartCaptureAsync(
+            Guid deviceId,
+            Guid idempotencyKey,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public IAsyncEnumerable<CaptureProgress> WatchCaptureAsync(
+            Guid operationId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
     }
 }

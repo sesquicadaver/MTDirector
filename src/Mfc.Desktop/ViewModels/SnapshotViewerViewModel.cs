@@ -5,29 +5,36 @@ using Avalonia.Input.Platform;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Grpc.Core;
+using Mfc.Contracts.Mfc.V1;
 using Mfc.Desktop.Services;
 
 namespace Mfc.Desktop.ViewModels;
 
 /// <summary>
-/// Read-only snapshot viewer: sections, config vs observations, hashes, schema version.
+/// Snapshot viewer: sections, config vs observations, hashes, schema version, and device capture.
 /// Network work stays off the UI thread; unknown properties require technical view.
+/// Record lists remain read-only; StartCapture is Controller snapshot persist (not Desktop→RouterOS write).
 /// </summary>
 public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposable
 {
     private readonly ISnapshotViewerService _viewer;
+    private readonly ISnapshotViewerClient _client;
     private readonly IControllerConnectionService _connection;
     private readonly InventoryTreeViewModel _inventory;
     private CancellationTokenSource? _loadCts;
+    private CancellationTokenSource? _captureCts;
     private bool _disposed;
     private bool _suppressSelectionHandlers;
 
     public SnapshotViewerViewModel(
         ISnapshotViewerService viewer,
+        ISnapshotViewerClient client,
         IControllerConnectionService connection,
         InventoryTreeViewModel inventory)
     {
         _viewer = viewer ?? throw new ArgumentNullException(nameof(viewer));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
         _inventory.PropertyChanged += OnInventoryPropertyChanged;
@@ -46,13 +53,25 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
     private string? _errorText;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ReloadCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CopySanitizedCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CaptureCommand))]
     private bool _isLoading;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ReloadCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CopySanitizedCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CaptureCommand))]
+    private bool _isCapturing;
 
     [ObservableProperty]
     private bool _showTechnicalView;
 
     [ObservableProperty]
     private string _statusText = "—";
+
+    [ObservableProperty]
+    private string _captureProgressText = "—";
 
     [ObservableProperty]
     private string _schemaVersionText = "—";
@@ -122,6 +141,75 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
         await LoadDeviceInternalAsync(device.Id).ConfigureAwait(true);
     }
 
+    [RelayCommand(CanExecute = nameof(CanCapture))]
+    private async Task CaptureAsync()
+    {
+        if (_inventory.SelectedNode is not { Kind: InventoryTreeKind.Device } device)
+        {
+            ErrorText = "Select a device to capture.";
+            return;
+        }
+
+        if (_connection.State != ControllerConnectionState.Connected)
+        {
+            ErrorText = "Connect to Controller before capturing.";
+            return;
+        }
+
+        _captureCts?.Cancel();
+        _captureCts?.Dispose();
+        _captureCts = new CancellationTokenSource();
+        CancellationToken token = _captureCts.Token;
+        Guid deviceId = device.Id;
+        IsCapturing = true;
+        ErrorText = null;
+        CaptureProgressText = "Starting capture…";
+        try
+        {
+            CaptureRunOutcome outcome = await Task.Run(
+                    async () => await RunCaptureAsync(deviceId, token).ConfigureAwait(false),
+                    token)
+                .ConfigureAwait(true);
+            if (outcome.ProgressLines.Count > 0)
+            {
+                CaptureProgressText = outcome.ProgressLines[^1];
+            }
+
+            if (outcome.LastProgress?.Stage == CaptureStage.Failed)
+            {
+                ErrorText = outcome.LastProgress.Error?.SanitizedDetail ?? "Capture failed.";
+                return;
+            }
+
+            if (outcome.LastProgress?.Stage == CaptureStage.Canceled)
+            {
+                ErrorText = "Capture cancelled.";
+                return;
+            }
+
+            await LoadDeviceInternalAsync(deviceId).ConfigureAwait(true);
+        }
+        catch (OperationCanceledException)
+        {
+            CaptureProgressText = "Canceled";
+            ErrorText = "Capture cancelled.";
+        }
+        catch (RpcException ex)
+        {
+            CaptureProgressText = "Failed";
+            ErrorText = ex.Status.Detail;
+        }
+        catch (Exception ex)
+        {
+            CaptureProgressText = "Failed";
+            ErrorText = ex.Message;
+        }
+        finally
+        {
+            IsCapturing = false;
+        }
+    }
+
     [RelayCommand(CanExecute = nameof(CanCopy))]
     private async Task CopySanitizedAsync()
     {
@@ -140,11 +228,53 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
 
     private bool CanReload()
         => !IsLoading
+           && !IsCapturing
+           && _connection.State == ControllerConnectionState.Connected
+           && _inventory.SelectedNode?.Kind == InventoryTreeKind.Device;
+
+    private bool CanCapture()
+        => !IsLoading
+           && !IsCapturing
            && _connection.State == ControllerConnectionState.Connected
            && _inventory.SelectedNode?.Kind == InventoryTreeKind.Device;
 
     private bool CanCopy()
-        => !IsLoading && Captures.Count > 0;
+        => !IsLoading && !IsCapturing && Captures.Count > 0;
+
+    private async Task<CaptureRunOutcome> RunCaptureAsync(Guid deviceId, CancellationToken token)
+    {
+        StartCaptureResponse started = await _client
+            .StartCaptureAsync(deviceId, Guid.NewGuid(), token)
+            .ConfigureAwait(false);
+        List<string> lines = [];
+        CaptureProgress? last = null;
+        await foreach (CaptureProgress progress in _client
+                           .WatchCaptureAsync(DesktopProtoUuid.ToGuid(started.OperationId), token)
+                           .ConfigureAwait(false))
+        {
+            last = progress;
+            lines.Add(FormatCaptureProgress(progress));
+        }
+
+        return new CaptureRunOutcome(last, lines);
+    }
+
+    private static string FormatCaptureProgress(CaptureProgress progress)
+    {
+        ArgumentNullException.ThrowIfNull(progress);
+        string stage = progress.Stage.ToString();
+        if (progress.HasCurrentSection && !string.IsNullOrWhiteSpace(progress.CurrentSection))
+        {
+            return $"{stage}: {progress.CurrentSection}";
+        }
+
+        if (progress.Error is ErrorDetail error && !string.IsNullOrWhiteSpace(error.SanitizedDetail))
+        {
+            return $"{stage}: {error.SanitizedDetail}";
+        }
+
+        return stage;
+    }
 
     private void OnInventoryPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
@@ -168,21 +298,29 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
     {
         if (Dispatcher.UIThread.CheckAccess())
         {
-            ReloadCommand.NotifyCanExecuteChanged();
+            NotifyCaptureCommands();
         }
         else
         {
-            Dispatcher.UIThread.Post(() => ReloadCommand.NotifyCanExecuteChanged());
+            Dispatcher.UIThread.Post(NotifyCaptureCommands);
         }
+    }
+
+    private void NotifyCaptureCommands()
+    {
+        ReloadCommand.NotifyCanExecuteChanged();
+        CaptureCommand.NotifyCanExecuteChanged();
+        CopySanitizedCommand.NotifyCanExecuteChanged();
     }
 
     private void HandleSelectionChanged()
     {
-        ReloadCommand.NotifyCanExecuteChanged();
+        NotifyCaptureCommands();
         InventoryNodeViewModel? selected = _inventory.SelectedNode;
         if (selected is null || selected.Kind != InventoryTreeKind.Device)
         {
             _loadCts?.Cancel();
+            _captureCts?.Cancel();
             _viewer.Clear();
             ApplyResult(new SnapshotViewerLoadResult { Succeeded = false });
             HintText = "Select a device in inventory to view its latest completed snapshot.";
@@ -208,8 +346,6 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
         _loadCts = new CancellationTokenSource();
         CancellationToken token = _loadCts.Token;
         IsLoading = true;
-        ReloadCommand.NotifyCanExecuteChanged();
-        CopySanitizedCommand.NotifyCanExecuteChanged();
         try
         {
             SnapshotViewerLoadResult result = await Task.Run(
@@ -240,8 +376,6 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
         finally
         {
             IsLoading = false;
-            ReloadCommand.NotifyCanExecuteChanged();
-            CopySanitizedCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -268,7 +402,6 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
         finally
         {
             IsLoading = false;
-            CopySanitizedCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -347,8 +480,6 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
         finally
         {
             IsLoading = false;
-            ReloadCommand.NotifyCanExecuteChanged();
-            CopySanitizedCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -478,5 +609,9 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
         _connection.StateChanged -= OnConnectionStateChanged;
         _loadCts?.Cancel();
         _loadCts?.Dispose();
+        _captureCts?.Cancel();
+        _captureCts?.Dispose();
     }
+
+    private sealed record CaptureRunOutcome(CaptureProgress? LastProgress, IReadOnlyList<string> ProgressLines);
 }

@@ -43,6 +43,8 @@ public sealed class DesktopVerticalSliceWiringTests
     public void DesktopClientsCoverInventorySnapshotCompareZonePolicyOnboardingDeploymentDriftAndAuditRpcs()
     {
         Type client = typeof(ISnapshotViewerClient);
+        Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.StartCaptureAsync)));
+        Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.WatchCaptureAsync)));
         Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.ListCapturesAsync)));
         Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.GetSummaryAsync)));
         Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.GetAllSectionRecordsAsync)));

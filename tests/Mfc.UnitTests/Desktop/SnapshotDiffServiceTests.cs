@@ -176,5 +176,16 @@ public sealed class SnapshotDiffServiceTests
             cancellationToken.ThrowIfCancellationRequested();
             return Task.FromResult(Diff);
         }
+
+        public Task<StartCaptureResponse> StartCaptureAsync(
+            Guid deviceId,
+            Guid idempotencyKey,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public IAsyncEnumerable<CaptureProgress> WatchCaptureAsync(
+            Guid operationId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
     }
 }
