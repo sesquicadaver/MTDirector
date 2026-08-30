@@ -11,6 +11,7 @@ namespace Mfc.Desktop.ViewModels;
 
 /// <summary>
 /// Drift module: list/show immutable drift events + semantic diff.
+/// List stays compact; selection loads <c>GetDriftEvent</c> for the full payload.
 /// No automatic fix / ForceRepair / AutoHeal commands (M6-04 AC#7).
 /// </summary>
 public sealed partial class DriftViewModel : ObservableObject, IDisposable
@@ -19,7 +20,12 @@ public sealed partial class DriftViewModel : ObservableObject, IDisposable
     private readonly IControllerConnectionService _connection;
     private readonly InventoryTreeViewModel _inventory;
     private CancellationTokenSource? _loadCts;
+    private int _detailEpoch;
+    private bool _suppressDetailLoad;
     private bool _disposed;
+    private bool _detailLoaded;
+    private Guid? _detailEventId;
+    private IReadOnlyList<DriftFindingListItem> _detailFindings = [];
 
     public DriftViewModel(
         IDriftServiceClient client,
@@ -93,15 +99,54 @@ public sealed partial class DriftViewModel : ObservableObject, IDisposable
     [NotifyPropertyChangedFor(nameof(SelectedEventFindings))]
     [NotifyPropertyChangedFor(nameof(HasSelectedEventFindings))]
     [NotifyPropertyChangedFor(nameof(HasNoSelectedEventFindings))]
+    [NotifyPropertyChangedFor(nameof(HasSelectedEventDetail))]
+    [NotifyPropertyChangedFor(nameof(HasNoSelectedEventDetail))]
     private DriftEventListItem? _selectedEvent;
 
-    /// <summary>Findings from the selected ListDeviceDriftEvents row (not GetDriftEvent).</summary>
-    public IReadOnlyList<DriftFindingListItem> SelectedEventFindings =>
-        SelectedEvent?.Findings ?? [];
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasSelectedEventDetail))]
+    [NotifyPropertyChangedFor(nameof(HasNoSelectedEventDetail))]
+    private string _detailNodeIdText = string.Empty;
+
+    [ObservableProperty]
+    private string _detailBaselineHashText = string.Empty;
+
+    [ObservableProperty]
+    private string _detailActualHashText = string.Empty;
+
+    [ObservableProperty]
+    private string _detailDesiredHashText = string.Empty;
+
+    [ObservableProperty]
+    private string _detailSemanticDiffHashText = string.Empty;
+
+    [ObservableProperty]
+    private string _detailImmutableText = string.Empty;
+
+    /// <summary>
+    /// Findings from GetDriftEvent when loaded for the selected id; otherwise the ListDeviceDriftEvents row.
+    /// </summary>
+    public IReadOnlyList<DriftFindingListItem> SelectedEventFindings
+    {
+        get
+        {
+            if (_detailLoaded && _detailEventId is Guid id && SelectedEvent?.Id == id)
+            {
+                return _detailFindings;
+            }
+
+            return SelectedEvent?.Findings ?? [];
+        }
+    }
 
     public bool HasSelectedEventFindings => SelectedEventFindings.Count > 0;
 
     public bool HasNoSelectedEventFindings => SelectedEventFindings.Count == 0;
+
+    public bool HasSelectedEventDetail =>
+        _detailLoaded && _detailEventId is Guid id && SelectedEvent?.Id == id;
+
+    public bool HasNoSelectedEventDetail => !HasSelectedEventDetail;
 
     [RelayCommand(CanExecute = nameof(CanRefresh))]
     private async Task RefreshAsync()
@@ -138,9 +183,12 @@ public sealed partial class DriftViewModel : ObservableObject, IDisposable
                 Events.Add(DriftEventListItem.FromProto(evt));
             }
 
+            _suppressDetailLoad = true;
             SelectedEvent = Events.FirstOrDefault();
+            _suppressDetailLoad = false;
             StatusText = $"Loaded {Events.Count} drift event(s) for device {deviceId.Value:D}.";
             ErrorText = null;
+            await LoadSelectedDetailAsync(token).ConfigureAwait(true);
         }
         catch (OperationCanceledException)
         {
@@ -168,7 +216,113 @@ public sealed partial class DriftViewModel : ObservableObject, IDisposable
 
     partial void OnSelectedEventChanged(DriftEventListItem? value)
     {
+        ApplyListSnapshot(value);
+        if (_suppressDetailLoad)
+        {
+            return;
+        }
+
+        _ = LoadSelectedDetailAsync(CancellationToken.None);
+    }
+
+    private void ApplyListSnapshot(DriftEventListItem? value)
+    {
+        Interlocked.Increment(ref _detailEpoch);
+        _detailLoaded = false;
+        _detailEventId = null;
+        _detailFindings = [];
         SemanticDiffText = value?.SemanticDiffCanonical ?? string.Empty;
+        DetailNodeIdText = string.Empty;
+        DetailBaselineHashText = string.Empty;
+        DetailActualHashText = string.Empty;
+        DetailDesiredHashText = string.Empty;
+        DetailSemanticDiffHashText = string.Empty;
+        DetailImmutableText = string.Empty;
+        NotifyFindingsChanged();
+    }
+
+    private async Task LoadSelectedDetailAsync(CancellationToken cancellationToken)
+    {
+        DriftEventListItem? selected = SelectedEvent;
+        if (selected is null)
+        {
+            return;
+        }
+
+        if (_connection.State != ControllerConnectionState.Connected)
+        {
+            return;
+        }
+
+        int epoch = Volatile.Read(ref _detailEpoch);
+        Guid eventId = selected.Id;
+        try
+        {
+            DriftEvent evt = await Task.Run(
+                    async () => await _client.GetDriftEventAsync(eventId, cancellationToken).ConfigureAwait(false),
+                    cancellationToken)
+                .ConfigureAwait(true);
+            if (epoch != Volatile.Read(ref _detailEpoch) || SelectedEvent?.Id != eventId)
+            {
+                return;
+            }
+
+            ApplyGetPayload(evt);
+            ErrorText = null;
+        }
+        catch (OperationCanceledException)
+        {
+            if (epoch != Volatile.Read(ref _detailEpoch))
+            {
+                return;
+            }
+
+            StatusText = "GetDriftEvent cancelled.";
+        }
+        catch (RpcException ex)
+        {
+            if (epoch != Volatile.Read(ref _detailEpoch))
+            {
+                return;
+            }
+
+            ErrorText = ex.Status.Detail;
+            StatusText = "GetDriftEvent failed; showing list payload.";
+        }
+        catch (Exception ex)
+        {
+            if (epoch != Volatile.Read(ref _detailEpoch))
+            {
+                return;
+            }
+
+            ErrorText = ex.Message;
+            StatusText = "GetDriftEvent failed; showing list payload.";
+        }
+    }
+
+    private void ApplyGetPayload(DriftEvent evt)
+    {
+        _detailEventId = DesktopProtoUuid.ToGuid(evt.Id);
+        _detailFindings = evt.Findings.Select(DriftFindingListItem.FromProto).ToArray();
+        _detailLoaded = true;
+        SemanticDiffText = evt.SemanticDiffCanonical ?? string.Empty;
+        DetailNodeIdText = DesktopProtoUuid.ToGuid(evt.NodeId).ToString("D");
+        DetailBaselineHashText = FormatHashFull(evt.BaselineCommittedHash);
+        DetailActualHashText = FormatHashFull(evt.ActualManagedResourceHash);
+        DetailDesiredHashText = FormatHashFull(evt.DesiredArtifactHashIgnoredForBaseline);
+        DetailSemanticDiffHashText = FormatHashFull(evt.SemanticDiffHash);
+        DetailImmutableText = evt.Immutable ? "immutable" : "mutable (unexpected)";
+        NotifyFindingsChanged();
+    }
+
+    private void NotifyFindingsChanged()
+    {
+        OnPropertyChanged(nameof(SelectedEventFindings));
+        OnPropertyChanged(nameof(HasSelectedEventFindings));
+        OnPropertyChanged(nameof(HasNoSelectedEventFindings));
+        OnPropertyChanged(nameof(HasSelectedEventDetail));
+        OnPropertyChanged(nameof(HasNoSelectedEventDetail));
     }
 
     private Guid? ResolveDeviceId()
@@ -202,6 +356,16 @@ public sealed partial class DriftViewModel : ObservableObject, IDisposable
         }
     }
 
+    private static string FormatHashFull(Sha256? hash)
+    {
+        if (hash is null || hash.Value.Length == 0)
+        {
+            return "—";
+        }
+
+        return Convert.ToHexString(hash.Value.Span).ToLowerInvariant();
+    }
+
     public void Dispose()
     {
         if (_disposed)
@@ -210,14 +374,15 @@ public sealed partial class DriftViewModel : ObservableObject, IDisposable
         }
 
         _disposed = true;
-        _connection.StateChanged -= OnConnectionStateChanged;
+        Interlocked.Increment(ref _detailEpoch);
         _inventory.PropertyChanged -= OnInventoryPropertyChanged;
+        _connection.StateChanged -= OnConnectionStateChanged;
         _loadCts?.Cancel();
         _loadCts?.Dispose();
     }
 }
 
-/// <summary>Presentation row for a drift event (Contracts-only).</summary>
+/// <summary>Presentation row for a drift event (Contracts-only). List hashes stay truncated.</summary>
 public sealed class DriftEventListItem
 {
     public required Guid Id { get; init; }
@@ -271,7 +436,7 @@ public sealed class DriftEventListItem
     }
 }
 
-/// <summary>One DriftFinding from the list response (kind / severity / detail).</summary>
+/// <summary>One DriftFinding from list or GetDriftEvent (kind / severity / detail).</summary>
 public sealed class DriftFindingListItem
 {
     public required string KindText { get; init; }

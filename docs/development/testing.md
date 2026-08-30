@@ -1762,7 +1762,8 @@ Issue Set M6-02 + E2E Workflow Spec §32–§34 → compare actual managed state
 | AC#10 No automatic repair | Application/Domain surface | `Ac10AutomaticRepairIsAbsent` |
 | AC#11 Restore via normal deploy only | API surface | `Ac11RestorationIsNormalDeploymentPathOnly` |
 | AC#12 Immutable + audited | `DriftEvent` + audit | `Ac12DriftEventsAreImmutableAndAudited` |
-| W1.5 Desktop findings list | `DriftEventListItem.Findings` (list RPC, not GetDriftEvent) | `Ac7bDriftShowsFindingsFromListResponseNotOnlySemanticDiff` + `DriftViewModelTests` |
+| W1.5 Desktop findings list | `DriftEventListItem.Findings` (list RPC) | `Ac7bDriftShowsFindingsFromListResponseNotOnlySemanticDiff` + `DriftViewModelTests` |
+| W3.7 GetDriftEvent detail | `DriftViewModel` selection → `GetDriftEvent` | `Ac7cDriftLoadsGetDriftEventForSelectedPayload` + `DriftViewModelTests` |
 
 Filter:
 ```bash
@@ -1820,6 +1821,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | W3.3 Onboarding/Deploy Watch | Start + Watch → `ProgressLines` | `Ac6cOperationsStartWatchesOnboardingAndDeploymentProgress` + `OnboardingViewModelTests` + `DeploymentViewModelTests` |
 | AC#7 Drift без automatic fix | `DriftViewModel` + `DriftService` | `Ac7DriftViewHasNoAutomaticFix` |
 | W1.5 Drift findings зі list | `DriftEventListItem.Findings` + `SelectedEventFindings` | `Ac7bDriftShowsFindingsFromListResponseNotOnlySemanticDiff` + `DriftViewModelTests` |
+| W3.7 Drift GetDriftEvent | selection loads full hashes / desired / semantic_diff_hash | `Ac7cDriftLoadsGetDriftEventForSelectedPayload` + `DriftViewModelTests` |
 | AC#8 Audit read-only | `AuditViewModel` + `AuditService` | `Ac8AuditIsReadOnly` |
 | AC#9 UI thread без remote I/O | Drift/Audit/Shell `Task.Run` | `Ac9UiThreadNeverPerformsRemoteIo` |
 | AC#10 Cached state позначений | Inventory Cached badge | `Ac10CachedStateIsClearlyMarked` |
