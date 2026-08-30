@@ -458,13 +458,55 @@
                 </ItemsPanelTemplate>
               </ListBox.ItemsPanel>
             </ListBox>
-            <TextBlock Classes="mfc-label" Text="Devices" />
+            <TextBlock Classes="mfc-label" Text="VRRP members" IsVisible="{Binding Node.IsVrrpNode}" />
+            <TextBlock Classes="mfc-muted"
+                       Text="{Binding Node.VrrpPairHint}"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding Node.IsVrrpNode}" />
+            <TextBlock Classes="mfc-muted"
+                       Text="No devices on this VRRP Node."
+                       IsVisible="{Binding Node.HasNoVrrpMembers}" />
+            <ListBox ItemsSource="{Binding Node.VrrpMembers}"
+                     SelectedItem="{Binding Node.SelectedVrrpMember, Mode=TwoWay}"
+                     MaxHeight="280"
+                     IsVisible="{Binding Node.HasVrrpMembers}">
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="vm:VrrpMemberListItem">
+                  <StackPanel Spacing="2" Margin="4">
+                    <TextBlock Text="{Binding SummaryLine}" FontWeight="SemiBold" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace" />
+                    <TextBlock Text="{Binding ReachabilityText, StringFormat=Reachability: {0}}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding RoleText, StringFormat=VRRP roles: {0}}"
+                               TextWrapping="Wrap"
+                               IsVisible="{Binding HasRole}" />
+                    <TextBlock Text="{Binding ManagementHostText, StringFormat=Management host: {0}}"
+                               TextWrapping="Wrap"
+                               FontFamily="Consolas,Menlo,monospace" />
+                    <TextBlock Text="{Binding LastSnapshotText, StringFormat=Last snapshot: {0}}" TextWrapping="Wrap" />
+                  </StackPanel>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+            <StackPanel Spacing="4"
+                        Margin="0,4,0,0"
+                        IsVisible="{Binding Node.HasSelectedVrrpMember}">
+              <TextBlock Classes="mfc-label" Text="Selected member" />
+              <TextBlock Text="{Binding Node.SelectedVrrpMember.DisplayName}" FontWeight="SemiBold" TextWrapping="Wrap" />
+              <TextBlock Text="{Binding Node.SelectedVrrpMember.ManagementHostText, StringFormat=Management host: {0}}"
+                         FontFamily="Consolas,Menlo,monospace"
+                         TextWrapping="Wrap" />
+            </StackPanel>
+            <TextBlock Classes="mfc-label" Text="Devices" IsVisible="{Binding Node.ShowStandaloneDeviceSection}" />
             <TextBlock Classes="mfc-muted"
                        Text="No devices on this Node."
-                       IsVisible="{Binding Node.HasNoDeviceMembers}" />
+                       IsVisible="{Binding Node.HasStandaloneDeviceEmpty}" />
             <ListBox ItemsSource="{Binding Node.DeviceMembers}"
                      MaxHeight="280"
-                     IsVisible="{Binding Node.HasDeviceMembers}">
+                     IsVisible="{Binding Node.HasStandaloneDeviceList}">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                   <VirtualizingStackPanel />

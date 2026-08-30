@@ -23,6 +23,7 @@ public sealed partial class InventoryNodeViewModel : ObservableObject
         ModelText = item.ModelText;
         VrrpRolesText = item.VrrpRolesText;
         LastSnapshotText = item.LastSnapshotText;
+        ManagementHostText = item.ManagementHostText;
         WorkflowStatusText = item.WorkflowStatusText;
         DesiredHashText = item.DesiredHashText;
         CommittedHashText = item.CommittedHashText;
@@ -58,6 +59,8 @@ public sealed partial class InventoryNodeViewModel : ObservableObject
     public string VrrpRolesText { get; }
 
     public string LastSnapshotText { get; }
+
+    public string ManagementHostText { get; }
 
     public string WorkflowStatusText { get; }
 
@@ -104,6 +107,7 @@ public sealed partial class InventoryNodeViewModel : ObservableObject
             $"Support: {OrDash(SupportStateText)}; Reachability: {OrDash(ReachabilityText)}; " +
             $"Version: {OrDash(RouterOsVersionText)}; Model: {OrDash(ModelText)}; " +
             $"VRRP: {OrDash(VrrpRolesText)}; Last snapshot: {OrDash(LastSnapshotText)}; " +
+            $"Mgmt: {OrDash(ManagementHostText)}; " +
             $"Desired: {OrDash(DesiredHashText)}; Committed: {OrDash(CommittedHashText)}; " +
             $"Actual: {OrDash(ActualHashText)}",
         _ => string.Empty,
