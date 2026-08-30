@@ -847,7 +847,130 @@
 
             <Border Classes="mfc-panel">
               <StackPanel Spacing="6">
+                <TextBlock Classes="mfc-label" Text="Address objects" />
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <TextBox Classes="mfc-field"
+                           PlaceholderText="name"
+                           Text="{Binding Policies.AddressNameText}"
+                           MinWidth="140"
+                           Width="180" />
+                  <ComboBox Classes="mfc-field"
+                            ItemsSource="{Binding Policies.Families}"
+                            SelectedItem="{Binding Policies.AddressFamily, Mode=TwoWay}"
+                            MinWidth="100"
+                            Width="120" />
+                  <Button Classes="mfc-action"
+                          Content="Upsert address"
+                          Command="{Binding Policies.UpsertAddressCommand}"
+                          MinWidth="120" />
+                </WrapPanel>
+                <TextBox Classes="mfc-field"
+                         PlaceholderText="host / CIDR / range per line"
+                         Text="{Binding Policies.AddressEntriesText}"
+                         AcceptsReturn="True"
+                         MinHeight="56"
+                         TextWrapping="Wrap" />
+                <ListBox ItemsSource="{Binding Policies.AddressObjects}" MaxHeight="120">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="svc:PolicyAddressObjectListItem">
+                      <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
+                                 FontFamily="Consolas,Menlo,monospace" />
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+              </StackPanel>
+            </Border>
+
+            <Border Classes="mfc-panel">
+              <StackPanel Spacing="6">
+                <TextBlock Classes="mfc-label" Text="Service objects" />
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <TextBox Classes="mfc-field"
+                           PlaceholderText="name"
+                           Text="{Binding Policies.ServiceNameText}"
+                           MinWidth="140"
+                           Width="180" />
+                  <TextBox Classes="mfc-field"
+                           PlaceholderText="TCP port"
+                           Text="{Binding Policies.ServiceTcpPortText}"
+                           MinWidth="80"
+                           Width="100" />
+                  <Button Classes="mfc-action"
+                          Content="Upsert service"
+                          Command="{Binding Policies.UpsertServiceCommand}"
+                          MinWidth="120" />
+                </WrapPanel>
+                <ListBox ItemsSource="{Binding Policies.ServiceObjects}" MaxHeight="120">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="svc:PolicyServiceObjectListItem">
+                      <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
+                                 FontFamily="Consolas,Menlo,monospace" />
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+              </StackPanel>
+            </Border>
+
+            <Border Classes="mfc-panel">
+              <StackPanel Spacing="6">
+                <TextBlock Classes="mfc-label" Text="Chain contracts" />
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <ComboBox Classes="mfc-field"
+                            ItemsSource="{Binding Policies.Families}"
+                            SelectedItem="{Binding Policies.ContractFamily, Mode=TwoWay}"
+                            MinWidth="100"
+                            Width="120" />
+                  <ComboBox Classes="mfc-field"
+                            ItemsSource="{Binding Policies.Chains}"
+                            SelectedItem="{Binding Policies.ContractChain, Mode=TwoWay}"
+                            MinWidth="120"
+                            Width="140" />
+                  <TextBox Classes="mfc-field"
+                           PlaceholderText="DROP / REJECT / RETURN_TO_UNMANAGED"
+                           Text="{Binding Policies.ContractDisposition}"
+                           MinWidth="180"
+                           Width="240" />
+                  <ComboBox Classes="mfc-field"
+                            ItemsSource="{Binding Policies.RejectModes}"
+                            SelectedItem="{Binding Policies.ContractRejectMode, Mode=TwoWay}"
+                            MinWidth="140"
+                            Width="180" />
+                  <Button Classes="mfc-action"
+                          Content="Replace contracts"
+                          Command="{Binding Policies.ReplaceContractsCommand}"
+                          MinWidth="140" />
+                </WrapPanel>
+                <ListBox ItemsSource="{Binding Policies.ChainContracts}" MaxHeight="120">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="svc:PolicyChainContractListItem">
+                      <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
+                                 FontFamily="Consolas,Menlo,monospace" />
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+              </StackPanel>
+            </Border>
+
+            <Border Classes="mfc-panel">
+              <StackPanel Spacing="6">
                 <TextBlock Classes="mfc-label" Text="Review: compose / diff / analysis risk" />
+                <TextBlock Classes="mfc-muted"
+                           Text="Compose node UUID defaults from the selected inventory Node (or the parent Node of a Device). Create draft fills the revision id; Load remains optional." />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"
                            PlaceholderText="compose node UUID"
@@ -863,7 +986,23 @@
                            MinWidth="240"
                            Width="320" />
                   <Button Classes="mfc-action" Content="Semantic diff" Command="{Binding Policies.DiffCommand}" MinWidth="120" />
+                  <Button Classes="mfc-action" Content="Record analysis" Command="{Binding Policies.RecordAnalysisCommand}" MinWidth="130" />
                 </WrapPanel>
+                <TextBlock Classes="mfc-label" Text="Revision diff" />
+                <ListBox ItemsSource="{Binding Policies.DiffLines}" MaxHeight="120">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="svc:PolicyFindingListItem">
+                      <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
+                                 FontFamily="Consolas,Menlo,monospace" />
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock Classes="mfc-label" Text="Compose findings" />
                 <ListBox ItemsSource="{Binding Policies.Findings}" MaxHeight="120">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>

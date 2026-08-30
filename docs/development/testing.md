@@ -818,6 +818,7 @@ Policy Model §16 / §18 / §9 / §60–§61 + Issue Set M2-18 → Domain writer
 | AC#10 No Save and Deploy | command surface | `Ac9Ac10SeparateActionsAndNoSaveAndDeploySurface` |
 | AC#11 Approved/InReview read-only | `PolicyRevisionPanelState.IsReadOnly` | `Ac11ApprovedRevisionIsReadOnly` |
 | Desktop RPC wiring (Contracts-only) | `IPolicyServiceClient` | `DesktopClientsCoverInventorySnapshotCompareZoneAndPolicyRpcs` |
+| W1.3 catalog lists + Compose ← Node | `PoliciesViewModel` + MainWindow Policies | `Ac5bPoliciesBindCatalogListsAndComposeFromSelectedNode` + `PoliciesViewModelTests` |
 
 **Residuals:** Typed `PolicyDocument.Tests` still opaque JSON text box. Full NODE_EFFECTIVE / per-device analysis hashes need device context — Desktop reuses logical-effective/content hash slots for `RecordAnalysisRun` wiring. Deploy button present with `CanExecute=false` (M4-12; packet-path Domain gate is N1-06 DONE). Composer/RouterOS writes remain out of scope (M3/M4).
 
@@ -1798,6 +1799,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | W1.1 Diff FieldLines + Warnings | `SnapshotDiffViewModel` + MainWindow Semantic diff | `Ac4bSemanticDiffShowsFieldLinesAndWarnings` + `SnapshotDiffServiceTests` |
 | W1.2 Snapshot record Fields | `SnapshotViewerViewModel` selected-record detail + `Fields.DisplayLine` | `Ac4cSnapshotRecordDetailShowsAllFields` + `SnapshotViewerServiceTests` |
 | AC#5 Policy authoring/review/binding | `PoliciesViewModel` | `Ac5PolicyViewSupportsAuthoringReviewAndBinding` |
+| W1.3 Policies catalog lists + Compose selection | `PoliciesViewModel` Address/Service/Contracts/`DiffLines` + Compose ← Node | `Ac5bPoliciesBindCatalogListsAndComposeFromSelectedNode` + `PoliciesViewModelTests` |
 | AC#6 Operations onboarding/deploy/recovery | Onboarding + Deployment VMs | `Ac6OperationsViewSupportsOnboardingDeploymentAndRecovery` |
 | AC#7 Drift без automatic fix | `DriftViewModel` + `DriftService` | `Ac7DriftViewHasNoAutomaticFix` |
 | AC#8 Audit read-only | `AuditViewModel` + `AuditService` | `Ac8AuditIsReadOnly` |
@@ -1809,7 +1811,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
-dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopMvpWorkflowsLivingSpecTests|FullyQualifiedName~AddRouterWizardViewModelTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DriftProtoContractTests|FullyQualifiedName~AuditProtoContractTests"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopMvpWorkflowsLivingSpecTests|FullyQualifiedName~AddRouterWizardViewModelTests|FullyQualifiedName~PoliciesViewModelTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DriftProtoContractTests|FullyQualifiedName~AuditProtoContractTests"
 ```
 
 ## Living Specification — standalone / dual-stack E2E (M6-05)

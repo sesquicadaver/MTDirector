@@ -35,13 +35,12 @@
 - **Перевірка:** Living Spec `Ac4cSnapshotRecordDetailShowsAllFields`; unit `LoadSectionMapsAllRecordFieldsNotOnlySummaryLine` (chain/action/comment + поля поза SummaryLine)
 - **Файли:** `MainWindow.axaml`, `SnapshotViewerViewModel.cs`, `SnapshotViewerModels.cs`, `DesktopMvpWorkflowsLivingSpecTests`
 
-### W1.3 Policies: обʼєкти / contracts / DiffLines + selection glue
-- **Дані вже в VM:** `AddressObjects`, `ServiceObjects`, `ChainContracts`, `DiffLines` + команди Upsert*/Replace*/Reorder*/RecordAnalysis
-- **Зробити:**
-  1. Секції списків у Policies axaml
-  2. Compose: default `ComposeNodeIdText` ← `Inventory.SelectedNode` (Node)
-  3. Після Create draft — уже є revision id; Load лишається, але не єдиний шлях
-- **Перевірка:** Create draft → видно address/service/contracts після upsert; Compose без ручного UUID при вибраному Node
+### W1.3 Policies: обʼєкти / contracts / DiffLines + selection glue — **DONE**
+- **Дані:** `AddressObjects`, `ServiceObjects`, `ChainContracts`, `DiffLines` + Upsert*/Replace*/RecordAnalysis; Create draft уже пише `RevisionIdText`
+- **Зроблено:** Policies axaml — секції списків address/service/contracts + Revision diff; Compose UUID ← inventory Node (або parent Node при Device)
+- **Не чіпали:** ListPolicies catalog browse (P3); Save and Deploy; local SemanticDiffEngine
+- **Перевірка:** Living Spec `Ac5bPoliciesBindCatalogListsAndComposeFromSelectedNode`; `PoliciesViewModelTests` (Node/Device → Compose; Create draft → revision id)
+- **Файли:** `MainWindow.axaml`, `PoliciesViewModel.cs`, `App.axaml.cs`, `DesktopMvpWorkflowsLivingSpecTests`
 
 ### W1.4 Deploy / Onboarding: приховані колекції
 - Deploy: bind `ArtifactLines`, `OrderLines`, `ProbeAndWatchdogLines` (зараз лише слабкі `SemanticDiffLines`)
@@ -120,7 +119,7 @@
 ```
 W1.1 Diff FieldLines     ← DONE
 W1.2 Snapshot Fields      ← DONE
-W1.3 Policies bind+Compose selection
+W1.3 Policies bind+Compose selection  ← DONE
 W1.4 Deploy/Onboarding collections
 W1.5 Drift findings
 W1.6 Inventory device fields
@@ -146,7 +145,8 @@ W4  VRRP Node shell
 |-------|--------|
 | W1.1 | **DONE** (FieldLines + Warnings UI) |
 | W1.2 | **DONE** (selected-record Fields detail) |
-| W1.3–W1.6 | **TODO** |
+| W1.3 | **DONE** (catalog lists + Compose ← Node) |
+| W1.4–W1.6 | **TODO** |
 | W2–W5 | **TODO** |
 
-**NEXT (alignment):** W1.3 Policies — lists + Compose ← SelectedNode.
+**NEXT (alignment):** W1.4 Deploy/Onboarding — bind ArtifactLines / OrderLines / ProbeAndWatchdogLines / Placements.
