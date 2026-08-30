@@ -108,7 +108,7 @@
 ## Хвиля 4 — VRRP structured UX (P2 UI + можливий P3 data)
 
 1. **Node-centric shell** для `NodeKind.Vrrp`: members table (a/b), role, mgmt host, last capture — **DONE** (W4.1)
-2. Selection model: ops на **Node** (pair) з drill-down member; Deploy не «перший child» мовчки — **W4.2**
+2. Selection model: ops на **Node** (pair) з drill-down member; Deploy не «перший child» мовчки — **DONE** (W4.2)
 3. Wizard: опція create VRRP node + register 2 devices — **W4.3**
 4. Pair capture / compare guidance (per-member captures; cross-device compare лишається forbid by design — показати why) — **W4.4**
 
@@ -143,7 +143,7 @@ W3.5 Zones Update/ResolveDevice    ← DONE
 W3.6 Policy mutate RPCs            ← DONE
 W3.7 Drift GetDriftEvent           ← DONE
 W4.1 VRRP Node members table       ← DONE
-W4.2 Deploy not silent first-child
+W4.2 Deploy not silent first-child ← DONE
 W4.3 VRRP create+register wizard
 W4.4 Pair capture / compare guidance
 ```
@@ -176,7 +176,8 @@ W4.4 Pair capture / compare guidance
 | W3.6 | **DONE** (Policy Update/Delete/Ack/Compile) |
 | W3.7 | **DONE** (Drift GetDriftEvent detail payload) |
 | W4.1 | **DONE** (VRRP Node a/b members: role / mgmt host / last capture) |
-| W2.1–W2.2, W4.2–W4.4, W5 | **TODO** |
+| W4.2 | **DONE** (Deploy/Onboarding plan all VRRP members, not silent first Device) |
+| W2.1–W2.2, W4.3–W4.4, W5 | **TODO** |
 
 ### W3.1 Snapshots: Capture + progress — **DONE**
 - **Дані:** SnapshotService `StartCapture` / `WatchCapture` (device_id only; Controller M1-26)
@@ -234,4 +235,11 @@ W4.4 Pair capture / compare guidance
 - **Перевірка:** Living Spec `Ac3dVrrpNodeShowsMemberTableRoleHostAndLastCapture`; `NodeDetailViewModelTests`; `InventoryTreeServiceTests`; `InventoryNodeViewModelTests`
 - **Файли:** `InventoryTreeService`, `InventoryNodeViewModel`, `NodeDetailViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment):** W4.2 Deploy/ops не мовчки перший Device child VRRP Node.
+### W4.2 Operations: VRRP pair not silent first Device — **DONE**
+- **Дані:** resolved Node (`NodeKindText == "Vrrp"`) + усі Device children; CreatePlan/Validate уже приймають `repeated` device inputs
+- **Зроблено:** `InventoryOpsSelection` — ops на Node (pair); план/validate включає всіх members. Вибір member у дереві все одно планує пару. Hint на Onboarding/Deploy. `RequireDeviceId` + `FirstOrDefault` Device child прибрані.
+- **Не чіпали:** Add router VRRP wizard (W4.3); pair capture/compare guidance (W4.4); WriteEnabled; Snapshot `device_id` Capture
+- **Перевірка:** Living Spec `Ac6dOperationsTargetVrrpNodePairNotSilentFirstDevice`; `InventoryOpsSelectionTests`; `DeploymentViewModelTests`; `OnboardingViewModelTests`
+- **Файли:** `InventoryOpsSelection`, `DeploymentViewModel`, `OnboardingViewModel`, `MainWindow.axaml`
+
+**NEXT (alignment):** W4.3 Wizard: create VRRP node + register 2 devices.

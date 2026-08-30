@@ -462,6 +462,47 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.DoesNotContain("WriteEnabled", deployment, StringComparison.Ordinal);
     }
 
+    /// <summary>W4.2: VRRP Operations target the Node pair (all members), not a silent first Device child.</summary>
+    [Fact]
+    public void Ac6dOperationsTargetVrrpNodePairNotSilentFirstDevice()
+    {
+        Assert.NotNull(typeof(DeploymentViewModel).GetProperty(nameof(DeploymentViewModel.TargetHint)));
+        Assert.NotNull(typeof(DeploymentViewModel).GetProperty(nameof(DeploymentViewModel.HasVrrpPairTarget)));
+        Assert.NotNull(typeof(OnboardingViewModel).GetProperty(nameof(OnboardingViewModel.TargetHint)));
+        Assert.NotNull(typeof(OnboardingViewModel).GetProperty(nameof(OnboardingViewModel.HasVrrpPairTarget)));
+        Assert.Equal(
+            "VRRP ops target this Node (pair). Create plan includes all members; the first Device is not used silently.",
+            InventoryOpsSelection.VrrpPairHint);
+
+        MethodInfo? deployRequireDevice = typeof(DeploymentViewModel).GetMethod(
+            "RequireDeviceId",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        MethodInfo? onboardRequireDevice = typeof(OnboardingViewModel).GetMethod(
+            "RequireDeviceId",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.Null(deployRequireDevice);
+        Assert.Null(onboardRequireDevice);
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Deployment.TargetHint", axaml, StringComparison.Ordinal);
+        Assert.Contains("Onboarding.TargetHint", axaml, StringComparison.Ordinal);
+        Assert.Contains("Deployment.HasVrrpPairTarget", axaml, StringComparison.Ordinal);
+        Assert.Contains("Onboarding.HasVrrpPairTarget", axaml, StringComparison.Ordinal);
+
+        string onboarding = ReadSource("src/Mfc.Desktop/ViewModels/OnboardingViewModel.cs");
+        string deployment = ReadSource("src/Mfc.Desktop/ViewModels/DeploymentViewModel.cs");
+        string selection = ReadSource("src/Mfc.Desktop/ViewModels/InventoryOpsSelection.cs");
+        Assert.Contains("InventoryOpsSelection.RequireDeviceIds", onboarding, StringComparison.Ordinal);
+        Assert.Contains("InventoryOpsSelection.RequireDeviceIds", deployment, StringComparison.Ordinal);
+        Assert.Contains("RequireDeviceIds", selection, StringComparison.Ordinal);
+        Assert.DoesNotContain("FirstOrDefault", onboarding, StringComparison.Ordinal);
+        Assert.DoesNotContain("FirstOrDefault", deployment, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", onboarding, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", deployment, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", selection, StringComparison.Ordinal);
+        Assert.DoesNotContain("Master/Backup", selection, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac7DriftViewHasNoAutomaticFix()
     {

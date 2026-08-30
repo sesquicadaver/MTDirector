@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Mfc.UnitTests.Desktop;
 
-/// <summary>W3.3: Onboarding Start consumes Watch stream, not only Start.Timeline.</summary>
+/// <summary>W3.3 Watch + W4.2 VRRP pair Validate (not silent first Device).</summary>
 public sealed class OnboardingViewModelTests
 {
     [Fact]
@@ -93,6 +93,61 @@ public sealed class OnboardingViewModelTests
         Assert.Equal("Operation Committed.", vm.StatusText);
     }
 
+    [Fact]
+    public async Task ValidatePrerequisitesIncludesAllVrrpMembersNotSilentFirstChild()
+    {
+        Guid nodeId = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff");
+        Guid deviceA = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid deviceB = Guid.Parse("22222222-3333-4444-5555-666666666666");
+        FakeConnection connection = new();
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        InventoryNodeViewModel site = new(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Site,
+            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            DisplayName = "LAB",
+            Children =
+            [
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeId,
+                    DisplayName = "edge-pair",
+                    NodeKindText = "Vrrp",
+                    Children =
+                    [
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceA,
+                            DisplayName = "r1",
+                        },
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceB,
+                            DisplayName = "r2",
+                        },
+                    ],
+                },
+            ],
+        });
+        inventory.Roots.Add(site);
+        inventory.SelectedNode = site.Children[0];
+        FakeOnboardingClient client = new();
+        using OnboardingViewModel vm = new(client, connection, inventory);
+
+        Assert.True(vm.HasVrrpPairTarget);
+        Assert.Equal(InventoryOpsSelection.VrrpPairHint, vm.TargetHint);
+
+        await vm.ValidateCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Equal(nodeId, client.LastNodeId);
+        Assert.Equal([deviceA, deviceB], client.LastDeviceIds);
+        Assert.Equal("Prerequisites passed.", vm.StatusText);
+    }
+
     private static Sha256 Hash(string seed)
         => new() { Value = ByteString.CopyFrom(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(seed))) };
 
@@ -143,11 +198,19 @@ public sealed class OnboardingViewModelTests
 
         public Guid WatchedOperationId { get; private set; }
 
+        public Guid LastNodeId { get; private set; }
+
+        public List<Guid> LastDeviceIds { get; private set; } = [];
+
         public Task<OnboardingPrerequisiteReport> ValidatePrerequisitesAsync(
             Guid nodeId,
             IReadOnlyList<OnboardingDevicePrerequisiteFacts> devices,
             CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
+        {
+            LastNodeId = nodeId;
+            LastDeviceIds = devices.Select(d => DesktopProtoUuid.ToGuid(d.DeviceId)).ToList();
+            return Task.FromResult(new OnboardingPrerequisiteReport { Passed = true });
+        }
 
         public Task<OnboardingPlanSummary> CreatePlanAsync(
             Guid nodeId,
