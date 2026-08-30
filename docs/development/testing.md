@@ -1259,6 +1259,7 @@ Issue Set M5-09 → separate RPCs, plan_hash at start, streaming progress, Deskt
 | AC#3 Server-streaming progress | `OnboardingProgressHub` | `Ac3WatchReplaysServerStreamingProgressUntilTerminal` |
 | AC#4 Prerequisite checklist | Desktop `Findings` | `Ac4To7DesktopChecklistPlacementAndNoWriteSurface` |
 | AC#5 Anchor placement | Desktop `Placements` | `Ac4To7DesktopChecklistPlacementAndNoWriteSurface` |
+| W1.4 bind Placements | MainWindow Onboarding «Anchor placements» | `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta` |
 | AC#6 No script source | proto + `HasScriptSource` | `ContractHasNoScriptSourceOrArbitraryWriteSurface` |
 | AC#7 No arbitrary writes | proto + `HasArbitraryWriteControls` | `Ac4To7DesktopFlagsAreCompileTimeFalse` |
 | AC#8 Recovery facts exact | `GetOnboardingRecoveryStatusUseCase` | `Ac8RecoveryFactsMatchStoredOperation` |
@@ -1632,6 +1633,7 @@ Safe Deployment + Issue Set M4-12 → gRPC DeploymentService + Desktop Deploy pa
 | AC#2 Start exact plan_hash | `StartDeploymentUseCase` | `Ac2StartRequiresExactPlanHash` |
 | AC#3 Watch server-streaming | `DeploymentProgressHub` | `Ac3WatchReplaysServerStreamingProgressUntilTerminal` |
 | AC#4–7 GUI surfaces | `DeploymentViewModel` | `Ac4To7DesktopSurfacesDiffArtifactsOrderProbesAndNoForceApply` |
+| W1.4 bind plan collections | MainWindow Deploy lists (not hash-delta only) | `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta` |
 | AC#8 Cancel→rollback | `StartDeploymentUseCase` | `Ac8CancellationAfterActivationBecomesRollback` |
 | AC#9 No ForceApply | proto contract | `Ac9ForceApplyAbsentFromContract` |
 | AC#10 No raw ROS commands | Desktop flags | `Ac10NoRawRouterOsCommandsOnDesktop` |
@@ -1801,6 +1803,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | AC#5 Policy authoring/review/binding | `PoliciesViewModel` | `Ac5PolicyViewSupportsAuthoringReviewAndBinding` |
 | W1.3 Policies catalog lists + Compose selection | `PoliciesViewModel` Address/Service/Contracts/`DiffLines` + Compose ← Node | `Ac5bPoliciesBindCatalogListsAndComposeFromSelectedNode` + `PoliciesViewModelTests` |
 | AC#6 Operations onboarding/deploy/recovery | Onboarding + Deployment VMs | `Ac6OperationsViewSupportsOnboardingDeploymentAndRecovery` |
+| W1.4 Deploy/Onboarding plan collections | `ArtifactLines` / `OrderLines` / `ProbeAndWatchdogLines` / `Placements` | `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta` |
 | AC#7 Drift без automatic fix | `DriftViewModel` + `DriftService` | `Ac7DriftViewHasNoAutomaticFix` |
 | AC#8 Audit read-only | `AuditViewModel` + `AuditService` | `Ac8AuditIsReadOnly` |
 | AC#9 UI thread без remote I/O | Drift/Audit/Shell `Task.Run` | `Ac9UiThreadNeverPerformsRemoteIo` |

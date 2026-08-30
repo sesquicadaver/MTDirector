@@ -202,6 +202,29 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("Recovery status", axaml, StringComparison.Ordinal);
     }
 
+    /// <summary>W1.4: Operations binds plan collections already held in VM (not SemanticDiffLines-only).</summary>
+    [Fact]
+    public void Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta()
+    {
+        Assert.NotNull(typeof(DeploymentViewModel).GetProperty(nameof(DeploymentViewModel.ArtifactLines)));
+        Assert.NotNull(typeof(DeploymentViewModel).GetProperty(nameof(DeploymentViewModel.OrderLines)));
+        Assert.NotNull(typeof(DeploymentViewModel).GetProperty(nameof(DeploymentViewModel.ProbeAndWatchdogLines)));
+        Assert.NotNull(typeof(DeploymentViewModel).GetProperty(nameof(DeploymentViewModel.SemanticDiffLines)));
+        Assert.NotNull(typeof(OnboardingViewModel).GetProperty(nameof(OnboardingViewModel.Placements)));
+        Assert.NotNull(typeof(OnboardingPlacementListItem).GetProperty(nameof(OnboardingPlacementListItem.SummaryLine)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Artifact hash delta", axaml, StringComparison.Ordinal);
+        Assert.Contains("Deployment.SemanticDiffLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("Deployment.ArtifactLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("Deployment.OrderLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("Deployment.ProbeAndWatchdogLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("Anchor placements", axaml, StringComparison.Ordinal);
+        Assert.Contains("Onboarding.Placements", axaml, StringComparison.Ordinal);
+        Assert.Contains("Activation / rollback order", axaml, StringComparison.Ordinal);
+        Assert.Contains("Probes and watchdog", axaml, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac7DriftViewHasNoAutomaticFix()
     {
