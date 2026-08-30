@@ -21,7 +21,7 @@ Equivalent gRPC:
 
 1. `RegisterDevice` — management host/port only (after Site/Node exist).
 2. `UpdateDeviceConnection` — username + password bytes + trust fields (idempotent, audited).
-3. `ValidateDeviceConnection` — Controller-side probe (Issue Set `DiscoverDevice` alias).
+3. `ValidateDeviceConnection` — Controller-side probe (Issue Set `DiscoverDevice` alias). Desktop **Probe** (W3.2) on Inventory device detail and Add router.
 4. `ListNeighborCandidates` — on-demand MikroTik candidates from seed `seed_device_id` (`discovery.read`).
 5. Connection summaries — **Desktop-safe**: username, trust mode, timeouts; **no password / ciphertext**.
 
@@ -34,7 +34,8 @@ Secrets use AES-256-GCM envelopes under `Security:MasterKeyProvider` (`Developme
 - Operator enters credentials once via Inventory **Add router** wizard (`UpdateDeviceConnection`); password is cleared from the form after success and never reloaded from Controller.
 - Prefer selecting an existing Site/Node in the tree so pickers pre-fill.
 - Neighbor suggest requires selecting an existing Device (seed) with a connection profile.
-- Living Spec: `Ac2bInventoryAddRouterWizard…` + `NeighborCandidatesLivingSpecTests` + `AddRouterWizardViewModelTests` ([`testing.md`](testing.md) M6-04).
+- **Probe** (`ValidateDeviceConnection`) uses the selected Device, or the last device registered in this wizard session; shows observed identity, support state, and `routeros_mutated`.
+- Living Spec: `Ac2bInventoryAddRouterWizard…` + `Ac2cInventoryAndAddRouterProbeValidateDeviceConnection` + `NeighborCandidatesLivingSpecTests` + `AddRouterWizardViewModelTests` ([`testing.md`](testing.md) M6-04).
 
 ## Synthetic lab credentials
 

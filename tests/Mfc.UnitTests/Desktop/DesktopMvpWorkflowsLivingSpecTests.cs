@@ -75,6 +75,30 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.ListNeighborCandidatesAsync)));
     }
 
+    /// <summary>W3.2: Inventory/Add router Probe calls ValidateDeviceConnection (read-only Controller probe).</summary>
+    [Fact]
+    public void Ac2cInventoryAndAddRouterProbeValidateDeviceConnection()
+    {
+        Type wizard = typeof(AddRouterWizardViewModel);
+        Assert.NotNull(wizard.GetProperty("ProbeCommand"));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.ProbeResultText)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.HasProbeResult)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.CanProbeVisible)));
+
+        Type inventory = typeof(IInventoryTreeClient);
+        Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.ValidateDeviceConnectionAsync)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("AddRouter.ProbeCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("AddRouter.ProbeResultText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Content=\"Probe\"", axaml, StringComparison.Ordinal);
+
+        string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/AddRouterWizardViewModel.cs");
+        Assert.Contains("ValidateDeviceConnectionAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("Task.Run", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness()
     {

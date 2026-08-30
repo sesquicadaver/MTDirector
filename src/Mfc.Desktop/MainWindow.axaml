@@ -175,6 +175,15 @@
               </StackPanel>
               <TextBlock Classes="mfc-label" Text="Last snapshot" />
               <TextBlock Text="{Binding Inventory.SelectedNode.LastSnapshotText}" TextWrapping="Wrap" />
+              <Button Classes="mfc-action"
+                      Content="Probe"
+                      Command="{Binding AddRouter.ProbeCommand}"
+                      MinWidth="120"
+                      HorizontalAlignment="Left" />
+              <TextBlock Text="{Binding AddRouter.ProbeResultText}"
+                         Classes="mfc-mono"
+                         TextWrapping="Wrap"
+                         IsVisible="{Binding AddRouter.HasProbeResult}" />
             </StackPanel>
             <TextBlock Classes="mfc-label" Text="Device hashes" />
             <TextBlock Text="{Binding Inventory.SelectedNode.DesiredHashText, StringFormat=desired: {0}}"
@@ -238,6 +247,11 @@
                           Command="{Binding AddRouter.LoadNeighborsCommand}"
                           MinWidth="180"
                           IsVisible="{Binding AddRouter.CanLoadNeighborsVisible}" />
+                  <Button Classes="mfc-action"
+                          Content="Probe"
+                          Command="{Binding AddRouter.ProbeCommand}"
+                          MinWidth="120"
+                          IsVisible="{Binding AddRouter.CanProbeVisible}" />
                 </WrapPanel>
                 <ComboBox Classes="mfc-field"
                           ItemsSource="{Binding AddRouter.NeighborCandidates}"

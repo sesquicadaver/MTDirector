@@ -14,7 +14,8 @@ using Mfc.Desktop.Services;
 namespace Mfc.Desktop.ViewModels;
 
 /// <summary>
-/// Inventory Add Router wizard: CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection.
+/// Inventory Add Router wizard: CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection,
+/// plus ValidateDeviceConnection probe for a selected or last-registered device.
 /// Contracts-only; password never retained after submit success.
 /// </summary>
 public sealed partial class AddRouterWizardViewModel : ObservableObject, IDisposable
@@ -29,6 +30,7 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
     private readonly InventoryTreeViewModel _inventory;
     private bool _disposed;
     private bool _suppressSiteCascade;
+    private Guid? _lastRegisteredDeviceId;
 
     public AddRouterWizardViewModel(
         IInventoryTreeClient client,
@@ -84,7 +86,11 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
 
     public bool HasNeighborCandidates => NeighborCandidates.Count > 0;
 
+    public bool HasProbeResult => !string.IsNullOrWhiteSpace(ProbeResultText);
+
     public bool CanLoadNeighborsVisible => TryGetSeedDeviceId() is not null;
+
+    public bool CanProbeVisible => TryGetProbeDeviceId() is not null;
 
     public bool ShowExistingSitePicker => UseExistingSite;
 
@@ -164,6 +170,10 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
     private string _pinnedSpkiSha256Hex = string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasProbeResult))]
+    private string _probeResultText = string.Empty;
+
+    [ObservableProperty]
     private NeighborCandidateItem? _selectedNeighborCandidate;
 
     [RelayCommand(CanExecute = nameof(CanLoadNeighbors))]
@@ -226,6 +236,33 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
 
         StatusText =
             $"Pre-filled from neighbor '{SelectedNeighborCandidate.DisplayText}'. Enter credentials and submit to register.";
+    }
+
+    [RelayCommand(CanExecute = nameof(CanProbe))]
+    private async Task ProbeAsync()
+    {
+        await RunBusyAsync(async ct =>
+        {
+            Guid? deviceId = TryGetProbeDeviceId();
+            if (deviceId is null)
+            {
+                throw new InvalidOperationException(
+                    "Select a registered Device in the inventory tree, or register one first.");
+            }
+
+            ProbeResultText = string.Empty;
+            ValidateDeviceConnectionResponse response = await Task.Run(
+                    async () => await _client.ValidateDeviceConnectionAsync(deviceId.Value, ct).ConfigureAwait(false),
+                    ct)
+                .ConfigureAwait(true);
+
+            string identity = string.IsNullOrWhiteSpace(response.ObservedIdentity)
+                ? "—"
+                : response.ObservedIdentity.Trim();
+            ProbeResultText =
+                $"identity: {identity} · support: {response.SupportState} · mutated: {response.RouterosMutated}";
+            StatusText = $"Probe completed for {deviceId.Value:D}.";
+        }).ConfigureAwait(true);
     }
 
     [RelayCommand(CanExecute = nameof(CanSubmit))]
@@ -304,6 +341,9 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
                     .ConfigureAwait(true);
 
                 Password = string.Empty;
+                _lastRegisteredDeviceId = DesktopProtoUuid.ToGuid(device.Id);
+                OnPropertyChanged(nameof(CanProbeVisible));
+                ProbeCommand.NotifyCanExecuteChanged();
                 StatusText =
                     $"Registered device '{displayName}' under node {nodeId:D}. Refreshing inventory…";
                 if (_inventory.RefreshCommand.CanExecute(null))
@@ -328,6 +368,11 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
            && _connection.State == ControllerConnectionState.Connected
            && TryGetSeedDeviceId() is not null;
 
+    private bool CanProbe()
+        => !IsBusy
+           && _connection.State == ControllerConnectionState.Connected
+           && TryGetProbeDeviceId() is not null;
+
     private bool CanApplyNeighbor()
         => !IsBusy && SelectedNeighborCandidate is not null;
 
@@ -336,6 +381,9 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
         InventoryNodeViewModel? selected = _inventory.SelectedNode;
         return selected?.Kind == InventoryTreeKind.Device ? selected.Id : null;
     }
+
+    private Guid? TryGetProbeDeviceId()
+        => TryGetSeedDeviceId() ?? _lastRegisteredDeviceId;
 
     partial void OnSelectedNeighborCandidateChanged(NeighborCandidateItem? value)
         => ApplyNeighborCandidateCommand.NotifyCanExecuteChanged();
@@ -423,6 +471,7 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
         SubmitCommand.NotifyCanExecuteChanged();
         LoadNeighborsCommand.NotifyCanExecuteChanged();
         ApplyNeighborCandidateCommand.NotifyCanExecuteChanged();
+        ProbeCommand.NotifyCanExecuteChanged();
         ErrorText = null;
         StatusText = null;
         try
@@ -443,6 +492,7 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
             SubmitCommand.NotifyCanExecuteChanged();
             LoadNeighborsCommand.NotifyCanExecuteChanged();
             ApplyNeighborCandidateCommand.NotifyCanExecuteChanged();
+            ProbeCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -500,6 +550,7 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
         }
 
         OnPropertyChanged(nameof(CanLoadNeighborsVisible));
+        OnPropertyChanged(nameof(CanProbeVisible));
         NotifySeedCommands();
     }
 
@@ -508,6 +559,7 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
         SubmitCommand.NotifyCanExecuteChanged();
         LoadNeighborsCommand.NotifyCanExecuteChanged();
         ApplyNeighborCandidateCommand.NotifyCanExecuteChanged();
+        ProbeCommand.NotifyCanExecuteChanged();
     }
 
     private void RebuildSiteChoices()

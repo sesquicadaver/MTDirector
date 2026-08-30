@@ -45,6 +45,14 @@ public interface IInventoryTreeClient
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Controller-side identity probe (Issue Set DiscoverDevice → ValidateDeviceConnection).
+    /// Read-only RouterOS path on the Controller; Desktop does not talk to RouterOS.
+    /// </summary>
+    Task<ValidateDeviceConnectionResponse> ValidateDeviceConnectionAsync(
+        Guid deviceId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// On-demand MikroTik neighbor suggestions from a registered seed device (#314).
     /// Never registers devices; caller pre-fills Add Router fields only.
     /// </summary>

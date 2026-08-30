@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Mfc.UnitTests.Desktop;
 
-/// <summary>Add Router wizard: CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection.</summary>
+/// <summary>Add Router wizard: CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection + Probe.</summary>
 public sealed class AddRouterWizardViewModelTests
 {
     [Fact]
@@ -178,6 +178,105 @@ public sealed class AddRouterWizardViewModelTests
         Assert.Equal("203.0.113.5", wizard.NeighborCandidates[0].Address);
     }
 
+    [Fact]
+    public async Task ProbeUsesSelectedDeviceAndShowsIdentitySupportAndMutated()
+    {
+        Guid siteId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+        Guid nodeId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid deviceId = Guid.Parse("dddddddd-eeee-ffff-aaaa-bbbbbbbbbbbb");
+
+        RecordingInventoryClient client = new()
+        {
+            ValidateResponse = new ValidateDeviceConnectionResponse
+            {
+                DeviceId = ToUuid(deviceId),
+                ObservedIdentity = "CHR-LAB",
+                SupportState = SupportState.Supported,
+                RouterosMutated = false,
+            },
+        };
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeService tree = new(new SeededTreeClientWithDevice(siteId, nodeId, deviceId));
+        InventoryTreeViewModel inventory = new(tree, connection);
+        await inventory.RefreshCommand.ExecuteAsync(null);
+        inventory.SelectedNode = inventory.Roots
+            .SelectMany(s => s.Children)
+            .SelectMany(n => n.Children)
+            .Single(d => d.Kind == InventoryTreeKind.Device);
+
+        AddRouterWizardViewModel wizard = new(client, connection, inventory);
+        Assert.True(wizard.ProbeCommand.CanExecute(null));
+        await wizard.ProbeCommand.ExecuteAsync(null);
+
+        Assert.Null(wizard.ErrorText);
+        Assert.Equal(1, client.ValidateCalls);
+        Assert.Equal(deviceId, client.LastValidateDeviceId);
+        Assert.Equal(0, client.RegisterDeviceCalls);
+        Assert.Contains("CHR-LAB", wizard.ProbeResultText, StringComparison.Ordinal);
+        Assert.Contains("Supported", wizard.ProbeResultText, StringComparison.Ordinal);
+        Assert.Contains("mutated: False", wizard.ProbeResultText, StringComparison.Ordinal);
+        Assert.True(wizard.HasProbeResult);
+    }
+
+    [Fact]
+    public async Task ProbeAfterSubmitUsesLastRegisteredDevice()
+    {
+        RecordingInventoryClient client = new()
+        {
+            ValidateResponse = new ValidateDeviceConnectionResponse
+            {
+                ObservedIdentity = "chr-1",
+                SupportState = SupportState.Supported,
+                RouterosMutated = false,
+            },
+        };
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        AddRouterWizardViewModel wizard = new(client, connection, inventory)
+        {
+            UseExistingSite = false,
+            UseExistingNode = false,
+            NewSiteCode = "LAB01",
+            NewSiteName = "Lab One",
+            NewNodeName = "core",
+            DeviceDisplayName = "chr-1",
+            ManagementHost = "192.0.2.10",
+            ManagementPortText = "8729",
+            Username = "admin",
+            Password = "secret-password",
+            SelectedTrustMode = CertificateTrustMode.InternalCa,
+            CaProfileRef = "lab-ca",
+        };
+
+        await wizard.SubmitCommand.ExecuteAsync(null);
+        Assert.Null(wizard.ErrorText);
+        Assert.True(wizard.CanProbeVisible);
+
+        await wizard.ProbeCommand.ExecuteAsync(null);
+
+        Assert.Null(wizard.ErrorText);
+        Assert.Equal(1, client.ValidateCalls);
+        Assert.Equal(client.RegisteredDeviceId, client.LastValidateDeviceId);
+        Assert.Contains("chr-1", wizard.ProbeResultText, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ProbeCommandDisabledWhenDisconnected()
+    {
+        RecordingInventoryClient client = new();
+        FakeConnection connection = new() { State = ControllerConnectionState.Disconnected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        inventory.SelectedNode = new InventoryNodeViewModel(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Device,
+            Id = Guid.Parse("dddddddd-eeee-ffff-aaaa-bbbbbbbbbbbb"),
+            DisplayName = "seed",
+        });
+
+        AddRouterWizardViewModel wizard = new(client, connection, inventory);
+        Assert.False(wizard.ProbeCommand.CanExecute(null));
+    }
+
     private sealed class FakeConnection : IControllerConnectionService
     {
         public ControllerConnectionState State { get; set; } = ControllerConnectionState.Disconnected;
@@ -299,6 +398,11 @@ public sealed class AddRouterWizardViewModelTests
             Guid seedDeviceId,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
+
+        public Task<ValidateDeviceConnectionResponse> ValidateDeviceConnectionAsync(
+            Guid deviceId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
     }
 
     private sealed class SeededTreeClientWithDevice : IInventoryTreeClient
@@ -403,6 +507,11 @@ public sealed class AddRouterWizardViewModelTests
             Guid seedDeviceId,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
+
+        public Task<ValidateDeviceConnectionResponse> ValidateDeviceConnectionAsync(
+            Guid deviceId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
     }
 
     private sealed class RecordingInventoryClient : IInventoryTreeClient
@@ -421,7 +530,20 @@ public sealed class AddRouterWizardViewModelTests
 
         public int ListNeighborCalls { get; private set; }
 
+        public int ValidateCalls { get; private set; }
+
         public Guid? LastNeighborSeedId { get; private set; }
+
+        public Guid? LastValidateDeviceId { get; private set; }
+
+        public Guid RegisteredDeviceId => _deviceId;
+
+        public ValidateDeviceConnectionResponse ValidateResponse { get; set; } = new()
+        {
+            ObservedIdentity = "seed-chr",
+            SupportState = SupportState.Supported,
+            RouterosMutated = false,
+        };
 
         public ListNeighborCandidatesResponse NeighborResponse { get; set; } = new()
         {
@@ -540,6 +662,16 @@ public sealed class AddRouterWizardViewModelTests
             LastNeighborSeedId = seedDeviceId;
             NeighborResponse.SeedDeviceId = ToUuid(seedDeviceId);
             return Task.FromResult(NeighborResponse);
+        }
+
+        public Task<ValidateDeviceConnectionResponse> ValidateDeviceConnectionAsync(
+            Guid deviceId,
+            CancellationToken cancellationToken = default)
+        {
+            ValidateCalls++;
+            LastValidateDeviceId = deviceId;
+            ValidateResponse.DeviceId = ToUuid(deviceId);
+            return Task.FromResult(ValidateResponse);
         }
     }
 
