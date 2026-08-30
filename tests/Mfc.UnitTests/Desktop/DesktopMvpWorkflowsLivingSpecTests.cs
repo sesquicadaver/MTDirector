@@ -88,6 +88,34 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.NotNull(typeof(ShellViewModel).GetProperty(nameof(ShellViewModel.Node)));
     }
 
+    /// <summary>W1.6: Inventory/Node bind device fields already on the tree item (not DetailSummary-only).</summary>
+    [Fact]
+    public void Ac3bInventoryAndNodeShowExplicitDeviceFields()
+    {
+        Assert.NotNull(typeof(InventoryNodeViewModel).GetProperty(nameof(InventoryNodeViewModel.ReachabilityText)));
+        Assert.NotNull(typeof(InventoryNodeViewModel).GetProperty(nameof(InventoryNodeViewModel.ModelText)));
+        Assert.NotNull(typeof(InventoryNodeViewModel).GetProperty(nameof(InventoryNodeViewModel.RouterOsVersionText)));
+        Assert.NotNull(typeof(InventoryNodeViewModel).GetProperty(nameof(InventoryNodeViewModel.VrrpRolesText)));
+        Assert.NotNull(typeof(InventoryNodeViewModel).GetProperty(nameof(InventoryNodeViewModel.LastSnapshotText)));
+        Assert.NotNull(typeof(InventoryNodeViewModel).GetProperty(nameof(InventoryNodeViewModel.HasVrrpRoles)));
+        Assert.NotNull(typeof(InventoryNodeViewModel).GetProperty(nameof(InventoryNodeViewModel.IsDevice)));
+        Assert.NotNull(typeof(NodeDetailViewModel).GetProperty(nameof(NodeDetailViewModel.DeviceMembers)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Inventory.SelectedNode.ReachabilityText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Inventory.SelectedNode.ModelText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Inventory.SelectedNode.RouterOsVersionText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Inventory.SelectedNode.LastSnapshotText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Inventory.SelectedNode.HasVrrpRoles", axaml, StringComparison.Ordinal);
+        Assert.Contains("Inventory.SelectedNode.VrrpRolesText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Inventory.SelectedNode.DetailSummary", axaml, StringComparison.Ordinal);
+        Assert.Contains("Node.DeviceMembers", axaml, StringComparison.Ordinal);
+        Assert.Contains("VRRP roles", axaml, StringComparison.Ordinal);
+        Assert.Contains("Last snapshot", axaml, StringComparison.Ordinal);
+        Assert.Contains("RouterOS version", axaml, StringComparison.Ordinal);
+        Assert.Contains("Reachability", axaml, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac4SnapshotViewShowsConfigurationAndObservations()
     {

@@ -69,6 +69,14 @@ public sealed partial class InventoryNodeViewModel : ObservableObject
 
     public ObservableCollection<InventoryNodeViewModel> Children { get; } = [];
 
+    public bool IsDevice => Kind == InventoryTreeKind.Device;
+
+    /// <summary>True when backend sent VRRP role labels; never invents placeholders.</summary>
+    public bool HasVrrpRoles =>
+        IsDevice
+        && !string.IsNullOrWhiteSpace(VrrpRolesText)
+        && !string.Equals(VrrpRolesText, "—", StringComparison.Ordinal);
+
     public string KindLabel => Kind switch
     {
         InventoryTreeKind.Site => "Site",
