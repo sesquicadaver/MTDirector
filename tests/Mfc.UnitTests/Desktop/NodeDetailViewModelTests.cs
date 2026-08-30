@@ -54,9 +54,9 @@ public sealed class NodeDetailViewModelTests
             ],
         });
         inventory.Roots.Add(site);
+        inventory.SelectedNode = site.Children[0];
 
         using NodeDetailViewModel vm = new(inventory, new ZonesViewModel(new StubZones(), connection, inventory), new OnboardingViewModel(new StubOnboarding(), connection, inventory));
-        inventory.SelectedNode = site.Children[0];
 
         InventoryNodeViewModel member = Assert.Single(vm.DeviceMembers);
         Assert.Equal("chr-seed", member.DisplayName);
@@ -103,9 +103,9 @@ public sealed class NodeDetailViewModelTests
             ],
         });
         inventory.Roots.Add(site);
+        inventory.SelectedNode = site.Children[0];
 
         using NodeDetailViewModel vm = new(inventory, new ZonesViewModel(new StubZones(), connection, inventory), new OnboardingViewModel(new StubOnboarding(), connection, inventory));
-        inventory.SelectedNode = site.Children[0];
 
         InventoryNodeViewModel member = Assert.Single(vm.DeviceMembers);
         Assert.True(member.HasVrrpRoles);
