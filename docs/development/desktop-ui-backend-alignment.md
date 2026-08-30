@@ -45,7 +45,7 @@
 ### W1.4 Deploy / Onboarding: приховані колекції — **DONE**
 - **Дані:** Deploy `ArtifactLines` / `OrderLines` / `ProbeAndWatchdogLines` / `SemanticDiffLines`; Onboarding `Placements`
 - **Зроблено:** Operations axaml біндить усі чотири Deploy-списки; Onboarding — Anchor placements; підпис SemanticDiffLines = «Artifact hash delta»
-- **Не чіпали:** Watch streams (W3.3); багатший Contracts policy diff (P3)
+- **Не чіпали:** багатший Contracts policy diff (P3)
 - **Перевірка:** Living Spec `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta`
 - **Файли:** `MainWindow.axaml`, `DesktopMvpWorkflowsLivingSpecTests`
 
@@ -95,7 +95,7 @@
 |------|----------------|-----|
 | W3.1 | `StartCapture` + `WatchCapture` | Snapshots: кнопка Capture + progress — **DONE** |
 | W3.2 | `ValidateDeviceConnection` | Add router / Inventory «Probe» — **DONE** |
-| W3.3 | Onboarding/Deploy `Watch` streams | Progress live, не лише snapshot після Start |
+| W3.3 | Onboarding/Deploy `Watch` streams | Progress live, не лише snapshot після Start — **DONE** |
 | W3.4 | `GetNodeWorkflow` | Node/Inventory workflow без дублювання ad-hoc |
 | W3.5 | Zones `UpdateZoneDefinition`, `ResolveZonesForDevice` | Edit zone; resolve device |
 | W3.6 | Policy: `UpdateRule`/`DeleteRule`/`AcknowledgeWarning`/`CompileNodeFilterArtifacts` | за пріоритетом review/deploy loop |
@@ -137,7 +137,8 @@ W1.6 Inventory device fields      ← DONE
 W2.3 VRRP labels from last capture ← DONE
 W3.1 StartCapture Desktop          ← DONE
 W3.2 ValidateConnection            ← DONE
-W3.3 Watch streams
+W3.3 Watch streams                 ← DONE
+W3.4 GetNodeWorkflow
 W4  VRRP Node shell
 ```
 
@@ -163,20 +164,28 @@ W4  VRRP Node shell
 | W2.3 | **DONE** (GetNode fills VRRP labels from last capture) |
 | W3.1 | **DONE** (Desktop StartCapture + WatchCapture + Capture progress) |
 | W3.2 | **DONE** (Desktop ValidateDeviceConnection Probe) |
-| W2.1–W2.2, W3.3–W5 | **TODO** |
+| W3.3 | **DONE** (Onboarding/Deploy Start + Watch progress) |
+| W2.1–W2.2, W3.4–W5 | **TODO** |
 
 ### W3.1 Snapshots: Capture + progress — **DONE**
 - **Дані:** SnapshotService `StartCapture` / `WatchCapture` (device_id only; Controller M1-26)
 - **Зроблено:** Desktop client + Snapshots кнопка Capture; `CaptureProgressText` зі stage / `current_section`; після COMPLETED — Reload list; FAILED показує sanitized error. Capture RPC off UI thread (`Task.Run`).
-- **Не чіпали:** `node_id` StartCapture (deferred); Onboarding/Deploy Watch (W3.3); WriteEnabled; local SemanticDiffEngine
+- **Не чіпали:** `node_id` StartCapture (deferred); WriteEnabled; local SemanticDiffEngine
 - **Перевірка:** Living Spec `Ac4dSnapshotCaptureStartsAndWatchesProgress`; `SnapshotViewerViewModelTests`
 - **Файли:** `ISnapshotViewerClient`, `GrpcSnapshotViewerClient`, `SnapshotViewerViewModel`, `MainWindow.axaml`, `App.axaml.cs`
 
 ### W3.2 Inventory/Add router: Probe — **DONE**
 - **Дані:** InventoryService `ValidateDeviceConnection` → DiscoverDeviceUseCase (read-only Controller probe)
 - **Зроблено:** Desktop client + кнопка Probe на Inventory device detail і в Add router; `ProbeResultText` = observed identity / support / mutated; target = selected Device або last registered
-- **Не чіпали:** Onboarding/Deploy Watch (W3.3); WriteEnabled; local SemanticDiffEngine
+- **Не чіпали:** WriteEnabled; local SemanticDiffEngine
 - **Перевірка:** Living Spec `Ac2cInventoryAndAddRouterProbeValidateDeviceConnection`; `AddRouterWizardViewModelTests`
 - **Файли:** `IInventoryTreeClient`, `GrpcInventoryTreeClient`, `AddRouterWizardViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment):** W3.3 Onboarding/Deploy Watch streams.
+### W3.3 Operations: Onboarding/Deploy Watch — **DONE**
+- **Дані:** `OnboardingService.Watch` / `DeploymentService.Watch` (clients already existed; Start used only `Timeline`)
+- **Зроблено:** Start → Start RPC + Watch stream off UI thread; ProgressLines bind stream `state`/`timeline_entry` (fallback to Start.Timeline if Watch empty)
+- **Не чіпали:** Rollback Watch (hub stops at first terminal); GetNodeWorkflow (W3.4); WriteEnabled
+- **Перевірка:** Living Spec `Ac6cOperationsStartWatchesOnboardingAndDeploymentProgress`; `OnboardingViewModelTests`; `DeploymentViewModelTests`
+- **Файли:** `OnboardingViewModel.cs`, `DeploymentViewModel.cs`
+
+**NEXT (alignment):** W3.4 GetNodeWorkflow (Node/Inventory workflow).

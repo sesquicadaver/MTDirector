@@ -12,7 +12,7 @@ using Mfc.Desktop.Services;
 namespace Mfc.Desktop.ViewModels;
 
 /// <summary>
-/// Onboarding operator panel: checklist, placement preview, recovery facts.
+/// Onboarding operator panel: checklist, placement preview, recovery facts, Watch progress.
 /// No script source and no free-form RouterOS write controls.
 /// </summary>
 public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
@@ -148,16 +148,23 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
                 throw new InvalidOperationException("Create a plan before start.");
             }
 
-            OnboardingOperationSummary started = await _client.StartAsync(planId, PlanHash, CancellationToken.None)
+            Sha256 planHash = PlanHash;
+            StartWatchOutcome outcome = await Task.Run(
+                    async () => await StartAndWatchAsync(planId, planHash, CancellationToken.None)
+                        .ConfigureAwait(false),
+                    CancellationToken.None)
                 .ConfigureAwait(true);
-            OperationId = DesktopProtoUuid.ToGuid(started.OperationId);
+            OperationId = DesktopProtoUuid.ToGuid(outcome.Started.OperationId);
             ProgressLines.Clear();
-            foreach (string line in started.Timeline)
+            IReadOnlyList<string> lines = outcome.WatchLines.Count > 0
+                ? outcome.WatchLines
+                : outcome.Started.Timeline;
+            foreach (string line in lines)
             {
                 ProgressLines.Add(line);
             }
 
-            StatusText = $"Operation {started.State}.";
+            StatusText = $"Operation {outcome.LastState}.";
         }).ConfigureAwait(true);
     }
 
@@ -238,6 +245,43 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
         }
 
         return device.Id;
+    }
+
+    private async Task<StartWatchOutcome> StartAndWatchAsync(
+        Guid planId,
+        Sha256 planHash,
+        CancellationToken cancellationToken)
+    {
+        OnboardingOperationSummary started = await _client.StartAsync(planId, planHash, cancellationToken)
+            .ConfigureAwait(false);
+        List<string> watchLines = [];
+        OnboardingOperationState lastState = started.State;
+        await foreach (OnboardingProgress progress in _client
+                           .WatchAsync(DesktopProtoUuid.ToGuid(started.OperationId), cancellationToken)
+                           .ConfigureAwait(false))
+        {
+            lastState = progress.State;
+            watchLines.Add(FormatProgress(progress));
+        }
+
+        return new StartWatchOutcome(started, watchLines, lastState);
+    }
+
+    private static string FormatProgress(OnboardingProgress progress)
+    {
+        ArgumentNullException.ThrowIfNull(progress);
+        string state = progress.State.ToString();
+        if (progress.HasTimelineEntry && !string.IsNullOrWhiteSpace(progress.TimelineEntry))
+        {
+            return $"{state}: {progress.TimelineEntry}";
+        }
+
+        if (progress.HasErrorCode && !string.IsNullOrWhiteSpace(progress.ErrorCode))
+        {
+            return $"{state}: {progress.ErrorCode}";
+        }
+
+        return state;
     }
 
     private async Task RunAsync(Func<Task> action)
@@ -331,4 +375,9 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
 
     private static Sha256 Utf8Sha256(string value)
         => new() { Value = ByteString.CopyFrom(SHA256.HashData(Encoding.UTF8.GetBytes(value))) };
+
+    private sealed record StartWatchOutcome(
+        OnboardingOperationSummary Started,
+        IReadOnlyList<string> WatchLines,
+        OnboardingOperationState LastState);
 }

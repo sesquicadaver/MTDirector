@@ -304,6 +304,31 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("Probes and watchdog", axaml, StringComparison.Ordinal);
     }
 
+    /// <summary>W3.3: Operations Start consumes Watch streams, not only Start.Timeline snapshot.</summary>
+    [Fact]
+    public void Ac6cOperationsStartWatchesOnboardingAndDeploymentProgress()
+    {
+        Assert.NotNull(typeof(OnboardingViewModel).GetProperty(nameof(OnboardingViewModel.ProgressLines)));
+        Assert.NotNull(typeof(DeploymentViewModel).GetProperty(nameof(DeploymentViewModel.ProgressLines)));
+        Assert.NotNull(typeof(IOnboardingServiceClient).GetMethod(nameof(IOnboardingServiceClient.WatchAsync)));
+        Assert.NotNull(typeof(IDeploymentServiceClient).GetMethod(nameof(IDeploymentServiceClient.WatchAsync)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Onboarding.ProgressLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("Deployment.ProgressLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("Onboarding.StartCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Deployment.StartCommand", axaml, StringComparison.Ordinal);
+
+        string onboarding = ReadSource("src/Mfc.Desktop/ViewModels/OnboardingViewModel.cs");
+        string deployment = ReadSource("src/Mfc.Desktop/ViewModels/DeploymentViewModel.cs");
+        Assert.Contains("WatchAsync", onboarding, StringComparison.Ordinal);
+        Assert.Contains("WatchAsync", deployment, StringComparison.Ordinal);
+        Assert.Contains("Task.Run", onboarding, StringComparison.Ordinal);
+        Assert.Contains("Task.Run", deployment, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", onboarding, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", deployment, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac7DriftViewHasNoAutomaticFix()
     {

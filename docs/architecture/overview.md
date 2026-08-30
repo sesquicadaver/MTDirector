@@ -95,7 +95,7 @@ Normative detail lives in [`TOR-1.md`](../../TOR-1.md), the MVP specifications, 
 | Scheduler proof + watchdog | Done (M5-06) | Fixed no-op proof; deadline+startup; source hash; TTL/commit margin; collision fail-closed |
 | Onboarding execution + verification | Done (M5-07) | Stage/arm/enable/verify/disarm/commit; pass-through equivalence; Node MANAGED only fully |
 | Onboarding rollback + crash recovery | Done (M5-08) | Disable-first exact rollback; Spec §46 decision table; no automatic adoption |
-| Onboarding API + Desktop workflow | Done (M5-09) + W1.4 | `OnboardingService` RPCs + Desktop checklist/placement/recovery; plan_hash; no script source; Placements bound in UI |
+| Onboarding API + Desktop workflow | Done (M5-09) + W1.4 + W3.3 | `OnboardingService` RPCs + Desktop checklist/placement/recovery; Start + Watch progress; plan_hash; no script source; Placements bound in UI |
 | Onboarding integration acceptance / M5 CLOSED | Done (M5-10) | Topology Living Spec + testlab dual-stack/CRS; crash/watchdog/guard; no partial managed Node |
 | Deployment plan + persistence | Done (M4-01) | Immutable plan + Node/device SM + lock + journal; EF `DeploymentSchemaM401`; no campaign / writer |
 | Packet-path deploy gate | Done (N1-06) | `PACKET_PATH_*` fail-closes Router/VRRP deploy; CPU/MIXED allowed; no offload writes |
@@ -109,12 +109,12 @@ Normative detail lives in [`TOR-1.md`](../../TOR-1.md), the MVP specifications, 
 | Multi-WAN deployment verification | Done (M4-09) | `MultiWanDeploymentVerification` + `VerifyMultiWanDeploymentUseCase`; no forced failover |
 | VRRP deployment coordinator | Done (M4-10) | `VrrpDeploymentPolicy` + `ExecuteVrrpDeploymentUseCase`; standby-first; no partial commit |
 | Rollback + crash recovery | Done (M4-11) | `DeploymentRecoveryDecision` + rollback/recover use cases; only COMMITTED keeps new |
-| Deployment API + Desktop workflow | Done (M4-12) + W1.4 | `DeploymentService` + Deploy tab; artifacts/order/probes bound; hash delta labeled honestly; plan_hash start; streaming Watch; audited mutations |
+| Deployment API + Desktop workflow | Done (M4-12) + W1.4 + W3.3 | `DeploymentService` + Deploy tab; artifacts/order/probes bound; Start + Watch progress; hash delta labeled honestly; plan_hash start; audited mutations |
 | Deployment fault and security acceptance | Done (M4-13) **M4 CLOSED** | Living Spec AC 1–13 all passed; `DeploymentFaultSecurityAcceptanceLivingSpecTests` + `DeploymentAcceptanceHarness`; standalone/VRRP/multi-WAN/rollback/security vectors; ArchitectureBoundary green |
 | Desired / committed / actual projection | Done (M6-01) | `DeviceHashState` + classifier + `NodeWorkflowStatusProjector`; EF `device_hash_states`; `GetNodeWorkflow`; Desktop desired/committed/actual hashes |
 | Managed drift detection | Done (M6-02) + W1.5 | `ManagedDriftDetector` + `DriftEvent` (immutable); EF `drift_events`; deploy gate blocks Critical; no auto-repair; Living Spec AC 1–12; Desktop binds list `findings` (kind/severity/detail) |
 | Bounded operational jobs | Done (M6-03) | `OperationalJobSchedulerHostedService` + bounded priority bag; recovery > drift; expired-exception DB-only; restricted watchdog cleanup; no broker; Living Spec AC 1–10 |
-| Desktop MVP workflows | Done (M6-04) + W1.1–W1.6 | Seven modules + `DriftService`/`AuditService` read paths; Shell nav; no auto-fix; Living Spec AC 1–12 (+ AC#2b Add router); drift findings + explicit device fields bound; shared `mfc-*` shell styles + wrap toolbars (overlap/readability polish 2026-08-29) |
+| Desktop MVP workflows | Done (M6-04) + W1.1–W1.6 + W3.1–W3.3 | Seven modules + `DriftService`/`AuditService` read paths; Shell nav; no auto-fix; Living Spec AC 1–12 (+ AC#2b Add router); capture/probe/watch glue; drift findings + explicit device fields bound; shared `mfc-*` shell styles + wrap toolbars (overlap/readability polish 2026-08-29) |
 | Standalone / dual-stack E2E | Done (M6-05) | Living Spec AC 1–10 + Integration inventory→capture→onboarding; scripted runtimes; Live CHR OFF |
 | Multi-WAN E2E | Done (M6-06) | Living Spec AC 1–10; failover/PCC/probes/FastTrack/drift; scripted runtimes; Live CHR OFF |
 | VRRP / CRS E2E | Done (M6-07) | Living Spec AC 1–11; VRRP coordinator + Switch FORWARD gate + CRS fixtures; Live CHR OFF |
