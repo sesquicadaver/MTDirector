@@ -32,24 +32,24 @@ internal static class ViewMapper
         Device device,
         DateTimeOffset? lastSnapshotAtUtc = null,
         IReadOnlyList<string>? vrrpRoleLabels = null) => new()
-    {
-        Id = device.Id.Value,
-        NodeId = device.NodeId.Value,
-        DisplayName = device.DisplayName.Value,
-        ManagementHost = device.ManagementEndpoint.Host.Value,
-        ManagementPort = device.ManagementEndpoint.Port,
-        Role = device.Role,
-        Enabled = device.Enabled,
-        LastSupportState = device.LastSupportState,
-        LastCompletedCaptureId = device.LastCompletedCaptureId,
-        RowVersion = device.RowVersion,
-        // Version/model/reachability stay unset until a dedicated observation projector exists.
-        RouterOsVersion = null,
-        Model = null,
-        Reachability = "Unknown",
-        VrrpRoleLabels = vrrpRoleLabels is { Count: > 0 } ? vrrpRoleLabels : [],
-        LastSnapshotAtUtc = lastSnapshotAtUtc,
-    };
+        {
+            Id = device.Id.Value,
+            NodeId = device.NodeId.Value,
+            DisplayName = device.DisplayName.Value,
+            ManagementHost = device.ManagementEndpoint.Host.Value,
+            ManagementPort = device.ManagementEndpoint.Port,
+            Role = device.Role,
+            Enabled = device.Enabled,
+            LastSupportState = device.LastSupportState,
+            LastCompletedCaptureId = device.LastCompletedCaptureId,
+            RowVersion = device.RowVersion,
+            // Version/model/reachability stay unset until a dedicated observation projector exists.
+            RouterOsVersion = null,
+            Model = null,
+            Reachability = "Unknown",
+            VrrpRoleLabels = vrrpRoleLabels is { Count: > 0 } ? vrrpRoleLabels : [],
+            LastSnapshotAtUtc = lastSnapshotAtUtc,
+        };
 
     public static SnapshotView ToView(StoredSnapshot snapshot, bool deduplicated = false) => new()
     {
