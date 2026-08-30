@@ -24,6 +24,11 @@ Runtime role/route active-state changes must not alter configuration hash (prove
 
 Canonical section ids live in `Mfc.Domain.Canonicalization.CanonicalSectionIds` (e.g. `firewall.ipv4.filter`, `ha.vrrp`, `routing.ipv4.default-state`, `topology.container-veth`, `topology.shared-veth`, `topology.validation`). Unknown RouterOS properties go to `compatibility.unknown-properties` observations — never silently dropped.
 
+## Desktop snapshot viewer
+
+- Read-only: `GetSnapshotSummary` / `GetSnapshotSection`; copy is sanitized (no credential field values).
+- W1.2: selected record detail binds all `SnapshotRecordListItem.Fields` (`DisplayLine`); list `SummaryLine` stays compact (≤4 + ellipsis).
+
 ## Semantic diff
 
 - Server-side `SemanticDiffEngine` / `CompareSnapshots` only.

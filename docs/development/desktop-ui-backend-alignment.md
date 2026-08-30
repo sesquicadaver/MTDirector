@@ -28,10 +28,12 @@
 - **Перевірка:** Living Spec `Ac4bSemanticDiffShowsFieldLinesAndWarnings`; unit `SnapshotDiffServiceTests` (field Summary); lab Compare seed → field lines visible
 - **Файли:** `MainWindow.axaml`, `SnapshotDiffViewModel.cs`, `DesktopMvpWorkflowsLivingSpecTests`
 
-### W1.2 Snapshots: повні поля запису
-- **Дані:** `SnapshotRecordListItem.Fields` (зараз UI = `SummaryLine` ≤4)
-- **Зробити:** detail pane / expand selected record → усі fields
-- **Перевірка:** filter rule з day-1 показує chain/action/comment повністю
+### W1.2 Snapshots: повні поля запису — **DONE**
+- **Дані:** `SnapshotRecordListItem.Fields` (список лишає `SummaryLine` ≤4 + ellipsis)
+- **Зроблено:** Snapshot tab — select configuration/observation record → detail «Selected record fields» з усіма `Fields.DisplayLine`
+- **Не чіпали:** local SemanticDiffEngine; capture RPC (W3.1)
+- **Перевірка:** Living Spec `Ac4cSnapshotRecordDetailShowsAllFields`; unit `LoadSectionMapsAllRecordFieldsNotOnlySummaryLine` (chain/action/comment + поля поза SummaryLine)
+- **Файли:** `MainWindow.axaml`, `SnapshotViewerViewModel.cs`, `SnapshotViewerModels.cs`, `DesktopMvpWorkflowsLivingSpecTests`
 
 ### W1.3 Policies: обʼєкти / contracts / DiffLines + selection glue
 - **Дані вже в VM:** `AddressObjects`, `ServiceObjects`, `ChainContracts`, `DiffLines` + команди Upsert*/Replace*/Reorder*/RecordAnalysis
@@ -116,8 +118,8 @@
 ## Рекомендований порядок PR
 
 ```
-W1.1 Diff FieldLines     ← зробити першим (доводить «бекенд уже вміє»)
-W1.2 Snapshot Fields
+W1.1 Diff FieldLines     ← DONE
+W1.2 Snapshot Fields      ← DONE
 W1.3 Policies bind+Compose selection
 W1.4 Deploy/Onboarding collections
 W1.5 Drift findings
@@ -143,7 +145,8 @@ W4  VRRP Node shell
 | Хвиля | Статус |
 |-------|--------|
 | W1.1 | **DONE** (FieldLines + Warnings UI) |
-| W1.2–W1.6 | **TODO** |
+| W1.2 | **DONE** (selected-record Fields detail) |
+| W1.3–W1.6 | **TODO** |
 | W2–W5 | **TODO** |
 
-**NEXT (alignment):** W1.2 Snapshots — повні поля запису.
+**NEXT (alignment):** W1.3 Policies — lists + Compose ← SelectedNode.

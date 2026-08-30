@@ -52,7 +52,7 @@ Normative detail lives in [`TOR-1.md`](../../TOR-1.md), the MVP specifications, 
 | Snapshot/diff gRPC | Done (M1-26) | `Protos/mfc/v1/snapshots.proto`, `SnapshotGrpcService` (VS §9.3; DiffEntry = Canonical Spec §30; Issue Set CaptureSnapshot→StartCapture) |
 | Desktop inventory tree | Done (M1-27) | Avalonia Site→Node→Device tree; `ListNodes` RPC; Contracts-only Desktop client; cached-on-error refresh |
 | Desktop Add router wizard | Done ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)) | Inventory panel: CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection; password cleared after success |
-| Desktop snapshot viewer | Done (M1-28) | Read-only Avalonia viewer; `SnapshotSummary.sections` statuses; config/obs split; sanitized export |
+| Desktop snapshot viewer | Done (M1-28) + W1.2 | Read-only Avalonia viewer; `SnapshotSummary.sections` statuses; config/obs split; selected-record `Fields` detail; sanitized export |
 | Desktop semantic diff viewer | Done (M1-29) | Avalonia CompareSnapshots UI; section-grouped DiffEntry rows; no local recompute |
 | Standalone CHR acceptance | Done (M1-30) | In-process vertical-slice suite + live CHR TLS gate + lab provision script |
 | Multi-WAN CHR acceptance | Done (M1-31) | Failover/balanced routing+NAT+mangle slice; config≠obs route diffs; lab provision |
