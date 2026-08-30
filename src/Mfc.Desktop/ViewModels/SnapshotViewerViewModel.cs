@@ -79,11 +79,36 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
     private SnapshotSectionListItem? _selectedSection;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SelectedRecordDetail))]
+    [NotifyPropertyChangedFor(nameof(SelectedRecordFields))]
+    [NotifyPropertyChangedFor(nameof(HasSelectedRecord))]
+    [NotifyPropertyChangedFor(nameof(HasNoSelectedRecord))]
+    private SnapshotRecordListItem? _selectedConfigurationRecord;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SelectedRecordDetail))]
+    [NotifyPropertyChangedFor(nameof(SelectedRecordFields))]
+    [NotifyPropertyChangedFor(nameof(HasSelectedRecord))]
+    [NotifyPropertyChangedFor(nameof(HasNoSelectedRecord))]
+    private SnapshotRecordListItem? _selectedObservationRecord;
+
+    [ObservableProperty]
     private string _hintText = "Select a device in inventory to view its latest completed snapshot.";
 
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorText);
 
     public bool HasCapture => !string.IsNullOrWhiteSpace(SelectedSectionId) || Captures.Count > 0;
+
+    /// <summary>The last selected configuration or observation record (mutually exclusive).</summary>
+    public SnapshotRecordListItem? SelectedRecordDetail =>
+        SelectedConfigurationRecord ?? SelectedObservationRecord;
+
+    public IReadOnlyList<SnapshotFieldLine> SelectedRecordFields =>
+        SelectedRecordDetail?.Fields ?? [];
+
+    public bool HasSelectedRecord => SelectedRecordDetail is not null;
+
+    public bool HasNoSelectedRecord => SelectedRecordDetail is null;
 
     [RelayCommand(CanExecute = nameof(CanReload))]
     private async Task ReloadAsync()
@@ -277,6 +302,22 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
     partial void OnErrorTextChanged(string? value)
         => OnPropertyChanged(nameof(HasError));
 
+    partial void OnSelectedConfigurationRecordChanged(SnapshotRecordListItem? value)
+    {
+        if (value is not null && SelectedObservationRecord is not null)
+        {
+            SelectedObservationRecord = null;
+        }
+    }
+
+    partial void OnSelectedObservationRecordChanged(SnapshotRecordListItem? value)
+    {
+        if (value is not null && SelectedConfigurationRecord is not null)
+        {
+            SelectedConfigurationRecord = null;
+        }
+    }
+
     private async Task LoadCaptureSelectionAsync(Guid captureId)
     {
         _loadCts?.Cancel();
@@ -352,6 +393,8 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
 
     private void ApplySectionRecords(SnapshotViewerLoadResult result)
     {
+        SelectedConfigurationRecord = null;
+        SelectedObservationRecord = null;
         ConfigurationRecords.Clear();
         foreach (SnapshotRecordListItem record in result.ConfigurationRecords)
         {

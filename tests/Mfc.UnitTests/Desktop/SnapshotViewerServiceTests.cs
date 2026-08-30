@@ -134,6 +134,78 @@ public sealed class SnapshotViewerServiceTests
     }
 
     [Fact]
+    public async Task LoadSectionMapsAllRecordFieldsNotOnlySummaryLine()
+    {
+        Guid deviceId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+        Guid captureId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        FakeSnapshotViewerClient client = new()
+        {
+            CapturesByDevice =
+            {
+                [deviceId] =
+                [
+                    new SnapshotSummary
+                    {
+                        CaptureId = ToUuid(captureId),
+                        DeviceId = ToUuid(deviceId),
+                        Status = SnapshotCaptureStatus.Completed,
+                        SchemaVersion = 1,
+                        Sections =
+                        {
+                            new SnapshotSectionSummary
+                            {
+                                SectionId = "firewall.ipv4.filter",
+                                Status = SnapshotSectionCaptureStatus.Ok,
+                                Ordered = true,
+                                ConfigurationRecordCount = 1,
+                            },
+                        },
+                    },
+                ],
+            },
+            RecordsByKey =
+            {
+                [$"{captureId}|firewall.ipv4.filter|{DiffDomain.Configuration}"] =
+                [
+                    new SnapshotRecord
+                    {
+                        StableKey = "fwc:rule:day1",
+                        Ordinal = 7,
+                        Configuration =
+                        {
+                            Field("action", "drop"),
+                            Field("chain", "forward"),
+                            Field("comment", "day-1 lab deny guest"),
+                            Field("dst-address", "10.20.0.0/16"),
+                            Field("protocol", "tcp"),
+                            Field("src-address", "192.168.88.0/24"),
+                        },
+                    },
+                ],
+            },
+        };
+
+        SnapshotViewerService service = new(client);
+        await service.LoadDeviceAsync(deviceId);
+        SnapshotViewerLoadResult section = await service.LoadSectionAsync(captureId, "firewall.ipv4.filter");
+
+        Assert.True(section.Succeeded);
+        SnapshotRecordListItem record = Assert.Single(section.ConfigurationRecords);
+        Assert.Equal(6, record.Fields.Count);
+        Assert.True(record.HasMoreFields);
+        Assert.Contains(record.Fields, f => f.Name == "chain" && f.Value == "forward");
+        Assert.Contains(record.Fields, f => f.Name == "action" && f.Value == "drop");
+        Assert.Contains(record.Fields, f => f.Name == "comment" && f.Value == "day-1 lab deny guest");
+        Assert.Contains(record.Fields, f => f.DisplayLine == "protocol=tcp");
+        Assert.Contains(record.Fields, f => f.DisplayLine == "src-address=192.168.88.0/24");
+        Assert.Contains("action=drop", record.SummaryLine, StringComparison.Ordinal);
+        Assert.Contains("chain=forward", record.SummaryLine, StringComparison.Ordinal);
+        Assert.DoesNotContain("src-address=", record.SummaryLine, StringComparison.Ordinal);
+        Assert.DoesNotContain("protocol=", record.SummaryLine, StringComparison.Ordinal);
+        Assert.EndsWith(" …", record.SummaryLine, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ExportIncludesTechnicalSectionWhenRequested()
     {
         SnapshotViewerLoadResult state = new()
@@ -165,6 +237,13 @@ public sealed class SnapshotViewerServiceTests
         Assert.Contains(SnapshotViewerService.UnknownPropertiesSectionId, withTech, StringComparison.Ordinal);
         Assert.DoesNotContain(SnapshotViewerService.UnknownPropertiesSectionId, without, StringComparison.Ordinal);
     }
+
+    private static CanonicalField Field(string name, string value)
+        => new()
+        {
+            Name = name,
+            Value = new CanonicalValue { StringValue = value },
+        };
 
     private static Uuid ToUuid(Guid id)
         => new() { Value = ByteString.CopyFrom(id.ToByteArray(bigEndian: true)) };

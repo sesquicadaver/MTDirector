@@ -100,6 +100,31 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("IsSnapshotsSelected", axaml, StringComparison.Ordinal);
     }
 
+    /// <summary>W1.2: Snapshot viewer detail binds all Fields (not SummaryLine ≤4 only).</summary>
+    [Fact]
+    public void Ac4cSnapshotRecordDetailShowsAllFields()
+    {
+        Type snapshot = typeof(SnapshotViewerViewModel);
+        Assert.NotNull(snapshot.GetProperty(nameof(SnapshotViewerViewModel.SelectedConfigurationRecord)));
+        Assert.NotNull(snapshot.GetProperty(nameof(SnapshotViewerViewModel.SelectedObservationRecord)));
+        Assert.NotNull(snapshot.GetProperty(nameof(SnapshotViewerViewModel.SelectedRecordDetail)));
+        Assert.NotNull(snapshot.GetProperty(nameof(SnapshotViewerViewModel.SelectedRecordFields)));
+        Assert.NotNull(snapshot.GetProperty(nameof(SnapshotViewerViewModel.HasSelectedRecord)));
+        Assert.NotNull(typeof(SnapshotRecordListItem).GetProperty(nameof(SnapshotRecordListItem.Fields)));
+        Assert.NotNull(typeof(SnapshotRecordListItem).GetProperty(nameof(SnapshotRecordListItem.HasMoreFields)));
+        Assert.NotNull(typeof(SnapshotFieldLine).GetProperty(nameof(SnapshotFieldLine.DisplayLine)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Selected record fields", axaml, StringComparison.Ordinal);
+        Assert.Contains("Snapshot.SelectedConfigurationRecord", axaml, StringComparison.Ordinal);
+        Assert.Contains("Snapshot.SelectedObservationRecord", axaml, StringComparison.Ordinal);
+        Assert.Contains("Snapshot.SelectedRecordFields", axaml, StringComparison.Ordinal);
+        Assert.Contains("Snapshot.HasSelectedRecord", axaml, StringComparison.Ordinal);
+        Assert.Contains("Snapshot.HasNoSelectedRecord", axaml, StringComparison.Ordinal);
+        Assert.Contains("DisplayLine", axaml, StringComparison.Ordinal);
+        Assert.Contains("Select a record to see all fields.", axaml, StringComparison.Ordinal);
+    }
+
     /// <summary>W1.1: Semantic diff binds FieldLines + Compare warnings (not RecordKey-only).</summary>
     [Fact]
     public void Ac4bSemanticDiffShowsFieldLinesAndWarnings()

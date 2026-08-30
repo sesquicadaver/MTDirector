@@ -22,8 +22,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **W1.2** Desktop Snapshot viewer: selected-record detail binds all `SnapshotRecordListItem.Fields` (`DisplayLine`); list `SummaryLine` stays compact (≤4 + ellipsis) (`MainWindow.axaml`, Living Spec `Ac4c`).
 - **W1.1** Desktop Semantic diff: bind `FieldLines.Summary` + Compare `Warnings` (`HasWarnings`) so operators see field-level changes, not only `RecordKey` hashes (`MainWindow.axaml`, Living Spec `Ac4b`).
-- Docs: Desktop UI ↔ backend alignment plan (`docs/development/desktop-ui-backend-alignment.md`) — phased P0–P3 wire-up of existing Contracts/VM data (Diff FieldLines, Policies lists, VRRP, capture glue); W1.1 marked DONE.
+- Docs: Desktop UI ↔ backend alignment plan (`docs/development/desktop-ui-backend-alignment.md`) — phased P0–P3 wire-up of existing Contracts/VM data (Diff FieldLines, Policies lists, VRRP, capture glue); W1.1–W1.2 marked DONE.
 - Desktop shell UI polish (2026-08-29): shared `mfc-*` Fluent styles in `App.axaml`; compact chrome; `WrapPanel` toolbars; inventory tree `TextTrimming`; zones layout without wasted `*` rows; `ClipToBounds` on module content — fixes overlapping controls in narrow columns. Living Spec Desktop AC strings preserved (`DesktopMvpWorkflowsLivingSpecTests` / routing assurance).
 - Documentation purge (2026-08-28): removed implemented `next-1`/`next-2` design notes (no archive retained); compacted obsolete ROADMAP §3 strikethrough queue + §7 open checklist; local `bin`/`obj` cleaned (gitignored).
 - Added operator HOWTO: [`docs/howto/build-and-run.md`](docs/howto/build-and-run.md) (Linux / Windows build, package, run).

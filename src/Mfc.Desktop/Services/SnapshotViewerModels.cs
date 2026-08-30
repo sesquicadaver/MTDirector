@@ -41,6 +41,8 @@ public sealed class SnapshotFieldLine
     public required string Name { get; init; }
 
     public required string Value { get; init; }
+
+    public string DisplayLine => $"{Name}={Value}";
 }
 
 /// <summary>One canonical record row for virtualized ListBox binding.</summary>
@@ -61,6 +63,9 @@ public sealed class SnapshotRecordListItem
         _ => Domain.ToString(),
     };
 
+    /// <summary>True when the compact list line omits one or more fields.</summary>
+    public bool HasMoreFields => Fields.Count > 4;
+
     public string SummaryLine
     {
         get
@@ -68,7 +73,13 @@ public sealed class SnapshotRecordListItem
             string fields = string.Join(
                 "; ",
                 Fields.Take(4).Select(f => $"{f.Name}={f.Value}"));
-            return string.IsNullOrWhiteSpace(fields) ? StableKey : $"{StableKey} · {fields}";
+            if (string.IsNullOrWhiteSpace(fields))
+            {
+                return StableKey;
+            }
+
+            string suffix = HasMoreFields ? " …" : string.Empty;
+            return $"{StableKey} · {fields}{suffix}";
         }
     }
 }
