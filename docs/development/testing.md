@@ -1756,6 +1756,7 @@ Issue Set M6-02 + E2E Workflow Spec §32–§34 → compare actual managed state
 | AC#10 No automatic repair | Application/Domain surface | `Ac10AutomaticRepairIsAbsent` |
 | AC#11 Restore via normal deploy only | API surface | `Ac11RestorationIsNormalDeploymentPathOnly` |
 | AC#12 Immutable + audited | `DriftEvent` + audit | `Ac12DriftEventsAreImmutableAndAudited` |
+| W1.5 Desktop findings list | `DriftEventListItem.Findings` (list RPC, not GetDriftEvent) | `Ac7bDriftShowsFindingsFromListResponseNotOnlySemanticDiff` + `DriftViewModelTests` |
 
 Filter:
 ```bash
@@ -1805,6 +1806,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | AC#6 Operations onboarding/deploy/recovery | Onboarding + Deployment VMs | `Ac6OperationsViewSupportsOnboardingDeploymentAndRecovery` |
 | W1.4 Deploy/Onboarding plan collections | `ArtifactLines` / `OrderLines` / `ProbeAndWatchdogLines` / `Placements` | `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta` |
 | AC#7 Drift без automatic fix | `DriftViewModel` + `DriftService` | `Ac7DriftViewHasNoAutomaticFix` |
+| W1.5 Drift findings зі list | `DriftEventListItem.Findings` + `SelectedEventFindings` | `Ac7bDriftShowsFindingsFromListResponseNotOnlySemanticDiff` + `DriftViewModelTests` |
 | AC#8 Audit read-only | `AuditViewModel` + `AuditService` | `Ac8AuditIsReadOnly` |
 | AC#9 UI thread без remote I/O | Drift/Audit/Shell `Task.Run` | `Ac9UiThreadNeverPerformsRemoteIo` |
 | AC#10 Cached state позначений | Inventory Cached badge | `Ac10CachedStateIsClearlyMarked` |
@@ -1814,7 +1816,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
-dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopMvpWorkflowsLivingSpecTests|FullyQualifiedName~AddRouterWizardViewModelTests|FullyQualifiedName~PoliciesViewModelTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DriftProtoContractTests|FullyQualifiedName~AuditProtoContractTests"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopMvpWorkflowsLivingSpecTests|FullyQualifiedName~AddRouterWizardViewModelTests|FullyQualifiedName~PoliciesViewModelTests|FullyQualifiedName~DriftViewModelTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DriftProtoContractTests|FullyQualifiedName~AuditProtoContractTests"
 ```
 
 ## Living Specification — standalone / dual-stack E2E (M6-05)

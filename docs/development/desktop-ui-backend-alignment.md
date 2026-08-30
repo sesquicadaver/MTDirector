@@ -49,9 +49,12 @@
 - **Перевірка:** Living Spec `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta`
 - **Файли:** `MainWindow.axaml`, `DesktopMvpWorkflowsLivingSpecTests`
 
-### W1.5 Drift: findings зі list response
-- Не губити `DriftFinding` у DTO; показати list під подією (kind/severity/detail)
-- `SemanticDiffText` лишається, але не єдине джерело змісту
+### W1.5 Drift: findings зі list response — **DONE**
+- **Дані:** `DriftEvent.findings` already on `ListDeviceDriftEvents`; Desktop previously used only `Findings.Count`
+- **Зроблено:** `DriftFindingListItem` (kind/severity/detail) + list під вибраною подією; `SemanticDiffText` лишається другим джерелом
+- **Не чіпали:** `GetDriftEvent` RPC (W3.7); local SemanticDiffEngine; auto-fix
+- **Перевірка:** Living Spec `Ac7bDriftShowsFindingsFromListResponseNotOnlySemanticDiff`; `DriftViewModelTests.FromProtoKeepsFindingKindSeverityAndDetail`
+- **Файли:** `MainWindow.axaml`, `DriftViewModel.cs`, `DesktopMvpWorkflowsLivingSpecTests`
 
 ### W1.6 Inventory/Node: явні device поля
 - Окремо (не лише `DetailSummary`): reachability, model, ROS version, **VRRP roles** (коли непорожні), last snapshot
@@ -123,7 +126,7 @@ W1.1 Diff FieldLines     ← DONE
 W1.2 Snapshot Fields      ← DONE
 W1.3 Policies bind+Compose selection  ← DONE
 W1.4 Deploy/Onboarding collections  ← DONE
-W1.5 Drift findings
+W1.5 Drift findings               ← DONE
 W1.6 Inventory device fields
 W2.3 VRRP labels audit → fix or PLAN
 W3.1 StartCapture Desktop
@@ -149,7 +152,8 @@ W4  VRRP Node shell
 | W1.2 | **DONE** (selected-record Fields detail) |
 | W1.3 | **DONE** (catalog lists + Compose ← Node) |
 | W1.4 | **DONE** (Deploy/Onboarding plan collections) |
-| W1.5–W1.6 | **TODO** |
+| W1.5 | **DONE** (Drift findings from list response) |
+| W1.6 | **TODO** |
 | W2–W5 | **TODO** |
 
-**NEXT (alignment):** W1.5 Drift — findings зі list response.
+**NEXT (alignment):** W1.6 Inventory/Node — явні device поля (reachability, model, ROS version, VRRP roles коли непорожні, last snapshot).

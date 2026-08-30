@@ -256,6 +256,30 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         }
     }
 
+    /// <summary>W1.5: Drift list maps findings (kind/severity/detail); SemanticDiffText is not the only content.</summary>
+    [Fact]
+    public void Ac7bDriftShowsFindingsFromListResponseNotOnlySemanticDiff()
+    {
+        Assert.NotNull(typeof(DriftEventListItem).GetProperty(nameof(DriftEventListItem.Findings)));
+        Assert.NotNull(typeof(DriftFindingListItem).GetProperty(nameof(DriftFindingListItem.KindText)));
+        Assert.NotNull(typeof(DriftFindingListItem).GetProperty(nameof(DriftFindingListItem.SeverityText)));
+        Assert.NotNull(typeof(DriftFindingListItem).GetProperty(nameof(DriftFindingListItem.Detail)));
+        Assert.NotNull(typeof(DriftViewModel).GetProperty(nameof(DriftViewModel.SelectedEventFindings)));
+        Assert.NotNull(typeof(DriftViewModel).GetProperty(nameof(DriftViewModel.SemanticDiffText)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Drift findings", axaml, StringComparison.Ordinal);
+        Assert.Contains("Drift.SelectedEventFindings", axaml, StringComparison.Ordinal);
+        Assert.Contains("KindText", axaml, StringComparison.Ordinal);
+        Assert.Contains("SeverityText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Drift.SemanticDiffText", axaml, StringComparison.Ordinal);
+        Assert.DoesNotContain("GetDriftEvent", axaml, StringComparison.Ordinal);
+
+        string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/DriftViewModel.cs");
+        Assert.Contains("evt.Findings.Select(DriftFindingListItem.FromProto)", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("GetDriftEventAsync", vmSource, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac8AuditIsReadOnly()
     {
