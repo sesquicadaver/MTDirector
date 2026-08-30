@@ -915,8 +915,14 @@
                             Width="160" />
                 </WrapPanel>
                 <TextBox Classes="mfc-field" PlaceholderText="description" Text="{Binding Policies.RuleDescriptionText}" />
-                <Button Classes="mfc-action" Content="Add rule" Command="{Binding Policies.AddRuleCommand}" MinWidth="100" HorizontalAlignment="Left" />
-                <ListBox ItemsSource="{Binding Policies.Rules}" MaxHeight="180">
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <Button Classes="mfc-action" Content="Add rule" Command="{Binding Policies.AddRuleCommand}" MinWidth="100" />
+                  <Button Classes="mfc-action" Content="Update rule" Command="{Binding Policies.UpdateRuleCommand}" MinWidth="110" />
+                  <Button Classes="mfc-action" Content="Delete rule" Command="{Binding Policies.DeleteRuleCommand}" MinWidth="110" />
+                </WrapPanel>
+                <ListBox ItemsSource="{Binding Policies.Rules}"
+                         SelectedItem="{Binding Policies.SelectedRule, Mode=TwoWay}"
+                         MaxHeight="180">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1074,6 +1080,15 @@
                            Width="320" />
                   <Button Classes="mfc-action" Content="Semantic diff" Command="{Binding Policies.DiffCommand}" MinWidth="120" />
                   <Button Classes="mfc-action" Content="Record analysis" Command="{Binding Policies.RecordAnalysisCommand}" MinWidth="130" />
+                  <Button Classes="mfc-action" Content="Acknowledge warning" Command="{Binding Policies.AcknowledgeWarningCommand}" MinWidth="160" />
+                </WrapPanel>
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <TextBox Classes="mfc-field"
+                           PlaceholderText="capability hash (64 hex, from Snapshots)"
+                           Text="{Binding Policies.CompileCapabilityHashText}"
+                           MinWidth="240"
+                           Width="320" />
+                  <Button Classes="mfc-action" Content="Compile artifacts" Command="{Binding Policies.CompileCommand}" MinWidth="140" />
                 </WrapPanel>
                 <TextBlock Classes="mfc-label" Text="Revision diff" />
                 <ListBox ItemsSource="{Binding Policies.DiffLines}" MaxHeight="120">
@@ -1090,7 +1105,9 @@
                   </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Compose findings" />
-                <ListBox ItemsSource="{Binding Policies.Findings}" MaxHeight="120">
+                <ListBox ItemsSource="{Binding Policies.Findings}"
+                         SelectedItem="{Binding Policies.SelectedFinding, Mode=TwoWay}"
+                         MaxHeight="120">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1102,6 +1119,14 @@
                                  FontFamily="Consolas,Menlo,monospace" />
                     </DataTemplate>
                   </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock Classes="mfc-label" Text="Compile artifacts" />
+                <ListBox ItemsSource="{Binding Policies.CompileArtifactLines}" MaxHeight="120">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
                 </ListBox>
               </StackPanel>
             </Border>

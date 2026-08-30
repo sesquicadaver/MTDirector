@@ -34,6 +34,26 @@ public interface IPolicyServiceClient
         string description,
         CancellationToken cancellationToken = default);
 
+    Task<PolicyRuleMutation> UpdateRuleAsync(
+        Guid revisionId,
+        Guid ruleId,
+        byte[] expectedContentHash,
+        IpAddressFamily family,
+        PolicyFilterChain chain,
+        PolicyPipelineStage stage,
+        uint ordinal,
+        bool enabled,
+        TrafficPredicate? predicate,
+        RuleEffect effect,
+        string description,
+        CancellationToken cancellationToken = default);
+
+    Task<PolicyRuleMutation> DeleteRuleAsync(
+        Guid revisionId,
+        Guid ruleId,
+        byte[] expectedContentHash,
+        CancellationToken cancellationToken = default);
+
     Task<PolicyRuleMutation> ReorderRulesAsync(
         Guid revisionId,
         byte[] expectedContentHash,
@@ -112,6 +132,11 @@ public interface IPolicyServiceClient
         IReadOnlyList<PolicyAnalysisTestResult>? testResults = null,
         CancellationToken cancellationToken = default);
 
+    Task<PolicyAnalysisRun> AcknowledgeWarningAsync(
+        Guid analysisRunId,
+        byte[] warningHash,
+        CancellationToken cancellationToken = default);
+
     Task<PolicyApprovalVote> ApproveRevisionAsync(
         Guid revisionId,
         Guid analysisRunId,
@@ -125,5 +150,12 @@ public interface IPolicyServiceClient
         Guid analysisRunId,
         byte[] expectedContentHash,
         byte[] currentDependencyFingerprint,
+        CancellationToken cancellationToken = default);
+
+    Task<CompileNodeFilterArtifactsResponse> CompileNodeFilterArtifactsAsync(
+        Guid nodeId,
+        Guid analysisRunId,
+        byte[] currentDependencyFingerprint,
+        byte[] currentCapabilityHash,
         CancellationToken cancellationToken = default);
 }

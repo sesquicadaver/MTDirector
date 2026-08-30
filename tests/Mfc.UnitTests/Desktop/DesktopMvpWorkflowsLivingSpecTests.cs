@@ -321,6 +321,53 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("Policies.LoadCommand", axaml, StringComparison.Ordinal);
     }
 
+    /// <summary>W3.6: Policies mutate rules, ack recorded warnings, and compile semantic artifacts.</summary>
+    [Fact]
+    public void Ac5cPoliciesMutateRulesAckWarningsAndCompile()
+    {
+        Type policies = typeof(PoliciesViewModel);
+        Assert.NotNull(policies.GetProperty("UpdateRuleCommand"));
+        Assert.NotNull(policies.GetProperty("DeleteRuleCommand"));
+        Assert.NotNull(policies.GetProperty("AcknowledgeWarningCommand"));
+        Assert.NotNull(policies.GetProperty("CompileCommand"));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.SelectedRule)));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.SelectedFinding)));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.CompileCapabilityHashText)));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.CompileArtifactLines)));
+
+        Assert.NotNull(typeof(IPolicyServiceClient).GetMethod(nameof(IPolicyServiceClient.UpdateRuleAsync)));
+        Assert.NotNull(typeof(IPolicyServiceClient).GetMethod(nameof(IPolicyServiceClient.DeleteRuleAsync)));
+        Assert.NotNull(typeof(IPolicyServiceClient).GetMethod(nameof(IPolicyServiceClient.AcknowledgeWarningAsync)));
+        Assert.NotNull(typeof(IPolicyServiceClient).GetMethod(nameof(IPolicyServiceClient.CompileNodeFilterArtifactsAsync)));
+        Assert.NotNull(typeof(IPolicyPanelService).GetMethod(nameof(IPolicyPanelService.UpdateRuleAsync)));
+        Assert.NotNull(typeof(IPolicyPanelService).GetMethod(nameof(IPolicyPanelService.DeleteRuleAsync)));
+        Assert.NotNull(typeof(IPolicyPanelService).GetMethod(nameof(IPolicyPanelService.AcknowledgeWarningAsync)));
+        Assert.NotNull(typeof(IPolicyPanelService).GetMethod(nameof(IPolicyPanelService.CompileNodeFilterArtifactsAsync)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Policies.UpdateRuleCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.DeleteRuleCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.AcknowledgeWarningCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.CompileCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.SelectedRule", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.SelectedFinding", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.CompileCapabilityHashText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.CompileArtifactLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("Content=\"Update rule\"", axaml, StringComparison.Ordinal);
+        Assert.Contains("Content=\"Delete rule\"", axaml, StringComparison.Ordinal);
+        Assert.Contains("Content=\"Acknowledge warning\"", axaml, StringComparison.Ordinal);
+        Assert.Contains("Content=\"Compile artifacts\"", axaml, StringComparison.Ordinal);
+
+        string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/PoliciesViewModel.cs");
+        Assert.Contains("UpdateRuleAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("DeleteRuleAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("AcknowledgeWarningAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("CompileNodeFilterArtifactsAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("Task.Run", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("SaveAndDeploy", vmSource, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac6OperationsViewSupportsOnboardingDeploymentAndRecovery()
     {
