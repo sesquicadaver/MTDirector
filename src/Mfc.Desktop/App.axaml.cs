@@ -37,7 +37,7 @@ public sealed class App : Application, IAsyncDisposable
         ZonesViewModel zonesVm = new(zonePanel, connection, inventoryVm);
         GrpcPolicyServiceClient policyClient = new(connection, options);
         PolicyPanelService policyPanel = new(policyClient);
-        PoliciesViewModel policiesVm = new(policyPanel, connection);
+        PoliciesViewModel policiesVm = new(policyPanel, connection, inventoryVm);
         GrpcOnboardingServiceClient onboardingClient = new(connection, options);
         OnboardingViewModel onboardingVm = new(onboardingClient, connection, inventoryVm);
         GrpcDeploymentServiceClient deploymentClient = new(connection, options);

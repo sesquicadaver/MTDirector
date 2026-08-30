@@ -16,6 +16,7 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
 
     private readonly IPolicyPanelService _policies;
     private readonly IControllerConnectionService _connection;
+    private readonly InventoryTreeViewModel _inventory;
     private bool _disposed;
     private byte[]? _contentHash;
     private byte[]? _logicalEffectiveHash;
@@ -23,11 +24,17 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
     private byte[]? _dependencyFingerprint;
     private Guid? _analysisRunId;
 
-    public PoliciesViewModel(IPolicyPanelService policies, IControllerConnectionService connection)
+    public PoliciesViewModel(
+        IPolicyPanelService policies,
+        IControllerConnectionService connection,
+        InventoryTreeViewModel inventory)
     {
         _policies = policies ?? throw new ArgumentNullException(nameof(policies));
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+        _inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
         _connection.StateChanged += OnConnectionStateChanged;
+        _inventory.PropertyChanged += OnInventoryPropertyChanged;
+        SyncComposeNodeFromInventory();
 
         Families =
         [
@@ -815,6 +822,51 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         }
     }
 
+    private void OnInventoryPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is not (nameof(InventoryTreeViewModel.SelectedNode)
+            or nameof(InventoryTreeViewModel.HasSelection)))
+        {
+            return;
+        }
+
+        SyncComposeNodeFromInventory();
+    }
+
+    /// <summary>
+    /// Defaults Compose to the selected inventory Node (or the parent Node of a Device).
+    /// Leaves a manually typed UUID when the current selection is not a Node.
+    /// </summary>
+    private void SyncComposeNodeFromInventory()
+    {
+        Guid? nodeId = TryGetComposeNodeId();
+        if (nodeId is Guid id)
+        {
+            ComposeNodeIdText = id.ToString("D");
+        }
+    }
+
+    private Guid? TryGetComposeNodeId()
+    {
+        InventoryNodeViewModel? selected = _inventory.SelectedNode;
+        if (selected is null)
+        {
+            return null;
+        }
+
+        if (selected.Kind == InventoryTreeKind.Node)
+        {
+            return selected.Id;
+        }
+
+        if (selected.Kind == InventoryTreeKind.Device && selected.ParentId is Guid parent)
+        {
+            return parent;
+        }
+
+        return null;
+    }
+
     public void Dispose()
     {
         if (_disposed)
@@ -823,6 +875,7 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         }
 
         _disposed = true;
+        _inventory.PropertyChanged -= OnInventoryPropertyChanged;
         _connection.StateChanged -= OnConnectionStateChanged;
     }
 }

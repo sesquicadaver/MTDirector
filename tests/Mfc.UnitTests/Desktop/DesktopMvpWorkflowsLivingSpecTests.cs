@@ -156,6 +156,38 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("Policy authoring / review / binding", axaml, StringComparison.Ordinal);
     }
 
+    /// <summary>W1.3: Policies binds catalog lists + DiffLines; Compose defaults from inventory Node.</summary>
+    [Fact]
+    public void Ac5bPoliciesBindCatalogListsAndComposeFromSelectedNode()
+    {
+        Type policies = typeof(PoliciesViewModel);
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.AddressObjects)));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.ServiceObjects)));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.ChainContracts)));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.DiffLines)));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.ComposeNodeIdText)));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.RevisionIdText)));
+        Assert.NotNull(policies.GetProperty("CreateDraftCommand"));
+        Assert.NotNull(policies.GetProperty("UpsertAddressCommand"));
+        Assert.NotNull(policies.GetProperty("UpsertServiceCommand"));
+        Assert.NotNull(policies.GetProperty("ReplaceContractsCommand"));
+        Assert.NotNull(policies.GetProperty("RecordAnalysisCommand"));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Address objects", axaml, StringComparison.Ordinal);
+        Assert.Contains("Service objects", axaml, StringComparison.Ordinal);
+        Assert.Contains("Chain contracts", axaml, StringComparison.Ordinal);
+        Assert.Contains("Revision diff", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.AddressObjects", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.ServiceObjects", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.ChainContracts", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.DiffLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.UpsertAddressCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.ComposeNodeIdText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.CreateDraftCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.LoadCommand", axaml, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac6OperationsViewSupportsOnboardingDeploymentAndRecovery()
     {
