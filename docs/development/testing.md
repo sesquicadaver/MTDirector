@@ -310,7 +310,8 @@ Policy Model §§20–21 + Issue Set M2-05 AC → module → tests:
 | Catalog SoT tables | `zone_definitions` / `node_zone_bindings` | `ZoneBindingsPersistTests` |
 | `PolicyDocument.ZoneDefinitions` stays `[]` | `PolicyDocument` | composition/hash embedding deferred (M2-06+) |
 | gRPC `mfc.v1.ZoneService` | `zones.proto` / `ZoneGrpcService` | `ZoneProtoContractTests` |
-| Desktop CRUD + blockers | `ZonePanelService` / Zones tab | `ZonesDesktopServiceTests` |
+| Desktop CRUD + blockers | `ZonePanelService` / Zones tab | `ZonesDesktopServiceTests` + `ZonesViewModelTests` |
+| W3.5 Update zone + Resolve device | `UpdateZoneDefinition` / `ResolveZonesForDevice` | `Ac2dZonesEditDefinitionAndResolveDevice` + `ZonesViewModelTests` |
 | AC#10–11 ZoneSelector / rules | `ZoneSelector` + `PolicyRule` (M2-06 Domain) | `PolicyRuleTests` D7 |
 | No Domain/App→RouterOs; Desktop Contracts-only | ArchitectureBoundary | `ArchitectureBoundaryTests` |
 
@@ -1800,6 +1801,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | AC#2 Inventory workflow status | `InventoryNodeViewModel.WorkflowStatusText` + MainWindow | `Ac2InventorySurfacesWorkflowStatusVisibly` |
 | AC#2b Inventory Add Router wizard | `AddRouterWizardViewModel` + `IInventoryTreeClient` write RPCs | `Ac2bInventoryAddRouterWizardCoversCreateRegisterConnectionPath` + `AddRouterWizardViewModelTests` |
 | W3.2 ValidateDeviceConnection Probe | Inventory/Add router Probe + `ProbeResultText` | `Ac2cInventoryAndAddRouterProbeValidateDeviceConnection` + `AddRouterWizardViewModelTests` |
+| W3.5 Zones Update + Resolve device | `UpdateZoneCommand` / `ResolveDeviceCommand` | `Ac2dZonesEditDefinitionAndResolveDevice` + `ZonesViewModelTests` + `ZonesDesktopServiceTests` |
 | Seed MikroTik neighbors (#314) | `ListNeighborCandidatesUseCase` + `/ip/neighbor` allowlist + Desktop Load/Apply | `NeighborCandidatesLivingSpecTests` + `ListNeighborCandidatesUseCaseTests` + `NeighborDiscoveryAllowlistTests` |
 | AC#3 Node topology/zones/onboarding/readiness | `NodeDetailViewModel` | `Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness` |
 | W1.6 Inventory/Node device fields | reachability/model/ROS/VRRP(when present)/last snapshot | `Ac3bInventoryAndNodeShowExplicitDeviceFields` + `InventoryNodeViewModelTests` + `NodeDetailViewModelTests` |
@@ -1824,7 +1826,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
-dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopMvpWorkflowsLivingSpecTests|FullyQualifiedName~AddRouterWizardViewModelTests|FullyQualifiedName~PoliciesViewModelTests|FullyQualifiedName~DriftViewModelTests|FullyQualifiedName~InventoryNodeViewModelTests|FullyQualifiedName~NodeDetailViewModelTests|FullyQualifiedName~SnapshotViewerViewModelTests|FullyQualifiedName~OnboardingViewModelTests|FullyQualifiedName~DeploymentViewModelTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DriftProtoContractTests|FullyQualifiedName~AuditProtoContractTests"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopMvpWorkflowsLivingSpecTests|FullyQualifiedName~AddRouterWizardViewModelTests|FullyQualifiedName~PoliciesViewModelTests|FullyQualifiedName~DriftViewModelTests|FullyQualifiedName~InventoryNodeViewModelTests|FullyQualifiedName~NodeDetailViewModelTests|FullyQualifiedName~SnapshotViewerViewModelTests|FullyQualifiedName~OnboardingViewModelTests|FullyQualifiedName~DeploymentViewModelTests|FullyQualifiedName~ZonesViewModelTests|FullyQualifiedName~ZonesDesktopServiceTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DriftProtoContractTests|FullyQualifiedName~AuditProtoContractTests"
 ```
 
 ## Living Specification — standalone / dual-stack E2E (M6-05)

@@ -99,6 +99,35 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
     }
 
+    /// <summary>W3.5: Zones panel edits definitions and resolves the selected Device.</summary>
+    [Fact]
+    public void Ac2dZonesEditDefinitionAndResolveDevice()
+    {
+        Type zones = typeof(ZonesViewModel);
+        Assert.NotNull(zones.GetProperty("UpdateZoneCommand"));
+        Assert.NotNull(zones.GetProperty("ResolveDeviceCommand"));
+        Assert.NotNull(zones.GetProperty(nameof(ZonesViewModel.EditZoneName)));
+        Assert.NotNull(zones.GetProperty(nameof(ZonesViewModel.EditZoneDescription)));
+
+        Assert.NotNull(typeof(IZoneServiceClient).GetMethod(nameof(IZoneServiceClient.UpdateZoneDefinitionAsync)));
+        Assert.NotNull(typeof(IZoneServiceClient).GetMethod(nameof(IZoneServiceClient.ResolveZonesForDeviceAsync)));
+        Assert.NotNull(typeof(IZonePanelService).GetMethod(nameof(IZonePanelService.UpdateZoneAsync)));
+        Assert.NotNull(typeof(IZonePanelService).GetMethod(nameof(IZonePanelService.ResolveForDeviceAsync)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Zones.UpdateZoneCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Zones.ResolveDeviceCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Content=\"Update zone\"", axaml, StringComparison.Ordinal);
+        Assert.Contains("Content=\"Resolve device\"", axaml, StringComparison.Ordinal);
+        Assert.Contains("Zones.EditZoneName", axaml, StringComparison.Ordinal);
+
+        string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/ZonesViewModel.cs");
+        Assert.Contains("UpdateZoneAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("ResolveForDeviceAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("Task.Run", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness()
     {

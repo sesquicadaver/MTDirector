@@ -63,7 +63,7 @@ Normative detail lives in [`TOR-1.md`](../../TOR-1.md), the MVP specifications, 
 | Policy Pipeline v1 + chain contracts | Done (M2-02) | Fixed stages + owner/effect matrix; company-only `ChainContract` |
 | Address objects + selectors | Done (M2-03) | Typed entries, interval algebra, `AddressSelectorEvaluator` |
 | Service objects + selectors | Done (M2-04) | Numeric protocols, ports, ICMP split, `ServiceSelectorEvaluator` |
-| Logical zones + Node bindings | Done (M2-05) | `ZoneDefinition` / `NodeZoneBinding`, ZoneService, Desktop Zones |
+| Logical zones + Node bindings | Done (M2-05) + W3.5 | `ZoneDefinition` / `NodeZoneBinding`, ZoneService, Desktop Zones Create/Update/Delete + Resolve node/device |
 | Zone VETH/VLAN/bridge resolve | Done (N1-05) | `topology.container-veth` / `shared-veth`; marker expand in `ZoneResolveEngine`; live capture←projector residual (M1-22) |
 | Typed policy rules | Done (M2-06) | Typed rules/predicates; App CAS CRUD; `PolicyService`; thin Desktop list |
 | Deterministic policy composition | Done (M2-07) | `EffectivePolicyComposer`; `ComposeEffectivePolicy`; logical IncrementalHash |
@@ -114,7 +114,7 @@ Normative detail lives in [`TOR-1.md`](../../TOR-1.md), the MVP specifications, 
 | Desired / committed / actual projection | Done (M6-01) + W3.4 | `DeviceHashState` + classifier + `NodeWorkflowStatusProjector`; EF `device_hash_states`; `GetNodeWorkflow`; Desktop Node tab binds workflow + device contributing/sync; tree label stays `GetNode.workflow_status` |
 | Managed drift detection | Done (M6-02) + W1.5 | `ManagedDriftDetector` + `DriftEvent` (immutable); EF `drift_events`; deploy gate blocks Critical; no auto-repair; Living Spec AC 1–12; Desktop binds list `findings` (kind/severity/detail) |
 | Bounded operational jobs | Done (M6-03) | `OperationalJobSchedulerHostedService` + bounded priority bag; recovery > drift; expired-exception DB-only; restricted watchdog cleanup; no broker; Living Spec AC 1–10 |
-| Desktop MVP workflows | Done (M6-04) + W1.1–W1.6 + W3.1–W3.4 | Seven modules + `DriftService`/`AuditService` read paths; Shell nav; no auto-fix; Living Spec AC 1–12 (+ AC#2b Add router); capture/probe/watch/GetNodeWorkflow glue; drift findings + explicit device fields bound; shared `mfc-*` shell styles + wrap toolbars (overlap/readability polish 2026-08-29) |
+| Desktop MVP workflows | Done (M6-04) + W1.1–W1.6 + W3.1–W3.5 | Seven modules + `DriftService`/`AuditService` read paths; Shell nav; no auto-fix; Living Spec AC 1–12 (+ AC#2b Add router); capture/probe/watch/GetNodeWorkflow/zones update+device-resolve glue; drift findings + explicit device fields bound; shared `mfc-*` shell styles + wrap toolbars (overlap/readability polish 2026-08-29) |
 | Standalone / dual-stack E2E | Done (M6-05) | Living Spec AC 1–10 + Integration inventory→capture→onboarding; scripted runtimes; Live CHR OFF |
 | Multi-WAN E2E | Done (M6-06) | Living Spec AC 1–10; failover/PCC/probes/FastTrack/drift; scripted runtimes; Live CHR OFF |
 | VRRP / CRS E2E | Done (M6-07) | Living Spec AC 1–11; VRRP coordinator + Switch FORWARD gate + CRS fixtures; Live CHR OFF |

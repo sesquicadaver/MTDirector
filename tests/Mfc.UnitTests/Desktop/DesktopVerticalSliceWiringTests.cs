@@ -64,8 +64,10 @@ public sealed class DesktopVerticalSliceWiringTests
 
         Type zones = typeof(IZoneServiceClient);
         Assert.NotNull(zones.GetMethod(nameof(IZoneServiceClient.ListZoneDefinitionsAsync)));
+        Assert.NotNull(zones.GetMethod(nameof(IZoneServiceClient.UpdateZoneDefinitionAsync)));
         Assert.NotNull(zones.GetMethod(nameof(IZoneServiceClient.UpsertNodeZoneBindingAsync)));
         Assert.NotNull(zones.GetMethod(nameof(IZoneServiceClient.ResolveZonesForNodeAsync)));
+        Assert.NotNull(zones.GetMethod(nameof(IZoneServiceClient.ResolveZonesForDeviceAsync)));
 
         Type policies = typeof(IPolicyServiceClient);
         Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ListRulesAsync)));
