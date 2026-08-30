@@ -90,7 +90,18 @@ public sealed partial class DriftViewModel : ObservableObject, IDisposable
     private string _semanticDiffText = string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SelectedEventFindings))]
+    [NotifyPropertyChangedFor(nameof(HasSelectedEventFindings))]
+    [NotifyPropertyChangedFor(nameof(HasNoSelectedEventFindings))]
     private DriftEventListItem? _selectedEvent;
+
+    /// <summary>Findings from the selected ListDeviceDriftEvents row (not GetDriftEvent).</summary>
+    public IReadOnlyList<DriftFindingListItem> SelectedEventFindings =>
+        SelectedEvent?.Findings ?? [];
+
+    public bool HasSelectedEventFindings => SelectedEventFindings.Count > 0;
+
+    public bool HasNoSelectedEventFindings => SelectedEventFindings.Count == 0;
 
     [RelayCommand(CanExecute = nameof(CanRefresh))]
     private async Task RefreshAsync()
@@ -225,6 +236,8 @@ public sealed class DriftEventListItem
 
     public required bool ConfigurationDriftPresent { get; init; }
 
+    public required IReadOnlyList<DriftFindingListItem> Findings { get; init; }
+
     public static DriftEventListItem FromProto(DriftEvent evt)
     {
         ArgumentNullException.ThrowIfNull(evt);
@@ -238,6 +251,7 @@ public sealed class DriftEventListItem
             SemanticDiffCanonical = evt.SemanticDiffCanonical ?? string.Empty,
             BlocksDeployment = evt.BlocksDeployment,
             ConfigurationDriftPresent = evt.ConfigurationDriftPresent,
+            Findings = evt.Findings.Select(DriftFindingListItem.FromProto).ToArray(),
             SummaryLine =
                 $"{evt.CreatedAt?.ToDateTimeOffset():u} · {evt.Outcome} · " +
                 $"config={evt.ConfigurationDriftPresent} · blocks={evt.BlocksDeployment} · " +
@@ -254,5 +268,32 @@ public sealed class DriftEventListItem
 
         string hex = Convert.ToHexString(hash.Value.Span).ToLowerInvariant();
         return hex.Length <= 12 ? hex : hex[..12] + "…";
+    }
+}
+
+/// <summary>One DriftFinding from the list response (kind / severity / detail).</summary>
+public sealed class DriftFindingListItem
+{
+    public required string KindText { get; init; }
+
+    public required string SeverityText { get; init; }
+
+    public required string Detail { get; init; }
+
+    public bool HasDetail => !string.IsNullOrWhiteSpace(Detail);
+
+    public string SummaryLine => HasDetail
+        ? $"{SeverityText} · {KindText} · {Detail}"
+        : $"{SeverityText} · {KindText}";
+
+    public static DriftFindingListItem FromProto(DriftFinding finding)
+    {
+        ArgumentNullException.ThrowIfNull(finding);
+        return new DriftFindingListItem
+        {
+            KindText = finding.Kind.ToString(),
+            SeverityText = finding.Severity.ToString(),
+            Detail = finding.Detail ?? string.Empty,
+        };
     }
 }

@@ -1154,7 +1154,7 @@
         </TabControl>
 
         <!-- Drift (no automatic fix) -->
-        <Grid IsVisible="{Binding IsDriftSelected}" RowDefinitions="Auto,*,*" ClipToBounds="True">
+        <Grid IsVisible="{Binding IsDriftSelected}" RowDefinitions="Auto,*,Auto,*" ClipToBounds="True">
           <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
             <WrapPanel DockPanel.Dock="Right" Classes="mfc-toolbar" ItemSpacing="8" Margin="8,0,0,0">
               <Button Classes="mfc-action" Content="Refresh" Command="{Binding Drift.RefreshCommand}" />
@@ -1195,7 +1195,37 @@
               </ListBox.ItemTemplate>
             </ListBox>
           </Border>
-          <Border Grid.Row="2" Classes="mfc-panel" ClipToBounds="True">
+          <Border Grid.Row="2" Classes="mfc-list-frame" Margin="0,0,0,8" ClipToBounds="True" MinHeight="96" MaxHeight="200">
+            <DockPanel LastChildFill="True">
+              <StackPanel DockPanel.Dock="Top" Spacing="2" Margin="0,0,0,6">
+                <TextBlock Classes="mfc-label" Text="Drift findings" />
+                <TextBlock Classes="mfc-muted"
+                           Text="Select an event to see kind / severity / detail from the list response."
+                           IsVisible="{Binding Drift.HasNoSelectedEventFindings}" />
+              </StackPanel>
+              <ListBox ItemsSource="{Binding Drift.SelectedEventFindings}"
+                       IsVisible="{Binding Drift.HasSelectedEventFindings}">
+                <ListBox.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <VirtualizingStackPanel />
+                  </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                  <DataTemplate DataType="vm:DriftFindingListItem">
+                    <StackPanel Spacing="2" Margin="4">
+                      <TextBlock Text="{Binding KindText}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                      <TextBlock Opacity="0.75" Text="{Binding SeverityText, StringFormat=Severity: {0}}" />
+                      <TextBlock Text="{Binding Detail}"
+                                 Classes="mfc-mono"
+                                 TextWrapping="Wrap"
+                                 IsVisible="{Binding HasDetail}" />
+                    </StackPanel>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </DockPanel>
+          </Border>
+          <Border Grid.Row="3" Classes="mfc-panel" ClipToBounds="True">
             <DockPanel LastChildFill="True">
               <TextBlock DockPanel.Dock="Top" Classes="mfc-label" Text="Semantic diff" Margin="0,0,0,6" />
               <TextBox Text="{Binding Drift.SemanticDiffText}"
