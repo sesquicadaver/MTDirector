@@ -109,6 +109,66 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
             .ConfigureAwait(false);
     }
 
+    public async Task<PolicyRuleMutation> UpdateRuleAsync(
+        Guid revisionId,
+        Guid ruleId,
+        byte[] expectedContentHash,
+        IpAddressFamily family,
+        PolicyFilterChain chain,
+        PolicyPipelineStage stage,
+        uint ordinal,
+        bool enabled,
+        TrafficPredicate? predicate,
+        RuleEffect effect,
+        string description,
+        CancellationToken cancellationToken = default)
+    {
+        PolicyService.PolicyServiceClient client = CreateClient();
+        UpdateRuleRequest request = new()
+        {
+            IdempotencyKey = DesktopProtoUuid.FromGuid(Guid.NewGuid()),
+            RevisionId = DesktopProtoUuid.FromGuid(revisionId),
+            RuleId = DesktopProtoUuid.FromGuid(ruleId),
+            ExpectedContentHash = ToSha256(expectedContentHash),
+            Family = family,
+            Chain = chain,
+            Stage = stage,
+            Ordinal = ordinal,
+            Enabled = enabled,
+            Effect = effect,
+            Logging = new LogSpecification { Enabled = false },
+            ExceptionEligible = false,
+            Description = description,
+        };
+        if (predicate is not null)
+        {
+            request.Predicate = predicate;
+        }
+
+        return await client.UpdateRuleAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<PolicyRuleMutation> DeleteRuleAsync(
+        Guid revisionId,
+        Guid ruleId,
+        byte[] expectedContentHash,
+        CancellationToken cancellationToken = default)
+    {
+        PolicyService.PolicyServiceClient client = CreateClient();
+        return await client.DeleteRuleAsync(
+                new DeleteRuleRequest
+                {
+                    IdempotencyKey = DesktopProtoUuid.FromGuid(Guid.NewGuid()),
+                    RevisionId = DesktopProtoUuid.FromGuid(revisionId),
+                    RuleId = DesktopProtoUuid.FromGuid(ruleId),
+                    ExpectedContentHash = ToSha256(expectedContentHash),
+                },
+                ActorHeaders(),
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     public async Task<PolicyRuleMutation> ReorderRulesAsync(
         Guid revisionId,
         byte[] expectedContentHash,
@@ -356,6 +416,24 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
             .ConfigureAwait(false);
     }
 
+    public async Task<PolicyAnalysisRun> AcknowledgeWarningAsync(
+        Guid analysisRunId,
+        byte[] warningHash,
+        CancellationToken cancellationToken = default)
+    {
+        PolicyService.PolicyServiceClient client = CreateClient();
+        return await client.AcknowledgeWarningAsync(
+                new AcknowledgeWarningRequest
+                {
+                    IdempotencyKey = DesktopProtoUuid.FromGuid(Guid.NewGuid()),
+                    AnalysisRunId = DesktopProtoUuid.FromGuid(analysisRunId),
+                    WarningHash = ToSha256(warningHash),
+                },
+                ActorHeaders(),
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     public async Task<PolicyApprovalVote> ApproveRevisionAsync(
         Guid revisionId,
         Guid analysisRunId,
@@ -396,6 +474,27 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
                     AnalysisRunId = DesktopProtoUuid.FromGuid(analysisRunId),
                     ExpectedContentHash = ToSha256(expectedContentHash),
                     CurrentDependencyFingerprint = ToSha256(currentDependencyFingerprint),
+                },
+                ActorHeaders(),
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<CompileNodeFilterArtifactsResponse> CompileNodeFilterArtifactsAsync(
+        Guid nodeId,
+        Guid analysisRunId,
+        byte[] currentDependencyFingerprint,
+        byte[] currentCapabilityHash,
+        CancellationToken cancellationToken = default)
+    {
+        PolicyService.PolicyServiceClient client = CreateClient();
+        return await client.CompileNodeFilterArtifactsAsync(
+                new CompileNodeFilterArtifactsRequest
+                {
+                    NodeId = DesktopProtoUuid.FromGuid(nodeId),
+                    AnalysisRunId = DesktopProtoUuid.FromGuid(analysisRunId),
+                    CurrentDependencyFingerprint = ToSha256(currentDependencyFingerprint),
+                    CurrentCapabilityHash = ToSha256(currentCapabilityHash),
                 },
                 ActorHeaders(),
                 cancellationToken: cancellationToken)

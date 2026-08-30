@@ -103,6 +103,8 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
 
     public ObservableCollection<PolicyFindingListItem> DiffLines { get; } = [];
 
+    public ObservableCollection<string> CompileArtifactLines { get; } = [];
+
     public IReadOnlyList<IpAddressFamily> Families { get; }
 
     public IReadOnlyList<PolicyFilterChain> Chains { get; }
@@ -223,6 +225,15 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private string _predicateServiceIdsText = string.Empty;
 
+    [ObservableProperty]
+    private PolicyRuleListItem? _selectedRule;
+
+    [ObservableProperty]
+    private PolicyFindingListItem? _selectedFinding;
+
+    [ObservableProperty]
+    private string _compileCapabilityHashText = string.Empty;
+
     [RelayCommand(CanExecute = nameof(CanOperate))]
     private async Task LoadAsync()
     {
@@ -277,6 +288,70 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
                     ct)
                 .ConfigureAwait(true));
             RuleDescriptionText = string.Empty;
+        }).ConfigureAwait(true);
+    }
+
+    [RelayCommand(CanExecute = nameof(CanMutate))]
+    private async Task UpdateRuleAsync()
+    {
+        if (!TryRequireMutableRevision(out Guid revisionId, out byte[] hash))
+        {
+            return;
+        }
+
+        if (SelectedRule is null)
+        {
+            ErrorText = "Select a rule to update.";
+            return;
+        }
+
+        PolicyRuleListItem rule = SelectedRule;
+        await RunBusyAsync(async ct =>
+        {
+            TrafficPredicate? predicate = BuildPredicateFromProtoFields();
+            ApplyState(await Task.Run(
+                    async () => await _policies.UpdateRuleAsync(
+                            revisionId,
+                            rule.Id,
+                            hash,
+                            SelectedFamily,
+                            SelectedChain,
+                            SelectedStage,
+                            rule.Ordinal,
+                            rule.Enabled,
+                            SelectedEffect,
+                            RuleDescriptionText.Trim(),
+                            predicate,
+                            ct)
+                        .ConfigureAwait(false),
+                    ct)
+                .ConfigureAwait(true));
+        }).ConfigureAwait(true);
+    }
+
+    [RelayCommand(CanExecute = nameof(CanMutate))]
+    private async Task DeleteRuleAsync()
+    {
+        if (!TryRequireMutableRevision(out Guid revisionId, out byte[] hash))
+        {
+            return;
+        }
+
+        if (SelectedRule is null)
+        {
+            ErrorText = "Select a rule to delete.";
+            return;
+        }
+
+        Guid ruleId = SelectedRule.Id;
+        await RunBusyAsync(async ct =>
+        {
+            ApplyState(await Task.Run(
+                    async () => await _policies.DeleteRuleAsync(revisionId, ruleId, hash, ct)
+                        .ConfigureAwait(false),
+                    ct)
+                .ConfigureAwait(true));
+            SelectedRule = null;
         }).ConfigureAwait(true);
     }
 
@@ -534,6 +609,92 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
             AnalysisRunIdText = run.Id.ToString("D");
             RiskLevelText = run.RiskLevel;
             EffectiveRiskLevelText = run.EffectiveRiskLevel;
+            Findings.Clear();
+            foreach (PolicyFindingListItem finding in run.AckableFindings)
+            {
+                Findings.Add(finding);
+            }
+
+            if (Findings.Count > 0)
+            {
+                SelectedFinding = Findings[0];
+            }
+        }).ConfigureAwait(true);
+    }
+
+    [RelayCommand(CanExecute = nameof(CanOperate))]
+    private async Task AcknowledgeWarningAsync()
+    {
+        if (_analysisRunId is not Guid runId)
+        {
+            ErrorText = "Record an analysis run before Acknowledge warning.";
+            return;
+        }
+
+        if (SelectedFinding is null || SelectedFinding.WarningHash is not { Length: 32 } warningHash)
+        {
+            ErrorText = "Select a recorded finding with a warning hash.";
+            return;
+        }
+
+        await RunBusyAsync(async ct =>
+        {
+            PolicyAnalysisRunListItem run = await Task.Run(
+                    async () => await _policies.AcknowledgeWarningAsync(runId, warningHash, ct)
+                        .ConfigureAwait(false),
+                    ct)
+                .ConfigureAwait(true);
+            RiskLevelText = run.RiskLevel;
+            EffectiveRiskLevelText = run.EffectiveRiskLevel;
+        }).ConfigureAwait(true);
+    }
+
+    [RelayCommand(CanExecute = nameof(CanOperate))]
+    private async Task CompileAsync()
+    {
+        if (!Guid.TryParse(ComposeNodeIdText.Trim(), out Guid nodeId))
+        {
+            ErrorText = "Select a Node (or enter its UUID) before CompileNodeFilterArtifacts.";
+            return;
+        }
+
+        if (_analysisRunId is not Guid runId || _dependencyFingerprint is null)
+        {
+            ErrorText = "Record an analysis run before compile (needs run id and dependency fingerprint).";
+            return;
+        }
+
+        byte[] capabilityHash;
+        try
+        {
+            capabilityHash = ParseSha256Hex(CompileCapabilityHashText, "capability hash");
+        }
+        catch (Exception ex)
+        {
+            ErrorText = ex.Message;
+            return;
+        }
+
+        Guid analysisRunId = runId;
+        byte[] fingerprint = _dependencyFingerprint;
+        await RunBusyAsync(async ct =>
+        {
+            PolicyCompilePanelResult compiled = await Task.Run(
+                    async () => await _policies.CompileNodeFilterArtifactsAsync(
+                            nodeId,
+                            analysisRunId,
+                            fingerprint,
+                            capabilityHash,
+                            ct)
+                        .ConfigureAwait(false),
+                    ct)
+                .ConfigureAwait(true);
+            CompileArtifactLines.Clear();
+            CompileArtifactLines.Add($"logical_effective={compiled.LogicalEffectiveHashHex}");
+            foreach (string line in compiled.ArtifactLines)
+            {
+                CompileArtifactLines.Add(line);
+            }
         }).ConfigureAwait(true);
     }
 
@@ -723,6 +884,7 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
             AnalysisRunIdText = string.Empty;
             RiskLevelText = string.Empty;
             EffectiveRiskLevelText = string.Empty;
+            CompileArtifactLines.Clear();
         }
 
         Rules.Clear();
@@ -795,6 +957,8 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         LoadCommand.NotifyCanExecuteChanged();
         CreateDraftCommand.NotifyCanExecuteChanged();
         AddRuleCommand.NotifyCanExecuteChanged();
+        UpdateRuleCommand.NotifyCanExecuteChanged();
+        DeleteRuleCommand.NotifyCanExecuteChanged();
         ReorderRulesCommand.NotifyCanExecuteChanged();
         UpsertAddressCommand.NotifyCanExecuteChanged();
         UpsertServiceCommand.NotifyCanExecuteChanged();
@@ -805,6 +969,8 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         DiffCommand.NotifyCanExecuteChanged();
         ComposeCommand.NotifyCanExecuteChanged();
         RecordAnalysisCommand.NotifyCanExecuteChanged();
+        AcknowledgeWarningCommand.NotifyCanExecuteChanged();
+        CompileCommand.NotifyCanExecuteChanged();
         ApproveCommand.NotifyCanExecuteChanged();
         BindCommand.NotifyCanExecuteChanged();
         DeployCommand.NotifyCanExecuteChanged();
@@ -865,6 +1031,31 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         }
 
         return null;
+    }
+
+    partial void OnSelectedRuleChanged(PolicyRuleListItem? value)
+    {
+        if (value is null)
+        {
+            return;
+        }
+
+        SelectedFamily = value.Family;
+        SelectedChain = value.Chain;
+        SelectedStage = value.Stage;
+        SelectedEffect = value.Effect;
+        RuleDescriptionText = value.Description;
+    }
+
+    private static byte[] ParseSha256Hex(string text, string fieldName)
+    {
+        string hex = text.Trim();
+        if (hex.Length != 64 || !hex.All(char.IsAsciiHexDigit))
+        {
+            throw new InvalidOperationException($"{fieldName} must be exactly 64 hexadecimal characters (from Snapshots capability_hash).");
+        }
+
+        return Convert.FromHexString(hex);
     }
 
     public void Dispose()

@@ -379,6 +379,7 @@ Policy Model §§22–27 + Issue Set M2-06 AC#1–12 → Domain + Application + 
 | Non-empty doc address/service arrays → hard UUID membership | `EnsureAddressServiceCatalog` | A5b |
 | gRPC `mfc.v1.PolicyService` | `policy.proto` / `PolicyGrpcService` | `PolicyProtoContractTests` / C2 |
 | Desktop thin list (Contracts-only) | `PolicyPanelService` | U1 `PolicyDesktopServiceTests` |
+| W3.6 Update/Delete/Ack/Compile | `PoliciesViewModel` + `IPolicyServiceClient` | `Ac5cPoliciesMutateRulesAckWarningsAndCompile` + `PoliciesViewModelTests` + `PolicyDesktopServiceTests` |
 | Architecture boundary | Desktop → Contracts only | C3 `ArchitectureBoundaryTests` |
 
 **Residuals (documented, non-blocking):** TCP_RESET on App/gRPC path needs an in-document service catalog that proves TCP-only (`IsTcpOnly`); CreateDraft starts with empty service_objects, so wire TCP_RESET remains Domain-proven until Address/Service object CRUD embeds catalogs. Idempotency hashes now include predicate+logging.
@@ -823,8 +824,9 @@ Policy Model §16 / §18 / §9 / §60–§61 + Issue Set M2-18 → Domain writer
 | AC#11 Approved/InReview read-only | `PolicyRevisionPanelState.IsReadOnly` | `Ac11ApprovedRevisionIsReadOnly` |
 | Desktop RPC wiring (Contracts-only) | `IPolicyServiceClient` | `DesktopClientsCoverInventorySnapshotCompareZoneAndPolicyRpcs` |
 | W1.3 catalog lists + Compose ← Node | `PoliciesViewModel` + MainWindow Policies | `Ac5bPoliciesBindCatalogListsAndComposeFromSelectedNode` + `PoliciesViewModelTests` |
+| W3.6 Update/Delete/Ack/Compile | `UpdateRule` / `DeleteRule` / `AcknowledgeWarning` / `CompileNodeFilterArtifacts` | `Ac5cPoliciesMutateRulesAckWarningsAndCompile` + `PoliciesViewModelTests` + `PolicyDesktopServiceTests` |
 
-**Residuals:** Typed `PolicyDocument.Tests` still opaque JSON text box. Full NODE_EFFECTIVE / per-device analysis hashes need device context — Desktop reuses logical-effective/content hash slots for `RecordAnalysisRun` wiring. Deploy button present with `CanExecute=false` (M4-12; packet-path Domain gate is N1-06 DONE). Composer/RouterOS writes remain out of scope (M3/M4).
+**Residuals:** Typed `PolicyDocument.Tests` still opaque JSON text box. Full NODE_EFFECTIVE / per-device analysis hashes need device context — Desktop reuses logical-effective/content hash slots for `RecordAnalysisRun` wiring. Compile is semantic summary only (`CompileNodeFilterArtifacts`); capability hash is entered from Snapshots (not invented). Deploy button present with `CanExecute=false` (M4-12; packet-path Domain gate is N1-06 DONE). RouterOS writes remain out of scope (M4 / WriteEnabled).
 
 Filter:
 ```bash
@@ -1812,6 +1814,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | W3.1 StartCapture + WatchCapture | Snapshots Capture button + progress | `Ac4dSnapshotCaptureStartsAndWatchesProgress` + `SnapshotViewerViewModelTests` |
 | AC#5 Policy authoring/review/binding | `PoliciesViewModel` | `Ac5PolicyViewSupportsAuthoringReviewAndBinding` |
 | W1.3 Policies catalog lists + Compose selection | `PoliciesViewModel` Address/Service/Contracts/`DiffLines` + Compose ← Node | `Ac5bPoliciesBindCatalogListsAndComposeFromSelectedNode` + `PoliciesViewModelTests` |
+| W3.6 Policy Update/Delete/Ack/Compile | `UpdateRuleCommand` / `DeleteRuleCommand` / `AcknowledgeWarningCommand` / `CompileCommand` | `Ac5cPoliciesMutateRulesAckWarningsAndCompile` + `PoliciesViewModelTests` + `PolicyDesktopServiceTests` |
 | AC#6 Operations onboarding/deploy/recovery | Onboarding + Deployment VMs | `Ac6OperationsViewSupportsOnboardingDeploymentAndRecovery` |
 | W1.4 Deploy/Onboarding plan collections | `ArtifactLines` / `OrderLines` / `ProbeAndWatchdogLines` / `Placements` | `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta` |
 | W3.3 Onboarding/Deploy Watch | Start + Watch → `ProgressLines` | `Ac6cOperationsStartWatchesOnboardingAndDeploymentProgress` + `OnboardingViewModelTests` + `DeploymentViewModelTests` |
@@ -1826,7 +1829,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 Filter:
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
-dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopMvpWorkflowsLivingSpecTests|FullyQualifiedName~AddRouterWizardViewModelTests|FullyQualifiedName~PoliciesViewModelTests|FullyQualifiedName~DriftViewModelTests|FullyQualifiedName~InventoryNodeViewModelTests|FullyQualifiedName~NodeDetailViewModelTests|FullyQualifiedName~SnapshotViewerViewModelTests|FullyQualifiedName~OnboardingViewModelTests|FullyQualifiedName~DeploymentViewModelTests|FullyQualifiedName~ZonesViewModelTests|FullyQualifiedName~ZonesDesktopServiceTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DriftProtoContractTests|FullyQualifiedName~AuditProtoContractTests"
+dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~DesktopMvpWorkflowsLivingSpecTests|FullyQualifiedName~AddRouterWizardViewModelTests|FullyQualifiedName~PoliciesViewModelTests|FullyQualifiedName~PolicyDesktopServiceTests|FullyQualifiedName~DriftViewModelTests|FullyQualifiedName~InventoryNodeViewModelTests|FullyQualifiedName~NodeDetailViewModelTests|FullyQualifiedName~SnapshotViewerViewModelTests|FullyQualifiedName~OnboardingViewModelTests|FullyQualifiedName~DeploymentViewModelTests|FullyQualifiedName~ZonesViewModelTests|FullyQualifiedName~ZonesDesktopServiceTests|FullyQualifiedName~ArchitectureBoundary|FullyQualifiedName~DriftProtoContractTests|FullyQualifiedName~AuditProtoContractTests"
 ```
 
 ## Living Specification — standalone / dual-stack E2E (M6-05)

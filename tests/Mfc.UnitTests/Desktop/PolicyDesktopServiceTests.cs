@@ -2,6 +2,7 @@ using Google.Protobuf;
 using Mfc.Contracts.Mfc.V1;
 using Mfc.Desktop.Services;
 using Xunit;
+using PolicyApprovalHasher = Mfc.Domain.Policy.PolicyApprovalHasher;
 
 namespace Mfc.UnitTests.Desktop;
 
@@ -198,6 +199,120 @@ public sealed class PolicyDesktopServiceTests
             compose.Findings);
         Assert.Equal("HIGH", run.RiskLevel);
         Assert.Equal("CRITICAL", run.EffectiveRiskLevel);
+        Assert.All(run.AckableFindings, f => Assert.True(f.HasWarningHash));
+    }
+
+    [Fact]
+    public async Task UpdateAndDeleteRuleRoundTripThroughClient()
+    {
+        FakePolicyServiceClient client = new();
+        Guid revisionId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+        Guid ruleId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        client.Revision = BuildDraftRevision(revisionId, ruleId);
+        PolicyPanelService service = new(client);
+        byte[] hash = client.Revision.ContentHash.Value.ToByteArray();
+
+        PolicyRevisionPanelState updated = await service.UpdateRuleAsync(
+            revisionId,
+            ruleId,
+            hash,
+            IpAddressFamily.Ipv6,
+            PolicyFilterChain.Input,
+            PolicyPipelineStage.CompanyDeny,
+            ordinal: 4,
+            enabled: false,
+            PolicyRuleEffect.Drop,
+            "deny-wan",
+            predicate: null);
+        Assert.Equal(ruleId, Assert.Single(updated.Rules).Id);
+        Assert.Equal(IpAddressFamily.Ipv6, updated.Rules[0].Family);
+        Assert.Equal(PolicyFilterChain.Input, updated.Rules[0].Chain);
+        Assert.Equal(PolicyPipelineStage.CompanyDeny, updated.Rules[0].Stage);
+        Assert.Equal(4u, updated.Rules[0].Ordinal);
+        Assert.False(updated.Rules[0].Enabled);
+        Assert.Equal(PolicyRuleEffect.Drop, updated.Rules[0].Effect);
+        Assert.Equal("deny-wan", updated.Rules[0].Description);
+
+        PolicyRevisionPanelState deleted = await service.DeleteRuleAsync(
+            revisionId,
+            ruleId,
+            updated.ContentHash);
+        Assert.Empty(deleted.Rules);
+    }
+
+    [Fact]
+    public void HashWarningMatchesDomainPolicyApprovalHasher()
+    {
+        const string code = "RULE_EMPTY";
+        const string target = "compose";
+        const string message = "empty selector";
+        byte[] desktop = PolicyPanelService.HashWarning(code, target, message);
+        byte[] domain = PolicyApprovalHasher.HashWarning(code, target, message).Bytes.ToArray();
+        Assert.Equal(domain, desktop);
+    }
+
+    [Fact]
+    public async Task AcknowledgeWarningForwardsHashToClient()
+    {
+        FakePolicyServiceClient client = new();
+        Guid runId = Guid.Parse("44444444-5555-6666-7777-888888888888");
+        byte[] warningHash = PolicyPanelService.HashWarning("RULE_EMPTY", "compose", "empty selector");
+        client.AnalysisRunResponse = new PolicyAnalysisRun
+        {
+            Id = ToUuid(runId),
+            RiskLevel = "HIGH",
+            EffectiveRiskLevel = "MEDIUM",
+            BundleHash = HashBytes(8),
+            DependencyFingerprint = HashBytes(9),
+        };
+        PolicyPanelService service = new(client);
+
+        PolicyAnalysisRunListItem run = await service.AcknowledgeWarningAsync(runId, warningHash);
+
+        Assert.Equal(runId, client.LastAckRunId);
+        Assert.Equal(warningHash, client.LastAckWarningHash);
+        Assert.Equal("HIGH", run.RiskLevel);
+        Assert.Equal("MEDIUM", run.EffectiveRiskLevel);
+    }
+
+    [Fact]
+    public async Task CompileMapsArtifactLinesWithoutRouterOsCommands()
+    {
+        FakePolicyServiceClient client = new();
+        Guid nodeId = Guid.Parse("99999999-8888-7777-6666-555555555555");
+        Guid deviceId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+        Guid runId = Guid.Parse("44444444-5555-6666-7777-888888888888");
+        client.CompileResponse = new CompileNodeFilterArtifactsResponse
+        {
+            NodeId = ToUuid(nodeId),
+            LogicalEffectivePolicyHash = HashBytes(3),
+            Artifacts =
+            {
+                new FilterArtifactSummary
+                {
+                    DeviceId = ToUuid(deviceId),
+                    ArtifactId = "art-1",
+                    RuleCount = 2,
+                    StoredAsNew = true,
+                },
+            },
+        };
+        PolicyPanelService service = new(client);
+
+        PolicyCompilePanelResult compiled = await service.CompileNodeFilterArtifactsAsync(
+            nodeId,
+            runId,
+            Enumerable.Repeat((byte)9, 32).ToArray(),
+            Enumerable.Repeat((byte)11, 32).ToArray());
+
+        Assert.Equal(nodeId, compiled.NodeId);
+        Assert.Equal(Convert.ToHexString(Enumerable.Repeat((byte)3, 32).ToArray()).ToLowerInvariant(), compiled.LogicalEffectiveHashHex);
+        Assert.Equal(
+            $"device={deviceId:D} artifact=art-1 rules=2 new=True",
+            Assert.Single(compiled.ArtifactLines));
+        Assert.Equal(nodeId, client.LastCompileNodeId);
+        Assert.Equal(runId, client.LastCompileRunId);
+        Assert.DoesNotContain("/ip/firewall", compiled.ArtifactLines[0], StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -286,6 +401,11 @@ public sealed class PolicyDesktopServiceTests
         public EffectivePolicy ComposeResponse { get; set; } = new();
         public PolicyRevisionDiff DiffResponse { get; set; } = new();
         public PolicyAnalysisRun AnalysisRunResponse { get; set; } = new();
+        public CompileNodeFilterArtifactsResponse CompileResponse { get; set; } = new();
+        public Guid? LastAckRunId { get; private set; }
+        public byte[]? LastAckWarningHash { get; private set; }
+        public Guid? LastCompileNodeId { get; private set; }
+        public Guid? LastCompileRunId { get; private set; }
         public IpAddressFamily? LastReorderFamily { get; private set; }
         public PolicyFilterChain? LastReorderChain { get; private set; }
         public PolicyPipelineStage? LastReorderStage { get; private set; }
@@ -345,6 +465,56 @@ public sealed class PolicyDesktopServiceTests
                 Description = description,
                 Predicate = predicate,
             });
+            return Task.FromResult(new PolicyRuleMutation { ContentHash = Revision.ContentHash });
+        }
+
+        public Task<PolicyRuleMutation> UpdateRuleAsync(
+            Guid revisionId,
+            Guid ruleId,
+            byte[] expectedContentHash,
+            IpAddressFamily family,
+            PolicyFilterChain chain,
+            PolicyPipelineStage stage,
+            uint ordinal,
+            bool enabled,
+            TrafficPredicate? predicate,
+            RuleEffect effect,
+            string description,
+            CancellationToken cancellationToken = default)
+        {
+            PolicyRule? match = Revision.Rules.FirstOrDefault(r => DesktopProtoUuid.ToGuid(r.Id) == ruleId);
+            if (match is not null)
+            {
+                match.Family = family;
+                match.Chain = chain;
+                match.Stage = stage;
+                match.Ordinal = ordinal;
+                match.Enabled = enabled;
+                match.Effect = effect;
+                match.Description = description;
+                if (predicate is not null)
+                {
+                    match.Predicate = predicate;
+                }
+            }
+
+            BumpHash();
+            return Task.FromResult(new PolicyRuleMutation { ContentHash = Revision.ContentHash });
+        }
+
+        public Task<PolicyRuleMutation> DeleteRuleAsync(
+            Guid revisionId,
+            Guid ruleId,
+            byte[] expectedContentHash,
+            CancellationToken cancellationToken = default)
+        {
+            PolicyRule? match = Revision.Rules.FirstOrDefault(r => DesktopProtoUuid.ToGuid(r.Id) == ruleId);
+            if (match is not null)
+            {
+                Revision.Rules.Remove(match);
+            }
+
+            BumpHash();
             return Task.FromResult(new PolicyRuleMutation { ContentHash = Revision.ContentHash });
         }
 
@@ -481,6 +651,28 @@ public sealed class PolicyDesktopServiceTests
             IReadOnlyList<PolicyAnalysisTestResult>? testResults = null,
             CancellationToken cancellationToken = default)
             => Task.FromResult(AnalysisRunResponse);
+
+        public Task<PolicyAnalysisRun> AcknowledgeWarningAsync(
+            Guid analysisRunId,
+            byte[] warningHash,
+            CancellationToken cancellationToken = default)
+        {
+            LastAckRunId = analysisRunId;
+            LastAckWarningHash = warningHash;
+            return Task.FromResult(AnalysisRunResponse);
+        }
+
+        public Task<CompileNodeFilterArtifactsResponse> CompileNodeFilterArtifactsAsync(
+            Guid nodeId,
+            Guid analysisRunId,
+            byte[] currentDependencyFingerprint,
+            byte[] currentCapabilityHash,
+            CancellationToken cancellationToken = default)
+        {
+            LastCompileNodeId = nodeId;
+            LastCompileRunId = analysisRunId;
+            return Task.FromResult(CompileResponse);
+        }
 
         public Task<PolicyApprovalVote> ApproveRevisionAsync(
             Guid revisionId,

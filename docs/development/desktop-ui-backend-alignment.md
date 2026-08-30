@@ -98,7 +98,7 @@
 | W3.3 | Onboarding/Deploy `Watch` streams | Progress live, не лише snapshot після Start — **DONE** |
 | W3.4 | `GetNodeWorkflow` | Node/Inventory workflow без дублювання ad-hoc — **DONE** |
 | W3.5 | Zones `UpdateZoneDefinition`, `ResolveZonesForDevice` | Edit zone; resolve device — **DONE** |
-| W3.6 | Policy: `UpdateRule`/`DeleteRule`/`AcknowledgeWarning`/`CompileNodeFilterArtifacts` | за пріоритетом review/deploy loop |
+| W3.6 | Policy: `UpdateRule`/`DeleteRule`/`AcknowledgeWarning`/`CompileNodeFilterArtifacts` | за пріоритетом review/deploy loop — **DONE** |
 | W3.7 | Drift `GetDriftEvent` | якщо list недостатній для payload |
 
 **Exit W3:** Capture/Probe/Watch з Desktop без grpcurl; Zones/Policy mutate paths доступні з UI.
@@ -140,7 +140,8 @@ W3.2 ValidateConnection            ← DONE
 W3.3 Watch streams                 ← DONE
 W3.4 GetNodeWorkflow               ← DONE
 W3.5 Zones Update/ResolveDevice    ← DONE
-W3.6 Policy mutate RPCs
+W3.6 Policy mutate RPCs            ← DONE
+W3.7 Drift GetDriftEvent
 W4  VRRP Node shell
 ```
 
@@ -169,7 +170,8 @@ W4  VRRP Node shell
 | W3.3 | **DONE** (Onboarding/Deploy Start + Watch progress) |
 | W3.4 | **DONE** (Node GetNodeWorkflow + device contributing/sync) |
 | W3.5 | **DONE** (Zones Update zone + Resolve device) |
-| W2.1–W2.2, W3.6–W5 | **TODO** |
+| W3.6 | **DONE** (Policy Update/Delete/Ack/Compile) |
+| W2.1–W2.2, W3.7–W5 | **TODO** |
 
 ### W3.1 Snapshots: Capture + progress — **DONE**
 - **Дані:** SnapshotService `StartCapture` / `WatchCapture` (device_id only; Controller M1-26)
@@ -206,4 +208,11 @@ W4  VRRP Node shell
 - **Перевірка:** Living Spec `Ac2dZonesEditDefinitionAndResolveDevice`; `ZonesViewModelTests`; `ZonesDesktopServiceTests`
 - **Файли:** `ZonePanelService`, `ZonesViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment):** W3.6 Policy `UpdateRule` / `DeleteRule` / `AcknowledgeWarning` / `CompileNodeFilterArtifacts`.
+### W3.6 Policies: Update / Delete / Ack / Compile — **DONE**
+- **Дані:** PolicyService `UpdateRule` / `DeleteRule` (CAS content hash) / `AcknowledgeWarning` (analysis_run_id + warning_hash) / `CompileNodeFilterArtifacts` (semantic summary only)
+- **Зроблено:** Policies panel Update/Delete вибраного правила; Acknowledge recorded finding (Desktop SHA-256 = Domain `mfc.policy.warning.v1`); Compile з Compose Node UUID + 64-hex capability з Snapshots. RPC off UI thread (`Task.Run`). Deploy лишається blocked.
+- **Не чіпали:** WriteEnabled; Save and Deploy; `GetDriftEvent` (W3.7); ListPolicies catalog (P3); local SemanticDiffEngine
+- **Перевірка:** Living Spec `Ac5cPoliciesMutateRulesAckWarningsAndCompile`; `PoliciesViewModelTests`; `PolicyDesktopServiceTests`
+- **Файли:** `IPolicyServiceClient`, `GrpcPolicyServiceClient`, `PolicyPanelService`, `PoliciesViewModel`, `MainWindow.axaml`
+
+**NEXT (alignment):** W3.7 Drift `GetDriftEvent`.

@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using Mfc.Contracts.Mfc.V1;
 
@@ -27,6 +28,8 @@ public sealed class PolicyRuleListItem
     public required bool Enabled { get; init; }
 
     public required string EffectText { get; init; }
+
+    public required PolicyRuleEffect Effect { get; init; }
 
     public required string Description { get; init; }
 
@@ -91,6 +94,16 @@ public sealed class PolicyChainContractListItem
 public sealed class PolicyFindingListItem
 {
     public required string SummaryLine { get; init; }
+
+    public string? Code { get; init; }
+
+    public string? Target { get; init; }
+
+    public string? Message { get; init; }
+
+    public byte[]? WarningHash { get; init; }
+
+    public bool HasWarningHash => WarningHash is { Length: 32 };
 }
 
 /// <summary>Loaded revision snapshot for the Policies panel.</summary>
@@ -158,7 +171,19 @@ public sealed class PolicyAnalysisRunListItem
 
     public required byte[] DependencyFingerprint { get; init; }
 
+    public IReadOnlyList<PolicyFindingListItem> AckableFindings { get; init; } = [];
+
     public string SummaryLine => $"run={Id:D} risk={RiskLevel} effective={EffectiveRiskLevel}";
+}
+
+/// <summary>Semantic compile summary (no RouterOS commands).</summary>
+public sealed class PolicyCompilePanelResult
+{
+    public required Guid NodeId { get; init; }
+
+    public required string LogicalEffectiveHashHex { get; init; }
+
+    public required IReadOnlyList<string> ArtifactLines { get; init; }
 }
 
 /// <summary>Desktop policy panel orchestration over Contracts-only client (M2-18).</summary>
@@ -192,6 +217,26 @@ public interface IPolicyPanelService
         PolicyRuleEffect effectKind,
         string description,
         TrafficPredicate? predicate,
+        CancellationToken cancellationToken = default);
+
+    Task<PolicyRevisionPanelState> UpdateRuleAsync(
+        Guid revisionId,
+        Guid ruleId,
+        byte[] expectedContentHash,
+        IpAddressFamily family,
+        PolicyFilterChain chain,
+        PolicyPipelineStage stage,
+        uint ordinal,
+        bool enabled,
+        PolicyRuleEffect effectKind,
+        string description,
+        TrafficPredicate? predicate,
+        CancellationToken cancellationToken = default);
+
+    Task<PolicyRevisionPanelState> DeleteRuleAsync(
+        Guid revisionId,
+        Guid ruleId,
+        byte[] expectedContentHash,
         CancellationToken cancellationToken = default);
 
     Task<PolicyRevisionPanelState> ReorderRulesInStageAsync(
@@ -252,6 +297,11 @@ public interface IPolicyPanelService
         IReadOnlyList<PolicyFindingListItem>? composeFindings = null,
         CancellationToken cancellationToken = default);
 
+    Task<PolicyAnalysisRunListItem> AcknowledgeWarningAsync(
+        Guid analysisRunId,
+        byte[] warningHash,
+        CancellationToken cancellationToken = default);
+
     Task ApproveAsync(
         Guid revisionId,
         Guid analysisRunId,
@@ -265,6 +315,13 @@ public interface IPolicyPanelService
         Guid analysisRunId,
         byte[] expectedContentHash,
         byte[] currentDependencyFingerprint,
+        CancellationToken cancellationToken = default);
+
+    Task<PolicyCompilePanelResult> CompileNodeFilterArtifactsAsync(
+        Guid nodeId,
+        Guid analysisRunId,
+        byte[] currentDependencyFingerprint,
+        byte[] currentCapabilityHash,
         CancellationToken cancellationToken = default);
 }
 
@@ -349,6 +406,48 @@ public sealed class PolicyPanelService : IPolicyPanelService
                 new RuleEffect { Kind = effectKind },
                 description,
                 cancellationToken)
+            .ConfigureAwait(false);
+        return await LoadRevisionAsync(revisionId, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<PolicyRevisionPanelState> UpdateRuleAsync(
+        Guid revisionId,
+        Guid ruleId,
+        byte[] expectedContentHash,
+        IpAddressFamily family,
+        PolicyFilterChain chain,
+        PolicyPipelineStage stage,
+        uint ordinal,
+        bool enabled,
+        PolicyRuleEffect effectKind,
+        string description,
+        TrafficPredicate? predicate,
+        CancellationToken cancellationToken = default)
+    {
+        _ = await _client.UpdateRuleAsync(
+                revisionId,
+                ruleId,
+                expectedContentHash,
+                family,
+                chain,
+                stage,
+                ordinal,
+                enabled,
+                predicate,
+                new RuleEffect { Kind = effectKind },
+                description,
+                cancellationToken)
+            .ConfigureAwait(false);
+        return await LoadRevisionAsync(revisionId, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<PolicyRevisionPanelState> DeleteRuleAsync(
+        Guid revisionId,
+        Guid ruleId,
+        byte[] expectedContentHash,
+        CancellationToken cancellationToken = default)
+    {
+        _ = await _client.DeleteRuleAsync(revisionId, ruleId, expectedContentHash, cancellationToken)
             .ConfigureAwait(false);
         return await LoadRevisionAsync(revisionId, cancellationToken).ConfigureAwait(false);
     }
@@ -609,16 +708,29 @@ public sealed class PolicyPanelService : IPolicyPanelService
         // remains callable for risk display + approve/bind wiring without RouterOS.
         byte[] contextHash = logicalEffectiveHash.Length == 32 ? logicalEffectiveHash : expectedContentHash;
         List<PolicyAnalysisFinding> findings = [];
+        List<PolicyFindingListItem> ackable = [];
         if (composeFindings is not null)
         {
             foreach (PolicyFindingListItem item in composeFindings)
             {
+                string code = string.IsNullOrWhiteSpace(item.Code) ? "DESKTOP_COMPOSE_FINDING" : item.Code.Trim();
+                string target = string.IsNullOrWhiteSpace(item.Target) ? "compose" : item.Target.Trim();
+                string message = string.IsNullOrWhiteSpace(item.Message) ? item.SummaryLine : item.Message.Trim();
                 findings.Add(new PolicyAnalysisFinding
                 {
-                    Code = "DESKTOP_COMPOSE_FINDING",
+                    Code = code,
                     Severity = "INFO",
-                    Message = item.SummaryLine,
-                    Target = "compose",
+                    Message = message,
+                    Target = target,
+                });
+                byte[] warningHash = HashWarning(code, target, message);
+                ackable.Add(new PolicyFindingListItem
+                {
+                    SummaryLine = FormatFinding(code, "INFO", message, target),
+                    Code = code,
+                    Target = target,
+                    Message = message,
+                    WarningHash = warningHash,
                 });
             }
         }
@@ -641,6 +753,25 @@ public sealed class PolicyPanelService : IPolicyPanelService
                 findings,
                 testResults: null,
                 cancellationToken)
+            .ConfigureAwait(false);
+        return new PolicyAnalysisRunListItem
+        {
+            Id = DesktopProtoUuid.ToGuid(run.Id),
+            RiskLevel = run.RiskLevel,
+            EffectiveRiskLevel = run.EffectiveRiskLevel,
+            BundleHash = ToHashBytes(run.BundleHash),
+            DependencyFingerprint = ToHashBytes(run.DependencyFingerprint),
+            AckableFindings = ackable,
+        };
+    }
+
+    public async Task<PolicyAnalysisRunListItem> AcknowledgeWarningAsync(
+        Guid analysisRunId,
+        byte[] warningHash,
+        CancellationToken cancellationToken = default)
+    {
+        PolicyAnalysisRun run = await _client
+            .AcknowledgeWarningAsync(analysisRunId, warningHash, cancellationToken)
             .ConfigureAwait(false);
         return new PolicyAnalysisRunListItem
         {
@@ -679,6 +810,51 @@ public sealed class PolicyPanelService : IPolicyPanelService
             expectedContentHash,
             currentDependencyFingerprint,
             cancellationToken);
+
+    public async Task<PolicyCompilePanelResult> CompileNodeFilterArtifactsAsync(
+        Guid nodeId,
+        Guid analysisRunId,
+        byte[] currentDependencyFingerprint,
+        byte[] currentCapabilityHash,
+        CancellationToken cancellationToken = default)
+    {
+        CompileNodeFilterArtifactsResponse response = await _client
+            .CompileNodeFilterArtifactsAsync(
+                nodeId,
+                analysisRunId,
+                currentDependencyFingerprint,
+                currentCapabilityHash,
+                cancellationToken)
+            .ConfigureAwait(false);
+        return new PolicyCompilePanelResult
+        {
+            NodeId = DesktopProtoUuid.ToGuid(response.NodeId),
+            LogicalEffectiveHashHex = FormatHash(ToHashBytes(response.LogicalEffectivePolicyHash)),
+            ArtifactLines = response.Artifacts.Select(a =>
+                $"device={DesktopProtoUuid.ToGuid(a.DeviceId):D} artifact={a.ArtifactId} " +
+                $"rules={a.RuleCount} new={a.StoredAsNew}").ToArray(),
+        };
+    }
+
+    /// <summary>
+    /// SHA-256 warning identity matching Domain <c>PolicyApprovalHasher.HashWarning</c>
+    /// (<c>mfc.policy.warning.v1</c>) so Desktop can ack without referencing Domain.
+    /// </summary>
+    public static byte[] HashWarning(string code, string target, string message)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(code);
+        ArgumentNullException.ThrowIfNull(target);
+        ArgumentException.ThrowIfNullOrWhiteSpace(message);
+        using IncrementalHash hasher = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        hasher.AppendData(Encoding.UTF8.GetBytes("mfc.policy.warning.v1"));
+        hasher.AppendData([(byte)0]);
+        hasher.AppendData(Encoding.UTF8.GetBytes(code.Trim()));
+        hasher.AppendData([(byte)0]);
+        hasher.AppendData(Encoding.UTF8.GetBytes(target.Trim()));
+        hasher.AppendData([(byte)0]);
+        hasher.AppendData(Encoding.UTF8.GetBytes(message.Trim()));
+        return hasher.GetHashAndReset();
+    }
 
     /// <summary>Parses one CIDR/host/range entry per line into proto AddressObjectEntry values.</summary>
     public static IReadOnlyList<AddressObjectEntry> ParseAddressEntries(string entriesText)
@@ -791,6 +967,7 @@ public sealed class PolicyPanelService : IPolicyPanelService
         StageText = rule.Stage.ToString(),
         Ordinal = rule.Ordinal,
         Enabled = rule.Enabled,
+        Effect = rule.Effect?.Kind ?? PolicyRuleEffect.Unspecified,
         EffectText = rule.Effect?.Kind.ToString() ?? "Unspecified",
         Description = rule.Description,
         WarningLines = rule.Warnings
