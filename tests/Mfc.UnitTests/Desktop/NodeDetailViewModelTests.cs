@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Mfc.UnitTests.Desktop;
 
-/// <summary>W1.6 device members + W3.4 GetNodeWorkflow on the Node module.</summary>
+/// <summary>W1.6 device members + W3.4 GetNodeWorkflow + W4.1 VRRP members table on the Node module.</summary>
 public sealed class NodeDetailViewModelTests
 {
     [Fact]
@@ -67,6 +67,9 @@ public sealed class NodeDetailViewModelTests
         Assert.Equal("2026-08-30 10:00:00Z", member.LastSnapshotText);
         Assert.False(member.HasVrrpRoles);
         Assert.True(vm.HasDeviceMembers);
+        Assert.False(vm.IsVrrpNode);
+        Assert.Empty(vm.VrrpMembers);
+        Assert.True(vm.HasStandaloneDeviceList);
         Assert.False(vm.HasNoDeviceMembers);
         Assert.Contains("chr-seed", Assert.Single(vm.DeviceHashLines), StringComparison.Ordinal);
         Assert.Equal(0, client.GetNodeWorkflowCalls);
@@ -114,6 +117,80 @@ public sealed class NodeDetailViewModelTests
         InventoryNodeViewModel member = Assert.Single(vm.DeviceMembers);
         Assert.True(member.HasVrrpRoles);
         Assert.Equal("master", member.VrrpRolesText);
+    }
+
+    [Fact]
+    public void VrrpNodeBuildsAbMemberTableWithoutInventingRoles()
+    {
+        Guid nodeId = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff");
+        Guid deviceA = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid deviceB = Guid.Parse("22222222-3333-4444-5555-666666666666");
+        FakeConnection connection = new();
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        InventoryNodeViewModel site = new(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Site,
+            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            DisplayName = "LAB",
+            Children =
+            [
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeId,
+                    DisplayName = "edge-pair",
+                    NodeKindText = "Vrrp",
+                    Children =
+                    [
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceA,
+                            DisplayName = "r1",
+                            VrrpRolesText = "master",
+                            ManagementHostText = "192.0.2.1:8729",
+                            LastSnapshotText = "2026-08-30 10:00:00Z",
+                            ReachabilityText = "Reachable",
+                        },
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceB,
+                            DisplayName = "r2",
+                            VrrpRolesText = "—",
+                            ManagementHostText = "192.0.2.2:8729",
+                            LastSnapshotText = "—",
+                            ReachabilityText = "Unknown",
+                        },
+                    ],
+                },
+            ],
+        });
+        inventory.Roots.Add(site);
+        inventory.SelectedNode = site.Children[0];
+
+        using NodeDetailViewModel vm = CreateVm(inventory, connection);
+
+        Assert.True(vm.IsVrrpNode);
+        Assert.False(vm.ShowStandaloneDeviceSection);
+        Assert.Contains("Node (pair)", vm.VrrpPairHint, StringComparison.Ordinal);
+        Assert.Equal(2, vm.VrrpMembers.Count);
+        Assert.Equal("a", vm.VrrpMembers[0].SlotText);
+        Assert.Equal("r1", vm.VrrpMembers[0].DisplayName);
+        Assert.Equal("master", vm.VrrpMembers[0].RoleText);
+        Assert.True(vm.VrrpMembers[0].HasRole);
+        Assert.Equal("192.0.2.1:8729", vm.VrrpMembers[0].ManagementHostText);
+        Assert.Equal("2026-08-30 10:00:00Z", vm.VrrpMembers[0].LastSnapshotText);
+        Assert.Equal("b", vm.VrrpMembers[1].SlotText);
+        Assert.Equal("r2", vm.VrrpMembers[1].DisplayName);
+        Assert.Equal("—", vm.VrrpMembers[1].RoleText);
+        Assert.False(vm.VrrpMembers[1].HasRole);
+        Assert.DoesNotContain("Backup", vm.VrrpMembers[1].RoleText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Master", vm.VrrpMembers[1].SummaryLine, StringComparison.OrdinalIgnoreCase);
+
+        vm.SelectedVrrpMember = vm.VrrpMembers[1];
+        Assert.True(vm.HasSelectedVrrpMember);
+        Assert.Equal(deviceB, vm.SelectedVrrpMember!.DeviceId);
     }
 
     [Fact]

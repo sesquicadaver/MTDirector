@@ -21,6 +21,7 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
     private readonly OnboardingViewModel _onboarding;
     private readonly IInventoryTreeClient _inventoryClient;
     private readonly IControllerConnectionService _connection;
+    private readonly object _workflowApplyGate = new();
     private int _workflowEpoch;
     private bool _disposed;
 
@@ -49,6 +50,9 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
     /// <summary>Device children of the resolved Node — explicit fields, not DetailSummary.</summary>
     public ObservableCollection<InventoryNodeViewModel> DeviceMembers { get; } = [];
 
+    /// <summary>VRRP pair members (a/b) when <see cref="IsVrrpNode"/>; roles only from backend labels.</summary>
+    public ObservableCollection<VrrpMemberListItem> VrrpMembers { get; } = [];
+
     public ObservableCollection<string> ZoneSummaryLines { get; } = [];
 
     /// <summary>Per-device contributing/sync lines from GetNodeWorkflow.</summary>
@@ -57,6 +61,18 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
     public bool HasDeviceMembers => DeviceMembers.Count > 0;
 
     public bool HasNoDeviceMembers => DeviceMembers.Count == 0;
+
+    public bool HasVrrpMembers => VrrpMembers.Count > 0;
+
+    public bool HasNoVrrpMembers => IsVrrpNode && VrrpMembers.Count == 0;
+
+    public bool HasStandaloneDeviceList => !IsVrrpNode && HasDeviceMembers;
+
+    public bool HasStandaloneDeviceEmpty => !IsVrrpNode && HasNoDeviceMembers;
+
+    public bool ShowStandaloneDeviceSection => !IsVrrpNode;
+
+    public bool HasSelectedVrrpMember => SelectedVrrpMember is not null;
 
     public bool HasWorkflowDeviceLines => WorkflowDeviceLines.Count > 0;
 
@@ -78,6 +94,20 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
 
     [ObservableProperty]
     private string _selectionHint = "No Node selected.";
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasNoVrrpMembers))]
+    [NotifyPropertyChangedFor(nameof(HasStandaloneDeviceList))]
+    [NotifyPropertyChangedFor(nameof(HasStandaloneDeviceEmpty))]
+    [NotifyPropertyChangedFor(nameof(ShowStandaloneDeviceSection))]
+    private bool _isVrrpNode;
+
+    [ObservableProperty]
+    private string _vrrpPairHint = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasSelectedVrrpMember))]
+    private VrrpMemberListItem? _selectedVrrpMember;
 
     [ObservableProperty]
     private string? _errorText;
@@ -142,56 +172,84 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         Interlocked.Increment(ref _workflowEpoch);
         InventoryNodeViewModel? selected = _inventory.SelectedNode;
         InventoryNodeViewModel? node = ResolveNode(selected);
-        DeviceHashLines.Clear();
-        DeviceMembers.Clear();
-        ZoneSummaryLines.Clear();
-        WorkflowDeviceLines.Clear();
-        NotifyWorkflowDeviceLinesChanged();
-        ErrorText = null;
-
-        if (node is null)
+        lock (_workflowApplyGate)
         {
-            SelectionHint = "Select a Node (or Device under a Node) in the inventory tree.";
-            TopologyText = "Topology: —";
-            WorkflowStatusText = "—";
-            OnboardingReadinessText = _onboarding.StatusText;
-            DeploymentReadinessText = "Select a Node to load GetNodeWorkflow.";
+            DeviceHashLines.Clear();
+            DeviceMembers.Clear();
+            VrrpMembers.Clear();
+            SelectedVrrpMember = null;
+            ZoneSummaryLines.Clear();
+            WorkflowDeviceLines.Clear();
+            NotifyWorkflowDeviceLinesChanged();
+            ErrorText = null;
+
+            if (node is null)
+            {
+                SelectionHint = "Select a Node (or Device under a Node) in the inventory tree.";
+                TopologyText = "Topology: —";
+                WorkflowStatusText = "—";
+                OnboardingReadinessText = _onboarding.StatusText;
+                DeploymentReadinessText = "Select a Node to load GetNodeWorkflow.";
+                IsVrrpNode = false;
+                VrrpPairHint = string.Empty;
+                NotifyDeviceMembersChanged();
+                return;
+            }
+
+            SelectionHint = $"Node: {node.DisplayName}";
+            TopologyText =
+                $"Kind: {OrDash(node.NodeKindText)}; Uplink: {OrDash(node.UplinkModeText)}; Status: {OrDash(node.StatusText)}";
+            WorkflowStatusText = OrDash(node.WorkflowStatusText);
+            OnboardingReadinessText = string.IsNullOrWhiteSpace(_onboarding.StatusText)
+                ? "—"
+                : _onboarding.StatusText;
+            DeploymentReadinessText = _connection.State == ControllerConnectionState.Connected
+                ? "Loading GetNodeWorkflow…"
+                : "Connect to Controller to load GetNodeWorkflow.";
+
+            IsVrrpNode = string.Equals(node.NodeKindText, "Vrrp", StringComparison.Ordinal);
+            VrrpPairHint = IsVrrpNode
+                ? "VRRP ops target this Node (pair). Select a member to drill down; do not treat the first Device as the pair."
+                : string.Empty;
+
+            int slot = 0;
+            foreach (InventoryNodeViewModel device in node.Children.Where(static c => c.Kind == InventoryTreeKind.Device))
+            {
+                DeviceMembers.Add(device);
+                DeviceHashLines.Add(
+                    $"{device.DisplayName}: desired={OrDash(device.DesiredHashText)} " +
+                    $"committed={OrDash(device.CommittedHashText)} actual={OrDash(device.ActualHashText)} " +
+                    $"({OrDash(device.SupportStateText)} / {OrDash(device.ReachabilityText)})");
+                if (IsVrrpNode)
+                {
+                    VrrpMembers.Add(new VrrpMemberListItem
+                    {
+                        SlotText = ((char)('a' + slot)).ToString(),
+                        DeviceId = device.Id,
+                        DisplayName = device.DisplayName,
+                        RoleText = device.HasVrrpRoles ? device.VrrpRolesText : "—",
+                        HasRole = device.HasVrrpRoles,
+                        ManagementHostText = OrDash(device.ManagementHostText),
+                        LastSnapshotText = OrDash(device.LastSnapshotText),
+                        ReachabilityText = OrDash(device.ReachabilityText),
+                    });
+                    slot++;
+                }
+            }
+
             NotifyDeviceMembersChanged();
-            return;
-        }
 
-        SelectionHint = $"Node: {node.DisplayName}";
-        TopologyText =
-            $"Kind: {OrDash(node.NodeKindText)}; Uplink: {OrDash(node.UplinkModeText)}; Status: {OrDash(node.StatusText)}";
-        WorkflowStatusText = OrDash(node.WorkflowStatusText);
-        OnboardingReadinessText = string.IsNullOrWhiteSpace(_onboarding.StatusText)
-            ? "—"
-            : _onboarding.StatusText;
-        DeploymentReadinessText = _connection.State == ControllerConnectionState.Connected
-            ? "Loading GetNodeWorkflow…"
-            : "Connect to Controller to load GetNodeWorkflow.";
+            ZoneSummaryLines.Add(_zones.SelectedNodeHint);
+            foreach (NodeZoneBindingListItem binding in _zones.Bindings.Take(32))
+            {
+                ZoneSummaryLines.Add(binding.SummaryLine);
+            }
 
-        foreach (InventoryNodeViewModel device in node.Children.Where(static c => c.Kind == InventoryTreeKind.Device))
-        {
-            DeviceMembers.Add(device);
-            DeviceHashLines.Add(
-                $"{device.DisplayName}: desired={OrDash(device.DesiredHashText)} " +
-                $"committed={OrDash(device.CommittedHashText)} actual={OrDash(device.ActualHashText)} " +
-                $"({OrDash(device.SupportStateText)} / {OrDash(device.ReachabilityText)})");
-        }
-
-        NotifyDeviceMembersChanged();
-
-        ZoneSummaryLines.Add(_zones.SelectedNodeHint);
-        foreach (NodeZoneBindingListItem binding in _zones.Bindings.Take(32))
-        {
-            ZoneSummaryLines.Add(binding.SummaryLine);
-        }
-
-        if (_zones.Bindings.Count == 0)
-        {
-            ZoneSummaryLines.Add(
-                "No zone bindings loaded for the selected Node (refresh Zones while a Node is selected).");
+            if (_zones.Bindings.Count == 0)
+            {
+                ZoneSummaryLines.Add(
+                    "No zone bindings loaded for the selected Node (refresh Zones while a Node is selected).");
+            }
         }
     }
 
@@ -217,26 +275,29 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
             NodeWorkflow workflow = await Task.Run(
                     async () => await _inventoryClient.GetNodeWorkflowAsync(nodeId).ConfigureAwait(false))
                 .ConfigureAwait(true);
-            if (epoch != Volatile.Read(ref _workflowEpoch))
+            lock (_workflowApplyGate)
             {
-                return;
-            }
+                if (epoch != Volatile.Read(ref _workflowEpoch))
+                {
+                    return;
+                }
 
-            WorkflowStatusText = FormatEnum(workflow.WorkflowStatus);
-            DeploymentReadinessText = WorkflowStatusText;
-            WorkflowDeviceLines.Clear();
-            foreach (DeviceWorkflowProjection device in workflow.Devices)
-            {
-                Guid deviceId = DesktopProtoUuid.ToGuid(device.DeviceId);
-                string name = DeviceMembers.FirstOrDefault(member => member.Id == deviceId)?.DisplayName
-                    ?? deviceId.ToString("D");
-                WorkflowDeviceLines.Add(
-                    $"{name}: contributing={FormatEnum(device.ContributingStatus)}; " +
-                    $"sync={FormatEnum(device.SyncClassification)}");
-            }
+                WorkflowStatusText = FormatEnum(workflow.WorkflowStatus);
+                DeploymentReadinessText = WorkflowStatusText;
+                WorkflowDeviceLines.Clear();
+                foreach (DeviceWorkflowProjection device in workflow.Devices)
+                {
+                    Guid deviceId = DesktopProtoUuid.ToGuid(device.DeviceId);
+                    string name = DeviceMembers.FirstOrDefault(member => member.Id == deviceId)?.DisplayName
+                        ?? deviceId.ToString("D");
+                    WorkflowDeviceLines.Add(
+                        $"{name}: contributing={FormatEnum(device.ContributingStatus)}; " +
+                        $"sync={FormatEnum(device.SyncClassification)}");
+                }
 
-            NotifyWorkflowDeviceLinesChanged();
-            ErrorText = null;
+                NotifyWorkflowDeviceLinesChanged();
+                ErrorText = null;
+            }
         }
         catch (OperationCanceledException)
         {
@@ -309,6 +370,11 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
     {
         OnPropertyChanged(nameof(HasDeviceMembers));
         OnPropertyChanged(nameof(HasNoDeviceMembers));
+        OnPropertyChanged(nameof(HasVrrpMembers));
+        OnPropertyChanged(nameof(HasNoVrrpMembers));
+        OnPropertyChanged(nameof(HasStandaloneDeviceList));
+        OnPropertyChanged(nameof(HasStandaloneDeviceEmpty));
+        OnPropertyChanged(nameof(ShowStandaloneDeviceSection));
     }
 
     private void NotifyWorkflowDeviceLinesChanged()
@@ -348,4 +414,27 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         _onboarding.PropertyChanged -= OnOnboardingPropertyChanged;
         _connection.StateChanged -= OnConnectionStateChanged;
     }
+}
+
+/// <summary>One VRRP pair member for the Node-centric table (Contracts-only labels).</summary>
+public sealed class VrrpMemberListItem
+{
+    public required string SlotText { get; init; }
+
+    public required Guid DeviceId { get; init; }
+
+    public required string DisplayName { get; init; }
+
+    public required string RoleText { get; init; }
+
+    public required bool HasRole { get; init; }
+
+    public required string ManagementHostText { get; init; }
+
+    public required string LastSnapshotText { get; init; }
+
+    public required string ReachabilityText { get; init; }
+
+    public string SummaryLine =>
+        $"{SlotText}: {DisplayName} · role={RoleText} · mgmt={ManagementHostText} · last={LastSnapshotText}";
 }

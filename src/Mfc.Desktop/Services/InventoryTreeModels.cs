@@ -35,6 +35,9 @@ public sealed class InventoryTreeItem
 
     public string LastSnapshotText { get; init; } = "—";
 
+    /// <summary>Device management host from proto (host or host:port); — when empty.</summary>
+    public string ManagementHostText { get; init; } = "—";
+
     /// <summary>Derived Node workflow status text (M6-01); empty for Site/Device.</summary>
     public string WorkflowStatusText { get; init; } = "—";
 

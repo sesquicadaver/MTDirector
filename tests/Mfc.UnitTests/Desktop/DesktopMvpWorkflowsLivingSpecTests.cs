@@ -194,6 +194,38 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.DoesNotContain("Zones hint=", vmSource, StringComparison.Ordinal);
     }
 
+    /// <summary>W4.1: VRRP Node shows a/b members with role, management host, last capture — no invented roles.</summary>
+    [Fact]
+    public void Ac3dVrrpNodeShowsMemberTableRoleHostAndLastCapture()
+    {
+        Type node = typeof(NodeDetailViewModel);
+        Assert.NotNull(node.GetProperty(nameof(NodeDetailViewModel.IsVrrpNode)));
+        Assert.NotNull(node.GetProperty(nameof(NodeDetailViewModel.VrrpMembers)));
+        Assert.NotNull(node.GetProperty(nameof(NodeDetailViewModel.VrrpPairHint)));
+        Assert.NotNull(node.GetProperty(nameof(NodeDetailViewModel.SelectedVrrpMember)));
+        Assert.NotNull(node.GetProperty(nameof(NodeDetailViewModel.HasVrrpMembers)));
+        Assert.NotNull(typeof(VrrpMemberListItem).GetProperty(nameof(VrrpMemberListItem.SlotText)));
+        Assert.NotNull(typeof(VrrpMemberListItem).GetProperty(nameof(VrrpMemberListItem.ManagementHostText)));
+        Assert.NotNull(typeof(VrrpMemberListItem).GetProperty(nameof(VrrpMemberListItem.RoleText)));
+        Assert.NotNull(typeof(VrrpMemberListItem).GetProperty(nameof(VrrpMemberListItem.LastSnapshotText)));
+        Assert.NotNull(typeof(InventoryNodeViewModel).GetProperty(nameof(InventoryNodeViewModel.ManagementHostText)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("VRRP members", axaml, StringComparison.Ordinal);
+        Assert.Contains("Node.VrrpMembers", axaml, StringComparison.Ordinal);
+        Assert.Contains("Node.IsVrrpNode", axaml, StringComparison.Ordinal);
+        Assert.Contains("Node.VrrpPairHint", axaml, StringComparison.Ordinal);
+        Assert.Contains("Node.SelectedVrrpMember", axaml, StringComparison.Ordinal);
+        Assert.Contains("Management host", axaml, StringComparison.Ordinal);
+        Assert.Contains("Last snapshot", axaml, StringComparison.Ordinal);
+
+        string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/NodeDetailViewModel.cs");
+        Assert.Contains("IsVrrpNode", vmSource, StringComparison.Ordinal);
+        Assert.Contains("VrrpMemberListItem", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("Master/Backup", vmSource, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac4SnapshotViewShowsConfigurationAndObservations()
     {

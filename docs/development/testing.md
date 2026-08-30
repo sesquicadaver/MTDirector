@@ -1809,6 +1809,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | AC#3 Node topology/zones/onboarding/readiness | `NodeDetailViewModel` | `Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness` |
 | W1.6 Inventory/Node device fields | reachability/model/ROS/VRRP(when present)/last snapshot | `Ac3bInventoryAndNodeShowExplicitDeviceFields` + `InventoryNodeViewModelTests` + `NodeDetailViewModelTests` |
 | W3.4 GetNodeWorkflow | Node `WorkflowDeviceLines` + canonical readiness | `Ac3cNodeLoadsGetNodeWorkflowInsteadOfAdHocReadinessMashup` + `NodeDetailViewModelTests` |
+| W4.1 VRRP Node members table | Node a/b members: role / mgmt host / last capture | `Ac3dVrrpNodeShowsMemberTableRoleHostAndLastCapture` + `NodeDetailViewModelTests` + `InventoryTreeServiceTests` + `InventoryNodeViewModelTests` |
 | AC#4 Snapshot configuration/observations | `SnapshotViewerViewModel` | `Ac4SnapshotViewShowsConfigurationAndObservations` |
 | W1.1 Diff FieldLines + Warnings | `SnapshotDiffViewModel` + MainWindow Semantic diff | `Ac4bSemanticDiffShowsFieldLinesAndWarnings` + `SnapshotDiffServiceTests` |
 | W1.2 Snapshot record Fields | `SnapshotViewerViewModel` selected-record detail + `Fields.DisplayLine` | `Ac4cSnapshotRecordDetailShowsAllFields` + `SnapshotViewerServiceTests` |

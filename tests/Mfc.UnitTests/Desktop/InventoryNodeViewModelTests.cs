@@ -20,6 +20,7 @@ public sealed class InventoryNodeViewModelTests
             RouterOsVersionText = "7.16.2",
             VrrpRolesText = "master",
             LastSnapshotText = "2026-08-30 10:00:00Z",
+            ManagementHostText = "192.0.2.10:8729",
         });
 
         Assert.True(device.IsDevice);
@@ -29,7 +30,9 @@ public sealed class InventoryNodeViewModelTests
         Assert.Equal("7.16.2", device.RouterOsVersionText);
         Assert.Equal("master", device.VrrpRolesText);
         Assert.Equal("2026-08-30 10:00:00Z", device.LastSnapshotText);
+        Assert.Equal("192.0.2.10:8729", device.ManagementHostText);
         Assert.Contains("Reachability: Reachable", device.DetailSummary, StringComparison.Ordinal);
+        Assert.Contains("Mgmt: 192.0.2.10:8729", device.DetailSummary, StringComparison.Ordinal);
     }
 
     [Fact]

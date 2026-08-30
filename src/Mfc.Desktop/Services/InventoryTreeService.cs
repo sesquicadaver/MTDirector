@@ -225,10 +225,22 @@ public sealed class InventoryTreeService : IInventoryTreeService
             ModelText = model,
             VrrpRolesText = vrrp,
             LastSnapshotText = lastSnapshot,
+            ManagementHostText = FormatManagementHost(device.ManagementHost, device.ManagementPort),
             DesiredHashText = FormatHash(device.DesiredArtifactHash),
             CommittedHashText = FormatHash(device.LastCommittedArtifactHash),
             ActualHashText = FormatHash(device.ActualManagedResourceHash),
         };
+    }
+
+    private static string FormatManagementHost(string host, uint port)
+    {
+        if (string.IsNullOrWhiteSpace(host))
+        {
+            return "—";
+        }
+
+        string trimmed = host.Trim();
+        return port == 0 ? trimmed : $"{trimmed}:{port}";
     }
 
     private static string FormatHash(Sha256? hash)
