@@ -12,7 +12,7 @@ using Mfc.Desktop.Services;
 namespace Mfc.Desktop.ViewModels;
 
 /// <summary>
-/// Deployment operator panel: semantic diff, artifacts, order, probes/TTL, progress, recovery.
+/// Deployment operator panel: semantic diff, artifacts, order, probes/TTL, Watch progress, recovery.
 /// No ForceApply and no raw RouterOS command surface.
 /// </summary>
 public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
@@ -149,27 +149,23 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
                 throw new InvalidOperationException("Create a plan before start.");
             }
 
-            DeploymentOperationSummary started = await _client.StartAsync(
-                    planId,
-                    PlanHash,
-                    [
-                        new DeploymentPacketPathPairFact
-                        {
-                            IngressInterface = "ether1",
-                            EgressInterface = "wan1",
-                            PathClass = DeploymentPacketPathKind.CpuFirewall,
-                        },
-                    ],
+            Sha256 planHash = PlanHash;
+            StartWatchOutcome outcome = await Task.Run(
+                    async () => await StartAndWatchAsync(planId, planHash, CancellationToken.None)
+                        .ConfigureAwait(false),
                     CancellationToken.None)
                 .ConfigureAwait(true);
-            OperationId = DesktopProtoUuid.ToGuid(started.OperationId);
+            OperationId = DesktopProtoUuid.ToGuid(outcome.Started.OperationId);
             ProgressLines.Clear();
-            foreach (string line in started.Timeline)
+            IReadOnlyList<string> lines = outcome.WatchLines.Count > 0
+                ? outcome.WatchLines
+                : outcome.Started.Timeline;
+            foreach (string line in lines)
             {
                 ProgressLines.Add(line);
             }
 
-            StatusText = $"Operation {started.State}.";
+            StatusText = $"Operation {outcome.LastState}.";
         }).ConfigureAwait(true);
     }
 
@@ -250,6 +246,54 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
         }
 
         return device.Id;
+    }
+
+    private async Task<StartWatchOutcome> StartAndWatchAsync(
+        Guid planId,
+        Sha256 planHash,
+        CancellationToken cancellationToken)
+    {
+        DeploymentOperationSummary started = await _client.StartAsync(
+                planId,
+                planHash,
+                [
+                    new DeploymentPacketPathPairFact
+                    {
+                        IngressInterface = "ether1",
+                        EgressInterface = "wan1",
+                        PathClass = DeploymentPacketPathKind.CpuFirewall,
+                    },
+                ],
+                cancellationToken)
+            .ConfigureAwait(false);
+        List<string> watchLines = [];
+        DeploymentOperationState lastState = started.State;
+        await foreach (DeploymentProgress progress in _client
+                           .WatchAsync(DesktopProtoUuid.ToGuid(started.OperationId), cancellationToken)
+                           .ConfigureAwait(false))
+        {
+            lastState = progress.State;
+            watchLines.Add(FormatProgress(progress));
+        }
+
+        return new StartWatchOutcome(started, watchLines, lastState);
+    }
+
+    private static string FormatProgress(DeploymentProgress progress)
+    {
+        ArgumentNullException.ThrowIfNull(progress);
+        string state = progress.State.ToString();
+        if (progress.HasTimelineEntry && !string.IsNullOrWhiteSpace(progress.TimelineEntry))
+        {
+            return $"{state}: {progress.TimelineEntry}";
+        }
+
+        if (progress.HasErrorCode && !string.IsNullOrWhiteSpace(progress.ErrorCode))
+        {
+            return $"{state}: {progress.ErrorCode}";
+        }
+
+        return state;
     }
 
     private async Task RunAsync(Func<Task> action)
@@ -338,4 +382,9 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
 
     private static Sha256 Utf8Sha256(string value)
         => new() { Value = ByteString.CopyFrom(SHA256.HashData(Encoding.UTF8.GetBytes(value))) };
+
+    private sealed record StartWatchOutcome(
+        DeploymentOperationSummary Started,
+        IReadOnlyList<string> WatchLines,
+        DeploymentOperationState LastState);
 }
