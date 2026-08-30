@@ -28,25 +28,28 @@ internal static class ViewMapper
         RowVersion = node.RowVersion,
     };
 
-    public static DeviceView ToView(Device device, DateTimeOffset? lastSnapshotAtUtc = null) => new()
-    {
-        Id = device.Id.Value,
-        NodeId = device.NodeId.Value,
-        DisplayName = device.DisplayName.Value,
-        ManagementHost = device.ManagementEndpoint.Host.Value,
-        ManagementPort = device.ManagementEndpoint.Port,
-        Role = device.Role,
-        Enabled = device.Enabled,
-        LastSupportState = device.LastSupportState,
-        LastCompletedCaptureId = device.LastCompletedCaptureId,
-        RowVersion = device.RowVersion,
-        // Observation fields stay unset until discovery/topology probes populate them.
-        RouterOsVersion = null,
-        Model = null,
-        Reachability = "Unknown",
-        VrrpRoleLabels = [],
-        LastSnapshotAtUtc = lastSnapshotAtUtc,
-    };
+    public static DeviceView ToView(
+        Device device,
+        DateTimeOffset? lastSnapshotAtUtc = null,
+        IReadOnlyList<string>? vrrpRoleLabels = null) => new()
+        {
+            Id = device.Id.Value,
+            NodeId = device.NodeId.Value,
+            DisplayName = device.DisplayName.Value,
+            ManagementHost = device.ManagementEndpoint.Host.Value,
+            ManagementPort = device.ManagementEndpoint.Port,
+            Role = device.Role,
+            Enabled = device.Enabled,
+            LastSupportState = device.LastSupportState,
+            LastCompletedCaptureId = device.LastCompletedCaptureId,
+            RowVersion = device.RowVersion,
+            // Version/model/reachability stay unset until a dedicated observation projector exists.
+            RouterOsVersion = null,
+            Model = null,
+            Reachability = "Unknown",
+            VrrpRoleLabels = vrrpRoleLabels is { Count: > 0 } ? vrrpRoleLabels : [],
+            LastSnapshotAtUtc = lastSnapshotAtUtc,
+        };
 
     public static SnapshotView ToView(StoredSnapshot snapshot, bool deduplicated = false) => new()
     {

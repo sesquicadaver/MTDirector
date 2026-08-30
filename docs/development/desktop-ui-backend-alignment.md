@@ -59,7 +59,7 @@
 ### W1.6 Inventory/Node: явні device поля — **DONE**
 - **Дані:** `InventoryNodeViewModel` уже має `ReachabilityText` / `ModelText` / `RouterOsVersionText` / `VrrpRolesText` / `LastSnapshotText` (мапинг з `Device` proto)
 - **Зроблено:** Inventory detail біндить поля окремо (не лише `DetailSummary`); VRRP лише коли `HasVrrpRoles`; Node — список `DeviceMembers` з тими ж полями
-- **Не чіпали:** фейкові VRRP лейбли (W2.3 audit); GetNode RPC glue; WriteEnabled
+- **Не чіпали:** GetNode fill (W2.3); WriteEnabled
 - **Перевірка:** Living Spec `Ac3bInventoryAndNodeShowExplicitDeviceFields`; `InventoryNodeViewModelTests`; `NodeDetailViewModelTests`; `InventoryTreeServiceTests.MapDeviceKeepsReachabilityModelVersionVrrpAndLastSnapshot`
 - **Файли:** `MainWindow.axaml`, `InventoryNodeViewModel.cs`, `NodeDetailViewModel.cs`, `DesktopMvpWorkflowsLivingSpecTests`
 
@@ -76,12 +76,14 @@
 ### W2.2 Routing assurance detail
 - Розгорнути next-hop / subject поля з proto замість одного SummaryLine (де корисно)
 
-### W2.3 VRRP labels pipeline *(може ескалюватись у P3)*
-1. Трасувати Controllers `GetNode` → чи `vrrp_role_labels` коли-небудь non-empty
-2. Якщо discovery є, а ViewMapper/`Device` view завжди `[]` → **backend fill** (P3/PLAN), потім UI badge (W1.6)
-3. Node view: список members з ролями, не «перший device»
+### W2.3 VRRP labels pipeline — **DONE**
+- **Дані:** last completed capture canonical `ha.vrrp` **observations** (`role` + `group`); proto mapper already copies `VrrpRoleLabels`
+- **Зроблено:** `GetNodeUseCase` проєктує labels через `DeviceVrrpRoleLabelProjector`; без snapshot / без `role` → порожньо (не вигадуємо Master/Backup)
+- **Не чіпали:** live RouterOS probe на GetNode; version/model/reachability (окремий projector)
+- **Перевірка:** Living Spec `VrrpRoleLabelsLivingSpecTests`; `GetNodeMapsVrrpRoleLabelsFromLastCaptureObservations`
+- **Файли:** `DeviceVrrpRoleLabelProjector.cs`, `InventoryUseCases.cs`, `ViewMapper.cs`
 
-**Exit W2:** Diff detail = rule semantics; VRRP roles або заповнені, або явний PLAN на backend hole.
+**Exit W2 (partial):** VRRP roles заповнюються з last capture observations. W2.1/W2.2 лишаються TODO.
 
 ---
 
@@ -132,7 +134,7 @@ W1.3 Policies bind+Compose selection  ← DONE
 W1.4 Deploy/Onboarding collections  ← DONE
 W1.5 Drift findings               ← DONE
 W1.6 Inventory device fields      ← DONE
-W2.3 VRRP labels audit → fix or PLAN
+W2.3 VRRP labels from last capture ← DONE
 W3.1 StartCapture Desktop
 W3.2 ValidateConnection
 W3.3 Watch streams
@@ -158,6 +160,7 @@ W4  VRRP Node shell
 | W1.4 | **DONE** (Deploy/Onboarding plan collections) |
 | W1.5 | **DONE** (Drift findings from list response) |
 | W1.6 | **DONE** (explicit Inventory/Node device fields) |
-| W2–W5 | **TODO** |
+| W2.3 | **DONE** (GetNode fills VRRP labels from last capture) |
+| W2.1–W2.2, W3–W5 | **TODO** |
 
-**NEXT (alignment):** W2.3 VRRP labels audit — трасувати `GetNode` / `vrrp_role_labels`; UI badge уже є (W1.6), порожні лейбли не маскувати.
+**NEXT (alignment):** W3.1 StartCapture + WatchCapture з Desktop.

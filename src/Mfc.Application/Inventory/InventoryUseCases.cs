@@ -7,6 +7,7 @@ using Mfc.Application.Mapping;
 using Mfc.Application.Models;
 using Mfc.Application.Workflow;
 using Mfc.Domain;
+using Mfc.Domain.Canonicalization;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Snapshots;
@@ -477,7 +478,8 @@ public sealed class GetNodeUseCase
         Dictionary<Guid, DeviceWorkflowProjectionView> byDevice = workflow.Devices
             .ToDictionary(static d => d.DeviceId);
 
-        DeviceView[] deviceViews = devices.Select(device =>
+        List<DeviceView> deviceViews = new(devices.Count);
+        foreach (Device device in devices)
         {
             DateTimeOffset? lastSnapshot = null;
             if (device.LastCompletedCaptureId is Guid captureId
@@ -486,7 +488,9 @@ public sealed class GetNodeUseCase
                 lastSnapshot = completedAt;
             }
 
-            DeviceView view = ViewMapper.ToView(device, lastSnapshot);
+            IReadOnlyList<string> vrrpLabels = await LoadVrrpRoleLabelsAsync(device, cancellationToken)
+                .ConfigureAwait(false);
+            DeviceView view = ViewMapper.ToView(device, lastSnapshot, vrrpLabels);
             if (byDevice.TryGetValue(device.Id.Value, out DeviceWorkflowProjectionView? projection))
             {
                 view = new DeviceView
@@ -513,8 +517,8 @@ public sealed class GetNodeUseCase
                 };
             }
 
-            return view;
-        }).ToArray();
+            deviceViews.Add(view);
+        }
 
         return ApplicationResults.Ok(new NodeDetailsView
         {
@@ -522,6 +526,21 @@ public sealed class GetNodeUseCase
             Devices = deviceViews,
             WorkflowStatus = workflow.NodeStatus,
         });
+    }
+
+    private async Task<IReadOnlyList<string>> LoadVrrpRoleLabelsAsync(
+        Device device,
+        CancellationToken cancellationToken)
+    {
+        if (device.LastCompletedCaptureId is not Guid captureId)
+        {
+            return [];
+        }
+
+        IReadOnlyList<CanonicalSection> sections = await _snapshots
+            .LoadCanonicalSectionsAsync(new SnapshotId(captureId), cancellationToken)
+            .ConfigureAwait(false);
+        return DeviceVrrpRoleLabelProjector.FromCanonicalSections(sections);
     }
 
     private async Task<Dictionary<Guid, DateTimeOffset>> ResolveLastSnapshotTimesAsync(
