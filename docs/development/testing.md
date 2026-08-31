@@ -1805,6 +1805,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | AC#2b Inventory Add Router wizard | `AddRouterWizardViewModel` + `IInventoryTreeClient` write RPCs | `Ac2bInventoryAddRouterWizardCoversCreateRegisterConnectionPath` + `AddRouterWizardViewModelTests` |
 | W3.2 ValidateDeviceConnection Probe | Inventory/Add router Probe + `ProbeResultText` | `Ac2cInventoryAndAddRouterProbeValidateDeviceConnection` + `AddRouterWizardViewModelTests` |
 | W4.3 VRRP create Node + two devices | Add router `CreateAsVrrpPair` → `NodeKind.Vrrp` + 2× RegisterDevice | `Ac2eAddRouterWizardCreatesVrrpNodeAndRegistersTwoDevices` + `AddRouterWizardViewModelTests` |
+| CONT-02 Neighbor apply VRRP member b | Apply neighbor → `PairMemberB*` when pair mode | `Ac2fAddRouterNeighborApplyFillsVrrpMemberB` + `AddRouterWizardViewModelTests` |
 | W3.5 Zones Update + Resolve device | `UpdateZoneCommand` / `ResolveDeviceCommand` | `Ac2dZonesEditDefinitionAndResolveDevice` + `ZonesViewModelTests` + `ZonesDesktopServiceTests` |
 | Seed MikroTik neighbors (#314) | `ListNeighborCandidatesUseCase` + `/ip/neighbor` allowlist + Desktop Load/Apply | `NeighborCandidatesLivingSpecTests` + `ListNeighborCandidatesUseCaseTests` + `NeighborDiscoveryAllowlistTests` |
 | AC#3 Node topology/zones/onboarding/readiness | `NodeDetailViewModel` | `Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness` |
@@ -1947,7 +1948,7 @@ Issue Set M6-09. **M6 CLOSED**. Live CHR / live physical CRS OFF — E2E Living 
 
 | AC / вимога | Модуль | Тест / артефакт |
 |-------------|--------|-----------------|
-| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md`; §3.C NEXT = CONT-02 | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
+| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md`; §3.C NEXT = W5-01 | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
 | AC#2 Release gates executed | `docs/release/release-gates.md` | `Ac2ReleaseGatesChecklistExists` |
 | AC#3 CHR matrix green | E2E Living Specs (substitute) | `Ac3ChrMatrixSubstitutedByE2ELivingSpecs` |
 | AC#4 Physical CRS green | `VrrpCrsE2E` + `crs-switch` | `Ac4PhysicalCrsSubstitutedByScriptedFixture` |

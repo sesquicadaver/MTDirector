@@ -159,10 +159,10 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 | `W5-03` | #344 | https://github.com/sesquicadaver/MTDirector/issues/344 |
 
 **Product issues (code):** 139 DONE (§2.2) + Desktop alignment P0–P2 DONE.  
-**Linear queue (§3.C):** **OPEN** — **NEXT = CONT-02** (#341). PLAN-02 (#339) **DONE**. CONT-01 (#340) **DONE**.  
+**Linear queue (§3.C):** **OPEN** — **NEXT = W5-01** (#342). PLAN-02 (#339) **DONE**. CONT-01 (#340) **DONE**. CONT-02 (#341) **DONE**.  
 **TRACKER-01** (#289): **DONE**. **PLAN-01** (#290): **DONE**. **P2-07…P2-11**: **DONE**. **PLAN-NBR-01** (#314): **DONE**.  
 Lab/CHR/`WriteEnabled` — parallel ops, not §3 predecessors. Plan: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 
-Start here: [`ROADMAP.md`](ROADMAP.md) §3.C — **NEXT = CONT-02** (#341); pilot [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md); Desktop inventory [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
+Start here: [`ROADMAP.md`](ROADMAP.md) §3.C — **NEXT = W5-01** (#342); pilot [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md); Desktop inventory [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).

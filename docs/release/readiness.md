@@ -16,13 +16,13 @@ This document summarizes **code + documentation readiness** against the normativ
 | P2 read path (P2-04…P2-06) | **100% CLOSED** | Production probe + capture + DI gate |
 | P2 write path (P2-07…P2-11) | **100% CLOSED** | Runtimes + WriteEnabled gate + pilot runbook |
 | Desktop alignment P0–P2 | **CLOSED** | W1.1–W4.4 + W2.1–W2.2 |
-| Linear queue (§3.C) | **ACTIVE** | **NEXT = CONT-02** ([#341](https://github.com/sesquicadaver/MTDirector/issues/341)) |
+| Linear queue (§3.C) | **ACTIVE** | **NEXT = W5-01** ([#342](https://github.com/sesquicadaver/MTDirector/issues/342)) |
 
 **Overall code readiness (milestones):** all 139 mapped product issues are **DONE in code**. Alignment P0–P2 is **DONE**. Remaining work is **glue + P3 Contracts** on a seeded queue — not a phase-stop.  
 **Queue integrity:** **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **PLAN-02** (#339) seeds continuous §3.C so `/autopilot` does not idle.  
 **Production pilot readiness (read-only):** **ready** when `Mfc:RouterOs:Enabled=true` + PostgreSQL + device connection profiles — see [`pilot-runbook.md`](../operations/pilot-runbook.md).  
 **Production pilot readiness (write path):** **ready (lab)** — set `Mfc:RouterOs:WriteEnabled=true`; checklist in [`pilot-runbook.md`](../operations/pilot-runbook.md). Lab phases **do not** block §3.  
-**Desktop inventory registration:** **ready** — Inventory **Add router** wizard (Site→Node→Device + credentials). Neighbor apply → VRRP member b is **CONT-02**.
+**Desktop inventory registration:** **ready** — Inventory **Add router** wizard (Site→Node→Device + credentials). Neighbor apply fills VRRP member b (**CONT-02 DONE**).
 
 ## Milestone matrix (code audit §2.2)
 
@@ -48,8 +48,8 @@ Desktop alignment W1–W4 / W2.1–W2.2 is **DONE** on top of that baseline (not
 |--:|----|-------:|--------|
 | 133 | PLAN-02 | [#339](https://github.com/sesquicadaver/MTDirector/issues/339) | **DONE** ([#345](https://github.com/sesquicadaver/MTDirector/pull/345)) |
 | 134 | CONT-01 | [#340](https://github.com/sesquicadaver/MTDirector/issues/340) | **DONE** |
-| 135 | CONT-02 | [#341](https://github.com/sesquicadaver/MTDirector/issues/341) | **NEXT** |
-| 136 | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | OPEN |
+| 135 | CONT-02 | [#341](https://github.com/sesquicadaver/MTDirector/issues/341) | **DONE** |
+| 136 | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | **NEXT** |
 | 137 | W5-02 | [#343](https://github.com/sesquicadaver/MTDirector/issues/343) | OPEN |
 | 138 | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | OPEN |
 
@@ -85,7 +85,7 @@ Operator checklist: [`pilot-runbook.md`](../operations/pilot-runbook.md).
 | Item | Queue |
 |------|-------|
 | Rollback without Watch stream | CONT-01 **DONE** |
-| Neighbor apply does not fill VRRP member b | CONT-02 |
+| Neighbor apply does not fill VRRP member b | CONT-02 **DONE** |
 | No `ListPolicies` catalog RPC | W5-01 |
 | No ManagementPath / FastTrack Desktop RPC | W5-02 |
 | Deployment semantic policy diff is `repeated string` | W5-03 |

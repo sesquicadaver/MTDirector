@@ -134,7 +134,7 @@
 | W5.c | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | Typed deployment semantic policy diff |
 | CRS / physical lab | — | — | **Не §3** — residual / ops parallel |
 
-Glue **перед** W5 (існуючі RPC): **CONT-01** Rollback Watch — **DONE**; **CONT-02** neighbor → member b ([#341](https://github.com/sesquicadaver/MTDirector/issues/341)).
+Glue **перед** W5 (існуючі RPC): **CONT-01** Rollback Watch — **DONE**; **CONT-02** neighbor → member b — **DONE**.
 
 ---
 
@@ -162,8 +162,8 @@ W4.4 Pair capture / compare guidance ← DONE
 W2.1 Diff record Before/After + warning truncate ← DONE
 W2.2 Routing assurance next-hop/subject fields ← DONE
 CONT-01 Rollback Watch              ← DONE
-CONT-02 Neighbor apply member b     ← NEXT (§3)
-W5-01 ListPolicies catalog
+CONT-02 Neighbor apply member b     ← DONE
+W5-01 ListPolicies catalog          ← NEXT (§3)
 W5-02 ManagementPath / FastTrack Desktop
 W5-03 Typed deploy policy semantic diff
 ```
@@ -203,7 +203,7 @@ W5-03 Typed deploy policy semantic diff
 | W2.2 | **DONE** (Routing assurance next-hop values + finding subject fields) |
 | W5 | **QUEUED** as W5-01…03 (§3.C; not idle) |
 | CONT-01 | **DONE** Rollback Watch (#340) |
-| CONT-02 | **NEXT** neighbor → member b (#341) |
+| CONT-02 | **DONE** neighbor → member b (#341) |
 
 ### W3.1 Snapshots: Capture + progress — **DONE**
 - **Дані:** SnapshotService `StartCapture` / `WatchCapture` (device_id only; Controller M1-26)
@@ -278,9 +278,16 @@ W5-03 Typed deploy policy semantic diff
 ### W4.3 Add router: VRRP Node + two devices — **DONE**
 - **Дані:** Inventory `CreateNode(declared_kind=Vrrp)` + two `RegisterDevice` / `UpdateDeviceConnection` (existing RPCs)
 - **Зроблено:** checkbox «Create as VRRP pair» on new Node; one submit registers members a/b (distinct names/hosts; shared credentials). Roles not invented — capture labels stay W2.3.
-- **Не чіпали:** pair capture/compare guidance (W4.4); WriteEnabled; neighbor-apply for member b (**CONT-02**)
+- **Не чіпали:** pair capture/compare guidance (W4.4); WriteEnabled
 - **Перевірка:** Living Spec `Ac2eAddRouterWizardCreatesVrrpNodeAndRegistersTwoDevices`; `AddRouterWizardViewModelTests`
 - **Файли:** `AddRouterWizardViewModel`, `MainWindow.axaml`
+
+### CONT-02 Add router: neighbor apply fills VRRP member b — **DONE**
+- **Дані:** existing `ListNeighborCandidates` + Apply (PLAN-NBR-01); pair fields from W4.3
+- **Зроблено:** pair mode — first Apply fills member a; second Apply fills `PairMemberB*` (host/port/display). Pair off — primary-only. No auto-register.
+- **Не чіпали:** WriteEnabled; VRRP role labels; LAN scan
+- **Перевірка:** Living Spec `Ac2fAddRouterNeighborApplyFillsVrrpMemberB`; `AddRouterWizardViewModelTests`
+- **Файли:** `AddRouterWizardViewModel`
 
 ### W4.4 Snapshots: VRRP pair capture / compare guidance — **DONE**
 - **Дані:** `StartCapture`/`WatchCapture` лишаються `device_id`; `CompareSnapshots` already forbids different devices (`SNAPSHOTS_FROM_DIFFERENT_DEVICES`, M1-24)
@@ -289,4 +296,4 @@ W5-03 Typed deploy policy semantic diff
 - **Перевірка:** Living Spec `Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy`; `SnapshotViewerViewModelTests`; `SnapshotDiffViewModelTests`; `InventoryOpsSelectionTests`
 - **Файли:** `InventoryOpsSelection`, `SnapshotViewerViewModel`, `SnapshotDiffViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **CONT-02** ([#341](https://github.com/sesquicadaver/MTDirector/issues/341)) — neighbor apply member b. CONT-01 Rollback Watch **DONE**.
+**NEXT (alignment / §3):** **W5-01** ([#342](https://github.com/sesquicadaver/MTDirector/issues/342)) — `ListPolicies` catalog. CONT-02 neighbor member b **DONE**.
