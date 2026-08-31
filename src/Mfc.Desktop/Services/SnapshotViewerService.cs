@@ -416,7 +416,8 @@ public sealed class SnapshotViewerService : ISnapshotViewerService
         }
     }
 
-    private static bool IsCredentialField(string name)
+    /// <summary>True when a canonical field name looks like a credential (omit from Desktop display).</summary>
+    public static bool IsCredentialFieldName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -426,6 +427,11 @@ public sealed class SnapshotViewerService : ISnapshotViewerService
         string lower = name.Trim().ToLowerInvariant();
         return CredentialFieldTokens.Any(token => lower.Contains(token, StringComparison.Ordinal));
     }
+
+    /// <summary>Formats a wire CanonicalValue the same way the snapshot viewer does.</summary>
+    public static string FormatFieldValue(CanonicalValue? value) => FormatCanonicalValue(value);
+
+    private static bool IsCredentialField(string name) => IsCredentialFieldName(name);
 
     private static string FormatHash(Sha256? hash)
     {

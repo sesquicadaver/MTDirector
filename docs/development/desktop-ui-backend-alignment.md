@@ -69,9 +69,12 @@
 
 ## Хвиля 2 — P1 якість mapping (без нових RPC)
 
-### W2.1 Diff / Snapshot record fidelity
-- Опційно мапити `DiffEntry.Before`/`After` SnapshotRecord у detail (wire уже є)
-- Warnings pagination / truncate policy
+### W2.1 Diff / Snapshot record fidelity — **DONE**
+- **Дані:** `DiffEntry.before` / `after` SnapshotRecord; `DiffPage.warnings` (wire already)
+- **Зроблено:** selected Diff entry shows sanitized Before/After record fields (credentials stripped, same as snapshot viewer). Compare warnings: union across pages (dedupe); Desktop shows first 12 + overflow line.
+- **Не чіпали:** local SemanticDiffEngine; WriteEnabled; server Compare
+- **Перевірка:** Living Spec `Ac4fSemanticDiffShowsBeforeAfterRecordsAndTruncatesWarnings`; `SnapshotDiffServiceTests`; `SnapshotDiffViewModelTests`
+- **Файли:** `SnapshotDiffService`, `SnapshotDiffViewModel`, `GrpcSnapshotViewerClient`, `MainWindow.axaml`
 
 ### W2.2 Routing assurance detail
 - Розгорнути next-hop / subject поля з proto замість одного SummaryLine (де корисно)
@@ -83,7 +86,7 @@
 - **Перевірка:** Living Spec `VrrpRoleLabelsLivingSpecTests`; `GetNodeMapsVrrpRoleLabelsFromLastCaptureObservations`
 - **Файли:** `DeviceVrrpRoleLabelProjector.cs`, `InventoryUseCases.cs`, `ViewMapper.cs`
 
-**Exit W2 (partial):** VRRP roles заповнюються з last capture observations. W2.1/W2.2 лишаються TODO.
+**Exit W2 (partial):** VRRP roles заповнюються з last capture observations. W2.1 record/warning fidelity DONE. W2.2 лишається TODO.
 
 ---
 
@@ -146,6 +149,7 @@ W4.1 VRRP Node members table       ← DONE
 W4.2 Deploy not silent first-child ← DONE
 W4.3 VRRP create+register wizard   ← DONE
 W4.4 Pair capture / compare guidance ← DONE
+W2.1 Diff record Before/After + warning truncate ← DONE
 ```
 
 Кожен PR: один модуль / один клас gap; оновити цей документ (статус DONE); Desktop Living Spec AC на ключові рядки axaml/VM.
@@ -179,7 +183,8 @@ W4.4 Pair capture / compare guidance ← DONE
 | W4.2 | **DONE** (Deploy/Onboarding plan all VRRP members, not silent first Device) |
 | W4.3 | **DONE** (Add router: CreateNode Vrrp + register two devices) |
 | W4.4 | **DONE** (VRRP per-member capture guidance; compare shows why a-against-b is forbidden) |
-| W2.1–W2.2, W5 | **TODO** |
+| W2.1 | **DONE** (Diff Before/After record detail; Compare warnings truncated) |
+| W2.2, W5 | **TODO** |
 
 ### W3.1 Snapshots: Capture + progress — **DONE**
 - **Дані:** SnapshotService `StartCapture` / `WatchCapture` (device_id only; Controller M1-26)
@@ -258,4 +263,4 @@ W4.4 Pair capture / compare guidance ← DONE
 - **Перевірка:** Living Spec `Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy`; `SnapshotViewerViewModelTests`; `SnapshotDiffViewModelTests`; `InventoryOpsSelectionTests`
 - **Файли:** `InventoryOpsSelection`, `SnapshotViewerViewModel`, `SnapshotDiffViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment):** W2.1 Diff / Snapshot record fidelity (optional Before/After record detail; warnings pagination).
+**NEXT (alignment):** W2.2 Routing assurance detail (next-hop / subject fields instead of a single SummaryLine).

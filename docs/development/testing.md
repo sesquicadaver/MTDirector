@@ -1813,6 +1813,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | W4.1 VRRP Node members table | Node a/b members: role / mgmt host / last capture | `Ac3dVrrpNodeShowsMemberTableRoleHostAndLastCapture` + `NodeDetailViewModelTests` + `InventoryTreeServiceTests` + `InventoryNodeViewModelTests` |
 | AC#4 Snapshot configuration/observations | `SnapshotViewerViewModel` | `Ac4SnapshotViewShowsConfigurationAndObservations` |
 | W1.1 Diff FieldLines + Warnings | `SnapshotDiffViewModel` + MainWindow Semantic diff | `Ac4bSemanticDiffShowsFieldLinesAndWarnings` + `SnapshotDiffServiceTests` |
+| W2.1 Diff Before/After + warning truncate | selected entry record sides; VisibleWarnings cap 12 | `Ac4fSemanticDiffShowsBeforeAfterRecordsAndTruncatesWarnings` + `SnapshotDiffServiceTests` + `SnapshotDiffViewModelTests` |
 | W1.2 Snapshot record Fields | `SnapshotViewerViewModel` selected-record detail + `Fields.DisplayLine` | `Ac4cSnapshotRecordDetailShowsAllFields` + `SnapshotViewerServiceTests` |
 | W3.1 StartCapture + WatchCapture | Snapshots Capture button + progress | `Ac4dSnapshotCaptureStartsAndWatchesProgress` + `SnapshotViewerViewModelTests` |
 | W4.4 VRRP pair capture / compare guidance | per-member Capture; Compare shows why a-against-b is forbidden | `Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy` + `SnapshotViewerViewModelTests` + `SnapshotDiffViewModelTests` + `InventoryOpsSelectionTests` |

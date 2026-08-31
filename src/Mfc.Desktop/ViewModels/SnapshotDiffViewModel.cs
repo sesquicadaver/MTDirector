@@ -39,6 +39,8 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
 
     public ObservableCollection<string> Warnings { get; } = [];
 
+    public ObservableCollection<string> VisibleWarnings { get; } = [];
+
     [ObservableProperty]
     private string? _errorText;
 
@@ -64,6 +66,12 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
     private SnapshotCaptureListItem? _targetCapture;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasSelectedEntryRecord))]
+    [NotifyPropertyChangedFor(nameof(HasSelectedEntryWithoutRecords))]
+    [NotifyPropertyChangedFor(nameof(HasNoSelectedEntry))]
+    private SnapshotDiffEntryItem? _selectedEntry;
+
+    [ObservableProperty]
     private SnapshotDiffSectionGroup? _selectedSectionGroup;
 
     [ObservableProperty]
@@ -72,10 +80,22 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
     [ObservableProperty]
     private bool _showObservationOnly;
 
+    [ObservableProperty]
+    private string _warningOverflowText = string.Empty;
+
+    [ObservableProperty]
+    private bool _hasWarningOverflow;
+
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorText);
 
     /// <summary>True when CompareSnapshots returned one or more warning strings.</summary>
     public bool HasWarnings => Warnings.Count > 0;
+
+    public bool HasSelectedEntryRecord => SelectedEntry is { HasRecordSides: true };
+
+    public bool HasSelectedEntryWithoutRecords => SelectedEntry is { HasRecordSides: false };
+
+    public bool HasNoSelectedEntry => SelectedEntry is null;
 
     [RelayCommand(CanExecute = nameof(CanReloadCaptures))]
     private async Task ReloadCapturesAsync()
@@ -274,7 +294,11 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
 
         SectionGroups.Clear();
         VisibleEntries.Clear();
+        SelectedEntry = null;
         Warnings.Clear();
+        VisibleWarnings.Clear();
+        HasWarningOverflow = false;
+        WarningOverflowText = string.Empty;
         OnPropertyChanged(nameof(HasWarnings));
         IsNoDifferences = false;
         BaseCapture = null;
@@ -299,18 +323,32 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
             Warnings.Add(warning);
         }
 
+        VisibleWarnings.Clear();
+        foreach (string warning in SnapshotDiffService.TakeVisibleWarnings(result.Warnings))
+        {
+            VisibleWarnings.Add(warning);
+        }
+
+        WarningOverflowText = SnapshotDiffService.FormatWarningOverflow(result.Warnings.Count);
+        HasWarningOverflow = !string.IsNullOrWhiteSpace(WarningOverflowText);
         OnPropertyChanged(nameof(HasWarnings));
         IsNoDifferences = result.IsNoDifferences;
         ErrorText = InventoryOpsSelection.ExplainCompareError(result.Error);
         StatusText = result.IsNoDifferences
             ? "No differences"
             : $"{result.AllEntries.Count} change(s) across {result.SectionGroups.Count} section(s).";
+        if (HasWarningOverflow)
+        {
+            StatusText += " " + WarningOverflowText;
+        }
+
         SelectedSectionGroup = SectionGroups.FirstOrDefault();
         RebuildVisibleEntries();
     }
 
     private void RebuildVisibleEntries()
     {
+        SnapshotDiffEntryItem? previous = SelectedEntry;
         IEnumerable<SnapshotDiffEntryItem> source = SelectedSectionGroup is null
             ? SectionGroups.SelectMany(g => g.Entries)
             : SelectedSectionGroup.Entries;
@@ -331,6 +369,15 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
         {
             VisibleEntries.Add(entry);
         }
+
+        if (previous is not null)
+        {
+            SelectedEntry = VisibleEntries.FirstOrDefault(e =>
+                e.SectionId == previous.SectionId
+                && e.RecordKey == previous.RecordKey);
+        }
+
+        SelectedEntry ??= VisibleEntries.FirstOrDefault();
     }
 
     public void Dispose()

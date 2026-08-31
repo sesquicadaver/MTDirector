@@ -10,6 +10,9 @@ namespace Mfc.Desktop.Services;
 /// </summary>
 public sealed class SnapshotDiffService : ISnapshotDiffService
 {
+    /// <summary>Desktop shows this many Compare warnings; the rest are summarized (W2.1).</summary>
+    public const int MaxVisibleCompareWarnings = 12;
+
     private readonly ISnapshotViewerClient _client;
     private SnapshotDiffLoadResult _current = Empty();
 
@@ -21,6 +24,27 @@ public sealed class SnapshotDiffService : ISnapshotDiffService
     public SnapshotDiffLoadResult Current => _current;
 
     public void Clear() => _current = Empty();
+
+    /// <summary>First <see cref="MaxVisibleCompareWarnings"/> warning strings, order preserved.</summary>
+    public static IReadOnlyList<string> TakeVisibleWarnings(IReadOnlyList<string> warnings)
+    {
+        ArgumentNullException.ThrowIfNull(warnings);
+        if (warnings.Count <= MaxVisibleCompareWarnings)
+        {
+            return warnings;
+        }
+
+        return warnings.Take(MaxVisibleCompareWarnings).ToArray();
+    }
+
+    /// <summary>Operator line when Compare returned more warnings than the visible cap.</summary>
+    public static string FormatWarningOverflow(int totalCount)
+    {
+        int hidden = totalCount - MaxVisibleCompareWarnings;
+        return hidden > 0
+            ? $"+{hidden} more warning(s) truncated (showing {MaxVisibleCompareWarnings} of {totalCount})."
+            : string.Empty;
+    }
 
     public async Task<SnapshotDiffLoadResult> LoadCapturesAsync(
         Guid deviceId,
@@ -196,7 +220,40 @@ public sealed class SnapshotDiffService : ISnapshotDiffService
             OrdinalText = ordinal,
             ConfidenceText = FormatEnum(entry.Confidence),
             FieldLines = fields,
+            HasBeforeRecord = entry.Before is not null,
+            HasAfterRecord = entry.After is not null,
+            BeforeStableKey = entry.Before is null ? string.Empty : entry.Before.StableKey,
+            AfterStableKey = entry.After is null ? string.Empty : entry.After.StableKey,
+            BeforeRecordFields = MapRecordFields(entry.Before),
+            AfterRecordFields = MapRecordFields(entry.After),
         };
+    }
+
+    private static List<SnapshotDiffFieldLine> MapRecordFields(SnapshotRecord? record)
+    {
+        if (record is null)
+        {
+            return [];
+        }
+
+        List<CanonicalField> fields = [.. record.Configuration, .. record.Observations];
+        List<SnapshotDiffFieldLine> lines = [];
+        foreach (CanonicalField field in fields.OrderBy(static f => f.Name, StringComparer.Ordinal))
+        {
+            if (SnapshotViewerService.IsCredentialFieldName(field.Name))
+            {
+                continue;
+            }
+
+            string value = SnapshotViewerService.FormatFieldValue(field.Value);
+            lines.Add(new SnapshotDiffFieldLine
+            {
+                FieldName = field.Name,
+                Summary = $"{field.Name}={value}",
+            });
+        }
+
+        return lines;
     }
 
     private static string FormatOrdinals(DiffEntry entry)

@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Mfc.UnitTests.Desktop;
 
-/// <summary>W4.4: Semantic diff shows why VRRP a-against-b compare is forbidden.</summary>
+/// <summary>W4.4 VRRP compare why + W2.1 Before/After records and warning truncate.</summary>
 public sealed class SnapshotDiffViewModelTests
 {
     [Fact]
@@ -78,6 +78,85 @@ public sealed class SnapshotDiffViewModelTests
 
         Assert.Equal(InventoryOpsSelection.CrossDeviceCompareForbiddenReason, vm.ErrorText);
         Assert.Equal(1, diff.CompareCalls);
+    }
+
+    [Fact]
+    public async Task CompareTruncatesWarningsAndSurfacesSelectedBeforeAfter()
+    {
+        string[] warnings = Enumerable.Range(1, 15).Select(i => "hash_changed:f" + i).ToArray();
+        SnapshotDiffEntryItem entry = new()
+        {
+            SectionId = "firewall.ipv4.filter",
+            DomainText = "Configuration",
+            ChangesText = "Modified",
+            RecordKey = "fwc:rule:1",
+            OrdinalText = "order: 0 → 1",
+            ConfidenceText = "ControllerId",
+            FieldLines =
+            [
+                new SnapshotDiffFieldLine { FieldName = "action", Summary = "action: accept → drop" },
+            ],
+            HasBeforeRecord = true,
+            HasAfterRecord = true,
+            BeforeStableKey = "fwc:rule:1",
+            AfterStableKey = "fwc:rule:1",
+            BeforeRecordFields =
+            [
+                new SnapshotDiffFieldLine { FieldName = "action", Summary = "action=accept" },
+            ],
+            AfterRecordFields =
+            [
+                new SnapshotDiffFieldLine { FieldName = "action", Summary = "action=drop" },
+            ],
+        };
+        StubDiff diff = new()
+        {
+            CompareResult = new SnapshotDiffLoadResult
+            {
+                Succeeded = true,
+                Warnings = warnings,
+                AllEntries = [entry],
+                SectionGroups =
+                [
+                    new SnapshotDiffSectionGroup
+                    {
+                        SectionId = entry.SectionId,
+                        EntryCount = 1,
+                        Entries = [entry],
+                    },
+                ],
+            },
+        };
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        using SnapshotDiffViewModel vm = new(diff, connection, inventory)
+        {
+            BaseCapture = new SnapshotCaptureListItem
+            {
+                CaptureId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                StatusText = "Completed",
+                CompletedAtText = "2026-08-30 12:00:00Z",
+                SchemaVersion = 1,
+            },
+            TargetCapture = new SnapshotCaptureListItem
+            {
+                CaptureId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                StatusText = "Completed",
+                CompletedAtText = "2026-08-30 13:00:00Z",
+                SchemaVersion = 1,
+            },
+        };
+
+        await vm.CompareCommand.ExecuteAsync(null);
+
+        Assert.Equal(15, vm.Warnings.Count);
+        Assert.Equal(SnapshotDiffService.MaxVisibleCompareWarnings, vm.VisibleWarnings.Count);
+        Assert.True(vm.HasWarningOverflow);
+        Assert.Contains("truncated", vm.WarningOverflowText, StringComparison.Ordinal);
+        Assert.True(vm.HasSelectedEntryRecord);
+        Assert.Equal("action=accept", Assert.Single(vm.SelectedEntry!.BeforeRecordFields).Summary);
+        Assert.Equal("action=drop", Assert.Single(vm.SelectedEntry.AfterRecordFields).Summary);
+        Assert.DoesNotContain("WriteEnabled", vm.StatusText, StringComparison.Ordinal);
     }
 
     private static (InventoryNodeViewModel Site, InventoryNodeViewModel Node, InventoryNodeViewModel MemberA)

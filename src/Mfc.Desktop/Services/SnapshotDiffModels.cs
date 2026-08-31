@@ -25,6 +25,22 @@ public sealed class SnapshotDiffEntryItem
 
     public required IReadOnlyList<SnapshotDiffFieldLine> FieldLines { get; init; }
 
+    /// <summary>Sanitized fields from DiffEntry.Before SnapshotRecord (empty when wire omitted the record).</summary>
+    public IReadOnlyList<SnapshotDiffFieldLine> BeforeRecordFields { get; init; } = [];
+
+    /// <summary>Sanitized fields from DiffEntry.After SnapshotRecord (empty when wire omitted the record).</summary>
+    public IReadOnlyList<SnapshotDiffFieldLine> AfterRecordFields { get; init; } = [];
+
+    public bool HasBeforeRecord { get; init; }
+
+    public bool HasAfterRecord { get; init; }
+
+    public string BeforeStableKey { get; init; } = string.Empty;
+
+    public string AfterStableKey { get; init; } = string.Empty;
+
+    public bool HasRecordSides => HasBeforeRecord || HasAfterRecord;
+
     public string HeaderLine =>
         $"{SectionId} · {DomainText} · {ChangesText} · {RecordKey} · {OrdinalText}";
 }
