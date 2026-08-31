@@ -131,6 +131,7 @@ public sealed class GrpcSnapshotViewerClient : ISnapshotViewerClient
         SnapshotService.SnapshotServiceClient client = CreateClient();
         Metadata headers = ActorHeaders();
         DiffPage aggregate = new();
+        HashSet<string> seenWarnings = new(StringComparer.Ordinal);
         string pageToken = string.Empty;
         do
         {
@@ -147,7 +148,14 @@ public sealed class GrpcSnapshotViewerClient : ISnapshotViewerClient
             if (aggregate.Entries.Count == 0)
             {
                 aggregate.Identical = page.Identical;
-                aggregate.Warnings.AddRange(page.Warnings);
+            }
+
+            foreach (string warning in page.Warnings)
+            {
+                if (seenWarnings.Add(warning))
+                {
+                    aggregate.Warnings.Add(warning);
+                }
             }
 
             aggregate.Entries.AddRange(page.Entries);

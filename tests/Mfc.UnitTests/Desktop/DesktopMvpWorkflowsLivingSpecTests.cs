@@ -371,7 +371,41 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("FieldLines", axaml, StringComparison.Ordinal);
         Assert.Contains("Compare warnings", axaml, StringComparison.Ordinal);
         Assert.Contains("Diff.HasWarnings", axaml, StringComparison.Ordinal);
-        Assert.Contains("Diff.Warnings", axaml, StringComparison.Ordinal);
+        Assert.Contains("Diff.VisibleWarnings", axaml, StringComparison.Ordinal);
+        Assert.Contains("Diff.HasWarningOverflow", axaml, StringComparison.Ordinal);
+    }
+
+    /// <summary>W2.1: Diff binds Before/After SnapshotRecord detail; Compare warnings truncate.</summary>
+    [Fact]
+    public void Ac4fSemanticDiffShowsBeforeAfterRecordsAndTruncatesWarnings()
+    {
+        Assert.NotNull(typeof(SnapshotDiffEntryItem).GetProperty(nameof(SnapshotDiffEntryItem.BeforeRecordFields)));
+        Assert.NotNull(typeof(SnapshotDiffEntryItem).GetProperty(nameof(SnapshotDiffEntryItem.AfterRecordFields)));
+        Assert.NotNull(typeof(SnapshotDiffEntryItem).GetProperty(nameof(SnapshotDiffEntryItem.HasRecordSides)));
+        Assert.NotNull(typeof(SnapshotDiffViewModel).GetProperty(nameof(SnapshotDiffViewModel.SelectedEntry)));
+        Assert.NotNull(typeof(SnapshotDiffViewModel).GetProperty(nameof(SnapshotDiffViewModel.VisibleWarnings)));
+        Assert.NotNull(typeof(SnapshotDiffViewModel).GetProperty(nameof(SnapshotDiffViewModel.HasWarningOverflow)));
+        Assert.Equal(12, SnapshotDiffService.MaxVisibleCompareWarnings);
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Before record", axaml, StringComparison.Ordinal);
+        Assert.Contains("After record", axaml, StringComparison.Ordinal);
+        Assert.Contains("Diff.SelectedEntry", axaml, StringComparison.Ordinal);
+        Assert.Contains("BeforeRecordFields", axaml, StringComparison.Ordinal);
+        Assert.Contains("AfterRecordFields", axaml, StringComparison.Ordinal);
+        Assert.Contains("Diff.VisibleWarnings", axaml, StringComparison.Ordinal);
+        Assert.Contains("Diff.WarningOverflowText", axaml, StringComparison.Ordinal);
+
+        string service = ReadSource("src/Mfc.Desktop/Services/SnapshotDiffService.cs");
+        string diff = ReadSource("src/Mfc.Desktop/ViewModels/SnapshotDiffViewModel.cs");
+        string client = ReadSource("src/Mfc.Desktop/Services/GrpcSnapshotViewerClient.cs");
+        Assert.Contains("MapRecordFields", service, StringComparison.Ordinal);
+        Assert.Contains("IsCredentialFieldName", service, StringComparison.Ordinal);
+        Assert.Contains("TakeVisibleWarnings", service, StringComparison.Ordinal);
+        Assert.Contains("seenWarnings", client, StringComparison.Ordinal);
+        Assert.Contains("Does not run SemanticDiffEngine locally", diff, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", service, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", diff, StringComparison.Ordinal);
     }
 
     [Fact]

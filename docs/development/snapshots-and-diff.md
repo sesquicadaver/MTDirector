@@ -38,6 +38,7 @@ Canonical section ids live in `Mfc.Domain.Canonicalization.CanonicalSectionIds` 
 - Managed rules use `fwc:rule:{uuid}:{rev}` markers for stable MODIFIED matching.
 - Empty result → Desktop **No differences** state.
 - Desktop Semantic diff (W1.1): binds `FieldLines.Summary` per entry + Compare `Warnings` (`HasWarnings`); does not re-run local SemanticDiffEngine.
+- W2.1: selected Diff entry shows sanitized Before/After `SnapshotRecord` fields (credentials omitted). Compare warnings are unioned across pages and truncated to 12 in the UI with an overflow line.
 - W4.4: VRRP members a and b are different devices — comparing a against b is forbidden (`SNAPSHOTS_FROM_DIFFERENT_DEVICES`); Desktop shows why. Capture each member and compare two captures of that same member.
 
 ## Schema version

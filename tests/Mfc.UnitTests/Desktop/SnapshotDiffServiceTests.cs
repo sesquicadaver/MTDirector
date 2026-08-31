@@ -48,6 +48,35 @@ public sealed class SnapshotDiffServiceTests
                                 After = new CanonicalValue { StringValue = "drop" },
                             },
                         },
+                        Before = new SnapshotRecord
+                        {
+                            StableKey = "fwc:rule:1",
+                            Configuration =
+                            {
+                                new CanonicalField
+                                {
+                                    Name = "action",
+                                    Value = new CanonicalValue { StringValue = "accept" },
+                                },
+                                new CanonicalField
+                                {
+                                    Name = "password",
+                                    Value = new CanonicalValue { StringValue = "lab-secret" },
+                                },
+                            },
+                        },
+                        After = new SnapshotRecord
+                        {
+                            StableKey = "fwc:rule:1",
+                            Configuration =
+                            {
+                                new CanonicalField
+                                {
+                                    Name = "action",
+                                    Value = new CanonicalValue { StringValue = "drop" },
+                                },
+                            },
+                        },
                     },
                     new DiffEntry
                     {
@@ -88,6 +117,11 @@ public sealed class SnapshotDiffServiceTests
         Assert.Contains("Modified", moved.ChangesText, StringComparison.Ordinal);
         Assert.Equal("order: 0 → 1", moved.OrdinalText);
         Assert.Contains(moved.FieldLines, f => f.Summary.Contains("accept → drop", StringComparison.Ordinal));
+        Assert.True(moved.HasBeforeRecord);
+        Assert.True(moved.HasAfterRecord);
+        Assert.Contains(moved.BeforeRecordFields, f => f.Summary == "action=accept");
+        Assert.DoesNotContain(moved.BeforeRecordFields, f => f.FieldName.Contains("password", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(moved.AfterRecordFields, f => f.Summary == "action=drop");
         Assert.Contains(result.AllEntries, e => e.SectionId == "firewall.ipv4.address-lists");
         Assert.Contains(result.AllEntries, e => e.DomainText == "Observation" && e.ChangesText.Contains("StateChanged", StringComparison.Ordinal));
         Assert.Contains(
@@ -123,6 +157,20 @@ public sealed class SnapshotDiffServiceTests
         SnapshotDiffLoadResult result = await service.CompareAsync(id, id);
         Assert.False(result.Succeeded);
         Assert.Contains("different", result.Error, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void TakeVisibleWarningsTruncatesPastCapAndFormatsOverflow()
+    {
+        string[] many = Enumerable.Range(1, 20).Select(i => "w" + i).ToArray();
+        IReadOnlyList<string> visible = SnapshotDiffService.TakeVisibleWarnings(many);
+
+        Assert.Equal(SnapshotDiffService.MaxVisibleCompareWarnings, visible.Count);
+        Assert.Equal("w1", visible[0]);
+        Assert.Equal("w12", visible[^1]);
+        Assert.Contains("+8 more warning(s) truncated", SnapshotDiffService.FormatWarningOverflow(20), StringComparison.Ordinal);
+        Assert.Empty(SnapshotDiffService.FormatWarningOverflow(3));
+        Assert.Equal(3, SnapshotDiffService.TakeVisibleWarnings(["a", "b", "c"]).Count);
     }
 
     private static SnapshotSummary Completed(Guid captureId, Guid deviceId, int hour)
