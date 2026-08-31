@@ -40,7 +40,7 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
 
     // ── AC 1 ──────────────────────────────────────────────────────────────────────
 
-    /// <summary>M0–M6 + N1-07 closed in ROADMAP / ISSUES; MVP CLOSED; post-MVP queue advances past M7.1-03.</summary>
+    /// <summary>M0–M6 + N1-07 closed in ROADMAP / ISSUES; MVP CLOSED; post-MVP M7 closed; §3.C continuous NEXT = CONT-01.</summary>
     [Fact]
     public void Ac1M0ThroughM6IssuesAreClosedInRoadmap()
     {
@@ -55,7 +55,8 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         Assert.Contains("M7.2 CLOSED", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.3 CLOSED", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.4 CLOSED", roadmap, StringComparison.Ordinal);
-        Assert.Contains("§3 NEXT = none", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = CONT-01", roadmap, StringComparison.Ordinal);
+        Assert.Contains("CONT-01", roadmap, StringComparison.Ordinal);
 
         // Logical ID → GitHub mapping lives in ISSUES.md after ROADMAP §3 strikethrough purge.
         foreach ((string id, string issue) in new[]

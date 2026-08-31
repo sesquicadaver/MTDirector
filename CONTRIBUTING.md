@@ -4,7 +4,7 @@ MikroTik Firewall Controller (namespace `Mfc`) — monorepo, trunk-based workflo
 
 ## Before you start
 
-1. Pick the next open row from [`ROADMAP.md`](ROADMAP.md) §3. **Current queue is empty** (P2 write-path CLOSED) — open a PLAN issue before starting new product work. Do not invent parallel tracks. (Post-queue UX such as Desktop Add router [#309](https://github.com/sesquicadaver/MTDirector/pull/309) was an exception with docs sync; prefer PLAN for the next tranche.)
+1. Pick the next open row from [`ROADMAP.md`](ROADMAP.md) §3 (**NEXT**). Product work stays **one linear track**. Lab/GNS3/CHR/`WriteEnabled` phases run **in parallel** and are **not** predecessors of §3. Closing a wave with empty NEXT is forbidden — seed the next tranche in the same cycle ([PLAN-02](https://github.com/sesquicadaver/MTDirector/issues/339) / [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md)). Do not invent a second product track.
 2. One issue → one short-lived branch → one PR.
 3. Do not expand scope without a new issue.
 4. No stubs, `NotImplementedException`, or disabled tests in production code.
