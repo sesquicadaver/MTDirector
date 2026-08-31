@@ -46,7 +46,7 @@ Desktop alignment W1–W4 / W2.1–W2.2 is **DONE** on top of that baseline (not
 
 | # | ID | GitHub | Status |
 |--:|----|-------:|--------|
-| 133 | PLAN-02 | [#339](https://github.com/sesquicadaver/MTDirector/issues/339) | seeding PR |
+| 133 | PLAN-02 | [#339](https://github.com/sesquicadaver/MTDirector/issues/339) | **DONE** ([#345](https://github.com/sesquicadaver/MTDirector/pull/345)) |
 | 134 | CONT-01 | [#340](https://github.com/sesquicadaver/MTDirector/issues/340) | **NEXT** after PLAN-02 |
 | 135 | CONT-02 | [#341](https://github.com/sesquicadaver/MTDirector/issues/341) | OPEN |
 | 136 | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | OPEN |

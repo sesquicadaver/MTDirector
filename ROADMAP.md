@@ -53,14 +53,14 @@
 | M6 E2E / drift | 9 | 0 | 100% |
 | M7 Post-MVP | 27 | 0 | 100% |
 | P2 Pilot (read path) | 3 | 0 | 100% |
-| Queue integrity + planning | 2 | 1 | TRACKER-01 + PLAN-01 DONE; **PLAN-02** seeding |
+| Queue integrity + planning | 3 | 0 | TRACKER-01 + PLAN-01 + **PLAN-02 DONE** |
 | P2 Pilot (write path) | 5 | 0 | **CLOSED** (P2-07…P2-11) |
-| §3.C Continuous (glue + W5) | 0 | 5 | CONT-01…02 + W5-01…03 after PLAN-02 |
+| §3.C Continuous (glue + W5) | 0 | 5 | CONT-01…02 + W5-01…03 |
 | **Разом (код)** | **139** | **0** | MVP+M7+P2 read DONE (alignment P0–P2 DONE) |
-| **Разом (черга §3)** | **128** | **6** | PLAN-02 + five atomic rows |
+| **Разом (черга §3)** | **129** | **5** | PLAN-02 DONE; five atomic rows OPEN |
 
 MVP issues (109) = **109 done + 0 remaining** — **MVP CLOSED (100%)**.  
-M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** **M7.2-04 DONE. M7.2 CLOSED.** **M7.3-01 DONE.** **M7.3-02 DONE.** **M7.3-03 DONE.** **M7.3-04 DONE.** **M7.3-05 DONE.** **M7.3-06 DONE. M7.3 CLOSED.** **M7.4-01 DONE.** **M7.4-02 DONE.** **M7.4-03 DONE.** **M7.4-04 DONE.** **M7.4-05 DONE.** **M7.4-06 DONE. M7.4 CLOSED.** Post-MVP M7 = **0** open. Release **`v0.2.0`**. **P2 read path CLOSED** (P2-04…P2-06). **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **P2-07 DONE** (#293). **P2-08 DONE** (#294). **P2-09 DONE** (#295). **P2-10 DONE** (#296). **P2-11 DONE** (#297). **P2 write-path CLOSED.** Desktop Add router UX [#309](https://github.com/sesquicadaver/MTDirector/pull/309) DONE. Alignment W1–W4 / W2.1–W2.2 DONE. **§3.C NEXT = CONT-01** (#340) after PLAN-02 (#339).
+M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** **M7.2-04 DONE. M7.2 CLOSED.** **M7.3-01 DONE.** **M7.3-02 DONE.** **M7.3-03 DONE.** **M7.3-04 DONE.** **M7.3-05 DONE.** **M7.3-06 DONE. M7.3 CLOSED.** **M7.4-01 DONE.** **M7.4-02 DONE.** **M7.4-03 DONE.** **M7.4-04 DONE.** **M7.4-05 DONE.** **M7.4-06 DONE. M7.4 CLOSED.** Post-MVP M7 = **0** open. Release **`v0.2.0`**. **P2 read path CLOSED** (P2-04…P2-06). **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **P2-07 DONE** (#293). **P2-08 DONE** (#294). **P2-09 DONE** (#295). **P2-10 DONE** (#296). **P2-11 DONE** (#297). **P2 write-path CLOSED.** Desktop Add router UX [#309](https://github.com/sesquicadaver/MTDirector/pull/309) DONE. Alignment W1–W4 / W2.1–W2.2 DONE. **§3.C NEXT = CONT-01** (#340). **PLAN-02 DONE** (#339 / [#345](https://github.com/sesquicadaver/MTDirector/pull/345)).
 Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий**; multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance **DONE**; **M4 CLOSED**; desired/committed/actual projection **готовий** (M6-01); managed drift detection **готовий** (M6-02); bounded operational jobs **готовий** (M6-03); Desktop MVP workflows **готовий** (M6-04); standalone/dual-stack E2E **готовий** (M6-05); multi-WAN E2E **готовий** (M6-06); VRRP/CRS E2E **готовий** (M6-07); security/backup/restore acceptance **готовий** (M6-08); MVP production acceptance **готовий** (M6-09); **M6 CLOSED**; path-class E2E/drift **готовий** (N1-07); **MVP CLOSED**; routing-assurance read allowlist **готовий** (M7.1-01); RoutingAssuranceState persistence **готовий** (M7.1-02); RouteResolutionTrace **готовий** (M7.1-03); ECMP ONE_OF sets **готовий** (M7.1-04); dynamic route origins **готовий** (M7.1-05); RouteExpectation evaluation **готовий** (M7.1-06); reverse-path symmetry **готовий** (M7.1-07); network path profile latency probes **готовий** (M7.1-08); routing configuration vs operational drift **готовий** (M7.1-09); routing assurance Desktop viewer **готовий** (M7.1-10); routing assurance CHR acceptance **готовий** (M7.1-11); endpoint attribution **готовий** (M7.2-01); endpoint presence **готовий** (M7.2-02); endpoint mobility **готовий** (M7.2-03); endpoint mobility CHR acceptance **готовий** (M7.2-04); incident signal ingress **готовий** (M7.3-01); active-state interval **готовий** (M7.3-02); session context **готовий** (M7.3-03); sensor correlation **готовий** (M7.3-04); assessment quality **готовий** (M7.3-05); incident assessment contract **готовий** (M7.3-06); incident deny overlay **готовий** (M7.4-01); response intent feasibility **готовий** (M7.4-02); overlay compile/deploy **готовий** (M7.4-03); TTL removal plan **готовий** (M7.4-04); RESPONSE_* feedback **готовий** (M7.4-05); incident response E2E **готовий** (M7.4-06); **M7.4 CLOSED**; Post-MVP M7 = **0** open; release tag **`v0.2.0`** (2026-08-24).
 
 ### 2.2 DONE (не в черзі)
@@ -201,7 +201,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 
 ## 3. Лінійна черга (стан)
 
-**Статус:** **§3.C active.** `NEXT = CONT-01` ([#340](https://github.com/sesquicadaver/MTDirector/issues/340)) після merge PLAN-02 ([#339](https://github.com/sesquicadaver/MTDirector/issues/339)).  
+**Статус:** **§3.C active.** `NEXT = CONT-01` ([#340](https://github.com/sesquicadaver/MTDirector/issues/340)). PLAN-02 **DONE** ([#339](https://github.com/sesquicadaver/MTDirector/issues/339) / [#345](https://github.com/sesquicadaver/MTDirector/pull/345)).  
 Канонічний план: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).  
 **Lab/CHR/`WriteEnabled` не є попередниками §3** — паралельний ops-трек; закриття хвилі без засіяного NEXT заборонене.
 
@@ -213,8 +213,8 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 
 | # | Logical ID | Issue | Scope | Status |
 |--:|------------|------:|-------|--------|
-| 133 | PLAN-02 | [#339](https://github.com/sesquicadaver/MTDirector/issues/339) | Seed continuous queue + no phase-stop process | **this PR** |
-| 134 | CONT-01 | [#340](https://github.com/sesquicadaver/MTDirector/issues/340) | Desktop Rollback + Watch (existing RPC) | OPEN — **NEXT after PLAN-02** |
+| 133 | PLAN-02 | [#339](https://github.com/sesquicadaver/MTDirector/issues/339) | Seed continuous queue + no phase-stop process | **DONE** ([#345](https://github.com/sesquicadaver/MTDirector/pull/345)) |
+| 134 | CONT-01 | [#340](https://github.com/sesquicadaver/MTDirector/issues/340) | Desktop Rollback + Watch (existing RPC) | OPEN — **NEXT** |
 | 135 | CONT-02 | [#341](https://github.com/sesquicadaver/MTDirector/issues/341) | Neighbor apply fills VRRP member b | OPEN |
 | 136 | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | `ListPolicies` catalog browse (Contracts + Desktop) | OPEN |
 | 137 | W5-02 | [#343](https://github.com/sesquicadaver/MTDirector/issues/343) | ManagementPath / FastTrack Desktop RPC + surface | OPEN |
@@ -242,10 +242,10 @@ Pilot (ops, parallel): [`docs/operations/pilot-runbook.md`](docs/operations/pilo
 | До MVP CLOSED | 0 | **MVP CLOSED** (N1-07 DONE) |
 | Post-MVP M7 | 0 | **M7.4 CLOSED** |
 | P2 Pilot (read path) | 0 | **CLOSED** (P2-04…P2-06) |
-| Queue integrity + planning | 1 | PLAN-02 (#339) seeding; TRACKER-01 + PLAN-01 **DONE** |
+| Queue integrity + planning | 0 | TRACKER-01 + PLAN-01 + PLAN-02 **DONE** |
 | P2 Pilot (write path) | 0 | **CLOSED** (P2-07…P2-11) |
-| §3.C Continuous | 5 | CONT-01…02 + W5-01…03 (after PLAN-02) |
-| **Нереалізовано (§3)** | **6** | PLAN-02 + five atomic rows |
+| §3.C Continuous | 5 | CONT-01…02 + W5-01…03 |
+| **Нереалізовано (§3)** | **5** | CONT-01 is **NEXT** |
 | DONE у коді (§2.2) | 139 | …+P2-06; release **`v0.2.0`**; alignment P0–P2 DONE |
 
 GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale OPEN #91–#95, #125–#136 closed. Хвиля 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
@@ -360,7 +360,7 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 | Write-path DI gate | P2-10 | `AddRouterOsWriteServices` + `WriteEnabled` flag | **DONE** (#296) |
 | Write-path pilot runbook | P2-11 | `WritePathPilotLivingSpecTests` + `pilot-runbook.md` write checklist | **DONE** (#297) |
 | Seed MikroTik neighbor candidates | PLAN-NBR-01 | `NeighborCandidatesLivingSpecTests` + allowlist/use-case/Desktop tests | **DONE** (#314 / #315) |
-| Continuous queue (no phase-stop) | PLAN-02 | `docs/planning/continuous-queue-plan.md` + §3.C | **this PR** (#339) |
+| Continuous queue (no phase-stop) | PLAN-02 | `docs/planning/continuous-queue-plan.md` + §3.C | **DONE** (#339 / #345) |
 | Desktop Rollback Watch | CONT-01 | Deployment Watch after Rollback; Living Spec | OPEN (#340) — **NEXT** |
 | Neighbor apply VRRP member b | CONT-02 | Add router Apply → `PairMemberB*` | OPEN (#341) |
 | ListPolicies catalog | W5-01 | Contracts + Desktop catalog browse | OPEN (#342) |
@@ -389,7 +389,7 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 
 ## 7. Операційний старт
 
-1. **NEXT = CONT-01** (#340) після merge PLAN-02. Береться лише відкритий рядок §3; лаба **не** блокує.
+1. **NEXT = CONT-01** (#340). Береться лише відкритий рядок §3; лаба **не** блокує.
 2. Lab/pilot RouterOS (паралельно): [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) (`Enabled` / `WriteEnabled`).
 3. Desktop реєстрація пристрою: Inventory **Add router** — [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
 4. Acceptance / readiness: [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md), [`docs/release/readiness.md`](docs/release/readiness.md). Continuous plan: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).
