@@ -282,6 +282,7 @@ public static class Program
     {
         services.AddSingleton<IClock, SystemClock>();
         services.AddScoped<CreateDraftPolicyUseCase>();
+        services.AddScoped<ListPoliciesUseCase>();
         services.AddScoped<GetPolicyRevisionUseCase>();
         services.AddScoped<ListRulesUseCase>();
         services.AddScoped<GetRuleUseCase>();

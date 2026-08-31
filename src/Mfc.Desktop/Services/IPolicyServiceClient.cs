@@ -12,6 +12,10 @@ public interface IPolicyServiceClient
         Guid? ownerId = null,
         CancellationToken cancellationToken = default);
 
+    Task<ListPoliciesResponse> ListPoliciesAsync(
+        PolicyKind kind = PolicyKind.Unspecified,
+        CancellationToken cancellationToken = default);
+
     Task<PolicyRevision> GetPolicyRevisionAsync(
         Guid revisionId,
         CancellationToken cancellationToken = default);

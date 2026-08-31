@@ -10,6 +10,7 @@ import "mfc/v1/zones.proto";
 // PolicyService — Policy Model §§7–9 / §§22–27 / M2-06 typed rules + draft CRUD + M2-18 catalogs/review.
 service PolicyService {
   rpc CreateDraftPolicy(CreateDraftPolicyRequest) returns (PolicyDraft);
+  rpc ListPolicies(ListPoliciesRequest) returns (ListPoliciesResponse);
   rpc GetPolicyRevision(GetPolicyRevisionRequest) returns (PolicyRevision);
   rpc ListRules(ListRulesRequest) returns (ListRulesResponse);
   rpc GetRule(GetRuleRequest) returns (PolicyRule);
@@ -270,6 +271,27 @@ message CreateDraftPolicyRequest {
 
 message GetPolicyRevisionRequest {
   Uuid revision_id = 1;
+}
+
+// UNSPECIFIED kind = all active policies. Catalog browse (W5-01); not SIEM-scale.
+message ListPoliciesRequest {
+  PolicyKind kind = 1;
+}
+
+message PolicyCatalogItem {
+  Uuid policy_id = 1;
+  string name = 2;
+  PolicyKind kind = 3;
+  PolicyOwnerScope owner_scope = 4;
+  optional Uuid owner_id = 5;
+  Uuid latest_revision_id = 6;
+  uint32 latest_revision_number = 7;
+  PolicyRevisionState latest_revision_state = 8;
+  Sha256 content_hash = 9;
+}
+
+message ListPoliciesResponse {
+  repeated PolicyCatalogItem policies = 1;
 }
 
 message ListRulesRequest {

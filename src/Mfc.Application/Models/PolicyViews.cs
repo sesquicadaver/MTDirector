@@ -328,6 +328,34 @@ public sealed class PolicyDraftView
     public required string ContentHashHex { get; init; }
 }
 
+/// <summary>One active policy plus its highest-numbered revision (catalog browse).</summary>
+public sealed class PolicyCatalogItemView
+{
+    public required Guid PolicyId { get; init; }
+
+    public required string Name { get; init; }
+
+    public required PolicyKind Kind { get; init; }
+
+    public required PolicyOwnerScope OwnerScope { get; init; }
+
+    public Guid? OwnerId { get; init; }
+
+    public required Guid LatestRevisionId { get; init; }
+
+    public required uint LatestRevisionNumber { get; init; }
+
+    public required PolicyRevisionState LatestRevisionState { get; init; }
+
+    public required string ContentHashHex { get; init; }
+}
+
+/// <summary>Active policy catalog (W5-01 ListPolicies).</summary>
+public sealed class PolicyCatalogListView
+{
+    public required IReadOnlyList<PolicyCatalogItemView> Policies { get; init; }
+}
+
 /// <summary>Mutation result carrying the new content hash and affected rule(s).</summary>
 public sealed class PolicyRuleMutationView
 {

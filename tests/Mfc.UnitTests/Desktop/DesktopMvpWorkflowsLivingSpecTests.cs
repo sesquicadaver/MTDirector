@@ -179,6 +179,32 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.DoesNotContain("Master/Backup", vmSource, StringComparison.Ordinal);
     }
 
+    /// <summary>W5-01: Policies catalog ListPolicies → select → LoadRevision fills rules/objects.</summary>
+    [Fact]
+    public void Ac5dPoliciesCatalogBrowseListPoliciesThenSelectLoadsRevision()
+    {
+        Type policies = typeof(PoliciesViewModel);
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.Catalog)));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.SelectedCatalogItem)));
+        Assert.NotNull(policies.GetProperty("RefreshCatalogCommand"));
+        Assert.NotNull(typeof(IPolicyServiceClient).GetMethod(nameof(IPolicyServiceClient.ListPoliciesAsync)));
+        Assert.NotNull(typeof(IPolicyPanelService).GetMethod(nameof(IPolicyPanelService.ListCatalogAsync)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Policy catalog", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.RefreshCatalogCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.Catalog", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.SelectedCatalogItem", axaml, StringComparison.Ordinal);
+        Assert.Contains("Refresh catalog", axaml, StringComparison.Ordinal);
+
+        string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/PoliciesViewModel.cs");
+        Assert.Contains("ListCatalogAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("LoadRevisionAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("SelectedCatalogItem", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("SemanticDiffEngine", vmSource, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness()
     {

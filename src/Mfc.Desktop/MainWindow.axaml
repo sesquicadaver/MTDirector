@@ -1037,6 +1037,28 @@
 
             <Border Classes="mfc-panel">
               <StackPanel Spacing="6">
+                <TextBlock Classes="mfc-label" Text="Policy catalog" />
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <Button Classes="mfc-action"
+                          Content="Refresh catalog"
+                          Command="{Binding Policies.RefreshCatalogCommand}"
+                          MinWidth="130" />
+                </WrapPanel>
+                <ListBox ItemsSource="{Binding Policies.Catalog}"
+                         SelectedItem="{Binding Policies.SelectedCatalogItem, Mode=TwoWay}"
+                         MaxHeight="160">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="svc:PolicyCatalogListItem">
+                      <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2"
+                                 FontFamily="Consolas,Menlo,monospace" />
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
                 <TextBlock Classes="mfc-label" Text="Revision" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"

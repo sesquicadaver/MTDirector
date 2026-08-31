@@ -42,6 +42,18 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
             .ConfigureAwait(false);
     }
 
+    public async Task<ListPoliciesResponse> ListPoliciesAsync(
+        PolicyKind kind = PolicyKind.Unspecified,
+        CancellationToken cancellationToken = default)
+    {
+        PolicyService.PolicyServiceClient client = CreateClient();
+        return await client.ListPoliciesAsync(
+                new ListPoliciesRequest { Kind = kind },
+                ActorHeaders(),
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     public async Task<PolicyRevision> GetPolicyRevisionAsync(
         Guid revisionId,
         CancellationToken cancellationToken = default)

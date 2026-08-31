@@ -57,6 +57,34 @@ internal static class PolicyProtoMapper
         return message;
     }
 
+    public static ListPoliciesResponse ToProto(PolicyCatalogListView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        ListPoliciesResponse message = new();
+        foreach (PolicyCatalogItemView item in view.Policies)
+        {
+            PolicyCatalogItem proto = new()
+            {
+                PolicyId = ProtoUuid.FromGuid(item.PolicyId),
+                Name = item.Name,
+                Kind = ToProto(item.Kind),
+                OwnerScope = ToProto(item.OwnerScope),
+                LatestRevisionId = ProtoUuid.FromGuid(item.LatestRevisionId),
+                LatestRevisionNumber = item.LatestRevisionNumber,
+                LatestRevisionState = ToProto(item.LatestRevisionState),
+                ContentHash = HexToSha256(item.ContentHashHex),
+            };
+            if (item.OwnerId is Guid ownerId)
+            {
+                proto.OwnerId = ProtoUuid.FromGuid(ownerId);
+            }
+
+            message.Policies.Add(proto);
+        }
+
+        return message;
+    }
+
     public static global::Mfc.Contracts.Mfc.V1.PolicyRevision ToProto(PolicyRevisionView view)
     {
         global::Mfc.Contracts.Mfc.V1.PolicyRevision message = new()

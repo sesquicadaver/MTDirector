@@ -90,6 +90,29 @@ public sealed class PolicyChainContractListItem
         : $"{FamilyText}/{ChainText} → {Disposition} ({RejectModeText})";
 }
 
+/// <summary>Presentation row for an active policy in the catalog list.</summary>
+public sealed class PolicyCatalogListItem
+{
+    public required Guid PolicyId { get; init; }
+
+    public required string Name { get; init; }
+
+    public required PolicyKind Kind { get; init; }
+
+    public required string KindText { get; init; }
+
+    public required Guid LatestRevisionId { get; init; }
+
+    public required uint LatestRevisionNumber { get; init; }
+
+    public required PolicyRevisionState LatestRevisionState { get; init; }
+
+    public required string StateText { get; init; }
+
+    public string SummaryLine
+        => $"{Name} [{KindText}] rev {LatestRevisionNumber} {StateText} {LatestRevisionId:D}";
+}
+
 /// <summary>Presentation row for a finding / warning / diff line.</summary>
 public sealed class PolicyFindingListItem
 {
@@ -191,6 +214,9 @@ public interface IPolicyPanelService
 {
     Task<PolicyRevisionPanelState> LoadRevisionAsync(
         Guid revisionId,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<PolicyCatalogListItem>> ListCatalogAsync(
         CancellationToken cancellationToken = default);
 
     Task<PolicyRevisionPanelState> CreateDraftAsync(
@@ -347,6 +373,15 @@ public sealed class PolicyPanelService : IPolicyPanelService
             .GetPolicyRevisionAsync(revisionId, cancellationToken)
             .ConfigureAwait(false);
         return ToPanelState(revision);
+    }
+
+    public async Task<IReadOnlyList<PolicyCatalogListItem>> ListCatalogAsync(
+        CancellationToken cancellationToken = default)
+    {
+        ListPoliciesResponse listed = await _client
+            .ListPoliciesAsync(PolicyKind.Unspecified, cancellationToken)
+            .ConfigureAwait(false);
+        return listed.Policies.Select(ToCatalogItem).ToArray();
     }
 
     public async Task<PolicyRevisionPanelState> CreateDraftAsync(
@@ -921,6 +956,22 @@ public sealed class PolicyPanelService : IPolicyPanelService
         }
 
         return entries;
+    }
+
+    private static PolicyCatalogListItem ToCatalogItem(PolicyCatalogItem item)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+        return new PolicyCatalogListItem
+        {
+            PolicyId = DesktopProtoUuid.ToGuid(item.PolicyId),
+            Name = item.Name,
+            Kind = item.Kind,
+            KindText = item.Kind.ToString(),
+            LatestRevisionId = DesktopProtoUuid.ToGuid(item.LatestRevisionId),
+            LatestRevisionNumber = item.LatestRevisionNumber,
+            LatestRevisionState = item.LatestRevisionState,
+            StateText = item.LatestRevisionState.ToString(),
+        };
     }
 
     private static PolicyRevisionPanelState ToPanelState(PolicyRevision revision)

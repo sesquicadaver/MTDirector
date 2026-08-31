@@ -19,6 +19,7 @@ public sealed class PolicyProtoContractTests
         Assert.Contains("ExpireExceptionBinding", methods);
         Assert.Contains("ComposeEffectivePolicy", methods);
         Assert.Contains("CreateDraftPolicy", methods);
+        Assert.Contains("ListPolicies", methods);
         Assert.Contains("GetPolicyRevision", methods);
         Assert.Contains("ListRules", methods);
         Assert.Contains("GetRule", methods);
@@ -33,6 +34,34 @@ public sealed class PolicyProtoContractTests
         Assert.Contains("ReplacePolicyTests", methods);
         Assert.Contains("DiffPolicyRevisions", methods);
         Assert.Equal("mfc.v1.PolicyService", PolicyService.Descriptor.FullName);
+    }
+
+    [Fact]
+    public void ListPoliciesCatalogMessagesExposeLatestRevisionIdentity()
+    {
+        Assert.Contains(PolicyService.Descriptor.Methods, static m => m.Name == "ListPolicies");
+        string[] request = ListPoliciesRequest.Descriptor.Fields.InDeclarationOrder()
+            .Select(static f => f.Name)
+            .ToArray();
+        Assert.Equal(["kind"], request);
+        string[] item = PolicyCatalogItem.Descriptor.Fields.InDeclarationOrder()
+            .Select(static f => f.Name)
+            .ToArray();
+        Assert.Equal(
+            [
+                "policy_id",
+                "name",
+                "kind",
+                "owner_scope",
+                "owner_id",
+                "latest_revision_id",
+                "latest_revision_number",
+                "latest_revision_state",
+                "content_hash",
+            ],
+            item);
+        Assert.Equal("policies", ListPoliciesResponse.Descriptor.FindFieldByNumber(1)!.Name);
+        Assert.True(ListPoliciesResponse.Descriptor.FindFieldByNumber(1)!.IsRepeated);
     }
 
     [Theory]

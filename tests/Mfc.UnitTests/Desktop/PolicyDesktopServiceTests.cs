@@ -32,6 +32,41 @@ public sealed class PolicyDesktopServiceTests
     }
 
     [Fact]
+    public async Task ListCatalogMapsPolicyIdentityAndLatestRevision()
+    {
+        FakePolicyServiceClient client = new();
+        Guid policyId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+        Guid revisionId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        client.CatalogResponse = new ListPoliciesResponse
+        {
+            Policies =
+            {
+                new PolicyCatalogItem
+                {
+                    PolicyId = ToUuid(policyId),
+                    Name = "lab-baseline",
+                    Kind = PolicyKind.CompanyBaseline,
+                    OwnerScope = PolicyOwnerScope.Company,
+                    LatestRevisionId = ToUuid(revisionId),
+                    LatestRevisionNumber = 1,
+                    LatestRevisionState = PolicyRevisionState.Draft,
+                    ContentHash = HashBytes(0x11),
+                },
+            },
+        };
+
+        PolicyPanelService service = new(client);
+        IReadOnlyList<PolicyCatalogListItem> catalog = await service.ListCatalogAsync();
+        PolicyCatalogListItem item = Assert.Single(catalog);
+        Assert.Equal(policyId, item.PolicyId);
+        Assert.Equal("lab-baseline", item.Name);
+        Assert.Equal(revisionId, item.LatestRevisionId);
+        Assert.Equal(1u, item.LatestRevisionNumber);
+        Assert.Contains("lab-baseline", item.SummaryLine, StringComparison.Ordinal);
+        Assert.Contains("CompanyBaseline", item.SummaryLine, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Ac4ParseAddressEntriesRejectsRawMatcherAndAcceptsHostCidrRange()
     {
         IReadOnlyList<AddressObjectEntry> entries = PolicyPanelService.ParseAddressEntries(
@@ -427,6 +462,13 @@ public sealed class PolicyDesktopServiceTests
                 RevisionNumber = 1,
                 ContentHash = Revision.ContentHash,
             });
+
+        public ListPoliciesResponse CatalogResponse { get; set; } = new();
+
+        public Task<ListPoliciesResponse> ListPoliciesAsync(
+            PolicyKind kind = PolicyKind.Unspecified,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(CatalogResponse);
 
         public Task<PolicyRevision> GetPolicyRevisionAsync(
             Guid revisionId,
