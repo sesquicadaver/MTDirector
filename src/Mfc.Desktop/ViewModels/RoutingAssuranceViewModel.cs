@@ -33,11 +33,11 @@ public sealed partial class RoutingAssuranceViewModel : ObservableObject, IDispo
         _inventory.PropertyChanged += OnInventoryPropertyChanged;
     }
 
-    public ObservableCollection<string> ExpectationLines { get; } = [];
+    public ObservableCollection<RouteExpectationLineItem> ExpectationLines { get; } = [];
 
-    public ObservableCollection<string> FindingLines { get; } = [];
+    public ObservableCollection<RouteFindingLineItem> FindingLines { get; } = [];
 
-    public ObservableCollection<string> TraceSummaryLines { get; } = [];
+    public ObservableCollection<RouteResolutionTraceSummaryLineItem> TraceSummaryLines { get; } = [];
 
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorText);
 
@@ -103,19 +103,19 @@ public sealed partial class RoutingAssuranceViewModel : ObservableObject, IDispo
             ExpectationLines.Clear();
             foreach (RouteExpectation expectation in detail.Expectations)
             {
-                ExpectationLines.Add(RouteExpectationLineItem.FromProto(expectation).SummaryLine);
+                ExpectationLines.Add(RouteExpectationLineItem.FromProto(expectation));
             }
 
             FindingLines.Clear();
             foreach (RouteFinding finding in detail.Findings)
             {
-                FindingLines.Add(RouteFindingLineItem.FromProto(finding).SummaryLine);
+                FindingLines.Add(RouteFindingLineItem.FromProto(finding));
             }
 
             TraceSummaryLines.Clear();
             foreach (RouteResolutionTraceSummary trace in detail.TraceSummaries)
             {
-                TraceSummaryLines.Add(RouteResolutionTraceSummaryLineItem.FromProto(trace).SummaryLine);
+                TraceSummaryLines.Add(RouteResolutionTraceSummaryLineItem.FromProto(trace));
             }
 
             StatusText =
@@ -205,10 +205,24 @@ public sealed partial class RoutingAssuranceViewModel : ObservableObject, IDispo
     }
 }
 
-/// <summary>Presentation row for a route expectation (Contracts-only).</summary>
+/// <summary>Presentation row for a route expectation (Contracts-only). Next-hops are values, not a count.</summary>
 public sealed class RouteExpectationLineItem
 {
     public required string SummaryLine { get; init; }
+
+    public required string FamilyText { get; init; }
+
+    public required string DestinationPrefix { get; init; }
+
+    public required string ExpectedTableText { get; init; }
+
+    public required string ExpectedVrfText { get; init; }
+
+    public required string AllowedNextHopsText { get; init; }
+
+    public required string AllowedEgressInterfacesText { get; init; }
+
+    public required string CriticalText { get; init; }
 
     public static RouteExpectationLineItem FromProto(RouteExpectation expectation)
     {
@@ -216,63 +230,106 @@ public sealed class RouteExpectationLineItem
         string critical = expectation.Critical ? "critical" : "normal";
         return new RouteExpectationLineItem
         {
-            SummaryLine =
-                $"{expectation.Family} {expectation.DestinationPrefix} → " +
-                $"table={OrDash(expectation.ExpectedTable)} vrf={OrDash(expectation.ExpectedVrf)} " +
-                $"next_hops={expectation.AllowedNextHops.Count} egress_if={expectation.AllowedEgressInterfaces.Count} " +
-                $"[{critical}]",
+            FamilyText = OrDash(expectation.Family),
+            DestinationPrefix = OrDash(expectation.DestinationPrefix),
+            ExpectedTableText = OrDash(expectation.ExpectedTable),
+            ExpectedVrfText = OrDash(expectation.ExpectedVrf),
+            AllowedNextHopsText = JoinOrDash(expectation.AllowedNextHops),
+            AllowedEgressInterfacesText = JoinOrDash(expectation.AllowedEgressInterfaces),
+            CriticalText = critical,
+            SummaryLine = $"{expectation.Family} {expectation.DestinationPrefix} [{critical}]",
         };
     }
 
     private static string OrDash(string? value)
-        => string.IsNullOrWhiteSpace(value) ? "—" : value;
+        => string.IsNullOrWhiteSpace(value) ? "—" : value.Trim();
+
+    private static string JoinOrDash(IEnumerable<string> values)
+        => RoutingAssuranceLineFormatting.JoinOrDash(values);
 }
 
-/// <summary>Presentation row for a route finding (Contracts-only).</summary>
+/// <summary>Presentation row for a route finding (Contracts-only). Subject is a distinct field.</summary>
 public sealed class RouteFindingLineItem
 {
     public required string SummaryLine { get; init; }
+
+    public required string Code { get; init; }
+
+    public required string SubjectText { get; init; }
+
+    public required string Message { get; init; }
 
     public static RouteFindingLineItem FromProto(RouteFinding finding)
     {
         ArgumentNullException.ThrowIfNull(finding);
         return new RouteFindingLineItem
         {
-            SummaryLine = $"{finding.Code} · subject={OrDash(finding.Subject)} · {finding.Message}",
+            Code = OrDash(finding.Code),
+            SubjectText = OrDash(finding.Subject),
+            Message = OrDash(finding.Message),
+            SummaryLine = $"{finding.Code}: {finding.Message}",
         };
     }
 
     private static string OrDash(string? value)
-        => string.IsNullOrWhiteSpace(value) ? "—" : value;
+        => string.IsNullOrWhiteSpace(value) ? "—" : value.Trim();
 }
 
-/// <summary>Presentation row for a bounded trace summary (Contracts-only).</summary>
+/// <summary>Presentation row for a bounded trace summary (Contracts-only). Next-hops are listed, not collapsed.</summary>
 public sealed class RouteResolutionTraceSummaryLineItem
 {
     public required string SummaryLine { get; init; }
 
+    public required string FamilyText { get; init; }
+
+    public required string DestinationAddressText { get; init; }
+
+    public required string SelectedTableText { get; init; }
+
+    public required string SelectedVrfText { get; init; }
+
+    public required string MatchedPrefixText { get; init; }
+
+    public required string NextHopGatewaysText { get; init; }
+
+    public required string EgressInterfacesText { get; init; }
+
+    public required string ExecutionPathText { get; init; }
+
+    public required string DecisionText { get; init; }
+
     public static RouteResolutionTraceSummaryLineItem FromProto(RouteResolutionTraceSummary trace)
     {
         ArgumentNullException.ThrowIfNull(trace);
-        string nextHops = trace.NextHopGateways.Count == 0
-            ? "—"
-            : string.Join(",", trace.NextHopGateways);
-        string egress = trace.EgressInterfaces.Count == 0
-            ? "—"
-            : string.Join(",", trace.EgressInterfaces);
-        string drift = trace.DriftCodes.Count == 0 ? "—" : string.Join(",", trace.DriftCodes);
-        string latency = trace.LatencyCodes.Count == 0 ? "—" : string.Join(",", trace.LatencyCodes);
         return new RouteResolutionTraceSummaryLineItem
         {
+            FamilyText = OrDash(trace.Family),
+            DestinationAddressText = OrDash(trace.DestinationAddress),
+            SelectedTableText = OrDash(trace.SelectedTable),
+            SelectedVrfText = OrDash(trace.SelectedVrf),
+            MatchedPrefixText = OrDash(trace.MatchedPrefix),
+            NextHopGatewaysText = JoinOrDash(trace.NextHopGateways),
+            EgressInterfacesText = JoinOrDash(trace.EgressInterfaces),
+            ExecutionPathText = OrDash(trace.ExecutionPath),
+            DecisionText = OrDash(trace.Decision),
             SummaryLine =
-                $"{trace.Family} dst={OrDash(trace.DestinationAddress)} " +
-                $"table={OrDash(trace.SelectedTable)} vrf={OrDash(trace.SelectedVrf)} " +
-                $"prefix={OrDash(trace.MatchedPrefix)} nh={nextHops} egress={egress} " +
-                $"path={OrDash(trace.ExecutionPath)} decision={OrDash(trace.Decision)} " +
-                $"drift={drift} latency={latency} rev={OrDash(trace.ReversePathSymmetryResult)}",
+                $"{trace.Family} dst={OrDash(trace.DestinationAddress)} table={OrDash(trace.SelectedTable)}",
         };
     }
 
     private static string OrDash(string? value)
-        => string.IsNullOrWhiteSpace(value) ? "—" : value;
+        => string.IsNullOrWhiteSpace(value) ? "—" : value.Trim();
+
+    private static string JoinOrDash(IEnumerable<string> values)
+        => RoutingAssuranceLineFormatting.JoinOrDash(values);
+}
+
+internal static class RoutingAssuranceLineFormatting
+{
+    public static string JoinOrDash(IEnumerable<string> values)
+    {
+        ArgumentNullException.ThrowIfNull(values);
+        string[] present = values.Where(static v => !string.IsNullOrWhiteSpace(v)).ToArray();
+        return present.Length == 0 ? "—" : string.Join(", ", present);
+    }
 }

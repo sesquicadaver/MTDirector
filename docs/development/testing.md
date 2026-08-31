@@ -2152,7 +2152,7 @@ dotnet test tests/Mfc.UnitTests -c Release --filter "FullyQualifiedName~RoutingD
 
 ## Living Specification — Desktop routing assurance viewers (M7.1-10)
 
-Issue Set M7.1-10 / Network Rule M7.1 Spec §10–§11. Read-only summaries; no full BGP table on Desktop; no routing writes.
+Issue Set M7.1-10 / Network Rule M7.1 Spec §10–§11. Read-only summaries; no full BGP table on Desktop; no routing writes. W2.2 binds next-hop/subject fields.
 
 | AC | Requirement | Module | Test |
 |----|-------------|--------|------|
@@ -2164,6 +2164,7 @@ Issue Set M7.1-10 / Network Rule M7.1 Spec §10–§11. Read-only summaries; no 
 | AC#6 Trace summary bounded | `RouteResolutionTraceSummary` proto/view | `Ac6TraceSummaryBoundedWithoutFullRouteTableDump` |
 | AC#7 Desktop architecture boundary | no Domain/RouterOs refs | `Ac7DesktopHasNoDomainOrRouterOsReferences` |
 | AC#8 Seven MVP modules unchanged | `ShellNavigationModule` count | `Ac8SevenMvpModulesRemainUnchanged` |
+| W2.2 next-hop / subject fields | typed rows `AllowedNextHopsText` / `SubjectText` / `NextHopGatewaysText` | `Ac9RoutingAssuranceBindsNextHopAndSubjectFields` + `RoutingAssuranceViewModelTests` |
 
 Filter:
 ```bash
