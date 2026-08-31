@@ -16,7 +16,7 @@ This document summarizes **code + documentation readiness** against the normativ
 | P2 read path (P2-04…P2-06) | **100% CLOSED** | Production probe + capture + DI gate |
 | P2 write path (P2-07…P2-11) | **100% CLOSED** | Runtimes + WriteEnabled gate + pilot runbook |
 | Desktop alignment P0–P2 | **CLOSED** | W1.1–W4.4 + W2.1–W2.2 |
-| Linear queue (§3.C) | **ACTIVE** | **NEXT = CONT-01** ([#340](https://github.com/sesquicadaver/MTDirector/issues/340)) |
+| Linear queue (§3.C) | **ACTIVE** | **NEXT = CONT-02** ([#341](https://github.com/sesquicadaver/MTDirector/issues/341)) |
 
 **Overall code readiness (milestones):** all 139 mapped product issues are **DONE in code**. Alignment P0–P2 is **DONE**. Remaining work is **glue + P3 Contracts** on a seeded queue — not a phase-stop.  
 **Queue integrity:** **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **PLAN-02** (#339) seeds continuous §3.C so `/autopilot` does not idle.  
@@ -47,8 +47,8 @@ Desktop alignment W1–W4 / W2.1–W2.2 is **DONE** on top of that baseline (not
 | # | ID | GitHub | Status |
 |--:|----|-------:|--------|
 | 133 | PLAN-02 | [#339](https://github.com/sesquicadaver/MTDirector/issues/339) | **DONE** ([#345](https://github.com/sesquicadaver/MTDirector/pull/345)) |
-| 134 | CONT-01 | [#340](https://github.com/sesquicadaver/MTDirector/issues/340) | **NEXT** after PLAN-02 |
-| 135 | CONT-02 | [#341](https://github.com/sesquicadaver/MTDirector/issues/341) | OPEN |
+| 134 | CONT-01 | [#340](https://github.com/sesquicadaver/MTDirector/issues/340) | **DONE** |
+| 135 | CONT-02 | [#341](https://github.com/sesquicadaver/MTDirector/issues/341) | **NEXT** |
 | 136 | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | OPEN |
 | 137 | W5-02 | [#343](https://github.com/sesquicadaver/MTDirector/issues/343) | OPEN |
 | 138 | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | OPEN |
@@ -84,7 +84,7 @@ Operator checklist: [`pilot-runbook.md`](../operations/pilot-runbook.md).
 
 | Item | Queue |
 |------|-------|
-| Rollback without Watch stream | CONT-01 |
+| Rollback without Watch stream | CONT-01 **DONE** |
 | Neighbor apply does not fill VRRP member b | CONT-02 |
 | No `ListPolicies` catalog RPC | W5-01 |
 | No ManagementPath / FastTrack Desktop RPC | W5-02 |

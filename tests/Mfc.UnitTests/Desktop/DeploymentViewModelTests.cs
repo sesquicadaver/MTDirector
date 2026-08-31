@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Mfc.UnitTests.Desktop;
 
-/// <summary>W3.3 Watch + W4.2 VRRP pair Create plan (not silent first Device).</summary>
+/// <summary>W3.3 Watch + W4.2 VRRP pair Create plan + CONT-01 Rollback Watch.</summary>
 public sealed class DeploymentViewModelTests
 {
     [Fact]
@@ -60,6 +60,88 @@ public sealed class DeploymentViewModelTests
             ["Activating: activating anchors", "Committed: committed"],
             vm.ProgressLines.ToArray());
         Assert.DoesNotContain("from-start-only", vm.ProgressLines);
+    }
+
+    [Fact]
+    public async Task RollbackWatchesProgressAndPrefersStreamOverRollbackTimeline()
+    {
+        Guid operationId = Guid.Parse("33333333-4444-5555-6666-777777777777");
+        FakeConnection connection = new();
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        FakeDeploymentClient client = new()
+        {
+            RollbackResponse = new DeploymentOperationSummary
+            {
+                OperationId = DesktopProtoUuid.FromGuid(operationId),
+                State = DeploymentOperationState.RollingBack,
+                Timeline = { "from-rollback-only" },
+            },
+            WatchEvents =
+            [
+                new DeploymentProgress
+                {
+                    OperationId = DesktopProtoUuid.FromGuid(operationId),
+                    State = DeploymentOperationState.RollingBack,
+                    TimelineEntry = "rolling back anchors",
+                },
+                new DeploymentProgress
+                {
+                    OperationId = DesktopProtoUuid.FromGuid(operationId),
+                    State = DeploymentOperationState.RolledBack,
+                    TimelineEntry = "rolled back",
+                },
+            ],
+        };
+
+        using DeploymentViewModel vm = new(client, connection, inventory)
+        {
+            OperationId = operationId,
+        };
+        vm.ProgressLines.Add("prior-start-line");
+
+        await vm.RollbackCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Equal(1, client.RollbackCalls);
+        Assert.Equal(1, client.WatchCalls);
+        Assert.Equal(operationId, client.WatchedOperationId);
+        Assert.Equal("Rollback RolledBack.", vm.StatusText);
+        Assert.Equal(
+            ["RollingBack: rolling back anchors", "RolledBack: rolled back"],
+            vm.ProgressLines.ToArray());
+        Assert.DoesNotContain("from-rollback-only", vm.ProgressLines);
+        Assert.DoesNotContain("prior-start-line", vm.ProgressLines);
+    }
+
+    [Fact]
+    public async Task RollbackFallsBackToTimelineWhenWatchEmpty()
+    {
+        Guid operationId = Guid.Parse("33333333-4444-5555-6666-777777777777");
+        FakeConnection connection = new();
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        FakeDeploymentClient client = new()
+        {
+            RollbackResponse = new DeploymentOperationSummary
+            {
+                OperationId = DesktopProtoUuid.FromGuid(operationId),
+                State = DeploymentOperationState.RolledBack,
+                Timeline = { "rollback-snapshot" },
+            },
+        };
+
+        using DeploymentViewModel vm = new(client, connection, inventory)
+        {
+            OperationId = operationId,
+        };
+        vm.ProgressLines.Add("prior-start-line");
+
+        await vm.RollbackCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Equal(1, client.RollbackCalls);
+        Assert.Equal(1, client.WatchCalls);
+        Assert.Equal("Rollback RolledBack.", vm.StatusText);
+        Assert.Equal(["prior-start-line", "rollback-snapshot"], vm.ProgressLines.ToArray());
     }
 
     [Fact]
@@ -213,9 +295,13 @@ public sealed class DeploymentViewModelTests
 
         public IReadOnlyList<DeploymentProgress> WatchEvents { get; init; } = [];
 
+        public DeploymentOperationSummary RollbackResponse { get; init; } = new();
+
         public int StartCalls { get; private set; }
 
         public int WatchCalls { get; private set; }
+
+        public int RollbackCalls { get; private set; }
 
         public Guid WatchedOperationId { get; private set; }
 
@@ -268,7 +354,11 @@ public sealed class DeploymentViewModelTests
         public Task<DeploymentOperationSummary> RollbackAsync(
             Guid operationId,
             CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            RollbackCalls++;
+            return Task.FromResult(RollbackResponse);
+        }
 
         public Task<DeploymentRecoveryStatus> GetRecoveryStatusAsync(
             Guid nodeId,

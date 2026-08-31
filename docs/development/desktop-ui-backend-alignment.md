@@ -134,7 +134,7 @@
 | W5.c | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | Typed deployment semantic policy diff |
 | CRS / physical lab | — | — | **Не §3** — residual / ops parallel |
 
-Glue **перед** W5 (існуючі RPC): **CONT-01** Rollback Watch ([#340](https://github.com/sesquicadaver/MTDirector/issues/340)); **CONT-02** neighbor → member b ([#341](https://github.com/sesquicadaver/MTDirector/issues/341)).
+Glue **перед** W5 (існуючі RPC): **CONT-01** Rollback Watch — **DONE**; **CONT-02** neighbor → member b ([#341](https://github.com/sesquicadaver/MTDirector/issues/341)).
 
 ---
 
@@ -161,8 +161,8 @@ W4.3 VRRP create+register wizard   ← DONE
 W4.4 Pair capture / compare guidance ← DONE
 W2.1 Diff record Before/After + warning truncate ← DONE
 W2.2 Routing assurance next-hop/subject fields ← DONE
-CONT-01 Rollback Watch              ← NEXT (§3)
-CONT-02 Neighbor apply member b
+CONT-01 Rollback Watch              ← DONE
+CONT-02 Neighbor apply member b     ← NEXT (§3)
 W5-01 ListPolicies catalog
 W5-02 ManagementPath / FastTrack Desktop
 W5-03 Typed deploy policy semantic diff
@@ -202,8 +202,8 @@ W5-03 Typed deploy policy semantic diff
 | W2.1 | **DONE** (Diff Before/After record detail; Compare warnings truncated) |
 | W2.2 | **DONE** (Routing assurance next-hop values + finding subject fields) |
 | W5 | **QUEUED** as W5-01…03 (§3.C; not idle) |
-| CONT-01 | **NEXT** Rollback Watch (#340) |
-| CONT-02 | OPEN neighbor → member b (#341) |
+| CONT-01 | **DONE** Rollback Watch (#340) |
+| CONT-02 | **NEXT** neighbor → member b (#341) |
 
 ### W3.1 Snapshots: Capture + progress — **DONE**
 - **Дані:** SnapshotService `StartCapture` / `WatchCapture` (device_id only; Controller M1-26)
@@ -221,15 +221,22 @@ W5-03 Typed deploy policy semantic diff
 
 ### W3.3 Operations: Onboarding/Deploy Watch — **DONE**
 - **Дані:** `OnboardingService.Watch` / `DeploymentService.Watch` (clients already existed; Start used only `Timeline`)
-- **Зроблено:** Start → Start RPC + Watch stream off UI thread; ProgressLines bind stream `state`/`timeline_entry` (fallback to Start.Timeline if Watch empty)
-- **Не чіпали:** Rollback Watch (**CONT-01**); GetNodeWorkflow (W3.4); WriteEnabled
+- **Зроблено:** Start → Start RPC + Watch stream off UI thread; ProgressLines bind stream `state`/`timeline_entry` (fallback to Start.Timeline if Watch empty). Rollback Watch: **CONT-01**.
+- **Не чіпали:** GetNodeWorkflow (W3.4); WriteEnabled
 - **Перевірка:** Living Spec `Ac6cOperationsStartWatchesOnboardingAndDeploymentProgress`; `OnboardingViewModelTests`; `DeploymentViewModelTests`
 - **Файли:** `OnboardingViewModel.cs`, `DeploymentViewModel.cs`
+
+### CONT-01 Operations: Deployment Rollback Watch — **DONE**
+- **Дані:** existing `Watch` / `Rollback` RPCs; hub replay after Committed includes rollback events
+- **Зроблено:** `RollbackAndWatchAsync` (Task.Run); ProgressLines from Watch (fallback Timeline); `DeploymentProgressHub` does not stop replay at the first terminal
+- **Не чіпали:** Onboarding Rollback Watch; WriteEnabled; new RPC
+- **Перевірка:** Living Spec `Ac6eDeploymentRollbackWatchesProgress`; `DeploymentViewModelTests`; `Ac3bWatchReplaysRollbackEventsAfterCommittedTerminal`
+- **Файли:** `DeploymentViewModel.cs`, `DeploymentProgressHub.cs`
 
 ### W3.4 Node: GetNodeWorkflow — **DONE**
 - **Дані:** InventoryService `GetNodeWorkflow` → `NodeWorkflow.workflow_status` + `DeviceWorkflowProjection` (contributing_status / sync_classification)
 - **Зроблено:** Desktop client + Node tab loads workflow off UI thread; `WorkflowDeviceLines` bind projections; `DeploymentReadinessText` = canonical workflow status (не mashup Zones+Onboarding). Inventory tree label лишається з `GetNode.workflow_status` (той самий projector, без N+1 на refresh).
-- **Не чіпали:** WriteEnabled; Zones mutate (W3.5); Rollback Watch; local SemanticDiffEngine
+- **Не чіпали:** WriteEnabled; Zones mutate (W3.5); local SemanticDiffEngine
 - **Перевірка:** Living Spec `Ac3cNodeLoadsGetNodeWorkflowInsteadOfAdHocReadinessMashup`; `NodeDetailViewModelTests`
 - **Файли:** `IInventoryTreeClient`, `GrpcInventoryTreeClient`, `NodeDetailViewModel`, `MainWindow.axaml`, `App.axaml.cs`
 
@@ -282,4 +289,4 @@ W5-03 Typed deploy policy semantic diff
 - **Перевірка:** Living Spec `Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy`; `SnapshotViewerViewModelTests`; `SnapshotDiffViewModelTests`; `InventoryOpsSelectionTests`
 - **Файли:** `InventoryOpsSelection`, `SnapshotViewerViewModel`, `SnapshotDiffViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **CONT-01** ([#340](https://github.com/sesquicadaver/MTDirector/issues/340)) — Rollback Watch. P0–P2 UI alignment closed. W5 is queued as W5-01…03, not a stop-gate.
+**NEXT (alignment / §3):** **CONT-02** ([#341](https://github.com/sesquicadaver/MTDirector/issues/341)) — neighbor apply member b. CONT-01 Rollback Watch **DONE**.

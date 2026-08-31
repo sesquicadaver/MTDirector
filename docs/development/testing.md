@@ -1823,6 +1823,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | AC#6 Operations onboarding/deploy/recovery | Onboarding + Deployment VMs | `Ac6OperationsViewSupportsOnboardingDeploymentAndRecovery` |
 | W1.4 Deploy/Onboarding plan collections | `ArtifactLines` / `OrderLines` / `ProbeAndWatchdogLines` / `Placements` | `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta` |
 | W3.3 Onboarding/Deploy Watch | Start + Watch → `ProgressLines` | `Ac6cOperationsStartWatchesOnboardingAndDeploymentProgress` + `OnboardingViewModelTests` + `DeploymentViewModelTests` |
+| CONT-01 Deployment Rollback Watch | Rollback + Watch → `ProgressLines` | `Ac6eDeploymentRollbackWatchesProgress` + `DeploymentViewModelTests` + `Ac3bWatchReplaysRollbackEventsAfterCommittedTerminal` |
 | W4.2 VRRP ops not silent first Device | Create plan / Validate all Node members | `Ac6dOperationsTargetVrrpNodePairNotSilentFirstDevice` + `InventoryOpsSelectionTests` + `DeploymentViewModelTests` + `OnboardingViewModelTests` |
 | AC#7 Drift без automatic fix | `DriftViewModel` + `DriftService` | `Ac7DriftViewHasNoAutomaticFix` |
 | W1.5 Drift findings зі list | `DriftEventListItem.Findings` + `SelectedEventFindings` | `Ac7bDriftShowsFindingsFromListResponseNotOnlySemanticDiff` + `DriftViewModelTests` |
@@ -1946,7 +1947,7 @@ Issue Set M6-09. **M6 CLOSED**. Live CHR / live physical CRS OFF — E2E Living 
 
 | AC / вимога | Модуль | Тест / артефакт |
 |-------------|--------|-----------------|
-| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md`; §3.C NEXT = CONT-01 (not idle empty queue) | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
+| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md`; §3.C NEXT = CONT-02 | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
 | AC#2 Release gates executed | `docs/release/release-gates.md` | `Ac2ReleaseGatesChecklistExists` |
 | AC#3 CHR matrix green | E2E Living Specs (substitute) | `Ac3ChrMatrixSubstitutedByE2ELivingSpecs` |
 | AC#4 Physical CRS green | `VrrpCrsE2E` + `crs-switch` | `Ac4PhysicalCrsSubstitutedByScriptedFixture` |
