@@ -71,6 +71,7 @@ public sealed class DesktopVerticalSliceWiringTests
 
         Type policies = typeof(IPolicyServiceClient);
         Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ListRulesAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ListPoliciesAsync)));
         Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.GetPolicyRevisionAsync)));
         Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.CreateDraftPolicyAsync)));
         Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.ValidateRevisionAsync)));

@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W5-01** ([#342](https://github.com/sesquicadaver/MTDirector/issues/342)): `ListPolicies` catalog RPC (active policies + latest revision) bound to Desktop Policies catalog list → select loads existing rules/objects. Living Spec `Ac5d`. **NEXT = W5-02** (#343).
 - **CONT-02** ([#341](https://github.com/sesquicadaver/MTDirector/issues/341)): Add router neighbor Apply fills VRRP member a then member b when pair mode is on (no auto-register). Living Spec `Ac2f`. **NEXT = W5-01** (#342).
 - **CONT-01** ([#340](https://github.com/sesquicadaver/MTDirector/issues/340)): Desktop Deployment Rollback consumes `Watch` (off UI thread, same pattern as Start); hub replay continues past Committed so a second Watch sees rollback events. Living Spec `Ac6e`. **NEXT = CONT-02** (#341).
 - **PLAN-02** ([#339](https://github.com/sesquicadaver/MTDirector/issues/339)): continuous product queue (§3.C) so wave/lab phase close never idles `/autopilot`. Canonical plan [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md). **NEXT = CONT-01** ([#340](https://github.com/sesquicadaver/MTDirector/issues/340)).

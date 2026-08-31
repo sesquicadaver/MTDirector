@@ -68,6 +68,89 @@ public sealed class PoliciesViewModelTests
     }
 
     [Fact]
+    public async Task RefreshCatalogFillsCatalogFromListPolicies()
+    {
+        Guid policyId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeee0001");
+        Guid revisionId = Guid.Parse("99999999-aaaa-bbbb-cccc-dddddddddddd");
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        PolicyCatalogListItem row = CatalogRow(policyId, revisionId, "lab-baseline");
+        StubPolicyPanel panel = new()
+        {
+            DraftState = EmptyDraft(revisionId, policyId),
+            CatalogItems = [row],
+        };
+        using PoliciesViewModel vm = new(panel, connection, inventory);
+
+        await vm.RefreshCatalogCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Equal(1, panel.ListCatalogCalls);
+        PolicyCatalogListItem listed = Assert.Single(vm.Catalog);
+        Assert.Equal("lab-baseline", listed.Name);
+        Assert.Equal(revisionId, listed.LatestRevisionId);
+        Assert.Contains("lab-baseline", listed.SummaryLine, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task SelectingCatalogItemLoadsRevisionRulesAndObjects()
+    {
+        Guid policyId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeee0001");
+        Guid revisionId = Guid.Parse("99999999-aaaa-bbbb-cccc-dddddddddddd");
+        Guid ruleId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid addressId = Guid.Parse("22222222-3333-4444-5555-666666666666");
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        PolicyCatalogListItem row = CatalogRow(policyId, revisionId, "lab-baseline");
+        StubPolicyPanel panel = new()
+        {
+            DraftState = EmptyDraft(
+                revisionId,
+                policyId,
+                [
+                    new PolicyRuleListItem
+                    {
+                        Id = ruleId,
+                        Family = IpAddressFamily.Ipv4,
+                        Chain = PolicyFilterChain.Forward,
+                        Stage = PolicyPipelineStage.CompanyAllow,
+                        FamilyText = "Ipv4",
+                        ChainText = "Forward",
+                        StageText = "CompanyAllow",
+                        Ordinal = 0,
+                        Enabled = true,
+                        Effect = PolicyRuleEffect.Accept,
+                        EffectText = "Accept",
+                        Description = "allow-lan",
+                        WarningLines = [],
+                    },
+                ],
+                [
+                    new PolicyAddressObjectListItem
+                    {
+                        Id = addressId,
+                        Name = "lan",
+                        FamilyText = "Ipv4",
+                        EntriesText = "10.0.0.0/8",
+                    },
+                ]),
+            CatalogItems = [row],
+        };
+        using PoliciesViewModel vm = new(panel, connection, inventory);
+        await vm.RefreshCatalogCommand.ExecuteAsync(null);
+
+        vm.SelectedCatalogItem = row;
+        await WaitUntil(() => panel.LoadRevisionCalls > 0);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Equal(1, panel.LoadRevisionCalls);
+        Assert.Equal(revisionId, panel.LastLoadedRevisionId);
+        Assert.Equal(revisionId.ToString("D"), vm.RevisionIdText);
+        Assert.Equal("allow-lan", Assert.Single(vm.Rules).Description);
+        Assert.Equal("lan", Assert.Single(vm.AddressObjects).Name);
+    }
+
+    [Fact]
     public async Task UpdateRuleCommandSendsSelectedRuleAndFormFields()
     {
         Guid revisionId = Guid.Parse("99999999-aaaa-bbbb-cccc-dddddddddddd");
@@ -222,11 +305,42 @@ public sealed class PoliciesViewModelTests
         Assert.Contains($"device={deviceId:D}", vm.CompileArtifactLines[1], StringComparison.Ordinal);
     }
 
-    private static PolicyRevisionPanelState EmptyDraft(Guid revisionId)
+    private static PolicyCatalogListItem CatalogRow(Guid policyId, Guid revisionId, string name)
+        => new()
+        {
+            PolicyId = policyId,
+            Name = name,
+            Kind = PolicyKind.CompanyBaseline,
+            KindText = "CompanyBaseline",
+            LatestRevisionId = revisionId,
+            LatestRevisionNumber = 1,
+            LatestRevisionState = PolicyRevisionState.Draft,
+            StateText = "Draft",
+        };
+
+    private static async Task WaitUntil(Func<bool> condition, int timeoutMs = 2000)
+    {
+        DateTimeOffset deadline = DateTimeOffset.UtcNow.AddMilliseconds(timeoutMs);
+        while (!condition())
+        {
+            if (DateTimeOffset.UtcNow > deadline)
+            {
+                throw new TimeoutException("Condition was not met in time.");
+            }
+
+            await Task.Delay(10);
+        }
+    }
+
+    private static PolicyRevisionPanelState EmptyDraft(
+        Guid revisionId,
+        Guid? policyId = null,
+        IReadOnlyList<PolicyRuleListItem>? rules = null,
+        IReadOnlyList<PolicyAddressObjectListItem>? addresses = null)
         => new()
         {
             RevisionId = revisionId,
-            PolicyId = Guid.Parse("cccccccc-dddd-eeee-ffff-000000000000"),
+            PolicyId = policyId ?? Guid.Parse("cccccccc-dddd-eeee-ffff-000000000000"),
             State = PolicyRevisionState.Draft,
             StateText = "Draft",
             Kind = PolicyKind.CompanyBaseline,
@@ -235,8 +349,8 @@ public sealed class PoliciesViewModelTests
             ContentHashHex = new string('a', 64),
             IsReadOnly = false,
             TestsJson = "[]",
-            Rules = [],
-            AddressObjects = [],
+            Rules = rules ?? [],
+            AddressObjects = addresses ?? [],
             ServiceObjects = [],
             ChainContracts = [],
             RevisionWarnings = [],
@@ -246,7 +360,15 @@ public sealed class PoliciesViewModelTests
     {
         public PolicyRevisionPanelState? DraftState { get; init; }
 
+        public IReadOnlyList<PolicyCatalogListItem> CatalogItems { get; init; } = [];
+
         public int CreateDraftCalls { get; private set; }
+
+        public int ListCatalogCalls { get; private set; }
+
+        public int LoadRevisionCalls { get; private set; }
+
+        public Guid LastLoadedRevisionId { get; private set; }
 
         public Task<PolicyRevisionPanelState> CreateDraftAsync(
             string name,
@@ -258,10 +380,23 @@ public sealed class PoliciesViewModelTests
             return Task.FromResult(DraftState ?? throw new InvalidOperationException("DraftState not set."));
         }
 
+        public Task<IReadOnlyList<PolicyCatalogListItem>> ListCatalogAsync(
+            CancellationToken cancellationToken = default)
+        {
+            ListCatalogCalls++;
+            cancellationToken.ThrowIfCancellationRequested();
+            return Task.FromResult(CatalogItems);
+        }
+
         public Task<PolicyRevisionPanelState> LoadRevisionAsync(
             Guid revisionId,
             CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
+        {
+            LoadRevisionCalls++;
+            LastLoadedRevisionId = revisionId;
+            cancellationToken.ThrowIfCancellationRequested();
+            return Task.FromResult(DraftState ?? throw new InvalidOperationException("DraftState not set."));
+        }
 
         public Task<PolicyRevisionPanelState> ValidateAsync(
             Guid revisionId,
@@ -450,6 +585,13 @@ public sealed class PoliciesViewModelTests
         {
             cancellationToken.ThrowIfCancellationRequested();
             return Task.FromResult(DraftState ?? throw new InvalidOperationException("DraftState not set."));
+        }
+
+        public Task<IReadOnlyList<PolicyCatalogListItem>> ListCatalogAsync(
+            CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return Task.FromResult<IReadOnlyList<PolicyCatalogListItem>>([]);
         }
 
         public Task<PolicyRevisionPanelState> LoadRevisionAsync(

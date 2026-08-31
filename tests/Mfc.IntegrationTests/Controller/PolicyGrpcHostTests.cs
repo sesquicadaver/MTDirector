@@ -147,6 +147,71 @@ public sealed class PolicyGrpcHostTests
     }
 
     [Fact]
+    public async Task ListPoliciesReturnsCreatedDraftsWithLatestRevision()
+    {
+        string connectionString = await _postgres.CreateFreshDatabaseAsync();
+        string url = $"http://127.0.0.1:{GetFreeTcpPort()}";
+
+        await using var app = Program.BuildHost(DevArgs(url, connectionString));
+        await app.Services.MigrateAsync();
+        await app.StartAsync();
+
+        try
+        {
+            await WaitForPortAsync(url, TimeSpan.FromSeconds(10));
+            using GrpcChannel channel = GrpcChannel.ForAddress(url);
+            PolicyService.PolicyServiceClient client = new(channel);
+            Metadata headers = ActorHeaders("tester");
+
+            PolicyDraft first = await client.CreateDraftPolicyAsync(
+                new CreateDraftPolicyRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    Name = "alpha-baseline",
+                    Kind = PolicyKind.CompanyBaseline,
+                    OwnerScope = PolicyOwnerScope.Company,
+                },
+                headers,
+                deadline: Deadline());
+            PolicyDraft second = await client.CreateDraftPolicyAsync(
+                new CreateDraftPolicyRequest
+                {
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    Name = "beta-baseline",
+                    Kind = PolicyKind.CompanyBaseline,
+                    OwnerScope = PolicyOwnerScope.Company,
+                },
+                headers,
+                deadline: Deadline());
+
+            ListPoliciesResponse listed = await client.ListPoliciesAsync(
+                new ListPoliciesRequest(),
+                headers,
+                deadline: Deadline());
+            Assert.Equal(2, listed.Policies.Count);
+            Assert.Equal("alpha-baseline", listed.Policies[0].Name);
+            Assert.Equal(first.PolicyId, listed.Policies[0].PolicyId);
+            Assert.Equal(first.RevisionId, listed.Policies[0].LatestRevisionId);
+            Assert.Equal(1u, listed.Policies[0].LatestRevisionNumber);
+            Assert.Equal(PolicyRevisionState.Draft, listed.Policies[0].LatestRevisionState);
+            Assert.Equal(first.ContentHash, listed.Policies[0].ContentHash);
+            Assert.Equal("beta-baseline", listed.Policies[1].Name);
+            Assert.Equal(second.RevisionId, listed.Policies[1].LatestRevisionId);
+
+            ListPoliciesResponse filtered = await client.ListPoliciesAsync(
+                new ListPoliciesRequest { Kind = PolicyKind.SiteOverlay },
+                headers,
+                deadline: Deadline());
+            Assert.Empty(filtered.Policies);
+        }
+        finally
+        {
+            using CancellationTokenSource stopCts = new(TimeSpan.FromSeconds(5));
+            await app.StopAsync(stopCts.Token);
+        }
+    }
+
+    [Fact]
     public async Task C2ComposeEffectivePolicyReturnsRulesRefsAndHash()
     {
         string connectionString = await _postgres.CreateFreshDatabaseAsync();

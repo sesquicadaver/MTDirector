@@ -13,6 +13,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
     public const string ActorMetadataKey = InventoryGrpcService.ActorMetadataKey;
 
     private readonly CreateDraftPolicyUseCase _createDraft;
+    private readonly ListPoliciesUseCase _listPolicies;
     private readonly GetPolicyRevisionUseCase _getRevision;
     private readonly ListRulesUseCase _listRules;
     private readonly GetRuleUseCase _getRule;
@@ -39,6 +40,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
 
     public PolicyGrpcService(
         CreateDraftPolicyUseCase createDraft,
+        ListPoliciesUseCase listPolicies,
         GetPolicyRevisionUseCase getRevision,
         ListRulesUseCase listRules,
         GetRuleUseCase getRule,
@@ -64,6 +66,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(createDraft);
+        ArgumentNullException.ThrowIfNull(listPolicies);
         ArgumentNullException.ThrowIfNull(getRevision);
         ArgumentNullException.ThrowIfNull(listRules);
         ArgumentNullException.ThrowIfNull(getRule);
@@ -88,6 +91,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         ArgumentNullException.ThrowIfNull(compileNodeArtifacts);
         ArgumentNullException.ThrowIfNull(environment);
         _createDraft = createDraft;
+        _listPolicies = listPolicies;
         _getRevision = getRevision;
         _listRules = listRules;
         _getRule = getRule;
@@ -128,6 +132,23 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
                 OwnerScope = PolicyProtoMapper.ToDomain(request.OwnerScope),
                 OwnerId = request.OwnerId is null ? null : ProtoUuid.ToGuid(request.OwnerId),
                 ParentContextHash = PolicyProtoMapper.ToOptionalHashBytes(request.ParentContextHash),
+            },
+            context.CancellationToken).ConfigureAwait(false);
+        return PolicyProtoMapper.ToProto(Unwrap(result));
+    }
+
+    public override async Task<ListPoliciesResponse> ListPolicies(
+        ListPoliciesRequest request,
+        ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ApplicationResult<PolicyCatalogListView> result = await _listPolicies.ExecuteAsync(
+            new ListPoliciesQuery
+            {
+                Actor = ResolveActor(context),
+                Kind = request.Kind == global::Mfc.Contracts.Mfc.V1.PolicyKind.Unspecified
+                    ? null
+                    : PolicyProtoMapper.ToDomain(request.Kind),
             },
             context.CancellationToken).ConfigureAwait(false);
         return PolicyProtoMapper.ToProto(Unwrap(result));

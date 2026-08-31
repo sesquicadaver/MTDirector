@@ -18,6 +18,7 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
     private readonly IControllerConnectionService _connection;
     private readonly InventoryTreeViewModel _inventory;
     private bool _disposed;
+    private bool _suppressCatalogSelection;
     private byte[]? _contentHash;
     private byte[]? _logicalEffectiveHash;
     private byte[]? _analysisBundleHash;
@@ -92,6 +93,8 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
     }
 
     public ObservableCollection<PolicyRuleListItem> Rules { get; } = [];
+
+    public ObservableCollection<PolicyCatalogListItem> Catalog { get; } = [];
 
     public ObservableCollection<PolicyAddressObjectListItem> AddressObjects { get; } = [];
 
@@ -229,10 +232,26 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
     private PolicyRuleListItem? _selectedRule;
 
     [ObservableProperty]
+    private PolicyCatalogListItem? _selectedCatalogItem;
+
+    [ObservableProperty]
     private PolicyFindingListItem? _selectedFinding;
 
     [ObservableProperty]
     private string _compileCapabilityHashText = string.Empty;
+
+    [RelayCommand(CanExecute = nameof(CanOperate))]
+    private async Task RefreshCatalogAsync()
+    {
+        await RunBusyAsync(async ct =>
+        {
+            IReadOnlyList<PolicyCatalogListItem> items = await Task.Run(
+                    async () => await _policies.ListCatalogAsync(ct).ConfigureAwait(false),
+                    ct)
+                .ConfigureAwait(true);
+            ApplyCatalog(items);
+        }).ConfigureAwait(true);
+    }
 
     [RelayCommand(CanExecute = nameof(CanOperate))]
     private async Task LoadAsync()
@@ -262,6 +281,11 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
             ApplyState(await _policies.CreateDraftAsync(DraftNameText.Trim(), PolicyKind.CompanyBaseline, ct)
                 .ConfigureAwait(true));
             DraftNameText = string.Empty;
+            IReadOnlyList<PolicyCatalogListItem> items = await Task.Run(
+                    async () => await _policies.ListCatalogAsync(ct).ConfigureAwait(false),
+                    ct)
+                .ConfigureAwait(true);
+            ApplyCatalog(items);
         }).ConfigureAwait(true);
     }
 
@@ -922,6 +946,35 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         NotifyCommands();
     }
 
+    private void ApplyCatalog(IReadOnlyList<PolicyCatalogListItem> items)
+    {
+        Guid? selectedPolicyId = SelectedCatalogItem?.PolicyId;
+        Guid loadedRevision = Guid.TryParse(RevisionIdText, out Guid revisionId) ? revisionId : Guid.Empty;
+        Catalog.Clear();
+        foreach (PolicyCatalogListItem item in items)
+        {
+            Catalog.Add(item);
+        }
+
+        PolicyCatalogListItem? next = null;
+        if (selectedPolicyId is Guid policyId)
+        {
+            next = Catalog.FirstOrDefault(c => c.PolicyId == policyId);
+        }
+
+        next ??= Catalog.FirstOrDefault(c => c.LatestRevisionId == loadedRevision);
+
+        _suppressCatalogSelection = true;
+        try
+        {
+            SelectedCatalogItem = next;
+        }
+        finally
+        {
+            _suppressCatalogSelection = false;
+        }
+    }
+
     private async Task RunBusyAsync(Func<CancellationToken, Task> action)
     {
         if (_connection.State != ControllerConnectionState.Connected)
@@ -955,6 +1008,7 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
     private void NotifyCommands()
     {
         LoadCommand.NotifyCanExecuteChanged();
+        RefreshCatalogCommand.NotifyCanExecuteChanged();
         CreateDraftCommand.NotifyCanExecuteChanged();
         AddRuleCommand.NotifyCanExecuteChanged();
         UpdateRuleCommand.NotifyCanExecuteChanged();
@@ -1031,6 +1085,35 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         }
 
         return null;
+    }
+
+    partial void OnSelectedCatalogItemChanged(PolicyCatalogListItem? value)
+    {
+        if (_suppressCatalogSelection || value is null)
+        {
+            return;
+        }
+
+        if (Guid.TryParse(RevisionIdText, out Guid current)
+            && current == value.LatestRevisionId
+            && _contentHash is not null)
+        {
+            return;
+        }
+
+        _ = SelectCatalogItemAsync(value);
+    }
+
+    private async Task SelectCatalogItemAsync(PolicyCatalogListItem item)
+    {
+        await RunBusyAsync(async ct =>
+        {
+            ApplyState(await Task.Run(
+                    async () => await _policies.LoadRevisionAsync(item.LatestRevisionId, ct)
+                        .ConfigureAwait(false),
+                    ct)
+                .ConfigureAwait(true));
+        }).ConfigureAwait(true);
     }
 
     partial void OnSelectedRuleChanged(PolicyRuleListItem? value)
