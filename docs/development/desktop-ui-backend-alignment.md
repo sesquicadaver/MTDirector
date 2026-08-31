@@ -110,7 +110,7 @@
 1. **Node-centric shell** для `NodeKind.Vrrp`: members table (a/b), role, mgmt host, last capture — **DONE** (W4.1)
 2. Selection model: ops на **Node** (pair) з drill-down member; Deploy не «перший child» мовчки — **DONE** (W4.2)
 3. Wizard: опція create VRRP node + register 2 devices — **DONE** (W4.3)
-4. Pair capture / compare guidance (per-member captures; cross-device compare лишається forbid by design — показати why) — **W4.4**
+4. Pair capture / compare guidance (per-member captures; cross-device compare лишається forbid by design — показати why) — **DONE** (W4.4)
 
 Залежить від W2.3 (labels) і W3.1 (capture).
 
@@ -145,7 +145,7 @@ W3.7 Drift GetDriftEvent           ← DONE
 W4.1 VRRP Node members table       ← DONE
 W4.2 Deploy not silent first-child ← DONE
 W4.3 VRRP create+register wizard   ← DONE
-W4.4 Pair capture / compare guidance
+W4.4 Pair capture / compare guidance ← DONE
 ```
 
 Кожен PR: один модуль / один клас gap; оновити цей документ (статус DONE); Desktop Living Spec AC на ключові рядки axaml/VM.
@@ -178,7 +178,8 @@ W4.4 Pair capture / compare guidance
 | W4.1 | **DONE** (VRRP Node a/b members: role / mgmt host / last capture) |
 | W4.2 | **DONE** (Deploy/Onboarding plan all VRRP members, not silent first Device) |
 | W4.3 | **DONE** (Add router: CreateNode Vrrp + register two devices) |
-| W2.1–W2.2, W4.4, W5 | **TODO** |
+| W4.4 | **DONE** (VRRP per-member capture guidance; compare shows why a-against-b is forbidden) |
+| W2.1–W2.2, W5 | **TODO** |
 
 ### W3.1 Snapshots: Capture + progress — **DONE**
 - **Дані:** SnapshotService `StartCapture` / `WatchCapture` (device_id only; Controller M1-26)
@@ -245,9 +246,16 @@ W4.4 Pair capture / compare guidance
 
 ### W4.3 Add router: VRRP Node + two devices — **DONE**
 - **Дані:** Inventory `CreateNode(declared_kind=Vrrp)` + two `RegisterDevice` / `UpdateDeviceConnection` (existing RPCs)
-- **Зроблено:** checkbox «Create as VRRP pair» on new Node; one submit registers members a/b (distinct names/hosts; shared credentials). Roles not invented — capture labels stay W2.3/W4.4.
+- **Зроблено:** checkbox «Create as VRRP pair» on new Node; one submit registers members a/b (distinct names/hosts; shared credentials). Roles not invented — capture labels stay W2.3.
 - **Не чіпали:** pair capture/compare guidance (W4.4); WriteEnabled; neighbor-apply for member b
 - **Перевірка:** Living Spec `Ac2eAddRouterWizardCreatesVrrpNodeAndRegistersTwoDevices`; `AddRouterWizardViewModelTests`
 - **Файли:** `AddRouterWizardViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment):** W4.4 Pair capture / compare guidance (per-member captures; cross-device compare forbid — show why).
+### W4.4 Snapshots: VRRP pair capture / compare guidance — **DONE**
+- **Дані:** `StartCapture`/`WatchCapture` лишаються `device_id`; `CompareSnapshots` already forbids different devices (`SNAPSHOTS_FROM_DIFFERENT_DEVICES`, M1-24)
+- **Зроблено:** Snapshots hint when VRRP Node/member selected — capture each member separately (no silent first child). Semantic diff shows why a-against-b is forbidden (same-device only). RPC error with that code maps to the same why-text.
+- **Не чіпали:** `node_id` StartCapture; WriteEnabled; local SemanticDiffEngine; server Compare
+- **Перевірка:** Living Spec `Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy`; `SnapshotViewerViewModelTests`; `SnapshotDiffViewModelTests`; `InventoryOpsSelectionTests`
+- **Файли:** `InventoryOpsSelection`, `SnapshotViewerViewModel`, `SnapshotDiffViewModel`, `MainWindow.axaml`
+
+**NEXT (alignment):** W2.1 Diff / Snapshot record fidelity (optional Before/After record detail; warnings pagination).

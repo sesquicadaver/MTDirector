@@ -152,6 +152,78 @@ public sealed class SnapshotViewerViewModelTests
         Assert.False(vm.CaptureCommand.CanExecute(null));
     }
 
+    [Fact]
+    public void VrrpNodeSelectionShowsPerMemberCaptureGuidanceAndDisablesCapture()
+    {
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        (InventoryNodeViewModel site, InventoryNodeViewModel node, _) = CreateVrrpSite();
+        inventory.Roots.Add(site);
+        inventory.SelectedNode = node;
+
+        using SnapshotViewerViewModel vm = new(new StubViewer(), new FakeSnapshotClient(), connection, inventory);
+
+        Assert.False(vm.CaptureCommand.CanExecute(null));
+        Assert.True(vm.HasVrrpPairGuidance);
+        Assert.Equal(InventoryOpsSelection.VrrpPairCaptureNodeHint, vm.PairGuidanceText);
+        Assert.DoesNotContain("Master", vm.PairGuidanceText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void VrrpMemberSelectionKeepsDeviceCaptureAndShowsSameDeviceCompareHint()
+    {
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        (InventoryNodeViewModel site, _, InventoryNodeViewModel memberA) = CreateVrrpSite();
+        inventory.Roots.Add(site);
+        inventory.SelectedNode = memberA;
+
+        using SnapshotViewerViewModel vm = new(new StubViewer(), new FakeSnapshotClient(), connection, inventory);
+
+        Assert.True(vm.CaptureCommand.CanExecute(null));
+        Assert.True(vm.HasVrrpPairGuidance);
+        Assert.Equal(InventoryOpsSelection.VrrpPairCaptureMemberHint, vm.PairGuidanceText);
+        Assert.Contains("same device", vm.PairGuidanceText, StringComparison.Ordinal);
+    }
+
+    private static (InventoryNodeViewModel Site, InventoryNodeViewModel Node, InventoryNodeViewModel MemberA)
+        CreateVrrpSite()
+    {
+        Guid nodeId = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff");
+        InventoryNodeViewModel site = new(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Site,
+            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            DisplayName = "LAB",
+            Children =
+            [
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeId,
+                    DisplayName = "edge-pair",
+                    NodeKindText = "Vrrp",
+                    Children =
+                    [
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = Guid.Parse("11111111-2222-3333-4444-555555555555"),
+                            DisplayName = "r1",
+                        },
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = Guid.Parse("22222222-3333-4444-5555-666666666666"),
+                            DisplayName = "r2",
+                        },
+                    ],
+                },
+            ],
+        });
+        return (site, site.Children[0], site.Children[0].Children[0]);
+    }
+
     private sealed class FakeConnection : IControllerConnectionService
     {
         public ControllerConnectionState State { get; set; } = ControllerConnectionState.Disconnected;

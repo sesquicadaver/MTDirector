@@ -28,6 +28,7 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
         _inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
         _inventory.PropertyChanged += OnInventoryPropertyChanged;
         _connection.StateChanged += OnConnectionStateChanged;
+        RefreshPairGuidance();
     }
 
     public ObservableCollection<SnapshotCaptureListItem> Captures { get; } = [];
@@ -49,6 +50,12 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
 
     [ObservableProperty]
     private string _statusText = "Select base and target captures, then Compare.";
+
+    [ObservableProperty]
+    private string _pairGuidanceText = string.Empty;
+
+    [ObservableProperty]
+    private bool _hasVrrpPairGuidance;
 
     [ObservableProperty]
     private SnapshotCaptureListItem? _baseCapture;
@@ -75,7 +82,9 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
     {
         if (_inventory.SelectedNode is not { Kind: InventoryTreeKind.Device } device)
         {
-            ErrorText = "Select a device to load captures for diff.";
+            ErrorText = InventoryOpsSelection.IsVrrpPair(_inventory.SelectedNode, _inventory.Roots)
+                ? "Select a VRRP member Device to compare captures of that same member (not a against b)."
+                : "Select a device to load captures for diff.";
             return;
         }
 
@@ -176,6 +185,7 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
     {
         ReloadCapturesCommand.NotifyCanExecuteChanged();
         CompareCommand.NotifyCanExecuteChanged();
+        RefreshPairGuidance();
         InventoryNodeViewModel? selected = _inventory.SelectedNode;
         if (selected is null || selected.Kind != InventoryTreeKind.Device)
         {
@@ -183,6 +193,7 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
             _diff.Clear();
             ApplyCapturesResult(new SnapshotDiffLoadResult { Succeeded = false });
             StatusText = "Select a device with completed captures to compare.";
+            RefreshPairGuidance();
             return;
         }
 
@@ -190,6 +201,14 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
         {
             ReloadCapturesCommand.Execute(null);
         }
+    }
+
+    private void RefreshPairGuidance()
+    {
+        PairGuidanceText = InventoryOpsSelection.FormatCompareGuidance(
+            _inventory.SelectedNode,
+            _inventory.Roots);
+        HasVrrpPairGuidance = !string.IsNullOrWhiteSpace(PairGuidanceText);
     }
 
     private async Task LoadCapturesInternalAsync(Guid deviceId)
@@ -282,7 +301,7 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
 
         OnPropertyChanged(nameof(HasWarnings));
         IsNoDifferences = result.IsNoDifferences;
-        ErrorText = result.Error;
+        ErrorText = InventoryOpsSelection.ExplainCompareError(result.Error);
         StatusText = result.IsNoDifferences
             ? "No differences"
             : $"{result.AllEntries.Count} change(s) across {result.SectionGroups.Count} section(s).";

@@ -30,7 +30,7 @@ Authoritative ТЗ and Issue Sets live in the repository root and are indexed in
 |----------|---------|
 | [`development/local-environment.md`](development/local-environment.md) | Workstation bootstrap |
 | [`development/testing.md`](development/testing.md) | Living Specification matrices (ТЗ → module → tests) |
-| [`development/desktop-ui-backend-alignment.md`](development/desktop-ui-backend-alignment.md) | Desktop UI ↔ Controller data alignment (P0–P3); **NEXT = W4.4** VRRP pair capture / compare guidance |
+| [`development/desktop-ui-backend-alignment.md`](development/desktop-ui-backend-alignment.md) | Desktop UI ↔ Controller data alignment (P0–P3); **NEXT = W2.1** Diff / Snapshot record fidelity |
 | [`development/ci.md`](development/ci.md) | CI workflow and gates |
 | [`development/git-workflow.md`](development/git-workflow.md) | Branch/PR process |
 | [`development/database-migrations.md`](development/database-migrations.md) | EF migrations |
