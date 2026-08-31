@@ -76,8 +76,12 @@
 - **Перевірка:** Living Spec `Ac4fSemanticDiffShowsBeforeAfterRecordsAndTruncatesWarnings`; `SnapshotDiffServiceTests`; `SnapshotDiffViewModelTests`
 - **Файли:** `SnapshotDiffService`, `SnapshotDiffViewModel`, `GrpcSnapshotViewerClient`, `MainWindow.axaml`
 
-### W2.2 Routing assurance detail
-- Розгорнути next-hop / subject поля з proto замість одного SummaryLine (де корисно)
+### W2.2 Routing assurance detail — **DONE**
+- **Дані:** `RouteExpectation.allowed_next_hops`, `RouteFinding.subject`, `RouteResolutionTraceSummary.next_hop_gateways` (wire already)
+- **Зроблено:** typed list rows bind next-hop **values** and finding **subject** as distinct fields (not `next_hops={count}` / one SummaryLine). Compact SummaryLine stays the header.
+- **Не чіпали:** WriteEnabled; routing writes; full BGP/FIB dump; local SemanticDiffEngine
+- **Перевірка:** Living Spec `Ac9RoutingAssuranceBindsNextHopAndSubjectFields`; `RoutingAssuranceViewModelTests`
+- **Файли:** `RoutingAssuranceViewModel`, `MainWindow.axaml`
 
 ### W2.3 VRRP labels pipeline — **DONE**
 - **Дані:** last completed capture canonical `ha.vrrp` **observations** (`role` + `group`); proto mapper already copies `VrrpRoleLabels`
@@ -86,7 +90,7 @@
 - **Перевірка:** Living Spec `VrrpRoleLabelsLivingSpecTests`; `GetNodeMapsVrrpRoleLabelsFromLastCaptureObservations`
 - **Файли:** `DeviceVrrpRoleLabelProjector.cs`, `InventoryUseCases.cs`, `ViewMapper.cs`
 
-**Exit W2 (partial):** VRRP roles заповнюються з last capture observations. W2.1 record/warning fidelity DONE. W2.2 лишається TODO.
+**Exit W2:** VRRP roles з last capture; Diff Before/After + warning truncate; Routing assurance next-hop/subject fields. Хвиля 2 **CLOSED**.
 
 ---
 
@@ -150,6 +154,7 @@ W4.2 Deploy not silent first-child ← DONE
 W4.3 VRRP create+register wizard   ← DONE
 W4.4 Pair capture / compare guidance ← DONE
 W2.1 Diff record Before/After + warning truncate ← DONE
+W2.2 Routing assurance next-hop/subject fields ← DONE
 ```
 
 Кожен PR: один модуль / один клас gap; оновити цей документ (статус DONE); Desktop Living Spec AC на ключові рядки axaml/VM.
@@ -184,7 +189,8 @@ W2.1 Diff record Before/After + warning truncate ← DONE
 | W4.3 | **DONE** (Add router: CreateNode Vrrp + register two devices) |
 | W4.4 | **DONE** (VRRP per-member capture guidance; compare shows why a-against-b is forbidden) |
 | W2.1 | **DONE** (Diff Before/After record detail; Compare warnings truncated) |
-| W2.2, W5 | **TODO** |
+| W2.2 | **DONE** (Routing assurance next-hop values + finding subject fields) |
+| W5 | **TODO** (P3 — PLAN only) |
 
 ### W3.1 Snapshots: Capture + progress — **DONE**
 - **Дані:** SnapshotService `StartCapture` / `WatchCapture` (device_id only; Controller M1-26)
@@ -263,4 +269,4 @@ W2.1 Diff record Before/After + warning truncate ← DONE
 - **Перевірка:** Living Spec `Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy`; `SnapshotViewerViewModelTests`; `SnapshotDiffViewModelTests`; `InventoryOpsSelectionTests`
 - **Файли:** `InventoryOpsSelection`, `SnapshotViewerViewModel`, `SnapshotDiffViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment):** W2.2 Routing assurance detail (next-hop / subject fields instead of a single SummaryLine).
+**NEXT (alignment):** none — P0–P2 UI alignment closed. W5 is P3 (PLAN issue only).

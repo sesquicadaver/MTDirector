@@ -568,28 +568,79 @@
                 <TextBlock Text="{Binding RoutingAssurance.OperationalHashText, StringFormat=operational_hash: {0}}"
                            Classes="mfc-mono" />
                 <TextBlock Classes="mfc-label" Text="Route expectations" />
-                <ListBox ItemsSource="{Binding RoutingAssurance.ExpectationLines}" MaxHeight="120">
+                <ListBox ItemsSource="{Binding RoutingAssurance.ExpectationLines}" MaxHeight="160">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
                     </ItemsPanelTemplate>
                   </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="vm:RouteExpectationLineItem">
+                      <StackPanel Spacing="2" Margin="2">
+                        <TextBlock Text="{Binding SummaryLine}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding AllowedNextHopsText, StringFormat=next-hops: {0}}"
+                                   Classes="mfc-mono"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding ExpectedTableText, StringFormat=table: {0}}"
+                                   Classes="mfc-muted"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding ExpectedVrfText, StringFormat=vrf: {0}}"
+                                   Classes="mfc-muted"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding AllowedEgressInterfacesText, StringFormat=egress-if: {0}}"
+                                   Classes="mfc-muted"
+                                   TextWrapping="Wrap" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Route findings" />
-                <ListBox ItemsSource="{Binding RoutingAssurance.FindingLines}" MaxHeight="120">
+                <ListBox ItemsSource="{Binding RoutingAssurance.FindingLines}" MaxHeight="160">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
                     </ItemsPanelTemplate>
                   </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="vm:RouteFindingLineItem">
+                      <StackPanel Spacing="2" Margin="2">
+                        <TextBlock Text="{Binding SummaryLine}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding SubjectText, StringFormat=subject: {0}}"
+                                   Classes="mfc-mono"
+                                   TextWrapping="Wrap" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Trace summaries" />
-                <ListBox ItemsSource="{Binding RoutingAssurance.TraceSummaryLines}" MaxHeight="160">
+                <ListBox ItemsSource="{Binding RoutingAssurance.TraceSummaryLines}" MaxHeight="200">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
                     </ItemsPanelTemplate>
                   </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="vm:RouteResolutionTraceSummaryLineItem">
+                      <StackPanel Spacing="2" Margin="2">
+                        <TextBlock Text="{Binding SummaryLine}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding NextHopGatewaysText, StringFormat=next-hops: {0}}"
+                                   Classes="mfc-mono"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding EgressInterfacesText, StringFormat=egress-if: {0}}"
+                                   Classes="mfc-muted"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding SelectedVrfText, StringFormat=vrf: {0}}"
+                                   Classes="mfc-muted"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding MatchedPrefixText, StringFormat=prefix: {0}}"
+                                   Classes="mfc-muted"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding ExecutionPathText, StringFormat=path: {0}}"
+                                   Classes="mfc-muted"
+                                   TextWrapping="Wrap" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
                 </ListBox>
               </StackPanel>
             </Border>

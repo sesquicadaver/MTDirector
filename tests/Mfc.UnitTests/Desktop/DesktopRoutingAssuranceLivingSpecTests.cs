@@ -40,7 +40,40 @@ public sealed class DesktopRoutingAssuranceLivingSpecTests
         Assert.NotNull(vm.GetProperty(nameof(RoutingAssuranceViewModel.TraceSummaryLines)));
         Assert.NotNull(vm.GetProperty(nameof(RoutingAssuranceViewModel.ConfigurationHashText)));
         Assert.NotNull(vm.GetProperty(nameof(RoutingAssuranceViewModel.OperationalHashText)));
-        Assert.NotNull(vm.GetProperty("RefreshCommand"));
+        Assert.NotNull(typeof(RouteExpectationLineItem).GetProperty(nameof(RouteExpectationLineItem.AllowedNextHopsText)));
+        Assert.NotNull(typeof(RouteFindingLineItem).GetProperty(nameof(RouteFindingLineItem.SubjectText)));
+        Assert.NotNull(typeof(RouteResolutionTraceSummaryLineItem).GetProperty(
+            nameof(RouteResolutionTraceSummaryLineItem.NextHopGatewaysText)));
+    }
+
+    /// <summary>W2.2: Routing assurance binds next-hop values and finding subject instead of a single SummaryLine.</summary>
+    [Fact]
+    public void Ac9RoutingAssuranceBindsNextHopAndSubjectFields()
+    {
+        Assert.NotNull(typeof(RouteExpectationLineItem).GetProperty(nameof(RouteExpectationLineItem.AllowedNextHopsText)));
+        Assert.NotNull(typeof(RouteExpectationLineItem).GetProperty(nameof(RouteExpectationLineItem.ExpectedTableText)));
+        Assert.NotNull(typeof(RouteFindingLineItem).GetProperty(nameof(RouteFindingLineItem.SubjectText)));
+        Assert.NotNull(typeof(RouteResolutionTraceSummaryLineItem).GetProperty(
+            nameof(RouteResolutionTraceSummaryLineItem.NextHopGatewaysText)));
+        Assert.NotNull(typeof(RouteResolutionTraceSummaryLineItem).GetProperty(
+            nameof(RouteResolutionTraceSummaryLineItem.EgressInterfacesText)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("AllowedNextHopsText", axaml, StringComparison.Ordinal);
+        Assert.Contains("SubjectText", axaml, StringComparison.Ordinal);
+        Assert.Contains("NextHopGatewaysText", axaml, StringComparison.Ordinal);
+        Assert.Contains("next-hops:", axaml, StringComparison.Ordinal);
+        Assert.Contains("subject:", axaml, StringComparison.Ordinal);
+        Assert.Contains("vm:RouteExpectationLineItem", axaml, StringComparison.Ordinal);
+        Assert.Contains("vm:RouteFindingLineItem", axaml, StringComparison.Ordinal);
+        Assert.Contains("vm:RouteResolutionTraceSummaryLineItem", axaml, StringComparison.Ordinal);
+
+        string vm = ReadSource("src/Mfc.Desktop/ViewModels/RoutingAssuranceViewModel.cs");
+        Assert.Contains("AllowedNextHopsText", vm, StringComparison.Ordinal);
+        Assert.Contains("JoinOrDash", vm, StringComparison.Ordinal);
+        Assert.DoesNotContain("next_hops={expectation.AllowedNextHops.Count}", vm, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", vm, StringComparison.Ordinal);
+        Assert.Contains("no routing writes", vm, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -72,6 +105,9 @@ public sealed class DesktopRoutingAssuranceLivingSpecTests
         Assert.Contains("RoutingAssurance.ExpectationLines", axaml, StringComparison.Ordinal);
         Assert.Contains("RoutingAssurance.FindingLines", axaml, StringComparison.Ordinal);
         Assert.Contains("RoutingAssurance.TraceSummaryLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("AllowedNextHopsText", axaml, StringComparison.Ordinal);
+        Assert.Contains("SubjectText", axaml, StringComparison.Ordinal);
+        Assert.Contains("NextHopGatewaysText", axaml, StringComparison.Ordinal);
         Assert.Contains("Route expectations", axaml, StringComparison.Ordinal);
         Assert.Contains("Trace summaries", axaml, StringComparison.Ordinal);
     }
