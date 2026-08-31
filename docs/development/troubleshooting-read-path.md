@@ -30,6 +30,7 @@ Fault-injection matrix: `FullyQualifiedName~FaultInjection`.
 
 - Diff is server-authoritative; Desktop must not recompute.
 - Confirm both captures completed and belong to the same device.
+- VRRP pair members a and b are different devices: capture each separately; Desktop Compare will not treat a-against-b as a pair diff (`SNAPSHOTS_FROM_DIFFERENT_DEVICES`).
 - Observation-only changes appear under observation domain filters.
 
 ## CHR lab

@@ -29,6 +29,7 @@ Canonical section ids live in `Mfc.Domain.Canonicalization.CanonicalSectionIds` 
 - Record lists stay read-only: `GetSnapshotSummary` / `GetSnapshotSection`; copy is sanitized (no credential field values).
 - W1.2: selected record detail binds all `SnapshotRecordListItem.Fields` (`DisplayLine`); list `SummaryLine` stays compact (≤4 + ellipsis).
 - W3.1: Capture button → `StartCapture` + `WatchCapture` (device_id only; `node_id` deferred in M1-26); progress shows stage / `current_section`; COMPLETED reloads the device list. Not a Desktop→RouterOS write and not WriteEnabled.
+- W4.4: VRRP pair — Capture is per member (select Device a or b; the Node is not a capture target and the first child is not used silently). Compare remains same-device only.
 
 ## Semantic diff
 
@@ -37,6 +38,7 @@ Canonical section ids live in `Mfc.Domain.Canonicalization.CanonicalSectionIds` 
 - Managed rules use `fwc:rule:{uuid}:{rev}` markers for stable MODIFIED matching.
 - Empty result → Desktop **No differences** state.
 - Desktop Semantic diff (W1.1): binds `FieldLines.Summary` per entry + Compare `Warnings` (`HasWarnings`); does not re-run local SemanticDiffEngine.
+- W4.4: VRRP members a and b are different devices — comparing a against b is forbidden (`SNAPSHOTS_FROM_DIFFERENT_DEVICES`); Desktop shows why. Capture each member and compare two captures of that same member.
 
 ## Schema version
 

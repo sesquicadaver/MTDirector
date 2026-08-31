@@ -319,6 +319,43 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.DoesNotContain("node_id", vmSource, StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>W4.4: VRRP Snapshots capture per member; Compare shows why a-against-b is forbidden.</summary>
+    [Fact]
+    public void Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy()
+    {
+        Assert.NotNull(typeof(SnapshotViewerViewModel).GetProperty(nameof(SnapshotViewerViewModel.PairGuidanceText)));
+        Assert.NotNull(typeof(SnapshotViewerViewModel).GetProperty(nameof(SnapshotViewerViewModel.HasVrrpPairGuidance)));
+        Assert.NotNull(typeof(SnapshotDiffViewModel).GetProperty(nameof(SnapshotDiffViewModel.PairGuidanceText)));
+        Assert.NotNull(typeof(SnapshotDiffViewModel).GetProperty(nameof(SnapshotDiffViewModel.HasVrrpPairGuidance)));
+        Assert.Equal(
+            "VRRP capture is per member. Select Device a or b in the tree; Capture does not run against the Node (no silent first child).",
+            InventoryOpsSelection.VrrpPairCaptureNodeHint);
+        Assert.Contains(
+            "SNAPSHOTS_FROM_DIFFERENT_DEVICES",
+            InventoryOpsSelection.CrossDeviceCompareForbiddenReason,
+            StringComparison.Ordinal);
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Snapshot.PairGuidanceText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Snapshot.HasVrrpPairGuidance", axaml, StringComparison.Ordinal);
+        Assert.Contains("Diff.PairGuidanceText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Diff.HasVrrpPairGuidance", axaml, StringComparison.Ordinal);
+
+        string snapshot = ReadSource("src/Mfc.Desktop/ViewModels/SnapshotViewerViewModel.cs");
+        string diff = ReadSource("src/Mfc.Desktop/ViewModels/SnapshotDiffViewModel.cs");
+        string selection = ReadSource("src/Mfc.Desktop/ViewModels/InventoryOpsSelection.cs");
+        Assert.Contains("FormatCaptureGuidance", snapshot, StringComparison.Ordinal);
+        Assert.Contains("FormatCompareGuidance", diff, StringComparison.Ordinal);
+        Assert.Contains("ExplainCompareError", diff, StringComparison.Ordinal);
+        Assert.Contains("StartCaptureAsync", snapshot, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", snapshot, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", diff, StringComparison.Ordinal);
+        Assert.DoesNotContain("node_id", snapshot, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Does not run SemanticDiffEngine locally", diff, StringComparison.Ordinal);
+        Assert.DoesNotContain("Master/Backup", selection, StringComparison.Ordinal);
+        Assert.Contains("SNAPSHOTS_FROM_DIFFERENT_DEVICES", selection, StringComparison.Ordinal);
+    }
+
     /// <summary>W1.1: Semantic diff binds FieldLines + Compare warnings (not RecordKey-only).</summary>
     [Fact]
     public void Ac4bSemanticDiffShowsFieldLinesAndWarnings()

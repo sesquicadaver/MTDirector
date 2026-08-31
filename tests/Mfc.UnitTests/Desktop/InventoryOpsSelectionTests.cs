@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Mfc.UnitTests.Desktop;
 
-/// <summary>W4.2: Operations resolve the Node and every Device member — never a silent first child.</summary>
+/// <summary>W4.2 ops pair resolve + W4.4 per-member capture / same-device compare guidance.</summary>
 public sealed class InventoryOpsSelectionTests
 {
     [Fact]
@@ -96,6 +96,56 @@ public sealed class InventoryOpsSelectionTests
             () => InventoryOpsSelection.RequireNode(null, []));
         Assert.Contains("Select a Node", ex.Message, StringComparison.Ordinal);
         Assert.Equal("Select a Node, then create a plan.", InventoryOpsSelection.FormatTargetHint(null, []));
+    }
+
+    [Fact]
+    public void VrrpPairCaptureGuidanceIsPerMemberNotNode()
+    {
+        (InventoryNodeViewModel site, _, _, _) = CreateVrrpSite();
+        InventoryNodeViewModel node = site.Children[0];
+        InventoryNodeViewModel memberA = node.Children[0];
+
+        Assert.Equal(
+            InventoryOpsSelection.VrrpPairCaptureNodeHint,
+            InventoryOpsSelection.FormatCaptureGuidance(node, [site]));
+        Assert.Equal(
+            InventoryOpsSelection.VrrpPairCaptureMemberHint,
+            InventoryOpsSelection.FormatCaptureGuidance(memberA, [site]));
+        Assert.Contains("per member", InventoryOpsSelection.VrrpPairCaptureNodeHint, StringComparison.Ordinal);
+        Assert.DoesNotContain("Master", InventoryOpsSelection.VrrpPairCaptureNodeHint, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(InventoryOpsSelection.FormatCaptureGuidance(null, [site]));
+    }
+
+    [Fact]
+    public void VrrpPairCompareGuidanceExplainsSameDeviceForbid()
+    {
+        (InventoryNodeViewModel site, _, _, _) = CreateVrrpSite();
+        InventoryNodeViewModel node = site.Children[0];
+        InventoryNodeViewModel memberB = node.Children[1];
+
+        string nodeHint = InventoryOpsSelection.FormatCompareGuidance(node, [site]);
+        string memberHint = InventoryOpsSelection.FormatCompareGuidance(memberB, [site]);
+
+        Assert.Contains("Select a VRRP member Device", nodeHint, StringComparison.Ordinal);
+        Assert.Contains("SNAPSHOTS_FROM_DIFFERENT_DEVICES", nodeHint, StringComparison.Ordinal);
+        Assert.Equal(InventoryOpsSelection.CrossDeviceCompareForbiddenReason, memberHint);
+        Assert.Contains("do not compare a against b", memberHint, StringComparison.Ordinal);
+        Assert.DoesNotContain("Master", memberHint, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(InventoryOpsSelection.FormatCompareGuidance(null, [site]));
+    }
+
+    [Fact]
+    public void ExplainCompareErrorMapsDifferentDevicesCode()
+    {
+        Assert.Equal(
+            InventoryOpsSelection.CrossDeviceCompareForbiddenReason,
+            InventoryOpsSelection.ExplainCompareError(
+                "Snapshots belong to different devices (SNAPSHOTS_FROM_DIFFERENT_DEVICES)."));
+        Assert.Equal(
+            InventoryOpsSelection.CrossDeviceCompareForbiddenReason,
+            InventoryOpsSelection.ExplainCompareError("snapshots_from_different_devices"));
+        Assert.Equal("Load cancelled.", InventoryOpsSelection.ExplainCompareError("Load cancelled."));
+        Assert.Null(InventoryOpsSelection.ExplainCompareError(null));
     }
 
     private static (InventoryNodeViewModel Site, Guid NodeId, Guid DeviceA, Guid DeviceB) CreateVrrpSite()

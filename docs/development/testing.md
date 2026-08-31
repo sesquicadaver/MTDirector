@@ -1815,6 +1815,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | W1.1 Diff FieldLines + Warnings | `SnapshotDiffViewModel` + MainWindow Semantic diff | `Ac4bSemanticDiffShowsFieldLinesAndWarnings` + `SnapshotDiffServiceTests` |
 | W1.2 Snapshot record Fields | `SnapshotViewerViewModel` selected-record detail + `Fields.DisplayLine` | `Ac4cSnapshotRecordDetailShowsAllFields` + `SnapshotViewerServiceTests` |
 | W3.1 StartCapture + WatchCapture | Snapshots Capture button + progress | `Ac4dSnapshotCaptureStartsAndWatchesProgress` + `SnapshotViewerViewModelTests` |
+| W4.4 VRRP pair capture / compare guidance | per-member Capture; Compare shows why a-against-b is forbidden | `Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy` + `SnapshotViewerViewModelTests` + `SnapshotDiffViewModelTests` + `InventoryOpsSelectionTests` |
 | AC#5 Policy authoring/review/binding | `PoliciesViewModel` | `Ac5PolicyViewSupportsAuthoringReviewAndBinding` |
 | W1.3 Policies catalog lists + Compose selection | `PoliciesViewModel` Address/Service/Contracts/`DiffLines` + Compose ← Node | `Ac5bPoliciesBindCatalogListsAndComposeFromSelectedNode` + `PoliciesViewModelTests` |
 | W3.6 Policy Update/Delete/Ack/Compile | `UpdateRuleCommand` / `DeleteRuleCommand` / `AcknowledgeWarningCommand` / `CompileCommand` | `Ac5cPoliciesMutateRulesAckWarningsAndCompile` + `PoliciesViewModelTests` + `PolicyDesktopServiceTests` |

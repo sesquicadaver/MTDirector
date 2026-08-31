@@ -39,6 +39,7 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
         _inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
         _inventory.PropertyChanged += OnInventoryPropertyChanged;
         _connection.StateChanged += OnConnectionStateChanged;
+        RefreshPairGuidance();
     }
 
     public ObservableCollection<SnapshotCaptureListItem> Captures { get; } = [];
@@ -114,6 +115,12 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
     [ObservableProperty]
     private string _hintText = "Select a device in inventory to view its latest completed snapshot.";
 
+    [ObservableProperty]
+    private string _pairGuidanceText = string.Empty;
+
+    [ObservableProperty]
+    private bool _hasVrrpPairGuidance;
+
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorText);
 
     public bool HasCapture => !string.IsNullOrWhiteSpace(SelectedSectionId) || Captures.Count > 0;
@@ -146,7 +153,9 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
     {
         if (_inventory.SelectedNode is not { Kind: InventoryTreeKind.Device } device)
         {
-            ErrorText = "Select a device to capture.";
+            ErrorText = InventoryOpsSelection.IsVrrpPair(_inventory.SelectedNode, _inventory.Roots)
+                ? "Select a VRRP member Device to capture (not the Node)."
+                : "Select a device to capture.";
             return;
         }
 
@@ -316,6 +325,7 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
     private void HandleSelectionChanged()
     {
         NotifyCaptureCommands();
+        RefreshPairGuidance();
         InventoryNodeViewModel? selected = _inventory.SelectedNode;
         if (selected is null || selected.Kind != InventoryTreeKind.Device)
         {
@@ -324,6 +334,7 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
             _viewer.Clear();
             ApplyResult(new SnapshotViewerLoadResult { Succeeded = false });
             HintText = "Select a device in inventory to view its latest completed snapshot.";
+            RefreshPairGuidance();
             return;
         }
 
@@ -331,6 +342,14 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
         {
             ReloadCommand.Execute(null);
         }
+    }
+
+    private void RefreshPairGuidance()
+    {
+        PairGuidanceText = InventoryOpsSelection.FormatCaptureGuidance(
+            _inventory.SelectedNode,
+            _inventory.Roots);
+        HasVrrpPairGuidance = !string.IsNullOrWhiteSpace(PairGuidanceText);
     }
 
     private async Task LoadDeviceInternalAsync(Guid deviceId)

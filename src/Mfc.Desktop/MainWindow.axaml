@@ -616,6 +616,10 @@
                 <TextBlock Classes="mfc-muted"
                            Text="{Binding Snapshot.CaptureProgressText, StringFormat=Capture progress: {0}}"
                            TextWrapping="Wrap" />
+                <TextBlock Classes="mfc-muted"
+                           Text="{Binding Snapshot.PairGuidanceText}"
+                           TextWrapping="Wrap"
+                           IsVisible="{Binding Snapshot.HasVrrpPairGuidance}" />
               </StackPanel>
 
               <Border Grid.Column="0"
@@ -667,7 +671,7 @@
                       ClipToBounds="True">
                 <Grid RowDefinitions="Auto,Auto,*,Auto,*,Auto">
                   <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,8">
-                    <TextBlock Text="{Binding Snapshot.HintText}" Classes="mfc-muted" />
+                    <TextBlock Text="{Binding Snapshot.HintText}" Classes="mfc-muted" TextWrapping="Wrap" />
                     <TextBlock Text="{Binding Snapshot.StatusText, StringFormat=Capture status: {0}}" TextWrapping="Wrap" />
                     <TextBlock Text="{Binding Snapshot.SchemaVersionText, StringFormat=Schema version: {0}}" TextWrapping="Wrap" />
                     <TextBlock Text="{Binding Snapshot.ConfigurationHashText, StringFormat=configuration_hash: {0}}"
@@ -770,7 +774,11 @@
             <Grid ColumnDefinitions="220,12,*" RowDefinitions="Auto,*" Margin="0,8,0,0">
               <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Spacing="8" Margin="0,0,0,10">
                 <TextBlock Classes="mfc-section-title" Text="Compare snapshots (server-side)" />
-                <TextBlock Text="{Binding Diff.StatusText}" Classes="mfc-muted" />
+                <TextBlock Text="{Binding Diff.StatusText}" Classes="mfc-muted" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding Diff.PairGuidanceText}"
+                           Classes="mfc-muted"
+                           TextWrapping="Wrap"
+                           IsVisible="{Binding Diff.HasVrrpPairGuidance}" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="12">
                   <StackPanel Spacing="4" MinWidth="200" MaxWidth="360">
                     <TextBlock Text="Base" Classes="mfc-label" />
