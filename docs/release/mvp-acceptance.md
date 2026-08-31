@@ -98,7 +98,7 @@ Live CHR / live physical CRS remain **OFF**. Optional residual: env-gated `MFC_C
 
 ## Milestone close statement
 
-With M6-01…M6-09 and N1-07 delivered, **M6 is CLOSED** and **MVP CLOSED**. Post-MVP **M7.1…M7.4 CLOSED** (issues #110–#136). **TRACKER-01 DONE** (#289); **PLAN-01 DONE** (#290); **P2-07…P2-11 DONE** (#293–#297) — **P2 write-path CLOSED**. Post-acceptance: alignment P0–P2 **DONE**; continuous queue **PLAN-02** (#339) / §3.C — **NEXT = CONT-01** (#340).  
+With M6-01…M6-09 and N1-07 delivered, **M6 is CLOSED** and **MVP CLOSED**. Post-MVP **M7.1…M7.4 CLOSED** (issues #110–#136). **TRACKER-01 DONE** (#289); **PLAN-01 DONE** (#290); **P2-07…P2-11 DONE** (#293–#297) — **P2 write-path CLOSED**. Post-acceptance: alignment P0–P2 **DONE**; **CONT-01 DONE** (#340); §3.C **NEXT = CONT-02** (#341).  
 Post-acceptance Desktop UX: Inventory **Add router** ([#309](https://github.com/sesquicadaver/MTDirector/pull/309), 2026-08-28) — see [`../development/connection-profiles.md`](../development/connection-profiles.md).
 
 ## Acceptance review (AC16)

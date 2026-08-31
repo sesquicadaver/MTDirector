@@ -562,6 +562,26 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.DoesNotContain("WriteEnabled", deployment, StringComparison.Ordinal);
     }
 
+    /// <summary>CONT-01: Deployment Rollback consumes Watch, not only Rollback.Timeline snapshot.</summary>
+    [Fact]
+    public void Ac6eDeploymentRollbackWatchesProgress()
+    {
+        Assert.NotNull(typeof(DeploymentViewModel).GetProperty(nameof(DeploymentViewModel.ProgressLines)));
+        Assert.NotNull(typeof(IDeploymentServiceClient).GetMethod(nameof(IDeploymentServiceClient.WatchAsync)));
+        Assert.NotNull(typeof(IDeploymentServiceClient).GetMethod(nameof(IDeploymentServiceClient.RollbackAsync)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Deployment.RollbackCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Deployment.ProgressLines", axaml, StringComparison.Ordinal);
+
+        string deployment = ReadSource("src/Mfc.Desktop/ViewModels/DeploymentViewModel.cs");
+        Assert.Contains("RollbackAndWatchAsync", deployment, StringComparison.Ordinal);
+        Assert.Contains("WatchAsync", deployment, StringComparison.Ordinal);
+        Assert.Contains("Task.Run", deployment, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", deployment, StringComparison.Ordinal);
+        Assert.DoesNotContain("SemanticDiffEngine", deployment, StringComparison.Ordinal);
+    }
+
     /// <summary>W4.2: VRRP Operations target the Node pair (all members), not a silent first Device child.</summary>
     [Fact]
     public void Ac6dOperationsTargetVrrpNodePairNotSilentFirstDevice()

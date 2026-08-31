@@ -7,7 +7,10 @@ using DomainState = Mfc.Domain.Deployment.DeploymentOperationState;
 
 namespace Mfc.Controller.Grpc;
 
-/// <summary>In-memory fan-out for WatchDeployment (M4-12).</summary>
+/// <summary>
+/// In-memory fan-out for WatchDeployment (M4-12).
+/// Replay includes events after an earlier terminal (Committed → rollback) so a second Watch sees rollback progress.
+/// </summary>
 public sealed class DeploymentProgressHub
 {
     private readonly ConcurrentDictionary<Guid, OperationStream> _operations = new();
@@ -54,10 +57,6 @@ public sealed class DeploymentProgressHub
         await foreach (DeploymentProgress progress in stream.ReadAsync(cancellationToken).ConfigureAwait(false))
         {
             yield return progress;
-            if (DeploymentProtoMapper.IsTerminal(progress.State))
-            {
-                yield break;
-            }
         }
     }
 
@@ -128,10 +127,6 @@ public sealed class DeploymentProgressHub
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return item;
-                if (DeploymentProtoMapper.IsTerminal(item.State))
-                {
-                    yield break;
-                }
             }
 
             if (alreadyTerminal)

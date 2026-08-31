@@ -82,6 +82,28 @@ public sealed class DeploymentWorkflowLivingSpecTests
     }
 
     [Fact]
+    public async Task Ac3bWatchReplaysRollbackEventsAfterCommittedTerminal()
+    {
+        DeploymentProgressHub hub = new();
+        Guid operationId = Guid.NewGuid();
+        hub.Publish(operationId, DomainState.Prechecking, timelineEntry: "precheck");
+        hub.Publish(operationId, DomainState.Committed);
+        hub.Publish(operationId, DomainState.RollingBack, timelineEntry: "rolling back");
+        hub.Publish(operationId, DomainState.RolledBack);
+        List<DeploymentProgress> received = [];
+        await foreach (DeploymentProgress progress in hub.WatchAsync(operationId, CancellationToken.None))
+        {
+            received.Add(progress);
+        }
+
+        Assert.Equal(4, received.Count);
+        Assert.Equal(ProtoState.Committed, received[1].State);
+        Assert.Equal(ProtoState.RollingBack, received[2].State);
+        Assert.Equal(ProtoState.RolledBack, received[^1].State);
+        Assert.True(DeploymentProtoMapper.IsTerminal(received[^1].State));
+    }
+
+    [Fact]
     public void Ac4To7DesktopSurfacesDiffArtifactsOrderProbesAndNoForceApply()
     {
         Type vm = typeof(Mfc.Desktop.ViewModels.DeploymentViewModel);

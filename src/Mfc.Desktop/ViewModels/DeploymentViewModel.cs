@@ -12,7 +12,7 @@ using Mfc.Desktop.Services;
 namespace Mfc.Desktop.ViewModels;
 
 /// <summary>
-/// Deployment operator panel: semantic diff, artifacts, order, probes/TTL, Watch progress, recovery.
+/// Deployment operator panel: semantic diff, artifacts, order, probes/TTL, Watch progress (Start and Rollback), recovery.
 /// No ForceApply and no raw RouterOS command surface.
 /// </summary>
 public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
@@ -189,13 +189,25 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
                 throw new InvalidOperationException("Start an operation before rollback.");
             }
 
-            DeploymentOperationSummary rolled = await _client.RollbackAsync(operationId, CancellationToken.None)
+            RollbackWatchOutcome outcome = await Task.Run(
+                    async () => await RollbackAndWatchAsync(operationId, CancellationToken.None)
+                        .ConfigureAwait(false),
+                    CancellationToken.None)
                 .ConfigureAwait(true);
-            StatusText = $"Rollback {rolled.State}.";
-            foreach (string line in rolled.Timeline)
+            IReadOnlyList<string> lines = outcome.WatchLines.Count > 0
+                ? outcome.WatchLines
+                : outcome.Rolled.Timeline;
+            if (outcome.WatchLines.Count > 0)
+            {
+                ProgressLines.Clear();
+            }
+
+            foreach (string line in lines)
             {
                 ProgressLines.Add(line);
             }
+
+            StatusText = $"Rollback {outcome.LastState}.";
         }).ConfigureAwait(true);
     }
 
@@ -257,6 +269,25 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
         }
 
         return new StartWatchOutcome(started, watchLines, lastState);
+    }
+
+    /// <summary>Rollback then Watch (off UI thread). Hub may replay Start+Rollback history after CONT-01 hub fix.</summary>
+    private async Task<RollbackWatchOutcome> RollbackAndWatchAsync(
+        Guid operationId,
+        CancellationToken cancellationToken)
+    {
+        DeploymentOperationSummary rolled = await _client.RollbackAsync(operationId, cancellationToken)
+            .ConfigureAwait(false);
+        List<string> watchLines = [];
+        DeploymentOperationState lastState = rolled.State;
+        await foreach (DeploymentProgress progress in _client.WatchAsync(operationId, cancellationToken)
+                           .ConfigureAwait(false))
+        {
+            lastState = progress.State;
+            watchLines.Add(FormatProgress(progress));
+        }
+
+        return new RollbackWatchOutcome(rolled, watchLines, lastState);
     }
 
     private static string FormatProgress(DeploymentProgress progress)
@@ -372,6 +403,11 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
 
     private sealed record StartWatchOutcome(
         DeploymentOperationSummary Started,
+        IReadOnlyList<string> WatchLines,
+        DeploymentOperationState LastState);
+
+    private sealed record RollbackWatchOutcome(
+        DeploymentOperationSummary Rolled,
         IReadOnlyList<string> WatchLines,
         DeploymentOperationState LastState);
 }
