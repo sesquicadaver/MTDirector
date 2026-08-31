@@ -44,7 +44,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Gap | Where | Queue ID |
 |-----|-------|----------|
 | Rollback Start without Watch | `DeploymentViewModel.RollbackAsync` vs `StartAndWatchAsync` | **CONT-01 DONE** |
-| Neighbor apply ignores VRRP member b | `AddRouterWizardViewModel.ApplyNeighborCandidate` | **CONT-02** |
+| Neighbor apply ignores VRRP member b | `AddRouterWizardViewModel.ApplyNeighborCandidate` | **CONT-02 DONE** |
 
 ### P3 / new Contracts (evidence)
 
@@ -84,12 +84,12 @@ W5-03 Typed deploy policy diff
 |------:|----|-------:|-------|--------|
 | 1 | PLAN-02 | [#339](https://github.com/sesquicadaver/MTDirector/issues/339) | Seed §3.C + process | **DONE** ([#345](https://github.com/sesquicadaver/MTDirector/pull/345)) |
 | 2 | CONT-01 | [#340](https://github.com/sesquicadaver/MTDirector/issues/340) | Rollback + Watch (existing RPC) | **DONE** |
-| 3 | CONT-02 | [#341](https://github.com/sesquicadaver/MTDirector/issues/341) | Neighbor apply → VRRP member b | **NEXT** |
-| 4 | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | `ListPolicies` catalog browse | OPEN |
+| 3 | CONT-02 | [#341](https://github.com/sesquicadaver/MTDirector/issues/341) | Neighbor apply → VRRP member b | **DONE** |
+| 4 | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | `ListPolicies` catalog browse | **NEXT** |
 | 5 | W5-02 | [#343](https://github.com/sesquicadaver/MTDirector/issues/343) | ManagementPath / FastTrack Desktop | OPEN |
 | 6 | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | Typed deployment semantic policy diff | OPEN |
 
-**NEXT = CONT-02 (#341).** CONT-01 is closed.
+**NEXT = W5-01 (#342).** CONT-02 is closed.
 
 When W5-03 merges, the closing PR must either (a) seed the next PLAN tranche in the same cycle, or (b) document an explicit residual (CRS lab stays ops). Empty §3 without that sentence is a process defect.
 

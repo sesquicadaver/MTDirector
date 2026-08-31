@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Mfc.UnitTests.Desktop;
 
-/// <summary>Add Router wizard: CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection + Probe + W4.3 VRRP pair.</summary>
+/// <summary>Add Router wizard: CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection + Probe + W4.3 VRRP pair + CONT-02 neighbor member b.</summary>
 public sealed class AddRouterWizardViewModelTests
 {
     [Fact]
@@ -138,8 +138,63 @@ public sealed class AddRouterWizardViewModelTests
         Assert.Equal("198.51.100.20", wizard.ManagementHost);
         Assert.Equal("8729", wizard.ManagementPortText);
         Assert.Equal("peer-a", wizard.DeviceDisplayName);
+        Assert.Equal(string.Empty, wizard.PairMemberBManagementHost);
         Assert.Equal(0, client.RegisterDeviceCalls);
         Assert.Equal(0, client.ListNeighborCalls);
+    }
+
+    [Fact]
+    public void ApplyNeighborWhenVrrpPairFirstFillsMemberAThenMemberBWithoutRegister()
+    {
+        RecordingInventoryClient client = new();
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        AddRouterWizardViewModel wizard = new(client, connection, new InventoryTreeViewModel(new EmptyTreeService(), connection))
+        {
+            UseExistingSite = false,
+            CreateAsVrrpPair = true,
+        };
+
+        NeighborCandidateItem memberA = new(
+            "198.51.100.20",
+            8729,
+            "peer-a",
+            "MikroTik",
+            "AA:BB:CC:DD:EE:01",
+            "7.16",
+            "CHR",
+            "ether1");
+        NeighborCandidateItem memberB = new(
+            "198.51.100.21",
+            8730,
+            "peer-b",
+            "MikroTik",
+            "AA:BB:CC:DD:EE:02",
+            "7.16",
+            "CHR",
+            "ether1");
+        wizard.NeighborCandidates.Add(memberA);
+        wizard.NeighborCandidates.Add(memberB);
+
+        Assert.True(wizard.ShowVrrpPairFields);
+        wizard.SelectedNeighborCandidate = memberA;
+        wizard.ApplyNeighborCandidateCommand.Execute(null);
+
+        Assert.Equal("198.51.100.20", wizard.ManagementHost);
+        Assert.Equal("8729", wizard.ManagementPortText);
+        Assert.Equal("peer-a", wizard.DeviceDisplayName);
+        Assert.Equal(string.Empty, wizard.PairMemberBManagementHost);
+
+        wizard.SelectedNeighborCandidate = memberB;
+        wizard.ApplyNeighborCandidateCommand.Execute(null);
+
+        Assert.Equal("198.51.100.20", wizard.ManagementHost);
+        Assert.Equal("peer-a", wizard.DeviceDisplayName);
+        Assert.Equal("198.51.100.21", wizard.PairMemberBManagementHost);
+        Assert.Equal("8730", wizard.PairMemberBManagementPortText);
+        Assert.Equal("peer-b", wizard.PairMemberBDisplayName);
+        Assert.Contains("member b", wizard.StatusText, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(0, client.RegisterDeviceCalls);
+        Assert.DoesNotContain("Master", wizard.StatusText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

@@ -16,6 +16,7 @@ namespace Mfc.Desktop.ViewModels;
 /// <summary>
 /// Inventory Add Router wizard: CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection,
 /// plus ValidateDeviceConnection probe and optional VRRP pair (NodeKind.Vrrp + two devices).
+/// Neighbor apply fills member a, then member b when the pair checkbox is on.
 /// Contracts-only; password never retained after submit success. Roles are not invented.
 /// </summary>
 public sealed partial class AddRouterWizardViewModel : ObservableObject, IDisposable
@@ -238,7 +239,9 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
                 : response.SeedIdentity;
             StatusText = NeighborCandidates.Count == 0
                 ? $"No MikroTik neighbors from seed '{seedLabel}'."
-                : $"Loaded {NeighborCandidates.Count} MikroTik candidate(s) from seed '{seedLabel}'. Pick one to pre-fill host/port.";
+                : ShowVrrpPairFields
+                    ? $"Loaded {NeighborCandidates.Count} MikroTik candidate(s) from seed '{seedLabel}'. Apply one for member a, then another for member b."
+                    : $"Loaded {NeighborCandidates.Count} MikroTik candidate(s) from seed '{seedLabel}'. Pick one to pre-fill host/port.";
         }).ConfigureAwait(true);
     }
 
@@ -250,16 +253,42 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
             return;
         }
 
-        ManagementHost = SelectedNeighborCandidate.Address;
-        ManagementPortText = SelectedNeighborCandidate.SuggestedPort.ToString(
-            System.Globalization.CultureInfo.InvariantCulture);
-        if (!string.IsNullOrWhiteSpace(SelectedNeighborCandidate.Identity))
+        NeighborCandidateItem candidate = SelectedNeighborCandidate;
+        if (ShowVrrpPairFields && !string.IsNullOrWhiteSpace(ManagementHost))
         {
-            DeviceDisplayName = SelectedNeighborCandidate.Identity.Trim();
+            ApplyNeighborToMemberB(candidate);
+            StatusText =
+                $"Pre-filled VRRP member b from neighbor '{candidate.DisplayText}'. Enter credentials and submit to register.";
+            return;
         }
 
+        ApplyNeighborToMemberA(candidate);
         StatusText =
-            $"Pre-filled from neighbor '{SelectedNeighborCandidate.DisplayText}'. Enter credentials and submit to register.";
+            $"Pre-filled from neighbor '{candidate.DisplayText}'. Enter credentials and submit to register.";
+    }
+
+    private void ApplyNeighborToMemberA(NeighborCandidateItem candidate)
+    {
+        ArgumentNullException.ThrowIfNull(candidate);
+        ManagementHost = candidate.Address;
+        ManagementPortText = candidate.SuggestedPort.ToString(
+            System.Globalization.CultureInfo.InvariantCulture);
+        if (!string.IsNullOrWhiteSpace(candidate.Identity))
+        {
+            DeviceDisplayName = candidate.Identity.Trim();
+        }
+    }
+
+    private void ApplyNeighborToMemberB(NeighborCandidateItem candidate)
+    {
+        ArgumentNullException.ThrowIfNull(candidate);
+        PairMemberBManagementHost = candidate.Address;
+        PairMemberBManagementPortText = candidate.SuggestedPort.ToString(
+            System.Globalization.CultureInfo.InvariantCulture);
+        if (!string.IsNullOrWhiteSpace(candidate.Identity))
+        {
+            PairMemberBDisplayName = candidate.Identity.Trim();
+        }
     }
 
     [RelayCommand(CanExecute = nameof(CanProbe))]

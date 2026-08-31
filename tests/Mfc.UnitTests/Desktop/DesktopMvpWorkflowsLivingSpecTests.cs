@@ -157,6 +157,28 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.DoesNotContain("Master/Backup", vmSource, StringComparison.Ordinal);
     }
 
+    /// <summary>CONT-02: VRRP pair neighbor apply fills member a then empty member b; no auto-register.</summary>
+    [Fact]
+    public void Ac2fAddRouterNeighborApplyFillsVrrpMemberB()
+    {
+        Type wizard = typeof(AddRouterWizardViewModel);
+        Assert.NotNull(wizard.GetProperty("ApplyNeighborCandidateCommand"));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.ShowVrrpPairFields)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.PairMemberBManagementHost)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.PairMemberBDisplayName)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.PairMemberBManagementPortText)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("AddRouter.ApplyNeighborCandidateCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("AddRouter.PairMemberBManagementHost", axaml, StringComparison.Ordinal);
+
+        string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/AddRouterWizardViewModel.cs");
+        Assert.Contains("ApplyNeighborToMemberB", vmSource, StringComparison.Ordinal);
+        Assert.Contains("ShowVrrpPairFields", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("Master/Backup", vmSource, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness()
     {

@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **CONT-02** ([#341](https://github.com/sesquicadaver/MTDirector/issues/341)): Add router neighbor Apply fills VRRP member a then member b when pair mode is on (no auto-register). Living Spec `Ac2f`. **NEXT = W5-01** (#342).
 - **CONT-01** ([#340](https://github.com/sesquicadaver/MTDirector/issues/340)): Desktop Deployment Rollback consumes `Watch` (off UI thread, same pattern as Start); hub replay continues past Committed so a second Watch sees rollback events. Living Spec `Ac6e`. **NEXT = CONT-02** (#341).
 - **PLAN-02** ([#339](https://github.com/sesquicadaver/MTDirector/issues/339)): continuous product queue (§3.C) so wave/lab phase close never idles `/autopilot`. Canonical plan [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md). **NEXT = CONT-01** ([#340](https://github.com/sesquicadaver/MTDirector/issues/340)).
 - Seed **MikroTik neighbor candidates** ([#314](https://github.com/sesquicadaver/MTDirector/issues/314) / [#315](https://github.com/sesquicadaver/MTDirector/pull/315)): allowlisted `/ip/neighbor/print` (`RosReadCommandId.IpNeighbors`); `ListNeighborCandidates` Inventory RPC + use case (MikroTik-only filter); Desktop Add Router Load/Apply pre-fill. No auto-register; no Desktop→RouterOS; distinct from M7.2 `/ipv6/neighbor`.
