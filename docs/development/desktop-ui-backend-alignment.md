@@ -1,8 +1,8 @@
 # Desktop UI ↔ backend alignment plan
 
-**Дата:** 2026-08-30  
+**Дата:** 2026-08-31  
 **Мета:** UI показує **реальні дані**, які Controller вже віддає (або Desktop уже тримає в VM), без «хеш-лише» Diff, без UUID-ритуалу там, де є selection, і з чесною VRRP-поверхнею.  
-**Поза scope цього плану:** нова доменна аналітика без Contracts (ManagementPath Desktop panel тощо) — лише якщо позначено **P3**.
+**P3:** нові Contracts лише як **засіяні** рядки §3.C (W5-01…03) — не окремий стоп «чекай PLAN».
 
 Суміжність з лабою: [`~/gns3-lab/VERIFICATION-MATRIX.md`](file:///home/sesquicadaver/gns3-lab/VERIFICATION-MATRIX.md) (A/B/C/D). Цей документ — **product UI wiring**, не lab provision.
 
@@ -13,7 +13,7 @@
 | **P0** | Дані вже в VM/DTO — axaml не біндить | 1 PR / модуль |
 | **P1** | Wire є — Desktop губить/сплющує поля | 1 PR mapping+UI |
 | **P2** | RPC є — немає client виклику / selection glue / Watch | 1–2 PR |
-| **P3** | Немає Contracts/наповнення (напр. порожні `vrrp_role_labels` з бекенду) | PLAN issue |
+| **P3** | Немає Contracts/наповнення | Atomic §3 row (PLAN seeds in the same cycle; never idle) |
 
 **Правило DoD кроку:** Living Spec / Desktop unit тест на наявність binding або AC «FieldLines visible»; anti-stub; docs sync (цей файл + CHANGELOG).
 
@@ -123,12 +123,18 @@
 
 ---
 
-## Хвиля 5 — P3 лише за PLAN (не «align existing»)
+## Хвиля 5 — P3 у §3.C (уже засіяно PLAN-02, не «чекай окремий PLAN»)
 
-- `ListPolicies` / catalog browse (немає в proto)
-- Desktop surface для ManagementPath / FastTrack analysis (немає RPC)
-- Багатий deployment semantic policy diff у Contracts замість `repeated string`
-- CRS / physical lab
+Атомарні рядки вже в [`ROADMAP.md`](../../ROADMAP.md) §3.C і [`continuous-queue-plan.md`](../planning/continuous-queue-plan.md). Лаба **не** блокує ці PR.
+
+| Крок | Logical ID | Issue | Scope |
+|------|------------|------:|-------|
+| W5.a | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | `ListPolicies` / catalog browse |
+| W5.b | W5-02 | [#343](https://github.com/sesquicadaver/MTDirector/issues/343) | ManagementPath / FastTrack Desktop RPC |
+| W5.c | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | Typed deployment semantic policy diff |
+| CRS / physical lab | — | — | **Не §3** — residual / ops parallel |
+
+Glue **перед** W5 (існуючі RPC): **CONT-01** Rollback Watch ([#340](https://github.com/sesquicadaver/MTDirector/issues/340)); **CONT-02** neighbor → member b ([#341](https://github.com/sesquicadaver/MTDirector/issues/341)).
 
 ---
 
@@ -155,6 +161,11 @@ W4.3 VRRP create+register wizard   ← DONE
 W4.4 Pair capture / compare guidance ← DONE
 W2.1 Diff record Before/After + warning truncate ← DONE
 W2.2 Routing assurance next-hop/subject fields ← DONE
+CONT-01 Rollback Watch              ← NEXT (§3)
+CONT-02 Neighbor apply member b
+W5-01 ListPolicies catalog
+W5-02 ManagementPath / FastTrack Desktop
+W5-03 Typed deploy policy semantic diff
 ```
 
 Кожен PR: один модуль / один клас gap; оновити цей документ (статус DONE); Desktop Living Spec AC на ключові рядки axaml/VM.
@@ -190,7 +201,9 @@ W2.2 Routing assurance next-hop/subject fields ← DONE
 | W4.4 | **DONE** (VRRP per-member capture guidance; compare shows why a-against-b is forbidden) |
 | W2.1 | **DONE** (Diff Before/After record detail; Compare warnings truncated) |
 | W2.2 | **DONE** (Routing assurance next-hop values + finding subject fields) |
-| W5 | **TODO** (P3 — PLAN only) |
+| W5 | **QUEUED** as W5-01…03 (§3.C; not idle) |
+| CONT-01 | **NEXT** Rollback Watch (#340) |
+| CONT-02 | OPEN neighbor → member b (#341) |
 
 ### W3.1 Snapshots: Capture + progress — **DONE**
 - **Дані:** SnapshotService `StartCapture` / `WatchCapture` (device_id only; Controller M1-26)
@@ -209,7 +222,7 @@ W2.2 Routing assurance next-hop/subject fields ← DONE
 ### W3.3 Operations: Onboarding/Deploy Watch — **DONE**
 - **Дані:** `OnboardingService.Watch` / `DeploymentService.Watch` (clients already existed; Start used only `Timeline`)
 - **Зроблено:** Start → Start RPC + Watch stream off UI thread; ProgressLines bind stream `state`/`timeline_entry` (fallback to Start.Timeline if Watch empty)
-- **Не чіпали:** Rollback Watch (hub stops at first terminal); GetNodeWorkflow (W3.4); WriteEnabled
+- **Не чіпали:** Rollback Watch (**CONT-01**); GetNodeWorkflow (W3.4); WriteEnabled
 - **Перевірка:** Living Spec `Ac6cOperationsStartWatchesOnboardingAndDeploymentProgress`; `OnboardingViewModelTests`; `DeploymentViewModelTests`
 - **Файли:** `OnboardingViewModel.cs`, `DeploymentViewModel.cs`
 
@@ -258,7 +271,7 @@ W2.2 Routing assurance next-hop/subject fields ← DONE
 ### W4.3 Add router: VRRP Node + two devices — **DONE**
 - **Дані:** Inventory `CreateNode(declared_kind=Vrrp)` + two `RegisterDevice` / `UpdateDeviceConnection` (existing RPCs)
 - **Зроблено:** checkbox «Create as VRRP pair» on new Node; one submit registers members a/b (distinct names/hosts; shared credentials). Roles not invented — capture labels stay W2.3.
-- **Не чіпали:** pair capture/compare guidance (W4.4); WriteEnabled; neighbor-apply for member b
+- **Не чіпали:** pair capture/compare guidance (W4.4); WriteEnabled; neighbor-apply for member b (**CONT-02**)
 - **Перевірка:** Living Spec `Ac2eAddRouterWizardCreatesVrrpNodeAndRegistersTwoDevices`; `AddRouterWizardViewModelTests`
 - **Файли:** `AddRouterWizardViewModel`, `MainWindow.axaml`
 
@@ -269,4 +282,4 @@ W2.2 Routing assurance next-hop/subject fields ← DONE
 - **Перевірка:** Living Spec `Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy`; `SnapshotViewerViewModelTests`; `SnapshotDiffViewModelTests`; `InventoryOpsSelectionTests`
 - **Файли:** `InventoryOpsSelection`, `SnapshotViewerViewModel`, `SnapshotDiffViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment):** none — P0–P2 UI alignment closed. W5 is P3 (PLAN issue only).
+**NEXT (alignment / §3):** **CONT-01** ([#340](https://github.com/sesquicadaver/MTDirector/issues/340)) — Rollback Watch. P0–P2 UI alignment closed. W5 is queued as W5-01…03, not a stop-gate.

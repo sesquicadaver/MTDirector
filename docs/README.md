@@ -2,14 +2,15 @@
 
 **Release:** `v0.2.0` (2026-08-24) — MVP + Post-MVP M7 CLOSED.  
 **Pilot:** P2 read + write path CLOSED — [`operations/pilot-runbook.md`](operations/pilot-runbook.md).  
-**Next delivery (§3):** **none** — queue empty. See [`ROADMAP.md`](../ROADMAP.md).  
-**Post-queue (2026-08-28):** Desktop Inventory **Add router** ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)).
+**Next delivery (§3):** **CONT-01** ([#340](https://github.com/sesquicadaver/MTDirector/issues/340)) — [`planning/continuous-queue-plan.md`](planning/continuous-queue-plan.md).  
+**Alignment P0–P2:** W1–W4 / W2.1–W2.2 **DONE** (`877a529`).
 
 ## Planning and tracking
 
 | Document | Purpose |
 |----------|---------|
 | [`ROADMAP.md`](../ROADMAP.md) | Linear atomic task queue (normative execution order) |
+| [`planning/continuous-queue-plan.md`](planning/continuous-queue-plan.md) | PLAN-02: continuous §3.C (no phase-stop idle) |
 | [`ISSUES.md`](../ISSUES.md) | Logical ID → GitHub issue mapping |
 | [`CHANGELOG.md`](../CHANGELOG.md) | Release history |
 
@@ -30,7 +31,7 @@ Authoritative ТЗ and Issue Sets live in the repository root and are indexed in
 |----------|---------|
 | [`development/local-environment.md`](development/local-environment.md) | Workstation bootstrap |
 | [`development/testing.md`](development/testing.md) | Living Specification matrices (ТЗ → module → tests) |
-| [`development/desktop-ui-backend-alignment.md`](development/desktop-ui-backend-alignment.md) | Desktop UI ↔ Controller data alignment (P0–P3); **NEXT = none** (W5 is P3 / PLAN only) |
+| [`development/desktop-ui-backend-alignment.md`](development/desktop-ui-backend-alignment.md) | Desktop UI ↔ Controller data alignment (P0–P3); **NEXT = CONT-01** (W5 queued as W5-01…03) |
 | [`development/ci.md`](development/ci.md) | CI workflow and gates |
 | [`development/git-workflow.md`](development/git-workflow.md) | Branch/PR process |
 | [`development/database-migrations.md`](development/database-migrations.md) | EF migrations |

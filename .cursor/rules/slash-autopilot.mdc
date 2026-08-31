@@ -12,8 +12,8 @@ alwaysApply: true
 1. Взяти **NEXT** (або єдиний відкритий PR цієї задачі) і довести до завершення.
 2. Реалізація + Living Spec + оновлення service docs у тому ж циклі (як у проєкті).
 3. **Не чекати** окремого наказу на `git commit`, `git push`, `gh pr create`, triage CI/review, або **squash-merge** у `main`, коли PR merge-ready (MERGEABLE, CI green, threads triaged).
-4. Після merge задачі — docs sync (NEXT → наступний ID), закрити issue, pull `main`.
-5. Якщо відкритих задач/PR немає — коротко звітувати; інакше не простоювати.
+4. Після merge задачі — docs sync (NEXT → наступний ID з §3), закрити issue, pull `main`. Закриття хвилі **не** зупиняє роботу: наступний рядок уже в §3, або цей самий PR засіває транш.
+5. Lab/GNS3/CHR/`WriteEnabled` **не** є стоп-гейтом для `/autopilot`. Якщо §3 несподівано порожня — засіяти наступний атомарний рядок з [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md) (PLAN issue + ROADMAP), не простоювати.
 
 ## Пріоритет блокерів на відкритому PR
 

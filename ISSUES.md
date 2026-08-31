@@ -151,13 +151,19 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 | `P2-10` | #296 | https://github.com/sesquicadaver/MTDirector/issues/296 |
 | `P2-11` | #297 | https://github.com/sesquicadaver/MTDirector/issues/297 |
 | `PLAN-NBR-01` | #314 | https://github.com/sesquicadaver/MTDirector/issues/314 |
+| `PLAN-02` | #339 | https://github.com/sesquicadaver/MTDirector/issues/339 |
+| `CONT-01` | #340 | https://github.com/sesquicadaver/MTDirector/issues/340 |
+| `CONT-02` | #341 | https://github.com/sesquicadaver/MTDirector/issues/341 |
+| `W5-01` | #342 | https://github.com/sesquicadaver/MTDirector/issues/342 |
+| `W5-02` | #343 | https://github.com/sesquicadaver/MTDirector/issues/343 |
+| `W5-03` | #344 | https://github.com/sesquicadaver/MTDirector/issues/344 |
 
-**Product issues (code):** 139 DONE (§2.2).  
-**Linear queue (§3):** **0 OPEN** — P2 write-path tranche **CLOSED** (P2-07…P2-11).  
-**TRACKER-01** (#289): **DONE**. **PLAN-01** (#290): **DONE**. **P2-07…P2-11**: **DONE** (2026-08-26…28).  
-**Post-queue UX:** Desktop Add router — [PR #309](https://github.com/sesquicadaver/MTDirector/pull/309) (not a §3 logical ID).  
-**PLAN:** Seed MikroTik neighbors — [#314](https://github.com/sesquicadaver/MTDirector/issues/314) **DONE** ([PR #315](https://github.com/sesquicadaver/MTDirector/pull/315)).
+**Product issues (code):** 139 DONE (§2.2) + Desktop alignment P0–P2 DONE.  
+**Linear queue (§3.C):** **OPEN** — PLAN-02 (#339) seeds CONT-01…02 + W5-01…03.  
+**NEXT after PLAN-02:** **CONT-01** (#340).  
+**TRACKER-01** (#289): **DONE**. **PLAN-01** (#290): **DONE**. **P2-07…P2-11**: **DONE**. **PLAN-NBR-01** (#314): **DONE**.  
+Lab/CHR/`WriteEnabled` — parallel ops, not §3 predecessors. Plan: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 
-Start here: [`ROADMAP.md`](ROADMAP.md) — queue empty; pilot [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md); Desktop inventory [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
+Start here: [`ROADMAP.md`](ROADMAP.md) §3.C — **NEXT = CONT-01** (#340); pilot [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md); Desktop inventory [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
