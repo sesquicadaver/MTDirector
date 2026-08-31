@@ -235,6 +235,12 @@
                             SelectedItem="{Binding AddRouter.SelectedUplinkMode, Mode=TwoWay}"
                             MaxWidth="280"
                             HorizontalAlignment="Left" />
+                  <CheckBox Content="Create as VRRP pair (two devices)"
+                            IsChecked="{Binding AddRouter.CreateAsVrrpPair}" />
+                  <TextBlock Classes="mfc-muted"
+                             Text="{Binding AddRouter.VrrpPairHint}"
+                             TextWrapping="Wrap"
+                             IsVisible="{Binding AddRouter.ShowVrrpPairFields}" />
                 </StackPanel>
 
                 <TextBlock Classes="mfc-label" Text="3. Device" Margin="0,6,0,0" />
@@ -271,9 +277,16 @@
                         MinWidth="180"
                         HorizontalAlignment="Left"
                         IsVisible="{Binding AddRouter.HasNeighborCandidates}" />
+                <TextBlock Classes="mfc-label" Text="Member a" IsVisible="{Binding AddRouter.ShowVrrpPairFields}" />
                 <TextBox Classes="mfc-field" PlaceholderText="display name" Text="{Binding AddRouter.DeviceDisplayName}" />
                 <TextBox Classes="mfc-field" PlaceholderText="management host (IP or DNS)" Text="{Binding AddRouter.ManagementHost}" />
                 <TextBox Classes="mfc-field" PlaceholderText="management port (8729)" Text="{Binding AddRouter.ManagementPortText}" />
+                <StackPanel Spacing="6" IsVisible="{Binding AddRouter.ShowVrrpPairFields}">
+                  <TextBlock Classes="mfc-label" Text="Member b" />
+                  <TextBox Classes="mfc-field" PlaceholderText="member b display name" Text="{Binding AddRouter.PairMemberBDisplayName}" />
+                  <TextBox Classes="mfc-field" PlaceholderText="member b management host (IP or DNS)" Text="{Binding AddRouter.PairMemberBManagementHost}" />
+                  <TextBox Classes="mfc-field" PlaceholderText="member b management port (8729)" Text="{Binding AddRouter.PairMemberBManagementPortText}" />
+                </StackPanel>
 
                 <TextBlock Classes="mfc-label" Text="4. Connection profile" Margin="0,6,0,0" />
                 <TextBox Classes="mfc-field" PlaceholderText="API username" Text="{Binding AddRouter.Username}" />

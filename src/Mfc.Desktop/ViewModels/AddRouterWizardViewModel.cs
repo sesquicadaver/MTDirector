@@ -15,8 +15,8 @@ namespace Mfc.Desktop.ViewModels;
 
 /// <summary>
 /// Inventory Add Router wizard: CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection,
-/// plus ValidateDeviceConnection probe for a selected or last-registered device.
-/// Contracts-only; password never retained after submit success.
+/// plus ValidateDeviceConnection probe and optional VRRP pair (NodeKind.Vrrp + two devices).
+/// Contracts-only; password never retained after submit success. Roles are not invented.
 /// </summary>
 public sealed partial class AddRouterWizardViewModel : ObservableObject, IDisposable
 {
@@ -56,6 +56,7 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
         SelectedTrustMode = CertificateTrustMode.InternalCa;
         SelectedUplinkMode = DeclaredUplinkMode.One;
         ManagementPortText = DefaultManagementPort.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        PairMemberBManagementPortText = DefaultManagementPort.ToString(System.Globalization.CultureInfo.InvariantCulture);
         CaProfileRef = "lab-ca";
         _connection.StateChanged += OnConnectionStateChanged;
         _inventory.PropertyChanged += OnInventoryPropertyChanged;
@@ -100,6 +101,13 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
 
     public bool ShowNewNodeFields => !UseExistingNode;
 
+    public bool ShowVrrpPairFields => !UseExistingNode && CreateAsVrrpPair;
+
+    public string VrrpPairHint =>
+        ShowVrrpPairFields
+            ? "Creates a VRRP Node and registers members a and b. Roles come from later capture labels, not from this wizard."
+            : string.Empty;
+
     public bool ShowCaProfile => SelectedTrustMode == CertificateTrustMode.InternalCa;
 
     public bool ShowSpkiPin => SelectedTrustMode == CertificateTrustMode.SpkiPin;
@@ -123,7 +131,14 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowExistingNodePicker))]
     [NotifyPropertyChangedFor(nameof(ShowNewNodeFields))]
+    [NotifyPropertyChangedFor(nameof(ShowVrrpPairFields))]
+    [NotifyPropertyChangedFor(nameof(VrrpPairHint))]
     private bool _useExistingNode = true;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowVrrpPairFields))]
+    [NotifyPropertyChangedFor(nameof(VrrpPairHint))]
+    private bool _createAsVrrpPair;
 
     [ObservableProperty]
     private InventoryPickerItem? _selectedSite;
@@ -151,6 +166,15 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
 
     [ObservableProperty]
     private string _managementPortText = string.Empty;
+
+    [ObservableProperty]
+    private string _pairMemberBDisplayName = string.Empty;
+
+    [ObservableProperty]
+    private string _pairMemberBManagementHost = string.Empty;
+
+    [ObservableProperty]
+    private string _pairMemberBManagementPortText = string.Empty;
 
     [ObservableProperty]
     private string _username = string.Empty;
@@ -273,6 +297,26 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
             string displayName = RequireTrimmed(DeviceDisplayName, "Device display name");
             string host = RequireTrimmed(ManagementHost, "Management host");
             uint port = ParsePort(ManagementPortText);
+            string? pairDisplayName = null;
+            string? pairHost = null;
+            uint pairPort = 0;
+            bool registerPair = ShowVrrpPairFields;
+            if (registerPair)
+            {
+                pairDisplayName = RequireTrimmed(PairMemberBDisplayName, "Member b display name");
+                pairHost = RequireTrimmed(PairMemberBManagementHost, "Member b management host");
+                pairPort = ParsePort(PairMemberBManagementPortText);
+                if (string.Equals(displayName, pairDisplayName, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidOperationException("VRRP members must have distinct display names.");
+                }
+
+                if (string.Equals(host, pairHost, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidOperationException("VRRP members must have distinct management hosts.");
+                }
+            }
+
             string user = RequireTrimmed(Username, "Username");
             if (string.IsNullOrEmpty(Password))
             {
@@ -312,46 +356,50 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
             byte[] passwordBytes = Encoding.UTF8.GetBytes(Password);
             try
             {
-                Device device = await Task.Run(
-                        async () => await _client.RegisterDeviceAsync(
-                                nodeId,
-                                displayName,
-                                host,
-                                port,
-                                DeviceRole.Router,
-                                ct)
-                            .ConfigureAwait(false),
+                Device device = await RegisterAndConnectAsync(
+                        nodeId,
+                        displayName,
+                        host,
+                        port,
+                        user,
+                        passwordBytes,
+                        trust,
+                        caRef,
+                        pin,
                         ct)
                     .ConfigureAwait(true);
 
-                await Task.Run(
-                        async () => await _client.UpdateDeviceConnectionAsync(
-                                DesktopProtoUuid.ToGuid(device.Id),
-                                user,
-                                passwordBytes,
-                                trust,
-                                caRef,
-                                pin,
-                                DefaultConnectTimeoutMs,
-                                DefaultCommandTimeoutMs,
-                                DefaultMaxResponseBytes,
-                                ct)
-                            .ConfigureAwait(false),
-                        ct)
-                    .ConfigureAwait(true);
+                if (registerPair)
+                {
+                    device = await RegisterAndConnectAsync(
+                            nodeId,
+                            pairDisplayName!,
+                            pairHost!,
+                            pairPort,
+                            user,
+                            passwordBytes,
+                            trust,
+                            caRef,
+                            pin,
+                            ct)
+                        .ConfigureAwait(true);
+                }
 
                 Password = string.Empty;
                 _lastRegisteredDeviceId = DesktopProtoUuid.ToGuid(device.Id);
                 OnPropertyChanged(nameof(CanProbeVisible));
                 ProbeCommand.NotifyCanExecuteChanged();
-                StatusText =
-                    $"Registered device '{displayName}' under node {nodeId:D}. Refreshing inventory…";
+                StatusText = registerPair
+                    ? $"Registered VRRP pair '{displayName}' + '{pairDisplayName}' under node {nodeId:D}. Refreshing inventory…"
+                    : $"Registered device '{displayName}' under node {nodeId:D}. Refreshing inventory…";
                 if (_inventory.RefreshCommand.CanExecute(null))
                 {
                     await _inventory.RefreshCommand.ExecuteAsync(null).ConfigureAwait(true);
                 }
 
-                StatusText = $"Device '{displayName}' ready. Next: validate connection / capture snapshot.";
+                StatusText = registerPair
+                    ? $"VRRP pair '{displayName}' + '{pairDisplayName}' ready. Next: capture both members (roles from labels, not invented)."
+                    : $"Device '{displayName}' ready. Next: validate connection / capture snapshot.";
             }
             finally
             {
@@ -422,17 +470,61 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
         }
 
         string name = RequireTrimmed(NewNodeName, "Node name");
+        NodeKind kind = CreateAsVrrpPair ? NodeKind.Vrrp : NodeKind.Router;
         Node node = await Task.Run(
                 async () => await _client.CreateNodeAsync(
                         siteId,
                         name,
-                        NodeKind.Router,
+                        kind,
                         SelectedUplinkMode,
                         cancellationToken)
                     .ConfigureAwait(false),
                 cancellationToken)
             .ConfigureAwait(true);
         return DesktopProtoUuid.ToGuid(node.Id);
+    }
+
+    private async Task<Device> RegisterAndConnectAsync(
+        Guid nodeId,
+        string displayName,
+        string host,
+        uint port,
+        string user,
+        byte[] passwordBytes,
+        CertificateTrustMode trust,
+        string? caRef,
+        Sha256? pin,
+        CancellationToken cancellationToken)
+    {
+        Device device = await Task.Run(
+                async () => await _client.RegisterDeviceAsync(
+                        nodeId,
+                        displayName,
+                        host,
+                        port,
+                        DeviceRole.Router,
+                        cancellationToken)
+                    .ConfigureAwait(false),
+                cancellationToken)
+            .ConfigureAwait(true);
+
+        await Task.Run(
+                async () => await _client.UpdateDeviceConnectionAsync(
+                        DesktopProtoUuid.ToGuid(device.Id),
+                        user,
+                        passwordBytes,
+                        trust,
+                        caRef,
+                        pin,
+                        DefaultConnectTimeoutMs,
+                        DefaultCommandTimeoutMs,
+                        DefaultMaxResponseBytes,
+                        cancellationToken)
+                    .ConfigureAwait(false),
+                cancellationToken)
+            .ConfigureAwait(true);
+
+        return device;
     }
 
     private (CertificateTrustMode Trust, string? CaRef, Sha256? Pin) BuildTrust()
@@ -677,6 +769,22 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
         }
 
         RebuildNodeChoices();
+    }
+
+    partial void OnUseExistingNodeChanged(bool value)
+    {
+        if (value)
+        {
+            CreateAsVrrpPair = false;
+        }
+    }
+
+    partial void OnCreateAsVrrpPairChanged(bool value)
+    {
+        if (value)
+        {
+            UseExistingNode = false;
+        }
     }
 
     private static string RequireTrimmed(string? value, string fieldName)

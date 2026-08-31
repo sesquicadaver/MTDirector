@@ -128,6 +128,35 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
     }
 
+    /// <summary>W4.3: Add router can create a VRRP Node and register two devices in one submit.</summary>
+    [Fact]
+    public void Ac2eAddRouterWizardCreatesVrrpNodeAndRegistersTwoDevices()
+    {
+        Type wizard = typeof(AddRouterWizardViewModel);
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.CreateAsVrrpPair)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.ShowVrrpPairFields)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.VrrpPairHint)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.PairMemberBDisplayName)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.PairMemberBManagementHost)));
+        Assert.NotNull(wizard.GetProperty(nameof(AddRouterWizardViewModel.PairMemberBManagementPortText)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("AddRouter.CreateAsVrrpPair", axaml, StringComparison.Ordinal);
+        Assert.Contains("Create as VRRP pair", axaml, StringComparison.Ordinal);
+        Assert.Contains("AddRouter.ShowVrrpPairFields", axaml, StringComparison.Ordinal);
+        Assert.Contains("AddRouter.VrrpPairHint", axaml, StringComparison.Ordinal);
+        Assert.Contains("AddRouter.PairMemberBDisplayName", axaml, StringComparison.Ordinal);
+        Assert.Contains("AddRouter.PairMemberBManagementHost", axaml, StringComparison.Ordinal);
+        Assert.Contains("Member b", axaml, StringComparison.Ordinal);
+
+        string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/AddRouterWizardViewModel.cs");
+        Assert.Contains("NodeKind.Vrrp", vmSource, StringComparison.Ordinal);
+        Assert.Contains("CreateAsVrrpPair", vmSource, StringComparison.Ordinal);
+        Assert.Contains("RegisterAndConnectAsync", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("Master/Backup", vmSource, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness()
     {

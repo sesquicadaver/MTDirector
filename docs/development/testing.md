@@ -1804,6 +1804,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | AC#2 Inventory workflow status | `InventoryNodeViewModel.WorkflowStatusText` + MainWindow | `Ac2InventorySurfacesWorkflowStatusVisibly` |
 | AC#2b Inventory Add Router wizard | `AddRouterWizardViewModel` + `IInventoryTreeClient` write RPCs | `Ac2bInventoryAddRouterWizardCoversCreateRegisterConnectionPath` + `AddRouterWizardViewModelTests` |
 | W3.2 ValidateDeviceConnection Probe | Inventory/Add router Probe + `ProbeResultText` | `Ac2cInventoryAndAddRouterProbeValidateDeviceConnection` + `AddRouterWizardViewModelTests` |
+| W4.3 VRRP create Node + two devices | Add router `CreateAsVrrpPair` → `NodeKind.Vrrp` + 2× RegisterDevice | `Ac2eAddRouterWizardCreatesVrrpNodeAndRegistersTwoDevices` + `AddRouterWizardViewModelTests` |
 | W3.5 Zones Update + Resolve device | `UpdateZoneCommand` / `ResolveDeviceCommand` | `Ac2dZonesEditDefinitionAndResolveDevice` + `ZonesViewModelTests` + `ZonesDesktopServiceTests` |
 | Seed MikroTik neighbors (#314) | `ListNeighborCandidatesUseCase` + `/ip/neighbor` allowlist + Desktop Load/Apply | `NeighborCandidatesLivingSpecTests` + `ListNeighborCandidatesUseCaseTests` + `NeighborDiscoveryAllowlistTests` |
 | AC#3 Node topology/zones/onboarding/readiness | `NodeDetailViewModel` | `Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness` |

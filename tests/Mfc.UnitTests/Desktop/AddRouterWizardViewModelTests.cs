@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Mfc.UnitTests.Desktop;
 
-/// <summary>Add Router wizard: CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection + Probe.</summary>
+/// <summary>Add Router wizard: CreateSite → CreateNode → RegisterDevice → UpdateDeviceConnection + Probe + W4.3 VRRP pair.</summary>
 public sealed class AddRouterWizardViewModelTests
 {
     [Fact]
@@ -44,6 +44,7 @@ public sealed class AddRouterWizardViewModelTests
         Assert.Equal("LAB01", client.LastSiteCode);
         Assert.Equal("core", client.LastNodeName);
         Assert.Equal("chr-1", client.LastDeviceName);
+        Assert.Equal(NodeKind.Router, client.LastDeclaredKind);
         Assert.Equal("admin", client.LastUsername);
         Assert.Equal(CertificateTrustMode.InternalCa, client.LastTrustMode);
         Assert.Equal("lab-ca", client.LastCaProfileRef);
@@ -258,6 +259,105 @@ public sealed class AddRouterWizardViewModelTests
         Assert.Equal(1, client.ValidateCalls);
         Assert.Equal(client.RegisteredDeviceId, client.LastValidateDeviceId);
         Assert.Contains("chr-1", wizard.ProbeResultText, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task SubmitCreatesVrrpNodeAndRegistersTwoDevices()
+    {
+        RecordingInventoryClient client = new();
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        AddRouterWizardViewModel wizard = new(client, connection, inventory)
+        {
+            UseExistingSite = false,
+            UseExistingNode = false,
+            CreateAsVrrpPair = true,
+            NewSiteCode = "LAB01",
+            NewSiteName = "Lab One",
+            NewNodeName = "edge-pair",
+            SelectedUplinkMode = DeclaredUplinkMode.Failover,
+            DeviceDisplayName = "r1",
+            ManagementHost = "192.0.2.1",
+            ManagementPortText = "8729",
+            PairMemberBDisplayName = "r2",
+            PairMemberBManagementHost = "192.0.2.2",
+            PairMemberBManagementPortText = "8729",
+            Username = "admin",
+            Password = "secret-password",
+            SelectedTrustMode = CertificateTrustMode.InternalCa,
+            CaProfileRef = "lab-ca",
+        };
+
+        Assert.True(wizard.ShowVrrpPairFields);
+        Assert.False(wizard.UseExistingNode);
+        Assert.Contains("members a and b", wizard.VrrpPairHint, StringComparison.Ordinal);
+        Assert.DoesNotContain("Master", wizard.VrrpPairHint, StringComparison.OrdinalIgnoreCase);
+
+        await wizard.SubmitCommand.ExecuteAsync(null);
+
+        Assert.Null(wizard.ErrorText);
+        Assert.Equal(string.Empty, wizard.Password);
+        Assert.Equal(1, client.CreateNodeCalls);
+        Assert.Equal(NodeKind.Vrrp, client.LastDeclaredKind);
+        Assert.Equal(DeclaredUplinkMode.Failover, client.LastUplinkMode);
+        Assert.Equal(2, client.RegisterDeviceCalls);
+        Assert.Equal(2, client.UpdateConnectionCalls);
+        Assert.Equal(["r1", "r2"], client.RegisteredDeviceNames);
+        Assert.Equal(["192.0.2.1", "192.0.2.2"], client.RegisteredHosts);
+        Assert.Contains("VRRP pair", wizard.StatusText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Master", wizard.StatusText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task SubmitVrrpPairRejectsIdenticalManagementHosts()
+    {
+        RecordingInventoryClient client = new();
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        AddRouterWizardViewModel wizard = new(client, connection, inventory)
+        {
+            UseExistingSite = false,
+            UseExistingNode = false,
+            CreateAsVrrpPair = true,
+            NewSiteCode = "LAB01",
+            NewSiteName = "Lab One",
+            NewNodeName = "edge-pair",
+            DeviceDisplayName = "r1",
+            ManagementHost = "192.0.2.1",
+            ManagementPortText = "8729",
+            PairMemberBDisplayName = "r2",
+            PairMemberBManagementHost = "192.0.2.1",
+            PairMemberBManagementPortText = "8729",
+            Username = "admin",
+            Password = "pw",
+            SelectedTrustMode = CertificateTrustMode.InternalCa,
+            CaProfileRef = "lab-ca",
+        };
+
+        await wizard.SubmitCommand.ExecuteAsync(null);
+
+        Assert.NotNull(wizard.ErrorText);
+        Assert.Contains("distinct management hosts", wizard.ErrorText, StringComparison.Ordinal);
+        Assert.Equal(0, client.CreateNodeCalls);
+        Assert.Equal(0, client.RegisterDeviceCalls);
+    }
+
+    [Fact]
+    public void CreateAsVrrpPairForcesNewNode()
+    {
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        AddRouterWizardViewModel wizard = new(
+            new RecordingInventoryClient(),
+            connection,
+            new InventoryTreeViewModel(new EmptyTreeService(), connection))
+        {
+            UseExistingNode = true,
+        };
+
+        wizard.CreateAsVrrpPair = true;
+
+        Assert.False(wizard.UseExistingNode);
+        Assert.True(wizard.ShowVrrpPairFields);
     }
 
     [Fact]
@@ -567,6 +667,14 @@ public sealed class AddRouterWizardViewModelTests
 
         public string? LastDeviceName { get; private set; }
 
+        public NodeKind LastDeclaredKind { get; private set; }
+
+        public DeclaredUplinkMode LastUplinkMode { get; private set; }
+
+        public List<string> RegisteredDeviceNames { get; } = [];
+
+        public List<string> RegisteredHosts { get; } = [];
+
         public Guid? LastRegisterNodeId { get; private set; }
 
         public string? LastUsername { get; private set; }
@@ -611,6 +719,8 @@ public sealed class AddRouterWizardViewModelTests
         {
             CreateNodeCalls++;
             LastNodeName = name;
+            LastDeclaredKind = declaredKind;
+            LastUplinkMode = declaredUplinkMode;
             return Task.FromResult(new Node
             {
                 Id = ToUuid(_nodeId),
@@ -633,6 +743,8 @@ public sealed class AddRouterWizardViewModelTests
             RegisterDeviceCalls++;
             LastDeviceName = displayName;
             LastRegisterNodeId = nodeId;
+            RegisteredDeviceNames.Add(displayName);
+            RegisteredHosts.Add(managementHost);
             return Task.FromResult(new Device
             {
                 Id = ToUuid(_deviceId),
