@@ -162,4 +162,10 @@ public interface IPolicyServiceClient
         byte[] currentDependencyFingerprint,
         byte[] currentCapabilityHash,
         CancellationToken cancellationToken = default);
+
+    Task<PolicySafetyAnalysis> GetDevicePolicySafetyAnalysisAsync(
+        Guid deviceId,
+        Guid? revisionId = null,
+        IReadOnlyList<string>? controllerSourcePrefixes = null,
+        CancellationToken cancellationToken = default);
 }

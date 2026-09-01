@@ -36,6 +36,7 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         _connection.StateChanged += OnConnectionStateChanged;
         _inventory.PropertyChanged += OnInventoryPropertyChanged;
         SyncComposeNodeFromInventory();
+        SyncSafetyDeviceFromInventory();
 
         Families =
         [
@@ -107,6 +108,14 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
     public ObservableCollection<PolicyFindingListItem> DiffLines { get; } = [];
 
     public ObservableCollection<string> CompileArtifactLines { get; } = [];
+
+    public ObservableCollection<string> ManagementPathFindingLines { get; } = [];
+
+    public ObservableCollection<string> FastTrackFindingLines { get; } = [];
+
+    public ObservableCollection<string> SafetyWitnessLines { get; } = [];
+
+    public ObservableCollection<string> SafetySystemTestLines { get; } = [];
 
     public IReadOnlyList<IpAddressFamily> Families { get; }
 
@@ -239,6 +248,21 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
 
     [ObservableProperty]
     private string _compileCapabilityHashText = string.Empty;
+
+    [ObservableProperty]
+    private string _safetyDeviceIdText = string.Empty;
+
+    [ObservableProperty]
+    private string _controllerSourcePrefixesText = string.Empty;
+
+    [ObservableProperty]
+    private string _managementPathContextHashText = string.Empty;
+
+    [ObservableProperty]
+    private string _fastTrackContextHashText = string.Empty;
+
+    [ObservableProperty]
+    private string _safetyFlagsText = string.Empty;
 
     [RelayCommand(CanExecute = nameof(CanOperate))]
     private async Task RefreshCatalogAsync()
@@ -766,6 +790,56 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         }).ConfigureAwait(true);
     }
 
+    [RelayCommand(CanExecute = nameof(CanOperate))]
+    private async Task RefreshSafetyAnalysisAsync()
+    {
+        if (!Guid.TryParse(SafetyDeviceIdText.Trim(), out Guid deviceId))
+        {
+            ErrorText = "Select a Device (or enter its UUID) before ManagementPath / FastTrack analysis.";
+            return;
+        }
+
+        List<string> prefixes = [];
+        foreach (string part in ControllerSourcePrefixesText.Split(
+                     [',', ';', ' ', '\n', '\r'],
+                     StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            prefixes.Add(part);
+        }
+
+        if (prefixes.Count == 0)
+        {
+            ErrorText = "Enter at least one controller source CIDR (analysis does not invent a default prefix).";
+            return;
+        }
+
+        Guid? revisionId = null;
+        if (!string.IsNullOrWhiteSpace(RevisionIdText))
+        {
+            if (!Guid.TryParse(RevisionIdText.Trim(), out Guid parsedRevision))
+            {
+                ErrorText = "Revision UUID is invalid (clear the field to analyze FastTrack without a revision).";
+                return;
+            }
+
+            revisionId = parsedRevision;
+        }
+
+        await RunBusyAsync(async ct =>
+        {
+            PolicySafetyAnalysisPanelResult analysis = await Task.Run(
+                    async () => await _policies.GetDevicePolicySafetyAnalysisAsync(
+                            deviceId,
+                            revisionId,
+                            prefixes,
+                            ct)
+                        .ConfigureAwait(false),
+                    ct)
+                .ConfigureAwait(true);
+            ApplySafetyAnalysis(analysis);
+        }).ConfigureAwait(true);
+    }
+
     [RelayCommand(CanExecute = nameof(CanNeverDeploy))]
     private Task DeployAsync()
     {
@@ -1027,6 +1101,7 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         CompileCommand.NotifyCanExecuteChanged();
         ApproveCommand.NotifyCanExecuteChanged();
         BindCommand.NotifyCanExecuteChanged();
+        RefreshSafetyAnalysisCommand.NotifyCanExecuteChanged();
         DeployCommand.NotifyCanExecuteChanged();
     }
 
@@ -1051,6 +1126,7 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         }
 
         SyncComposeNodeFromInventory();
+        SyncSafetyDeviceFromInventory();
     }
 
     /// <summary>
@@ -1085,6 +1161,43 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Binds safety analysis to the selected inventory Device. Node selection does not invent a member.
+    /// </summary>
+    private void SyncSafetyDeviceFromInventory()
+    {
+        InventoryNodeViewModel? selected = _inventory.SelectedNode;
+        if (selected is { Kind: InventoryTreeKind.Device })
+        {
+            SafetyDeviceIdText = selected.Id.ToString("D");
+        }
+    }
+
+    private void ApplySafetyAnalysis(PolicySafetyAnalysisPanelResult analysis)
+    {
+        ManagementPathContextHashText = analysis.ManagementPathContextHashHex;
+        FastTrackContextHashText = analysis.FastTrackContextHashHex;
+        SafetyFlagsText =
+            $"blocks_management_path={analysis.BlocksManagementPath} " +
+            $"allows_safe_fasttrack={analysis.AllowsSafeFastTrack} " +
+            $"requires_accept_fallback={analysis.RequiresAcceptFallback} " +
+            $"risk_floor={analysis.RiskFloor}";
+
+        ReplaceLines(ManagementPathFindingLines, analysis.ManagementPathFindingLines);
+        ReplaceLines(FastTrackFindingLines, analysis.FastTrackFindingLines);
+        ReplaceLines(SafetyWitnessLines, analysis.WitnessLines);
+        ReplaceLines(SafetySystemTestLines, analysis.SystemTestLines);
+    }
+
+    private static void ReplaceLines(ObservableCollection<string> target, IReadOnlyList<string> lines)
+    {
+        target.Clear();
+        foreach (string line in lines)
+        {
+            target.Add(line);
+        }
     }
 
     partial void OnSelectedCatalogItemChanged(PolicyCatalogListItem? value)

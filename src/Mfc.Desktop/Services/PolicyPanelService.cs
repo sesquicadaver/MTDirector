@@ -209,6 +209,36 @@ public sealed class PolicyCompilePanelResult
     public required IReadOnlyList<string> ArtifactLines { get; init; }
 }
 
+/// <summary>Controller-produced ManagementPath / FastTrack facts for Desktop bind (W5-02).</summary>
+public sealed class PolicySafetyAnalysisPanelResult
+{
+    public required Guid DeviceId { get; init; }
+
+    public Guid? CaptureId { get; init; }
+
+    public Guid? RevisionId { get; init; }
+
+    public required string ManagementPathContextHashHex { get; init; }
+
+    public required string FastTrackContextHashHex { get; init; }
+
+    public required bool BlocksManagementPath { get; init; }
+
+    public required bool AllowsSafeFastTrack { get; init; }
+
+    public required bool RequiresAcceptFallback { get; init; }
+
+    public required string RiskFloor { get; init; }
+
+    public required IReadOnlyList<string> ManagementPathFindingLines { get; init; }
+
+    public required IReadOnlyList<string> FastTrackFindingLines { get; init; }
+
+    public required IReadOnlyList<string> WitnessLines { get; init; }
+
+    public required IReadOnlyList<string> SystemTestLines { get; init; }
+}
+
 /// <summary>Desktop policy panel orchestration over Contracts-only client (M2-18).</summary>
 public interface IPolicyPanelService
 {
@@ -348,6 +378,12 @@ public interface IPolicyPanelService
         Guid analysisRunId,
         byte[] currentDependencyFingerprint,
         byte[] currentCapabilityHash,
+        CancellationToken cancellationToken = default);
+
+    Task<PolicySafetyAnalysisPanelResult> GetDevicePolicySafetyAnalysisAsync(
+        Guid deviceId,
+        Guid? revisionId,
+        IReadOnlyList<string> controllerSourcePrefixes,
         CancellationToken cancellationToken = default);
 }
 
@@ -871,6 +907,22 @@ public sealed class PolicyPanelService : IPolicyPanelService
         };
     }
 
+    public async Task<PolicySafetyAnalysisPanelResult> GetDevicePolicySafetyAnalysisAsync(
+        Guid deviceId,
+        Guid? revisionId,
+        IReadOnlyList<string> controllerSourcePrefixes,
+        CancellationToken cancellationToken = default)
+    {
+        PolicySafetyAnalysis analysis = await _client
+            .GetDevicePolicySafetyAnalysisAsync(
+                deviceId,
+                revisionId,
+                controllerSourcePrefixes,
+                cancellationToken)
+            .ConfigureAwait(false);
+        return ToSafetyPanelResult(analysis);
+    }
+
     /// <summary>
     /// SHA-256 warning identity matching Domain <c>PolicyApprovalHasher.HashWarning</c>
     /// (<c>mfc.policy.warning.v1</c>) so Desktop can ack without referencing Domain.
@@ -956,6 +1008,64 @@ public sealed class PolicyPanelService : IPolicyPanelService
         }
 
         return entries;
+    }
+
+    private static PolicySafetyAnalysisPanelResult ToSafetyPanelResult(PolicySafetyAnalysis analysis)
+    {
+        List<string> witnesses = [];
+        List<string> managementLines = [];
+        foreach (PolicySafetyFinding finding in analysis.ManagementPathFindings)
+        {
+            managementLines.Add(FormatFinding(finding));
+            if (finding.Witness is not null)
+            {
+                witnesses.Add($"{finding.Code}: {FormatWitness(finding.Witness)}");
+            }
+        }
+
+        List<string> fastTrackLines = analysis.FasttrackFindings.Select(FormatFinding).ToList();
+        foreach (ManagementSystemTest test in analysis.SystemTests)
+        {
+            witnesses.Add($"SYSTEM {test.Expected}: {FormatWitness(test.Packet)}");
+        }
+
+        return new PolicySafetyAnalysisPanelResult
+        {
+            DeviceId = DesktopProtoUuid.ToGuid(analysis.DeviceId),
+            CaptureId = TryUuid(analysis.CaptureId),
+            RevisionId = TryUuid(analysis.RevisionId),
+            ManagementPathContextHashHex = FormatHash(ToHashBytes(analysis.ManagementPathContextHash)),
+            FastTrackContextHashHex = FormatHash(ToHashBytes(analysis.FasttrackContextHash)),
+            BlocksManagementPath = analysis.BlocksManagementPath,
+            AllowsSafeFastTrack = analysis.AllowsSafeFasttrack,
+            RequiresAcceptFallback = analysis.RequiresAcceptFallback,
+            RiskFloor = analysis.RiskFloor ?? string.Empty,
+            ManagementPathFindingLines = managementLines,
+            FastTrackFindingLines = fastTrackLines,
+            WitnessLines = witnesses,
+            SystemTestLines = analysis.SystemTests
+                .Select(static t => $"{t.Origin} {t.Chain} expected={t.Expected}")
+                .ToArray(),
+        };
+    }
+
+    private static Guid? TryUuid(Uuid? value)
+        => value is { Value.Length: 16 } ? DesktopProtoUuid.ToGuid(value) : null;
+
+    private static string FormatFinding(PolicySafetyFinding finding)
+    {
+        string subject = string.IsNullOrWhiteSpace(finding.Subject) ? string.Empty : $" {finding.Subject}";
+        return $"{finding.Code} [{finding.Severity}]{subject} {finding.Message}";
+    }
+
+    private static string FormatWitness(PolicyWitnessPacket packet)
+    {
+        string proto = packet.HasProtocol ? $" proto={packet.Protocol}" : string.Empty;
+        string dport = packet.HasDestinationPort ? $" dport={packet.DestinationPort}" : string.Empty;
+        string state = string.IsNullOrWhiteSpace(packet.ConnectionState)
+            ? string.Empty
+            : $" state={packet.ConnectionState}";
+        return $"{packet.Family} {packet.Chain} {packet.SourceAddress}->{packet.DestinationAddress}{proto}{dport}{state}";
     }
 
     private static PolicyCatalogListItem ToCatalogItem(PolicyCatalogItem item)

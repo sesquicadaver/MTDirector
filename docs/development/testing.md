@@ -381,6 +381,7 @@ Policy Model §§22–27 + Issue Set M2-06 AC#1–12 → Domain + Application + 
 | Desktop thin list (Contracts-only) | `PolicyPanelService` | U1 `PolicyDesktopServiceTests` |
 | W3.6 Update/Delete/Ack/Compile | `PoliciesViewModel` + `IPolicyServiceClient` | `Ac5cPoliciesMutateRulesAckWarningsAndCompile` + `PoliciesViewModelTests` + `PolicyDesktopServiceTests` |
 | W5-01 ListPolicies catalog | `ListPoliciesUseCase` + Policies catalog ListBox | `Ac5dPoliciesCatalogBrowseListPoliciesThenSelectLoadsRevision` + `ListPoliciesUseCaseTests` + `PoliciesViewModelTests` |
+| W5-02 ManagementPath / FastTrack | `GetDevicePolicySafetyAnalysisUseCase` + Policies safety panel | `Ac5ePoliciesShowManagementPathAndFastTrackAnalysis` + `GetDevicePolicySafetyAnalysisUseCaseTests` + `PoliciesViewModelTests` |
 | Architecture boundary | Desktop → Contracts only | C3 `ArchitectureBoundaryTests` |
 
 **Residuals (documented, non-blocking):** TCP_RESET on App/gRPC path needs an in-document service catalog that proves TCP-only (`IsTcpOnly`); CreateDraft starts with empty service_objects, so wire TCP_RESET remains Domain-proven until Address/Service object CRUD embeds catalogs. Idempotency hashes now include predicate+logging.
@@ -1823,6 +1824,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | W1.3 Policies catalog lists + Compose selection | `PoliciesViewModel` Address/Service/Contracts/`DiffLines` + Compose ← Node | `Ac5bPoliciesBindCatalogListsAndComposeFromSelectedNode` + `PoliciesViewModelTests` |
 | W3.6 Policy Update/Delete/Ack/Compile | `UpdateRuleCommand` / `DeleteRuleCommand` / `AcknowledgeWarningCommand` / `CompileCommand` | `Ac5cPoliciesMutateRulesAckWarningsAndCompile` + `PoliciesViewModelTests` + `PolicyDesktopServiceTests` |
 | W5-01 ListPolicies catalog browse | `ListPolicies` RPC + catalog select → LoadRevision | `Ac5dPoliciesCatalogBrowseListPoliciesThenSelectLoadsRevision` + `ListPoliciesUseCaseTests` + `PoliciesViewModelTests` + `PolicyDesktopServiceTests` |
+| W5-02 ManagementPath / FastTrack Desktop | `GetDevicePolicySafetyAnalysis` RPC + hashes/findings/witnesses bind | `Ac5ePoliciesShowManagementPathAndFastTrackAnalysis` + `GetDevicePolicySafetyAnalysisUseCaseTests` + `PoliciesViewModelTests` + `PolicyDesktopServiceTests` |
 | AC#6 Operations onboarding/deploy/recovery | Onboarding + Deployment VMs | `Ac6OperationsViewSupportsOnboardingDeploymentAndRecovery` |
 | W1.4 Deploy/Onboarding plan collections | `ArtifactLines` / `OrderLines` / `ProbeAndWatchdogLines` / `Placements` | `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta` |
 | W3.3 Onboarding/Deploy Watch | Start + Watch → `ProgressLines` | `Ac6cOperationsStartWatchesOnboardingAndDeploymentProgress` + `OnboardingViewModelTests` + `DeploymentViewModelTests` |
@@ -1950,7 +1952,7 @@ Issue Set M6-09. **M6 CLOSED**. Live CHR / live physical CRS OFF — E2E Living 
 
 | AC / вимога | Модуль | Тест / артефакт |
 |-------------|--------|-----------------|
-| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md`; §3.C NEXT = W5-02 | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
+| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md`; §3.C NEXT = W5-03 | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
 | AC#2 Release gates executed | `docs/release/release-gates.md` | `Ac2ReleaseGatesChecklistExists` |
 | AC#3 CHR matrix green | E2E Living Specs (substitute) | `Ac3ChrMatrixSubstitutedByE2ELivingSpecs` |
 | AC#4 Physical CRS green | `VrrpCrsE2E` + `crs-switch` | `Ac4PhysicalCrsSubstitutedByScriptedFixture` |

@@ -205,6 +205,38 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.DoesNotContain("SemanticDiffEngine", vmSource, StringComparison.Ordinal);
     }
 
+    /// <summary>W5-02: Policies bind ManagementPath/FastTrack hashes and findings from Controller RPC.</summary>
+    [Fact]
+    public void Ac5ePoliciesShowManagementPathAndFastTrackAnalysis()
+    {
+        Type policies = typeof(PoliciesViewModel);
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.ManagementPathFindingLines)));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.FastTrackFindingLines)));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.SafetyWitnessLines)));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.ManagementPathContextHashText)));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.FastTrackContextHashText)));
+        Assert.NotNull(policies.GetProperty("RefreshSafetyAnalysisCommand"));
+        Assert.NotNull(typeof(IPolicyServiceClient).GetMethod(nameof(IPolicyServiceClient.GetDevicePolicySafetyAnalysisAsync)));
+        Assert.NotNull(typeof(IPolicyPanelService).GetMethod(nameof(IPolicyPanelService.GetDevicePolicySafetyAnalysisAsync)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Management path / FastTrack", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.RefreshSafetyAnalysisCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.ManagementPathFindingLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.FastTrackFindingLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.SafetyWitnessLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("controller source CIDR", axaml, StringComparison.Ordinal);
+
+        string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/PoliciesViewModel.cs");
+        Assert.Contains("GetDevicePolicySafetyAnalysisAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("ManagementPathContextHashText", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("SemanticDiffEngine", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("ManagementPathAnalysis", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("FastTrackAnalysis", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("Master/Backup", vmSource, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness()
     {

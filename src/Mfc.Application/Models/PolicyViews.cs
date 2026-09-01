@@ -469,3 +469,77 @@ public sealed class PolicyBindingView
 
     public required bool DeploymentStarted { get; init; }
 }
+
+/// <summary>Witness packet produced by Controller analysis (W5-02). Desktop binds, does not recompute.</summary>
+public sealed class PolicyWitnessPacketView
+{
+    public required IpAddressFamily Family { get; init; }
+
+    public required PolicyFilterChain Chain { get; init; }
+
+    public required string SourceAddress { get; init; }
+
+    public required string DestinationAddress { get; init; }
+
+    public byte? Protocol { get; init; }
+
+    public ushort? SourcePort { get; init; }
+
+    public ushort? DestinationPort { get; init; }
+
+    public string? ConnectionState { get; init; }
+}
+
+/// <summary>One ManagementPath or FastTrack finding plus optional witness.</summary>
+public sealed class PolicySafetyFindingView
+{
+    public required string Code { get; init; }
+
+    public required string Severity { get; init; }
+
+    public required string Message { get; init; }
+
+    public string? Subject { get; init; }
+
+    public PolicyWitnessPacketView? Witness { get; init; }
+}
+
+/// <summary>Generated SYSTEM test from ManagementPath analysis (Policy Model §54).</summary>
+public sealed class ManagementSystemTestView
+{
+    public required string Origin { get; init; }
+
+    public required PolicyFilterChain Chain { get; init; }
+
+    public required string Expected { get; init; }
+
+    public required PolicyWitnessPacketView Packet { get; init; }
+}
+
+/// <summary>Read-only ManagementPath + FastTrack analysis for one Device (W5-02).</summary>
+public sealed class PolicySafetyAnalysisView
+{
+    public required Guid DeviceId { get; init; }
+
+    public Guid? CaptureId { get; init; }
+
+    public Guid? RevisionId { get; init; }
+
+    public required string ManagementPathContextHashHex { get; init; }
+
+    public required string FastTrackContextHashHex { get; init; }
+
+    public required bool BlocksManagementPath { get; init; }
+
+    public required bool AllowsSafeFastTrack { get; init; }
+
+    public required bool RequiresAcceptFallback { get; init; }
+
+    public required string RiskFloor { get; init; }
+
+    public required IReadOnlyList<PolicySafetyFindingView> ManagementPathFindings { get; init; }
+
+    public required IReadOnlyList<PolicySafetyFindingView> FastTrackFindings { get; init; }
+
+    public required IReadOnlyList<ManagementSystemTestView> SystemTests { get; init; }
+}

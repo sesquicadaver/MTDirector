@@ -306,6 +306,7 @@ public static class Program
         services.AddScoped<ReplacePolicyTestsUseCase>();
         services.AddScoped<DiffPolicyRevisionsUseCase>();
         services.AddScoped<CompileNodeFilterArtifactsUseCase>();
+        services.AddScoped<GetDevicePolicySafetyAnalysisUseCase>();
     }
 
     private static void RegisterOnboardingApplication(IServiceCollection services)

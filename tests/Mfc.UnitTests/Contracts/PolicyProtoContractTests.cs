@@ -33,6 +33,7 @@ public sealed class PolicyProtoContractTests
         Assert.Contains("ReplaceChainContracts", methods);
         Assert.Contains("ReplacePolicyTests", methods);
         Assert.Contains("DiffPolicyRevisions", methods);
+        Assert.Contains("GetDevicePolicySafetyAnalysis", methods);
         Assert.Equal("mfc.v1.PolicyService", PolicyService.Descriptor.FullName);
     }
 
@@ -62,6 +63,36 @@ public sealed class PolicyProtoContractTests
             item);
         Assert.Equal("policies", ListPoliciesResponse.Descriptor.FindFieldByNumber(1)!.Name);
         Assert.True(ListPoliciesResponse.Descriptor.FindFieldByNumber(1)!.IsRepeated);
+    }
+
+    [Fact]
+    public void GetDevicePolicySafetyAnalysisExposesHashesFindingsAndWitnesses()
+    {
+        Assert.Contains(PolicyService.Descriptor.Methods, static m => m.Name == "GetDevicePolicySafetyAnalysis");
+        string[] request = GetDevicePolicySafetyAnalysisRequest.Descriptor.Fields.InDeclarationOrder()
+            .Select(static f => f.Name)
+            .ToArray();
+        Assert.Equal(["device_id", "revision_id", "controller_source_prefixes"], request);
+        string[] analysis = PolicySafetyAnalysis.Descriptor.Fields.InDeclarationOrder()
+            .Select(static f => f.Name)
+            .ToArray();
+        Assert.Equal(
+            [
+                "device_id",
+                "capture_id",
+                "revision_id",
+                "management_path_context_hash",
+                "fasttrack_context_hash",
+                "blocks_management_path",
+                "allows_safe_fasttrack",
+                "requires_accept_fallback",
+                "risk_floor",
+                "management_path_findings",
+                "fasttrack_findings",
+                "system_tests",
+            ],
+            analysis);
+        Assert.True(PolicySafetyFinding.Descriptor.FindFieldByNumber(5)!.MessageType == PolicyWitnessPacket.Descriptor);
     }
 
     [Theory]

@@ -45,6 +45,7 @@ public sealed class PoliciesViewModelTests
             parentId: nodeId);
 
         Assert.Equal(nodeId.ToString("D"), vm.ComposeNodeIdText);
+        Assert.Equal(deviceId.ToString("D"), vm.SafetyDeviceIdText);
     }
 
     [Fact]
@@ -90,6 +91,47 @@ public sealed class PoliciesViewModelTests
         Assert.Equal("lab-baseline", listed.Name);
         Assert.Equal(revisionId, listed.LatestRevisionId);
         Assert.Contains("lab-baseline", listed.SummaryLine, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task RefreshSafetyAnalysisBindsControllerHashesAndFindings()
+    {
+        Guid deviceId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        StubPolicyPanel panel = new()
+        {
+            SafetyResult = new PolicySafetyAnalysisPanelResult
+            {
+                DeviceId = deviceId,
+                CaptureId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+                ManagementPathContextHashHex = new string('a', 64),
+                FastTrackContextHashHex = new string('b', 64),
+                BlocksManagementPath = true,
+                AllowsSafeFastTrack = false,
+                RequiresAcceptFallback = false,
+                RiskFloor = string.Empty,
+                ManagementPathFindingLines = ["API_SSL_DISABLED [BLOCKER] api-ssl is disabled"],
+                FastTrackFindingLines = [],
+                WitnessLines = ["API_SSL_DISABLED: Ipv4 Input 192.0.2.1->192.0.2.10 dport=8729"],
+                SystemTestLines = ["SYSTEM Input expected=ACCEPT"],
+            },
+        };
+        using PoliciesViewModel vm = new(panel, connection, inventory)
+        {
+            SafetyDeviceIdText = deviceId.ToString("D"),
+            ControllerSourcePrefixesText = "192.0.2.0/24",
+        };
+
+        await vm.RefreshSafetyAnalysisCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Equal(1, panel.SafetyAnalysisCalls);
+        Assert.Equal(new string('a', 64), vm.ManagementPathContextHashText);
+        Assert.Equal(new string('b', 64), vm.FastTrackContextHashText);
+        Assert.Contains("blocks_management_path=True", vm.SafetyFlagsText, StringComparison.Ordinal);
+        Assert.Contains("API_SSL_DISABLED", Assert.Single(vm.ManagementPathFindingLines), StringComparison.Ordinal);
+        Assert.Contains("192.0.2.10", Assert.Single(vm.SafetyWitnessLines), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -540,6 +582,21 @@ public sealed class PoliciesViewModelTests
             byte[] currentCapabilityHash,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
+
+        public PolicySafetyAnalysisPanelResult? SafetyResult { get; init; }
+
+        public int SafetyAnalysisCalls { get; private set; }
+
+        public Task<PolicySafetyAnalysisPanelResult> GetDevicePolicySafetyAnalysisAsync(
+            Guid deviceId,
+            Guid? revisionId,
+            IReadOnlyList<string> controllerSourcePrefixes,
+            CancellationToken cancellationToken = default)
+        {
+            SafetyAnalysisCalls++;
+            cancellationToken.ThrowIfCancellationRequested();
+            return Task.FromResult(SafetyResult ?? throw new InvalidOperationException("SafetyResult not set."));
+        }
     }
 
     private sealed class RecordingPolicyPanel : IPolicyPanelService
@@ -826,6 +883,13 @@ public sealed class PoliciesViewModelTests
                 ],
             });
         }
+
+        public Task<PolicySafetyAnalysisPanelResult> GetDevicePolicySafetyAnalysisAsync(
+            Guid deviceId,
+            Guid? revisionId,
+            IReadOnlyList<string> controllerSourcePrefixes,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
 
         private static PolicyRevisionPanelState CloneDraft(
             PolicyRevisionPanelState draft,

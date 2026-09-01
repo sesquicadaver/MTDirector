@@ -1095,6 +1095,68 @@
 
             <Border Classes="mfc-panel">
               <StackPanel Spacing="6">
+                <TextBlock Classes="mfc-label" Text="Management path / FastTrack" />
+                <TextBlock Text="Facts from the device last capture (Controller analysis). Desktop does not recompute."
+                           TextWrapping="Wrap" />
+                <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <TextBox Classes="mfc-field"
+                           PlaceholderText="device UUID"
+                           Text="{Binding Policies.SafetyDeviceIdText}"
+                           MinWidth="240"
+                           Width="320" />
+                  <TextBox Classes="mfc-field"
+                           PlaceholderText="controller source CIDR (required)"
+                           Text="{Binding Policies.ControllerSourcePrefixesText}"
+                           MinWidth="220"
+                           Width="280" />
+                  <Button Classes="mfc-action"
+                          Content="Analyze safety"
+                          Command="{Binding Policies.RefreshSafetyAnalysisCommand}"
+                          MinWidth="130" />
+                </WrapPanel>
+                <TextBlock Text="{Binding Policies.ManagementPathContextHashText, StringFormat=ManagementPath hash: {0}}"
+                           Classes="mfc-mono"
+                           TextWrapping="Wrap" />
+                <TextBlock Text="{Binding Policies.FastTrackContextHashText, StringFormat=FastTrack hash: {0}}"
+                           Classes="mfc-mono"
+                           TextWrapping="Wrap" />
+                <TextBlock Text="{Binding Policies.SafetyFlagsText}" TextWrapping="Wrap" />
+                <TextBlock Classes="mfc-label" Text="ManagementPath findings" />
+                <ListBox ItemsSource="{Binding Policies.ManagementPathFindingLines}" MaxHeight="120">
+                  <ListBox.ItemTemplate>
+                    <DataTemplate>
+                      <TextBlock Text="{Binding}" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace" />
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock Classes="mfc-label" Text="FastTrack findings" />
+                <ListBox ItemsSource="{Binding Policies.FastTrackFindingLines}" MaxHeight="120">
+                  <ListBox.ItemTemplate>
+                    <DataTemplate>
+                      <TextBlock Text="{Binding}" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace" />
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock Classes="mfc-label" Text="Witnesses / SYSTEM tests" />
+                <ListBox ItemsSource="{Binding Policies.SafetyWitnessLines}" MaxHeight="100">
+                  <ListBox.ItemTemplate>
+                    <DataTemplate>
+                      <TextBlock Text="{Binding}" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace" />
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+                <ListBox ItemsSource="{Binding Policies.SafetySystemTestLines}" MaxHeight="80">
+                  <ListBox.ItemTemplate>
+                    <DataTemplate>
+                      <TextBlock Text="{Binding}" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace" />
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+              </StackPanel>
+            </Border>
+
+            <Border Classes="mfc-panel">
+              <StackPanel Spacing="6">
                 <TextBlock Classes="mfc-label" Text="Rules" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <ComboBox Classes="mfc-field"

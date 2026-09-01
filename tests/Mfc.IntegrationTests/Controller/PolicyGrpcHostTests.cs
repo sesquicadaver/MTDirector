@@ -212,6 +212,41 @@ public sealed class PolicyGrpcHostTests
     }
 
     [Fact]
+    public async Task GetDevicePolicySafetyAnalysisUnknownDeviceReturnsNotFound()
+    {
+        string connectionString = await _postgres.CreateFreshDatabaseAsync();
+        string url = $"http://127.0.0.1:{GetFreeTcpPort()}";
+
+        await using var app = Program.BuildHost(DevArgs(url, connectionString));
+        await app.Services.MigrateAsync();
+        await app.StartAsync();
+
+        try
+        {
+            await WaitForPortAsync(url, TimeSpan.FromSeconds(10));
+            using GrpcChannel channel = GrpcChannel.ForAddress(url);
+            PolicyService.PolicyServiceClient client = new(channel);
+            Metadata headers = ActorHeaders("tester");
+
+            RpcException missing = await Assert.ThrowsAsync<RpcException>(async () =>
+                await client.GetDevicePolicySafetyAnalysisAsync(
+                    new GetDevicePolicySafetyAnalysisRequest
+                    {
+                        DeviceId = ProtoUuid.FromGuid(Guid.NewGuid()),
+                        ControllerSourcePrefixes = { "192.0.2.0/24" },
+                    },
+                    headers,
+                    deadline: Deadline()));
+            Assert.Equal(StatusCode.NotFound, missing.StatusCode);
+        }
+        finally
+        {
+            using CancellationTokenSource stopCts = new(TimeSpan.FromSeconds(5));
+            await app.StopAsync(stopCts.Token);
+        }
+    }
+
+    [Fact]
     public async Task C2ComposeEffectivePolicyReturnsRulesRefsAndHash()
     {
         string connectionString = await _postgres.CreateFreshDatabaseAsync();

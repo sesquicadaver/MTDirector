@@ -1,6 +1,6 @@
 # Architecture overview
 
-**Release baseline:** `v0.2.0` + P2 read/write CLOSED + Desktop alignment P0–P2 DONE + CONT-01…02 DONE + W5-01 DONE. **§3.C NEXT = W5-02** ([#343](https://github.com/sesquicadaver/MTDirector/issues/343)).
+**Release baseline:** `v0.2.0` + P2 read/write CLOSED + Desktop alignment P0–P2 DONE + CONT-01…02 DONE + W5-01…02 DONE. **§3.C NEXT = W5-03** ([#344](https://github.com/sesquicadaver/MTDirector/issues/344)).
 
 MTDirector (MikroTik Firewall Controller) is a **modular monolith**: one deployable Controller process, one Desktop client, and clear assembly boundaries.
 

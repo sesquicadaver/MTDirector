@@ -91,6 +91,7 @@ public sealed class DesktopVerticalSliceWiringTests
         Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.DeleteRuleAsync)));
         Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.AcknowledgeWarningAsync)));
         Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.CompileNodeFilterArtifactsAsync)));
+        Assert.NotNull(policies.GetMethod(nameof(IPolicyServiceClient.GetDevicePolicySafetyAnalysisAsync)));
 
         Type onboarding = typeof(IOnboardingServiceClient);
         Assert.NotNull(onboarding.GetMethod(nameof(IOnboardingServiceClient.ValidatePrerequisitesAsync)));

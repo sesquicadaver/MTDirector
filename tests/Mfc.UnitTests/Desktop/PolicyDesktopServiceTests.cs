@@ -67,6 +67,72 @@ public sealed class PolicyDesktopServiceTests
     }
 
     [Fact]
+    public async Task SafetyAnalysisMapsHashesFindingsAndWitnessesFromController()
+    {
+        FakePolicyServiceClient client = new();
+        Guid deviceId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+        client.SafetyResponse = new PolicySafetyAnalysis
+        {
+            DeviceId = ToUuid(deviceId),
+            CaptureId = ToUuid(Guid.Parse("11111111-2222-3333-4444-555555555555")),
+            ManagementPathContextHash = HashBytes(0x21),
+            FasttrackContextHash = HashBytes(0x22),
+            BlocksManagementPath = true,
+            AllowsSafeFasttrack = false,
+            RequiresAcceptFallback = false,
+            RiskFloor = string.Empty,
+            ManagementPathFindings =
+            {
+                new PolicySafetyFinding
+                {
+                    Code = "API_SSL_DISABLED",
+                    Severity = "BLOCKER",
+                    Message = "api-ssl is disabled",
+                    Witness = new PolicyWitnessPacket
+                    {
+                        Family = IpAddressFamily.Ipv4,
+                        Chain = PolicyFilterChain.Input,
+                        SourceAddress = "192.0.2.1",
+                        DestinationAddress = "192.0.2.10",
+                        DestinationPort = 8729,
+                    },
+                },
+            },
+            SystemTests =
+            {
+                new ManagementSystemTest
+                {
+                    Origin = "SYSTEM",
+                    Chain = PolicyFilterChain.Input,
+                    Expected = "ACCEPT",
+                    Packet = new PolicyWitnessPacket
+                    {
+                        Family = IpAddressFamily.Ipv4,
+                        Chain = PolicyFilterChain.Input,
+                        SourceAddress = "192.0.2.1",
+                        DestinationAddress = "192.0.2.10",
+                    },
+                },
+            },
+        };
+
+        PolicyPanelService service = new(client);
+        PolicySafetyAnalysisPanelResult result = await service.GetDevicePolicySafetyAnalysisAsync(
+            deviceId,
+            revisionId: null,
+            ["192.0.2.0/24"]);
+        Assert.Equal(deviceId, result.DeviceId);
+        Assert.True(result.BlocksManagementPath);
+        Assert.Equal(64, result.ManagementPathContextHashHex.Length);
+        Assert.Equal(64, result.FastTrackContextHashHex.Length);
+        Assert.Contains("API_SSL_DISABLED", Assert.Single(result.ManagementPathFindingLines), StringComparison.Ordinal);
+        Assert.Contains("192.0.2.10", result.WitnessLines[0], StringComparison.Ordinal);
+        Assert.Contains("SYSTEM", Assert.Single(result.SystemTestLines), StringComparison.Ordinal);
+        Assert.Equal(deviceId, client.LastSafetyDeviceId);
+        Assert.Equal(["192.0.2.0/24"], client.LastSafetyPrefixes);
+    }
+
+    [Fact]
     public void Ac4ParseAddressEntriesRejectsRawMatcherAndAcceptsHostCidrRange()
     {
         IReadOnlyList<AddressObjectEntry> entries = PolicyPanelService.ParseAddressEntries(
@@ -465,6 +531,12 @@ public sealed class PolicyDesktopServiceTests
 
         public ListPoliciesResponse CatalogResponse { get; set; } = new();
 
+        public PolicySafetyAnalysis SafetyResponse { get; set; } = new();
+
+        public Guid? LastSafetyDeviceId { get; private set; }
+
+        public IReadOnlyList<string>? LastSafetyPrefixes { get; private set; }
+
         public Task<ListPoliciesResponse> ListPoliciesAsync(
             PolicyKind kind = PolicyKind.Unspecified,
             CancellationToken cancellationToken = default)
@@ -714,6 +786,17 @@ public sealed class PolicyDesktopServiceTests
             LastCompileNodeId = nodeId;
             LastCompileRunId = analysisRunId;
             return Task.FromResult(CompileResponse);
+        }
+
+        public Task<PolicySafetyAnalysis> GetDevicePolicySafetyAnalysisAsync(
+            Guid deviceId,
+            Guid? revisionId = null,
+            IReadOnlyList<string>? controllerSourcePrefixes = null,
+            CancellationToken cancellationToken = default)
+        {
+            LastSafetyDeviceId = deviceId;
+            LastSafetyPrefixes = controllerSourcePrefixes;
+            return Task.FromResult(SafetyResponse);
         }
 
         public Task<PolicyApprovalVote> ApproveRevisionAsync(
