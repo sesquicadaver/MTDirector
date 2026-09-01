@@ -73,6 +73,7 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.RegisterDeviceAsync)));
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.UpdateDeviceConnectionAsync)));
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.ListNeighborCandidatesAsync)));
+        Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.ValidateVrrpPairConsistencyAsync)));
     }
 
     /// <summary>W3.2: Inventory/Add router Probe calls ValidateDeviceConnection (read-only Controller probe).</summary>

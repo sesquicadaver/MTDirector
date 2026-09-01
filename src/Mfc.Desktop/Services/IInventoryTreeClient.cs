@@ -65,4 +65,11 @@ public interface IInventoryTreeClient
     Task<ListNeighborCandidatesResponse> ListNeighborCandidatesAsync(
         Guid seedDeviceId,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// W6-02: VRRP pair config + logical firewall agreement from last completed captures.
+    /// </summary>
+    Task<VrrpPairConsistencyReport> ValidateVrrpPairConsistencyAsync(
+        Guid nodeId,
+        CancellationToken cancellationToken = default);
 }

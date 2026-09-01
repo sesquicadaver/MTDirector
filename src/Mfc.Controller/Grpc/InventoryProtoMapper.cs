@@ -2,6 +2,7 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Mfc.Application.Abstractions.ConnectionProfiles;
 using Mfc.Application.Models;
+using Mfc.Application.Topology;
 using Mfc.Contracts.Mfc.V1;
 using Mfc.Domain;
 using Mfc.Domain.Inventory.Primitives;
@@ -200,6 +201,39 @@ internal static class InventoryProtoMapper
         }
 
         return response;
+    }
+
+    public static VrrpPairConsistencyReport ToProto(VrrpPairConsistencyView view)
+    {
+        VrrpPairConsistencyReport report = new()
+        {
+            NodeId = ProtoUuid.FromGuid(view.NodeId),
+            Passed = view.Passed,
+            MemberCount = (uint)view.MemberCount,
+            CaptureCount = (uint)view.CaptureCount,
+        };
+        foreach (VrrpPairConsistencyFindingView finding in view.Findings)
+        {
+            VrrpPairConsistencyFinding item = new()
+            {
+                Code = finding.Code,
+                Message = finding.Message,
+                Severity = finding.Severity,
+            };
+            if (!string.IsNullOrWhiteSpace(finding.Subject))
+            {
+                item.Subject = finding.Subject;
+            }
+
+            if (finding.DeviceId is Guid deviceId)
+            {
+                item.DeviceId = ProtoUuid.FromGuid(deviceId);
+            }
+
+            report.Findings.Add(item);
+        }
+
+        return report;
     }
 
     public static DomainSiteStatus ToDomain(ProtoSiteStatus status) => status switch

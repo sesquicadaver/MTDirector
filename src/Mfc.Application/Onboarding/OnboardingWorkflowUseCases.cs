@@ -5,6 +5,7 @@ using Mfc.Application.Abstractions.Onboarding;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.Time;
 using Mfc.Application.Common;
+using Mfc.Application.Topology;
 using Mfc.Domain;
 using Mfc.Domain.Capabilities;
 using Mfc.Domain.Inventory;
@@ -13,6 +14,7 @@ using Mfc.Domain.Onboarding;
 using Mfc.Domain.Onboarding.Primitives;
 using Mfc.Domain.Policy;
 using Mfc.Domain.Policy.Primitives;
+using Mfc.Domain.Topology;
 using Auth = Mfc.Application.Common.AuthorizationGuard;
 
 namespace Mfc.Application.Onboarding;
@@ -119,18 +121,22 @@ public sealed class ValidateOnboardingPrerequisitesWorkflowUseCase
     private readonly IAuthorizationBoundary _auth;
     private readonly INodeStore _nodes;
     private readonly IAuditEventWriter _audit;
+    private readonly VrrpPairConsistencyLoader _vrrpPair;
 
     public ValidateOnboardingPrerequisitesWorkflowUseCase(
         IAuthorizationBoundary auth,
         INodeStore nodes,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        VrrpPairConsistencyLoader vrrpPair)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(vrrpPair);
         _auth = auth;
         _nodes = nodes;
         _audit = audit;
+        _vrrpPair = vrrpPair;
     }
 
     public async Task<ApplicationResult<OnboardingPrerequisiteReportView>> ExecuteAsync(
@@ -154,23 +160,47 @@ public sealed class ValidateOnboardingPrerequisitesWorkflowUseCase
         Dictionary<DeviceId, OnboardingDevicePrerequisiteFacts> byDevice = command.Facts
             .ToDictionary(static f => f.DeviceId);
         OnboardingPrerequisiteResult result = ValidateOnboardingPrerequisitesUseCase.Execute(node, byDevice);
+        List<OnboardingFindingView> findings = result.Findings.Select(static f => new OnboardingFindingView
+        {
+            Code = f.Code,
+            Severity = f.Severity,
+            Message = f.Message,
+            DeviceId = f.DeviceId?.Value,
+            Target = f.Target,
+        }).ToList();
+
+        if (node.DeclaredKind == NodeKind.Vrrp)
+        {
+            VrrpPairConsistencyResult pair = await _vrrpPair
+                .AnalyzeNodeAsync(node, cancellationToken)
+                .ConfigureAwait(false);
+            foreach (VrrpPairConsistencyFinding finding in pair.Findings)
+            {
+                findings.Add(new OnboardingFindingView
+                {
+                    Code = finding.Code,
+                    Severity = finding.Severity == VrrpPairFindingSeverity.Blocker
+                        ? OnboardingCodes.SeverityBlocker
+                        : "FINDING",
+                    Message = finding.Message,
+                    DeviceId = finding.DeviceId,
+                    Target = finding.Subject,
+                });
+            }
+        }
+
+        bool passed = findings.Count == 0
+            || findings.All(static f => f.Severity != OnboardingCodes.SeverityBlocker);
         await _audit.AppendAsync(
             command.Actor,
             Operation,
-            JsonSerializer.Serialize(new { node_id = command.NodeId, passed = result.Passed }),
+            JsonSerializer.Serialize(new { node_id = command.NodeId, passed }),
             cancellationToken).ConfigureAwait(false);
         return ApplicationResults.Ok(new OnboardingPrerequisiteReportView
         {
             NodeId = command.NodeId,
-            Passed = result.Passed,
-            Findings = result.Findings.Select(static f => new OnboardingFindingView
-            {
-                Code = f.Code,
-                Severity = f.Severity,
-                Message = f.Message,
-                DeviceId = f.DeviceId?.Value,
-                Target = f.Target,
-            }).ToArray(),
+            Passed = passed,
+            Findings = findings,
         });
     }
 }
@@ -200,6 +230,7 @@ public sealed class CreateOnboardingPlanUseCase
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
     private readonly IClock _clock;
+    private readonly VrrpPairConsistencyLoader _vrrpPair;
 
     public CreateOnboardingPlanUseCase(
         IAuthorizationBoundary auth,
@@ -207,7 +238,8 @@ public sealed class CreateOnboardingPlanUseCase
         IOnboardingStore onboarding,
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
-        IClock clock)
+        IClock clock,
+        VrrpPairConsistencyLoader vrrpPair)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
@@ -215,12 +247,14 @@ public sealed class CreateOnboardingPlanUseCase
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(clock);
+        ArgumentNullException.ThrowIfNull(vrrpPair);
         _auth = auth;
         _nodes = nodes;
         _onboarding = onboarding;
         _idempotency = idempotency;
         _audit = audit;
         _clock = clock;
+        _vrrpPair = vrrpPair;
     }
 
     public async Task<ApplicationResult<OnboardingPlanSummaryView>> ExecuteAsync(
@@ -274,6 +308,14 @@ public sealed class CreateOnboardingPlanUseCase
             if (node is null)
             {
                 return ApplicationResults.Fail(ApplicationError.NotFound($"Node '{command.NodeId}' not found."));
+            }
+
+            ApplicationError? pairError = await VrrpPairPlanGate
+                .BlockIfFailedAsync(_vrrpPair, node, cancellationToken)
+                .ConfigureAwait(false);
+            if (pairError is not null)
+            {
+                return ApplicationResults.Fail(pairError);
             }
 
             OnboardingPlan plan = OnboardingPlan.Create(

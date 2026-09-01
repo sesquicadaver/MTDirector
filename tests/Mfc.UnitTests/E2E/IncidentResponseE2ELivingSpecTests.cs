@@ -294,7 +294,10 @@ public sealed class IncidentResponseE2ELivingSpecTests
             FakeIdempotencyStore idempotency = new();
             EmitResponseFeedbackUseCase feedback = ResponseFeedbackTestFactory.CreateEmit(auth, feedbackStore, audit, clock);
             AssessResponseIntentFeasibilityUseCase assess = new(auth, feedback);
-            CreateDeploymentPlanUseCase createPlan = new(auth, fx.Nodes, deployments, idempotency, audit, clock);
+            CreateDeploymentPlanUseCase createPlan = new(
+                auth, fx.Nodes, deployments, idempotency, audit, clock,
+                new Mfc.Application.Topology.VrrpPairConsistencyLoader(
+                    new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore()));
             E2EScriptedDeploymentRuntime runtime = new() { Commit = true };
             StartDeploymentUseCase start = new(auth, fx.Nodes, deployments, drift, idempotency, audit, clock, runtime);
             DeployIncidentDenyOverlayUseCase deploy = new(

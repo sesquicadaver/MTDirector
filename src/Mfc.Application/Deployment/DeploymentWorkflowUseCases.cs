@@ -5,6 +5,7 @@ using Mfc.Application.Abstractions.Deployment;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.Time;
 using Mfc.Application.Common;
+using Mfc.Application.Topology;
 using Mfc.Domain;
 using Mfc.Domain.Deployment;
 using Mfc.Domain.Deployment.Primitives;
@@ -188,6 +189,7 @@ public sealed class CreateDeploymentPlanUseCase
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
     private readonly IClock _clock;
+    private readonly VrrpPairConsistencyLoader _vrrpPair;
 
     public CreateDeploymentPlanUseCase(
         IAuthorizationBoundary auth,
@@ -195,7 +197,8 @@ public sealed class CreateDeploymentPlanUseCase
         IDeploymentStore deployments,
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
-        IClock clock)
+        IClock clock,
+        VrrpPairConsistencyLoader vrrpPair)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
@@ -203,12 +206,14 @@ public sealed class CreateDeploymentPlanUseCase
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(clock);
+        ArgumentNullException.ThrowIfNull(vrrpPair);
         _auth = auth;
         _nodes = nodes;
         _deployments = deployments;
         _idempotency = idempotency;
         _audit = audit;
         _clock = clock;
+        _vrrpPair = vrrpPair;
     }
 
     public async Task<ApplicationResult<DeploymentPlanSummaryView>> ExecuteAsync(
@@ -263,6 +268,14 @@ public sealed class CreateDeploymentPlanUseCase
             if (node is null)
             {
                 return ApplicationResults.Fail(ApplicationError.NotFound($"Node '{command.NodeId}' not found."));
+            }
+
+            ApplicationError? pairError = await VrrpPairPlanGate
+                .BlockIfFailedAsync(_vrrpPair, node, cancellationToken)
+                .ConfigureAwait(false);
+            if (pairError is not null)
+            {
+                return ApplicationResults.Fail(pairError);
             }
 
             DeploymentPlan plan = DeploymentPlan.Create(

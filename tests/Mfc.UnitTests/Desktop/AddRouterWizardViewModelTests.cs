@@ -563,6 +563,11 @@ public sealed class AddRouterWizardViewModelTests
             Guid deviceId,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
+
+        public Task<VrrpPairConsistencyReport> ValidateVrrpPairConsistencyAsync(
+            Guid nodeId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
     }
 
     private sealed class SeededTreeClientWithDevice : IInventoryTreeClient
@@ -675,6 +680,11 @@ public sealed class AddRouterWizardViewModelTests
 
         public Task<ValidateDeviceConnectionResponse> ValidateDeviceConnectionAsync(
             Guid deviceId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<VrrpPairConsistencyReport> ValidateVrrpPairConsistencyAsync(
+            Guid nodeId,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
     }
@@ -855,6 +865,11 @@ public sealed class AddRouterWizardViewModelTests
             ValidateResponse.DeviceId = ToUuid(deviceId);
             return Task.FromResult(ValidateResponse);
         }
+
+        public Task<VrrpPairConsistencyReport> ValidateVrrpPairConsistencyAsync(
+            Guid nodeId,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
     }
 
     private static Uuid ToUuid(Guid id)

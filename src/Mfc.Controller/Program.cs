@@ -14,6 +14,7 @@ using Mfc.Application.Onboarding;
 using Mfc.Application.Policies;
 using Mfc.Application.Routing;
 using Mfc.Application.Snapshots;
+using Mfc.Application.Topology;
 using Mfc.Application.Workflow;
 using Mfc.Application.Zones;
 using Mfc.Controller.Authorization;
@@ -252,6 +253,8 @@ public static class Program
         services.AddScoped<UpdateConnectionProfileUseCase>();
         services.AddScoped<DiscoverDeviceUseCase>();
         services.AddScoped<ListNeighborCandidatesUseCase>();
+        services.AddScoped<VrrpPairConsistencyLoader>();
+        services.AddScoped<ValidateVrrpPairConsistencyUseCase>();
     }
 
     private static void RegisterSnapshotApplication(IServiceCollection services)

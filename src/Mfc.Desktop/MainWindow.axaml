@@ -503,6 +503,39 @@
                 </DataTemplate>
               </ListBox.ItemTemplate>
             </ListBox>
+            <TextBlock Classes="mfc-label" Text="VRRP pair consistency" IsVisible="{Binding Node.IsVrrpNode}" />
+            <TextBlock Classes="mfc-muted"
+                       Text="{Binding Node.VrrpPairStatusText}"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding Node.IsVrrpNode}" />
+            <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding Node.IsVrrpNode}">
+              <Button Classes="mfc-action"
+                      Content="Validate (last captures)"
+                      Command="{Binding Node.ValidateVrrpPairCommand}"
+                      MinWidth="180" />
+              <Button Classes="mfc-action"
+                      Content="Capture all members + validate"
+                      Command="{Binding Node.CaptureAllMembersAndValidateCommand}"
+                      MinWidth="220" />
+            </StackPanel>
+            <TextBlock Classes="mfc-muted"
+                       Text="No pair consistency findings yet."
+                       IsVisible="{Binding Node.HasNoVrrpPairFindings}" />
+            <ListBox ItemsSource="{Binding Node.VrrpPairFindings}"
+                     MaxHeight="200"
+                     IsVisible="{Binding Node.HasVrrpPairFindings}">
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="vm:VrrpPairFindingListItem">
+                  <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="4"
+                             FontFamily="Consolas,Menlo,monospace" />
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
             <StackPanel Spacing="4"
                         Margin="0,4,0,0"
                         IsVisible="{Binding Node.HasSelectedVrrpMember}">

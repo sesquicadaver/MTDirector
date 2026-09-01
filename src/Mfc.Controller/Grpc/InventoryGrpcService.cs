@@ -4,6 +4,7 @@ using Mfc.Application.Common;
 using Mfc.Application.Inventory;
 using Mfc.Application.Models;
 using Mfc.Application.Snapshots;
+using Mfc.Application.Topology;
 using Mfc.Application.Workflow;
 using Mfc.Contracts.Mfc.V1;
 using Mfc.Domain.Inventory.Primitives;
@@ -29,6 +30,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
     private readonly UpdateConnectionProfileUseCase _updateConnection;
     private readonly DiscoverDeviceUseCase _discoverDevice;
     private readonly ListNeighborCandidatesUseCase _listNeighborCandidates;
+    private readonly ValidateVrrpPairConsistencyUseCase _validateVrrpPair;
     private readonly ValidateDeviceConnectionCoordinator _probeCoordinator;
     private readonly IHostEnvironment _environment;
 
@@ -44,6 +46,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         UpdateConnectionProfileUseCase updateConnection,
         DiscoverDeviceUseCase discoverDevice,
         ListNeighborCandidatesUseCase listNeighborCandidates,
+        ValidateVrrpPairConsistencyUseCase validateVrrpPair,
         ValidateDeviceConnectionCoordinator probeCoordinator,
         IHostEnvironment environment)
     {
@@ -58,6 +61,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         ArgumentNullException.ThrowIfNull(updateConnection);
         ArgumentNullException.ThrowIfNull(discoverDevice);
         ArgumentNullException.ThrowIfNull(listNeighborCandidates);
+        ArgumentNullException.ThrowIfNull(validateVrrpPair);
         ArgumentNullException.ThrowIfNull(probeCoordinator);
         ArgumentNullException.ThrowIfNull(environment);
         _listSites = listSites;
@@ -71,6 +75,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         _updateConnection = updateConnection;
         _discoverDevice = discoverDevice;
         _listNeighborCandidates = listNeighborCandidates;
+        _validateVrrpPair = validateVrrpPair;
         _probeCoordinator = probeCoordinator;
         _environment = environment;
     }
@@ -285,6 +290,22 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         ApplicationResult<NeighborCandidatesView> result = await _listNeighborCandidates
             .ExecuteAsync(
                 new ListNeighborCandidatesCommand { Actor = actor, SeedDeviceId = seedDeviceId },
+                context.CancellationToken)
+            .ConfigureAwait(false);
+        return InventoryProtoMapper.ToProto(Unwrap(result));
+    }
+
+    public override async Task<VrrpPairConsistencyReport> ValidateVrrpPairConsistency(
+        ValidateVrrpPairConsistencyRequest request,
+        ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        Guid nodeId = ProtoUuid.ToGuid(request.NodeId);
+        string actor = ResolveActor(context);
+
+        ApplicationResult<VrrpPairConsistencyView> result = await _validateVrrpPair
+            .ExecuteAsync(
+                new ValidateVrrpPairConsistencyQuery { Actor = actor, NodeId = nodeId },
                 context.CancellationToken)
             .ConfigureAwait(false);
         return InventoryProtoMapper.ToProto(Unwrap(result));

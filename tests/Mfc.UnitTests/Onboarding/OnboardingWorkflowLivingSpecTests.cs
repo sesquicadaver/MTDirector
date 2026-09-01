@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using Mfc.Application.Abstractions.Onboarding;
 using Mfc.Application.Common;
 using Mfc.Application.Onboarding;
+using Mfc.Application.Topology;
 using Mfc.Controller.Grpc;
 using Mfc.Domain.Capabilities;
 using Mfc.Domain.Inventory.Primitives;
@@ -437,8 +438,13 @@ public sealed class OnboardingWorkflowLivingSpecTests
                 store,
                 auth,
                 audit,
-                new ValidateOnboardingPrerequisitesWorkflowUseCase(auth, nodes, audit),
-                new CreateOnboardingPlanUseCase(auth, nodes, store, idempotency, audit, clock),
+                new ValidateOnboardingPrerequisitesWorkflowUseCase(
+                    auth, nodes, audit, new VrrpPairConsistencyLoader(
+                        new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore())),
+                new CreateOnboardingPlanUseCase(
+                    auth, nodes, store, idempotency, audit, clock,
+                    new VrrpPairConsistencyLoader(
+                        new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore())),
                 new StartOnboardingUseCase(auth, nodes, store, idempotency, audit, clock, runtime),
                 new RollbackOnboardingWorkflowUseCase(auth, nodes, store, idempotency, audit, clock, runtime),
                 new GetOnboardingRecoveryStatusUseCase(auth, nodes, store, audit));

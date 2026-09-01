@@ -288,7 +288,10 @@ public sealed class IncidentDenyOverlayRemovalLivingSpecTests
             FakeResponseFeedbackEventStore feedbackStore = new();
             EmitResponseFeedbackUseCase feedback = ResponseFeedbackTestFactory.CreateEmit(auth, feedbackStore, audit, clock);
             ExpireIncidentDenyOverlayBindingUseCase expire = new(auth, fx.Approvals, idempotency, audit, clock, fx.Policies, feedback);
-            CreateDeploymentPlanUseCase createPlan = new(auth, fx.Nodes, deployments, idempotency, audit, clock);
+            CreateDeploymentPlanUseCase createPlan = new(
+                auth, fx.Nodes, deployments, idempotency, audit, clock,
+                new Mfc.Application.Topology.VrrpPairConsistencyLoader(
+                    new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore()));
             PlanIncidentDenyOverlayRemovalUseCase plan = new(
                 auth, fx.Policies, fx.Approvals, audit, expire, fx.UseCase, createPlan, feedback);
             DomainPolicy overlay = (await fx.Policies.ListActiveByOwnerAsync(

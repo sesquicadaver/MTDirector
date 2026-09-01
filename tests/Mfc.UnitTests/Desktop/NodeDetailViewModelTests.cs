@@ -173,7 +173,7 @@ public sealed class NodeDetailViewModelTests
 
         Assert.True(vm.IsVrrpNode);
         Assert.False(vm.ShowStandaloneDeviceSection);
-        Assert.Contains("Node (pair)", vm.VrrpPairHint, StringComparison.Ordinal);
+        Assert.Contains("pair consistency", vm.VrrpPairHint, StringComparison.OrdinalIgnoreCase);
         Assert.Equal(2, vm.VrrpMembers.Count);
         Assert.Equal("a", vm.VrrpMembers[0].SlotText);
         Assert.Equal("r1", vm.VrrpMembers[0].DisplayName);
@@ -273,6 +273,7 @@ public sealed class NodeDetailViewModelTests
             new ZonesViewModel(new StubZones(), connection, inventory),
             new OnboardingViewModel(new StubOnboarding(), connection, inventory),
             client ?? new RecordingInventoryClient(),
+            new StubSnapshotClient(),
             connection);
     }
 
@@ -345,6 +346,41 @@ public sealed class NodeDetailViewModelTests
         public Task<ListNeighborCandidatesResponse> ListNeighborCandidatesAsync(
             Guid seedDeviceId,
             CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<VrrpPairConsistencyReport> ValidateVrrpPairConsistencyAsync(
+            Guid nodeId,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(new VrrpPairConsistencyReport { Passed = true });
+    }
+
+    private sealed class StubSnapshotClient : ISnapshotViewerClient
+    {
+        public Task<StartCaptureResponse> StartCaptureAsync(
+            Guid deviceId, Guid idempotencyKey, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public async IAsyncEnumerable<CaptureProgress> WatchCaptureAsync(
+            Guid operationId, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            await Task.CompletedTask;
+            yield break;
+        }
+
+        public Task<IReadOnlyList<SnapshotSummary>> ListCapturesAsync(
+            Guid deviceId, CancellationToken cancellationToken = default)
+            => Task.FromResult<IReadOnlyList<SnapshotSummary>>([]);
+
+        public Task<SnapshotSummary> GetSummaryAsync(
+            Guid captureId, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<IReadOnlyList<SnapshotRecord>> GetAllSectionRecordsAsync(
+            Guid captureId, string sectionId, DiffDomain domain, CancellationToken cancellationToken = default)
+            => Task.FromResult<IReadOnlyList<SnapshotRecord>>([]);
+
+        public Task<DiffPage> CompareSnapshotsAsync(
+            Guid leftCaptureId, Guid rightCaptureId, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
     }
 
