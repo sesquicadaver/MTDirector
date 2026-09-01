@@ -12,8 +12,8 @@ using Mfc.Desktop.Services;
 namespace Mfc.Desktop.ViewModels;
 
 /// <summary>
-/// Deployment operator panel: semantic diff, artifacts, order, probes/TTL, Watch progress (Start and Rollback), recovery.
-/// No ForceApply and no raw RouterOS command surface.
+/// Deployment operator panel: typed semantic diff (kind/path/before/after), artifacts, order, probes/TTL, Watch progress (Start and Rollback), recovery.
+/// Does not run SemanticDiffEngine locally. No ForceApply and no raw RouterOS command surface.
 /// </summary>
 public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
 {
@@ -34,6 +34,8 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
         _inventory.PropertyChanged += OnInventoryPropertyChanged;
         RefreshTargetHint();
     }
+
+    public ObservableCollection<DeploymentSemanticDiffListItem> SemanticDiffRows { get; } = [];
 
     public ObservableCollection<string> SemanticDiffLines { get; } = [];
 
@@ -113,10 +115,24 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
                 CancellationToken.None).ConfigureAwait(true);
             PlanId = DesktopProtoUuid.ToGuid(plan.PlanId);
             PlanHash = plan.PlanHash;
+            SemanticDiffRows.Clear();
             SemanticDiffLines.Clear();
-            foreach (string entry in plan.SemanticDiffEntries)
+            foreach (DeploymentSemanticDiffEntry entry in plan.SemanticDiff)
             {
-                SemanticDiffLines.Add(entry);
+                DeploymentSemanticDiffListItem row = DeploymentSemanticDiffListItem.FromProto(entry);
+                SemanticDiffRows.Add(row);
+                if (!string.Equals(row.HashDeltaText, "—", StringComparison.Ordinal))
+                {
+                    SemanticDiffLines.Add(row.HashDeltaText);
+                }
+            }
+
+            if (SemanticDiffLines.Count == 0)
+            {
+                foreach (string entry in plan.SemanticDiffEntries)
+                {
+                    SemanticDiffLines.Add(entry);
+                }
             }
 
             ArtifactLines.Clear();
@@ -410,4 +426,43 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
         DeploymentOperationSummary Rolled,
         IReadOnlyList<string> WatchLines,
         DeploymentOperationState LastState);
+}
+
+/// <summary>Presentation row for typed deployment semantic diff (Contracts-only). Kind/path/before/after are distinct fields.</summary>
+public sealed class DeploymentSemanticDiffListItem
+{
+    public required string SummaryLine { get; init; }
+
+    public required string KindText { get; init; }
+
+    public required string PathText { get; init; }
+
+    public required string BeforeText { get; init; }
+
+    public required string AfterText { get; init; }
+
+    public required string HashDeltaText { get; init; }
+
+    public static DeploymentSemanticDiffListItem FromProto(DeploymentSemanticDiffEntry entry)
+    {
+        ArgumentNullException.ThrowIfNull(entry);
+        string kind = entry.Kind switch
+        {
+            DeploymentSemanticDiffKind.ArtifactUnchanged => "ARTIFACT_UNCHANGED",
+            DeploymentSemanticDiffKind.ArtifactChanged => "ARTIFACT_CHANGED",
+            _ => "UNSPECIFIED",
+        };
+        return new DeploymentSemanticDiffListItem
+        {
+            KindText = kind,
+            PathText = OrDash(entry.Path),
+            BeforeText = OrDash(entry.Before),
+            AfterText = OrDash(entry.After),
+            HashDeltaText = OrDash(entry.HashDelta),
+            SummaryLine = $"{kind} {OrDash(entry.Path)}",
+        };
+    }
+
+    private static string OrDash(string? value)
+        => string.IsNullOrWhiteSpace(value) ? "—" : value.Trim();
 }

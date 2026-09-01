@@ -62,6 +62,13 @@ enum DeploymentPacketPathKind {
   DEPLOYMENT_PACKET_PATH_KIND_INDETERMINATE = 4;
 }
 
+// Existing DeviceDeploymentPlan old/new artifact hashes. Not a local SemanticDiffEngine.
+enum DeploymentSemanticDiffKind {
+  DEPLOYMENT_SEMANTIC_DIFF_KIND_UNSPECIFIED = 0;
+  DEPLOYMENT_SEMANTIC_DIFF_KIND_ARTIFACT_UNCHANGED = 1;
+  DEPLOYMENT_SEMANTIC_DIFF_KIND_ARTIFACT_CHANGED = 2;
+}
+
 message DeploymentAnchorTargetInput {
   string marker = 1;
   string jump_target = 2;
@@ -122,6 +129,15 @@ message DeploymentDevicePlanView {
   repeated DeploymentProbeView probes = 7;
 }
 
+message DeploymentSemanticDiffEntry {
+  DeploymentSemanticDiffKind kind = 1;
+  string path = 2;
+  optional Uuid device_id = 3;
+  string before = 4;
+  string after = 5;
+  string hash_delta = 6;
+}
+
 message DeploymentPlanSummary {
   Uuid plan_id = 1;
   Uuid node_id = 2;
@@ -131,6 +147,7 @@ message DeploymentPlanSummary {
   repeated Uuid activation_order_device_ids = 6;
   repeated Uuid rollback_order_device_ids = 7;
   repeated DeploymentDevicePlanView devices = 8;
+  repeated DeploymentSemanticDiffEntry semantic_diff = 9;
 }
 
 message DeploymentPacketPathPairFact {

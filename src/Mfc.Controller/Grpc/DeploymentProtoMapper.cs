@@ -8,6 +8,7 @@ using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
 using Mfc.Domain.Policy;
 using AppDeviceView = Mfc.Application.Deployment.DeploymentDevicePlanView;
+using AppDiffKind = Mfc.Application.Deployment.DeploymentSemanticDiffKind;
 using AppProbeView = Mfc.Application.Deployment.DeploymentProbeView;
 using DomainAction = Mfc.Domain.Deployment.DeploymentRecoveryAction;
 using DomainPathKind = Mfc.Domain.Policy.PacketPathKind;
@@ -15,6 +16,7 @@ using DomainProbeKind = Mfc.Domain.Deployment.DeploymentProbeKind;
 using DomainState = Mfc.Domain.Deployment.DeploymentOperationState;
 using ProtoAction = Mfc.Contracts.Mfc.V1.DeploymentRecoveryAction;
 using ProtoDeviceView = Mfc.Contracts.Mfc.V1.DeploymentDevicePlanView;
+using ProtoDiffKind = Mfc.Contracts.Mfc.V1.DeploymentSemanticDiffKind;
 using ProtoPathKind = Mfc.Contracts.Mfc.V1.DeploymentPacketPathKind;
 using ProtoProbeKind = Mfc.Contracts.Mfc.V1.DeploymentProbeKind;
 using ProtoProbeView = Mfc.Contracts.Mfc.V1.DeploymentProbeView;
@@ -79,6 +81,24 @@ public static class DeploymentProtoMapper
             ExpiresAt = Timestamp.FromDateTimeOffset(view.ExpiresAtUtc),
         };
         message.SemanticDiffEntries.AddRange(view.SemanticDiffEntries);
+        foreach (DeploymentSemanticDiffEntryView entry in view.SemanticDiff)
+        {
+            DeploymentSemanticDiffEntry row = new()
+            {
+                Kind = ToProto(entry.Kind),
+                Path = entry.Path,
+                Before = entry.Before,
+                After = entry.After,
+                HashDelta = entry.HashDelta,
+            };
+            if (entry.DeviceId is Guid deviceId)
+            {
+                row.DeviceId = ProtoUuid.FromGuid(deviceId);
+            }
+
+            message.SemanticDiff.Add(row);
+        }
+
         foreach (Guid deviceId in view.ActivationOrderDeviceIds)
         {
             message.ActivationOrderDeviceIds.Add(ProtoUuid.FromGuid(deviceId));
@@ -247,6 +267,14 @@ public static class DeploymentProtoMapper
 
     private static Sha256 ToSha256(byte[] bytes)
         => new() { Value = ByteString.CopyFrom(bytes) };
+
+    private static ProtoDiffKind ToProto(AppDiffKind kind)
+        => kind switch
+        {
+            AppDiffKind.ArtifactUnchanged => ProtoDiffKind.ArtifactUnchanged,
+            AppDiffKind.ArtifactChanged => ProtoDiffKind.ArtifactChanged,
+            _ => ProtoDiffKind.Unspecified,
+        };
 
     private static ProtoProbeKind ToProto(DomainProbeKind kind)
         => kind switch

@@ -201,6 +201,77 @@ public sealed class DeploymentViewModelTests
     }
 
     [Fact]
+    public async Task CreatePlanBindsTypedSemanticDiffKindPathBeforeAfter()
+    {
+        Guid nodeId = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff");
+        Guid deviceId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        string before = Convert.ToHexString(Enumerable.Repeat((byte)0x11, 32).ToArray());
+        string after = Convert.ToHexString(Enumerable.Repeat((byte)0x22, 32).ToArray());
+        string hashDelta = $"device:{deviceId:D}:artifact {before[..12]}… → {after[..12]}…";
+        FakeConnection connection = new();
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        InventoryNodeViewModel site = new(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Site,
+            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            DisplayName = "LAB",
+            Children =
+            [
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeId,
+                    DisplayName = "edge",
+                    Children =
+                    [
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceId,
+                            DisplayName = "r1",
+                        },
+                    ],
+                },
+            ],
+        });
+        inventory.Roots.Add(site);
+        inventory.SelectedNode = site.Children[0];
+        FakeDeploymentClient client = new()
+        {
+            CreatePlanOverride = new DeploymentPlanSummary
+            {
+                PlanId = DesktopProtoUuid.FromGuid(Guid.Parse("dddddddd-eeee-ffff-aaaa-111111111111")),
+                PlanHash = Hash("plan"),
+                SemanticDiff =
+                {
+                    new DeploymentSemanticDiffEntry
+                    {
+                        Kind = DeploymentSemanticDiffKind.ArtifactChanged,
+                        Path = $"device/{deviceId:D}/artifact",
+                        DeviceId = DesktopProtoUuid.FromGuid(deviceId),
+                        Before = before,
+                        After = after,
+                        HashDelta = hashDelta,
+                    },
+                },
+                SemanticDiffEntries = { hashDelta },
+            },
+        };
+        using DeploymentViewModel vm = new(client, connection, inventory);
+
+        await vm.CreatePlanCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Single(vm.SemanticDiffRows);
+        Assert.Equal("ARTIFACT_CHANGED", vm.SemanticDiffRows[0].KindText);
+        Assert.Equal($"device/{deviceId:D}/artifact", vm.SemanticDiffRows[0].PathText);
+        Assert.Equal(before, vm.SemanticDiffRows[0].BeforeText);
+        Assert.Equal(after, vm.SemanticDiffRows[0].AfterText);
+        Assert.Equal(hashDelta, vm.SemanticDiffRows[0].HashDeltaText);
+        Assert.Equal([hashDelta], vm.SemanticDiffLines.ToArray());
+    }
+
+    [Fact]
     public async Task CreatePlanWhenVrrpMemberSelectedStillUsesPair()
     {
         Guid nodeId = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff");
@@ -309,6 +380,8 @@ public sealed class DeploymentViewModelTests
 
         public List<Guid> LastDeviceIds { get; private set; } = [];
 
+        public DeploymentPlanSummary? CreatePlanOverride { get; init; }
+
         public Task<DeploymentPlanSummary> CreatePlanAsync(
             Guid nodeId,
             Sha256 logicalPolicyHash,
@@ -319,6 +392,11 @@ public sealed class DeploymentViewModelTests
         {
             LastNodeId = nodeId;
             LastDeviceIds = devices.Select(d => DesktopProtoUuid.ToGuid(d.DeviceId)).ToList();
+            if (CreatePlanOverride is not null)
+            {
+                return Task.FromResult(CreatePlanOverride);
+            }
+
             return Task.FromResult(new DeploymentPlanSummary
             {
                 PlanId = DesktopProtoUuid.FromGuid(Guid.Parse("dddddddd-eeee-ffff-aaaa-111111111111")),

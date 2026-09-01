@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W5-03** ([#344](https://github.com/sesquicadaver/MTDirector/issues/344)): typed deployment semantic policy diff (`kind` / `path` / `before` / `after`) from existing device artifact hashes; string hash delta stays secondary. Living Spec `Ac6f`. **§3.C NEXT = residual (CRS lab ops)**.
 - **W5-02** ([#343](https://github.com/sesquicadaver/MTDirector/issues/343)): `GetDevicePolicySafetyAnalysis` read RPC exposes existing ManagementPath / FastTrack hashes, blockers, and witnesses; Desktop Policies binds them (no local recompute). Living Spec `Ac5e`. **NEXT = W5-03** (#344).
 - **W5-01** ([#342](https://github.com/sesquicadaver/MTDirector/issues/342)): `ListPolicies` catalog RPC (active policies + latest revision) bound to Desktop Policies catalog list → select loads existing rules/objects. Living Spec `Ac5d`. **NEXT = W5-02** (#343).
 - **CONT-02** ([#341](https://github.com/sesquicadaver/MTDirector/issues/341)): Add router neighbor Apply fills VRRP member a then member b when pair mode is on (no auto-register). Living Spec `Ac2f`. **NEXT = W5-01** (#342).
