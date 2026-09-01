@@ -201,7 +201,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 
 ## 3. Лінійна черга (стан)
 
-**Статус:** **§3.C CLOSED.** `§3.C NEXT = residual (CRS lab ops)`. W6-01 **DONE** ([#352](https://github.com/sesquicadaver/MTDirector/issues/352)); W6-02 **DONE** ([#354](https://github.com/sesquicadaver/MTDirector/issues/354)); W6-03 **DONE** ([#356](https://github.com/sesquicadaver/MTDirector/issues/356)); W6-04 **DONE** ([#358](https://github.com/sesquicadaver/MTDirector/issues/358)). W6-05 **DONE** ([#360](https://github.com/sesquicadaver/MTDirector/issues/360)).  
+**Статус:** **§3.C CLOSED.** `§3.C NEXT = residual (CRS lab ops)`. W6-01 **DONE** ([#352](https://github.com/sesquicadaver/MTDirector/issues/352)); W6-02 **DONE** ([#354](https://github.com/sesquicadaver/MTDirector/issues/354)); W6-03 **DONE** ([#356](https://github.com/sesquicadaver/MTDirector/issues/356)); W6-04 **DONE** ([#358](https://github.com/sesquicadaver/MTDirector/issues/358)). W6-05 **DONE** ([#360](https://github.com/sesquicadaver/MTDirector/issues/360)). W6-06 **DONE** ([#362](https://github.com/sesquicadaver/MTDirector/issues/362)). W6-07 **DONE** ([#364](https://github.com/sesquicadaver/MTDirector/issues/364)).  
 Канонічний план: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).  
 **Lab/CHR/`WriteEnabled` не є попередниками §3** — паралельний ops-трек. CRS/physical lab runner лишається ops (`known-limitations.md`), не продуктний рядок §3.
 
