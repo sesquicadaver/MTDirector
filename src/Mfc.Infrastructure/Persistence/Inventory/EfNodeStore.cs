@@ -123,5 +123,8 @@ public sealed class EfNodeStore : INodeStore
             entity.LastSupportState is null ? null : (SupportState)entity.LastSupportState.Value,
             (ManagementState)entity.ManagementState,
             (ulong)entity.RowVersion,
-            entity.LastCompletedCaptureId);
+            entity.LastCompletedCaptureId,
+            entity.LastObservedReachability is null
+                ? null
+                : (ObservedReachability)entity.LastObservedReachability.Value);
 }

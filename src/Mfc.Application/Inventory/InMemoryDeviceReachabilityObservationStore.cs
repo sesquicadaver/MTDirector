@@ -4,7 +4,7 @@ using Mfc.Application.Mapping;
 
 namespace Mfc.Application.Inventory;
 
-/// <summary>Thread-safe in-process Reachability observation map (W6-05).</summary>
+/// <summary>Thread-safe in-process Reachability observation map (W6-05 overlay; W6-08 persists on Device).</summary>
 public sealed class InMemoryDeviceReachabilityObservationStore : IDeviceReachabilityObservationStore
 {
     private readonly ConcurrentDictionary<Guid, string> _byDevice = new();

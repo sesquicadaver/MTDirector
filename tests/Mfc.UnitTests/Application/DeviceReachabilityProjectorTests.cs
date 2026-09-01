@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Mfc.UnitTests.Application;
 
-/// <summary>W6-05: GetNode Reachability from LastSupportState + process-local observation.</summary>
+/// <summary>W6-05 / W6-08: GetNode Reachability from LastSupportState + durable / process-local observation.</summary>
 public sealed class DeviceReachabilityProjectorTests
 {
     [Fact]
@@ -28,6 +28,24 @@ public sealed class DeviceReachabilityProjectorTests
             DeviceReachabilityProjector.Reachable,
             DeviceReachabilityProjector.Project(null, DeviceReachabilityProjector.Reachable));
     }
+
+    [Fact]
+    public void DurableObservedUnreachableSurvivesWithoutProcessLocalStore()
+        => Assert.Equal(
+            DeviceReachabilityProjector.Unreachable,
+            DeviceReachabilityProjector.Project(
+                SupportState.Supported,
+                observedReachability: null,
+                ObservedReachability.Unreachable));
+
+    [Fact]
+    public void ProcessLocalObservationOverridesDurable()
+        => Assert.Equal(
+            DeviceReachabilityProjector.Reachable,
+            DeviceReachabilityProjector.Project(
+                SupportState.Supported,
+                DeviceReachabilityProjector.Reachable,
+                ObservedReachability.Unreachable));
 
     [Fact]
     public void InMemoryStoreRoundTripsUnreachable()

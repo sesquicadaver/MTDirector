@@ -52,6 +52,9 @@ public sealed class EfDeviceStore : IDeviceStore
         entity.Role = (short)device.Role;
         entity.ManagementState = (short)device.ManagementState;
         entity.LastSupportState = device.LastSupportState is null ? null : (short)device.LastSupportState.Value;
+        entity.LastObservedReachability = device.LastObservedReachability is null
+            ? null
+            : (short)device.LastObservedReachability.Value;
         entity.LastCompletedCaptureId = device.LastCompletedCaptureId;
         entity.RowVersion = (long)device.RowVersion;
         entity.UpdatedAtUtc = DateTimeOffset.UtcNow;
@@ -81,6 +84,9 @@ public sealed class EfDeviceStore : IDeviceStore
         Role = (short)device.Role,
         ManagementState = (short)device.ManagementState,
         LastSupportState = device.LastSupportState is null ? null : (short)device.LastSupportState.Value,
+        LastObservedReachability = device.LastObservedReachability is null
+            ? null
+            : (short)device.LastObservedReachability.Value,
         LastCompletedCaptureId = device.LastCompletedCaptureId,
         RowVersion = (long)device.RowVersion,
         CreatedAtUtc = created,
@@ -98,5 +104,8 @@ public sealed class EfDeviceStore : IDeviceStore
             entity.LastSupportState is null ? null : (SupportState)entity.LastSupportState.Value,
             (ManagementState)entity.ManagementState,
             (ulong)entity.RowVersion,
-            entity.LastCompletedCaptureId);
+            entity.LastCompletedCaptureId,
+            entity.LastObservedReachability is null
+                ? null
+                : (ObservedReachability)entity.LastObservedReachability.Value);
 }

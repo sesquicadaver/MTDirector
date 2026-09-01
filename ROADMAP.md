@@ -1,9 +1,9 @@
 # MTDirector — ROADMAP реалізації v0.2
 
-**Дата оновлення:** 1 вересня 2026 (W5-03 typed deploy semantic diff)
+**Дата оновлення:** 1 вересня 2026 (W6-08 durable Unreachable)
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** `main` @ post-W6-07 — M7.4 CLOSED; P2 read + write CLOSED; Desktop alignment W1–W4 / W2.1–W2.2 DONE; CONT-01…02 DONE; W5-01…03 DONE; W6-01…W6-07 DONE; **§3.C NEXT = residual (CRS lab ops)**
+**Базовий коміт аудиту:** `main` @ post-W6-08 — M7.4 CLOSED; P2 read + write CLOSED; Desktop alignment W1–W4 / W2.1–W2.2 DONE; CONT-01…02 DONE; W5-01…03 DONE; W6-01…W6-08 DONE; **§3.C NEXT = residual (CRS lab ops)**
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -55,9 +55,9 @@
 | P2 Pilot (read path) | 3 | 0 | 100% |
 | Queue integrity + planning | 3 | 0 | TRACKER-01 + PLAN-01 + **PLAN-02 DONE** |
 | P2 Pilot (write path) | 5 | 0 | **CLOSED** (P2-07…P2-11) |
-| §3.C Continuous (glue + W5 + W6) | 12 | 0 | CONT-01…02 + W5-01…03 + W6-01…W6-07 **DONE** |
-| **Разом (код)** | **139** | **0** | MVP+M7+P2 read DONE (alignment P0–P2 DONE) |
-| **Разом (черга §3)** | **139** | **0** | W6-01…W6-07 DONE; residual CRS lab ops |
+| §3.C Continuous (glue + W5 + W6) | 13 | 0 | CONT-01…02 + W5-01…03 + W6-01…W6-08 **DONE** |
+| **Разом (код)** | **140** | **0** | MVP+M7+P2 read DONE (alignment P0–P2 DONE) |
+| **Разом (черга §3)** | **140** | **0** | W6-01…W6-08 DONE; residual CRS lab ops |
 
 MVP issues (109) = **109 done + 0 remaining** — **MVP CLOSED (100%)**.  
 M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** **M7.2-04 DONE. M7.2 CLOSED.** **M7.3-01 DONE.** **M7.3-02 DONE.** **M7.3-03 DONE.** **M7.3-04 DONE.** **M7.3-05 DONE.** **M7.3-06 DONE. M7.3 CLOSED.** **M7.4-01 DONE.** **M7.4-02 DONE.** **M7.4-03 DONE.** **M7.4-04 DONE.** **M7.4-05 DONE.** **M7.4-06 DONE. M7.4 CLOSED.** Post-MVP M7 = **0** open. Release **`v0.2.0`**. **P2 read path CLOSED** (P2-04…P2-06). **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **P2-07 DONE** (#293). **P2-08 DONE** (#294). **P2-09 DONE** (#295). **P2-10 DONE** (#296). **P2-11 DONE** (#297). **P2 write-path CLOSED.** Desktop Add router UX [#309](https://github.com/sesquicadaver/MTDirector/pull/309) DONE. Alignment W1–W4 / W2.1–W2.2 DONE. **PLAN-02 DONE** (#339 / [#345](https://github.com/sesquicadaver/MTDirector/pull/345)). **CONT-01 DONE** (#340). **CONT-02 DONE** (#341). **W5-01 DONE** (#342). **W5-02 DONE** (#343). **W5-03 DONE** (#344). **W6-01 DONE** (#352). **§3.C NEXT = residual (CRS lab ops)**.
@@ -201,7 +201,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 
 ## 3. Лінійна черга (стан)
 
-**Статус:** **§3.C CLOSED.** `§3.C NEXT = residual (CRS lab ops)`. W6-01 **DONE** ([#352](https://github.com/sesquicadaver/MTDirector/issues/352)); W6-02 **DONE** ([#354](https://github.com/sesquicadaver/MTDirector/issues/354)); W6-03 **DONE** ([#356](https://github.com/sesquicadaver/MTDirector/issues/356)); W6-04 **DONE** ([#358](https://github.com/sesquicadaver/MTDirector/issues/358)). W6-05 **DONE** ([#360](https://github.com/sesquicadaver/MTDirector/issues/360)). W6-06 **DONE** ([#362](https://github.com/sesquicadaver/MTDirector/issues/362)). W6-07 **DONE** ([#364](https://github.com/sesquicadaver/MTDirector/issues/364)).  
+**Статус:** **§3.C CLOSED.** `§3.C NEXT = residual (CRS lab ops)`. W6-01 **DONE** ([#352](https://github.com/sesquicadaver/MTDirector/issues/352)); W6-02 **DONE** ([#354](https://github.com/sesquicadaver/MTDirector/issues/354)); W6-03 **DONE** ([#356](https://github.com/sesquicadaver/MTDirector/issues/356)); W6-04 **DONE** ([#358](https://github.com/sesquicadaver/MTDirector/issues/358)). W6-05 **DONE** ([#360](https://github.com/sesquicadaver/MTDirector/issues/360)). W6-06 **DONE** ([#362](https://github.com/sesquicadaver/MTDirector/issues/362)). W6-07 **DONE** ([#364](https://github.com/sesquicadaver/MTDirector/issues/364)). W6-08 **DONE** ([#366](https://github.com/sesquicadaver/MTDirector/issues/366)).  
 Канонічний план: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).  
 **Lab/CHR/`WriteEnabled` не є попередниками §3** — паралельний ops-трек. CRS/physical lab runner лишається ops (`known-limitations.md`), не продуктний рядок §3.
 
@@ -226,6 +226,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | 143 | W6-05 | [#360](https://github.com/sesquicadaver/MTDirector/issues/360) | GetNode Reachability from probe (LastSupportState + observation) | **DONE** |
 | 144 | W6-06 | [#362](https://github.com/sesquicadaver/MTDirector/issues/362) | Policies typed revision Diff rows (kind/detail) | **DONE** |
 | 145 | W6-07 | [#364](https://github.com/sesquicadaver/MTDirector/issues/364) | Policies Diff baseline from catalog picker | **DONE** |
+| 146 | W6-08 | [#366](https://github.com/sesquicadaver/MTDirector/issues/366) | Durable GetNode Unreachable (Device.LastObservedReachability) | **DONE** |
 
 Повна історія закритих рядків §3.A / §3.B (M0–M6 + N1 + M7 + P2) збережена в git history (до docs-purge) і зведена в [`ISSUES.md`](ISSUES.md) + §2.2 DONE.
 

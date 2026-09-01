@@ -22,6 +22,9 @@ public sealed class DeviceEntity
 
     public short? LastSupportState { get; set; }
 
+    /// <summary>Persisted <see cref="Mfc.Domain.Inventory.ObservedReachability"/> (W6-08).</summary>
+    public short? LastObservedReachability { get; set; }
+
     /// <summary>Persisted <see cref="Mfc.Domain.Inventory.ManagementState"/> (M5-01).</summary>
     public short ManagementState { get; set; }
 

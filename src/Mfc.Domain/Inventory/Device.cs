@@ -22,6 +22,12 @@ public sealed class Device
 
     public SupportState? LastSupportState { get; private set; }
 
+    /// <summary>
+    /// Last connectivity observation from DiscoverDevice / ValidateDeviceConnection (W6-08).
+    /// Null means never observed; distinct from <see cref="LastSupportState"/> (capability after a successful probe).
+    /// </summary>
+    public ObservedReachability? LastObservedReachability { get; private set; }
+
     public ManagementState ManagementState { get; private set; }
 
     /// <summary>Last successfully persisted capture for this device, if any.</summary>
@@ -37,6 +43,7 @@ public sealed class Device
         DeviceRole role,
         bool enabled,
         SupportState? lastSupportState,
+        ObservedReachability? lastObservedReachability,
         ManagementState managementState,
         Guid? lastCompletedCaptureId,
         ulong rowVersion)
@@ -48,6 +55,7 @@ public sealed class Device
         Role = role;
         Enabled = enabled;
         LastSupportState = lastSupportState;
+        LastObservedReachability = lastObservedReachability;
         ManagementState = managementState;
         LastCompletedCaptureId = lastCompletedCaptureId;
         RowVersion = rowVersion;
@@ -69,6 +77,7 @@ public sealed class Device
             role,
             enabled: true,
             lastSupportState: null,
+            lastObservedReachability: null,
             ManagementState.Unmanaged,
             lastCompletedCaptureId: null,
             rowVersion: 1);
@@ -85,7 +94,8 @@ public sealed class Device
         SupportState? lastSupportState,
         ManagementState managementState,
         ulong rowVersion,
-        Guid? lastCompletedCaptureId = null)
+        Guid? lastCompletedCaptureId = null,
+        ObservedReachability? lastObservedReachability = null)
     {
         ArgumentNullException.ThrowIfNull(displayName);
         ArgumentNullException.ThrowIfNull(managementEndpoint);
@@ -99,6 +109,11 @@ public sealed class Device
             throw new DomainInvariantException($"Unknown management state '{managementState}'.");
         }
 
+        if (lastObservedReachability is not null && !Enum.IsDefined(lastObservedReachability.Value))
+        {
+            throw new DomainInvariantException($"Unknown observed reachability '{lastObservedReachability}'.");
+        }
+
         return new Device(
             id,
             nodeId,
@@ -107,6 +122,7 @@ public sealed class Device
             role,
             enabled,
             lastSupportState,
+            lastObservedReachability,
             managementState,
             lastCompletedCaptureId,
             rowVersion);
@@ -141,6 +157,18 @@ public sealed class Device
     public void RecordSupportState(SupportState state)
     {
         LastSupportState = state;
+        Touch();
+    }
+
+    /// <summary>Records connectivity observation from a probe (durable across Controller restart).</summary>
+    public void RecordObservedReachability(ObservedReachability reachability)
+    {
+        if (!Enum.IsDefined(reachability))
+        {
+            throw new DomainInvariantException($"Unknown observed reachability '{reachability}'.");
+        }
+
+        LastObservedReachability = reachability;
         Touch();
     }
 

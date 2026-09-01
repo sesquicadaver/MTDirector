@@ -58,6 +58,16 @@ public enum SupportState : byte
     Unsupported = 3,
 }
 
+/// <summary>
+/// Durable connectivity observation from DiscoverDevice (W6-08). Distinct from <see cref="SupportState"/>.
+/// </summary>
+public enum ObservedReachability : byte
+{
+    Unknown = 0,
+    Reachable = 1,
+    Unreachable = 2,
+}
+
 public enum IpAddressFamily : byte
 {
     IPv4 = 0,

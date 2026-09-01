@@ -48,7 +48,10 @@ internal static class ViewMapper
             RowVersion = device.RowVersion,
             RouterOsVersion = string.IsNullOrWhiteSpace(routerOsVersion) ? null : routerOsVersion.Trim(),
             Model = string.IsNullOrWhiteSpace(model) ? null : model.Trim(),
-            Reachability = DeviceReachabilityProjector.Project(device.LastSupportState, reachability),
+            Reachability = DeviceReachabilityProjector.Project(
+                device.LastSupportState,
+                reachability,
+                device.LastObservedReachability),
             VrrpRoleLabels = vrrpRoleLabels is { Count: > 0 } ? vrrpRoleLabels : [],
             LastSnapshotAtUtc = lastSnapshotAtUtc,
         };

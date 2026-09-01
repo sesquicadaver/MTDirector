@@ -205,7 +205,7 @@ residual: CRS / physical lab runner (ops, not §3)
 | W4.4 | **DONE** (VRRP per-member capture guidance; compare shows why a-against-b is forbidden) |
 | W2.1 | **DONE** (Diff Before/After record detail; Compare warnings truncated) |
 | W2.2 | **DONE** (Routing assurance next-hop values + finding subject fields) |
-| W5 | W5-01…03 **DONE**; W6-01…W6-03 **DONE**; residual CRS lab ops |
+| W5 | W5-01…03 **DONE**; W6-01…W6-08 **DONE**; residual CRS lab ops |
 | CONT-01 | **DONE** Rollback Watch (#340) |
 | CONT-02 | **DONE** neighbor → member b (#341) |
 
@@ -335,6 +335,20 @@ residual: CRS / physical lab runner (ops, not §3)
 - **Перевірка:** `Ac5gPoliciesRevisionDiffBindsTypedKindDetailRows`; `PolicyDesktopServiceTests`
 - **Файли:** `PolicyPanelService`, `PoliciesViewModel`, `MainWindow.axaml`
 
+### W6-05 Inventory: GetNode Reachability from probe — **DONE**
+- **Дані:** `Device.LastSupportState` already persisted by DiscoverDevice; proto `reachability` existed but ViewMapper always forced `Unknown`
+- **Зроблено:** `DeviceReachabilityProjector` (LastSupportState → Reachable); process-local observation store for Unreachable after connectivity probe failure; GetNode + DiscoverDevice wire; Desktop Probe refreshes inventory in `finally`
+- **Не чіпали:** live probe on every GetNode; WriteEnabled; CRS lab; inventing Master/Backup; durable Unreachable → **W6-08**
+- **Перевірка:** `DeviceReachabilityProjectorTests`; Inventory GetNode reachability assertions; `Ac2eInventoryProbeRefreshesTreeAfterValidateDeviceConnection`
+- **Файли:** `DeviceReachabilityProjector`, `InMemoryDeviceReachabilityObservationStore`, `DiscoverDeviceUseCase`, `GetNodeUseCase`, `ViewMapper`, `AddRouterWizardViewModel`, `Program.cs`
+
+### W6-08 Inventory: durable Unreachable across Controller restart — **DONE**
+- **Дані:** W6-05 process-local observation only; `Device.LastSupportState` never recorded Unreachable
+- **Зроблено:** Domain `ObservedReachability` + `Device.LastObservedReachability`; EF column + migration; DiscoverDevice persists Unreachable on connectivity failure and Reachable on success; GetNode projects durable observation without in-memory store (simulates restart). Fail-closed `InvalidOperationException` still does not claim Unreachable.
+- **Не чіпали:** live probe on every GetNode; WriteEnabled; CRS lab; inventing Master/Backup
+- **Перевірка:** `DiscoverDevicePersistsUnreachableAcrossEmptyObservationStore`; `DeviceReachabilityProjectorTests`; GetNode durable assertion
+- **Файли:** `Device`, `InventoryEnums`, `DeviceEntity`, `EfDeviceStore`, `DiscoverDeviceUseCase`, `DeviceReachabilityProjector`, `ViewMapper`
+
 ### W6-07 Policies: Diff baseline from catalog picker — **DONE**
 - **Дані:** existing `ListPolicies` catalog `LatestRevisionId` (W5-01)
 - **Зроблено:** `DiffBaselineCatalogItem` fills `DiffBaselineRevisionIdText` without LoadRevision (UUID paste optional). ComboBox bound to Catalog.
@@ -342,11 +356,4 @@ residual: CRS / physical lab runner (ops, not §3)
 - **Перевірка:** `Ac5hPoliciesDiffBaselinePicksFromCatalogWithoutUuidRitual`; `DiffBaselineCatalogItemFillsBaselineUuidWithoutLoadingRevision`
 - **Файли:** `PoliciesViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-07 Diff baseline catalog **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.
-
-### W6-05 Inventory: GetNode Reachability from probe — **DONE**
-- **Дані:** `Device.LastSupportState` already persisted by DiscoverDevice; proto `reachability` existed but ViewMapper always forced `Unknown`
-- **Зроблено:** `DeviceReachabilityProjector` (LastSupportState → Reachable); process-local observation store for Unreachable after connectivity probe failure; GetNode + DiscoverDevice wire; Desktop Probe refreshes inventory in `finally`
-- **Не чіпали:** live probe on every GetNode; WriteEnabled; CRS lab; inventing Master/Backup; durable Unreachable across Controller restart
-- **Перевірка:** `DeviceReachabilityProjectorTests`; Inventory GetNode reachability assertions; `Ac2eInventoryProbeRefreshesTreeAfterValidateDeviceConnection`
-- **Файли:** `DeviceReachabilityProjector`, `InMemoryDeviceReachabilityObservationStore`, `DiscoverDeviceUseCase`, `GetNodeUseCase`, `ViewMapper`, `AddRouterWizardViewModel`, `Program.cs`
+**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-08 durable Unreachable **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.
