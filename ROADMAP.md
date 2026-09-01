@@ -57,7 +57,7 @@
 | P2 Pilot (write path) | 5 | 0 | **CLOSED** (P2-07…P2-11) |
 | §3.C Continuous (glue + W5 + W6) | 10 | 0 | CONT-01…02 + W5-01…03 + W6-01…W6-05 **DONE** |
 | **Разом (код)** | **139** | **0** | MVP+M7+P2 read DONE (alignment P0–P2 DONE) |
-| **Разом (черга §3)** | **136** | **0** | W6-01…W6-05 DONE; residual CRS lab ops |
+| **Разом (черга §3)** | **137** | **0** | W6-01…W6-05 DONE; residual CRS lab ops |
 
 MVP issues (109) = **109 done + 0 remaining** — **MVP CLOSED (100%)**.  
 M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** **M7.2-04 DONE. M7.2 CLOSED.** **M7.3-01 DONE.** **M7.3-02 DONE.** **M7.3-03 DONE.** **M7.3-04 DONE.** **M7.3-05 DONE.** **M7.3-06 DONE. M7.3 CLOSED.** **M7.4-01 DONE.** **M7.4-02 DONE.** **M7.4-03 DONE.** **M7.4-04 DONE.** **M7.4-05 DONE.** **M7.4-06 DONE. M7.4 CLOSED.** Post-MVP M7 = **0** open. Release **`v0.2.0`**. **P2 read path CLOSED** (P2-04…P2-06). **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **P2-07 DONE** (#293). **P2-08 DONE** (#294). **P2-09 DONE** (#295). **P2-10 DONE** (#296). **P2-11 DONE** (#297). **P2 write-path CLOSED.** Desktop Add router UX [#309](https://github.com/sesquicadaver/MTDirector/pull/309) DONE. Alignment W1–W4 / W2.1–W2.2 DONE. **PLAN-02 DONE** (#339 / [#345](https://github.com/sesquicadaver/MTDirector/pull/345)). **CONT-01 DONE** (#340). **CONT-02 DONE** (#341). **W5-01 DONE** (#342). **W5-02 DONE** (#343). **W5-03 DONE** (#344). **W6-01 DONE** (#352). **§3.C NEXT = residual (CRS lab ops)**.
