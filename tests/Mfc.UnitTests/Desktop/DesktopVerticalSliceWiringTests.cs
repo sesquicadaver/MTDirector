@@ -61,6 +61,7 @@ public sealed class DesktopVerticalSliceWiringTests
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.UpdateDeviceConnectionAsync)));
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.ValidateDeviceConnectionAsync)));
         Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.ListNeighborCandidatesAsync)));
+        Assert.NotNull(inventory.GetMethod(nameof(IInventoryTreeClient.ValidateVrrpPairConsistencyAsync)));
 
         Type zones = typeof(IZoneServiceClient);
         Assert.NotNull(zones.GetMethod(nameof(IZoneServiceClient.ListZoneDefinitionsAsync)));

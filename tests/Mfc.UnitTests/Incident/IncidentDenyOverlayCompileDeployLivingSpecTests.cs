@@ -391,7 +391,10 @@ public sealed class IncidentDenyOverlayCompileDeployLivingSpecTests
             EmitResponseFeedbackUseCase feedback = ResponseFeedbackTestFactory.CreateEmit(auth, feedbackStore, audit, clock);
             CompileNodeFilterArtifactsUseCase compile = new(
                 auth, nodes, devices, policies, approvals, zones, bindings, observations, snapshots, artifacts, clock);
-            CreateDeploymentPlanUseCase createPlan = new(auth, nodes, deployments, idempotency, audit, clock);
+            CreateDeploymentPlanUseCase createPlan = new(
+                auth, nodes, deployments, idempotency, audit, clock,
+                new Mfc.Application.Topology.VrrpPairConsistencyLoader(
+                    new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore()));
             StartDeploymentUseCase start = new(auth, nodes, deployments, drift, idempotency, audit, clock, runtime);
             return new DeployHarness(
                 auth,
@@ -413,7 +416,10 @@ public sealed class IncidentDenyOverlayCompileDeployLivingSpecTests
             ScriptedDeploymentRuntime runtime = new() { Commit = true };
             FakeResponseFeedbackEventStore feedbackStore = new();
             EmitResponseFeedbackUseCase feedback = ResponseFeedbackTestFactory.CreateEmit(auth, feedbackStore, audit, clock);
-            CreateDeploymentPlanUseCase createPlan = new(auth, fx.Nodes, deployments, idempotency, audit, clock);
+            CreateDeploymentPlanUseCase createPlan = new(
+                auth, fx.Nodes, deployments, idempotency, audit, clock,
+                new Mfc.Application.Topology.VrrpPairConsistencyLoader(
+                    new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore()));
             StartDeploymentUseCase start = new(auth, fx.Nodes, deployments, drift, idempotency, audit, clock, runtime);
             DeployIncidentDenyOverlayUseCase deploy = new(
                 auth, fx.Policies, fx.Approvals, audit, fx.UseCase, createPlan, start, feedback);

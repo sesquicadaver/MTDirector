@@ -47,6 +47,7 @@ public sealed class NeighborCandidatesLivingSpecTests
     {
         ServiceDescriptor descriptor = InventoryService.Descriptor;
         Assert.Contains(descriptor.Methods, m => m.Name == "ListNeighborCandidates");
+        Assert.Contains(descriptor.Methods, m => m.Name == "ValidateVrrpPairConsistency");
         Assert.DoesNotContain(
             NeighborCandidate.Descriptor.Fields.InDeclarationOrder(),
             f => f.Name.Contains("password", StringComparison.OrdinalIgnoreCase));

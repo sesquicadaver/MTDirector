@@ -225,6 +225,18 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
             .ConfigureAwait(false);
     }
 
+    public async Task<VrrpPairConsistencyReport> ValidateVrrpPairConsistencyAsync(
+        Guid nodeId,
+        CancellationToken cancellationToken = default)
+    {
+        InventoryService.InventoryServiceClient client = CreateClient();
+        return await client.ValidateVrrpPairConsistencyAsync(
+                new ValidateVrrpPairConsistencyRequest { NodeId = DesktopProtoUuid.FromGuid(nodeId) },
+                ActorHeaders(),
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     private InventoryService.InventoryServiceClient CreateClient()
     {
         GrpcChannel? channel = _connection.Channel;

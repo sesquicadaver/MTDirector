@@ -83,6 +83,7 @@ public sealed class InventoryProtoContractTests
                 "UpdateDevice",
                 "UpdateDeviceConnection",
                 "ValidateDeviceConnection",
+                "ValidateVrrpPairConsistency",
             ],
             methods);
         Assert.DoesNotContain("DiscoverDevice", methods);

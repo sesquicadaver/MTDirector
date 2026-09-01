@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using Mfc.Application.Abstractions.Deployment;
 using Mfc.Application.Common;
 using Mfc.Application.Deployment;
+using Mfc.Application.Topology;
 using Mfc.Contracts.Mfc.V1;
 using Mfc.Controller.Grpc;
 using Mfc.Domain.Deployment;
@@ -456,7 +457,10 @@ public sealed class DeploymentWorkflowLivingSpecTests
                 store,
                 auth,
                 audit,
-                new CreateDeploymentPlanUseCase(auth, nodes, store, idempotency, audit, clock),
+                new CreateDeploymentPlanUseCase(
+                    auth, nodes, store, idempotency, audit, clock,
+                    new VrrpPairConsistencyLoader(
+                        new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore())),
                 new StartDeploymentUseCase(
                     auth, nodes, store, new FakeDriftEventStore(), idempotency, audit, clock, runtime),
                 new RollbackDeploymentWorkflowUseCase(auth, nodes, store, idempotency, audit, clock, runtime),

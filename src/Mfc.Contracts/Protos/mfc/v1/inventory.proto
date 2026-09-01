@@ -24,6 +24,8 @@ service InventoryService {
   rpc ListNeighborCandidates(ListNeighborCandidatesRequest) returns (ListNeighborCandidatesResponse);
   // Derived desired/committed/actual projection (M6-01). Status is never stored on Node.
   rpc GetNodeWorkflow(GetNodeWorkflowRequest) returns (NodeWorkflow);
+  // W6-02: VRRP member config + logical firewall agreement from last completed captures (read-only).
+  rpc ValidateVrrpPairConsistency(ValidateVrrpPairConsistencyRequest) returns (VrrpPairConsistencyReport);
 }
 
 enum SiteStatus {
@@ -292,4 +294,25 @@ message ListNeighborCandidatesResponse {
   string seed_identity = 2;
   repeated NeighborCandidate candidates = 3;
   bool routeros_mutated = 4;
+}
+
+message ValidateVrrpPairConsistencyRequest {
+  Uuid node_id = 1;
+}
+
+message VrrpPairConsistencyFinding {
+  string code = 1;
+  string message = 2;
+  // FINDING or BLOCKER (matches Domain VrrpPairFindingSeverity).
+  string severity = 3;
+  optional string subject = 4;
+  optional Uuid device_id = 5;
+}
+
+message VrrpPairConsistencyReport {
+  Uuid node_id = 1;
+  bool passed = 2;
+  uint32 member_count = 3;
+  uint32 capture_count = 4;
+  repeated VrrpPairConsistencyFinding findings = 5;
 }

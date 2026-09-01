@@ -10,8 +10,9 @@ using Mfc.Desktop.Services;
 namespace Mfc.Desktop.ViewModels;
 
 /// <summary>
-/// Node module: topology, zones summary, onboarding readiness, workflow, device hashes.
-/// Composes Contracts-backed Inventory / Zones / Onboarding presentation — no Domain/SQL.
+/// Node module: topology, zones summary, onboarding readiness, workflow, device hashes,
+/// VRRP pair consistency (W6-02).
+/// Composes Contracts-backed Inventory / Zones / Onboarding / Snapshot presentation — no Domain/SQL.
 /// Canonical workflow comes from GetNodeWorkflow, not an ad-hoc Zones+Onboarding mashup.
 /// </summary>
 public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
@@ -20,6 +21,7 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
     private readonly ZonesViewModel _zones;
     private readonly OnboardingViewModel _onboarding;
     private readonly IInventoryTreeClient _inventoryClient;
+    private readonly ISnapshotViewerClient _snapshotClient;
     private readonly IControllerConnectionService _connection;
     private readonly object _workflowApplyGate = new();
     private int _workflowEpoch;
@@ -30,12 +32,14 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         ZonesViewModel zones,
         OnboardingViewModel onboarding,
         IInventoryTreeClient inventoryClient,
+        ISnapshotViewerClient snapshotClient,
         IControllerConnectionService connection)
     {
         _inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
         _zones = zones ?? throw new ArgumentNullException(nameof(zones));
         _onboarding = onboarding ?? throw new ArgumentNullException(nameof(onboarding));
         _inventoryClient = inventoryClient ?? throw new ArgumentNullException(nameof(inventoryClient));
+        _snapshotClient = snapshotClient ?? throw new ArgumentNullException(nameof(snapshotClient));
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _inventory.PropertyChanged += OnInventoryPropertyChanged;
         _zones.PropertyChanged += OnZonesPropertyChanged;
@@ -58,6 +62,9 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
     /// <summary>Per-device contributing/sync lines from GetNodeWorkflow.</summary>
     public ObservableCollection<string> WorkflowDeviceLines { get; } = [];
 
+    /// <summary>W6-02 pair consistency findings for the selected VRRP Node.</summary>
+    public ObservableCollection<VrrpPairFindingListItem> VrrpPairFindings { get; } = [];
+
     public bool HasDeviceMembers => DeviceMembers.Count > 0;
 
     public bool HasNoDeviceMembers => DeviceMembers.Count == 0;
@@ -77,6 +84,10 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
     public bool HasWorkflowDeviceLines => WorkflowDeviceLines.Count > 0;
 
     public bool HasNoWorkflowDeviceLines => WorkflowDeviceLines.Count == 0;
+
+    public bool HasVrrpPairFindings => VrrpPairFindings.Count > 0;
+
+    public bool HasNoVrrpPairFindings => IsVrrpNode && VrrpPairFindings.Count == 0;
 
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorText);
 
@@ -100,6 +111,9 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
     [NotifyPropertyChangedFor(nameof(HasStandaloneDeviceList))]
     [NotifyPropertyChangedFor(nameof(HasStandaloneDeviceEmpty))]
     [NotifyPropertyChangedFor(nameof(ShowStandaloneDeviceSection))]
+    [NotifyPropertyChangedFor(nameof(HasNoVrrpPairFindings))]
+    [NotifyCanExecuteChangedFor(nameof(ValidateVrrpPairCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CaptureAllMembersAndValidateCommand))]
     private bool _isVrrpNode;
 
     [ObservableProperty]
@@ -113,7 +127,12 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
     private string? _errorText;
 
     [ObservableProperty]
+    private string _vrrpPairStatusText = string.Empty;
+
+    [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RefreshCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ValidateVrrpPairCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CaptureAllMembersAndValidateCommand))]
     private bool _isBusy;
 
     [RelayCommand(CanExecute = nameof(CanRefresh))]
@@ -121,9 +140,27 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
     {
         RefreshPresentation();
         await LoadNodeWorkflowAsync().ConfigureAwait(true);
+        if (IsVrrpNode)
+        {
+            await ValidateVrrpPairInternalAsync(liveCapture: false).ConfigureAwait(true);
+        }
     }
 
+    [RelayCommand(CanExecute = nameof(CanValidateVrrpPair))]
+    private async Task ValidateVrrpPairAsync()
+        => await ValidateVrrpPairInternalAsync(liveCapture: false).ConfigureAwait(true);
+
+    [RelayCommand(CanExecute = nameof(CanValidateVrrpPair))]
+    private async Task CaptureAllMembersAndValidateAsync()
+        => await ValidateVrrpPairInternalAsync(liveCapture: true).ConfigureAwait(true);
+
     private bool CanRefresh() => !IsBusy;
+
+    private bool CanValidateVrrpPair()
+        => !IsBusy
+           && IsVrrpNode
+           && _connection.State == ControllerConnectionState.Connected
+           && ResolveNode(_inventory.SelectedNode) is not null;
 
     private void OnInventoryPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -180,7 +217,10 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
             SelectedVrrpMember = null;
             ZoneSummaryLines.Clear();
             WorkflowDeviceLines.Clear();
+            VrrpPairFindings.Clear();
+            VrrpPairStatusText = string.Empty;
             NotifyWorkflowDeviceLinesChanged();
+            NotifyVrrpPairFindingsChanged();
             ErrorText = null;
 
             if (node is null)
@@ -209,8 +249,10 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
 
             IsVrrpNode = string.Equals(node.NodeKindText, "Vrrp", StringComparison.Ordinal);
             VrrpPairHint = IsVrrpNode
-                ? "VRRP ops target this Node (pair). Select a member to drill down; do not treat the first Device as the pair."
+                ? "VRRP pair consistency checks VIP/config agreement and logical firewall from last captures (or Capture all members). Blockers gate Onboarding Validate and Deploy CreatePlan."
                 : string.Empty;
+            ValidateVrrpPairCommand.NotifyCanExecuteChanged();
+            CaptureAllMembersAndValidateCommand.NotifyCanExecuteChanged();
 
             int slot = 0;
             foreach (InventoryNodeViewModel device in node.Children.Where(static c => c.Kind == InventoryTreeKind.Device))
@@ -337,6 +379,89 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         }
     }
 
+    private async Task ValidateVrrpPairInternalAsync(bool liveCapture)
+    {
+        InventoryNodeViewModel? node = ResolveNode(_inventory.SelectedNode);
+        if (node is null || !IsVrrpNode)
+        {
+            return;
+        }
+
+        if (_connection.State != ControllerConnectionState.Connected)
+        {
+            VrrpPairStatusText = "Connect to Controller to validate VRRP pair consistency.";
+            return;
+        }
+
+        IsBusy = true;
+        ErrorText = null;
+        try
+        {
+            if (liveCapture)
+            {
+                VrrpPairStatusText = "Capturing all VRRP members…";
+                foreach (VrrpMemberListItem member in VrrpMembers.ToArray())
+                {
+                    StartCaptureResponse started = await _snapshotClient
+                        .StartCaptureAsync(member.DeviceId, Guid.NewGuid(), CancellationToken.None)
+                        .ConfigureAwait(true);
+                    CaptureProgress? last = null;
+                    await foreach (CaptureProgress progress in _snapshotClient
+                                       .WatchCaptureAsync(
+                                           DesktopProtoUuid.ToGuid(started.OperationId),
+                                           CancellationToken.None)
+                                       .ConfigureAwait(true))
+                    {
+                        last = progress;
+                        VrrpPairStatusText =
+                            $"{member.DisplayName}: {progress.Stage}";
+                    }
+
+                    if (last is null || last.Stage != CaptureStage.Completed)
+                    {
+                        throw new InvalidOperationException(
+                            $"Capture for member '{member.DisplayName}' did not complete successfully.");
+                    }
+                }
+            }
+
+            VrrpPairStatusText = "Validating VRRP pair consistency from last captures…";
+            VrrpPairConsistencyReport report = await _inventoryClient
+                .ValidateVrrpPairConsistencyAsync(node.Id, CancellationToken.None)
+                .ConfigureAwait(true);
+            VrrpPairFindings.Clear();
+            foreach (VrrpPairConsistencyFinding finding in report.Findings)
+            {
+                VrrpPairFindings.Add(new VrrpPairFindingListItem
+                {
+                    Code = finding.Code,
+                    Severity = finding.Severity,
+                    Message = finding.Message,
+                    Subject = finding.HasSubject ? finding.Subject : string.Empty,
+                });
+            }
+
+            NotifyVrrpPairFindingsChanged();
+            VrrpPairStatusText = report.Passed
+                ? $"Pair consistency passed (members={report.MemberCount}, captures={report.CaptureCount})."
+                : $"Pair consistency has blockers (members={report.MemberCount}, captures={report.CaptureCount}).";
+        }
+        catch (RpcException ex)
+        {
+            ErrorText = ex.Status.Detail;
+            VrrpPairStatusText = "VRRP pair consistency failed.";
+        }
+        catch (Exception ex)
+        {
+            ErrorText = ex.Message;
+            VrrpPairStatusText = "VRRP pair consistency failed.";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
     private InventoryNodeViewModel? ResolveNode(InventoryNodeViewModel? selected)
     {
         if (selected is null)
@@ -381,6 +506,12 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
     {
         OnPropertyChanged(nameof(HasWorkflowDeviceLines));
         OnPropertyChanged(nameof(HasNoWorkflowDeviceLines));
+    }
+
+    private void NotifyVrrpPairFindingsChanged()
+    {
+        OnPropertyChanged(nameof(HasVrrpPairFindings));
+        OnPropertyChanged(nameof(HasNoVrrpPairFindings));
     }
 
     partial void OnErrorTextChanged(string? value) => OnPropertyChanged(nameof(HasError));
@@ -437,4 +568,21 @@ public sealed class VrrpMemberListItem
 
     public string SummaryLine =>
         $"{SlotText}: {DisplayName} · role={RoleText} · mgmt={ManagementHostText} · last={LastSnapshotText}";
+}
+
+/// <summary>One VRRP pair consistency finding (Contracts-only; W6-02).</summary>
+public sealed class VrrpPairFindingListItem
+{
+    public required string Code { get; init; }
+
+    public required string Severity { get; init; }
+
+    public required string Message { get; init; }
+
+    public required string Subject { get; init; }
+
+    public string SummaryLine =>
+        string.IsNullOrWhiteSpace(Subject)
+            ? $"[{Severity}] {Code}: {Message}"
+            : $"[{Severity}] {Code} ({Subject}): {Message}";
 }

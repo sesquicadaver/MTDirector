@@ -388,5 +388,13 @@ public sealed class InventoryTreeServiceTests
             cancellationToken.ThrowIfCancellationRequested();
             throw new NotSupportedException("ValidateDeviceConnection is not used by InventoryTreeService tests.");
         }
+
+        public Task<VrrpPairConsistencyReport> ValidateVrrpPairConsistencyAsync(
+            Guid nodeId,
+            CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new NotSupportedException("ValidateVrrpPairConsistency is not used by InventoryTreeService tests.");
+        }
     }
 }

@@ -74,6 +74,7 @@ Initial Issue Set M1-27 AC → module → tests:
 | Display fields (reachability/version/model/support/kind/uplink/VRRP/last snapshot) | Device proto + `InventoryNodeViewModel` | hierarchy test + host GetNode observation defaults |
 | W2.3 VRRP labels from last capture | `GetNodeUseCase` + `DeviceVrrpRoleLabelProjector` | `VrrpRoleLabelsLivingSpecTests` + `GetNodeMapsVrrpRoleLabelsFromLastCaptureObservations` |
 | W6-01 last-capture version/model | `DeviceLastCaptureFacts` + GetNode | `DeviceLastCaptureFactsTests` + `GetNodeMapsVrrpRoleLabelsFromLastCaptureObservations` |
+| W6-02 VRRP pair consistency RPC | `ValidateVrrpPairConsistency` + Desktop Node | `NeighborCandidatesLivingSpecTests` (RPC name) + `VrrpPairConsistencyAnalyzerTests` + `NodeDetailViewModelTests` |
 | Refresh cancellation | `InventoryTreeService.RefreshAsync` | `CancellationStopsRefresh` |
 | No parallel overlapping refresh | single-flight coalesce | `ParallelRefreshDoesNotStartTwoOverlappingLoads` |
 | Large inventory paged | `ListSites`/`ListNodes` page loops | `ListNodesPaginates…` + `GrpcInventoryTreeClient` |
@@ -84,6 +85,24 @@ Initial Issue Set M1-27 AC → module → tests:
 | W3.2 ValidateDeviceConnection Probe | Desktop Inventory/Add router | `Ac2cInventoryAndAddRouterProbeValidateDeviceConnection` + `AddRouterWizardViewModelTests` |
 
 Filter: `dotnet test --filter FullyQualifiedName~InventoryTree`.
+
+## Living Specification — VRRP pair consistency (W6-02)
+
+Issue [#354](https://github.com/sesquicadaver/MTDirector/issues/354) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Admin-critical `ha.vrrp` fields MUST agree (same family+VRID) | `VrrpPairConsistencyAnalyzer` | `VrrpPairConsistencyAnalyzerTests` |
+| Equal priorities → Finding (not Blocker) | same | same |
+| Logical firewall filter digest agreement | same (`firewall.ipv4/ipv6.filter`) | same |
+| Desired logical hash divergence → Blocker | same | same |
+| Last completed captures (read-only) | `VrrpPairConsistencyLoader` + `ValidateVrrpPairConsistencyUseCase` | Domain + Application wiring |
+| Inventory RPC | `ValidateVrrpPairConsistency` | `NeighborCandidatesLivingSpecTests` method name |
+| Desktop Node findings + Capture-all path | `NodeDetailViewModel` | `NodeDetailViewModelTests` + MainWindow Node panel |
+| Gate Onboarding Validate | merge findings; missing captures are FINDING until captures exist | `ValidateOnboardingPrerequisitesWorkflowUseCase` |
+| Gate Deploy/Onboarding CreatePlan | `VrrpPairPlanGate` (onboarding allows incomplete captures; deploy is strict) | CreatePlan use cases Conflict on config/FW blockers |
+
+Filter: `dotnet test --filter FullyQualifiedName~VrrpPairConsistency`.
 
 ## Living Specification — desktop snapshot viewer (M1-28)
 
@@ -1828,6 +1847,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | W5-01 ListPolicies catalog browse | `ListPolicies` RPC + catalog select → LoadRevision | `Ac5dPoliciesCatalogBrowseListPoliciesThenSelectLoadsRevision` + `ListPoliciesUseCaseTests` + `PoliciesViewModelTests` + `PolicyDesktopServiceTests` |
 | W5-02 ManagementPath / FastTrack Desktop | `GetDevicePolicySafetyAnalysis` RPC + hashes/findings/witnesses bind | `Ac5ePoliciesShowManagementPathAndFastTrackAnalysis` + `GetDevicePolicySafetyAnalysisUseCaseTests` + `PoliciesViewModelTests` + `PolicyDesktopServiceTests` |
 | W6-01 operator-readable Diff/Snapshot + captured filter | fingerprint not list identity; default `firewall.ipv4.filter`; empty catalog hint | `Ac4gOperatorReadableDiffAndFirewallSectionDefault` + `Ac5fEmptyPolicyCatalogPointsAtCapturedFilter` + `SnapshotPresentationIdentityTests` + `SnapshotDiffServiceTests` |
+| W6-02 VRRP pair consistency | last captures + logical FW; Node UI; CreatePlan/Validate gates | `VrrpPairConsistencyAnalyzerTests` + Inventory `ValidateVrrpPairConsistency` |
 | W5-03 Typed deploy semantic policy diff | `semantic_diff` kind/path/before/after; hash delta secondary | `Ac6fDeploymentPlanBindsTypedSemanticDiffRows` + `DeploymentWorkflowLivingSpecTests` + `DeploymentViewModelTests` + `DeploymentProtoContractTests` |
 | AC#6 Operations onboarding/deploy/recovery | Onboarding + Deployment VMs | `Ac6OperationsViewSupportsOnboardingDeploymentAndRecovery` |
 | W1.4 Deploy/Onboarding plan collections | `ArtifactLines` / `OrderLines` / `ProbeAndWatchdogLines` / `Placements` | `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta` |

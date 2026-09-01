@@ -182,7 +182,9 @@ public sealed class PoliciesViewModelTests
         await vm.RefreshCatalogCommand.ExecuteAsync(null);
 
         vm.SelectedCatalogItem = row;
-        await WaitUntil(() => panel.LoadRevisionCalls > 0);
+        await WaitUntil(() =>
+            panel.LoadRevisionCalls > 0
+            && string.Equals(vm.RevisionIdText, revisionId.ToString("D"), StringComparison.Ordinal));
 
         Assert.Null(vm.ErrorText);
         Assert.Equal(1, panel.LoadRevisionCalls);
