@@ -85,6 +85,109 @@ internal static class PolicyProtoMapper
         return message;
     }
 
+    public static PolicySafetyAnalysis ToProto(PolicySafetyAnalysisView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        PolicySafetyAnalysis message = new()
+        {
+            DeviceId = ProtoUuid.FromGuid(view.DeviceId),
+            ManagementPathContextHash = HexToSha256(view.ManagementPathContextHashHex),
+            FasttrackContextHash = HexToSha256(view.FastTrackContextHashHex),
+            BlocksManagementPath = view.BlocksManagementPath,
+            AllowsSafeFasttrack = view.AllowsSafeFastTrack,
+            RequiresAcceptFallback = view.RequiresAcceptFallback,
+            RiskFloor = view.RiskFloor ?? string.Empty,
+        };
+        if (view.CaptureId is Guid captureId)
+        {
+            message.CaptureId = ProtoUuid.FromGuid(captureId);
+        }
+
+        if (view.RevisionId is Guid revisionId)
+        {
+            message.RevisionId = ProtoUuid.FromGuid(revisionId);
+        }
+
+        foreach (PolicySafetyFindingView finding in view.ManagementPathFindings)
+        {
+            message.ManagementPathFindings.Add(ToProto(finding));
+        }
+
+        foreach (PolicySafetyFindingView finding in view.FastTrackFindings)
+        {
+            message.FasttrackFindings.Add(ToProto(finding));
+        }
+
+        foreach (ManagementSystemTestView test in view.SystemTests)
+        {
+            message.SystemTests.Add(ToProto(test));
+        }
+
+        return message;
+    }
+
+    private static PolicySafetyFinding ToProto(PolicySafetyFindingView view)
+    {
+        PolicySafetyFinding message = new()
+        {
+            Code = view.Code,
+            Severity = view.Severity,
+            Message = view.Message,
+        };
+        if (!string.IsNullOrWhiteSpace(view.Subject))
+        {
+            message.Subject = view.Subject;
+        }
+
+        if (view.Witness is not null)
+        {
+            message.Witness = ToProto(view.Witness);
+        }
+
+        return message;
+    }
+
+    private static global::Mfc.Contracts.Mfc.V1.ManagementSystemTest ToProto(ManagementSystemTestView view)
+        => new()
+        {
+            Origin = view.Origin,
+            Chain = ToProto(view.Chain),
+            Expected = view.Expected,
+            Packet = ToProto(view.Packet),
+        };
+
+    private static global::Mfc.Contracts.Mfc.V1.PolicyWitnessPacket ToProto(PolicyWitnessPacketView view)
+    {
+        global::Mfc.Contracts.Mfc.V1.PolicyWitnessPacket message = new()
+        {
+            Family = ToProto(view.Family),
+            Chain = ToProto(view.Chain),
+            SourceAddress = view.SourceAddress,
+            DestinationAddress = view.DestinationAddress,
+        };
+        if (view.Protocol is byte protocol)
+        {
+            message.Protocol = protocol;
+        }
+
+        if (view.SourcePort is ushort sourcePort)
+        {
+            message.SourcePort = sourcePort;
+        }
+
+        if (view.DestinationPort is ushort destinationPort)
+        {
+            message.DestinationPort = destinationPort;
+        }
+
+        if (!string.IsNullOrWhiteSpace(view.ConnectionState))
+        {
+            message.ConnectionState = view.ConnectionState;
+        }
+
+        return message;
+    }
+
     public static global::Mfc.Contracts.Mfc.V1.PolicyRevision ToProto(PolicyRevisionView view)
     {
         global::Mfc.Contracts.Mfc.V1.PolicyRevision message = new()

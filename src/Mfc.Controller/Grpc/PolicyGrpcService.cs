@@ -36,6 +36,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
     private readonly ReplacePolicyTestsUseCase _replaceTests;
     private readonly DiffPolicyRevisionsUseCase _diffRevisions;
     private readonly CompileNodeFilterArtifactsUseCase _compileNodeArtifacts;
+    private readonly GetDevicePolicySafetyAnalysisUseCase _policySafetyAnalysis;
     private readonly IHostEnvironment _environment;
 
     public PolicyGrpcService(
@@ -63,6 +64,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         ReplacePolicyTestsUseCase replaceTests,
         DiffPolicyRevisionsUseCase diffRevisions,
         CompileNodeFilterArtifactsUseCase compileNodeArtifacts,
+        GetDevicePolicySafetyAnalysisUseCase policySafetyAnalysis,
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(createDraft);
@@ -89,6 +91,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         ArgumentNullException.ThrowIfNull(replaceTests);
         ArgumentNullException.ThrowIfNull(diffRevisions);
         ArgumentNullException.ThrowIfNull(compileNodeArtifacts);
+        ArgumentNullException.ThrowIfNull(policySafetyAnalysis);
         ArgumentNullException.ThrowIfNull(environment);
         _createDraft = createDraft;
         _listPolicies = listPolicies;
@@ -114,6 +117,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         _replaceTests = replaceTests;
         _diffRevisions = diffRevisions;
         _compileNodeArtifacts = compileNodeArtifacts;
+        _policySafetyAnalysis = policySafetyAnalysis;
         _environment = environment;
     }
 
@@ -594,6 +598,23 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
                 CurrentDependencyFingerprint = PolicyProtoMapper.ToHashBytes(request.CurrentDependencyFingerprint),
                 CurrentCapabilityHash = PolicyProtoMapper.ToHashBytes(request.CurrentCapabilityHash),
                 CompilerProfileHash = PolicyProtoMapper.ToOptionalHashBytes(request.CompilerProfileHash),
+            },
+            context.CancellationToken).ConfigureAwait(false);
+        return PolicyProtoMapper.ToProto(Unwrap(result));
+    }
+
+    public override async Task<PolicySafetyAnalysis> GetDevicePolicySafetyAnalysis(
+        GetDevicePolicySafetyAnalysisRequest request,
+        ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ApplicationResult<PolicySafetyAnalysisView> result = await _policySafetyAnalysis.ExecuteAsync(
+            new GetDevicePolicySafetyAnalysisQuery
+            {
+                Actor = ResolveActor(context),
+                DeviceId = ProtoUuid.ToGuid(request.DeviceId),
+                RevisionId = ProtoUuid.ToNullableGuid(request.RevisionId),
+                ControllerSourcePrefixes = request.ControllerSourcePrefixes.ToArray(),
             },
             context.CancellationToken).ConfigureAwait(false);
         return PolicyProtoMapper.ToProto(Unwrap(result));

@@ -16,7 +16,7 @@ This document summarizes **code + documentation readiness** against the normativ
 | P2 read path (P2-04…P2-06) | **100% CLOSED** | Production probe + capture + DI gate |
 | P2 write path (P2-07…P2-11) | **100% CLOSED** | Runtimes + WriteEnabled gate + pilot runbook |
 | Desktop alignment P0–P2 | **CLOSED** | W1.1–W4.4 + W2.1–W2.2 |
-| Linear queue (§3.C) | **ACTIVE** | **NEXT = W5-02** ([#343](https://github.com/sesquicadaver/MTDirector/issues/343)) |
+| Linear queue (§3.C) | **ACTIVE** | **NEXT = W5-03** ([#344](https://github.com/sesquicadaver/MTDirector/issues/344)) |
 
 **Overall code readiness (milestones):** all 139 mapped product issues are **DONE in code**. Alignment P0–P2 is **DONE**. Remaining work is **glue + P3 Contracts** on a seeded queue — not a phase-stop.  
 **Queue integrity:** **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **PLAN-02** (#339) seeds continuous §3.C so `/autopilot` does not idle.  
@@ -50,8 +50,8 @@ Desktop alignment W1–W4 / W2.1–W2.2 is **DONE** on top of that baseline (not
 | 134 | CONT-01 | [#340](https://github.com/sesquicadaver/MTDirector/issues/340) | **DONE** |
 | 135 | CONT-02 | [#341](https://github.com/sesquicadaver/MTDirector/issues/341) | **DONE** |
 | 136 | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | **DONE** |
-| 137 | W5-02 | [#343](https://github.com/sesquicadaver/MTDirector/issues/343) | **NEXT** |
-| 138 | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | OPEN |
+| 137 | W5-02 | [#343](https://github.com/sesquicadaver/MTDirector/issues/343) | **DONE** |
+| 138 | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | **NEXT** |
 
 Closed history (P2 + PLAN-01): TRACKER-01 [#289](https://github.com/sesquicadaver/MTDirector/issues/289) … P2-11 [#297](https://github.com/sesquicadaver/MTDirector/issues/297); PLAN-NBR-01 [#314](https://github.com/sesquicadaver/MTDirector/issues/314).
 
@@ -87,7 +87,7 @@ Operator checklist: [`pilot-runbook.md`](../operations/pilot-runbook.md).
 | Rollback without Watch stream | CONT-01 **DONE** |
 | Neighbor apply does not fill VRRP member b | CONT-02 **DONE** |
 | No `ListPolicies` catalog RPC | W5-01 **DONE** |
-| No ManagementPath / FastTrack Desktop RPC | W5-02 |
+| No ManagementPath / FastTrack Desktop RPC | W5-02 **DONE** |
 | Deployment semantic policy diff is `repeated string` | W5-03 |
 
 ## Intentional residuals (not defects)

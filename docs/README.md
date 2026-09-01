@@ -2,7 +2,7 @@
 
 **Release:** `v0.2.0` (2026-08-24) — MVP + Post-MVP M7 CLOSED.  
 **Pilot:** P2 read + write path CLOSED — [`operations/pilot-runbook.md`](operations/pilot-runbook.md).  
-**Next delivery (§3):** **W5-02** ([#343](https://github.com/sesquicadaver/MTDirector/issues/343)) — [`planning/continuous-queue-plan.md`](planning/continuous-queue-plan.md).  
+**Next delivery (§3):** **W5-03** ([#344](https://github.com/sesquicadaver/MTDirector/issues/344)) — [`planning/continuous-queue-plan.md`](planning/continuous-queue-plan.md).  
 **Alignment P0–P2:** W1–W4 / W2.1–W2.2 **DONE** (`877a529`).
 
 ## Planning and tracking
@@ -31,7 +31,7 @@ Authoritative ТЗ and Issue Sets live in the repository root and are indexed in
 |----------|---------|
 | [`development/local-environment.md`](development/local-environment.md) | Workstation bootstrap |
 | [`development/testing.md`](development/testing.md) | Living Specification matrices (ТЗ → module → tests) |
-| [`development/desktop-ui-backend-alignment.md`](development/desktop-ui-backend-alignment.md) | Desktop UI ↔ Controller data alignment (P0–P3); **NEXT = W5-02** |
+| [`development/desktop-ui-backend-alignment.md`](development/desktop-ui-backend-alignment.md) | Desktop UI ↔ Controller data alignment (P0–P3); **NEXT = W5-03** |
 | [`development/ci.md`](development/ci.md) | CI workflow and gates |
 | [`development/git-workflow.md`](development/git-workflow.md) | Branch/PR process |
 | [`development/database-migrations.md`](development/database-migrations.md) | EF migrations |

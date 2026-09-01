@@ -513,6 +513,34 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
             .ConfigureAwait(false);
     }
 
+    public async Task<PolicySafetyAnalysis> GetDevicePolicySafetyAnalysisAsync(
+        Guid deviceId,
+        Guid? revisionId = null,
+        IReadOnlyList<string>? controllerSourcePrefixes = null,
+        CancellationToken cancellationToken = default)
+    {
+        PolicyService.PolicyServiceClient client = CreateClient();
+        GetDevicePolicySafetyAnalysisRequest request = new()
+        {
+            DeviceId = DesktopProtoUuid.FromGuid(deviceId),
+        };
+        if (revisionId is Guid rid)
+        {
+            request.RevisionId = DesktopProtoUuid.FromGuid(rid);
+        }
+
+        if (controllerSourcePrefixes is not null)
+        {
+            request.ControllerSourcePrefixes.AddRange(controllerSourcePrefixes);
+        }
+
+        return await client.GetDevicePolicySafetyAnalysisAsync(
+                request,
+                ActorHeaders(),
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     private PolicyService.PolicyServiceClient CreateClient()
     {
         GrpcChannel channel = _connection.Channel

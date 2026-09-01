@@ -33,6 +33,9 @@ service PolicyService {
   rpc ReplacePolicyTests(ReplacePolicyTestsRequest) returns (PolicyRevision);
   rpc DiffPolicyRevisions(DiffPolicyRevisionsRequest) returns (PolicyRevisionDiff);
   rpc CompileNodeFilterArtifacts(CompileNodeFilterArtifactsRequest) returns (CompileNodeFilterArtifactsResponse);
+  // Read-only ManagementPath + FastTrack facts from the device's last capture (W5-02).
+  // Desktop binds hashes/findings/witnesses; it must not recompute Domain analysis.
+  rpc GetDevicePolicySafetyAnalysis(GetDevicePolicySafetyAnalysisRequest) returns (PolicySafetyAnalysis);
 }
 
 enum PolicyKind {
@@ -659,4 +662,53 @@ message CompileNodeFilterArtifactsResponse {
   Uuid node_id = 1;
   Sha256 logical_effective_policy_hash = 2;
   repeated FilterArtifactSummary artifacts = 3;
+}
+
+// W5-02: controller source CIDRs are required (no invented /0). Optional revision
+// supplies FastTrack desired rules; unset analyzes FastTrack against an empty rule list.
+message GetDevicePolicySafetyAnalysisRequest {
+  Uuid device_id = 1;
+  optional Uuid revision_id = 2;
+  repeated string controller_source_prefixes = 3;
+}
+
+message PolicyWitnessPacket {
+  IpAddressFamily family = 1;
+  PolicyFilterChain chain = 2;
+  string source_address = 3;
+  string destination_address = 4;
+  optional uint32 protocol = 5;
+  optional uint32 source_port = 6;
+  optional uint32 destination_port = 7;
+  optional string connection_state = 8;
+}
+
+message PolicySafetyFinding {
+  string code = 1;
+  string severity = 2;
+  string message = 3;
+  optional string subject = 4;
+  optional PolicyWitnessPacket witness = 5;
+}
+
+message ManagementSystemTest {
+  string origin = 1;
+  PolicyFilterChain chain = 2;
+  string expected = 3;
+  PolicyWitnessPacket packet = 4;
+}
+
+message PolicySafetyAnalysis {
+  Uuid device_id = 1;
+  optional Uuid capture_id = 2;
+  optional Uuid revision_id = 3;
+  Sha256 management_path_context_hash = 4;
+  Sha256 fasttrack_context_hash = 5;
+  bool blocks_management_path = 6;
+  bool allows_safe_fasttrack = 7;
+  bool requires_accept_fallback = 8;
+  string risk_floor = 9;
+  repeated PolicySafetyFinding management_path_findings = 10;
+  repeated PolicySafetyFinding fasttrack_findings = 11;
+  repeated ManagementSystemTest system_tests = 12;
 }

@@ -130,7 +130,7 @@
 | Крок | Logical ID | Issue | Scope |
 |------|------------|------:|-------|
 | W5.a | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | `ListPolicies` / catalog browse — **DONE** |
-| W5.b | W5-02 | [#343](https://github.com/sesquicadaver/MTDirector/issues/343) | ManagementPath / FastTrack Desktop RPC |
+| W5.b | W5-02 | [#343](https://github.com/sesquicadaver/MTDirector/issues/343) | ManagementPath / FastTrack Desktop RPC — **DONE** |
 | W5.c | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | Typed deployment semantic policy diff |
 | CRS / physical lab | — | — | **Не §3** — residual / ops parallel |
 
@@ -164,8 +164,8 @@ W2.2 Routing assurance next-hop/subject fields ← DONE
 CONT-01 Rollback Watch              ← DONE
 CONT-02 Neighbor apply member b     ← DONE
 W5-01 ListPolicies catalog          ← DONE
-W5-02 ManagementPath / FastTrack Desktop  ← NEXT (§3)
-W5-03 Typed deploy policy semantic diff
+W5-02 ManagementPath / FastTrack Desktop  ← DONE
+W5-03 Typed deploy policy semantic diff  ← NEXT (§3)
 ```
 
 Кожен PR: один модуль / один клас gap; оновити цей документ (статус DONE); Desktop Living Spec AC на ключові рядки axaml/VM.
@@ -201,7 +201,7 @@ W5-03 Typed deploy policy semantic diff
 | W4.4 | **DONE** (VRRP per-member capture guidance; compare shows why a-against-b is forbidden) |
 | W2.1 | **DONE** (Diff Before/After record detail; Compare warnings truncated) |
 | W2.2 | **DONE** (Routing assurance next-hop values + finding subject fields) |
-| W5 | W5-01 **DONE**; W5-02…03 queued (§3.C) |
+| W5 | W5-01…02 **DONE**; W5-03 queued (§3.C) |
 | CONT-01 | **DONE** Rollback Watch (#340) |
 | CONT-02 | **DONE** neighbor → member b (#341) |
 
@@ -292,9 +292,16 @@ W5-03 Typed deploy policy semantic diff
 ### W5.a Policies: ListPolicies catalog browse — **DONE**
 - **Дані:** new `PolicyService.ListPolicies` (kind filter optional; active policies + latest revision identity). Domain catalog already existed (M2); this is Contracts + Controller + Desktop.
 - **Зроблено:** catalog ListBox + Refresh; select row → `GetPolicyRevision` fills existing Rules / address / service / contracts. Create draft refreshes catalog. No Save and Deploy; no local SemanticDiffEngine.
-- **Не чіпали:** WriteEnabled; SIEM-scale policy UI; W5-02 ManagementPath
+- **Не чіпали:** WriteEnabled; SIEM-scale policy UI; W5-02 ManagementPath (then queued)
 - **Перевірка:** Living Spec `Ac5dPoliciesCatalogBrowseListPoliciesThenSelectLoadsRevision`; `ListPoliciesUseCaseTests`; `PoliciesViewModelTests`; `PolicyProtoContractTests`; `PolicyGrpcHostTests`
 - **Файли:** `policy.proto`, `ListPoliciesUseCase`, `PolicyGrpcService`, `IPolicyServiceClient`, `PolicyPanelService`, `PoliciesViewModel`, `MainWindow.axaml`
+
+### W5.b Policies: ManagementPath / FastTrack Desktop — **DONE**
+- **Дані:** Domain `ManagementPathAnalysis` / `FastTrackAnalysis` already exist (M2-13 / M2-15). New read RPC `GetDevicePolicySafetyAnalysis` runs existing Application mappers on the device's last capture.
+- **Зроблено:** Controller hashes + blockers + witnesses + SYSTEM tests; Desktop Policies panel binds them. Controller source CIDRs are required (no invented `/0`). Optional revision supplies FastTrack desired rules. No local Domain analysis on Desktop; no VRRP role invention; no WriteEnabled.
+- **Не чіпали:** new analysis algorithms; Save and Deploy; local SemanticDiffEngine
+- **Перевірка:** Living Spec `Ac5ePoliciesShowManagementPathAndFastTrackAnalysis`; `GetDevicePolicySafetyAnalysisUseCaseTests`; `PoliciesViewModelTests`; `PolicyDesktopServiceTests`; `PolicyProtoContractTests`; `PolicyGrpcHostTests`
+- **Файли:** `policy.proto`, `GetDevicePolicySafetyAnalysisUseCase`, `PolicyGrpcService`, `IPolicyServiceClient`, `PolicyPanelService`, `PoliciesViewModel`, `MainWindow.axaml`
 
 ### W4.4 Snapshots: VRRP pair capture / compare guidance — **DONE**
 - **Дані:** `StartCapture`/`WatchCapture` лишаються `device_id`; `CompareSnapshots` already forbids different devices (`SNAPSHOTS_FROM_DIFFERENT_DEVICES`, M1-24)
@@ -303,4 +310,4 @@ W5-03 Typed deploy policy semantic diff
 - **Перевірка:** Living Spec `Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy`; `SnapshotViewerViewModelTests`; `SnapshotDiffViewModelTests`; `InventoryOpsSelectionTests`
 - **Файли:** `InventoryOpsSelection`, `SnapshotViewerViewModel`, `SnapshotDiffViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **W5-02** ([#343](https://github.com/sesquicadaver/MTDirector/issues/343)) — ManagementPath / FastTrack Desktop. W5-01 catalog **DONE**.
+**NEXT (alignment / §3):** **W5-03** ([#344](https://github.com/sesquicadaver/MTDirector/issues/344)) — typed deployment semantic policy diff. W5-02 ManagementPath **DONE**.
