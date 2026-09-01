@@ -7,10 +7,15 @@ namespace Mfc.Application.Topology;
 /// <summary>Shared VRRP pair gate for Onboarding/Deploy CreatePlan (W6-02).</summary>
 public static class VrrpPairPlanGate
 {
+    /// <summary>
+    /// When true, missing captures / empty VRRP sections do not block CreatePlan
+    /// (onboarding often runs before first capture). Deploy stays strict.
+    /// </summary>
     public static async Task<ApplicationError?> BlockIfFailedAsync(
         VrrpPairConsistencyLoader loader,
         Node node,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        bool allowIncompleteCaptures = false)
     {
         ArgumentNullException.ThrowIfNull(loader);
         ArgumentNullException.ThrowIfNull(node);
@@ -22,17 +27,26 @@ public static class VrrpPairPlanGate
         VrrpPairConsistencyResult result = await loader
             .AnalyzeNodeAsync(node, cancellationToken)
             .ConfigureAwait(false);
-        if (result.Passed)
+        IEnumerable<VrrpPairConsistencyFinding> blockers = result.Findings
+            .Where(static f => f.Severity == VrrpPairFindingSeverity.Blocker);
+        if (allowIncompleteCaptures)
+        {
+            blockers = blockers.Where(static f =>
+                f.Code is not (
+                    VrrpPairConsistencyFinding.MissingCapture
+                    or VrrpPairConsistencyFinding.NoVrrpGroups
+                    or VrrpPairConsistencyFinding.InsufficientMembers));
+        }
+
+        VrrpPairConsistencyFinding[] remaining = blockers.ToArray();
+        if (remaining.Length == 0)
         {
             return null;
         }
 
         string summary = string.Join(
             "; ",
-            result.Findings
-                .Where(static f => f.Severity == VrrpPairFindingSeverity.Blocker)
-                .Take(5)
-                .Select(static f => f.Code + ": " + f.Message));
+            remaining.Take(5).Select(static f => f.Code + ": " + f.Message));
         return ApplicationError.Conflict(
             "VRRP pair consistency blockers prevent CreatePlan. " + summary);
     }
