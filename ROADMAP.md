@@ -375,7 +375,7 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 | ManagementPath / FastTrack Desktop | W5-02 | RPC + Desktop surface of existing analysis | **DONE** (#343) |
 | Typed deploy policy semantic diff | W5-03 | Contracts typed entries (not only `repeated string`); Living Spec `Ac6f` | **DONE** (#344) |
 
-Оновлювати рядок **Статус** при закритті issue; **§3.C NEXT = residual (CRS lab ops)**. W6-07 **DONE**. CRS/physical lab runner stays ops, not a §3 product row.
+Оновлювати рядок **Статус** при закритті issue; **§3.C NEXT = residual (CRS lab ops)**. W6-08 **DONE**. CRS/physical lab runner stays ops, not a §3 product row.
 
 ---
 
@@ -397,7 +397,7 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 
 ## 7. Операційний старт
 
-1. **§3.C NEXT = residual (CRS lab ops)**. W6-07 **DONE**. Береться лише відкритий рядок §3; лаба **не** блокує. Physical CRS runner — ops, не продуктний рядок.
+1. **§3.C NEXT = residual (CRS lab ops)**. W6-08 **DONE**. Береться лише відкритий рядок §3; лаба **не** блокує. Physical CRS runner — ops, не продуктний рядок.
 2. Lab/pilot RouterOS (паралельно): [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) (`Enabled` / `WriteEnabled`).
 3. Desktop реєстрація пристрою: Inventory **Add router** — [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
 4. Acceptance / readiness: [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md), [`docs/release/readiness.md`](docs/release/readiness.md). Continuous plan: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).
