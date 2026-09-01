@@ -116,6 +116,17 @@ Issue [#356](https://github.com/sesquicadaver/MTDirector/issues/356) AC → modu
 
 Filter: `dotnet test --filter FullyQualifiedName~CaptureNodeSnapshots`.
 
+## Living Specification — Onboarding Rollback Watch (W6-04)
+
+Issue [#358](https://github.com/sesquicadaver/MTDirector/issues/358) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Hub Watch after Committed+RolledBack returns full history | `OnboardingProgressHub` | `Ac3bWatchReplaysRollbackEventsAfterCommittedTerminal` |
+| Desktop Rollback prefers Watch over Timeline | `OnboardingViewModel.RollbackAndWatchAsync` | `OnboardingViewModelTests` + `Ac6gOnboardingRollbackWatchesProgress` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~OnboardingViewModelTests|FullyQualifiedName~Ac3bWatchReplaysRollbackEventsAfterCommittedTerminal|FullyQualifiedName~Ac6gOnboardingRollbackWatchesProgress"`.
+
 ## Living Specification — desktop snapshot viewer (M1-28)
 
 Initial Issue Set M1-28 AC → module → tests:
@@ -1865,6 +1876,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | W1.4 Deploy/Onboarding plan collections | `ArtifactLines` / `OrderLines` / `ProbeAndWatchdogLines` / `Placements` | `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta` |
 | W3.3 Onboarding/Deploy Watch | Start + Watch → `ProgressLines` | `Ac6cOperationsStartWatchesOnboardingAndDeploymentProgress` + `OnboardingViewModelTests` + `DeploymentViewModelTests` |
 | CONT-01 Deployment Rollback Watch | Rollback + Watch → `ProgressLines` | `Ac6eDeploymentRollbackWatchesProgress` + `DeploymentViewModelTests` + `Ac3bWatchReplaysRollbackEventsAfterCommittedTerminal` |
+| W6-04 Onboarding Rollback Watch | Rollback + Watch → `ProgressLines`; hub replay past Committed | `Ac6gOnboardingRollbackWatchesProgress` + `OnboardingViewModelTests` + Onboarding `Ac3bWatchReplaysRollbackEventsAfterCommittedTerminal` |
 | W5-03 Typed deploy semantic diff | `SemanticDiffRows` kind/path/before/after; `SemanticDiffLines` secondary | `Ac6fDeploymentPlanBindsTypedSemanticDiffRows` + `DeploymentViewModelTests` |
 | W4.2 VRRP ops not silent first Device | Create plan / Validate all Node members | `Ac6dOperationsTargetVrrpNodePairNotSilentFirstDevice` + `InventoryOpsSelectionTests` + `DeploymentViewModelTests` + `OnboardingViewModelTests` |
 | AC#7 Drift без automatic fix | `DriftViewModel` + `DriftService` | `Ac7DriftViewHasNoAutomaticFix` |

@@ -225,7 +225,7 @@ residual: CRS / physical lab runner (ops, not §3)
 
 ### W3.3 Operations: Onboarding/Deploy Watch — **DONE**
 - **Дані:** `OnboardingService.Watch` / `DeploymentService.Watch` (clients already existed; Start used only `Timeline`)
-- **Зроблено:** Start → Start RPC + Watch stream off UI thread; ProgressLines bind stream `state`/`timeline_entry` (fallback to Start.Timeline if Watch empty). Rollback Watch: **CONT-01**.
+- **Зроблено:** Start → Start RPC + Watch stream off UI thread; ProgressLines bind stream `state`/`timeline_entry` (fallback to Start.Timeline if Watch empty). Deployment Rollback Watch: **CONT-01**. Onboarding Rollback Watch: **W6-04**.
 - **Не чіпали:** GetNodeWorkflow (W3.4); WriteEnabled
 - **Перевірка:** Living Spec `Ac6cOperationsStartWatchesOnboardingAndDeploymentProgress`; `OnboardingViewModelTests`; `DeploymentViewModelTests`
 - **Файли:** `OnboardingViewModel.cs`, `DeploymentViewModel.cs`
@@ -233,9 +233,16 @@ residual: CRS / physical lab runner (ops, not §3)
 ### CONT-01 Operations: Deployment Rollback Watch — **DONE**
 - **Дані:** existing `Watch` / `Rollback` RPCs; hub replay after Committed includes rollback events
 - **Зроблено:** `RollbackAndWatchAsync` (Task.Run); ProgressLines from Watch (fallback Timeline); `DeploymentProgressHub` does not stop replay at the first terminal
-- **Не чіпали:** Onboarding Rollback Watch; WriteEnabled; new RPC
+- **Не чіпали:** Onboarding Rollback Watch (W6-04); WriteEnabled; new RPC
 - **Перевірка:** Living Spec `Ac6eDeploymentRollbackWatchesProgress`; `DeploymentViewModelTests`; `Ac3bWatchReplaysRollbackEventsAfterCommittedTerminal`
 - **Файли:** `DeploymentViewModel.cs`, `DeploymentProgressHub.cs`
+
+### W6-04 Operations: Onboarding Rollback Watch — **DONE**
+- **Дані:** existing Onboarding `Watch` / `Rollback` RPCs; hub replay after Committed includes rollback events (CONT-01 parity)
+- **Зроблено:** `RollbackAndWatchAsync` (Task.Run); ProgressLines from Watch (fallback Timeline); `OnboardingProgressHub` does not stop replay at the first terminal
+- **Не чіпали:** WriteEnabled; new RPC; CRS lab
+- **Перевірка:** Living Spec `Ac6gOnboardingRollbackWatchesProgress`; `OnboardingViewModelTests`; `Ac3bWatchReplaysRollbackEventsAfterCommittedTerminal` (Onboarding)
+- **Файли:** `OnboardingViewModel.cs`, `OnboardingProgressHub.cs`
 
 ### W3.4 Node: GetNodeWorkflow — **DONE**
 - **Дані:** InventoryService `GetNodeWorkflow` → `NodeWorkflow.workflow_status` + `DeviceWorkflowProjection` (contributing_status / sync_classification)
@@ -321,4 +328,4 @@ residual: CRS / physical lab runner (ops, not §3)
 - **Перевірка:** Living Spec `Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy`; `SnapshotViewerViewModelTests`; `SnapshotDiffViewModelTests`; `InventoryOpsSelectionTests`
 - **Файли:** `InventoryOpsSelection`, `SnapshotViewerViewModel`, `SnapshotDiffViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-03 StartCapture node_id **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.
+**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-04 Onboarding Rollback Watch **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.

@@ -703,6 +703,25 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
             StringComparison.Ordinal);
     }
 
+    /// <summary>W6-04: Onboarding Rollback consumes Watch, not only Rollback.Timeline snapshot.</summary>
+    [Fact]
+    public void Ac6gOnboardingRollbackWatchesProgress()
+    {
+        Assert.NotNull(typeof(OnboardingViewModel).GetProperty(nameof(OnboardingViewModel.ProgressLines)));
+        Assert.NotNull(typeof(IOnboardingServiceClient).GetMethod(nameof(IOnboardingServiceClient.WatchAsync)));
+        Assert.NotNull(typeof(IOnboardingServiceClient).GetMethod(nameof(IOnboardingServiceClient.RollbackAsync)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Onboarding.RollbackCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Onboarding.ProgressLines", axaml, StringComparison.Ordinal);
+
+        string onboarding = ReadSource("src/Mfc.Desktop/ViewModels/OnboardingViewModel.cs");
+        Assert.Contains("RollbackAndWatchAsync", onboarding, StringComparison.Ordinal);
+        Assert.Contains("WatchAsync", onboarding, StringComparison.Ordinal);
+        Assert.Contains("Task.Run", onboarding, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", onboarding, StringComparison.Ordinal);
+    }
+
     /// <summary>W5-03: Operations binds typed semantic diff kind/path/before/after; hash delta stays secondary.</summary>
     [Fact]
     public void Ac6fDeploymentPlanBindsTypedSemanticDiffRows()
