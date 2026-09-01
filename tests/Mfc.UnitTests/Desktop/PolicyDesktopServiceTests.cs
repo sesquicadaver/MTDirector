@@ -290,7 +290,9 @@ public sealed class PolicyDesktopServiceTests
 
         PolicyDiffPanelResult diff = await service.DiffAsync(baselineId, revisionId);
         Assert.Equal("HIGH", diff.RiskLevel);
+        Assert.Contains(diff.Rows, r => r.KindText == "rule" && r.DetailText.Contains("ADDED", StringComparison.Ordinal));
         Assert.Contains(diff.Lines, l => l.SummaryLine.Contains("ADDED", StringComparison.Ordinal));
+        Assert.Equal(diff.Rows.Count, diff.Lines.Count);
 
         PolicyAnalysisRunListItem run = await service.RecordAnalysisRunAsync(
             revisionId,

@@ -168,7 +168,21 @@ public sealed class PolicyDiffPanelResult
 {
     public required string RiskLevel { get; init; }
 
+    /// <summary>Typed kind/detail rows (W6-06). Preferred binding over <see cref="Lines"/>.</summary>
+    public required IReadOnlyList<PolicyDiffRowListItem> Rows { get; init; }
+
+    /// <summary>Secondary flat SummaryLine list (compat with W1.3 DiffLines).</summary>
     public required IReadOnlyList<PolicyFindingListItem> Lines { get; init; }
+}
+
+/// <summary>Typed Policies revision diff row (Contracts PolicyRevisionDiff classes; no local engine).</summary>
+public sealed class PolicyDiffRowListItem
+{
+    public required string KindText { get; init; }
+
+    public required string DetailText { get; init; }
+
+    public string SummaryLine => $"{KindText}: {DetailText}";
 }
 
 /// <summary>Result of compose findings for review UI.</summary>
@@ -707,41 +721,61 @@ public sealed class PolicyPanelService : IPolicyPanelService
         PolicyRevisionDiff diff = await _client
             .DiffPolicyRevisionsAsync(beforeRevisionId, afterRevisionId, cancellationToken)
             .ConfigureAwait(false);
-        List<PolicyFindingListItem> lines = [];
+        List<PolicyDiffRowListItem> rows = [];
         foreach (string semantic in diff.SemanticClasses)
         {
-            lines.Add(new PolicyFindingListItem { SummaryLine = $"semantic: {semantic}" });
+            rows.Add(new PolicyDiffRowListItem
+            {
+                KindText = "semantic",
+                DetailText = OrDash(semantic),
+            });
         }
 
         foreach (string packet in diff.PacketSpaceClasses)
         {
-            lines.Add(new PolicyFindingListItem { SummaryLine = $"packet-space: {packet}" });
+            rows.Add(new PolicyDiffRowListItem
+            {
+                KindText = "packet-space",
+                DetailText = OrDash(packet),
+            });
         }
 
         foreach (string driver in diff.RiskDrivers)
         {
-            lines.Add(new PolicyFindingListItem { SummaryLine = $"risk-driver: {driver}" });
+            rows.Add(new PolicyDiffRowListItem
+            {
+                KindText = "risk-driver",
+                DetailText = OrDash(driver),
+            });
         }
 
         foreach (PolicyRuleDiffLine rule in diff.RuleChanges)
         {
             Guid ruleId = DesktopProtoUuid.ToGuid(rule.RuleId);
             string changes = string.Join(", ", rule.Changes);
-            lines.Add(new PolicyFindingListItem { SummaryLine = $"rule {ruleId:D}: {changes}" });
+            rows.Add(new PolicyDiffRowListItem
+            {
+                KindText = "rule",
+                DetailText = $"{ruleId:D}: {OrDash(changes)}",
+            });
         }
 
         foreach (PolicyAnalysisFinding finding in diff.FindingSummaries)
         {
-            lines.Add(new PolicyFindingListItem
+            rows.Add(new PolicyDiffRowListItem
             {
-                SummaryLine = FormatFinding(finding.Code, finding.Severity, finding.Message, finding.Target),
+                KindText = "finding",
+                DetailText = FormatFinding(finding.Code, finding.Severity, finding.Message, finding.Target),
             });
         }
 
         return new PolicyDiffPanelResult
         {
             RiskLevel = diff.RiskLevel,
-            Lines = lines,
+            Rows = rows,
+            Lines = rows
+                .Select(static r => new PolicyFindingListItem { SummaryLine = r.SummaryLine })
+                .ToArray(),
         };
     }
 
@@ -1201,6 +1235,9 @@ public sealed class PolicyPanelService : IPolicyPanelService
             ? null
             : contract.RejectMode.ToString(),
     };
+
+    private static string OrDash(string? value)
+        => string.IsNullOrWhiteSpace(value) ? "—" : value.Trim();
 
     private static string FormatFinding(string code, string? severity, string message, string? subject)
     {

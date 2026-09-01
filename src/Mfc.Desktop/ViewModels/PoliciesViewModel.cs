@@ -115,6 +115,8 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
 
     public ObservableCollection<PolicyFindingListItem> DiffLines { get; } = [];
 
+    public ObservableCollection<PolicyDiffRowListItem> DiffRows { get; } = [];
+
     public ObservableCollection<string> CompileArtifactLines { get; } = [];
 
     public ObservableCollection<string> ManagementPathFindingLines { get; } = [];
@@ -605,7 +607,13 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         await RunBusyAsync(async ct =>
         {
             PolicyDiffPanelResult diff = await _policies.DiffAsync(beforeId, afterId, ct).ConfigureAwait(true);
+            DiffRows.Clear();
             DiffLines.Clear();
+            foreach (PolicyDiffRowListItem row in diff.Rows)
+            {
+                DiffRows.Add(row);
+            }
+
             foreach (PolicyFindingListItem line in diff.Lines)
             {
                 DiffLines.Add(line);
@@ -982,6 +990,7 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         if (invalidateReview)
         {
             Findings.Clear();
+            DiffRows.Clear();
             DiffLines.Clear();
             _analysisRunId = null;
             _analysisBundleHash = null;
