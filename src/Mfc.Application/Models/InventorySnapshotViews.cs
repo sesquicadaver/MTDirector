@@ -77,7 +77,7 @@ public sealed class DeviceView
     /// <summary>Observed hardware model when known; null means unset (UI shows —).</summary>
     public string? Model { get; init; }
 
-    /// <summary>Unknown / Reachable / Unreachable. Defaults to Unknown until probe wiring.</summary>
+    /// <summary>Unknown / Reachable / Unreachable. From last probe (W6-05); defaults to Unknown.</summary>
     public string Reachability { get; init; } = "Unknown";
 
     /// <summary>

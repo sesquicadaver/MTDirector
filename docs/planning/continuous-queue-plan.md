@@ -46,6 +46,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Rollback Start without Watch | `DeploymentViewModel.RollbackAsync` vs `StartAndWatchAsync` | **CONT-01 DONE** |
 | Neighbor apply ignores VRRP member b | `AddRouterWizardViewModel.ApplyNeighborCandidate` | **CONT-02 DONE** |
 | Onboarding Rollback without Watch / hub stops at Committed | `OnboardingViewModel` + `OnboardingProgressHub` | **W6-04 DONE** |
+| GetNode Reachability always Unknown | `ViewMapper` / DiscoverDevice LastSupportState | **W6-05 DONE** |
 
 ### P3 / new Contracts (evidence)
 
@@ -79,6 +80,7 @@ W6-01 Operator-readable Diff/Snapshot **DONE**
 W6-02 VRRP pair consistency **DONE**
 W6-03 StartCapture node_id **DONE**
 W6-04 Onboarding Rollback Watch **DONE**
+W6-05 GetNode Reachability **DONE**
 residual: CRS / physical lab runner (ops, not §3)
 ```
 
@@ -98,8 +100,9 @@ residual: CRS / physical lab runner (ops, not §3)
 | 8 | W6-02 | [#354](https://github.com/sesquicadaver/MTDirector/issues/354) | VRRP pair consistency (config + logical FW) | **DONE** |
 | 9 | W6-03 | [#356](https://github.com/sesquicadaver/MTDirector/issues/356) | StartCapture node_id fan-out | **DONE** |
 | 10 | W6-04 | [#358](https://github.com/sesquicadaver/MTDirector/issues/358) | Onboarding Rollback + Watch (hub + Desktop) | **DONE** |
+| 11 | W6-05 | [#360](https://github.com/sesquicadaver/MTDirector/issues/360) | GetNode Reachability from probe | **DONE** |
 
-**§3.C NEXT = residual (CRS lab ops).** W6-04 is closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row. Empty §3 without that residual sentence would be a process defect — the residual is documented here.
+**§3.C NEXT = residual (CRS lab ops).** W6-05 is closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row. Empty §3 without that residual sentence would be a process defect — the residual is documented here.
 
 ## Anti-goals (unchanged)
 

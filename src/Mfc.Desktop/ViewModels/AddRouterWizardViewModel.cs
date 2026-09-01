@@ -304,17 +304,28 @@ public sealed partial class AddRouterWizardViewModel : ObservableObject, IDispos
             }
 
             ProbeResultText = string.Empty;
-            ValidateDeviceConnectionResponse response = await Task.Run(
-                    async () => await _client.ValidateDeviceConnectionAsync(deviceId.Value, ct).ConfigureAwait(false),
-                    ct)
-                .ConfigureAwait(true);
+            try
+            {
+                ValidateDeviceConnectionResponse response = await Task.Run(
+                        async () => await _client.ValidateDeviceConnectionAsync(deviceId.Value, ct).ConfigureAwait(false),
+                        ct)
+                    .ConfigureAwait(true);
 
-            string identity = string.IsNullOrWhiteSpace(response.ObservedIdentity)
-                ? "—"
-                : response.ObservedIdentity.Trim();
-            ProbeResultText =
-                $"identity: {identity} · support: {response.SupportState} · mutated: {response.RouterosMutated}";
-            StatusText = $"Probe completed for {deviceId.Value:D}.";
+                string identity = string.IsNullOrWhiteSpace(response.ObservedIdentity)
+                    ? "—"
+                    : response.ObservedIdentity.Trim();
+                ProbeResultText =
+                    $"identity: {identity} · support: {response.SupportState} · mutated: {response.RouterosMutated}";
+                StatusText = $"Probe completed for {deviceId.Value:D}.";
+            }
+            finally
+            {
+                // W6-05: GetNode Reachability may change after probe; refresh tree even on RPC failure.
+                if (_inventory.RefreshCommand.CanExecute(null))
+                {
+                    await _inventory.RefreshCommand.ExecuteAsync(null).ConfigureAwait(true);
+                }
+            }
         }).ConfigureAwait(true);
     }
 

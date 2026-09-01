@@ -252,7 +252,7 @@ public sealed class AddRouterWizardViewModelTests
             },
         };
         FakeConnection connection = new() { State = ControllerConnectionState.Connected };
-        InventoryTreeService tree = new(new SeededTreeClientWithDevice(siteId, nodeId, deviceId));
+        CountingTreeService tree = new(new InventoryTreeService(new SeededTreeClientWithDevice(siteId, nodeId, deviceId)));
         InventoryTreeViewModel inventory = new(tree, connection);
         await inventory.RefreshCommand.ExecuteAsync(null);
         inventory.SelectedNode = inventory.Roots
@@ -272,6 +272,7 @@ public sealed class AddRouterWizardViewModelTests
         Assert.Contains("Supported", wizard.ProbeResultText, StringComparison.Ordinal);
         Assert.Contains("mutated: False", wizard.ProbeResultText, StringComparison.Ordinal);
         Assert.True(wizard.HasProbeResult);
+        Assert.True(tree.RefreshCount >= 2); // initial load + post-probe refresh (W6-05)
     }
 
     [Fact]
@@ -463,6 +464,23 @@ public sealed class AddRouterWizardViewModelTests
 
         public Task<InventoryTreeLoadResult> RefreshAsync(CancellationToken cancellationToken = default)
             => Task.FromResult(Current);
+    }
+
+    private sealed class CountingTreeService : IInventoryTreeService
+    {
+        private readonly IInventoryTreeService _inner;
+
+        public CountingTreeService(IInventoryTreeService inner) => _inner = inner;
+
+        public int RefreshCount { get; private set; }
+
+        public InventoryTreeLoadResult Current => _inner.Current;
+
+        public async Task<InventoryTreeLoadResult> RefreshAsync(CancellationToken cancellationToken = default)
+        {
+            RefreshCount++;
+            return await _inner.RefreshAsync(cancellationToken).ConfigureAwait(false);
+        }
     }
 
     private sealed class SeededTreeClient : IInventoryTreeClient

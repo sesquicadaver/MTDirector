@@ -33,7 +33,8 @@ internal static class ViewMapper
         DateTimeOffset? lastSnapshotAtUtc = null,
         IReadOnlyList<string>? vrrpRoleLabels = null,
         string? routerOsVersion = null,
-        string? model = null) => new()
+        string? model = null,
+        string? reachability = null) => new()
         {
             Id = device.Id.Value,
             NodeId = device.NodeId.Value,
@@ -47,7 +48,7 @@ internal static class ViewMapper
             RowVersion = device.RowVersion,
             RouterOsVersion = string.IsNullOrWhiteSpace(routerOsVersion) ? null : routerOsVersion.Trim(),
             Model = string.IsNullOrWhiteSpace(model) ? null : model.Trim(),
-            Reachability = "Unknown",
+            Reachability = DeviceReachabilityProjector.Project(device.LastSupportState, reachability),
             VrrpRoleLabels = vrrpRoleLabels is { Count: > 0 } ? vrrpRoleLabels : [],
             LastSnapshotAtUtc = lastSnapshotAtUtc,
         };

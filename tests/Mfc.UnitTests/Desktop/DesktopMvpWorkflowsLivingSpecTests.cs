@@ -100,6 +100,17 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
     }
 
+    /// <summary>W6-05: Inventory Probe refreshes tree so GetNode Reachability can surface.</summary>
+    [Fact]
+    public void Ac2eInventoryProbeRefreshesTreeAfterValidateDeviceConnection()
+    {
+        string wizard = ReadSource("src/Mfc.Desktop/ViewModels/AddRouterWizardViewModel.cs");
+        Assert.Contains("ValidateDeviceConnectionAsync", wizard, StringComparison.Ordinal);
+        Assert.Contains("RefreshCommand", wizard, StringComparison.Ordinal);
+        Assert.Contains("finally", wizard, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", wizard, StringComparison.Ordinal);
+    }
+
     /// <summary>W3.5: Zones panel edits definitions and resolves the selected Device.</summary>
     [Fact]
     public void Ac2dZonesEditDefinitionAndResolveDevice()

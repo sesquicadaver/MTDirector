@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Mfc.Application.Abstractions.Audit;
 using Mfc.Application.Abstractions.Authorization;
+using Mfc.Application.Abstractions.Inventory;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Common;
 using Mfc.Application.Mapping;
@@ -418,13 +419,15 @@ public sealed class GetNodeUseCase
     private readonly IDeviceStore _devices;
     private readonly ISnapshotStore _snapshots;
     private readonly ProjectNodeWorkflowUseCase _projectWorkflow;
+    private readonly IDeviceReachabilityObservationStore? _reachabilityObservations;
 
     public GetNodeUseCase(
         IAuthorizationBoundary auth,
         INodeStore nodes,
         IDeviceStore devices,
         ISnapshotStore snapshots,
-        ProjectNodeWorkflowUseCase projectWorkflow)
+        ProjectNodeWorkflowUseCase projectWorkflow,
+        IDeviceReachabilityObservationStore? reachabilityObservations = null)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
@@ -436,6 +439,7 @@ public sealed class GetNodeUseCase
         _devices = devices;
         _snapshots = snapshots;
         _projectWorkflow = projectWorkflow;
+        _reachabilityObservations = reachabilityObservations;
     }
 
     public async Task<ApplicationResult<NodeDetailsView>> ExecuteAsync(
@@ -490,12 +494,20 @@ public sealed class GetNodeUseCase
 
             DeviceLastCaptureFacts facts = await LoadLastCaptureFactsAsync(device, cancellationToken)
                 .ConfigureAwait(false);
+            string? observedReachability = null;
+            if (_reachabilityObservations is not null
+                && _reachabilityObservations.TryGet(device.Id.Value, out string observed))
+            {
+                observedReachability = observed;
+            }
+
             DeviceView view = ViewMapper.ToView(
                 device,
                 lastSnapshot,
                 facts.VrrpRoleLabels,
                 facts.RouterOsVersion,
-                facts.Model);
+                facts.Model,
+                observedReachability);
             if (byDevice.TryGetValue(device.Id.Value, out DeviceWorkflowProjectionView? projection))
             {
                 view = new DeviceView

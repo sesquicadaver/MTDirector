@@ -86,7 +86,7 @@
 ### W2.3 VRRP labels pipeline — **DONE**
 - **Дані:** last completed capture canonical `ha.vrrp` **observations** (`role` + `group`); proto mapper already copies `VrrpRoleLabels`
 - **Зроблено:** `GetNodeUseCase` проєктує labels через `DeviceVrrpRoleLabelProjector`; без snapshot / без `role` → порожньо (не вигадуємо Master/Backup)
-- **Не чіпали:** live RouterOS probe на GetNode; version/model/reachability (окремий projector)
+- **Не чіпали:** live RouterOS probe на кожен GetNode; Reachability projector → **W6-05**
 - **Перевірка:** Living Spec `VrrpRoleLabelsLivingSpecTests`; `GetNodeMapsVrrpRoleLabelsFromLastCaptureObservations`
 - **Файли:** `DeviceVrrpRoleLabelProjector.cs`, `InventoryUseCases.cs`, `ViewMapper.cs`
 
@@ -328,4 +328,11 @@ residual: CRS / physical lab runner (ops, not §3)
 - **Перевірка:** Living Spec `Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy`; `SnapshotViewerViewModelTests`; `SnapshotDiffViewModelTests`; `InventoryOpsSelectionTests`
 - **Файли:** `InventoryOpsSelection`, `SnapshotViewerViewModel`, `SnapshotDiffViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-04 Onboarding Rollback Watch **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.
+**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-05 GetNode Reachability **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.
+
+### W6-05 Inventory: GetNode Reachability from probe — **DONE**
+- **Дані:** `Device.LastSupportState` already persisted by DiscoverDevice; proto `reachability` existed but ViewMapper always forced `Unknown`
+- **Зроблено:** `DeviceReachabilityProjector` (LastSupportState → Reachable); process-local observation store for Unreachable after connectivity probe failure; GetNode + DiscoverDevice wire; Desktop Probe refreshes inventory in `finally`
+- **Не чіпали:** live probe on every GetNode; WriteEnabled; CRS lab; inventing Master/Backup; durable Unreachable across Controller restart
+- **Перевірка:** `DeviceReachabilityProjectorTests`; Inventory GetNode reachability assertions; `Ac2eInventoryProbeRefreshesTreeAfterValidateDeviceConnection`
+- **Файли:** `DeviceReachabilityProjector`, `InMemoryDeviceReachabilityObservationStore`, `DiscoverDeviceUseCase`, `GetNodeUseCase`, `ViewMapper`, `AddRouterWizardViewModel`, `Program.cs`

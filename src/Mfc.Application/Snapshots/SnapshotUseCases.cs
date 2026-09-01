@@ -1,4 +1,5 @@
 using Mfc.Application.Abstractions.Authorization;
+using Mfc.Application.Abstractions.Inventory;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Common;
@@ -32,12 +33,14 @@ public sealed class DiscoverDeviceUseCase
     private readonly IDeviceStore _devices;
     private readonly IConnectionProfileReadStore _profiles;
     private readonly IRouterOsReadPort _routerOs;
+    private readonly IDeviceReachabilityObservationStore? _reachabilityObservations;
 
     public DiscoverDeviceUseCase(
         IAuthorizationBoundary auth,
         IDeviceStore devices,
         IConnectionProfileReadStore profiles,
-        IRouterOsReadPort routerOs)
+        IRouterOsReadPort routerOs,
+        IDeviceReachabilityObservationStore? reachabilityObservations = null)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(devices);
@@ -47,6 +50,7 @@ public sealed class DiscoverDeviceUseCase
         _devices = devices;
         _profiles = profiles;
         _routerOs = routerOs;
+        _reachabilityObservations = reachabilityObservations;
     }
 
     public async Task<ApplicationResult<DeviceDiscoveryView>> ExecuteAsync(
@@ -76,6 +80,7 @@ public sealed class DiscoverDeviceUseCase
         }
         catch (InvalidOperationException ex)
         {
+            // Fail-closed / not_configured ports — do not claim Unreachable.
             return ApplicationResults.Fail(ApplicationError.Failed(ex.Message));
         }
         catch (OperationCanceledException)
@@ -84,12 +89,14 @@ public sealed class DiscoverDeviceUseCase
         }
         catch (Exception ex) when (ex is not OutOfMemoryException)
         {
+            _reachabilityObservations?.Record(device.Id.Value, DeviceReachabilityProjector.Unreachable);
             return ApplicationResults.Fail(
                 ApplicationError.Dependency("RouterOS probe failed (sanitized)."));
         }
 
         device.RecordSupportState(probe.SupportState);
         await _devices.UpdateAsync(device, cancellationToken).ConfigureAwait(false);
+        _reachabilityObservations?.Record(device.Id.Value, DeviceReachabilityProjector.Reachable);
 
         return ApplicationResults.Ok(new DeviceDiscoveryView
         {

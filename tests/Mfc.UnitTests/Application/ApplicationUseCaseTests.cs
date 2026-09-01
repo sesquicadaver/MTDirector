@@ -5,6 +5,7 @@ using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Common;
 using Mfc.Application.Inventory;
+using Mfc.Application.Mapping;
 using Mfc.Application.Models;
 using Mfc.Application.Snapshots;
 using Mfc.Application.Workflow;
@@ -181,6 +182,24 @@ public sealed class InventoryUseCaseTests
         Assert.Null(details.Value.Devices[0].RouterOsVersion);
         Assert.Null(details.Value.Devices[0].Model);
         Assert.Empty(details.Value.Devices[0].VrrpRoleLabels);
+
+        Device? persisted = await devices.GetAsync(new DeviceId(device.Id));
+        Assert.NotNull(persisted);
+        persisted!.RecordSupportState(SupportState.Supported);
+        await devices.UpdateAsync(persisted);
+
+        ApplicationResult<NodeDetailsView> afterProbe = await getNode.ExecuteAsync(
+            new GetNodeQuery { Actor = "a", NodeId = node.Id });
+        Assert.True(afterProbe.IsSuccess);
+        Assert.Equal(DeviceReachabilityProjector.Reachable, afterProbe.Value!.Devices[0].Reachability);
+
+        InMemoryDeviceReachabilityObservationStore observations = new();
+        observations.Record(device.Id, DeviceReachabilityProjector.Unreachable);
+        GetNodeUseCase getNodeObserved = new(auth, nodes, devices, new FakeSnapshotStore(), projectWorkflow, observations);
+        ApplicationResult<NodeDetailsView> unreachable = await getNodeObserved.ExecuteAsync(
+            new GetNodeQuery { Actor = "a", NodeId = node.Id });
+        Assert.True(unreachable.IsSuccess);
+        Assert.Equal(DeviceReachabilityProjector.Unreachable, unreachable.Value!.Devices[0].Reachability);
 
         ApplicationResult<NodeDetailsView> missing = await getNode.ExecuteAsync(
             new GetNodeQuery { Actor = "a", NodeId = Guid.NewGuid() });
