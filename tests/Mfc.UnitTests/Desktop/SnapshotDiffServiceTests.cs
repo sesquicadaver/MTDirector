@@ -132,6 +132,59 @@ public sealed class SnapshotDiffServiceTests
     }
 
     [Fact]
+    public async Task AddedUnmanagedFilterShowsFieldLinesNotFingerprintHeader()
+    {
+        string fingerprint = new('d', 64);
+        Guid left = Guid.NewGuid();
+        Guid right = Guid.NewGuid();
+        FakeClient client = new()
+        {
+            Diff = new DiffPage
+            {
+                Identical = false,
+                Entries =
+                {
+                    new DiffEntry
+                    {
+                        SectionId = "firewall.ipv4.filter",
+                        Domain = DiffDomain.Configuration,
+                        RecordKey = fingerprint,
+                        AfterOrdinal = 4,
+                        Changes = { DiffChange.Added },
+                        After = new SnapshotRecord
+                        {
+                            StableKey = fingerprint,
+                            Configuration =
+                            {
+                                new CanonicalField
+                                {
+                                    Name = "chain",
+                                    Value = new CanonicalValue { StringValue = "forward" },
+                                },
+                                new CanonicalField
+                                {
+                                    Name = "action",
+                                    Value = new CanonicalValue { StringValue = "drop" },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        SnapshotDiffService service = new(client);
+        SnapshotDiffLoadResult result = await service.CompareAsync(left, right);
+
+        SnapshotDiffEntryItem added = Assert.Single(result.AllEntries);
+        Assert.DoesNotContain(fingerprint, added.DisplayIdentity, StringComparison.Ordinal);
+        Assert.DoesNotContain(fingerprint, added.HeaderLine, StringComparison.Ordinal);
+        Assert.Contains(added.FieldLines, f => f.Summary == "chain=forward");
+        Assert.Contains(added.FieldLines, f => f.Summary == "action=drop");
+        Assert.Contains("chain=forward", added.HeaderLine, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task IdenticalEmptyDiffIsNoDifferences()
     {
         Guid left = Guid.NewGuid();

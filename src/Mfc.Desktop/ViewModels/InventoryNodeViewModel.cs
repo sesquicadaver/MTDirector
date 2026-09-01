@@ -22,6 +22,7 @@ public sealed partial class InventoryNodeViewModel : ObservableObject
         RouterOsVersionText = item.RouterOsVersionText;
         ModelText = item.ModelText;
         VrrpRolesText = item.VrrpRolesText;
+        IsVrrpMember = item.IsVrrpMember;
         LastSnapshotText = item.LastSnapshotText;
         ManagementHostText = item.ManagementHostText;
         WorkflowStatusText = item.WorkflowStatusText;
@@ -58,6 +59,9 @@ public sealed partial class InventoryNodeViewModel : ObservableObject
 
     public string VrrpRolesText { get; }
 
+    /// <summary>True when this Device is a member of a VRRP Node (pair), independent of role labels.</summary>
+    public bool IsVrrpMember { get; }
+
     public string LastSnapshotText { get; }
 
     public string ManagementHostText { get; }
@@ -79,6 +83,9 @@ public sealed partial class InventoryNodeViewModel : ObservableObject
         IsDevice
         && !string.IsNullOrWhiteSpace(VrrpRolesText)
         && !string.Equals(VrrpRolesText, "—", StringComparison.Ordinal);
+
+    /// <summary>Show the VRRP roles row for pair members even when last-capture labels are empty.</summary>
+    public bool ShowVrrpSurface => HasVrrpRoles || IsVrrpMember;
 
     public string KindLabel => Kind switch
     {

@@ -374,11 +374,12 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
             ApplyResult(result);
             if (result is { Succeeded: true, CaptureId: Guid captureId, Sections.Count: > 0 })
             {
-                SnapshotSectionListItem? firstVisible = VisibleSections.FirstOrDefault();
-                if (firstVisible is not null)
+                SnapshotSectionListItem? preferred = SnapshotPresentationIdentity
+                    .PreferOperatorFacingSection(VisibleSections.ToArray());
+                if (preferred is not null)
                 {
-                    SelectedSection = firstVisible;
-                    await LoadSelectedSectionAsync(captureId, firstVisible.SectionId, token)
+                    SelectedSection = preferred;
+                    await LoadSelectedSectionAsync(captureId, preferred.SectionId, token)
                         .ConfigureAwait(true);
                 }
             }
@@ -484,11 +485,12 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
                     token)
                 .ConfigureAwait(true);
             ApplyResult(result);
-            SnapshotSectionListItem? firstVisible = VisibleSections.FirstOrDefault();
-            if (result.Succeeded && firstVisible is not null)
+            SnapshotSectionListItem? preferred = SnapshotPresentationIdentity
+                .PreferOperatorFacingSection(VisibleSections.ToArray());
+            if (result.Succeeded && preferred is not null)
             {
-                SelectedSection = firstVisible;
-                await LoadSelectedSectionAsync(captureId, firstVisible.SectionId, token)
+                SelectedSection = preferred;
+                await LoadSelectedSectionAsync(captureId, preferred.SectionId, token)
                     .ConfigureAwait(true);
             }
         }
@@ -566,6 +568,7 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
         {
             string? previous = SelectedSection?.SectionId;
             VisibleSections.Clear();
+            List<SnapshotSectionListItem> visible = [];
             foreach (SnapshotSectionListItem section in sections)
             {
                 if (section.IsTechnicalOnly && !ShowTechnicalView)
@@ -573,6 +576,11 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
                     continue;
                 }
 
+                visible.Add(section);
+            }
+
+            foreach (SnapshotSectionListItem section in SnapshotPresentationIdentity.OrderOperatorFacing(visible))
+            {
                 VisibleSections.Add(section);
             }
 

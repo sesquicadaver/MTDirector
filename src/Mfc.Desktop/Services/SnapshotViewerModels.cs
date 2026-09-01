@@ -67,21 +67,7 @@ public sealed class SnapshotRecordListItem
     public bool HasMoreFields => Fields.Count > 4;
 
     public string SummaryLine
-    {
-        get
-        {
-            string fields = string.Join(
-                "; ",
-                Fields.Take(4).Select(f => $"{f.Name}={f.Value}"));
-            if (string.IsNullOrWhiteSpace(fields))
-            {
-                return StableKey;
-            }
-
-            string suffix = HasMoreFields ? " …" : string.Empty;
-            return $"{StableKey} · {fields}{suffix}";
-        }
-    }
+        => SnapshotPresentationIdentity.FormatRecordSummary(StableKey, OrdinalText, Fields, HasMoreFields);
 }
 
 /// <summary>Loaded capture header + sections for the viewer.</summary>

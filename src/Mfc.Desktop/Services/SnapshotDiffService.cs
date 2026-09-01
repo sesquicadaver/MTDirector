@@ -203,6 +203,8 @@ public sealed class SnapshotDiffService : ISnapshotDiffService
             ? "—"
             : string.Join(", ", entry.Changes.Select(FormatEnum));
         string ordinal = FormatOrdinals(entry);
+        List<SnapshotDiffFieldLine> afterFields = MapRecordFields(entry.After);
+        List<SnapshotDiffFieldLine> beforeFields = MapRecordFields(entry.Before);
         List<SnapshotDiffFieldLine> fields = entry.FieldDiffs
             .Select(static f => new SnapshotDiffFieldLine
             {
@@ -210,6 +212,10 @@ public sealed class SnapshotDiffService : ISnapshotDiffService
                 Summary = FormatFieldDiff(f),
             })
             .ToList();
+        if (fields.Count == 0)
+        {
+            fields = afterFields.Count > 0 ? afterFields : beforeFields;
+        }
 
         return new SnapshotDiffEntryItem
         {
@@ -224,8 +230,8 @@ public sealed class SnapshotDiffService : ISnapshotDiffService
             HasAfterRecord = entry.After is not null,
             BeforeStableKey = entry.Before is null ? string.Empty : entry.Before.StableKey,
             AfterStableKey = entry.After is null ? string.Empty : entry.After.StableKey,
-            BeforeRecordFields = MapRecordFields(entry.Before),
-            AfterRecordFields = MapRecordFields(entry.After),
+            BeforeRecordFields = beforeFields,
+            AfterRecordFields = afterFields,
         };
     }
 

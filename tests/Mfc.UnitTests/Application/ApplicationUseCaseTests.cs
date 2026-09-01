@@ -1289,6 +1289,17 @@ public sealed class SnapshotUseCaseTests
                         ["role"] = "Backup",
                     }),
                 ]),
+            new CanonicalSection(
+                CanonicalDomain.Observations,
+                CanonicalSectionIds.SystemResource,
+                ordered: false,
+                [
+                    new CanonicalRecord(new Dictionary<string, string>(StringComparer.Ordinal)
+                    {
+                        ["version"] = "7.16.2 (stable)",
+                        ["board-name"] = "CHR",
+                    }),
+                ]),
         ];
 
         Device? persisted = await devices.GetAsync(new DeviceId(device.Id));
@@ -1303,6 +1314,8 @@ public sealed class SnapshotUseCaseTests
         Assert.Equal(
             ["Backup · Ipv4/vrid=20/if=ether2", "Master · Ipv4/vrid=10/if=ether1"],
             details.Value!.Devices[0].VrrpRoleLabels);
+        Assert.Equal("7.16.2 (stable)", details.Value.Devices[0].RouterOsVersion);
+        Assert.Equal("CHR", details.Value.Devices[0].Model);
     }
 
     private sealed class ThrowingSnapshotCapturePort(Exception ex) : ISnapshotCapturePort

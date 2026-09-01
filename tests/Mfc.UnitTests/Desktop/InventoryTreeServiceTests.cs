@@ -93,6 +93,7 @@ public sealed class InventoryTreeServiceTests
         Assert.Equal("—", device.RouterOsVersionText);
         Assert.Equal("—", device.ModelText);
         Assert.Equal("—", device.VrrpRolesText);
+        Assert.False(device.IsVrrpMember);
     }
 
     [Fact]
@@ -172,6 +173,7 @@ public sealed class InventoryTreeServiceTests
         Assert.Equal("CHR", device.ModelText);
         Assert.Equal("7.16.2", device.RouterOsVersionText);
         Assert.Equal("master", device.VrrpRolesText);
+        Assert.True(device.IsVrrpMember);
         Assert.Equal("2026-08-30 10:00:00Z", device.LastSnapshotText);
         Assert.Equal("192.0.2.1:8729", device.ManagementHostText);
     }

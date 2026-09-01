@@ -73,6 +73,7 @@ Initial Issue Set M1-27 AC → module → tests:
 | UI/VM without Domain objects | Desktop → Contracts only | `InventoryTreeViewModelAssemblyHasNoDomainOrRouterOsReferences` + architecture |
 | Display fields (reachability/version/model/support/kind/uplink/VRRP/last snapshot) | Device proto + `InventoryNodeViewModel` | hierarchy test + host GetNode observation defaults |
 | W2.3 VRRP labels from last capture | `GetNodeUseCase` + `DeviceVrrpRoleLabelProjector` | `VrrpRoleLabelsLivingSpecTests` + `GetNodeMapsVrrpRoleLabelsFromLastCaptureObservations` |
+| W6-01 last-capture version/model | `DeviceLastCaptureFacts` + GetNode | `DeviceLastCaptureFactsTests` + `GetNodeMapsVrrpRoleLabelsFromLastCaptureObservations` |
 | Refresh cancellation | `InventoryTreeService.RefreshAsync` | `CancellationStopsRefresh` |
 | No parallel overlapping refresh | single-flight coalesce | `ParallelRefreshDoesNotStartTwoOverlappingLoads` |
 | Large inventory paged | `ListSites`/`ListNodes` page loops | `ListNodesPaginates…` + `GrpcInventoryTreeClient` |
@@ -1826,6 +1827,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | W3.6 Policy Update/Delete/Ack/Compile | `UpdateRuleCommand` / `DeleteRuleCommand` / `AcknowledgeWarningCommand` / `CompileCommand` | `Ac5cPoliciesMutateRulesAckWarningsAndCompile` + `PoliciesViewModelTests` + `PolicyDesktopServiceTests` |
 | W5-01 ListPolicies catalog browse | `ListPolicies` RPC + catalog select → LoadRevision | `Ac5dPoliciesCatalogBrowseListPoliciesThenSelectLoadsRevision` + `ListPoliciesUseCaseTests` + `PoliciesViewModelTests` + `PolicyDesktopServiceTests` |
 | W5-02 ManagementPath / FastTrack Desktop | `GetDevicePolicySafetyAnalysis` RPC + hashes/findings/witnesses bind | `Ac5ePoliciesShowManagementPathAndFastTrackAnalysis` + `GetDevicePolicySafetyAnalysisUseCaseTests` + `PoliciesViewModelTests` + `PolicyDesktopServiceTests` |
+| W6-01 operator-readable Diff/Snapshot + captured filter | fingerprint not list identity; default `firewall.ipv4.filter`; empty catalog hint | `Ac4gOperatorReadableDiffAndFirewallSectionDefault` + `Ac5fEmptyPolicyCatalogPointsAtCapturedFilter` + `SnapshotPresentationIdentityTests` + `SnapshotDiffServiceTests` |
 | W5-03 Typed deploy semantic policy diff | `semantic_diff` kind/path/before/after; hash delta secondary | `Ac6fDeploymentPlanBindsTypedSemanticDiffRows` + `DeploymentWorkflowLivingSpecTests` + `DeploymentViewModelTests` + `DeploymentProtoContractTests` |
 | AC#6 Operations onboarding/deploy/recovery | Onboarding + Deployment VMs | `Ac6OperationsViewSupportsOnboardingDeploymentAndRecovery` |
 | W1.4 Deploy/Onboarding plan collections | `ArtifactLines` / `OrderLines` / `ProbeAndWatchdogLines` / `Placements` | `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta` |

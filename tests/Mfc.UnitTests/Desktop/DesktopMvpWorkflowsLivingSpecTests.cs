@@ -237,6 +237,19 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.DoesNotContain("Master/Backup", vmSource, StringComparison.Ordinal);
     }
 
+    /// <summary>W6-01: empty policy catalog points operators at captured filter, not a missing analysis RPC.</summary>
+    [Fact]
+    public void Ac5fEmptyPolicyCatalogPointsAtCapturedFilter()
+    {
+        Assert.NotNull(typeof(PoliciesViewModel).GetProperty(nameof(PoliciesViewModel.HasEmptyCatalog)));
+        Assert.NotNull(typeof(PoliciesViewModel).GetProperty(nameof(PoliciesViewModel.CapturedFilterHintText)));
+        Assert.Contains("firewall.ipv4.filter", PoliciesViewModel.CapturedFilterHint, StringComparison.Ordinal);
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Policies.HasEmptyCatalog", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.CapturedFilterHintText", axaml, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness()
     {
@@ -260,6 +273,7 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.NotNull(typeof(InventoryNodeViewModel).GetProperty(nameof(InventoryNodeViewModel.VrrpRolesText)));
         Assert.NotNull(typeof(InventoryNodeViewModel).GetProperty(nameof(InventoryNodeViewModel.LastSnapshotText)));
         Assert.NotNull(typeof(InventoryNodeViewModel).GetProperty(nameof(InventoryNodeViewModel.HasVrrpRoles)));
+        Assert.NotNull(typeof(InventoryNodeViewModel).GetProperty(nameof(InventoryNodeViewModel.ShowVrrpSurface)));
         Assert.NotNull(typeof(InventoryNodeViewModel).GetProperty(nameof(InventoryNodeViewModel.IsDevice)));
         Assert.NotNull(typeof(NodeDetailViewModel).GetProperty(nameof(NodeDetailViewModel.DeviceMembers)));
 
@@ -268,7 +282,7 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("Inventory.SelectedNode.ModelText", axaml, StringComparison.Ordinal);
         Assert.Contains("Inventory.SelectedNode.RouterOsVersionText", axaml, StringComparison.Ordinal);
         Assert.Contains("Inventory.SelectedNode.LastSnapshotText", axaml, StringComparison.Ordinal);
-        Assert.Contains("Inventory.SelectedNode.HasVrrpRoles", axaml, StringComparison.Ordinal);
+        Assert.Contains("Inventory.SelectedNode.ShowVrrpSurface", axaml, StringComparison.Ordinal);
         Assert.Contains("Inventory.SelectedNode.VrrpRolesText", axaml, StringComparison.Ordinal);
         Assert.Contains("Inventory.SelectedNode.DetailSummary", axaml, StringComparison.Ordinal);
         Assert.Contains("Node.DeviceMembers", axaml, StringComparison.Ordinal);
@@ -327,6 +341,7 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("Node.SelectedVrrpMember", axaml, StringComparison.Ordinal);
         Assert.Contains("Management host", axaml, StringComparison.Ordinal);
         Assert.Contains("Last snapshot", axaml, StringComparison.Ordinal);
+        Assert.DoesNotContain("IsVisible=\"{Binding HasRole}\"", axaml, StringComparison.Ordinal);
 
         string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/NodeDetailViewModel.cs");
         Assert.Contains("IsVrrpNode", vmSource, StringComparison.Ordinal);
@@ -453,6 +468,27 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("Diff.HasWarnings", axaml, StringComparison.Ordinal);
         Assert.Contains("Diff.VisibleWarnings", axaml, StringComparison.Ordinal);
         Assert.Contains("Diff.HasWarningOverflow", axaml, StringComparison.Ordinal);
+        Assert.Contains("DisplayIdentity", ReadSource("src/Mfc.Desktop/Services/SnapshotDiffModels.cs"), StringComparison.Ordinal);
+        Assert.Contains("IsFingerprintKey", ReadSource("src/Mfc.Desktop/Services/SnapshotPresentationIdentity.cs"), StringComparison.Ordinal);
+    }
+
+    /// <summary>W6-01: Diff/Snapshot identity is field/ordinal, not fingerprint hex; firewall.filter is first-class.</summary>
+    [Fact]
+    public void Ac4gOperatorReadableDiffAndFirewallSectionDefault()
+    {
+        Assert.NotNull(typeof(SnapshotDiffEntryItem).GetProperty(nameof(SnapshotDiffEntryItem.DisplayIdentity)));
+        Assert.True(SnapshotPresentationIdentity.IsFingerprintKey(new string('a', 64)));
+        Assert.Equal(
+            "firewall.ipv4.filter",
+            SnapshotPresentationIdentity.OperatorFacingSectionIds[0]);
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("FieldLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("firewall.ipv4.filter", ReadSource("src/Mfc.Desktop/Services/SnapshotPresentationIdentity.cs"), StringComparison.Ordinal);
+        Assert.Contains("PreferOperatorFacingSection", ReadSource("src/Mfc.Desktop/ViewModels/SnapshotViewerViewModel.cs"), StringComparison.Ordinal);
+        Assert.Contains("CompareAsync().ConfigureAwait(true)", ReadSource("src/Mfc.Desktop/ViewModels/SnapshotDiffViewModel.cs"), StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", ReadSource("src/Mfc.Desktop/Services/SnapshotPresentationIdentity.cs"), StringComparison.Ordinal);
+        Assert.DoesNotContain("SemanticDiffEngine", ReadSource("src/Mfc.Desktop/Services/SnapshotPresentationIdentity.cs"), StringComparison.Ordinal);
     }
 
     /// <summary>W2.1: Diff binds Before/After SnapshotRecord detail; Compare warnings truncate.</summary>

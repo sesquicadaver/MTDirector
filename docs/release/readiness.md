@@ -16,7 +16,7 @@ This document summarizes **code + documentation readiness** against the normativ
 | P2 read path (P2-04…P2-06) | **100% CLOSED** | Production probe + capture + DI gate |
 | P2 write path (P2-07…P2-11) | **100% CLOSED** | Runtimes + WriteEnabled gate + pilot runbook |
 | Desktop alignment P0–P2 | **CLOSED** | W1.1–W4.4 + W2.1–W2.2 |
-| Linear queue (§3.C) | **CLOSED** | **§3.C NEXT = residual (CRS lab ops)**; W5-03 ([#344](https://github.com/sesquicadaver/MTDirector/issues/344)) **DONE** |
+| Linear queue (§3.C) | **CLOSED** | **§3.C NEXT = residual (CRS lab ops)**; W6-01 ([#352](https://github.com/sesquicadaver/MTDirector/issues/352)) **DONE** |
 
 **Overall code readiness (milestones):** all 139 mapped product issues are **DONE in code**. Alignment P0–P2 is **DONE**. W5 tranche is **DONE**. Residual CRS/physical lab runner stays ops — not a phase-stop.  
 **Queue integrity:** **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **PLAN-02** (#339) seeds continuous §3.C so `/autopilot` does not idle.  
@@ -52,6 +52,7 @@ Desktop alignment W1–W4 / W2.1–W2.2 is **DONE** on top of that baseline (not
 | 136 | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | **DONE** |
 | 137 | W5-02 | [#343](https://github.com/sesquicadaver/MTDirector/issues/343) | **DONE** |
 | 138 | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | **DONE** |
+| 139 | W6-01 | [#352](https://github.com/sesquicadaver/MTDirector/issues/352) | **DONE** |
 
 Closed history (P2 + PLAN-01): TRACKER-01 [#289](https://github.com/sesquicadaver/MTDirector/issues/289) … P2-11 [#297](https://github.com/sesquicadaver/MTDirector/issues/297); PLAN-NBR-01 [#314](https://github.com/sesquicadaver/MTDirector/issues/314).
 

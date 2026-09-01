@@ -31,7 +31,9 @@ internal static class ViewMapper
     public static DeviceView ToView(
         Device device,
         DateTimeOffset? lastSnapshotAtUtc = null,
-        IReadOnlyList<string>? vrrpRoleLabels = null) => new()
+        IReadOnlyList<string>? vrrpRoleLabels = null,
+        string? routerOsVersion = null,
+        string? model = null) => new()
         {
             Id = device.Id.Value,
             NodeId = device.NodeId.Value,
@@ -43,9 +45,8 @@ internal static class ViewMapper
             LastSupportState = device.LastSupportState,
             LastCompletedCaptureId = device.LastCompletedCaptureId,
             RowVersion = device.RowVersion,
-            // Version/model/reachability stay unset until a dedicated observation projector exists.
-            RouterOsVersion = null,
-            Model = null,
+            RouterOsVersion = string.IsNullOrWhiteSpace(routerOsVersion) ? null : routerOsVersion.Trim(),
+            Model = string.IsNullOrWhiteSpace(model) ? null : model.Trim(),
             Reachability = "Unknown",
             VrrpRoleLabels = vrrpRoleLabels is { Count: > 0 } ? vrrpRoleLabels : [],
             LastSnapshotAtUtc = lastSnapshotAtUtc,

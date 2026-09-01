@@ -97,6 +97,14 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
 
     public ObservableCollection<PolicyCatalogListItem> Catalog { get; } = [];
 
+    /// <summary>True when ListPolicies returned no drafts — captured filter lives in Snapshots, not here.</summary>
+    public bool HasEmptyCatalog => Catalog.Count == 0;
+
+    public const string CapturedFilterHint =
+        "No policy draft in the catalog. Captured firewall filter rules are in Snapshots → firewall.ipv4.filter (select a Device). Analyze safety uses last capture + required controller source CIDR — not the empty catalog.";
+
+    public string CapturedFilterHintText => HasEmptyCatalog ? CapturedFilterHint : string.Empty;
+
     public ObservableCollection<PolicyAddressObjectListItem> AddressObjects { get; } = [];
 
     public ObservableCollection<PolicyServiceObjectListItem> ServiceObjects { get; } = [];
@@ -1047,6 +1055,8 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         {
             _suppressCatalogSelection = false;
         }
+
+        OnPropertyChanged(nameof(HasEmptyCatalog));
     }
 
     private async Task RunBusyAsync(Func<CancellationToken, Task> action)

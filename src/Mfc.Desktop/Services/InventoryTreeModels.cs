@@ -33,6 +33,9 @@ public sealed class InventoryTreeItem
 
     public string VrrpRolesText { get; init; } = "—";
 
+    /// <summary>True when this Device sits under a VRRP Node (pair member), even without role labels.</summary>
+    public bool IsVrrpMember { get; init; }
+
     public string LastSnapshotText { get; init; } = "—";
 
     /// <summary>Device management host from proto (host or host:port); — when empty.</summary>

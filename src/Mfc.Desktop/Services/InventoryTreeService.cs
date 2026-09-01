@@ -165,9 +165,10 @@ public sealed class InventoryTreeService : IInventoryTreeService
                 cancellationToken.ThrowIfCancellationRequested();
                 Guid nodeId = DesktopProtoUuid.ToGuid(node.Id);
                 NodeDetails details = await _client.GetNodeAsync(nodeId, cancellationToken).ConfigureAwait(false);
+                bool isVrrp = node.DeclaredKind == NodeKind.Vrrp;
                 List<InventoryTreeItem> devices = details.Devices
                     .OrderBy(d => d.DisplayName, StringComparer.Ordinal)
-                    .Select(MapDevice)
+                    .Select(d => MapDevice(d, isVrrp))
                     .ToList();
                 nodeItems.Add(new InventoryTreeItem
                 {
@@ -195,7 +196,7 @@ public sealed class InventoryTreeService : IInventoryTreeService
         return roots;
     }
 
-    private static InventoryTreeItem MapDevice(Device device)
+    private static InventoryTreeItem MapDevice(Device device, bool isVrrpMember = false)
     {
         string version = device.HasRouterosVersion && !string.IsNullOrWhiteSpace(device.RouterosVersion)
             ? device.RouterosVersion
@@ -224,6 +225,7 @@ public sealed class InventoryTreeService : IInventoryTreeService
             RouterOsVersionText = version,
             ModelText = model,
             VrrpRolesText = vrrp,
+            IsVrrpMember = isVrrpMember,
             LastSnapshotText = lastSnapshot,
             ManagementHostText = FormatManagementHost(device.ManagementHost, device.ManagementPort),
             DesiredHashText = FormatHash(device.DesiredArtifactHash),
