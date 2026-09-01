@@ -311,7 +311,7 @@ public sealed class CreateOnboardingPlanUseCase
             }
 
             ApplicationError? pairError = await VrrpPairPlanGate
-                .BlockIfFailedAsync(_vrrpPair, node, cancellationToken, allowIncompleteCaptures: true)
+                .BlockIfFailedAsync(_vrrpPair, node, allowIncompleteCaptures: true, cancellationToken)
                 .ConfigureAwait(false);
             if (pairError is not null)
             {
