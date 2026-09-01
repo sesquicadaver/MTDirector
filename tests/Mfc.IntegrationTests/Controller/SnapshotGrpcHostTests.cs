@@ -275,7 +275,7 @@ public sealed class SnapshotGrpcHostTests
                 headers,
                 deadline: Deadline());
             Assert.NotNull(nodeStarted.OperationId);
-            Assert.True(nodeStarted.HasCaptureId);
+            Assert.Equal(16, nodeStarted.CaptureId.Value.Length);
 
             List<CaptureProgress> nodeProgress = [];
             using (AsyncServerStreamingCall<CaptureProgress> watch = snapshots.WatchCapture(
