@@ -52,7 +52,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 |-----|----------|
 | No `ListPolicies` in `policy.proto` (catalog browse) | **W5-01 DONE** |
 | No Desktop RPC for ManagementPath / FastTrack | **W5-02 DONE** |
-| Deployment `semantic_diff_entries` is `repeated string` | **W5-03** |
+| Deployment `semantic_diff_entries` is `repeated string` | **W5-03 DONE** |
 | CRS / physical lab runner | **Not §3** — residual in known-limitations; ops parallel |
 
 ### Deferred / not this tranche (evidence)
@@ -73,7 +73,8 @@ CONT-01 Rollback Watch **DONE**      Isolated WriteEnabled=true lab
 CONT-02 Neighbor → member b **DONE** Live CHR when an isolated runner exists
 W5-01 ListPolicies **DONE**
 W5-02 ManagementPath / FastTrack **DONE**
-W5-03 Typed deploy policy diff
+W5-03 Typed deploy policy diff **DONE**
+residual: CRS / physical lab runner (ops, not §3)
 ```
 
 `/autopilot` always takes **§3 NEXT**. It does not wait for lab phase transitions.
@@ -87,11 +88,9 @@ W5-03 Typed deploy policy diff
 | 3 | CONT-02 | [#341](https://github.com/sesquicadaver/MTDirector/issues/341) | Neighbor apply → VRRP member b | **DONE** |
 | 4 | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | `ListPolicies` catalog browse | **DONE** |
 | 5 | W5-02 | [#343](https://github.com/sesquicadaver/MTDirector/issues/343) | ManagementPath / FastTrack Desktop | **DONE** |
-| 6 | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | Typed deployment semantic policy diff | **NEXT** |
+| 6 | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | Typed deployment semantic policy diff | **DONE** |
 
-**NEXT = W5-03 (#344).** W5-02 is closed.
-
-When W5-03 merges, the closing PR must either (a) seed the next PLAN tranche in the same cycle, or (b) document an explicit residual (CRS lab stays ops). Empty §3 without that sentence is a process defect.
+**§3.C NEXT = residual (CRS lab ops).** W5-03 is closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row. Empty §3 without that residual sentence would be a process defect — the residual is documented here.
 
 ## Anti-goals (unchanged)
 

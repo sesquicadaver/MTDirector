@@ -225,6 +225,13 @@ public sealed class DeploymentWorkflowLivingSpecTests
         ApplicationResult<DeploymentPlanSummaryView> plan = await harness.CreatePlanAsync();
         Assert.True(plan.IsSuccess);
         Assert.NotEmpty(plan.Value!.SemanticDiffEntries);
+        Assert.NotEmpty(plan.Value.SemanticDiff);
+        DeploymentSemanticDiffEntryView first = plan.Value.SemanticDiff[0];
+        Assert.NotEqual(Mfc.Application.Deployment.DeploymentSemanticDiffKind.Unspecified, first.Kind);
+        Assert.Contains("/artifact", first.Path, StringComparison.Ordinal);
+        Assert.False(string.IsNullOrWhiteSpace(first.Before));
+        Assert.False(string.IsNullOrWhiteSpace(first.After));
+        Assert.Equal(first.HashDelta, plan.Value.SemanticDiffEntries[0]);
         Assert.NotEmpty(plan.Value.Devices);
         Assert.NotEmpty(plan.Value.Devices[0].ActivationOrderMarkers);
         Assert.NotEmpty(plan.Value.Devices[0].RollbackOrderMarkers);

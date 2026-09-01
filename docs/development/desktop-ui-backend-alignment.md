@@ -131,7 +131,7 @@
 |------|------------|------:|-------|
 | W5.a | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | `ListPolicies` / catalog browse — **DONE** |
 | W5.b | W5-02 | [#343](https://github.com/sesquicadaver/MTDirector/issues/343) | ManagementPath / FastTrack Desktop RPC — **DONE** |
-| W5.c | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | Typed deployment semantic policy diff |
+| W5.c | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | Typed deployment semantic policy diff — **DONE** |
 | CRS / physical lab | — | — | **Не §3** — residual / ops parallel |
 
 Glue **перед** W5 (існуючі RPC): **CONT-01** Rollback Watch — **DONE**; **CONT-02** neighbor → member b — **DONE**.
@@ -165,7 +165,8 @@ CONT-01 Rollback Watch              ← DONE
 CONT-02 Neighbor apply member b     ← DONE
 W5-01 ListPolicies catalog          ← DONE
 W5-02 ManagementPath / FastTrack Desktop  ← DONE
-W5-03 Typed deploy policy semantic diff  ← NEXT (§3)
+W5-03 Typed deploy policy semantic diff  ← DONE
+residual: CRS / physical lab runner (ops, not §3)
 ```
 
 Кожен PR: один модуль / один клас gap; оновити цей документ (статус DONE); Desktop Living Spec AC на ключові рядки axaml/VM.
@@ -201,7 +202,7 @@ W5-03 Typed deploy policy semantic diff  ← NEXT (§3)
 | W4.4 | **DONE** (VRRP per-member capture guidance; compare shows why a-against-b is forbidden) |
 | W2.1 | **DONE** (Diff Before/After record detail; Compare warnings truncated) |
 | W2.2 | **DONE** (Routing assurance next-hop values + finding subject fields) |
-| W5 | W5-01…02 **DONE**; W5-03 queued (§3.C) |
+| W5 | W5-01…03 **DONE**; residual CRS lab ops |
 | CONT-01 | **DONE** Rollback Watch (#340) |
 | CONT-02 | **DONE** neighbor → member b (#341) |
 
@@ -303,6 +304,13 @@ W5-03 Typed deploy policy semantic diff  ← NEXT (§3)
 - **Перевірка:** Living Spec `Ac5ePoliciesShowManagementPathAndFastTrackAnalysis`; `GetDevicePolicySafetyAnalysisUseCaseTests`; `PoliciesViewModelTests`; `PolicyDesktopServiceTests`; `PolicyProtoContractTests`; `PolicyGrpcHostTests`
 - **Файли:** `policy.proto`, `GetDevicePolicySafetyAnalysisUseCase`, `PolicyGrpcService`, `IPolicyServiceClient`, `PolicyPanelService`, `PoliciesViewModel`, `MainWindow.axaml`
 
+### W5.c Operations: typed deployment semantic policy diff — **DONE**
+- **Дані:** existing `DeviceDeploymentPlan` old/new artifact hashes. `semantic_diff_entries` remains `repeated string` (hash delta, secondary).
+- **Зроблено:** Contracts `DeploymentSemanticDiffEntry` (kind / path / before / after / hash_delta); Controller maps those facts; Desktop binds structured rows (`SemanticDiffRows`). No local `SemanticDiffEngine`; no new analysis algorithms.
+- **Не чіпали:** Save and Deploy; physical CRS lab runner; `StartCapture` `node_id`
+- **Перевірка:** Living Spec `Ac6fDeploymentPlanBindsTypedSemanticDiffRows`; `DeploymentWorkflowLivingSpecTests`; `DeploymentViewModelTests`; `DeploymentProtoContractTests`
+- **Файли:** `deployment.proto`, `CreateDeploymentPlanUseCase.ToPlanView`, `DeploymentProtoMapper`, `DeploymentViewModel`, `MainWindow.axaml`
+
 ### W4.4 Snapshots: VRRP pair capture / compare guidance — **DONE**
 - **Дані:** `StartCapture`/`WatchCapture` лишаються `device_id`; `CompareSnapshots` already forbids different devices (`SNAPSHOTS_FROM_DIFFERENT_DEVICES`, M1-24)
 - **Зроблено:** Snapshots hint when VRRP Node/member selected — capture each member separately (no silent first child). Semantic diff shows why a-against-b is forbidden (same-device only). RPC error with that code maps to the same why-text.
@@ -310,4 +318,4 @@ W5-03 Typed deploy policy semantic diff  ← NEXT (§3)
 - **Перевірка:** Living Spec `Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy`; `SnapshotViewerViewModelTests`; `SnapshotDiffViewModelTests`; `InventoryOpsSelectionTests`
 - **Файли:** `InventoryOpsSelection`, `SnapshotViewerViewModel`, `SnapshotDiffViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **W5-03** ([#344](https://github.com/sesquicadaver/MTDirector/issues/344)) — typed deployment semantic policy diff. W5-02 ManagementPath **DONE**.
+**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W5-03 typed deploy semantic diff **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.

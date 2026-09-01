@@ -1489,9 +1489,31 @@
                   <Button Classes="mfc-action" Content="Rollback" Command="{Binding Deployment.RollbackCommand}" MinWidth="90" />
                   <Button Classes="mfc-action" Content="Recovery status" Command="{Binding Deployment.RecoveryCommand}" MinWidth="130" />
                 </WrapPanel>
+                <TextBlock Classes="mfc-label" Text="Policy semantic diff" />
+                <ListBox ItemsSource="{Binding Deployment.SemanticDiffRows}" MaxHeight="140">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="vm:DeploymentSemanticDiffListItem">
+                      <StackPanel Spacing="2" Margin="2">
+                        <TextBlock Text="{Binding KindText}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding PathText, StringFormat=path: {0}}"
+                                   Classes="mfc-mono"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding BeforeText, StringFormat=before: {0}}"
+                                   Classes="mfc-mono"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding AfterText, StringFormat=after: {0}}"
+                                   Classes="mfc-mono"
+                                   TextWrapping="Wrap" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
                 <TextBlock Classes="mfc-label" Text="Artifact hash delta" />
-                <TextBlock Classes="mfc-muted"
-                           Text="Contracts repeated-string hash delta until a richer policy diff exists." />
                 <ListBox ItemsSource="{Binding Deployment.SemanticDiffLines}" MaxHeight="100">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>

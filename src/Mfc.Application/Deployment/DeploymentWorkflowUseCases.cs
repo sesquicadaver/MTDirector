@@ -87,6 +87,29 @@ public sealed class DeploymentDevicePlanView
     public required IReadOnlyList<DeploymentProbeView> Probes { get; init; }
 }
 
+/// <summary>Existing device artifact-hash facts. Not a SemanticDiffEngine result.</summary>
+public enum DeploymentSemanticDiffKind : byte
+{
+    Unspecified = 0,
+    ArtifactUnchanged = 1,
+    ArtifactChanged = 2,
+}
+
+public sealed class DeploymentSemanticDiffEntryView
+{
+    public required DeploymentSemanticDiffKind Kind { get; init; }
+
+    public required string Path { get; init; }
+
+    public Guid? DeviceId { get; init; }
+
+    public required string Before { get; init; }
+
+    public required string After { get; init; }
+
+    public required string HashDelta { get; init; }
+}
+
 public sealed class DeploymentPlanSummaryView
 {
     public required Guid PlanId { get; init; }
@@ -98,6 +121,8 @@ public sealed class DeploymentPlanSummaryView
     public required DateTimeOffset ExpiresAtUtc { get; init; }
 
     public required IReadOnlyList<string> SemanticDiffEntries { get; init; }
+
+    public required IReadOnlyList<DeploymentSemanticDiffEntryView> SemanticDiff { get; init; }
 
     public required IReadOnlyList<Guid> ActivationOrderDeviceIds { get; init; }
 
@@ -271,16 +296,29 @@ public sealed class CreateDeploymentPlanUseCase
 
     internal static DeploymentPlanSummaryView ToPlanView(DeploymentPlan plan)
     {
-        List<string> semanticDiff = [];
+        List<string> semanticDiffEntries = [];
+        List<DeploymentSemanticDiffEntryView> semanticDiff = [];
         List<DeploymentDevicePlanView> devices = [];
         foreach (DeviceDeploymentPlan device in plan.DevicePlans)
         {
             string oldHex = Convert.ToHexString(device.OldArtifactHash.Bytes);
             string newHex = Convert.ToHexString(device.NewArtifactHash.Bytes);
-            semanticDiff.Add(
-                string.Equals(oldHex, newHex, StringComparison.Ordinal)
-                    ? $"device:{device.DeviceId.Value:D}:artifact=unchanged"
-                    : $"device:{device.DeviceId.Value:D}:artifact {oldHex[..12]}… → {newHex[..12]}…");
+            bool unchanged = string.Equals(oldHex, newHex, StringComparison.Ordinal);
+            string hashDelta = unchanged
+                ? $"device:{device.DeviceId.Value:D}:artifact=unchanged"
+                : $"device:{device.DeviceId.Value:D}:artifact {oldHex[..12]}… → {newHex[..12]}…";
+            semanticDiffEntries.Add(hashDelta);
+            semanticDiff.Add(new DeploymentSemanticDiffEntryView
+            {
+                Kind = unchanged
+                    ? DeploymentSemanticDiffKind.ArtifactUnchanged
+                    : DeploymentSemanticDiffKind.ArtifactChanged,
+                Path = $"device/{device.DeviceId.Value:D}/artifact",
+                DeviceId = device.DeviceId.Value,
+                Before = oldHex,
+                After = newHex,
+                HashDelta = hashDelta,
+            });
             devices.Add(new DeploymentDevicePlanView
             {
                 DeviceId = device.DeviceId.Value,
@@ -307,7 +345,8 @@ public sealed class CreateDeploymentPlanUseCase
             NodeId = plan.NodeId.Value,
             PlanHash = plan.PlanHash.Bytes.ToArray(),
             ExpiresAtUtc = plan.ExpiresAtUtc,
-            SemanticDiffEntries = semanticDiff,
+            SemanticDiffEntries = semanticDiffEntries,
+            SemanticDiff = semanticDiff,
             ActivationOrderDeviceIds = plan.ActivationOrder.Select(static d => d.Value).ToArray(),
             RollbackOrderDeviceIds = plan.RollbackOrder.Select(static d => d.Value).ToArray(),
             Devices = devices,

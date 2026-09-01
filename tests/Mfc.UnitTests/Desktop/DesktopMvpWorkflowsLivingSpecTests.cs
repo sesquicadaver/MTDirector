@@ -659,7 +659,37 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("WatchAsync", deployment, StringComparison.Ordinal);
         Assert.Contains("Task.Run", deployment, StringComparison.Ordinal);
         Assert.DoesNotContain("WriteEnabled", deployment, StringComparison.Ordinal);
-        Assert.DoesNotContain("SemanticDiffEngine", deployment, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "SemanticDiffEngine",
+            deployment.Replace("Does not run SemanticDiffEngine locally", string.Empty, StringComparison.Ordinal),
+            StringComparison.Ordinal);
+    }
+
+    /// <summary>W5-03: Operations binds typed semantic diff kind/path/before/after; hash delta stays secondary.</summary>
+    [Fact]
+    public void Ac6fDeploymentPlanBindsTypedSemanticDiffRows()
+    {
+        Assert.NotNull(typeof(DeploymentViewModel).GetProperty(nameof(DeploymentViewModel.SemanticDiffRows)));
+        Assert.NotNull(typeof(DeploymentViewModel).GetProperty(nameof(DeploymentViewModel.SemanticDiffLines)));
+        Assert.NotNull(typeof(DeploymentSemanticDiffListItem).GetProperty(nameof(DeploymentSemanticDiffListItem.KindText)));
+        Assert.NotNull(typeof(DeploymentSemanticDiffListItem).GetProperty(nameof(DeploymentSemanticDiffListItem.PathText)));
+        Assert.NotNull(typeof(DeploymentSemanticDiffListItem).GetProperty(nameof(DeploymentSemanticDiffListItem.BeforeText)));
+        Assert.NotNull(typeof(DeploymentSemanticDiffListItem).GetProperty(nameof(DeploymentSemanticDiffListItem.AfterText)));
+        Assert.NotNull(typeof(DeploymentSemanticDiffListItem).GetProperty(nameof(DeploymentSemanticDiffListItem.HashDeltaText)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Deployment.SemanticDiffRows", axaml, StringComparison.Ordinal);
+        Assert.Contains("Deployment.SemanticDiffLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("KindText", axaml, StringComparison.Ordinal);
+        Assert.Contains("PathText", axaml, StringComparison.Ordinal);
+        Assert.Contains("BeforeText", axaml, StringComparison.Ordinal);
+        Assert.Contains("AfterText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Artifact hash delta", axaml, StringComparison.Ordinal);
+        Assert.DoesNotContain("until a richer policy diff exists", axaml, StringComparison.Ordinal);
+
+        string deployment = ReadSource("src/Mfc.Desktop/ViewModels/DeploymentViewModel.cs");
+        Assert.Contains("Does not run SemanticDiffEngine locally", deployment, StringComparison.Ordinal);
+        Assert.DoesNotContain("SemanticDiffEngine", deployment.Replace("Does not run SemanticDiffEngine locally", string.Empty, StringComparison.Ordinal), StringComparison.Ordinal);
     }
 
     /// <summary>W4.2: VRRP Operations target the Node pair (all members), not a silent first Device child.</summary>

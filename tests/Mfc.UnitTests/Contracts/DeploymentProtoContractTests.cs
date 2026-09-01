@@ -25,6 +25,26 @@ public sealed class DeploymentProtoContractTests
     }
 
     [Fact]
+    public void DeploymentPlanSummaryExposesTypedSemanticDiffEntries()
+    {
+        Assert.Equal("semantic_diff_entries", DeploymentPlanSummary.Descriptor.FindFieldByNumber(5)!.Name);
+        Assert.True(DeploymentPlanSummary.Descriptor.FindFieldByNumber(5)!.IsRepeated);
+        Assert.Equal("semantic_diff", DeploymentPlanSummary.Descriptor.FindFieldByNumber(9)!.Name);
+        Assert.True(DeploymentPlanSummary.Descriptor.FindFieldByNumber(9)!.IsRepeated);
+        string[] fields = DeploymentSemanticDiffEntry.Descriptor.Fields.InDeclarationOrder()
+            .Select(static f => f.Name)
+            .ToArray();
+        Assert.Equal(["kind", "path", "device_id", "before", "after", "hash_delta"], fields);
+        string[] kinds = DeploymentPlanSummary.Descriptor.File.EnumTypes
+            .Single(static e => e.Name == "DeploymentSemanticDiffKind")
+            .Values
+            .Select(static v => v.Name)
+            .ToArray();
+        Assert.Contains("DEPLOYMENT_SEMANTIC_DIFF_KIND_ARTIFACT_UNCHANGED", kinds);
+        Assert.Contains("DEPLOYMENT_SEMANTIC_DIFF_KIND_ARTIFACT_CHANGED", kinds);
+    }
+
+    [Fact]
     public void MutationRequestsRequireIdempotencyKeyAndStartRequiresPlanHash()
     {
         Assert.Equal("idempotency_key", CreateDeploymentPlanRequest.Descriptor.Fields.InDeclarationOrder()[0].Name);
