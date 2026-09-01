@@ -176,12 +176,18 @@ public sealed class ValidateOnboardingPrerequisitesWorkflowUseCase
                 .ConfigureAwait(false);
             foreach (VrrpPairConsistencyFinding finding in pair.Findings)
             {
+                bool incompleteCaptureSignal = finding.Code is
+                    VrrpPairConsistencyFinding.MissingCapture
+                    or VrrpPairConsistencyFinding.NoVrrpGroups
+                    or VrrpPairConsistencyFinding.InsufficientMembers;
+                string severity = finding.Severity == VrrpPairFindingSeverity.Blocker
+                    && !incompleteCaptureSignal
+                        ? OnboardingCodes.SeverityBlocker
+                        : "FINDING";
                 findings.Add(new OnboardingFindingView
                 {
                     Code = finding.Code,
-                    Severity = finding.Severity == VrrpPairFindingSeverity.Blocker
-                        ? OnboardingCodes.SeverityBlocker
-                        : "FINDING",
+                    Severity = severity,
                     Message = finding.Message,
                     DeviceId = finding.DeviceId,
                     Target = finding.Subject,

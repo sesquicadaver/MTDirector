@@ -99,7 +99,7 @@ Issue [#354](https://github.com/sesquicadaver/MTDirector/issues/354) AC → modu
 | Last completed captures (read-only) | `VrrpPairConsistencyLoader` + `ValidateVrrpPairConsistencyUseCase` | Domain + Application wiring |
 | Inventory RPC | `ValidateVrrpPairConsistency` | `NeighborCandidatesLivingSpecTests` method name |
 | Desktop Node findings + Capture-all path | `NodeDetailViewModel` | `NodeDetailViewModelTests` + MainWindow Node panel |
-| Gate Onboarding Validate | merge findings into prerequisites | `ValidateOnboardingPrerequisitesWorkflowUseCase` |
+| Gate Onboarding Validate | merge findings; missing captures are FINDING until captures exist | `ValidateOnboardingPrerequisitesWorkflowUseCase` |
 | Gate Deploy/Onboarding CreatePlan | `VrrpPairPlanGate` (onboarding allows incomplete captures; deploy is strict) | CreatePlan use cases Conflict on config/FW blockers |
 
 Filter: `dotnet test --filter FullyQualifiedName~VrrpPairConsistency`.
