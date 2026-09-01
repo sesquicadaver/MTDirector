@@ -13,6 +13,12 @@ public interface ISnapshotViewerClient
         Guid idempotencyKey,
         CancellationToken cancellationToken = default);
 
+    /// <summary>W6-03: capture every Device on a Node under one WatchCapture stream.</summary>
+    Task<StartCaptureResponse> StartNodeCaptureAsync(
+        Guid nodeId,
+        Guid idempotencyKey,
+        CancellationToken cancellationToken = default);
+
     IAsyncEnumerable<CaptureProgress> WatchCaptureAsync(
         Guid operationId,
         CancellationToken cancellationToken = default);

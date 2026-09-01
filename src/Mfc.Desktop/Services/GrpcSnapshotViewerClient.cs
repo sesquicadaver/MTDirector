@@ -36,6 +36,23 @@ public sealed class GrpcSnapshotViewerClient : ISnapshotViewerClient
             .ConfigureAwait(false);
     }
 
+    public async Task<StartCaptureResponse> StartNodeCaptureAsync(
+        Guid nodeId,
+        Guid idempotencyKey,
+        CancellationToken cancellationToken = default)
+    {
+        SnapshotService.SnapshotServiceClient client = CreateClient();
+        return await client.StartCaptureAsync(
+                new StartCaptureRequest
+                {
+                    NodeId = DesktopProtoUuid.FromGuid(nodeId),
+                    IdempotencyKey = DesktopProtoUuid.FromGuid(idempotencyKey),
+                },
+                ActorHeaders(),
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     public async IAsyncEnumerable<CaptureProgress> WatchCaptureAsync(
         Guid operationId,
         [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)

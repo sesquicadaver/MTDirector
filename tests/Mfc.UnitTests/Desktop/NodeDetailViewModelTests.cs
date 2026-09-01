@@ -360,6 +360,13 @@ public sealed class NodeDetailViewModelTests
             Guid deviceId, Guid idempotencyKey, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
+
+        public Task<StartCaptureResponse> StartNodeCaptureAsync(
+            Guid nodeId,
+            Guid idempotencyKey,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
         public async IAsyncEnumerable<CaptureProgress> WatchCaptureAsync(
             Guid operationId, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
         {

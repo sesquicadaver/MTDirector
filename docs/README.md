@@ -2,7 +2,7 @@
 
 **Release:** `v0.2.0` (2026-08-24) — MVP + Post-MVP M7 CLOSED.  
 **Pilot:** P2 read + write path CLOSED — [`operations/pilot-runbook.md`](operations/pilot-runbook.md).  
-**Next delivery (§3):** **§3.C NEXT = residual (CRS lab ops)** — W6-02 ([#354](https://github.com/sesquicadaver/MTDirector/issues/354)) **DONE**. CRS/physical lab runner stays ops.  
+**Next delivery (§3):** **§3.C NEXT = residual (CRS lab ops)** — W6-03 ([#356](https://github.com/sesquicadaver/MTDirector/issues/356)) **DONE**. CRS/physical lab runner stays ops.  
 **Alignment P0–P2:** W1–W4 / W2.1–W2.2 **DONE** (`877a529`).
 
 ## Planning and tracking
@@ -31,7 +31,7 @@ Authoritative ТЗ and Issue Sets live in the repository root and are indexed in
 |----------|---------|
 | [`development/local-environment.md`](development/local-environment.md) | Workstation bootstrap |
 | [`development/testing.md`](development/testing.md) | Living Specification matrices (ТЗ → module → tests) |
-| [`development/desktop-ui-backend-alignment.md`](development/desktop-ui-backend-alignment.md) | Desktop UI ↔ Controller data alignment (P0–P3); W6-01…W6-02 **DONE**; residual CRS lab ops |
+| [`development/desktop-ui-backend-alignment.md`](development/desktop-ui-backend-alignment.md) | Desktop UI ↔ Controller data alignment (P0–P3); W6-01…W6-03 **DONE**; residual CRS lab ops |
 | [`development/ci.md`](development/ci.md) | CI workflow and gates |
 | [`development/git-workflow.md`](development/git-workflow.md) | Branch/PR process |
 | [`development/database-migrations.md`](development/database-migrations.md) | EF migrations |

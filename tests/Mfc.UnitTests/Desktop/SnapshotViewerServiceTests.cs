@@ -262,6 +262,13 @@ public sealed class SnapshotViewerServiceTests
 
         public Dictionary<string, List<SnapshotRecord>> RecordsByKey { get; } = new(StringComparer.Ordinal);
 
+
+        public Task<StartCaptureResponse> StartNodeCaptureAsync(
+            Guid nodeId,
+            Guid idempotencyKey,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
         public Task<IReadOnlyList<SnapshotSummary>> ListCapturesAsync(
             Guid deviceId,
             CancellationToken cancellationToken = default)

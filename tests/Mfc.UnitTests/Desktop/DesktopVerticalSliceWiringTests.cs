@@ -44,6 +44,7 @@ public sealed class DesktopVerticalSliceWiringTests
     {
         Type client = typeof(ISnapshotViewerClient);
         Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.StartCaptureAsync)));
+        Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.StartNodeCaptureAsync)));
         Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.WatchCaptureAsync)));
         Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.ListCapturesAsync)));
         Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.GetSummaryAsync)));

@@ -134,6 +134,7 @@
 | W5.c | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | Typed deployment semantic policy diff — **DONE** |
 | W6.a | W6-01 | [#352](https://github.com/sesquicadaver/MTDirector/issues/352) | Operator-readable Diff/Snapshot + VRRP surface — **DONE** |
 | W6.b | W6-02 | [#354](https://github.com/sesquicadaver/MTDirector/issues/354) | VRRP pair consistency (config + logical FW) — **DONE** |
+| W6.c | W6-03 | [#356](https://github.com/sesquicadaver/MTDirector/issues/356) | StartCapture node_id fan-out — **DONE** |
 | CRS / physical lab | — | — | **Не §3** — residual / ops parallel |
 
 Glue **перед** W5 (існуючі RPC): **CONT-01** Rollback Watch — **DONE**; **CONT-02** neighbor → member b — **DONE**.
@@ -204,7 +205,7 @@ residual: CRS / physical lab runner (ops, not §3)
 | W4.4 | **DONE** (VRRP per-member capture guidance; compare shows why a-against-b is forbidden) |
 | W2.1 | **DONE** (Diff Before/After record detail; Compare warnings truncated) |
 | W2.2 | **DONE** (Routing assurance next-hop values + finding subject fields) |
-| W5 | W5-01…03 **DONE**; W6-01…W6-02 **DONE**; residual CRS lab ops |
+| W5 | W5-01…03 **DONE**; W6-01…W6-03 **DONE**; residual CRS lab ops |
 | CONT-01 | **DONE** Rollback Watch (#340) |
 | CONT-02 | **DONE** neighbor → member b (#341) |
 
@@ -320,4 +321,4 @@ residual: CRS / physical lab runner (ops, not §3)
 - **Перевірка:** Living Spec `Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy`; `SnapshotViewerViewModelTests`; `SnapshotDiffViewModelTests`; `InventoryOpsSelectionTests`
 - **Файли:** `InventoryOpsSelection`, `SnapshotViewerViewModel`, `SnapshotDiffViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-02 VRRP pair consistency **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.
+**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-03 StartCapture node_id **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.

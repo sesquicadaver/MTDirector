@@ -29,7 +29,8 @@ Canonical section ids live in `Mfc.Domain.Canonicalization.CanonicalSectionIds` 
 - Record lists stay read-only: `GetSnapshotSummary` / `GetSnapshotSection`; copy is sanitized (no credential field values).
 - W1.2: selected record detail binds all `SnapshotRecordListItem.Fields` (`DisplayLine`); list `SummaryLine` stays compact (≤4 + ellipsis). Unmanaged fingerprint `StableKey` does not lead the list line (W6-01).
 - W6-01: when present, Snapshots open `firewall.ipv4.filter` first (then `firewall.ipv6.filter` / `ha.vrrp`); section sidebar is operator-facing order, not alphabetical.
-- W3.1: Capture button → `StartCapture` + `WatchCapture` (device_id only; `node_id` deferred in M1-26); progress shows stage / `current_section`; COMPLETED reloads the device list. Not a Desktop→RouterOS write and not WriteEnabled.
+- W3.1: Capture button → `StartCapture` + `WatchCapture` (device_id); progress shows stage / `current_section`; COMPLETED reloads the device list. Not a Desktop→RouterOS write and not WriteEnabled.
+- W6-03: `StartCapture(node_id)` captures every Device on the Node under one operation/Watch stream (Desktop Node Capture-all).
 - W4.4: VRRP pair — Capture is per member (select Device a or b; the Node is not a capture target and the first child is not used silently). Compare remains same-device only.
 
 ## Semantic diff

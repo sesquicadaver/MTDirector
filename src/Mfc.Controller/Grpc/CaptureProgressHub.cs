@@ -26,18 +26,28 @@ public sealed class CaptureProgressHub
         return operationId;
     }
 
-    /// <summary>Publishes a progress event to all watchers of <paramref name="operationId"/>.</summary>
-    public void Publish(Guid operationId, CaptureStage stage, Guid? captureId = null, ErrorDetail? error = null)
+    /// <summary>
+    /// Publishes a progress event to all watchers of <paramref name="operationId"/>.
+    /// When <paramref name="deviceId"/> is set, it overrides the operation's default device
+    /// (Node fan-out; W6-03).
+    /// </summary>
+    public void Publish(
+        Guid operationId,
+        CaptureStage stage,
+        Guid? captureId = null,
+        ErrorDetail? error = null,
+        Guid? deviceId = null)
     {
         if (!_operations.TryGetValue(operationId, out OperationStream? stream))
         {
             return;
         }
 
+        Guid progressDeviceId = deviceId ?? stream.DeviceId;
         CaptureProgress progress = new()
         {
             OperationId = ProtoUuid.FromGuid(operationId),
-            DeviceId = ProtoUuid.FromGuid(stream.DeviceId),
+            DeviceId = ProtoUuid.FromGuid(progressDeviceId),
             Stage = stage,
             OccurredAt = Timestamp.FromDateTimeOffset(DateTimeOffset.UtcNow),
         };
