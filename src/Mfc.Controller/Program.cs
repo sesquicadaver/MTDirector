@@ -146,6 +146,7 @@ public static class Program
             Mfc.Application.Abstractions.Integration.IResponseFeedbackDeliveryPort,
             Mfc.Infrastructure.Integration.NotConfiguredResponseFeedbackDeliveryPort>();
         builder.Services.AddSingleton<ValidateDeviceConnectionCoordinator>();
+        builder.Services.AddSingleton<Mfc.Application.Abstractions.Inventory.IDeviceReachabilityObservationStore, Mfc.Application.Inventory.InMemoryDeviceReachabilityObservationStore>();
         builder.Services.AddSingleton<CaptureProgressHub>();
         builder.Services.AddSingleton<OnboardingProgressHub>();
         builder.Services.AddSingleton<DeploymentProgressHub>();
