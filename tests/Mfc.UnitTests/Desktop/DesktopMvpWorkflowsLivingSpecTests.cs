@@ -399,6 +399,7 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
 
         Type client = typeof(ISnapshotViewerClient);
         Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.StartCaptureAsync)));
+        Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.StartNodeCaptureAsync)));
         Assert.NotNull(client.GetMethod(nameof(ISnapshotViewerClient.WatchCaptureAsync)));
 
         string axaml = ReadMainWindowAxaml();

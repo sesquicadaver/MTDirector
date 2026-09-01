@@ -319,6 +319,13 @@ public sealed class SnapshotViewerViewModelTests
             return Task.FromResult(StartResponse);
         }
 
+
+        public Task<StartCaptureResponse> StartNodeCaptureAsync(
+            Guid nodeId,
+            Guid idempotencyKey,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
         public async IAsyncEnumerable<CaptureProgress> WatchCaptureAsync(
             Guid operationId,
             [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)

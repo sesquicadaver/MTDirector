@@ -248,6 +248,13 @@ public sealed class SnapshotDiffServiceTests
 
         public int CompareCalls { get; private set; }
 
+
+        public Task<StartCaptureResponse> StartNodeCaptureAsync(
+            Guid nodeId,
+            Guid idempotencyKey,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
         public Task<IReadOnlyList<SnapshotSummary>> ListCapturesAsync(
             Guid deviceId,
             CancellationToken cancellationToken = default)

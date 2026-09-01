@@ -57,7 +57,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 
 ### Deferred / not this tranche (evidence)
 
-- `StartCapture` `node_id` — Controller comment, M1-26 deferred; larger API than CONT glue
+- `StartCapture` `node_id` — **W6-03 DONE** (#356); device_id path unchanged
 - Policies “Save and Deploy” — MVP scope lock
 - Local Desktop `SemanticDiffEngine` — anti-goal
 - Auto-fix drift — anti-goal
@@ -76,6 +76,7 @@ W5-02 ManagementPath / FastTrack **DONE**
 W5-03 Typed deploy policy diff **DONE**
 W6-01 Operator-readable Diff/Snapshot **DONE**
 W6-02 VRRP pair consistency **DONE**
+W6-03 StartCapture node_id **DONE**
 residual: CRS / physical lab runner (ops, not §3)
 ```
 
@@ -93,8 +94,9 @@ residual: CRS / physical lab runner (ops, not §3)
 | 6 | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | Typed deployment semantic policy diff | **DONE** |
 | 7 | W6-01 | [#352](https://github.com/sesquicadaver/MTDirector/issues/352) | Operator-readable snapshot/diff + VRRP surface | **DONE** |
 | 8 | W6-02 | [#354](https://github.com/sesquicadaver/MTDirector/issues/354) | VRRP pair consistency (config + logical FW) | **DONE** |
+| 9 | W6-03 | [#356](https://github.com/sesquicadaver/MTDirector/issues/356) | StartCapture node_id fan-out | **DONE** |
 
-**§3.C NEXT = residual (CRS lab ops).** W6-02 is closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row. Empty §3 without that residual sentence would be a process defect — the residual is documented here.
+**§3.C NEXT = residual (CRS lab ops).** W6-03 is closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row. Empty §3 without that residual sentence would be a process defect — the residual is documented here.
 
 ## Anti-goals (unchanged)
 

@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W6-03** ([#356](https://github.com/sesquicadaver/MTDirector/issues/356)): `StartCapture(node_id)` fans out to all Node devices under one WatchCapture stream; Desktop Capture-all uses it. Living Spec W6-03. **§3.C NEXT = residual (CRS lab ops)**.
 - **W6-02** ([#354](https://github.com/sesquicadaver/MTDirector/issues/354)): Node-scoped VRRP pair consistency from last completed captures (`ValidateVrrpPairConsistency`) — admin-critical `ha.vrrp` agreement + logical firewall digests; Desktop Node validate / Capture-all+validate; blockers gate Onboarding Validate and Deploy/Onboarding CreatePlan. Living Spec W6-02. **§3.C NEXT = residual (CRS lab ops)**.
 - **W6-01** ([#352](https://github.com/sesquicadaver/MTDirector/issues/352)): operator-readable snapshot/diff identity (fingerprint no longer leads rows); VRRP member surface without invented roles; Snapshots default to `firewall.ipv4.filter`; GetNode projects last-capture version/board-name; empty policy catalog points at captured filter. Living Spec `Ac4g` / `Ac5f`. **§3.C NEXT = residual (CRS lab ops)**.
 - **W5-03** ([#344](https://github.com/sesquicadaver/MTDirector/issues/344)): typed deployment semantic policy diff (`kind` / `path` / `before` / `after`) from existing device artifact hashes; string hash delta stays secondary. Living Spec `Ac6f`. **§3.C NEXT = residual (CRS lab ops)**.

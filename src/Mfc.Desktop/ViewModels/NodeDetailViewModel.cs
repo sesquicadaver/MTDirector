@@ -399,29 +399,28 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         {
             if (liveCapture)
             {
-                VrrpPairStatusText = "Capturing all VRRP members…";
-                foreach (VrrpMemberListItem member in VrrpMembers.ToArray())
+                VrrpPairStatusText = "Capturing all VRRP members (StartCapture node_id)…";
+                StartCaptureResponse started = await _snapshotClient
+                    .StartNodeCaptureAsync(node.Id, Guid.NewGuid(), CancellationToken.None)
+                    .ConfigureAwait(true);
+                CaptureProgress? last = null;
+                await foreach (CaptureProgress progress in _snapshotClient
+                                   .WatchCaptureAsync(
+                                       DesktopProtoUuid.ToGuid(started.OperationId),
+                                       CancellationToken.None)
+                                   .ConfigureAwait(true))
                 {
-                    StartCaptureResponse started = await _snapshotClient
-                        .StartCaptureAsync(member.DeviceId, Guid.NewGuid(), CancellationToken.None)
-                        .ConfigureAwait(true);
-                    CaptureProgress? last = null;
-                    await foreach (CaptureProgress progress in _snapshotClient
-                                       .WatchCaptureAsync(
-                                           DesktopProtoUuid.ToGuid(started.OperationId),
-                                           CancellationToken.None)
-                                       .ConfigureAwait(true))
-                    {
-                        last = progress;
-                        VrrpPairStatusText =
-                            $"{member.DisplayName}: {progress.Stage}";
-                    }
+                    last = progress;
+                    Guid progressDevice = DesktopProtoUuid.ToGuid(progress.DeviceId);
+                    string memberName = VrrpMembers.FirstOrDefault(m => m.DeviceId == progressDevice)?.DisplayName
+                        ?? (progressDevice == Guid.Empty ? "node" : progressDevice.ToString("D"));
+                    VrrpPairStatusText = $"{memberName}: {progress.Stage}";
+                }
 
-                    if (last is null || last.Stage != CaptureStage.Completed)
-                    {
-                        throw new InvalidOperationException(
-                            $"Capture for member '{member.DisplayName}' did not complete successfully.");
-                    }
+                if (last is null || last.Stage != CaptureStage.Completed)
+                {
+                    throw new InvalidOperationException(
+                        "Node capture did not complete successfully for all VRRP members.");
                 }
             }
 

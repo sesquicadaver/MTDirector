@@ -266,19 +266,34 @@ public sealed class SnapshotGrpcHostTests
 
             (Device device, Node node) = await SeedDeviceWithConnectionAsync(inventory, headers, "192.0.2.27");
 
-            RpcException nodeEx = await Assert.ThrowsAsync<RpcException>(async () =>
+            StartCaptureResponse nodeStarted = await snapshots.StartCaptureAsync(
+                new StartCaptureRequest
+                {
+                    NodeId = node.Id,
+                    IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
+                },
+                headers,
+                deadline: Deadline());
+            Assert.NotNull(nodeStarted.OperationId);
+            Assert.Equal(16, nodeStarted.CaptureId.Value.Length);
+
+            List<CaptureProgress> nodeProgress = [];
+            using (AsyncServerStreamingCall<CaptureProgress> watch = snapshots.WatchCapture(
+                       new WatchCaptureRequest { OperationId = nodeStarted.OperationId },
+                       headers,
+                       deadline: Deadline()))
             {
-                await snapshots.StartCaptureAsync(
-                    new StartCaptureRequest
-                    {
-                        NodeId = node.Id,
-                        IdempotencyKey = ProtoUuid.FromGuid(Guid.NewGuid()),
-                    },
-                    headers,
-                    deadline: Deadline());
-            });
-            Assert.Equal(StatusCode.FailedPrecondition, nodeEx.StatusCode);
-            Assert.Contains("node capture deferred", nodeEx.Status.Detail, StringComparison.OrdinalIgnoreCase);
+                await foreach (CaptureProgress progress in watch.ResponseStream.ReadAllAsync())
+                {
+                    nodeProgress.Add(progress);
+                }
+            }
+
+            Assert.Contains(nodeProgress, static p => p.Stage == CaptureStage.Completed);
+            Assert.Contains(
+                nodeProgress,
+                p => p.Stage == CaptureStage.Persisting
+                     && ProtoUuid.ToGuid(p.DeviceId) == ProtoUuid.ToGuid(device.Id));
 
             string denyUrl = $"http://127.0.0.1:{GetFreeTcpPort()}";
             await using var denyApp = Program.BuildHost(

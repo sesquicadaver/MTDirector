@@ -260,6 +260,7 @@ public static class Program
     private static void RegisterSnapshotApplication(IServiceCollection services)
     {
         services.AddScoped<CaptureSnapshotUseCase>();
+        services.AddScoped<CaptureNodeSnapshotsUseCase>();
         services.AddScoped<ListSnapshotsUseCase>();
         services.AddScoped<GetSnapshotUseCase>();
         services.AddScoped<GetSnapshotSectionUseCase>();

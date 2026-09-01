@@ -104,6 +104,18 @@ Issue [#354](https://github.com/sesquicadaver/MTDirector/issues/354) AC → modu
 
 Filter: `dotnet test --filter FullyQualifiedName~VrrpPairConsistency`.
 
+## Living Specification — StartCapture node_id (W6-03)
+
+Issue [#356](https://github.com/sesquicadaver/MTDirector/issues/356) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| `StartCapture(node_id)` fans out members | `CaptureNodeSnapshotsUseCase` + SnapshotGrpc | `CaptureNodeSnapshotsUseCaseTests` + `SnapshotGrpcHostTests` |
+| One WatchCapture stream / terminal COMPLETED | `CaptureProgressHub` device override | host Watch progress |
+| Desktop Capture-all uses node_id | `NodeDetailViewModel` + `ISnapshotViewerClient.StartNodeCaptureAsync` | wiring Living Spec |
+
+Filter: `dotnet test --filter FullyQualifiedName~CaptureNodeSnapshots`.
+
 ## Living Specification — desktop snapshot viewer (M1-28)
 
 Initial Issue Set M1-28 AC → module → tests:

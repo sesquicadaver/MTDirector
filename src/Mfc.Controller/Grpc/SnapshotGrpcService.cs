@@ -6,7 +6,7 @@ using Mfc.Contracts.Mfc.V1;
 
 namespace Mfc.Controller.Grpc;
 
-/// <summary>gRPC surface for Vertical Slice §9.3 SnapshotService (M1-26).</summary>
+/// <summary>gRPC surface for Vertical Slice §9.3 SnapshotService (M1-26 / W6-03 node capture).</summary>
 public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
 {
     public const string ActorMetadataKey = InventoryGrpcService.ActorMetadataKey;
@@ -14,6 +14,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
     private const int MaxPageSize = 200;
 
     private readonly CaptureSnapshotUseCase _capture;
+    private readonly CaptureNodeSnapshotsUseCase _captureNode;
     private readonly ListSnapshotsUseCase _list;
     private readonly GetSnapshotUseCase _get;
     private readonly GetSnapshotSectionUseCase _getSection;
@@ -23,6 +24,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
 
     public SnapshotGrpcService(
         CaptureSnapshotUseCase capture,
+        CaptureNodeSnapshotsUseCase captureNode,
         ListSnapshotsUseCase list,
         GetSnapshotUseCase get,
         GetSnapshotSectionUseCase getSection,
@@ -31,6 +33,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(capture);
+        ArgumentNullException.ThrowIfNull(captureNode);
         ArgumentNullException.ThrowIfNull(list);
         ArgumentNullException.ThrowIfNull(get);
         ArgumentNullException.ThrowIfNull(getSection);
@@ -38,6 +41,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
         ArgumentNullException.ThrowIfNull(progressHub);
         ArgumentNullException.ThrowIfNull(environment);
         _capture = capture;
+        _captureNode = captureNode;
         _list = list;
         _get = get;
         _getSection = getSection;
@@ -51,18 +55,21 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
         ServerCallContext context)
     {
         ArgumentNullException.ThrowIfNull(request);
-        if (request.TargetCase == StartCaptureRequest.TargetOneofCase.NodeId)
+        return request.TargetCase switch
         {
-            throw GrpcApplicationErrorMapper.ToRpcException(
-                ApplicationError.Failed("node capture deferred: StartCapture supports device_id only in M1-26."));
-        }
+            StartCaptureRequest.TargetOneofCase.DeviceId => await StartDeviceCaptureAsync(request, context)
+                .ConfigureAwait(false),
+            StartCaptureRequest.TargetOneofCase.NodeId => await StartNodeCaptureAsync(request, context)
+                .ConfigureAwait(false),
+            _ => throw GrpcApplicationErrorMapper.ToRpcException(
+                ApplicationError.Failed("StartCapture requires device_id or node_id.")),
+        };
+    }
 
-        if (request.TargetCase != StartCaptureRequest.TargetOneofCase.DeviceId)
-        {
-            throw GrpcApplicationErrorMapper.ToRpcException(
-                ApplicationError.Failed("StartCapture requires device_id or node_id."));
-        }
-
+    private async Task<StartCaptureResponse> StartDeviceCaptureAsync(
+        StartCaptureRequest request,
+        ServerCallContext context)
+    {
         Guid deviceId = ProtoUuid.ToGuid(request.DeviceId);
         Guid idempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey);
         Guid operationId = _progressHub.Begin(deviceId);
@@ -98,13 +105,101 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
             SnapshotView snapshot = result.Value!;
             _progressHub.Publish(operationId, CaptureStage.Completed, captureId: snapshot.Id);
 
-            StartCaptureResponse response = new()
+            return new StartCaptureResponse
             {
                 OperationId = ProtoUuid.FromGuid(operationId),
                 Deduplicated = snapshot.Deduplicated,
                 CaptureId = ProtoUuid.FromGuid(snapshot.Id),
             };
-            return response;
+        }
+        catch (RpcException)
+        {
+            throw;
+        }
+        catch (OperationCanceledException)
+        {
+            _progressHub.Publish(operationId, CaptureStage.Canceled);
+            throw;
+        }
+        catch (Exception)
+        {
+            _progressHub.Publish(
+                operationId,
+                CaptureStage.Failed,
+                error: new ErrorDetail
+                {
+                    Code = "failed",
+                    Retryable = false,
+                    CorrelationId = ProtoUuid.FromGuid(Guid.NewGuid()),
+                    SanitizedDetail = "capture failed",
+                });
+            throw;
+        }
+    }
+
+    private async Task<StartCaptureResponse> StartNodeCaptureAsync(
+        StartCaptureRequest request,
+        ServerCallContext context)
+    {
+        Guid nodeId = ProtoUuid.ToGuid(request.NodeId);
+        Guid idempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey);
+        Guid operationId = _progressHub.Begin(Guid.Empty);
+        _progressHub.Publish(operationId, CaptureStage.Queued, deviceId: Guid.Empty);
+
+        try
+        {
+            ApplicationResult<CaptureNodeSnapshotsView> result = await _captureNode
+                .ExecuteAsync(
+                    new CaptureNodeSnapshotsCommand
+                    {
+                        Actor = ResolveActor(context),
+                        NodeId = nodeId,
+                        IdempotencyKey = idempotencyKey,
+                    },
+                    onMemberStarted: (memberDeviceId, displayName, ct) =>
+                    {
+                        _ = ct;
+                        _progressHub.Publish(
+                            operationId,
+                            CaptureStage.Persisting,
+                            deviceId: memberDeviceId);
+                        _ = displayName;
+                        return Task.CompletedTask;
+                    },
+                    cancellationToken: context.CancellationToken)
+                .ConfigureAwait(false);
+
+            if (!result.IsSuccess)
+            {
+                _progressHub.Publish(
+                    operationId,
+                    CaptureStage.Failed,
+                    error: new ErrorDetail
+                    {
+                        Code = result.Error!.Code,
+                        Retryable = false,
+                        CorrelationId = ProtoUuid.FromGuid(Guid.NewGuid()),
+                        SanitizedDetail = result.Error.Message,
+                    });
+                throw GrpcApplicationErrorMapper.ToRpcException(result.Error!);
+            }
+
+            CaptureNodeSnapshotsView batch = result.Value!;
+            SnapshotView last = batch.Members[^1].Snapshot;
+            bool allDedup = batch.Members.All(static m => m.Snapshot.Deduplicated);
+
+            _progressHub.Publish(
+                operationId,
+                CaptureStage.Completed,
+                captureId: last.Id,
+                deviceId: batch.Members[^1].DeviceId);
+
+            return new StartCaptureResponse
+            {
+                OperationId = ProtoUuid.FromGuid(operationId),
+                Deduplicated = allDedup,
+                CaptureId = ProtoUuid.FromGuid(last.Id),
+            };
         }
         catch (RpcException)
         {
