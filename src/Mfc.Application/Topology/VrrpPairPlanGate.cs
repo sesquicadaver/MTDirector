@@ -14,8 +14,8 @@ public static class VrrpPairPlanGate
     public static async Task<ApplicationError?> BlockIfFailedAsync(
         VrrpPairConsistencyLoader loader,
         Node node,
-        CancellationToken cancellationToken = default,
-        bool allowIncompleteCaptures = false)
+        bool allowIncompleteCaptures = false,
+        CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(loader);
         ArgumentNullException.ThrowIfNull(node);
