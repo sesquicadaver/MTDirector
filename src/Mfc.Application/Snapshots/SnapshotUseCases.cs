@@ -89,12 +89,15 @@ public sealed class DiscoverDeviceUseCase
         }
         catch (Exception ex) when (ex is not OutOfMemoryException)
         {
+            device.RecordObservedReachability(ObservedReachability.Unreachable);
+            await _devices.UpdateAsync(device, cancellationToken).ConfigureAwait(false);
             _reachabilityObservations?.Record(device.Id.Value, DeviceReachabilityProjector.Unreachable);
             return ApplicationResults.Fail(
                 ApplicationError.Dependency("RouterOS probe failed (sanitized)."));
         }
 
         device.RecordSupportState(probe.SupportState);
+        device.RecordObservedReachability(ObservedReachability.Reachable);
         await _devices.UpdateAsync(device, cancellationToken).ConfigureAwait(false);
         _reachabilityObservations?.Record(device.Id.Value, DeviceReachabilityProjector.Reachable);
 

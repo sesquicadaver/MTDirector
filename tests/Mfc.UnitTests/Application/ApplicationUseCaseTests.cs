@@ -193,6 +193,18 @@ public sealed class InventoryUseCaseTests
         Assert.True(afterProbe.IsSuccess);
         Assert.Equal(DeviceReachabilityProjector.Reachable, afterProbe.Value!.Devices[0].Reachability);
 
+        Device? forUnreachable = await devices.GetAsync(new DeviceId(device.Id));
+        Assert.NotNull(forUnreachable);
+        forUnreachable!.RecordObservedReachability(ObservedReachability.Unreachable);
+        await devices.UpdateAsync(forUnreachable);
+
+        // W6-08: durable Unreachable without process-local observation store (simulates Controller restart).
+        GetNodeUseCase getNodeDurable = new(auth, nodes, devices, new FakeSnapshotStore(), projectWorkflow);
+        ApplicationResult<NodeDetailsView> durableUnreachable = await getNodeDurable.ExecuteAsync(
+            new GetNodeQuery { Actor = "a", NodeId = node.Id });
+        Assert.True(durableUnreachable.IsSuccess);
+        Assert.Equal(DeviceReachabilityProjector.Unreachable, durableUnreachable.Value!.Devices[0].Reachability);
+
         InMemoryDeviceReachabilityObservationStore observations = new();
         observations.Record(device.Id, DeviceReachabilityProjector.Unreachable);
         GetNodeUseCase getNodeObserved = new(auth, nodes, devices, new FakeSnapshotStore(), projectWorkflow, observations);
@@ -649,6 +661,8 @@ public sealed class SnapshotUseCaseTests
         Assert.True(discovery.IsSuccess);
         Assert.False(discovery.Value!.RouterOsMutated);
         Assert.False(routerOs.MutatedRouterOs);
+        Device? afterOk = await devices.GetAsync(new DeviceId(device.Id));
+        Assert.Equal(ObservedReachability.Reachable, afterOk!.LastObservedReachability);
 
         Guid idempotencyKey = Guid.Parse("11111111-1111-1111-1111-111111111111");
         CaptureSnapshotUseCase captureUseCase = new(auth, devices, profiles, capture, snapshots, audit);
@@ -703,6 +717,83 @@ public sealed class SnapshotUseCaseTests
             });
         Assert.True(identical.Value!.Identical);
         Assert.Empty(identical.Value.ChangedFields);
+    }
+
+    /// <summary>W6-08 Living Spec: connectivity failure persists Unreachable on Device (survives empty observation store).</summary>
+    [Fact]
+    public async Task DiscoverDevicePersistsUnreachableAcrossEmptyObservationStore()
+    {
+        FakeAuthorizationBoundary auth = new();
+        FakeSiteStore sites = new();
+        FakeNodeStore nodes = new();
+        FakeDeviceStore devices = new();
+        FakeConnectionProfileReadStore profiles = new();
+        FakeRouterOsReadPort routerOs = new();
+
+        SiteView site = (await CreateSite(auth, sites).ExecuteAsync(
+            new CreateSiteCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                Code = "UR01",
+                Name = "Unreachable",
+            })).Value!;
+        NodeView node = (await CreateNode(auth, sites, nodes).ExecuteAsync(
+            new CreateNodeCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                SiteId = site.Id,
+                Name = "core",
+                DeclaredKind = NodeKind.Router,
+                DeclaredUplinkMode = DeclaredUplinkMode.One,
+            })).Value!;
+        DeviceView device = (await RegisterDevice(auth, nodes, devices).ExecuteAsync(
+            new RegisterDeviceCommand
+            {
+                Actor = "a",
+                IdempotencyKey = Guid.NewGuid(),
+                NodeId = node.Id,
+                DisplayName = "core",
+                ManagementHost = "192.0.2.88",
+                Role = DeviceRole.Router,
+            })).Value!;
+        profiles.ByDevice[device.Id] = new ConnectionProfileReadModel
+        {
+            SecretReference = SecretReference.From(Guid.NewGuid()),
+            TrustMode = CertificateTrustMode.InternalCa,
+            CaProfileRef = "ca",
+        };
+
+        routerOs.ThrowOnProbe = new InvalidOperationException("RouterOS read port is not configured.");
+        ApplicationResult<DeviceDiscoveryView> notConfigured =
+            await new DiscoverDeviceUseCase(auth, devices, profiles, routerOs).ExecuteAsync(
+                new DiscoverDeviceCommand { Actor = "a", DeviceId = device.Id });
+        Assert.Equal("failed", notConfigured.Error!.Code);
+        Assert.Null((await devices.GetAsync(new DeviceId(device.Id)))!.LastObservedReachability);
+
+        routerOs.ThrowOnProbe = new TimeoutException("probe timed out");
+        ApplicationResult<DeviceDiscoveryView> connectivityFail =
+            await new DiscoverDeviceUseCase(auth, devices, profiles, routerOs).ExecuteAsync(
+                new DiscoverDeviceCommand { Actor = "a", DeviceId = device.Id });
+        Assert.Equal("dependency", connectivityFail.Error!.Code);
+        Device? persisted = await devices.GetAsync(new DeviceId(device.Id));
+        Assert.Equal(ObservedReachability.Unreachable, persisted!.LastObservedReachability);
+
+        ProjectNodeWorkflowUseCase projectWorkflow = new(
+            auth,
+            nodes,
+            devices,
+            new FakeDeviceHashStateStore(),
+            new FakeConnectionProfileReadStore(),
+            new FakeOnboardingStore(),
+            new FakeDeploymentStore(),
+            new FakePolicyApprovalStore());
+        ApplicationResult<NodeDetailsView> details = await new GetNodeUseCase(
+                auth, nodes, devices, new FakeSnapshotStore(), projectWorkflow)
+            .ExecuteAsync(new GetNodeQuery { Actor = "a", NodeId = node.Id });
+        Assert.True(details.IsSuccess);
+        Assert.Equal(DeviceReachabilityProjector.Unreachable, details.Value!.Devices[0].Reachability);
     }
 
     [Fact]

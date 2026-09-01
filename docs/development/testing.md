@@ -127,17 +127,18 @@ Issue [#358](https://github.com/sesquicadaver/MTDirector/issues/358) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~OnboardingViewModelTests|FullyQualifiedName~Ac3bWatchReplaysRollbackEventsAfterCommittedTerminal|FullyQualifiedName~Ac6gOnboardingRollbackWatchesProgress"`.
 
-## Living Specification — GetNode Reachability (W6-05)
+## Living Specification — GetNode Reachability (W6-05 / W6-08)
 
-Issue [#360](https://github.com/sesquicadaver/MTDirector/issues/360) AC → module → tests:
+Issue [#360](https://github.com/sesquicadaver/MTDirector/issues/360) / [#366](https://github.com/sesquicadaver/MTDirector/issues/366) AC → module → tests:
 
 | AC / вимога | Модуль | Тест |
 |-------------|--------|------|
 | LastSupportState → Reachable on GetNode | `DeviceReachabilityProjector` + `ViewMapper` / `GetNodeUseCase` | `DeviceReachabilityProjectorTests` + Inventory GetNode assertions |
 | Connectivity probe failure → Unreachable observation | `DiscoverDeviceUseCase` + in-memory store | projector + observation override assertion |
 | Probe refreshes inventory tree | `AddRouterWizardViewModel` | `Ac2e…` + `ProbeUsesSelectedDevice…` |
+| Unreachable durable without process-local store (W6-08) | `Device.LastObservedReachability` + EF | `DiscoverDevicePersistsUnreachableAcrossEmptyObservationStore` |
 
-Filter: `dotnet test --filter "FullyQualifiedName~DeviceReachabilityProjectorTests|FullyQualifiedName~Ac2eInventoryProbe|FullyQualifiedName~ProbeUsesSelectedDevice"`.
+Filter: `dotnet test --filter "FullyQualifiedName~DeviceReachabilityProjectorTests|FullyQualifiedName~DiscoverDevicePersistsUnreachable|FullyQualifiedName~Ac2eInventoryProbe|FullyQualifiedName~ProbeUsesSelectedDevice|FullyQualifiedName~GetNodeReturnsDevices"`.
 
 
 ## Living Specification — Policies typed Diff rows (W6-06)
@@ -1893,6 +1894,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | AC#3 Node topology/zones/onboarding/readiness | `NodeDetailViewModel` | `Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness` |
 | W1.6 Inventory/Node device fields | reachability/model/ROS/VRRP(when present)/last snapshot | `Ac3bInventoryAndNodeShowExplicitDeviceFields` + `InventoryNodeViewModelTests` + `NodeDetailViewModelTests` |
 | W6-05 GetNode Reachability from probe | LastSupportState → Reachable; Unreachable observation; Probe refresh | `DeviceReachabilityProjectorTests` + `Ac2eInventoryProbeRefreshesTreeAfterValidateDeviceConnection` |
+| W6-08 Durable Unreachable | LastObservedReachability on Device; GetNode without in-memory store | `DiscoverDevicePersistsUnreachableAcrossEmptyObservationStore` + projector durable tests |
 | W6-06 Policies typed Diff rows | KindText/DetailText DiffRows; DiffLines secondary | `Ac5gPoliciesRevisionDiffBindsTypedKindDetailRows` + `PolicyDesktopServiceTests` |
 | W6-07 Policies Diff baseline catalog | DiffBaselineCatalogItem → baseline UUID; no LoadRevision | `Ac5hPoliciesDiffBaselinePicksFromCatalogWithoutUuidRitual` + `PoliciesViewModelTests` |
 | W3.4 GetNodeWorkflow | Node `WorkflowDeviceLines` + canonical readiness | `Ac3cNodeLoadsGetNodeWorkflowInsteadOfAdHocReadinessMashup` + `NodeDetailViewModelTests` |

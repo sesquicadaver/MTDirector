@@ -1,8 +1,8 @@
 namespace Mfc.Application.Abstractions.Inventory;
 
 /// <summary>
-/// Process-local Reachability observations from ValidateDeviceConnection / DiscoverDevice (W6-05).
-/// Unreachable is not durable across Controller restart; successful probes also persist LastSupportState.
+/// Optional process-local Reachability cache from ValidateDeviceConnection / DiscoverDevice (W6-05).
+/// W6-08 persists Unreachable/Reachable on Device; this store remains a same-process overlay.
 /// </summary>
 public interface IDeviceReachabilityObservationStore
 {

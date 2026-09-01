@@ -49,6 +49,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | GetNode Reachability always Unknown | `ViewMapper` / DiscoverDevice LastSupportState | **W6-05 DONE** |
 | Policies Diff flattened to SummaryLine only | `PolicyPanelService.DiffAsync` / DiffLines | **W6-06 DONE** |
 | Diff baseline UUID paste ritual | `PoliciesViewModel.DiffBaselineRevisionIdText` | **W6-07 DONE** |
+| Unreachable lost on Controller restart | `IDeviceReachabilityObservationStore` (process-local) | **W6-08 DONE** |
 
 ### P3 / new Contracts (evidence)
 
@@ -85,6 +86,7 @@ W6-04 Onboarding Rollback Watch **DONE**
 W6-05 GetNode Reachability **DONE**
 W6-06 Policies typed Diff rows **DONE**
 W6-07 Diff baseline catalog **DONE**
+W6-08 Durable Unreachable **DONE**
 residual: CRS / physical lab runner (ops, not §3)
 ```
 
@@ -107,8 +109,9 @@ residual: CRS / physical lab runner (ops, not §3)
 | 11 | W6-05 | [#360](https://github.com/sesquicadaver/MTDirector/issues/360) | GetNode Reachability from probe | **DONE** |
 | 12 | W6-06 | [#362](https://github.com/sesquicadaver/MTDirector/issues/362) | Policies typed Diff rows | **DONE** |
 | 13 | W6-07 | [#364](https://github.com/sesquicadaver/MTDirector/issues/364) | Diff baseline from catalog picker | **DONE** |
+| 14 | W6-08 | [#366](https://github.com/sesquicadaver/MTDirector/issues/366) | Durable GetNode Unreachable | **DONE** |
 
-**§3.C NEXT = residual (CRS lab ops).** W6-07 is closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row. Empty §3 without that residual sentence would be a process defect — the residual is documented here.
+**§3.C NEXT = residual (CRS lab ops).** W6-08 is closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row. Empty §3 without that residual sentence would be a process defect — the residual is documented here.
 
 ## Anti-goals (unchanged)
 
