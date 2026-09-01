@@ -57,6 +57,7 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         Assert.Contains("M7.4 CLOSED", roadmap, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = residual (CRS lab ops)", roadmap, StringComparison.Ordinal);
         Assert.Contains("W5-03", roadmap, StringComparison.Ordinal);
+        Assert.Contains("W6-01", roadmap, StringComparison.Ordinal);
         Assert.Contains("W5-02", roadmap, StringComparison.Ordinal);
         Assert.Contains("W5-01", roadmap, StringComparison.Ordinal);
         Assert.Contains("CONT-02", roadmap, StringComparison.Ordinal);

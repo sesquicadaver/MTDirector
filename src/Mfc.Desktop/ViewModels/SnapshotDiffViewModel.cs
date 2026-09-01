@@ -264,6 +264,11 @@ public sealed partial class SnapshotDiffViewModel : ObservableObject, IDisposabl
             ReloadCapturesCommand.NotifyCanExecuteChanged();
             CompareCommand.NotifyCanExecuteChanged();
         }
+
+        if (CanCompare() && CompareCommand.CanExecute(null))
+        {
+            await CompareAsync().ConfigureAwait(true);
+        }
     }
 
     partial void OnBaseCaptureChanged(SnapshotCaptureListItem? value)

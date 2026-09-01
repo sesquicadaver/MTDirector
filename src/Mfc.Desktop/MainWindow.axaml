@@ -169,7 +169,7 @@
               <TextBlock Text="{Binding Inventory.SelectedNode.ModelText}" TextWrapping="Wrap" />
               <TextBlock Classes="mfc-label" Text="RouterOS version" />
               <TextBlock Text="{Binding Inventory.SelectedNode.RouterOsVersionText}" TextWrapping="Wrap" />
-              <StackPanel Spacing="6" IsVisible="{Binding Inventory.SelectedNode.HasVrrpRoles}">
+              <StackPanel Spacing="6" IsVisible="{Binding Inventory.SelectedNode.ShowVrrpSurface}">
                 <TextBlock Classes="mfc-label" Text="VRRP roles" />
                 <TextBlock Text="{Binding Inventory.SelectedNode.VrrpRolesText}" TextWrapping="Wrap" />
               </StackPanel>
@@ -494,8 +494,7 @@
                     <TextBlock Text="{Binding SummaryLine}" FontWeight="SemiBold" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace" />
                     <TextBlock Text="{Binding ReachabilityText, StringFormat=Reachability: {0}}" TextWrapping="Wrap" />
                     <TextBlock Text="{Binding RoleText, StringFormat=VRRP roles: {0}}"
-                               TextWrapping="Wrap"
-                               IsVisible="{Binding HasRole}" />
+                               TextWrapping="Wrap" />
                     <TextBlock Text="{Binding ManagementHostText, StringFormat=Management host: {0}}"
                                TextWrapping="Wrap"
                                FontFamily="Consolas,Menlo,monospace" />
@@ -534,7 +533,7 @@
                     <TextBlock Text="{Binding RouterOsVersionText, StringFormat=RouterOS version: {0}}" TextWrapping="Wrap" />
                     <TextBlock Text="{Binding VrrpRolesText, StringFormat=VRRP roles: {0}}"
                                TextWrapping="Wrap"
-                               IsVisible="{Binding HasVrrpRoles}" />
+                               IsVisible="{Binding ShowVrrpSurface}" />
                     <TextBlock Text="{Binding LastSnapshotText, StringFormat=Last snapshot: {0}}" TextWrapping="Wrap" />
                   </StackPanel>
                 </DataTemplate>
@@ -1059,6 +1058,10 @@
                     </DataTemplate>
                   </ListBox.ItemTemplate>
                 </ListBox>
+                <TextBlock Classes="mfc-muted"
+                           Text="{Binding Policies.CapturedFilterHintText}"
+                           TextWrapping="Wrap"
+                           IsVisible="{Binding Policies.HasEmptyCatalog}" />
                 <TextBlock Classes="mfc-label" Text="Revision" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"

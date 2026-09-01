@@ -41,8 +41,11 @@ public sealed class SnapshotDiffEntryItem
 
     public bool HasRecordSides => HasBeforeRecord || HasAfterRecord;
 
+    public string DisplayIdentity =>
+        SnapshotPresentationIdentity.FormatDiffIdentity(RecordKey, OrdinalText, FieldLines);
+
     public string HeaderLine =>
-        $"{SectionId} · {DomainText} · {ChangesText} · {RecordKey} · {OrdinalText}";
+        $"{SectionId} · {DomainText} · {ChangesText} · {DisplayIdentity} · {OrdinalText}";
 }
 
 /// <summary>Section group for sidebar navigation.</summary>

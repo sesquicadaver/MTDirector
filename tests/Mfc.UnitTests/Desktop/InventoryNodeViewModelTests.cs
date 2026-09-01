@@ -48,6 +48,24 @@ public sealed class InventoryNodeViewModelTests
 
         Assert.True(device.IsDevice);
         Assert.False(device.HasVrrpRoles);
+        Assert.False(device.ShowVrrpSurface);
+    }
+
+    [Fact]
+    public void VrrpPairMemberShowsSurfaceEvenWithoutRoleLabels()
+    {
+        InventoryNodeViewModel device = new(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Device,
+            Id = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff"),
+            DisplayName = "vrrp-a",
+            IsVrrpMember = true,
+            VrrpRolesText = "—",
+        });
+
+        Assert.True(device.IsVrrpMember);
+        Assert.False(device.HasVrrpRoles);
+        Assert.True(device.ShowVrrpSurface);
     }
 
     [Fact]
@@ -64,5 +82,6 @@ public sealed class InventoryNodeViewModelTests
 
         Assert.False(node.IsDevice);
         Assert.False(node.HasVrrpRoles);
+        Assert.False(node.ShowVrrpSurface);
     }
 }

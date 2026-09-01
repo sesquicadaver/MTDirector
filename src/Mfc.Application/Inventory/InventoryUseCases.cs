@@ -488,9 +488,14 @@ public sealed class GetNodeUseCase
                 lastSnapshot = completedAt;
             }
 
-            IReadOnlyList<string> vrrpLabels = await LoadVrrpRoleLabelsAsync(device, cancellationToken)
+            DeviceLastCaptureFacts facts = await LoadLastCaptureFactsAsync(device, cancellationToken)
                 .ConfigureAwait(false);
-            DeviceView view = ViewMapper.ToView(device, lastSnapshot, vrrpLabels);
+            DeviceView view = ViewMapper.ToView(
+                device,
+                lastSnapshot,
+                facts.VrrpRoleLabels,
+                facts.RouterOsVersion,
+                facts.Model);
             if (byDevice.TryGetValue(device.Id.Value, out DeviceWorkflowProjectionView? projection))
             {
                 view = new DeviceView
@@ -528,19 +533,19 @@ public sealed class GetNodeUseCase
         });
     }
 
-    private async Task<IReadOnlyList<string>> LoadVrrpRoleLabelsAsync(
+    private async Task<DeviceLastCaptureFacts> LoadLastCaptureFactsAsync(
         Device device,
         CancellationToken cancellationToken)
     {
         if (device.LastCompletedCaptureId is not Guid captureId)
         {
-            return [];
+            return DeviceLastCaptureFacts.Empty;
         }
 
         IReadOnlyList<CanonicalSection> sections = await _snapshots
             .LoadCanonicalSectionsAsync(new SnapshotId(captureId), cancellationToken)
             .ConfigureAwait(false);
-        return DeviceVrrpRoleLabelProjector.FromCanonicalSections(sections);
+        return DeviceLastCaptureFacts.FromCanonicalSections(sections);
     }
 
     private async Task<Dictionary<Guid, DateTimeOffset>> ResolveLastSnapshotTimesAsync(

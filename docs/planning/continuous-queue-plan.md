@@ -74,6 +74,7 @@ CONT-02 Neighbor → member b **DONE** Live CHR when an isolated runner exists
 W5-01 ListPolicies **DONE**
 W5-02 ManagementPath / FastTrack **DONE**
 W5-03 Typed deploy policy diff **DONE**
+W6-01 Operator-readable Diff/Snapshot **DONE**
 residual: CRS / physical lab runner (ops, not §3)
 ```
 
@@ -89,8 +90,9 @@ residual: CRS / physical lab runner (ops, not §3)
 | 4 | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | `ListPolicies` catalog browse | **DONE** |
 | 5 | W5-02 | [#343](https://github.com/sesquicadaver/MTDirector/issues/343) | ManagementPath / FastTrack Desktop | **DONE** |
 | 6 | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | Typed deployment semantic policy diff | **DONE** |
+| 7 | W6-01 | [#352](https://github.com/sesquicadaver/MTDirector/issues/352) | Operator-readable snapshot/diff + VRRP surface | **DONE** |
 
-**§3.C NEXT = residual (CRS lab ops).** W5-03 is closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row. Empty §3 without that residual sentence would be a process defect — the residual is documented here.
+**§3.C NEXT = residual (CRS lab ops).** W6-01 is closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row. Empty §3 without that residual sentence would be a process defect — the residual is documented here.
 
 ## Anti-goals (unchanged)
 
