@@ -271,7 +271,7 @@ public sealed class CreateDeploymentPlanUseCase
             }
 
             ApplicationError? pairError = await VrrpPairPlanGate
-                .BlockIfFailedAsync(_vrrpPair, node, cancellationToken)
+                .BlockIfFailedAsync(_vrrpPair, node, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
             if (pairError is not null)
             {
