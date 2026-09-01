@@ -7,7 +7,10 @@ using DomainState = Mfc.Domain.Onboarding.OnboardingOperationState;
 
 namespace Mfc.Controller.Grpc;
 
-/// <summary>In-memory fan-out for WatchOnboarding (M5-09).</summary>
+/// <summary>
+/// In-memory fan-out for WatchOnboarding (M5-09).
+/// Replay includes events after an earlier terminal (Committed → rollback) so a second Watch sees rollback progress (W6-04 / CONT-01 parity).
+/// </summary>
 public sealed class OnboardingProgressHub
 {
     private readonly ConcurrentDictionary<Guid, OperationStream> _operations = new();
@@ -54,10 +57,6 @@ public sealed class OnboardingProgressHub
         await foreach (OnboardingProgress progress in stream.ReadAsync(cancellationToken).ConfigureAwait(false))
         {
             yield return progress;
-            if (OnboardingProtoMapper.IsTerminal(progress.State))
-            {
-                yield break;
-            }
         }
     }
 
@@ -128,10 +127,6 @@ public sealed class OnboardingProgressHub
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return item;
-                if (OnboardingProtoMapper.IsTerminal(item.State))
-                {
-                    yield break;
-                }
             }
 
             if (alreadyTerminal)

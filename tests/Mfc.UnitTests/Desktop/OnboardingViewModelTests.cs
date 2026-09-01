@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Mfc.UnitTests.Desktop;
 
-/// <summary>W3.3 Watch + W4.2 VRRP pair Validate (not silent first Device).</summary>
+/// <summary>W3.3 Watch + W4.2 VRRP pair Validate + W6-04 Rollback Watch.</summary>
 public sealed class OnboardingViewModelTests
 {
     [Fact]
@@ -91,6 +91,88 @@ public sealed class OnboardingViewModelTests
         Assert.Equal(1, client.WatchCalls);
         Assert.Equal(["queued", "committed"], vm.ProgressLines.ToArray());
         Assert.Equal("Operation Committed.", vm.StatusText);
+    }
+
+    [Fact]
+    public async Task RollbackWatchesProgressAndPrefersStreamOverRollbackTimeline()
+    {
+        Guid operationId = Guid.Parse("33333333-4444-5555-6666-777777777777");
+        FakeConnection connection = new();
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        FakeOnboardingClient client = new()
+        {
+            RollbackResponse = new OnboardingOperationSummary
+            {
+                OperationId = DesktopProtoUuid.FromGuid(operationId),
+                State = OnboardingOperationState.RollingBack,
+                Timeline = { "from-rollback-only" },
+            },
+            WatchEvents =
+            [
+                new OnboardingProgress
+                {
+                    OperationId = DesktopProtoUuid.FromGuid(operationId),
+                    State = OnboardingOperationState.RollingBack,
+                    TimelineEntry = "rolling back anchors",
+                },
+                new OnboardingProgress
+                {
+                    OperationId = DesktopProtoUuid.FromGuid(operationId),
+                    State = OnboardingOperationState.RolledBack,
+                    TimelineEntry = "rolled back",
+                },
+            ],
+        };
+
+        using OnboardingViewModel vm = new(client, connection, inventory)
+        {
+            OperationId = operationId,
+        };
+        vm.ProgressLines.Add("prior-start-line");
+
+        await vm.RollbackCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Equal(1, client.RollbackCalls);
+        Assert.Equal(1, client.WatchCalls);
+        Assert.Equal(operationId, client.WatchedOperationId);
+        Assert.Equal("Rollback RolledBack.", vm.StatusText);
+        Assert.Equal(
+            ["RollingBack: rolling back anchors", "RolledBack: rolled back"],
+            vm.ProgressLines.ToArray());
+        Assert.DoesNotContain("from-rollback-only", vm.ProgressLines);
+        Assert.DoesNotContain("prior-start-line", vm.ProgressLines);
+    }
+
+    [Fact]
+    public async Task RollbackFallsBackToTimelineWhenWatchEmpty()
+    {
+        Guid operationId = Guid.Parse("33333333-4444-5555-6666-777777777777");
+        FakeConnection connection = new();
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        FakeOnboardingClient client = new()
+        {
+            RollbackResponse = new OnboardingOperationSummary
+            {
+                OperationId = DesktopProtoUuid.FromGuid(operationId),
+                State = OnboardingOperationState.RolledBack,
+                Timeline = { "rollback-snapshot" },
+            },
+        };
+
+        using OnboardingViewModel vm = new(client, connection, inventory)
+        {
+            OperationId = operationId,
+        };
+        vm.ProgressLines.Add("prior-start-line");
+
+        await vm.RollbackCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Equal(1, client.RollbackCalls);
+        Assert.Equal(1, client.WatchCalls);
+        Assert.Equal("Rollback RolledBack.", vm.StatusText);
+        Assert.Equal(["prior-start-line", "rollback-snapshot"], vm.ProgressLines.ToArray());
     }
 
     [Fact]
@@ -190,11 +272,15 @@ public sealed class OnboardingViewModelTests
     {
         public OnboardingOperationSummary StartResponse { get; init; } = new();
 
+        public OnboardingOperationSummary RollbackResponse { get; init; } = new();
+
         public IReadOnlyList<OnboardingProgress> WatchEvents { get; init; } = [];
 
         public int StartCalls { get; private set; }
 
         public int WatchCalls { get; private set; }
+
+        public int RollbackCalls { get; private set; }
 
         public Guid WatchedOperationId { get; private set; }
 
@@ -247,7 +333,11 @@ public sealed class OnboardingViewModelTests
         public Task<OnboardingOperationSummary> RollbackAsync(
             Guid operationId,
             CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            RollbackCalls++;
+            return Task.FromResult(RollbackResponse);
+        }
 
         public Task<OnboardingRecoveryStatus> GetRecoveryStatusAsync(
             Guid nodeId,

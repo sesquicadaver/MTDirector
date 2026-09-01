@@ -190,13 +190,25 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
                 throw new InvalidOperationException("Start an operation before rollback.");
             }
 
-            OnboardingOperationSummary rolled = await _client.RollbackAsync(operationId, CancellationToken.None)
+            RollbackWatchOutcome outcome = await Task.Run(
+                    async () => await RollbackAndWatchAsync(operationId, CancellationToken.None)
+                        .ConfigureAwait(false),
+                    CancellationToken.None)
                 .ConfigureAwait(true);
-            StatusText = $"Rollback {rolled.State}.";
-            foreach (string line in rolled.Timeline)
+            IReadOnlyList<string> lines = outcome.WatchLines.Count > 0
+                ? outcome.WatchLines
+                : outcome.Rolled.Timeline;
+            if (outcome.WatchLines.Count > 0)
+            {
+                ProgressLines.Clear();
+            }
+
+            foreach (string line in lines)
             {
                 ProgressLines.Add(line);
             }
+
+            StatusText = $"Rollback {outcome.LastState}.";
         }).ConfigureAwait(true);
     }
 
@@ -247,6 +259,25 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
         }
 
         return new StartWatchOutcome(started, watchLines, lastState);
+    }
+
+    /// <summary>Rollback then Watch (off UI thread). Hub may replay Start+Rollback history after W6-04 hub fix.</summary>
+    private async Task<RollbackWatchOutcome> RollbackAndWatchAsync(
+        Guid operationId,
+        CancellationToken cancellationToken)
+    {
+        OnboardingOperationSummary rolled = await _client.RollbackAsync(operationId, cancellationToken)
+            .ConfigureAwait(false);
+        List<string> watchLines = [];
+        OnboardingOperationState lastState = rolled.State;
+        await foreach (OnboardingProgress progress in _client.WatchAsync(operationId, cancellationToken)
+                           .ConfigureAwait(false))
+        {
+            lastState = progress.State;
+            watchLines.Add(FormatProgress(progress));
+        }
+
+        return new RollbackWatchOutcome(rolled, watchLines, lastState);
     }
 
     private static string FormatProgress(OnboardingProgress progress)
@@ -367,6 +398,11 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
 
     private sealed record StartWatchOutcome(
         OnboardingOperationSummary Started,
+        IReadOnlyList<string> WatchLines,
+        OnboardingOperationState LastState);
+
+    private sealed record RollbackWatchOutcome(
+        OnboardingOperationSummary Rolled,
         IReadOnlyList<string> WatchLines,
         OnboardingOperationState LastState);
 }
