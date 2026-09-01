@@ -151,6 +151,18 @@ Issue [#362](https://github.com/sesquicadaver/MTDirector/issues/362) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Ac5gPoliciesRevisionDiff|FullyQualifiedName~PolicyDesktopServiceTests"`.
 
+
+## Living Specification — Policies Diff baseline catalog (W6-07)
+
+Issue [#364](https://github.com/sesquicadaver/MTDirector/issues/364) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Catalog picker fills baseline UUID without LoadRevision | `PoliciesViewModel.DiffBaselineCatalogItem` | `DiffBaselineCatalogItemFillsBaselineUuidWithoutLoadingRevision` |
+| Axaml binds DiffBaselineCatalogItem | MainWindow Policies Diff toolbar | `Ac5hPoliciesDiffBaselinePicksFromCatalogWithoutUuidRitual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DiffBaselineCatalogItem|FullyQualifiedName~Ac5hPoliciesDiffBaseline"`.
+
 ## Living Specification — desktop snapshot viewer (M1-28)
 
 Initial Issue Set M1-28 AC → module → tests:
@@ -1882,6 +1894,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | W1.6 Inventory/Node device fields | reachability/model/ROS/VRRP(when present)/last snapshot | `Ac3bInventoryAndNodeShowExplicitDeviceFields` + `InventoryNodeViewModelTests` + `NodeDetailViewModelTests` |
 | W6-05 GetNode Reachability from probe | LastSupportState → Reachable; Unreachable observation; Probe refresh | `DeviceReachabilityProjectorTests` + `Ac2eInventoryProbeRefreshesTreeAfterValidateDeviceConnection` |
 | W6-06 Policies typed Diff rows | KindText/DetailText DiffRows; DiffLines secondary | `Ac5gPoliciesRevisionDiffBindsTypedKindDetailRows` + `PolicyDesktopServiceTests` |
+| W6-07 Policies Diff baseline catalog | DiffBaselineCatalogItem → baseline UUID; no LoadRevision | `Ac5hPoliciesDiffBaselinePicksFromCatalogWithoutUuidRitual` + `PoliciesViewModelTests` |
 | W3.4 GetNodeWorkflow | Node `WorkflowDeviceLines` + canonical readiness | `Ac3cNodeLoadsGetNodeWorkflowInsteadOfAdHocReadinessMashup` + `NodeDetailViewModelTests` |
 | W4.1 VRRP Node members table | Node a/b members: role / mgmt host / last capture | `Ac3dVrrpNodeShowsMemberTableRoleHostAndLastCapture` + `NodeDetailViewModelTests` + `InventoryTreeServiceTests` + `InventoryNodeViewModelTests` |
 | AC#4 Snapshot configuration/observations | `SnapshotViewerViewModel` | `Ac4SnapshotViewShowsConfigurationAndObservations` |

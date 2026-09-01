@@ -163,12 +163,13 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 | `W6-04` | #358 | https://github.com/sesquicadaver/MTDirector/issues/358 |
 | `W6-05` | #360 | https://github.com/sesquicadaver/MTDirector/issues/360 |
 | `W6-06` | #362 | https://github.com/sesquicadaver/MTDirector/issues/362 |
+| `W6-07` | #364 | https://github.com/sesquicadaver/MTDirector/issues/364 |
 
 **Product issues (code):** 141 DONE (§2.2) + Desktop alignment P0–P2 DONE.  
-**Linear queue (§3.C):** **CLOSED** — **§3.C NEXT = residual (CRS lab ops)**. PLAN-02 (#339) **DONE**. CONT-01 (#340) **DONE**. CONT-02 (#341) **DONE**. W5-01 (#342) **DONE**. W5-02 (#343) **DONE**. W5-03 (#344) **DONE**. W6-01 (#352) **DONE**. W6-02 (#354) **DONE**. W6-03 (#356) **DONE**. W6-04 (#358) **DONE**. W6-05 (#360) **DONE**. W6-06 (#362) **DONE**.  
+**Linear queue (§3.C):** **CLOSED** — **§3.C NEXT = residual (CRS lab ops)**. PLAN-02 (#339) **DONE**. CONT-01 (#340) **DONE**. CONT-02 (#341) **DONE**. W5-01 (#342) **DONE**. W5-02 (#343) **DONE**. W5-03 (#344) **DONE**. W6-01 (#352) **DONE**. W6-02 (#354) **DONE**. W6-03 (#356) **DONE**. W6-04 (#358) **DONE**. W6-05 (#360) **DONE**. W6-06 (#362) **DONE**. W6-07 (#364) **DONE**.  
 **TRACKER-01** (#289): **DONE**. **PLAN-01** (#290): **DONE**. **P2-07…P2-11**: **DONE**. **PLAN-NBR-01** (#314): **DONE**.  
 Lab/CHR/`WriteEnabled` — parallel ops, not §3 predecessors. Plan: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 
-Start here: [`ROADMAP.md`](ROADMAP.md) §3.C — **§3.C NEXT = residual (CRS lab ops)**; W6-06 (#362) **DONE**; pilot [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md); Desktop inventory [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
+Start here: [`ROADMAP.md`](ROADMAP.md) §3.C — **§3.C NEXT = residual (CRS lab ops)**; W6-07 (#364) **DONE**; pilot [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md); Desktop inventory [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).

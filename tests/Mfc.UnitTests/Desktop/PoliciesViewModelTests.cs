@@ -94,6 +94,31 @@ public sealed class PoliciesViewModelTests
     }
 
     [Fact]
+    public async Task DiffBaselineCatalogItemFillsBaselineUuidWithoutLoadingRevision()
+    {
+        Guid policyId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeee0002");
+        Guid revisionId = Guid.Parse("88888888-aaaa-bbbb-cccc-dddddddddddd");
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        PolicyCatalogListItem row = CatalogRow(policyId, revisionId, "diff-baseline");
+        StubPolicyPanel panel = new()
+        {
+            DraftState = EmptyDraft(revisionId, policyId),
+            CatalogItems = [row],
+        };
+        using PoliciesViewModel vm = new(panel, connection, inventory);
+
+        await vm.RefreshCatalogCommand.ExecuteAsync(null);
+        int loadsBefore = panel.LoadRevisionCalls;
+
+        vm.DiffBaselineCatalogItem = Assert.Single(vm.Catalog);
+
+        Assert.Equal(revisionId.ToString("D"), vm.DiffBaselineRevisionIdText);
+        Assert.Equal(loadsBefore, panel.LoadRevisionCalls);
+        Assert.Same(vm.Catalog[0], vm.DiffBaselineCatalogItem);
+    }
+
+    [Fact]
     public async Task RefreshSafetyAnalysisBindsControllerHashesAndFindings()
     {
         Guid deviceId = Guid.Parse("11111111-2222-3333-4444-555555555555");
