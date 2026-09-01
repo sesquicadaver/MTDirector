@@ -335,7 +335,14 @@ residual: CRS / physical lab runner (ops, not §3)
 - **Перевірка:** `Ac5gPoliciesRevisionDiffBindsTypedKindDetailRows`; `PolicyDesktopServiceTests`
 - **Файли:** `PolicyPanelService`, `PoliciesViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-06 typed Policies Diff **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.
+### W6-07 Policies: Diff baseline from catalog picker — **DONE**
+- **Дані:** existing `ListPolicies` catalog `LatestRevisionId` (W5-01)
+- **Зроблено:** `DiffBaselineCatalogItem` fills `DiffBaselineRevisionIdText` without LoadRevision (UUID paste optional). ComboBox bound to Catalog.
+- **Не чіпали:** Save and Deploy; WriteEnabled; CRS; local SemanticDiffEngine
+- **Перевірка:** `Ac5hPoliciesDiffBaselinePicksFromCatalogWithoutUuidRitual`; `DiffBaselineCatalogItemFillsBaselineUuidWithoutLoadingRevision`
+- **Файли:** `PoliciesViewModel`, `MainWindow.axaml`
+
+**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-07 Diff baseline catalog **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.
 
 ### W6-05 Inventory: GetNode Reachability from probe — **DONE**
 - **Дані:** `Device.LastSupportState` already persisted by DiscoverDevice; proto `reachability` existed but ViewMapper always forced `Unknown`

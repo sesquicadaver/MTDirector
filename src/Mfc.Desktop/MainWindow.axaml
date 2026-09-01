@@ -1375,6 +1375,17 @@
                   <Button Classes="mfc-action" Content="Compose findings" Command="{Binding Policies.ComposeCommand}" MinWidth="130" />
                 </WrapPanel>
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
+                  <ComboBox Classes="mfc-field"
+                            ItemsSource="{Binding Policies.Catalog}"
+                            SelectedItem="{Binding Policies.DiffBaselineCatalogItem}"
+                            MinWidth="240"
+                            Width="320">
+                    <ComboBox.ItemTemplate>
+                      <DataTemplate DataType="svc:PolicyCatalogListItem">
+                        <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" />
+                      </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                  </ComboBox>
                   <TextBox Classes="mfc-field"
                            PlaceholderText="baseline revision UUID"
                            Text="{Binding Policies.DiffBaselineRevisionIdText}"

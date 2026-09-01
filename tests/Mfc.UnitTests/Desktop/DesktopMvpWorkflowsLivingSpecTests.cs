@@ -605,6 +605,26 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.DoesNotContain("WriteEnabled", service, StringComparison.Ordinal);
     }
 
+    /// <summary>W6-07: Diff baseline revision can be chosen from catalog without UUID paste / LoadRevision.</summary>
+    [Fact]
+    public void Ac5hPoliciesDiffBaselinePicksFromCatalogWithoutUuidRitual()
+    {
+        Assert.NotNull(typeof(PoliciesViewModel).GetProperty(nameof(PoliciesViewModel.DiffBaselineCatalogItem)));
+        Assert.NotNull(typeof(PoliciesViewModel).GetProperty(nameof(PoliciesViewModel.DiffBaselineRevisionIdText)));
+        Assert.NotNull(typeof(PoliciesViewModel).GetProperty(nameof(PoliciesViewModel.Catalog)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Policies.DiffBaselineCatalogItem", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.DiffBaselineRevisionIdText", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.Catalog", axaml, StringComparison.Ordinal);
+
+        string vm = ReadSource("src/Mfc.Desktop/ViewModels/PoliciesViewModel.cs");
+        Assert.Contains("OnDiffBaselineCatalogItemChanged", vm, StringComparison.Ordinal);
+        Assert.Contains("DiffBaselineRevisionIdText = value.LatestRevisionId", vm, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", vm, StringComparison.Ordinal);
+        Assert.DoesNotContain("SemanticDiffEngine", vm, StringComparison.Ordinal);
+    }
+
     /// <summary>W3.6: Policies mutate rules, ack recorded warnings, and compile semantic artifacts.</summary>
     [Fact]
     public void Ac5cPoliciesMutateRulesAckWarningsAndCompile()

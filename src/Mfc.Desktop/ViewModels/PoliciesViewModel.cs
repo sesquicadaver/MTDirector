@@ -253,6 +253,10 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private PolicyCatalogListItem? _selectedCatalogItem;
 
+    /// <summary>Catalog row used only as DiffPolicyRevisions baseline (does not LoadRevision).</summary>
+    [ObservableProperty]
+    private PolicyCatalogListItem? _diffBaselineCatalogItem;
+
     [ObservableProperty]
     private PolicyFindingListItem? _selectedFinding;
 
@@ -1040,6 +1044,7 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
     private void ApplyCatalog(IReadOnlyList<PolicyCatalogListItem> items)
     {
         Guid? selectedPolicyId = SelectedCatalogItem?.PolicyId;
+        Guid? baselineRevisionId = DiffBaselineCatalogItem?.LatestRevisionId;
         Guid loadedRevision = Guid.TryParse(RevisionIdText, out Guid revisionId) ? revisionId : Guid.Empty;
         Catalog.Clear();
         foreach (PolicyCatalogListItem item in items)
@@ -1065,7 +1070,21 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
             _suppressCatalogSelection = false;
         }
 
+        DiffBaselineCatalogItem = baselineRevisionId is Guid baselineId
+            ? Catalog.FirstOrDefault(c => c.LatestRevisionId == baselineId)
+            : null;
+
         OnPropertyChanged(nameof(HasEmptyCatalog));
+    }
+
+    partial void OnDiffBaselineCatalogItemChanged(PolicyCatalogListItem? value)
+    {
+        if (value is null)
+        {
+            return;
+        }
+
+        DiffBaselineRevisionIdText = value.LatestRevisionId.ToString("D");
     }
 
     private async Task RunBusyAsync(Func<CancellationToken, Task> action)
