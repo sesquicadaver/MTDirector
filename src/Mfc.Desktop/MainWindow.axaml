@@ -1393,7 +1393,24 @@
                   <Button Classes="mfc-action" Content="Compile artifacts" Command="{Binding Policies.CompileCommand}" MinWidth="140" />
                 </WrapPanel>
                 <TextBlock Classes="mfc-label" Text="Revision diff" />
-                <ListBox ItemsSource="{Binding Policies.DiffLines}" MaxHeight="120">
+                <ListBox ItemsSource="{Binding Policies.DiffRows}" MaxHeight="140">
+                  <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="svc:PolicyDiffRowListItem">
+                      <StackPanel Orientation="Vertical" Margin="2" Spacing="2">
+                        <TextBlock Text="{Binding KindText}" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding DetailText}" TextWrapping="Wrap"
+                                   FontFamily="Consolas,Menlo,monospace" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock Classes="mfc-label" Text="Revision diff (summary lines)" />
+                <ListBox ItemsSource="{Binding Policies.DiffLines}" MaxHeight="80">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />

@@ -45,7 +45,7 @@
 ### W1.4 Deploy / Onboarding: приховані колекції — **DONE**
 - **Дані:** Deploy `ArtifactLines` / `OrderLines` / `ProbeAndWatchdogLines` / `SemanticDiffLines`; Onboarding `Placements`
 - **Зроблено:** Operations axaml біндить усі чотири Deploy-списки; Onboarding — Anchor placements; підпис SemanticDiffLines = «Artifact hash delta»
-- **Не чіпали:** багатший Contracts policy diff (P3)
+- **Не чіпали:** багатший Contracts policy diff → **W6-06**
 - **Перевірка:** Living Spec `Ac6bOperationsShowsPlanCollectionsNotOnlyHashDelta`
 - **Файли:** `MainWindow.axaml`, `DesktopMvpWorkflowsLivingSpecTests`
 
@@ -328,7 +328,14 @@ residual: CRS / physical lab runner (ops, not §3)
 - **Перевірка:** Living Spec `Ac4eVrrpPairCaptureIsPerMemberAndCompareShowsCrossDeviceForbidWhy`; `SnapshotViewerViewModelTests`; `SnapshotDiffViewModelTests`; `InventoryOpsSelectionTests`
 - **Файли:** `InventoryOpsSelection`, `SnapshotViewerViewModel`, `SnapshotDiffViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-05 GetNode Reachability **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.
+### W6-06 Policies: typed revision Diff rows — **DONE**
+- **Дані:** existing `DiffPolicyRevisions` / `PolicyRevisionDiff` (semantic_classes, packet_space, risk_drivers, rule_changes, finding_summaries)
+- **Зроблено:** `PolicyDiffRowListItem` (KindText / DetailText); DiffRows primary bind; DiffLines SummaryLine secondary (W1.3 compat). No local SemanticDiffEngine.
+- **Не чіпали:** Save and Deploy; WriteEnabled; CRS lab; new RPC
+- **Перевірка:** `Ac5gPoliciesRevisionDiffBindsTypedKindDetailRows`; `PolicyDesktopServiceTests`
+- **Файли:** `PolicyPanelService`, `PoliciesViewModel`, `MainWindow.axaml`
+
+**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-06 typed Policies Diff **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.
 
 ### W6-05 Inventory: GetNode Reachability from probe — **DONE**
 - **Дані:** `Device.LastSupportState` already persisted by DiscoverDevice; proto `reachability` existed but ViewMapper always forced `Unknown`

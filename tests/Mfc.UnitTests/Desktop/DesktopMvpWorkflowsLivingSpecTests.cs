@@ -582,6 +582,29 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("Policies.LoadCommand", axaml, StringComparison.Ordinal);
     }
 
+    /// <summary>W6-06: Policies Revision diff binds typed kind/detail rows; DiffLines stay secondary.</summary>
+    [Fact]
+    public void Ac5gPoliciesRevisionDiffBindsTypedKindDetailRows()
+    {
+        Assert.NotNull(typeof(PoliciesViewModel).GetProperty(nameof(PoliciesViewModel.DiffRows)));
+        Assert.NotNull(typeof(PoliciesViewModel).GetProperty(nameof(PoliciesViewModel.DiffLines)));
+        Assert.NotNull(typeof(PolicyDiffRowListItem).GetProperty(nameof(PolicyDiffRowListItem.KindText)));
+        Assert.NotNull(typeof(PolicyDiffRowListItem).GetProperty(nameof(PolicyDiffRowListItem.DetailText)));
+        Assert.NotNull(typeof(PolicyDiffRowListItem).GetProperty(nameof(PolicyDiffRowListItem.SummaryLine)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Policies.DiffRows", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.DiffLines", axaml, StringComparison.Ordinal);
+        Assert.Contains("KindText", axaml, StringComparison.Ordinal);
+        Assert.Contains("DetailText", axaml, StringComparison.Ordinal);
+
+        string service = ReadSource("src/Mfc.Desktop/Services/PolicyPanelService.cs");
+        Assert.Contains("PolicyDiffRowListItem", service, StringComparison.Ordinal);
+        Assert.Contains("KindText = \"semantic\"", service, StringComparison.Ordinal);
+        Assert.DoesNotContain("SemanticDiffEngine", service, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", service, StringComparison.Ordinal);
+    }
+
     /// <summary>W3.6: Policies mutate rules, ack recorded warnings, and compile semantic artifacts.</summary>
     [Fact]
     public void Ac5cPoliciesMutateRulesAckWarningsAndCompile()

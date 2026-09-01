@@ -47,6 +47,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Neighbor apply ignores VRRP member b | `AddRouterWizardViewModel.ApplyNeighborCandidate` | **CONT-02 DONE** |
 | Onboarding Rollback without Watch / hub stops at Committed | `OnboardingViewModel` + `OnboardingProgressHub` | **W6-04 DONE** |
 | GetNode Reachability always Unknown | `ViewMapper` / DiscoverDevice LastSupportState | **W6-05 DONE** |
+| Policies Diff flattened to SummaryLine only | `PolicyPanelService.DiffAsync` / DiffLines | **W6-06 DONE** |
 
 ### P3 / new Contracts (evidence)
 
@@ -81,6 +82,7 @@ W6-02 VRRP pair consistency **DONE**
 W6-03 StartCapture node_id **DONE**
 W6-04 Onboarding Rollback Watch **DONE**
 W6-05 GetNode Reachability **DONE**
+W6-06 Policies typed Diff rows **DONE**
 residual: CRS / physical lab runner (ops, not §3)
 ```
 
@@ -101,8 +103,9 @@ residual: CRS / physical lab runner (ops, not §3)
 | 9 | W6-03 | [#356](https://github.com/sesquicadaver/MTDirector/issues/356) | StartCapture node_id fan-out | **DONE** |
 | 10 | W6-04 | [#358](https://github.com/sesquicadaver/MTDirector/issues/358) | Onboarding Rollback + Watch (hub + Desktop) | **DONE** |
 | 11 | W6-05 | [#360](https://github.com/sesquicadaver/MTDirector/issues/360) | GetNode Reachability from probe | **DONE** |
+| 12 | W6-06 | [#362](https://github.com/sesquicadaver/MTDirector/issues/362) | Policies typed Diff rows | **DONE** |
 
-**§3.C NEXT = residual (CRS lab ops).** W6-05 is closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row. Empty §3 without that residual sentence would be a process defect — the residual is documented here.
+**§3.C NEXT = residual (CRS lab ops).** W6-06 is closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row. Empty §3 without that residual sentence would be a process defect — the residual is documented here.
 
 ## Anti-goals (unchanged)
 
