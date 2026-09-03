@@ -75,6 +75,12 @@ public sealed class AuthenticationHostOptions
     /// Development-only authentication shortcut. Requires Development + loopback bind + this flag.
     /// </summary>
     public bool AllowDevelopmentAuthentication { get; init; }
+
+    /// <summary>
+    /// Documents that Development may resolve actor from <c>x-mfc-actor</c> when no principal is present (W7-02).
+    /// Forbidden outside Development — Production must bind actor to TLS/auth principal (see <c>GrpcRequestActorResolver</c>).
+    /// </summary>
+    public bool AllowMetadataActor { get; init; }
 }
 
 public sealed class DatabaseHostOptions

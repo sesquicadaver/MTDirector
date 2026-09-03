@@ -21,6 +21,7 @@ Configuration sources (highest wins last):
 | `Security:TrustedCa:ProfilesDirectory` | Absolute path; `{dir}/{CaProfileRef}/*.{pem,crt,cer,der}` for INTERNAL_CA (SEC-04). Empty → fail-closed at materialize |
 | `Security:TrustedCa:RevocationMode` | `Online` (default), `Offline`, or `NoCheck` for INTERNAL_CA custom-chain builds |
 | `Authentication:AllowDevelopmentAuthentication` | Dev-only; loopback bind required |
+| `Authentication:AllowMetadataActor` | Dev-only (W7-02); documents lab metadata actor path; **forbidden outside Development**. Production binds actor to TLS/auth principal (`GrpcRequestActorResolver`) |
 | `Database:ConnectionString` | PostgreSQL only |
 
 ## RouterOS production ports (P2 pilot)
