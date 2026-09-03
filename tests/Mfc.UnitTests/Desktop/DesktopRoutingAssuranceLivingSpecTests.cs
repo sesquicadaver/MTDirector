@@ -62,8 +62,9 @@ public sealed class DesktopRoutingAssuranceLivingSpecTests
         Assert.Contains("AllowedNextHopsText", axaml, StringComparison.Ordinal);
         Assert.Contains("SubjectText", axaml, StringComparison.Ordinal);
         Assert.Contains("NextHopGatewaysText", axaml, StringComparison.Ordinal);
-        Assert.Contains("next-hops:", axaml, StringComparison.Ordinal);
-        Assert.Contains("subject:", axaml, StringComparison.Ordinal);
+        Assert.Contains("Next hops:", axaml, StringComparison.Ordinal);
+        Assert.Contains("Subject:", axaml, StringComparison.Ordinal);
+        Assert.DoesNotContain("next-hops:", axaml, StringComparison.Ordinal);
         Assert.Contains("vm:RouteExpectationLineItem", axaml, StringComparison.Ordinal);
         Assert.Contains("vm:RouteFindingLineItem", axaml, StringComparison.Ordinal);
         Assert.Contains("vm:RouteResolutionTraceSummaryLineItem", axaml, StringComparison.Ordinal);
