@@ -243,9 +243,9 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
             OnboardingReadinessText = string.IsNullOrWhiteSpace(_onboarding.StatusText)
                 ? "—"
                 : _onboarding.StatusText;
-                DeploymentReadinessText = _connection.State == ControllerConnectionState.Connected
-                ? "Loading deployment readiness…"
-                : "Connect to Controller to load deployment readiness.";
+            DeploymentReadinessText = _connection.State == ControllerConnectionState.Connected
+            ? "Loading deployment readiness…"
+            : "Connect to Controller to load deployment readiness.";
 
             IsVrrpNode = string.Equals(node.NodeKindText, "Vrrp", StringComparison.Ordinal);
             VrrpPairHint = IsVrrpNode
