@@ -85,26 +85,39 @@ public sealed class AuditEventHashChainSec03IntegrationTests
 
         await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
         MfcDbContext db = scope.ServiceProvider.GetRequiredService<MfcDbContext>();
-        List<AuditEventEntity> rows = await db.AuditEvents
-            .OrderBy(e => e.OccurredAtUtc)
-            .ThenBy(e => e.Id)
-            .ToListAsync();
+        List<AuditEventEntity> rows = await db.AuditEvents.ToListAsync();
         Assert.Equal(4, rows.Count);
 
-        // Linear chain: each previous hash equals the prior event hash (no silent fork).
-        for (int i = 1; i < rows.Count; i++)
+        AuditEventEntity genesis = Assert.Single(rows, static r => r.PreviousEventHash is null);
+        Dictionary<string, AuditEventEntity> byPrevious = rows
+            .Where(static r => r.PreviousEventHash is not null)
+            .ToDictionary(
+                static r => Convert.ToHexString(r.PreviousEventHash!),
+                static r => r,
+                StringComparer.Ordinal);
+        Assert.Equal(rows.Count - 1, byPrevious.Count);
+
+        List<AuditEventEntity> chain = [genesis];
+        while (byPrevious.TryGetValue(Convert.ToHexString(chain[^1].EventHash), out AuditEventEntity? next))
         {
-            Assert.NotNull(rows[i].PreviousEventHash);
-            Assert.True(
-                rows[i - 1].EventHash.AsSpan().SequenceEqual(rows[i].PreviousEventHash),
-                $"Fork detected at index {i}.");
+            chain.Add(next);
+        }
+
+        Assert.Equal(rows.Count, chain.Count);
+        for (int i = 0; i < chain.Count; i++)
+        {
+            byte[]? previous = i == 0 ? null : chain[i - 1].EventHash;
             byte[] expected = AuditEventHashing.Compute(
-                rows[i].PreviousEventHash,
-                rows[i].Id,
-                rows[i].Actor,
-                rows[i].Action,
-                rows[i].PayloadJson);
-            Assert.True(expected.AsSpan().SequenceEqual(rows[i].EventHash));
+                previous,
+                chain[i].Id,
+                chain[i].Actor,
+                chain[i].Action,
+                chain[i].PayloadJson);
+            Assert.True(expected.AsSpan().SequenceEqual(chain[i].EventHash));
+            if (i > 0)
+            {
+                Assert.True(previous!.AsSpan().SequenceEqual(chain[i].PreviousEventHash));
+            }
         }
     }
 
