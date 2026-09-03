@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Hosting;
 
 namespace Mfc.Controller.Configuration;
@@ -103,6 +104,13 @@ public static class ControllerOptionsValidator
         if (options.Grpc.ShutdownTimeoutSeconds is < 1 or > 600)
         {
             throw new InvalidOperationException("Mfc:Grpc:ShutdownTimeoutSeconds must be between 1 and 600.");
+        }
+
+        ClientCertificateMode clientCertMode = GrpcClientCertificateModeParser.Parse(options.Grpc.ClientCertificateMode);
+        if (!isHttps && clientCertMode != ClientCertificateMode.NoCertificate)
+        {
+            throw new InvalidOperationException(
+                "Mfc:Grpc:ClientCertificateMode other than NoCertificate requires an https:// ListenAddress.");
         }
     }
 

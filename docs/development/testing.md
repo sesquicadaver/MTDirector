@@ -193,6 +193,21 @@ Issues [#371](https://github.com/sesquicadaver/MTDirector/issues/371) / [#402](h
 
 Filter: `dotnet test --filter "FullyQualifiedName~GrpcRequestActorResolverTests|FullyQualifiedName~ProductionRejectsAllowMetadataActor"`.
 
+## Living Specification — Kestrel mTLS client certificates (W7-03)
+
+Issue [#404](https://github.com/sesquicadaver/MTDirector/issues/404) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Parse No/Allow/Require modes | `GrpcClientCertificateModeParser` | `KestrelClientCertificateW703LivingSpecTests.Ac1ParsesClientCertificateMode` |
+| Unknown mode fail-closed | same | `Ac1RejectsUnknownClientCertificateMode` |
+| Non-NoCertificate requires https | `ControllerOptionsValidator` | `Ac1HttpBindRejectsNonNoCertificateMode` |
+| Desktop presents configured PFX | `DesktopGrpcHttpHandlerFactory` | `Ac2DesktopHandlerAttachesConfiguredClientCertificate` |
+| Empty path = no client cert | same | `Ac2DesktopHandlerOmitsClientCertificateWhenPathEmpty` |
+| Missing PFX fail-closed | same | `Ac2MissingClientCertificateFileFailsClosed` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~KestrelClientCertificateW703"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
