@@ -1,0 +1,175 @@
+syntax = "proto3";
+
+package mfc.v1;
+
+option csharp_namespace = "Mfc.Contracts.Mfc.V1";
+
+import "google/protobuf/timestamp.proto";
+import "mfc/v1/common.proto";
+
+// IncidentService — SEC-06 scoped operator surface for M7.3 signal ingress + assessment bind.
+// Deploy/overlay/feedback RPCs stay Application-only until separately queued.
+service IncidentService {
+  rpc IngestIncidentSignal(IngestIncidentSignalRequest) returns (IncidentSignal);
+  rpc BindIncidentResponseAssessment(BindIncidentResponseAssessmentRequest)
+      returns (IncidentResponseAssessmentBinding);
+}
+
+enum IncidentSignalSourceType {
+  INCIDENT_SIGNAL_SOURCE_TYPE_UNSPECIFIED = 0;
+  INCIDENT_SIGNAL_SOURCE_TYPE_SIEM = 1;
+  INCIDENT_SIGNAL_SOURCE_TYPE_NDR = 2;
+  INCIDENT_SIGNAL_SOURCE_TYPE_EDR = 3;
+  INCIDENT_SIGNAL_SOURCE_TYPE_IDS = 4;
+  INCIDENT_SIGNAL_SOURCE_TYPE_ROUTER_OS_LOG = 5;
+  INCIDENT_SIGNAL_SOURCE_TYPE_FLOW_ANALYZER = 6;
+  INCIDENT_SIGNAL_SOURCE_TYPE_MONITORING = 7;
+}
+
+enum IncidentSeverity {
+  INCIDENT_SEVERITY_UNSPECIFIED = 0;
+  INCIDENT_SEVERITY_INFO = 1;
+  INCIDENT_SEVERITY_LOW = 2;
+  INCIDENT_SEVERITY_MEDIUM = 3;
+  INCIDENT_SEVERITY_HIGH = 4;
+  INCIDENT_SEVERITY_CRITICAL = 5;
+}
+
+enum IncidentEntityReferenceKind {
+  INCIDENT_ENTITY_REFERENCE_KIND_UNSPECIFIED = 0;
+  INCIDENT_ENTITY_REFERENCE_KIND_IP_ADDRESS = 1;
+  INCIDENT_ENTITY_REFERENCE_KIND_MAC_ADDRESS = 2;
+  INCIDENT_ENTITY_REFERENCE_KIND_HOSTNAME = 3;
+  INCIDENT_ENTITY_REFERENCE_KIND_USER = 4;
+  INCIDENT_ENTITY_REFERENCE_KIND_DOMAIN = 5;
+  INCIDENT_ENTITY_REFERENCE_KIND_URL = 6;
+  INCIDENT_ENTITY_REFERENCE_KIND_HASH = 7;
+  INCIDENT_ENTITY_REFERENCE_KIND_OTHER = 8;
+}
+
+enum IncidentSessionVisibilityStatus {
+  INCIDENT_SESSION_VISIBILITY_STATUS_UNSPECIFIED = 0;
+  INCIDENT_SESSION_VISIBILITY_STATUS_FULL = 1;
+  INCIDENT_SESSION_VISIBILITY_STATUS_PARTIAL = 2;
+  INCIDENT_SESSION_VISIBILITY_STATUS_NOT_OBSERVED = 3;
+}
+
+enum ObservedPacketPathClass {
+  OBSERVED_PACKET_PATH_CLASS_UNSPECIFIED = 0;
+  OBSERVED_PACKET_PATH_CLASS_UNKNOWN = 1;
+  OBSERVED_PACKET_PATH_CLASS_CPU_FIREWALL = 2;
+  OBSERVED_PACKET_PATH_CLASS_HARDWARE_OFFLOADED = 3;
+  OBSERVED_PACKET_PATH_CLASS_MIXED = 4;
+  OBSERVED_PACKET_PATH_CLASS_INDETERMINATE = 5;
+}
+
+message IncidentEntityReference {
+  IncidentEntityReferenceKind kind = 1;
+  string value = 2;
+}
+
+message IncidentFlowTuple {
+  optional string source_address = 1;
+  optional uint32 source_port = 2;
+  optional string destination_address = 3;
+  optional uint32 destination_port = 4;
+  optional string protocol = 5;
+}
+
+message IncidentIndicator {
+  string type = 1;
+  string value = 2;
+}
+
+message IncidentSignal {
+  Uuid event_id = 1;
+  string source_event_id = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  google.protobuf.Timestamp received_at = 4;
+  IncidentSignalSourceType source_type = 5;
+  string category = 6;
+  IncidentSeverity severity = 7;
+  int32 confidence = 8;
+  optional Uuid site_id = 9;
+  optional Uuid node_id = 10;
+  optional Uuid device_id = 11;
+  repeated IncidentEntityReference entities = 12;
+  optional IncidentFlowTuple flow = 13;
+  optional IncidentFlowTuple original_flow = 14;
+  optional IncidentFlowTuple translated_flow = 15;
+  optional uint32 vlan_id = 16;
+  optional string interface = 17;
+  optional string vrf = 18;
+  optional string container_id = 19;
+  optional string vpn_identity = 20;
+  repeated IncidentIndicator indicators = 21;
+  repeated string evidence_refs = 22;
+  string deduplication_key = 23;
+  optional string raw_event_ref = 24;
+}
+
+message IngestIncidentSignalRequest {
+  Uuid event_id = 1;
+  string source_event_id = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  google.protobuf.Timestamp received_at = 4;
+  IncidentSignalSourceType source_type = 5;
+  string category = 6;
+  IncidentSeverity severity = 7;
+  int32 confidence = 8;
+  string deduplication_key = 9;
+  optional Uuid site_id = 10;
+  optional Uuid node_id = 11;
+  optional Uuid device_id = 12;
+  repeated IncidentEntityReference entities = 13;
+  optional IncidentFlowTuple flow = 14;
+  optional IncidentFlowTuple original_flow = 15;
+  optional IncidentFlowTuple translated_flow = 16;
+  optional uint32 vlan_id = 17;
+  optional string interface = 18;
+  optional string vrf = 19;
+  optional string container_id = 20;
+  optional string vpn_identity = 21;
+  repeated IncidentIndicator indicators = 22;
+  repeated string evidence_refs = 23;
+  optional string raw_event_ref = 24;
+  repeated string forbidden_ingress_field_names = 25;
+}
+
+message ResponseAssessment {
+  Uuid assessment_id = 1;
+  Uuid incident_id = 2;
+  Uuid endpoint_id = 3;
+  Uuid presence_id = 4;
+  Uuid enforcement_node_id = 5;
+  string feasibility = 6;
+  string visibility_status = 7;
+  int32 confidence = 8;
+  string status = 9;
+  google.protobuf.Timestamp created_at = 10;
+  optional google.protobuf.Timestamp invalidated_at = 11;
+  optional string invalidation_reason = 12;
+}
+
+message IncidentResponseAssessmentFinding {
+  string code = 1;
+  string message = 2;
+  optional string subject = 3;
+}
+
+message IncidentResponseAssessmentBinding {
+  Uuid incident_id = 1;
+  IncidentFlowTuple correlation_flow = 2;
+  ResponseAssessment assessment = 3;
+  repeated IncidentResponseAssessmentFinding findings = 4;
+}
+
+message BindIncidentResponseAssessmentRequest {
+  IngestIncidentSignalRequest signal = 1;
+  Uuid endpoint_id = 2;
+  Uuid presence_id = 3;
+  Uuid enforcement_node_id = 4;
+  google.protobuf.Timestamp assessed_at = 5;
+  optional IncidentSessionVisibilityStatus session_visibility = 6;
+  ObservedPacketPathClass packet_path_class = 7;
+}

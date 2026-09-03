@@ -244,6 +244,19 @@ Issue [#378](https://github.com/sesquicadaver/MTDirector/issues/378) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec05"`.
 
+## Living Specification — Incident assessment gRPC (SEC-06)
+
+Issue [#380](https://github.com/sesquicadaver/MTDirector/issues/380) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| incident.proto + MapGrpcService | Contracts + `Program` | `Ac1IncidentProtoAndMapGrpcServiceAreRegistered` |
+| Ingest with authz | `IncidentGrpcService` | `Ac2IngestIncidentSignalSucceedsWithAuthz` |
+| Ingest fail-closed | same | `Ac3IngestFailsClosedWithoutPermission` |
+| Bind assessment + authz | same | `Ac4BindAssessmentSucceedsAndAuthzFailsClosed` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~IncidentGrpcSec06"`.
+
 ## Living Specification — desktop snapshot viewer (M1-28)
 
 Initial Issue Set M1-28 AC → module → tests:

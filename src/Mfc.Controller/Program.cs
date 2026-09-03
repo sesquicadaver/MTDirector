@@ -182,6 +182,7 @@ public static class Program
         app.MapGrpcService<DriftGrpcService>();
         app.MapGrpcService<AuditGrpcService>();
         app.MapGrpcService<RoutingAssuranceGrpcService>();
+        app.MapGrpcService<IncidentGrpcService>();
         return app;
     }
 
