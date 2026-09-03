@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **SEC-08** ([#385](https://github.com/sesquicadaver/MTDirector/issues/385)): `UpdateConnectionProfileUseCase` + deployment plan/start/rollback terminal writes share `IUnitOfWork`. Living Spec `MutationAtomicitySec08LivingSpecTests`. **§3.C NEXT = residual (CRS lab ops)**.
 - **SEC-07** ([#383](https://github.com/sesquicadaver/MTDirector/issues/383)): extend `IUnitOfWork` atomic boundary to zone mutations, policy draft/rules pipeline, remaining approval paths, validate revision, and exception metadata. Living Spec `MutationAtomicitySec07LivingSpecTests`. Residual: `DeploymentWorkflowUseCases` / `UpdateConnectionProfileUseCase`. **§3.C NEXT = residual (CRS lab ops)**.
 - **SEC-06** ([#380](https://github.com/sesquicadaver/MTDirector/issues/380)): `incident.proto` + `IncidentGrpcService` (`IngestIncidentSignal`, `BindIncidentResponseAssessment`) with fail-closed authz. Living Spec `IncidentGrpcSec06LivingSpecTests`. **§3.C NEXT = residual (CRS lab ops)**.
 - **SEC-05** ([#378](https://github.com/sesquicadaver/MTDirector/issues/378)): inventory/policy mutation + idempotency + audit share `IUnitOfWork`; `EfAuditEventWriter` joins ambient transactions (no nested tx). Living Spec `MutationAtomicitySec05LivingSpecTests`. Seeded SEC-06 (#380). **§3.C NEXT = SEC-06 (#380)**.

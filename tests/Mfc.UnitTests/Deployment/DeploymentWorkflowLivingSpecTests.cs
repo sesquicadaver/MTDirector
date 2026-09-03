@@ -460,10 +460,11 @@ public sealed class DeploymentWorkflowLivingSpecTests
                 new CreateDeploymentPlanUseCase(
                     auth, nodes, store, idempotency, audit, clock,
                     new VrrpPairConsistencyLoader(
-                        new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore())),
+                        new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore()),
+                    new FakeUnitOfWork()),
                 new StartDeploymentUseCase(
-                    auth, nodes, store, new FakeDriftEventStore(), idempotency, audit, clock, runtime),
-                new RollbackDeploymentWorkflowUseCase(auth, nodes, store, idempotency, audit, clock, runtime),
+                    auth, nodes, store, new FakeDriftEventStore(), idempotency, audit, clock, runtime, new FakeUnitOfWork()),
+                new RollbackDeploymentWorkflowUseCase(auth, nodes, store, idempotency, audit, clock, runtime, new FakeUnitOfWork()),
                 new GetDeploymentRecoveryStatusUseCase(auth, nodes, store, audit));
         }
 

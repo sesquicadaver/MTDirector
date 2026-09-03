@@ -16,18 +16,22 @@ public sealed class UpdateConnectionProfileUseCase
     private readonly IAuthorizationBoundary _auth;
     private readonly IConnectionProfileService _profiles;
     private readonly IIdempotencyStore _idempotency;
+    private readonly IUnitOfWork _unitOfWork;
 
     public UpdateConnectionProfileUseCase(
         IAuthorizationBoundary auth,
         IConnectionProfileService profiles,
-        IIdempotencyStore idempotency)
+        IIdempotencyStore idempotency,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(profiles);
         ArgumentNullException.ThrowIfNull(idempotency);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _profiles = profiles;
         _idempotency = idempotency;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<ConnectionProfileView>> ExecuteAsync(
@@ -84,17 +88,22 @@ public sealed class UpdateConnectionProfileUseCase
 
         try
         {
-            ConnectionProfileView view = await _profiles.UpsertAsync(command, cancellationToken)
-                .ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                    command.Actor,
-                    Operation,
-                    command.IdempotencyKey,
-                    requestHash,
-                    view.DeviceId,
-                    cancellationToken)
-                .ConfigureAwait(false);
-            return ApplicationResults.Ok(view);
+            ConnectionProfileView? view = null;
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
+                {
+                    view = await _profiles.UpsertAsync(command, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor,
+                            Operation,
+                            command.IdempotencyKey,
+                            requestHash,
+                            view.DeviceId,
+                            ct)
+                        .ConfigureAwait(false);
+                },
+                cancellationToken).ConfigureAwait(false);
+            return ApplicationResults.Ok(view!);
         }
         catch (InvalidOperationException ex)
         {
