@@ -168,7 +168,7 @@ public sealed class EcmpRouteSetLivingSpecTests
         Device device = CreateDevice();
         await devices.AddAsync(device);
 
-        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         ApplicationResult<RoutingAssuranceStateView> written = await upsert.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
             {

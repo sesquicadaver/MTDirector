@@ -125,7 +125,7 @@ public sealed class DynamicRouteOriginLivingSpecTests
                 Obs("10.10.0.0/16", "ether1", "main", isDynamic: true, routeType: "connect"),
             ]);
 
-        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         ApplicationResult<RoutingAssuranceStateView> written = await upsert.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
             {

@@ -65,7 +65,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | CaptureSnapshot persist+audit UoW | Application write paths | **SEC-12 DONE** |
 | Device hash-state upsert UoW | Application write paths | **SEC-13 DONE** |
 | Endpoint presence multi-store UoW | Application write paths | **SEC-14 DONE** |
-| Routing assurance state upsert UoW | Application write paths | **SEC-15 OPEN** |
+| Routing assurance state upsert UoW | Application write paths | **SEC-15 DONE** |
 
 ### P3 / new Contracts (evidence)
 
@@ -118,7 +118,7 @@ SEC-11 Drift detect + response-feedback UoW **DONE**
 SEC-12 CaptureSnapshot persist+audit UoW **DONE**
 SEC-13 UpsertDeviceHashState UoW **DONE**
 SEC-14 OpenEndpointPresence UoW **DONE**
-SEC-15 UpsertRoutingAssuranceState UoW **OPEN**
+SEC-15 UpsertRoutingAssuranceState UoW **DONE**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -157,9 +157,9 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 27 | SEC-12 | [#392](https://github.com/sesquicadaver/MTDirector/issues/392) | CaptureSnapshot persist+audit UoW | **DONE** |
 | 28 | SEC-13 | [#394](https://github.com/sesquicadaver/MTDirector/issues/394) | UpsertDeviceHashState UoW | **DONE** |
 | 29 | SEC-14 | [#396](https://github.com/sesquicadaver/MTDirector/issues/396) | OpenEndpointPresence UoW | **DONE** |
-| 30 | SEC-15 | [#398](https://github.com/sesquicadaver/MTDirector/issues/398) | UpsertRoutingAssuranceState UoW | **OPEN** |
+| 30 | SEC-15 | [#398](https://github.com/sesquicadaver/MTDirector/issues/398) | UpsertRoutingAssuranceState UoW | **DONE** |
 
-**§3.C NEXT = SEC-15 (#398)**. SEC-14 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C SEC tranche CLOSED**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate until next PLAN seed.
 
 ## Anti-goals (unchanged)
 

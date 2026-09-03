@@ -363,4 +363,4 @@ residual: CRS / physical lab runner (ops, not §3)
 - **Перевірка:** `Ac5iPoliciesReorderMovesSelectedRuleWithoutUuidPaste`; `MoveRuleDownBuildsStageOrderWithoutUuidPaste`; `MoveRuleUpAtFirstReportsBoundaryWithoutRpc`
 - **Файли:** `PoliciesViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **§3.C NEXT = SEC-15 (#398)**. SEC-14 OpenEndpointPresence UoW **DONE**. Physical CRS runner stays ops.
+**NEXT (alignment / §3):** **§3.C SEC tranche CLOSED** (SEC-15 **DONE**). Physical CRS runner stays ops.

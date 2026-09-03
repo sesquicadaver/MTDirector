@@ -88,7 +88,7 @@ public sealed class RoutingAssuranceCoverageTests
         FakeDeviceStore devices = new();
         FakeRoutingAssuranceStateStore store = new();
         FakeClock clock = new();
-        UpsertRoutingAssuranceStateUseCase useCase = new(new FakeAuthorizationBoundary(), devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase useCase = new(new FakeAuthorizationBoundary(), devices, store, clock, new FakeUnitOfWork());
 
         ApplicationResult<RoutingAssuranceStateView> missing = await useCase.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
