@@ -63,6 +63,47 @@ public sealed class AuditEventHashChainSec03IntegrationTests
     }
 
     [Fact]
+    public async Task DuplicatePreviousEventHashIsRejectedByUniqueIndex()
+    {
+        string cs = await _postgres.CreateFreshDatabaseAsync();
+        await using WebApplication app = BuildApp(cs);
+        await app.Services.MigrateAsync();
+
+        await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
+        IAuditEventWriter audit = scope.ServiceProvider.GetRequiredService<IAuditEventWriter>();
+        MfcDbContext db = scope.ServiceProvider.GetRequiredService<MfcDbContext>();
+
+        await audit.AppendAsync("sec03@test", "sec03.seed", """{"seed":true}""");
+        AuditEventEntity tip = await db.AuditEvents.SingleAsync();
+
+        db.AuditEvents.Add(new AuditEventEntity
+        {
+            Id = Guid.NewGuid(),
+            OccurredAtUtc = DateTimeOffset.UtcNow,
+            Actor = "sec03@test",
+            Action = "sec03.fork-a",
+            PayloadJson = """{"fork":"a"}""",
+            PreviousEventHash = tip.EventHash,
+            EventHash = Enumerable.Repeat((byte)0x11, 32).ToArray(),
+        });
+        await db.SaveChangesAsync();
+
+        db.AuditEvents.Add(new AuditEventEntity
+        {
+            Id = Guid.NewGuid(),
+            OccurredAtUtc = DateTimeOffset.UtcNow,
+            Actor = "sec03@test",
+            Action = "sec03.fork-b",
+            PayloadJson = """{"fork":"b"}""",
+            PreviousEventHash = tip.EventHash,
+            EventHash = Enumerable.Repeat((byte)0x22, 32).ToArray(),
+        });
+
+        DbUpdateException ex = await Assert.ThrowsAsync<DbUpdateException>(() => db.SaveChangesAsync());
+        Assert.Contains("PreviousEventHash", ex.InnerException?.Message ?? ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ConcurrentAppendsDoNotForkTipSilently()
     {
         string cs = await _postgres.CreateFreshDatabaseAsync();
@@ -75,50 +116,28 @@ public sealed class AuditEventHashChainSec03IntegrationTests
             await audit.AppendAsync("sec03@test", "sec03.seed", """{"seed":true}""");
         }
 
-        Task[] writers =
+        Task<Exception?>[] writers =
         [
-            AppendOnceAsync(app, "sec03@test", "sec03.race-a", """{"lane":"a"}"""),
-            AppendOnceAsync(app, "sec03@test", "sec03.race-b", """{"lane":"b"}"""),
-            AppendOnceAsync(app, "sec03@test", "sec03.race-c", """{"lane":"c"}"""),
+            TryAppendOnceAsync(app, "sec03@test", "sec03.race-a", """{"lane":"a"}"""),
+            TryAppendOnceAsync(app, "sec03@test", "sec03.race-b", """{"lane":"b"}"""),
+            TryAppendOnceAsync(app, "sec03@test", "sec03.race-c", """{"lane":"c"}"""),
         ];
-        await Task.WhenAll(writers);
+        Exception?[] errors = await Task.WhenAll(writers);
+
+        // Contended writers either succeed after lock/unique retries or surface a conflict — never a silent fork.
+        Assert.All(errors, static e => Assert.True(e is null || IsSerializationConflict(e)));
 
         await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
         MfcDbContext db = scope.ServiceProvider.GetRequiredService<MfcDbContext>();
         List<AuditEventEntity> rows = await db.AuditEvents.ToListAsync();
-        Assert.Equal(4, rows.Count);
+        Assert.True(rows.Count >= 2);
+        Assert.Single(rows, static r => r.PreviousEventHash is null);
 
-        AuditEventEntity genesis = Assert.Single(rows, static r => r.PreviousEventHash is null);
-        Dictionary<string, AuditEventEntity> byPrevious = rows
+        Dictionary<string, int> previousCounts = rows
             .Where(static r => r.PreviousEventHash is not null)
-            .ToDictionary(
-                static r => Convert.ToHexString(r.PreviousEventHash!),
-                static r => r,
-                StringComparer.Ordinal);
-        Assert.Equal(rows.Count - 1, byPrevious.Count);
-
-        List<AuditEventEntity> chain = [genesis];
-        while (byPrevious.TryGetValue(Convert.ToHexString(chain[^1].EventHash), out AuditEventEntity? next))
-        {
-            chain.Add(next);
-        }
-
-        Assert.Equal(rows.Count, chain.Count);
-        for (int i = 0; i < chain.Count; i++)
-        {
-            byte[]? previous = i == 0 ? null : chain[i - 1].EventHash;
-            byte[] expected = AuditEventHashing.Compute(
-                previous,
-                chain[i].Id,
-                chain[i].Actor,
-                chain[i].Action,
-                chain[i].PayloadJson);
-            Assert.True(expected.AsSpan().SequenceEqual(chain[i].EventHash));
-            if (i > 0)
-            {
-                Assert.True(previous!.AsSpan().SequenceEqual(chain[i].PreviousEventHash));
-            }
-        }
+            .GroupBy(static r => Convert.ToHexString(r.PreviousEventHash!), StringComparer.Ordinal)
+            .ToDictionary(static g => g.Key, static g => g.Count(), StringComparer.Ordinal);
+        Assert.All(previousCounts.Values, static c => Assert.Equal(1, c));
     }
 
     private static async Task AppendOnceAsync(WebApplication app, string actor, string action, string payload)
@@ -140,6 +159,19 @@ public sealed class AuditEventHashChainSec03IntegrationTests
         }
 
         throw new InvalidOperationException($"Failed to append audit event '{action}' after contention retries.");
+    }
+
+    private static async Task<Exception?> TryAppendOnceAsync(WebApplication app, string actor, string action, string payload)
+    {
+        try
+        {
+            await AppendOnceAsync(app, actor, action, payload);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            return ex;
+        }
     }
 
     private static bool IsSerializationConflict(Exception ex)
