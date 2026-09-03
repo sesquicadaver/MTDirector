@@ -61,7 +61,7 @@ M0 → M1 → M2 → M3 → M5 → M4 → M6 → MVP CLOSED
 → W5-01 (#342) → **DONE**
 → W5-02 (#343) → **DONE**
 → W5-03 (#344) → **DONE**
-→ **§3.C NEXT = residual (CRS lab ops)**
+→ **§3.C NEXT = SEC-02** (#372)
 ```
 
 ## Стек
