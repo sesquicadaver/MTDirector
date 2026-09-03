@@ -19,5 +19,10 @@ internal sealed class AuditEventConfiguration : IEntityTypeConfiguration<AuditEv
         builder.Property(e => e.EventHash).HasColumnType("bytea").IsRequired();
         builder.HasIndex(e => e.OccurredAtUtc);
         builder.HasIndex(e => e.EventHash).IsUnique();
+        // SEC-03: at most one child per predecessor tip (prevents silent concurrent forks).
+        builder.HasIndex(e => e.PreviousEventHash)
+            .IsUnique()
+            .HasFilter("\"PreviousEventHash\" IS NOT NULL")
+            .HasDatabaseName("IX_audit_events_PreviousEventHash_unique");
     }
 }

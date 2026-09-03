@@ -368,30 +368,34 @@ public sealed class SecurityBackupRestoreLivingSpecTests
         const string actor = "admin@test";
         const string action = "bootstrap.self-check";
         const string payload = """{"ok":true}""";
-        byte[] first = ComputeAuditEventHash(previous: null, actor, action, payload);
-        byte[] second = ComputeAuditEventHash(previous: first, actor, action, """{"ok":true,"n":2}""");
+        byte[] first = ComputeAuditEventHash(previous: null, Guid.Parse("11111111-1111-1111-1111-111111111111"), actor, action, payload);
+        byte[] second = ComputeAuditEventHash(previous: first, Guid.Parse("22222222-2222-2222-2222-222222222222"), actor, action, """{"ok":true,"n":2}""");
 
         Assert.Equal(32, first.Length);
         Assert.Equal(32, second.Length);
         Assert.False(first.AsSpan().SequenceEqual(second));
 
-        byte[] tampered = ComputeAuditEventHash(previous: null, actor, action, """{"ok":false}""");
+        byte[] tampered = ComputeAuditEventHash(previous: null, Guid.Parse("11111111-1111-1111-1111-111111111111"), actor, action, """{"ok":false}""");
         Assert.False(first.AsSpan().SequenceEqual(tampered));
 
-        // Chain continuity: wrong previous length breaks link to next event.
-        byte[] broken = ComputeAuditEventHash(previous: Enumerable.Repeat((byte)9, 16).ToArray(), actor, action, payload);
-        Assert.False(first.AsSpan().SequenceEqual(broken));
+        // Chain continuity: different predecessor *bytes* (same length) produce a different next hash.
+        byte[] otherPrev = Enumerable.Repeat((byte)7, 32).ToArray();
+        Guid eventId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+        byte[] fromFirst = ComputeAuditEventHash(previous: first, eventId, actor, action, payload);
+        byte[] fromOther = ComputeAuditEventHash(previous: otherPrev, eventId, actor, action, payload);
+        Assert.False(fromFirst.AsSpan().SequenceEqual(fromOther));
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────────
 
-    /// <summary>Mirrors <c>EfAuditEventWriter</c> event hash preimage.</summary>
+    /// <summary>Mirrors <c>AuditEventHashing.Compute</c> / <c>EfAuditEventWriter</c> event hash preimage (SEC-03).</summary>
     internal static byte[] ComputeAuditEventHash(
         byte[]? previous,
+        Guid eventId,
         string actor,
         string action,
         string payloadJson)
-        => SHA256.HashData(Encoding.UTF8.GetBytes($"{previous?.Length ?? 0}|{actor}|{action}|{payloadJson}"));
+        => Mfc.Infrastructure.Audit.AuditEventHashing.Compute(previous, eventId, actor, action, payloadJson);
 
     /// <summary>Mirrors <c>EfAuditEventWriter.AssertNoCredentialLeak</c> for Living Spec without a DB.</summary>
     private static void AssertAuditPayloadHasNoCredentialFields(string payloadJson)

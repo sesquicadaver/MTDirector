@@ -363,4 +363,4 @@ residual: CRS / physical lab runner (ops, not §3)
 - **Перевірка:** `Ac5iPoliciesReorderMovesSelectedRuleWithoutUuidPaste`; `MoveRuleDownBuildsStageOrderWithoutUuidPaste`; `MoveRuleUpAtFirstReportsBoundaryWithoutRpc`
 - **Файли:** `PoliciesViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **§3.C NEXT = SEC-03** (#373). SEC-02 store-backed deploy materializer **DONE**. Physical CRS runner stays ops.
+**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. SEC-03 audit hash chain **DONE**. Physical CRS runner stays ops.

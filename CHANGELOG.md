@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **SEC-03** ([#373](https://github.com/sesquicadaver/MTDirector/issues/373)): audit `EventHash` includes predecessor hash bytes + event id (`AuditEventHashing`); Serializable append + `pg_advisory_xact_lock` + unique `PreviousEventHash` index prevent silent tip forks. Living Spec `AuditEventHashChainSec03LivingSpecTests` + Integration. **§3.C NEXT = residual (CRS lab ops)**.
 - **SEC-02** ([#372](https://github.com/sesquicadaver/MTDirector/issues/372)): production WriteEnabled DI uses `FilterArtifactStoreDeploymentArtifactMaterializer` (not AnchorOnly); staging loads AddressLists/Chains from sealed filter artifact; post-activation / recovery observe `resource_hash` from live managed state (`ObservedManagedResourceHash`); fail-closed when body missing. Living Spec `DeploymentArtifactMaterializerSec02LivingSpecTests`. **§3.C NEXT = SEC-03**.
 - **SEC-01** ([#371](https://github.com/sesquicadaver/MTDirector/issues/371)): reject reserved `SystemActor` asserted via `x-mfc-actor` gRPC metadata (`GrpcRequestActorResolver`); in-process operational jobs unchanged. Living Spec `GrpcRequestActorResolverTests`. Seeded SEC-02 (#372) / SEC-03 (#373). **§3.C NEXT = SEC-02**.
 - **W6-09** ([#369](https://github.com/sesquicadaver/MTDirector/issues/369)): Policies Move up/down reorder from selected rule via existing `ReorderRules` (no UUID paste). Living Spec `Ac5i`. **§3.C NEXT = residual (CRS lab ops)**.

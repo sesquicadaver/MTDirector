@@ -27,6 +27,7 @@ You should receive an acknowledgement within a reasonable time. We will coordina
 - Production RouterOS write paths require CODEOWNERS review.
 - Reserved `Mfc:OperationalJobs:SystemActor` is for **in-process** operational jobs only. gRPC clients must not assert it via `x-mfc-actor` (SEC-01 / `GrpcRequestActorResolver`).
 - WriteEnabled production DI loads staging drafts from `IFilterArtifactStore` (`FilterArtifactStoreDeploymentArtifactMaterializer`); observed managed `resource_hash` is measured from live RouterOS state (SEC-02), not echoed from the plan.
+- Audit `EventHash` chains predecessor **bytes** (not length) plus event id; appends use Serializable + `pg_advisory_xact_lock` and a unique index on `PreviousEventHash` (SEC-03 / `AuditEventHashing`).
 
 ## Safe Harbor
 

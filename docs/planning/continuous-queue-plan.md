@@ -53,7 +53,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | ReorderRules only via UUID paste | `PoliciesViewModel.ReorderRuleIdsText` | **W6-09 DONE** |
 | System actor spoofable via `x-mfc-actor` | `SystemActorAuthorizationBoundary` + gRPC ResolveActor | **SEC-01 DONE** |
 | AnchorOnly empty deploy materializer in production | `AnchorOnlyDeploymentArtifactMaterializer` | **SEC-02 DONE** |
-| Audit hash uses predecessor length only | `EfAuditEventWriter` | **SEC-03** |
+| Audit hash uses predecessor length only | `EfAuditEventWriter` | **SEC-03 DONE** |
 
 ### P3 / new Contracts (evidence)
 
@@ -94,7 +94,7 @@ W6-08 Durable Unreachable **DONE**
 W6-09 Policies Move up/down reorder **DONE**
 SEC-01 Reject system actor gRPC spoof **DONE**
 SEC-02 Deploy artifact materializer **DONE**
-SEC-03 Audit hash chain **OPEN**
+SEC-03 Audit hash chain **DONE**
 residual ops: CRS / physical lab runner (not §3)
 ```
 
@@ -121,9 +121,9 @@ residual ops: CRS / physical lab runner (not §3)
 | 15 | W6-09 | [#369](https://github.com/sesquicadaver/MTDirector/issues/369) | Policies Reorder via Move up/down | **DONE** |
 | 16 | SEC-01 | [#371](https://github.com/sesquicadaver/MTDirector/issues/371) | Reject system actor via gRPC metadata | **DONE** |
 | 17 | SEC-02 | [#372](https://github.com/sesquicadaver/MTDirector/issues/372) | Deploy artifact materializer + observed hash | **DONE** |
-| 18 | SEC-03 | [#373](https://github.com/sesquicadaver/MTDirector/issues/373) | Audit hash chain includes predecessor bytes | **OPEN** |
+| 18 | SEC-03 | [#373](https://github.com/sesquicadaver/MTDirector/issues/373) | Audit hash chain includes predecessor bytes | **DONE** |
 
-**§3.C NEXT = SEC-03** (#373). SEC-02 closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row.
+**§3.C NEXT = residual (CRS lab ops)**. SEC tranche closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row.
 
 ## Anti-goals (unchanged)
 
