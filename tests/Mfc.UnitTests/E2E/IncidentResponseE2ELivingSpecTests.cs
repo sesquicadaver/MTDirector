@@ -306,7 +306,7 @@ public sealed class IncidentResponseE2ELivingSpecTests
             ReportIncidentDeploymentOutcomeUseCase reportOutcome = new(feedback);
             ListResponseFeedbackEventsUseCase listFeedback = new(auth, feedbackStore);
             ExpireIncidentDenyOverlayBindingUseCase expire = new(
-                auth, fx.Approvals, idempotency, audit, clock, fx.Policies, feedback);
+                auth, fx.Approvals, idempotency, audit, clock, fx.Policies, feedback, new FakeUnitOfWork());
             PlanIncidentDenyOverlayRemovalUseCase planRemoval = new(
                 auth, fx.Policies, fx.Approvals, audit, expire, fx.UseCase, createPlan, feedback);
 

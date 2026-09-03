@@ -244,6 +244,16 @@ Issue [#378](https://github.com/sesquicadaver/MTDirector/issues/378) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec05"`.
 
+## Living Specification — Incident overlay expiry UoW (SEC-10)
+
+| ТЗ / AC | Модуль | Тест |
+|---------|--------|------|
+| Expire binding in one UoW | `ExpireIncidentDenyOverlayBindingUseCase` | `MutationAtomicitySec10LivingSpecTests.Ac1` |
+| known-limitations | `known-limitations.md` | `Ac2` |
+| No Application idempotency Save outside UoW | `src/Mfc.Application/**/*UseCase*.cs` | `Ac3` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec10"`.
+
 ## Living Specification — Onboarding workflow UoW (SEC-09)
 
 | ТЗ / AC | Модуль | Тест |
