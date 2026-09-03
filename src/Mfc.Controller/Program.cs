@@ -131,6 +131,7 @@ public static class Program
         builder.Services.AddMfcSecrets(options.Security.MasterKeyProvider);
 
         RegisterAuthorization(builder.Services, options, jobOptions, builder.Environment.EnvironmentName);
+        builder.Services.AddSingleton<GrpcRequestActorResolver>();
         RegisterInventoryApplication(builder.Services);
         RegisterSnapshotApplication(builder.Services);
         RegisterZoneApplication(builder.Services);

@@ -32,6 +32,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
     private readonly ListNeighborCandidatesUseCase _listNeighborCandidates;
     private readonly ValidateVrrpPairConsistencyUseCase _validateVrrpPair;
     private readonly ValidateDeviceConnectionCoordinator _probeCoordinator;
+    private readonly GrpcRequestActorResolver _actors;
     private readonly IHostEnvironment _environment;
 
     public InventoryGrpcService(
@@ -48,6 +49,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         ListNeighborCandidatesUseCase listNeighborCandidates,
         ValidateVrrpPairConsistencyUseCase validateVrrpPair,
         ValidateDeviceConnectionCoordinator probeCoordinator,
+        GrpcRequestActorResolver actors,
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(listSites);
@@ -63,6 +65,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         ArgumentNullException.ThrowIfNull(listNeighborCandidates);
         ArgumentNullException.ThrowIfNull(validateVrrpPair);
         ArgumentNullException.ThrowIfNull(probeCoordinator);
+        ArgumentNullException.ThrowIfNull(actors);
         ArgumentNullException.ThrowIfNull(environment);
         _listSites = listSites;
         _listNodes = listNodes;
@@ -77,6 +80,7 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         _listNeighborCandidates = listNeighborCandidates;
         _validateVrrpPair = validateVrrpPair;
         _probeCoordinator = probeCoordinator;
+        _actors = actors;
         _environment = environment;
     }
 
@@ -311,22 +315,8 @@ public sealed class InventoryGrpcService : InventoryService.InventoryServiceBase
         return InventoryProtoMapper.ToProto(Unwrap(result));
     }
 
-    private string ResolveActor(ServerCallContext context)
-    {
-        string? actor = context.RequestHeaders.GetValue(ActorMetadataKey);
-        if (!string.IsNullOrWhiteSpace(actor))
-        {
-            return actor.Trim();
-        }
-
-        if (_environment.IsDevelopment())
-        {
-            return "dev";
-        }
-
-        throw GrpcApplicationErrorMapper.ToRpcException(
-            ApplicationError.Unauthorized("Missing x-mfc-actor metadata."));
-    }
+    private string ResolveActor(ServerCallContext context) =>
+        _actors.Resolve(context, _environment, "dev");
 
     private static T Unwrap<T>(ApplicationResult<T> result)
     {

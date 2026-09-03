@@ -20,6 +20,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
     private readonly GetSnapshotSectionUseCase _getSection;
     private readonly CompareSnapshotsUseCase _compare;
     private readonly CaptureProgressHub _progressHub;
+    private readonly GrpcRequestActorResolver _actors;
     private readonly IHostEnvironment _environment;
 
     public SnapshotGrpcService(
@@ -30,6 +31,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
         GetSnapshotSectionUseCase getSection,
         CompareSnapshotsUseCase compare,
         CaptureProgressHub progressHub,
+        GrpcRequestActorResolver actors,
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(capture);
@@ -39,6 +41,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
         ArgumentNullException.ThrowIfNull(getSection);
         ArgumentNullException.ThrowIfNull(compare);
         ArgumentNullException.ThrowIfNull(progressHub);
+        ArgumentNullException.ThrowIfNull(actors);
         ArgumentNullException.ThrowIfNull(environment);
         _capture = capture;
         _captureNode = captureNode;
@@ -47,6 +50,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
         _getSection = getSection;
         _compare = compare;
         _progressHub = progressHub;
+        _actors = actors;
         _environment = environment;
     }
 
@@ -367,22 +371,8 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
         return page;
     }
 
-    private string ResolveActor(ServerCallContext context)
-    {
-        string? actor = context.RequestHeaders.GetValue(ActorMetadataKey);
-        if (!string.IsNullOrWhiteSpace(actor))
-        {
-            return actor.Trim();
-        }
-
-        if (_environment.IsDevelopment())
-        {
-            return "dev";
-        }
-
-        throw GrpcApplicationErrorMapper.ToRpcException(
-            ApplicationError.Unauthorized("Missing x-mfc-actor metadata."));
-    }
+    private string ResolveActor(ServerCallContext context) =>
+        _actors.Resolve(context, _environment, "dev");
 
     private static T Unwrap<T>(ApplicationResult<T> result)
     {

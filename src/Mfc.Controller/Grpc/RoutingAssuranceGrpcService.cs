@@ -12,15 +12,19 @@ public sealed class RoutingAssuranceGrpcService : RoutingAssuranceService.Routin
     public const string ActorMetadataKey = InventoryGrpcService.ActorMetadataKey;
 
     private readonly GetRoutingAssuranceStateUseCase _getState;
+    private readonly GrpcRequestActorResolver _actors;
     private readonly IHostEnvironment _environment;
 
     public RoutingAssuranceGrpcService(
         GetRoutingAssuranceStateUseCase getState,
+        GrpcRequestActorResolver actors,
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(getState);
+        ArgumentNullException.ThrowIfNull(actors);
         ArgumentNullException.ThrowIfNull(environment);
         _getState = getState;
+        _actors = actors;
         _environment = environment;
     }
 
@@ -39,21 +43,8 @@ public sealed class RoutingAssuranceGrpcService : RoutingAssuranceService.Routin
         return RoutingAssuranceProtoMapper.ToProto(Unwrap(result));
     }
 
-    private string ResolveActor(ServerCallContext context)
-    {
-        string? actor = context.RequestHeaders.GetValue(ActorMetadataKey);
-        if (string.IsNullOrWhiteSpace(actor))
-        {
-            if (_environment.IsDevelopment())
-            {
-                return "development";
-            }
-
-            throw GrpcApplicationErrorMapper.ToRpcException(ApplicationError.Unauthorized());
-        }
-
-        return actor;
-    }
+    private string ResolveActor(ServerCallContext context) =>
+        _actors.Resolve(context, _environment, "development");
 
     private static T Unwrap<T>(ApplicationResult<T> result)
     {

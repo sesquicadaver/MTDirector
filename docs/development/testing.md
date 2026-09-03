@@ -176,6 +176,18 @@ Issue [#369](https://github.com/sesquicadaver/MTDirector/issues/369) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MoveRule|FullyQualifiedName~Ac5iPoliciesReorder"`.
 
+## Living Specification — Reject system actor gRPC spoof (SEC-01)
+
+Issue [#371](https://github.com/sesquicadaver/MTDirector/issues/371) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| `x-mfc-actor` = SystemActor → Unauthorized | `GrpcRequestActorResolver` | `GrpcRequestActorResolverTests.RejectsReservedSystemActorViaMetadata` |
+| Non-system actor accepted | same | `AllowsNonSystemActorMetadata` |
+| In-process SystemActor still authorized | `SystemActorAuthorizationBoundary` | `SystemActorBoundaryStillAllowsInProcessJobActor` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~GrpcRequestActorResolverTests"`.
+
 ## Living Specification — desktop snapshot viewer (M1-28)
 
 Initial Issue Set M1-28 AC → module → tests:
@@ -2055,7 +2067,7 @@ Issue Set M6-09. **M6 CLOSED**. Live CHR / live physical CRS OFF — E2E Living 
 
 | AC / вимога | Модуль | Тест / артефакт |
 |-------------|--------|-----------------|
-| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md`; §3.C NEXT = residual (CRS lab ops) | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
+| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md`; §3.C NEXT = SEC-02 | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
 | AC#2 Release gates executed | `docs/release/release-gates.md` | `Ac2ReleaseGatesChecklistExists` |
 | AC#3 CHR matrix green | E2E Living Specs (substitute) | `Ac3ChrMatrixSubstitutedByE2ELivingSpecs` |
 | AC#4 Physical CRS green | `VrrpCrsE2E` + `crs-switch` | `Ac4PhysicalCrsSubstitutedByScriptedFixture` |

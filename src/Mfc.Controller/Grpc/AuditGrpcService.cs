@@ -12,13 +12,19 @@ public sealed class AuditGrpcService : AuditService.AuditServiceBase
     public const string ActorMetadataKey = InventoryGrpcService.ActorMetadataKey;
 
     private readonly ListAuditEventsUseCase _list;
+    private readonly GrpcRequestActorResolver _actors;
     private readonly IHostEnvironment _environment;
 
-    public AuditGrpcService(ListAuditEventsUseCase list, IHostEnvironment environment)
+    public AuditGrpcService(
+        ListAuditEventsUseCase list,
+        GrpcRequestActorResolver actors,
+        IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(list);
+        ArgumentNullException.ThrowIfNull(actors);
         ArgumentNullException.ThrowIfNull(environment);
         _list = list;
+        _actors = actors;
         _environment = environment;
     }
 
@@ -41,21 +47,8 @@ public sealed class AuditGrpcService : AuditService.AuditServiceBase
         return response;
     }
 
-    private string ResolveActor(ServerCallContext context)
-    {
-        string? actor = context.RequestHeaders.GetValue(ActorMetadataKey);
-        if (string.IsNullOrWhiteSpace(actor))
-        {
-            if (_environment.IsDevelopment())
-            {
-                return "development";
-            }
-
-            throw GrpcApplicationErrorMapper.ToRpcException(ApplicationError.Unauthorized());
-        }
-
-        return actor;
-    }
+    private string ResolveActor(ServerCallContext context) =>
+        _actors.Resolve(context, _environment, "development");
 
     private static T Unwrap<T>(ApplicationResult<T> result)
     {
