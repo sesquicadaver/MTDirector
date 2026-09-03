@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **SEC-06** ([#380](https://github.com/sesquicadaver/MTDirector/issues/380)): `incident.proto` + `IncidentGrpcService` (`IngestIncidentSignal`, `BindIncidentResponseAssessment`) with fail-closed authz. Living Spec `IncidentGrpcSec06LivingSpecTests`. **§3.C NEXT = residual (CRS lab ops)**.
 - **SEC-05** ([#378](https://github.com/sesquicadaver/MTDirector/issues/378)): inventory/policy mutation + idempotency + audit share `IUnitOfWork`; `EfAuditEventWriter` joins ambient transactions (no nested tx). Living Spec `MutationAtomicitySec05LivingSpecTests`. Seeded SEC-06 (#380). **§3.C NEXT = SEC-06 (#380)**.
 - **SEC-04** ([#377](https://github.com/sesquicadaver/MTDirector/issues/377)): production DI uses `DirectoryRouterOsTrustedCaStore` (`Mfc:Security:TrustedCa:ProfilesDirectory` + `RevocationMode`, default Online); INTERNAL_CA custom-chain applies configured revocation (not hardcoded `NoCheck`); fail-closed when profile material missing. Living Spec `TrustedCaStoreSec04LivingSpecTests`. Seeded SEC-05 (#378). **§3.C NEXT = SEC-05 (#378)**.
 - **SEC-03** ([#373](https://github.com/sesquicadaver/MTDirector/issues/373)): audit `EventHash` includes predecessor hash bytes + event id (`AuditEventHashing`); Serializable append + `pg_advisory_xact_lock` + unique `PreviousEventHash` index prevent silent tip forks. Living Spec `AuditEventHashChainSec03LivingSpecTests` + Integration. **§3.C NEXT = residual (CRS lab ops)**.
