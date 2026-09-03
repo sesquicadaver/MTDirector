@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W6-09** ([#369](https://github.com/sesquicadaver/MTDirector/issues/369)): Policies Move up/down reorder from selected rule via existing `ReorderRules` (no UUID paste). Living Spec `Ac5i`. **§3.C NEXT = residual (CRS lab ops)**.
 - **W6-08** ([#366](https://github.com/sesquicadaver/MTDirector/issues/366)): durable GetNode Unreachable via `Device.LastObservedReachability` (EF); DiscoverDevice persists connectivity failures; fail-closed not_configured still does not claim Unreachable. Living Spec `DiscoverDevicePersistsUnreachableAcrossEmptyObservationStore`. **§3.C NEXT = residual (CRS lab ops)**.
 - **W6-03** ([#356](https://github.com/sesquicadaver/MTDirector/issues/356)): `StartCapture(node_id)` fans out to all Node devices under one WatchCapture stream; Desktop Capture-all uses it. Living Spec W6-03. **§3.C NEXT = residual (CRS lab ops)**.
 - **W6-02** ([#354](https://github.com/sesquicadaver/MTDirector/issues/354)): Node-scoped VRRP pair consistency from last completed captures (`ValidateVrrpPairConsistency`) — admin-critical `ha.vrrp` agreement + logical firewall digests; Desktop Node validate / Capture-all+validate; blockers gate Onboarding Validate and Deploy/Onboarding CreatePlan. Living Spec W6-02. **§3.C NEXT = residual (CRS lab ops)**.

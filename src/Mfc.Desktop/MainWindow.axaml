@@ -1221,6 +1221,8 @@
                   <Button Classes="mfc-action" Content="Add rule" Command="{Binding Policies.AddRuleCommand}" MinWidth="100" />
                   <Button Classes="mfc-action" Content="Update rule" Command="{Binding Policies.UpdateRuleCommand}" MinWidth="110" />
                   <Button Classes="mfc-action" Content="Delete rule" Command="{Binding Policies.DeleteRuleCommand}" MinWidth="110" />
+                  <Button Classes="mfc-action" Content="Move up" Command="{Binding Policies.MoveRuleUpCommand}" MinWidth="100" />
+                  <Button Classes="mfc-action" Content="Move down" Command="{Binding Policies.MoveRuleDownCommand}" MinWidth="110" />
                 </WrapPanel>
                 <ListBox ItemsSource="{Binding Policies.Rules}"
                          SelectedItem="{Binding Policies.SelectedRule, Mode=TwoWay}"

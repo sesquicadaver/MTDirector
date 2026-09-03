@@ -164,6 +164,18 @@ Issue [#364](https://github.com/sesquicadaver/MTDirector/issues/364) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DiffBaselineCatalogItem|FullyQualifiedName~Ac5hPoliciesDiffBaseline"`.
 
+## Living Specification — Policies Move up/down reorder (W6-09)
+
+Issue [#369](https://github.com/sesquicadaver/MTDirector/issues/369) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Move down builds contiguous stage order without UUID paste | `PoliciesViewModel.MoveRuleDown` | `MoveRuleDownBuildsStageOrderWithoutUuidPaste` |
+| Boundary at first skips RPC | `MoveRuleUp` | `MoveRuleUpAtFirstReportsBoundaryWithoutRpc` |
+| Axaml binds Move commands (not ReorderRuleIdsText) | MainWindow Policies rules toolbar | `Ac5iPoliciesReorderMovesSelectedRuleWithoutUuidPaste` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MoveRule|FullyQualifiedName~Ac5iPoliciesReorder"`.
+
 ## Living Specification — desktop snapshot viewer (M1-28)
 
 Initial Issue Set M1-28 AC → module → tests:
