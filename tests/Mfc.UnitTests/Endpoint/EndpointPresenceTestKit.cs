@@ -20,7 +20,8 @@ internal static class EndpointPresenceTestKit
             presence ?? new FakeEndpointPresenceStore(),
             assessments ?? new FakeResponseAssessmentStore(),
             routing ?? new FakeRoutingAssuranceStateStore(),
-            clock ?? new FakeClock());
+            clock ?? new FakeClock(),
+            new FakeUnitOfWork());
 
     public static UpsertEndpointPresenceCommand Command(
         EndpointId endpointId,

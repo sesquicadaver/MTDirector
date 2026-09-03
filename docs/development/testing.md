@@ -244,6 +244,16 @@ Issue [#378](https://github.com/sesquicadaver/MTDirector/issues/378) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec05"`.
 
+## Living Specification — OpenEndpointPresence multi-store UoW (SEC-14)
+
+| ТЗ / AC | Модуль | Тест |
+|---------|--------|------|
+| Assessment+migration in one UoW | `OpenEndpointPresenceUseCase` | `MutationAtomicitySec14LivingSpecTests.Ac1` |
+| Source boundary | `EndpointPresenceUseCases` | `Ac2` |
+| known-limitations | `known-limitations.md` | `Ac3` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec14"`.
+
 ## Living Specification — UpsertDeviceHashState UoW (SEC-13)
 
 | ТЗ / AC | Модуль | Тест |
