@@ -20,7 +20,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 ## Live lab residuals (optional)
 
 - Live CHR matrix is **OFF**. Scripted E2E Living Specs (M6-05…M6-07 + N1-07 + M7.1-11 + M7.2-04 + M7.4-06) are the DoD substitute.
-- Live physical CRS hardware exercise is **OFF**. Scripted CRS fixture + `VrrpCrsE2ELivingSpecTests` AC11 are the DoD substitute. Physical CRS is **ops residual**, not a §3 stop-gate. **§3.C NEXT = SEC-12 (#392)** after SEC-11.
+- Live physical CRS hardware exercise is **OFF**. Scripted CRS fixture + `VrrpCrsE2ELivingSpecTests` AC11 are the DoD substitute. Physical CRS is **ops residual**, not a §3 stop-gate. **§3.C NEXT = SEC-13 (#394)** after SEC-12.
 - Golden live CHR hashes remain env-gated until an isolated runner exists.
 
 ## Packaging / signing residuals
@@ -34,7 +34,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - No NAT / RAW / Mangle / routing / VRRP / bridge / VLAN **writes** beyond managed filter/onboarding/deploy allowlists.
 - No campaigns, auto-deploy, auto-fix drift, web/mobile UI, multi-tenant, microservices/Redis/K8s, multi-vendor, SIEM/SOAR in Controller.
 - `IResponseFeedbackDeliveryPort` defaults to **not configured** until an external analytics complex is wired.
-- **SEC-07…SEC-11 DONE:** Zone/policy (SEC-07), `UpdateConnectionProfileUseCase` + `DeploymentWorkflowUseCases` (SEC-08), `OnboardingWorkflowUseCases` (SEC-09), `ExpireIncidentDenyOverlayBindingUseCase` (SEC-10), and `DetectManagedDriftUseCase` + `EmitResponseFeedbackUseCase` store+audit (SEC-11) share `IUnitOfWork` for entity+idempotency+audit co-writes. Feedback **delivery** remains outside the DB boundary. Intentional residual: resolve-only zone updates (no idempotency/audit triple); Start* pre-runtime `AddOperationAsync` stays outside UoW; `CaptureSnapshotUseCase` persist+audit (candidate SEC-12).
+- **SEC-07…SEC-12 DONE:** Zone/policy (SEC-07), `UpdateConnectionProfileUseCase` + `DeploymentWorkflowUseCases` (SEC-08), `OnboardingWorkflowUseCases` (SEC-09), `ExpireIncidentDenyOverlayBindingUseCase` (SEC-10), `DetectManagedDriftUseCase` + `EmitResponseFeedbackUseCase` store+audit (SEC-11), and `CaptureSnapshotUseCase` persist+audit (SEC-12) share `IUnitOfWork` for entity+idempotency+audit co-writes. Feedback **delivery** and RouterOS capture remain outside the DB boundary. Intentional residual: resolve-only zone updates (no idempotency/audit triple); Start* pre-runtime `AddOperationAsync` stays outside UoW; `UpsertDeviceHashStateUseCase` (candidate SEC-13).
 
 ## Operational notes
 
