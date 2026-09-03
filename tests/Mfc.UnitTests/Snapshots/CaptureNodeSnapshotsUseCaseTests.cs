@@ -81,5 +81,6 @@ public sealed class CaptureNodeSnapshotsUseCaseTests
             new FakeConnectionProfileReadStore(),
             new FakeSnapshotCapturePort(),
             new FakeSnapshotStore(),
-            new FakeAuditEventWriter());
+            new FakeAuditEventWriter(),
+            new FakeUnitOfWork());
 }

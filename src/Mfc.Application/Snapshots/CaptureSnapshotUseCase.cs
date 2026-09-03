@@ -35,6 +35,7 @@ public sealed class CaptureSnapshotUseCase
     private readonly ISnapshotCapturePort _capture;
     private readonly ISnapshotStore _snapshots;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CaptureSnapshotUseCase(
         IAuthorizationBoundary auth,
@@ -42,7 +43,8 @@ public sealed class CaptureSnapshotUseCase
         IConnectionProfileReadStore profiles,
         ISnapshotCapturePort capture,
         ISnapshotStore snapshots,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(devices);
@@ -50,12 +52,14 @@ public sealed class CaptureSnapshotUseCase
         ArgumentNullException.ThrowIfNull(capture);
         ArgumentNullException.ThrowIfNull(snapshots);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _devices = devices;
         _profiles = profiles;
         _capture = capture;
         _snapshots = snapshots;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<SnapshotView>> ExecuteAsync(
@@ -90,7 +94,7 @@ public sealed class CaptureSnapshotUseCase
             .ConfigureAwait(false);
         if (byIdempotency is not null)
         {
-            await AuditAsync(
+            await AuditInUnitOfWorkAsync(
                 command.Actor,
                 "snapshot.capture.idempotent",
                 byIdempotency,
@@ -117,6 +121,7 @@ public sealed class CaptureSnapshotUseCase
             PinnedSpkiSha256 = profile.PinnedSpkiSha256,
         };
 
+        // RouterOS capture stays outside the DB boundary.
         SnapshotCaptureResult captured;
         try
         {
@@ -152,7 +157,7 @@ public sealed class CaptureSnapshotUseCase
             .ConfigureAwait(false);
         if (existing is not null)
         {
-            await AuditAsync(
+            await AuditInUnitOfWorkAsync(
                 command.Actor,
                 "snapshot.capture.identical",
                 existing,
@@ -161,28 +166,43 @@ public sealed class CaptureSnapshotUseCase
             return ApplicationResults.Ok(ViewMapper.ToView(existing, deduplicated: true));
         }
 
-        StoredSnapshot stored = await _snapshots.PersistCompletedAsync(
-            new SnapshotPersistRequest
+        StoredSnapshot? stored = null;
+        await _unitOfWork.ExecuteAsync(
+            async ct =>
             {
-                DeviceId = device.Id,
-                RequestedBy = requestedBy,
-                IdempotencyKey = command.IdempotencyKey,
-                Capture = captured,
-                CapturedAtUtc = DateTimeOffset.UtcNow,
+                stored = await _snapshots.PersistCompletedAsync(
+                    new SnapshotPersistRequest
+                    {
+                        DeviceId = device.Id,
+                        RequestedBy = requestedBy,
+                        IdempotencyKey = command.IdempotencyKey,
+                        Capture = captured,
+                        CapturedAtUtc = DateTimeOffset.UtcNow,
+                    },
+                    ct).ConfigureAwait(false);
+                await AppendAuditAsync(
+                    command.Actor,
+                    "snapshot.capture.completed",
+                    stored,
+                    identical: false,
+                    ct).ConfigureAwait(false);
             },
             cancellationToken).ConfigureAwait(false);
 
-        await AuditAsync(
-            command.Actor,
-            "snapshot.capture.completed",
-            stored,
-            identical: false,
-            cancellationToken).ConfigureAwait(false);
-
-        return ApplicationResults.Ok(ViewMapper.ToView(stored, deduplicated: false));
+        return ApplicationResults.Ok(ViewMapper.ToView(stored!, deduplicated: false));
     }
 
-    private async Task AuditAsync(
+    private Task AuditInUnitOfWorkAsync(
+        string actor,
+        string action,
+        StoredSnapshot snapshot,
+        bool identical,
+        CancellationToken cancellationToken)
+        => _unitOfWork.ExecuteAsync(
+            ct => AppendAuditAsync(actor, action, snapshot, identical, ct),
+            cancellationToken);
+
+    private async Task AppendAuditAsync(
         string actor,
         string action,
         StoredSnapshot snapshot,

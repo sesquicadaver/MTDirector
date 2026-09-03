@@ -215,9 +215,11 @@ public sealed class EfSnapshotStore : ISnapshotStore
             ?? throw new InvalidOperationException(
                 $"Device '{request.DeviceId.Value}' was not found; cannot persist snapshot capture.");
 
-        await using IDbContextTransaction tx = await _db.Database
-            .BeginTransactionAsync(cancellationToken)
-            .ConfigureAwait(false);
+        IDbContextTransaction? ambient = _db.Database.CurrentTransaction;
+        bool ownsTransaction = ambient is null;
+        IDbContextTransaction tx = ownsTransaction
+            ? await _db.Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false)
+            : ambient!;
         try
         {
             _db.CaptureOperations.Add(new CaptureOperationEntity
@@ -324,13 +326,27 @@ public sealed class EfSnapshotStore : ISnapshotStore
             device.UpdatedAtUtc = now;
 
             await _db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-            await tx.CommitAsync(cancellationToken).ConfigureAwait(false);
+            if (ownsTransaction)
+            {
+                await tx.CommitAsync(cancellationToken).ConfigureAwait(false);
+            }
         }
         catch
         {
-            await tx.RollbackAsync(cancellationToken).ConfigureAwait(false);
+            if (ownsTransaction)
+            {
+                await tx.RollbackAsync(cancellationToken).ConfigureAwait(false);
+            }
+
             _db.ChangeTracker.Clear();
             throw;
+        }
+        finally
+        {
+            if (ownsTransaction)
+            {
+                await tx.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         SnapshotMetadata metadata = SnapshotMetadata.CreateCompleted(

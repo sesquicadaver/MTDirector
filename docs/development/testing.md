@@ -244,6 +244,16 @@ Issue [#378](https://github.com/sesquicadaver/MTDirector/issues/378) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec05"`.
 
+## Living Specification — CaptureSnapshot persist+audit UoW (SEC-12)
+
+| ТЗ / AC | Модуль | Тест |
+|---------|--------|------|
+| Persist+audit in one UoW | `CaptureSnapshotUseCase` | `MutationAtomicitySec12LivingSpecTests.Ac1` |
+| Capture port outside UoW | same | `Ac2` |
+| known-limitations | `known-limitations.md` | `Ac3` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec12"`.
+
 ## Living Specification — Drift detect + response-feedback UoW (SEC-11)
 
 | ТЗ / AC | Модуль | Тест |

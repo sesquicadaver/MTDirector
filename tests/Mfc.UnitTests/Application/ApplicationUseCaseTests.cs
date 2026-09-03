@@ -665,7 +665,7 @@ public sealed class SnapshotUseCaseTests
         Assert.Equal(ObservedReachability.Reachable, afterOk!.LastObservedReachability);
 
         Guid idempotencyKey = Guid.Parse("11111111-1111-1111-1111-111111111111");
-        CaptureSnapshotUseCase captureUseCase = new(auth, devices, profiles, capture, snapshots, audit);
+        CaptureSnapshotUseCase captureUseCase = new(auth, devices, profiles, capture, snapshots, audit, new FakeUnitOfWork());
         ApplicationResult<SnapshotView> first = await captureUseCase.ExecuteAsync(
             new CaptureSnapshotCommand { Actor = "a", DeviceId = device.Id, IdempotencyKey = idempotencyKey });
         ApplicationResult<SnapshotView> second = await captureUseCase.ExecuteAsync(
@@ -815,7 +815,7 @@ public sealed class SnapshotUseCaseTests
         Assert.Equal("not_found", discoverMissing.Error!.Code);
 
         ApplicationResult<SnapshotView> captureMissing =
-            await new CaptureSnapshotUseCase(auth, devices, profiles, capture, snapshots, audit).ExecuteAsync(
+            await new CaptureSnapshotUseCase(auth, devices, profiles, capture, snapshots, audit, new FakeUnitOfWork()).ExecuteAsync(
                 new CaptureSnapshotCommand { Actor = "a", DeviceId = missingId, IdempotencyKey = idempotencyKey });
         Assert.Equal("not_found", captureMissing.Error!.Code);
 
@@ -871,7 +871,7 @@ public sealed class SnapshotUseCaseTests
         Assert.Equal("failed", noProfile.Error!.Code);
 
         ApplicationResult<SnapshotView> captureNoProfile =
-            await new CaptureSnapshotUseCase(auth, devices, profiles, capture, snapshots, audit).ExecuteAsync(
+            await new CaptureSnapshotUseCase(auth, devices, profiles, capture, snapshots, audit, new FakeUnitOfWork()).ExecuteAsync(
                 new CaptureSnapshotCommand
                 {
                     Actor = "a",
@@ -891,7 +891,7 @@ public sealed class SnapshotUseCaseTests
                 new DiscoverDeviceCommand { Actor = "guest", DeviceId = device.Id })).Error!.Code);
         Assert.Equal(
             "forbidden",
-            (await new CaptureSnapshotUseCase(auth, devices, profiles, capture, snapshots, audit).ExecuteAsync(
+            (await new CaptureSnapshotUseCase(auth, devices, profiles, capture, snapshots, audit, new FakeUnitOfWork()).ExecuteAsync(
                 new CaptureSnapshotCommand
                 {
                     Actor = "guest",
@@ -1130,7 +1130,7 @@ public sealed class SnapshotUseCaseTests
         Assert.Null(failedView.Value.SnapshotHashHex);
         Assert.False(failedView.Value.Deduplicated);
 
-        CaptureSnapshotUseCase captureUseCase = new(auth, devices, profiles, capture, snapshots, audit);
+        CaptureSnapshotUseCase captureUseCase = new(auth, devices, profiles, capture, snapshots, audit, new FakeUnitOfWork());
         byte[] digest = Enumerable.Repeat((byte)6, 32).ToArray();
         capture.NextResult = FakeSnapshotCapturePort.CreateResult(digest);
         ApplicationResult<SnapshotView> first = await captureUseCase.ExecuteAsync(
@@ -1203,7 +1203,7 @@ public sealed class SnapshotUseCaseTests
             CaProfileRef = "ca",
         };
 
-        CaptureSnapshotUseCase captureUseCase = new(auth, devices, profiles, capture, snapshots, audit);
+        CaptureSnapshotUseCase captureUseCase = new(auth, devices, profiles, capture, snapshots, audit, new FakeUnitOfWork());
         ApplicationResult<SnapshotView> emptyKey = await captureUseCase.ExecuteAsync(
             new CaptureSnapshotCommand { Actor = "a", DeviceId = device.Id, IdempotencyKey = Guid.Empty });
         Assert.Equal("failed", emptyKey.Error!.Code);
@@ -1211,7 +1211,7 @@ public sealed class SnapshotUseCaseTests
         capture.NextResult = FakeSnapshotCapturePort.CreateResult(Enumerable.Repeat((byte)1, 32).ToArray());
         ThrowingSnapshotCapturePort unstable = new(new InvalidOperationException("SNAPSHOT_UNSTABLE drift"));
         ApplicationResult<SnapshotView> unstableResult = await new CaptureSnapshotUseCase(
-            auth, devices, profiles, unstable, snapshots, audit).ExecuteAsync(
+            auth, devices, profiles, unstable, snapshots, audit, new FakeUnitOfWork()).ExecuteAsync(
             new CaptureSnapshotCommand
             {
                 Actor = "a",
@@ -1222,7 +1222,7 @@ public sealed class SnapshotUseCaseTests
 
         ThrowingSnapshotCapturePort tooLarge = new(new InvalidOperationException("SNAPSHOT_TOO_LARGE limit"));
         ApplicationResult<SnapshotView> tooLargeResult = await new CaptureSnapshotUseCase(
-            auth, devices, profiles, tooLarge, snapshots, audit).ExecuteAsync(
+            auth, devices, profiles, tooLarge, snapshots, audit, new FakeUnitOfWork()).ExecuteAsync(
             new CaptureSnapshotCommand
             {
                 Actor = "a",
@@ -1233,7 +1233,7 @@ public sealed class SnapshotUseCaseTests
 
         ThrowingSnapshotCapturePort dependency = new(new IOException("network down"));
         ApplicationResult<SnapshotView> dependencyResult = await new CaptureSnapshotUseCase(
-            auth, devices, profiles, dependency, snapshots, audit).ExecuteAsync(
+            auth, devices, profiles, dependency, snapshots, audit, new FakeUnitOfWork()).ExecuteAsync(
             new CaptureSnapshotCommand
             {
                 Actor = "a",
