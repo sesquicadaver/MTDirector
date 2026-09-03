@@ -26,6 +26,7 @@ using Mfc.Infrastructure.Persistence.Logging;
 using Mfc.Infrastructure.Security;
 using Mfc.RouterOs.DependencyInjection;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
@@ -160,6 +161,13 @@ public static class Program
             kestrel.ConfigureEndpointDefaults(endpoint =>
             {
                 endpoint.Protocols = HttpProtocols.Http2;
+            });
+
+            ClientCertificateMode clientCertificateMode =
+                GrpcClientCertificateModeParser.Parse(options.Grpc.ClientCertificateMode);
+            kestrel.ConfigureHttpsDefaults(https =>
+            {
+                https.ClientCertificateMode = clientCertificateMode;
             });
         });
 

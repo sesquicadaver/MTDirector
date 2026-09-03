@@ -15,6 +15,7 @@ Configuration sources (highest wins last):
 | `Grpc:ListenAddress` | Kestrel URL (`https://` required outside Dev insecure loopback) |
 | `Grpc:ShutdownTimeoutSeconds` | Graceful shutdown budget (1–600) |
 | `Grpc:AllowInsecureLoopback` | Development-only HTTP on loopback |
+| `Grpc:ClientCertificateMode` | W7-03: `NoCertificate` (default), `AllowCertificate`, or `RequireCertificate` (HTTPS only; Kestrel `ConfigureHttpsDefaults`) |
 | `Security:RequireTls` | Reject non-TLS production binds |
 | `Security:MasterKeyProvider` | Named master-key provider (`Development` or `OsKeyStore`; `Development` forbidden outside Development) |
 | `Security:MasterKeyBase64` (env `MFC__Security__MasterKeyBase64`) | Required for `OsKeyStore`: base64 of a 32-byte master key (never stored in PostgreSQL) |
@@ -58,6 +59,17 @@ Registration: `AddMfcRouterOs(IConfiguration)` in `Program.cs` (or explicit `Add
 With both flags `false` (default), inventory probe/capture and write runtimes remain fail-closed — CI behaviour unchanged.
 
 Pilot checklist: [`pilot-runbook.md`](pilot-runbook.md).
+
+## Desktop mTLS client certificate (W7-03)
+
+When Controller HTTPS uses `AllowCertificate` / `RequireCertificate`, Desktop can present a lab PFX:
+
+| Key | Purpose |
+|-----|---------|
+| `Desktop:ClientCertificatePath` | Absolute path to client PFX (empty = no client cert) |
+| `Desktop:ClientCertificatePassword` | Optional PFX password |
+
+Development HTTP loopback keeps `ClientCertificateMode=NoCertificate` and empty Desktop cert path.
 
 ## Examples
 

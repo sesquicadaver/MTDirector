@@ -38,6 +38,12 @@ public sealed class GrpcHostOptions
     /// Production must never enable this.
     /// </summary>
     public bool AllowInsecureLoopback { get; init; }
+
+    /// <summary>
+    /// HTTPS client-certificate mode (W7-03): <c>NoCertificate</c>, <c>AllowCertificate</c>, or <c>RequireCertificate</c>.
+    /// Applied via Kestrel <c>ConfigureHttpsDefaults</c>. HTTP binds ignore this (must stay NoCertificate).
+    /// </summary>
+    public string ClientCertificateMode { get; init; } = "NoCertificate";
 }
 
 public sealed class SecurityHostOptions

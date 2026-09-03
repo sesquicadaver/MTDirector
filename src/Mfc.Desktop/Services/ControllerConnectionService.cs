@@ -87,11 +87,7 @@ public sealed class ControllerConnectionService : IControllerConnectionService
                 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             }
 
-            SocketsHttpHandler httpHandler = new()
-            {
-                EnableMultipleHttp2Connections = true,
-                ConnectTimeout = TimeSpan.FromSeconds(_options.HealthCheckTimeoutSeconds),
-            };
+            SocketsHttpHandler httpHandler = DesktopGrpcHttpHandlerFactory.Create(_options);
 
             _channel = GrpcChannel.ForAddress(endpoint, new GrpcChannelOptions
             {
