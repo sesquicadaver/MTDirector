@@ -203,6 +203,19 @@ Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DeploymentArtifactMaterializerSec02|FullyQualifiedName~WritePathReadinessLivingSpecTests.Ac3"`.
 
+## Living Specification — Audit hash chain (SEC-03)
+
+Issue [#373](https://github.com/sesquicadaver/MTDirector/issues/373) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Hash includes predecessor bytes (same length, different content) | `AuditEventHashing` | `Ac1HashIncludesPreviousEventHashBytesNotOnlyLength` |
+| Genesis vs chained | same | `Ac2GenesisAndChainedHashesDifferWithStableIdentity` |
+| Event id in preimage | same | `Ac3EventIdIsPartOfPreimage` |
+| Append serialization under contention | `EfAuditEventWriter` + unique `PreviousEventHash` | `AuditEventHashChainSec03IntegrationTests.ConcurrentAppendsDoNotForkTipSilently` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditEventHashChainSec03"`.
+
 ## Living Specification — desktop snapshot viewer (M1-28)
 
 Initial Issue Set M1-28 AC → module → tests:
@@ -2082,7 +2095,7 @@ Issue Set M6-09. **M6 CLOSED**. Live CHR / live physical CRS OFF — E2E Living 
 
 | AC / вимога | Модуль | Тест / артефакт |
 |-------------|--------|-----------------|
-| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md`; §3.C NEXT = SEC-03 | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
+| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md`; §3.C NEXT = residual | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
 | AC#2 Release gates executed | `docs/release/release-gates.md` | `Ac2ReleaseGatesChecklistExists` |
 | AC#3 CHR matrix green | E2E Living Specs (substitute) | `Ac3ChrMatrixSubstitutedByE2ELivingSpecs` |
 | AC#4 Physical CRS green | `VrrpCrsE2E` + `crs-switch` | `Ac4PhysicalCrsSubstitutedByScriptedFixture` |

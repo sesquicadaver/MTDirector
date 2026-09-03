@@ -258,6 +258,7 @@ public sealed class SecurityBackupRestoreAcceptanceTests
             AuditEventEntity seeded = await db.AuditEvents.OrderByDescending(e => e.OccurredAtUtc).FirstAsync();
             byte[] expected = ComputeAuditEventHash(
                 seeded.PreviousEventHash,
+                seeded.Id,
                 seeded.Actor,
                 seeded.Action,
                 seeded.PayloadJson);
@@ -305,13 +306,14 @@ public sealed class SecurityBackupRestoreAcceptanceTests
         return (sourceCs, restoreCs, deviceId, password);
     }
 
-    /// <summary>Mirrors <c>EfAuditEventWriter</c> event hash preimage (M6-08 Living Spec AC10).</summary>
+    /// <summary>Mirrors <c>AuditEventHashing.Compute</c> / <c>EfAuditEventWriter</c> (SEC-03).</summary>
     private static byte[] ComputeAuditEventHash(
         byte[]? previous,
+        Guid eventId,
         string actor,
         string action,
         string payloadJson)
-        => SHA256.HashData(Encoding.UTF8.GetBytes($"{previous?.Length ?? 0}|{actor}|{action}|{payloadJson}"));
+        => Mfc.Infrastructure.Audit.AuditEventHashing.Compute(previous, eventId, actor, action, payloadJson);
 
     private static async Task<(DomainNode Node, DomainDevice Device, DeploymentPlan Plan)> SeedRouterAsync(
         ISiteStore sites,

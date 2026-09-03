@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+using System.Data;
 using System.Text.Json;
 using Mfc.Application.Abstractions.Audit;
 using Mfc.Infrastructure.Persistence;
@@ -7,7 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Mfc.Infrastructure.Audit;
 
-/// <summary>Appends hash-chained audit events. Callers must never pass credential material in payloadJson.</summary>
+/// <summary>
+/// Appends hash-chained audit events (SEC-03). Callers must never pass credential material in payloadJson.
+/// Appends run under a serializable transaction so concurrent writers cannot fork the tip silently.
+/// </summary>
 public sealed class EfAuditEventWriter : IAuditEventWriter
 {
     private readonly MfcDbContext _db;
@@ -29,27 +32,55 @@ public sealed class EfAuditEventWriter : IAuditEventWriter
         ArgumentException.ThrowIfNullOrWhiteSpace(payloadJson);
         AssertNoCredentialLeak(payloadJson);
 
-        byte[]? previous = await _db.AuditEvents
-            .OrderByDescending(e => e.OccurredAtUtc)
-            .Select(e => e.EventHash)
-            .FirstOrDefaultAsync(cancellationToken)
+        string trimmedActor = actor.Trim();
+        string trimmedAction = action.Trim();
+
+        // Serializable tip read + insert: concurrent appends must serialize or fail closed.
+        await using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction tx = await _db.Database
+            .BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken)
             .ConfigureAwait(false);
 
-        byte[] eventHash = SHA256.HashData(
-            System.Text.Encoding.UTF8.GetBytes($"{previous?.Length ?? 0}|{actor}|{action}|{payloadJson}"));
-
-        _db.AuditEvents.Add(new AuditEventEntity
+        try
         {
-            Id = Guid.NewGuid(),
-            OccurredAtUtc = DateTimeOffset.UtcNow,
-            Actor = actor.Trim(),
-            Action = action.Trim(),
-            PayloadJson = payloadJson,
-            PreviousEventHash = previous,
-            EventHash = eventHash,
-        });
+            // Session-scoped xact advisory lock serializes tip selection across writers (SEC-03).
+            await _db.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock(87201403)", cancellationToken)
+                .ConfigureAwait(false);
 
-        await _db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            byte[]? previous = await _db.AuditEvents
+                .OrderByDescending(e => e.OccurredAtUtc)
+                .ThenByDescending(e => e.Id)
+                .Select(e => e.EventHash)
+                .FirstOrDefaultAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            Guid eventId = Guid.NewGuid();
+            DateTimeOffset occurredAt = DateTimeOffset.UtcNow;
+            byte[] eventHash = AuditEventHashing.Compute(
+                previous,
+                eventId,
+                trimmedActor,
+                trimmedAction,
+                payloadJson);
+
+            _db.AuditEvents.Add(new AuditEventEntity
+            {
+                Id = eventId,
+                OccurredAtUtc = occurredAt,
+                Actor = trimmedActor,
+                Action = trimmedAction,
+                PayloadJson = payloadJson,
+                PreviousEventHash = previous,
+                EventHash = eventHash,
+            });
+
+            await _db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await tx.CommitAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch
+        {
+            await tx.RollbackAsync(cancellationToken).ConfigureAwait(false);
+            throw;
+        }
     }
 
     private static void AssertNoCredentialLeak(string payloadJson)
