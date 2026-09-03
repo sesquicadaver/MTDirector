@@ -59,6 +59,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | No Incident gRPC surface | Contracts / Controller | **SEC-06 DONE** |
 | Partial UoW on mutations | Application write paths | **SEC-07 DONE** |
 | Deploy/profile UoW residual | Application write paths | **SEC-08 DONE** |
+| Onboarding UoW residual | Application write paths | **SEC-09 DONE** |
 
 ### P3 / new Contracts (evidence)
 
@@ -105,6 +106,7 @@ SEC-05 Atomic mutation/idempotency/audit **DONE**
 SEC-06 Incident assessment gRPC **DONE**
 SEC-07 Extend atomic mutation boundary **DONE**
 SEC-08 Connection profile + deployment UoW **DONE**
+SEC-09 Onboarding workflow UoW **DONE**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -137,8 +139,9 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 21 | SEC-06 | [#380](https://github.com/sesquicadaver/MTDirector/issues/380) | Incident assessment gRPC surface | **DONE** |
 | 22 | SEC-07 | [#383](https://github.com/sesquicadaver/MTDirector/issues/383) | Extend atomic mutation boundary | **DONE** |
 | 23 | SEC-08 | [#385](https://github.com/sesquicadaver/MTDirector/issues/385) | Connection profile + deployment UoW | **DONE** |
+| 24 | SEC-09 | [#387](https://github.com/sesquicadaver/MTDirector/issues/387) | Onboarding workflow UoW | **DONE** |
 
-**§3.C NEXT = residual (CRS lab ops)**. SEC-08 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = residual (CRS lab ops)**. SEC-09 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

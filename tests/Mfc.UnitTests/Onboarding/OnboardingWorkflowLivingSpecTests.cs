@@ -466,9 +466,10 @@ public sealed class OnboardingWorkflowLivingSpecTests
                 new CreateOnboardingPlanUseCase(
                     auth, nodes, store, idempotency, audit, clock,
                     new VrrpPairConsistencyLoader(
-                        new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore())),
-                new StartOnboardingUseCase(auth, nodes, store, idempotency, audit, clock, runtime),
-                new RollbackOnboardingWorkflowUseCase(auth, nodes, store, idempotency, audit, clock, runtime),
+                        new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore()),
+                    new FakeUnitOfWork()),
+                new StartOnboardingUseCase(auth, nodes, store, idempotency, audit, clock, runtime, new FakeUnitOfWork()),
+                new RollbackOnboardingWorkflowUseCase(auth, nodes, store, idempotency, audit, clock, runtime, new FakeUnitOfWork()),
                 new GetOnboardingRecoveryStatusUseCase(auth, nodes, store, audit));
         }
 

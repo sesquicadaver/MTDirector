@@ -237,6 +237,7 @@ public sealed class CreateOnboardingPlanUseCase
     private readonly IAuditEventWriter _audit;
     private readonly IClock _clock;
     private readonly VrrpPairConsistencyLoader _vrrpPair;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CreateOnboardingPlanUseCase(
         IAuthorizationBoundary auth,
@@ -245,7 +246,8 @@ public sealed class CreateOnboardingPlanUseCase
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
         IClock clock,
-        VrrpPairConsistencyLoader vrrpPair)
+        VrrpPairConsistencyLoader vrrpPair,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
@@ -254,6 +256,7 @@ public sealed class CreateOnboardingPlanUseCase
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(clock);
         ArgumentNullException.ThrowIfNull(vrrpPair);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _nodes = nodes;
         _onboarding = onboarding;
@@ -261,6 +264,7 @@ public sealed class CreateOnboardingPlanUseCase
         _audit = audit;
         _clock = clock;
         _vrrpPair = vrrpPair;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<OnboardingPlanSummaryView>> ExecuteAsync(
@@ -331,14 +335,19 @@ public sealed class CreateOnboardingPlanUseCase
                 command.DevicePlans,
                 new UserId(ActorKey.FromActor(command.Actor)),
                 _clock.UtcNow);
-            await _onboarding.AddPlanAsync(plan, cancellationToken).ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                command.Actor, Operation, command.IdempotencyKey, requestHash, plan.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new { plan_id = plan.Id.Value, node_id = plan.NodeId.Value }),
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
+                {
+                    await _onboarding.AddPlanAsync(plan, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, plan.Id.Value, ct)
+                        .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new { plan_id = plan.Id.Value, node_id = plan.NodeId.Value }),
+                            ct).ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ToPlanView(plan));
         }
@@ -405,6 +414,7 @@ public sealed class StartOnboardingUseCase
     private readonly IAuditEventWriter _audit;
     private readonly IClock _clock;
     private readonly IOnboardingRuntime _runtime;
+    private readonly IUnitOfWork _unitOfWork;
 
     public StartOnboardingUseCase(
         IAuthorizationBoundary auth,
@@ -413,7 +423,8 @@ public sealed class StartOnboardingUseCase
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
         IClock clock,
-        IOnboardingRuntime runtime)
+        IOnboardingRuntime runtime,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
@@ -422,6 +433,7 @@ public sealed class StartOnboardingUseCase
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(clock);
         ArgumentNullException.ThrowIfNull(runtime);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _nodes = nodes;
         _onboarding = onboarding;
@@ -429,6 +441,7 @@ public sealed class StartOnboardingUseCase
         _audit = audit;
         _clock = clock;
         _runtime = runtime;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<OnboardingOperationSummaryView>> ExecuteAsync(
@@ -521,20 +534,25 @@ public sealed class StartOnboardingUseCase
                 return ApplicationResults.Fail(ApplicationError.Failed(ex.Message));
             }
 
-            await _onboarding.SaveOperationAsync(operation, cancellationToken).ConfigureAwait(false);
-            await _nodes.UpdateAsync(node, cancellationToken).ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
                 {
-                    operation_id = operation.Id.Value,
-                    plan_id = plan.Id.Value,
-                    state = operation.State.ToString(),
-                }),
+                    await _onboarding.SaveOperationAsync(operation, ct).ConfigureAwait(false);
+                    await _nodes.UpdateAsync(node, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, ct)
+                        .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new
+                            {
+                                operation_id = operation.Id.Value,
+                                plan_id = plan.Id.Value,
+                                state = operation.State.ToString(),
+                            }),
+                            ct).ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ToOperationView(operation, executed.Timeline, executed.NodeManaged));
         }
@@ -588,6 +606,7 @@ public sealed class RollbackOnboardingWorkflowUseCase
     private readonly IAuditEventWriter _audit;
     private readonly IClock _clock;
     private readonly IOnboardingRuntime _runtime;
+    private readonly IUnitOfWork _unitOfWork;
 
     public RollbackOnboardingWorkflowUseCase(
         IAuthorizationBoundary auth,
@@ -596,7 +615,8 @@ public sealed class RollbackOnboardingWorkflowUseCase
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
         IClock clock,
-        IOnboardingRuntime runtime)
+        IOnboardingRuntime runtime,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
@@ -605,6 +625,7 @@ public sealed class RollbackOnboardingWorkflowUseCase
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(clock);
         ArgumentNullException.ThrowIfNull(runtime);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _nodes = nodes;
         _onboarding = onboarding;
@@ -612,6 +633,7 @@ public sealed class RollbackOnboardingWorkflowUseCase
         _audit = audit;
         _clock = clock;
         _runtime = runtime;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<OnboardingOperationSummaryView>> ExecuteAsync(
@@ -677,19 +699,24 @@ public sealed class RollbackOnboardingWorkflowUseCase
 
             OnboardingRollbackResult rolled = await _runtime.RollbackAsync(node, plan, operation, _clock.UtcNow, cancellationToken)
                 .ConfigureAwait(false);
-            await _onboarding.SaveOperationAsync(operation, cancellationToken).ConfigureAwait(false);
-            await _nodes.UpdateAsync(node, cancellationToken).ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
                 {
-                    operation_id = operation.Id.Value,
-                    state = operation.State.ToString(),
-                }),
+                    await _onboarding.SaveOperationAsync(operation, ct).ConfigureAwait(false);
+                    await _nodes.UpdateAsync(node, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, ct)
+                        .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new
+                            {
+                                operation_id = operation.Id.Value,
+                                state = operation.State.ToString(),
+                            }),
+                            ct).ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(StartOnboardingUseCase.ToOperationView(operation, rolled.Timeline, nodeManaged: false));
         }
