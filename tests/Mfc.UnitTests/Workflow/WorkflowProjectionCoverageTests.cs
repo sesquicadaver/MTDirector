@@ -188,7 +188,7 @@ public sealed class WorkflowProjectionCoverageTests
     {
         FakeAuthorizationBoundary auth = new();
         auth.DeniedPermissions.Add(ApplicationPermissions.InventoryWrite);
-        UpsertDeviceHashStateUseCase useCase = new(auth, new FakeDeviceStore(), new FakeDeviceHashStateStore(), new FakeClock());
+        UpsertDeviceHashStateUseCase useCase = new(auth, new FakeDeviceStore(), new FakeDeviceHashStateStore(), new FakeClock(), new FakeUnitOfWork());
 
         ApplicationResult<DeviceHashStateView> result = await useCase.ExecuteAsync(new UpsertDeviceHashStateCommand
         {
@@ -208,7 +208,8 @@ public sealed class WorkflowProjectionCoverageTests
             new FakeAuthorizationBoundary(),
             new FakeDeviceStore(),
             new FakeDeviceHashStateStore(),
-            new FakeClock());
+            new FakeClock(),
+            new FakeUnitOfWork());
 
         ApplicationResult<DeviceHashStateView> result = await useCase.ExecuteAsync(new UpsertDeviceHashStateCommand
         {
@@ -231,7 +232,8 @@ public sealed class WorkflowProjectionCoverageTests
             new FakeAuthorizationBoundary(),
             devices,
             new FakeDeviceHashStateStore(),
-            new FakeClock());
+            new FakeClock(),
+            new FakeUnitOfWork());
 
         ApplicationResult<DeviceHashStateView> result = await useCase.ExecuteAsync(new UpsertDeviceHashStateCommand
         {
@@ -253,7 +255,7 @@ public sealed class WorkflowProjectionCoverageTests
         FakeClock clock = new();
         Device device = CreateDeviceEntity(Guid.NewGuid(), Guid.NewGuid(), ManagementState.Managed, lastCompletedCaptureId: Guid.NewGuid());
         await devices.AddAsync(device);
-        UpsertDeviceHashStateUseCase useCase = new(new FakeAuthorizationBoundary(), devices, hashStates, clock);
+        UpsertDeviceHashStateUseCase useCase = new(new FakeAuthorizationBoundary(), devices, hashStates, clock, new FakeUnitOfWork());
 
         ApplicationResult<DeviceHashStateView> created = await useCase.ExecuteAsync(new UpsertDeviceHashStateCommand
         {

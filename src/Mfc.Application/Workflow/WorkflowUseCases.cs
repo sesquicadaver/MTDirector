@@ -41,21 +41,25 @@ public sealed class UpsertDeviceHashStateUseCase
     private readonly IDeviceStore _devices;
     private readonly IDeviceHashStateStore _hashStates;
     private readonly IClock _clock;
+    private readonly IUnitOfWork _unitOfWork;
 
     public UpsertDeviceHashStateUseCase(
         IAuthorizationBoundary auth,
         IDeviceStore devices,
         IDeviceHashStateStore hashStates,
-        IClock clock)
+        IClock clock,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(devices);
         ArgumentNullException.ThrowIfNull(hashStates);
         ArgumentNullException.ThrowIfNull(clock);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _devices = devices;
         _hashStates = hashStates;
         _clock = clock;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<DeviceHashStateView>> ExecuteAsync(
@@ -118,7 +122,9 @@ public sealed class UpsertDeviceHashStateUseCase
                 command.AnchorKnown,
                 now);
 
-        await _hashStates.UpsertAsync(state, cancellationToken).ConfigureAwait(false);
+        await _unitOfWork.ExecuteAsync(
+            async ct => await _hashStates.UpsertAsync(state, ct).ConfigureAwait(false),
+            cancellationToken).ConfigureAwait(false);
         return ApplicationResults.Ok(WorkflowViewMapper.ToView(state));
     }
 
