@@ -19,4 +19,13 @@ public sealed class DesktopOptions
 
     /// <summary>Delay between reconnect attempts.</summary>
     public int ReconnectDelayMilliseconds { get; init; } = 1000;
+
+    /// <summary>
+    /// Optional path to a client certificate (PFX) presented to Controller when mTLS is enabled (W7-03).
+    /// Empty keeps the previous no-client-cert behaviour (Development HTTP loopback).
+    /// </summary>
+    public string? ClientCertificatePath { get; init; }
+
+    /// <summary>Optional password for <see cref="ClientCertificatePath"/> PFX.</summary>
+    public string? ClientCertificatePassword { get; init; }
 }

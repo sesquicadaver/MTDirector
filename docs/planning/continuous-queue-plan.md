@@ -68,7 +68,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Routing assurance state upsert UoW | Application write paths | **SEC-15 DONE** |
 | Desktop MikroTik/Winbox display labels | Desktop presentation | **W7-01 DONE** |
 | gRPC actor ↔ authenticated principal | Controller authn | **W7-02 DONE** |
-| Controller Kestrel mTLS client certificates | Controller TLS | **W7-03 OPEN** |
+| Controller Kestrel mTLS client certificates | Controller TLS | **W7-03 DONE** |
+| Validate mTLS client certs against TrustedCa | Controller TLS | **W7-04 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -124,7 +125,8 @@ SEC-14 OpenEndpointPresence UoW **DONE**
 SEC-15 UpsertRoutingAssuranceState UoW **DONE**
 W7-01 Desktop MikroTik/Winbox display labels **DONE**
 W7-02 Bind gRPC actor to authenticated principal **DONE**
-W7-03 Controller Kestrel mTLS client certificates **OPEN**
+W7-03 Controller Kestrel mTLS client certificates **DONE**
+W7-04 Validate mTLS client certs against TrustedCa **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -166,9 +168,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 30 | SEC-15 | [#398](https://github.com/sesquicadaver/MTDirector/issues/398) | UpsertRoutingAssuranceState UoW | **DONE** |
 | 31 | W7-01 | [#401](https://github.com/sesquicadaver/MTDirector/issues/401) | Desktop MikroTik/Winbox display labels | **DONE** |
 | 32 | W7-02 | [#402](https://github.com/sesquicadaver/MTDirector/issues/402) | Bind gRPC actor to authenticated principal | **DONE** |
-| 33 | W7-03 | [#404](https://github.com/sesquicadaver/MTDirector/issues/404) | Controller Kestrel mTLS client certificates | **OPEN** |
+| 33 | W7-03 | [#404](https://github.com/sesquicadaver/MTDirector/issues/404) | Controller Kestrel mTLS client certificates | **DONE** |
+| 34 | W7-04 | [#406](https://github.com/sesquicadaver/MTDirector/issues/406) | Validate mTLS client certs against TrustedCa | **OPEN** |
 
-**§3.C NEXT = W7-03 (#404)**. W7-02 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-04 (#406)**. W7-03 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
