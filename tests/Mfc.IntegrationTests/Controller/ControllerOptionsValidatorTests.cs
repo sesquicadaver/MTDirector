@@ -20,7 +20,11 @@ public sealed class ControllerOptionsValidatorTests
                 RequireTls = true,
                 MasterKeyProvider = "Development",
             },
-            Authentication = new AuthenticationHostOptions { AllowDevelopmentAuthentication = true },
+            Authentication = new AuthenticationHostOptions
+            {
+                AllowDevelopmentAuthentication = true,
+                AllowMetadataActor = true,
+            },
             Database = new DatabaseHostOptions
             {
                 ConnectionString = "Host=127.0.0.1;Port=5432;Database=mfc;Username=mfc;Password=secret",
@@ -175,6 +179,34 @@ public sealed class ControllerOptionsValidatorTests
             () => ControllerOptionsValidator.Validate(options, Environments.Production));
 
         Assert.Contains("master-key", ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void ProductionRejectsAllowMetadataActor()
+    {
+        ControllerOptions options = new()
+        {
+            Grpc = new GrpcHostOptions
+            {
+                ListenAddress = "https://127.0.0.1:5101",
+                AllowInsecureLoopback = false,
+            },
+            Security = new SecurityHostOptions
+            {
+                RequireTls = true,
+                MasterKeyProvider = "OsKeyStore",
+            },
+            Authentication = new AuthenticationHostOptions { AllowMetadataActor = true },
+            Database = new DatabaseHostOptions
+            {
+                ConnectionString = "Host=127.0.0.1;Database=mfc;Username=mfc;Password=secret",
+            },
+        };
+
+        InvalidOperationException ex = Assert.Throws<InvalidOperationException>(
+            () => ControllerOptionsValidator.Validate(options, Environments.Production));
+
+        Assert.Contains("AllowMetadataActor", ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]

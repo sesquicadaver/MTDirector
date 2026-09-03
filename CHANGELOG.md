@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-02** ([#402](https://github.com/sesquicadaver/MTDirector/issues/402)): Production gRPC actor bound to authenticated principal (peer identity / client cert / claims); metadata spoof rejected; Development lab metadata path retained; `AllowMetadataActor` forbidden outside Development. Living Spec `GrpcRequestActorResolverTests`. Seeded W7-03 (#404). **§3.C NEXT = W7-03 (#404)**.
 - **W7-01** ([#401](https://github.com/sesquicadaver/MTDirector/issues/401)): Desktop `DesktopDisplayLabels` — MikroTik/Winbox section and property names in Snapshot/Diff/Inventory UI. Seeded W7-02 (#402). **§3.C NEXT = W7-02 (#402)**.
 - **SEC-15** ([#398](https://github.com/sesquicadaver/MTDirector/issues/398)): `UpsertRoutingAssuranceStateUseCase` upsert inside `IUnitOfWork`. Living Spec `MutationAtomicitySec15LivingSpecTests`. **§3.C SEC tranche CLOSED**; **NEXT = residual (CRS lab ops)** until next PLAN seed.
 - **SEC-14** ([#396](https://github.com/sesquicadaver/MTDirector/issues/396)): `OpenEndpointPresenceUseCase` assessment+migration writes inside `IUnitOfWork`. Living Spec `MutationAtomicitySec14LivingSpecTests`. Seeded SEC-15 (#398). **§3.C NEXT = SEC-15 (#398)**.

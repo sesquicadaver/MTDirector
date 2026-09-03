@@ -176,17 +176,22 @@ Issue [#369](https://github.com/sesquicadaver/MTDirector/issues/369) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MoveRule|FullyQualifiedName~Ac5iPoliciesReorder"`.
 
-## Living Specification — Reject system actor gRPC spoof (SEC-01)
+## Living Specification — Reject system actor gRPC spoof (SEC-01) + principal bind (W7-02)
 
-Issue [#371](https://github.com/sesquicadaver/MTDirector/issues/371) AC → module → tests:
+Issues [#371](https://github.com/sesquicadaver/MTDirector/issues/371) / [#402](https://github.com/sesquicadaver/MTDirector/issues/402) AC → module → tests:
 
 | AC / вимога | Модуль | Тест |
 |-------------|--------|------|
 | `x-mfc-actor` = SystemActor → Unauthorized | `GrpcRequestActorResolver` | `GrpcRequestActorResolverTests.RejectsReservedSystemActorViaMetadata` |
-| Non-system actor accepted | same | `AllowsNonSystemActorMetadata` |
+| Development non-system metadata accepted | same | `DevelopmentAllowsNonSystemActorMetadata` |
+| Production metadata without principal → Unauthorized | same | `ProductionRejectsMetadataWithoutPrincipal` |
+| Production peer identity principal used | same | `ProductionUsesPeerIdentityPrincipal` |
+| Metadata ≠ principal → Unauthorized | same | `ProductionRejectsMetadataThatDisagreesWithPrincipal` |
+| SystemActor via principal rejected | same | `RejectsSystemActorViaPrincipal` |
+| `AllowMetadataActor` forbidden outside Development | `ControllerOptionsValidator` | `ProductionRejectsAllowMetadataActor` |
 | In-process SystemActor still authorized | `SystemActorAuthorizationBoundary` | `SystemActorBoundaryStillAllowsInProcessJobActor` |
 
-Filter: `dotnet test --filter "FullyQualifiedName~GrpcRequestActorResolverTests"`.
+Filter: `dotnet test --filter "FullyQualifiedName~GrpcRequestActorResolverTests|FullyQualifiedName~ProductionRejectsAllowMetadataActor"`.
 
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 

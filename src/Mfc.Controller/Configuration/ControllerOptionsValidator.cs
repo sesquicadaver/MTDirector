@@ -60,6 +60,12 @@ public static class ControllerOptionsValidator
                 throw new InvalidOperationException("Development authentication is forbidden outside Development.");
             }
 
+            if (options.Authentication.AllowMetadataActor)
+            {
+                throw new InvalidOperationException(
+                    "Mfc:Authentication:AllowMetadataActor is forbidden outside Development.");
+            }
+
             if (string.Equals(options.Security.MasterKeyProvider, "Development", StringComparison.OrdinalIgnoreCase))
             {
                 throw new InvalidOperationException("Development master-key provider is forbidden outside Development.");
@@ -85,6 +91,12 @@ public static class ControllerOptionsValidator
             {
                 throw new InvalidOperationException(
                     "Development authentication is allowed only when gRPC bind is loopback.");
+            }
+
+            if (options.Authentication.AllowMetadataActor && !isLoopback)
+            {
+                throw new InvalidOperationException(
+                    "AllowMetadataActor is allowed only when gRPC bind is loopback.");
             }
         }
 
