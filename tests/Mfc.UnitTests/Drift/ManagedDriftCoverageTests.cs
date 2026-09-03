@@ -68,7 +68,7 @@ public sealed class ManagedDriftCoverageTests
         FakeDriftEventStore drift = new();
         FakeAuditEventWriter audit = new();
         FakeClock clock = new();
-        DetectManagedDriftUseCase useCase = new(auth, devices, hashStates, drift, audit, clock);
+        DetectManagedDriftUseCase useCase = new(auth, devices, hashStates, drift, audit, clock, new FakeUnitOfWork());
 
         ApplicationResult<DriftEventView> missingDevice = await useCase.ExecuteAsync(
             new DetectManagedDriftCommand { Actor = "tester", DeviceId = Guid.NewGuid() });

@@ -53,24 +53,28 @@ public sealed class EmitResponseFeedbackUseCase
     private readonly IResponseFeedbackDeliveryPort _delivery;
     private readonly IAuditEventWriter _audit;
     private readonly IClock _clock;
+    private readonly IUnitOfWork _unitOfWork;
 
     public EmitResponseFeedbackUseCase(
         IAuthorizationBoundary auth,
         IResponseFeedbackEventStore store,
         IResponseFeedbackDeliveryPort delivery,
         IAuditEventWriter audit,
-        IClock clock)
+        IClock clock,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(store);
         ArgumentNullException.ThrowIfNull(delivery);
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(clock);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _store = store;
         _delivery = delivery;
         _audit = audit;
         _clock = clock;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<ResponseFeedbackEventView>> ExecuteAsync(
@@ -110,22 +114,29 @@ public sealed class EmitResponseFeedbackUseCase
             return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
         }
 
-        await _store.AppendAsync(feedbackEvent, cancellationToken).ConfigureAwait(false);
+        // Delivery is outside the DB boundary (may be NotConfigured). Outcome is captured first so the
+        // atomic store+audit write can include it; ports used in-process are sync/fail-closed.
         ResponseFeedbackDeliveryResult delivery = await _delivery
             .DeliverAsync(feedbackEvent, cancellationToken)
             .ConfigureAwait(false);
-        await _audit.AppendAsync(
-            command.Actor,
-            Operation,
-            JsonSerializer.Serialize(new
+        await _unitOfWork.ExecuteAsync(
+            async ct =>
             {
-                event_id = feedbackEvent.Id.Value,
-                event_code = feedbackEvent.EventCode,
-                incident_id = feedbackEvent.IncidentId.Value,
-                node_id = feedbackEvent.NodeId.Value,
-                correlation_id = feedbackEvent.CorrelationId,
-                delivery = delivery.Outcome.ToString(),
-            }),
+                await _store.AppendAsync(feedbackEvent, ct).ConfigureAwait(false);
+                await _audit.AppendAsync(
+                        command.Actor,
+                        Operation,
+                        JsonSerializer.Serialize(new
+                        {
+                            event_id = feedbackEvent.Id.Value,
+                            event_code = feedbackEvent.EventCode,
+                            incident_id = feedbackEvent.IncidentId.Value,
+                            node_id = feedbackEvent.NodeId.Value,
+                            correlation_id = feedbackEvent.CorrelationId,
+                            delivery = delivery.Outcome.ToString(),
+                        }),
+                        ct).ConfigureAwait(false);
+            },
             cancellationToken).ConfigureAwait(false);
         return ApplicationResults.Ok(ResponseFeedbackEventView.FromDomain(feedbackEvent, delivery.Outcome));
     }

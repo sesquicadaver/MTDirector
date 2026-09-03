@@ -694,7 +694,7 @@ public sealed class StandaloneDualStackE2ELivingSpecTests
                 device,
                 driftEvents,
                 clock,
-                new DetectManagedDriftUseCase(auth, devices, hashStates, driftEvents, audit, clock));
+                new DetectManagedDriftUseCase(auth, devices, hashStates, driftEvents, audit, clock, new FakeUnitOfWork()));
         }
     }
 }

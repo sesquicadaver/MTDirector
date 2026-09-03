@@ -355,7 +355,7 @@ public sealed class ManagedDriftDetectionLivingSpecTests
                 driftEvents,
                 audit,
                 clock,
-                new DetectManagedDriftUseCase(auth, devices, hashStates, driftEvents, audit, clock),
+                new DetectManagedDriftUseCase(auth, devices, hashStates, driftEvents, audit, clock, new FakeUnitOfWork()),
                 new GetDriftEventUseCase(auth, driftEvents),
                 new ListDeviceDriftEventsUseCase(auth, driftEvents));
         }

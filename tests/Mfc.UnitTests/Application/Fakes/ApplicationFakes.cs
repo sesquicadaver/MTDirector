@@ -1496,7 +1496,8 @@ internal static class ResponseFeedbackTestFactory
             store,
             delivery ?? new RecordingResponseFeedbackDeliveryPort(),
             audit,
-            clock);
+            clock,
+            new FakeUnitOfWork());
 }
 
 internal sealed class FakeEndpointPresenceStore : IEndpointPresenceStore
