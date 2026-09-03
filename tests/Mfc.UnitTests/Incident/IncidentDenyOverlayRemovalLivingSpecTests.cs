@@ -79,7 +79,7 @@ public sealed class IncidentDenyOverlayRemovalLivingSpecTests
         FakePolicyStore policies = new();
         FakeResponseFeedbackEventStore feedbackStore = new();
         EmitResponseFeedbackUseCase feedback = ResponseFeedbackTestFactory.CreateEmit(auth, feedbackStore, audit, clock);
-        ExpireIncidentDenyOverlayBindingUseCase expire = new(auth, approvals, idempotency, audit, clock, policies, feedback);
+        ExpireIncidentDenyOverlayBindingUseCase expire = new(auth, approvals, idempotency, audit, clock, policies, feedback, new FakeUnitOfWork());
         PolicyDesiredBinding binding = SampleBinding(PolicyBindingScope.IncidentDenyOverlay, ExpiredAt);
         await approvals.AddBindingAsync(binding);
 
@@ -287,7 +287,7 @@ public sealed class IncidentDenyOverlayRemovalLivingSpecTests
             FakeClock clock = new() { UtcNow = T0 };
             FakeResponseFeedbackEventStore feedbackStore = new();
             EmitResponseFeedbackUseCase feedback = ResponseFeedbackTestFactory.CreateEmit(auth, feedbackStore, audit, clock);
-            ExpireIncidentDenyOverlayBindingUseCase expire = new(auth, fx.Approvals, idempotency, audit, clock, fx.Policies, feedback);
+            ExpireIncidentDenyOverlayBindingUseCase expire = new(auth, fx.Approvals, idempotency, audit, clock, fx.Policies, feedback, new FakeUnitOfWork());
             CreateDeploymentPlanUseCase createPlan = new(
                 auth, fx.Nodes, deployments, idempotency, audit, clock,
                 new Mfc.Application.Topology.VrrpPairConsistencyLoader(

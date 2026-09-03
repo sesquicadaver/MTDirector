@@ -40,6 +40,7 @@ public sealed class ExpireIncidentDenyOverlayBindingUseCase
     private readonly IClock _clock;
     private readonly IPolicyStore _policies;
     private readonly EmitResponseFeedbackUseCase _feedback;
+    private readonly IUnitOfWork _unitOfWork;
 
     public ExpireIncidentDenyOverlayBindingUseCase(
         IAuthorizationBoundary auth,
@@ -48,7 +49,8 @@ public sealed class ExpireIncidentDenyOverlayBindingUseCase
         IAuditEventWriter audit,
         IClock clock,
         IPolicyStore policies,
-        EmitResponseFeedbackUseCase feedback)
+        EmitResponseFeedbackUseCase feedback,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(approvals);
@@ -57,6 +59,7 @@ public sealed class ExpireIncidentDenyOverlayBindingUseCase
         ArgumentNullException.ThrowIfNull(clock);
         ArgumentNullException.ThrowIfNull(policies);
         ArgumentNullException.ThrowIfNull(feedback);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _approvals = approvals;
         _idempotency = idempotency;
@@ -64,6 +67,7 @@ public sealed class ExpireIncidentDenyOverlayBindingUseCase
         _clock = clock;
         _policies = policies;
         _feedback = feedback;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<PolicyBindingView>> ExecuteAsync(
@@ -144,19 +148,24 @@ public sealed class ExpireIncidentDenyOverlayBindingUseCase
             return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
         }
 
-        await _approvals.SaveBindingAsync(binding, cancellationToken).ConfigureAwait(false);
-        await _idempotency.SaveAsync(
-            command.Actor, Operation, command.IdempotencyKey, requestHash, binding.Id.Value, cancellationToken)
-            .ConfigureAwait(false);
-        await _audit.AppendAsync(
-            command.Actor,
-            Operation,
-            JsonSerializer.Serialize(new
+        await _unitOfWork.ExecuteAsync(
+            async ct =>
             {
-                binding_id = binding.Id.Value,
-                state = binding.State.ToString(),
-                deployment_started = false,
-            }),
+                await _approvals.SaveBindingAsync(binding, ct).ConfigureAwait(false);
+                await _idempotency.SaveAsync(
+                        command.Actor, Operation, command.IdempotencyKey, requestHash, binding.Id.Value, ct)
+                    .ConfigureAwait(false);
+                await _audit.AppendAsync(
+                        command.Actor,
+                        Operation,
+                        JsonSerializer.Serialize(new
+                        {
+                            binding_id = binding.Id.Value,
+                            state = binding.State.ToString(),
+                            deployment_started = false,
+                        }),
+                        ct).ConfigureAwait(false);
+            },
             cancellationToken).ConfigureAwait(false);
 
         Guid? incidentId = await IncidentOverlayFeedbackSupport.TryResolveOverlayIncidentIdAsync(

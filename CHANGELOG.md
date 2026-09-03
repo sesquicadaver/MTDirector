@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **SEC-10** ([#389](https://github.com/sesquicadaver/MTDirector/issues/389)): `ExpireIncidentDenyOverlayBindingUseCase` persists binding+idempotency+audit inside `IUnitOfWork`. Living Spec `MutationAtomicitySec10LivingSpecTests`. **§3.C NEXT = residual (CRS lab ops)**.
 - **SEC-09** ([#387](https://github.com/sesquicadaver/MTDirector/issues/387)): onboarding plan/start/rollback terminal writes share `IUnitOfWork`. Living Spec `MutationAtomicitySec09LivingSpecTests`. **§3.C NEXT = residual (CRS lab ops)**.
 - **SEC-08** ([#385](https://github.com/sesquicadaver/MTDirector/issues/385)): `UpdateConnectionProfileUseCase` + deployment plan/start/rollback terminal writes share `IUnitOfWork`. Living Spec `MutationAtomicitySec08LivingSpecTests`. **§3.C NEXT = residual (CRS lab ops)**.
 - **SEC-07** ([#383](https://github.com/sesquicadaver/MTDirector/issues/383)): extend `IUnitOfWork` atomic boundary to zone mutations, policy draft/rules pipeline, remaining approval paths, validate revision, and exception metadata. Living Spec `MutationAtomicitySec07LivingSpecTests`. Residual: `DeploymentWorkflowUseCases` / `UpdateConnectionProfileUseCase`. **§3.C NEXT = residual (CRS lab ops)**.
