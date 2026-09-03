@@ -1,4 +1,5 @@
 using System.Net;
+using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Deployment;
 using Mfc.Domain;
@@ -25,6 +26,7 @@ public sealed class RouterOsDeploymentDeviceSession
     private readonly DeviceDeploymentPlan _devicePlan;
     private readonly DeploymentOperationId _operationId;
     private readonly IRouterOsConnectionMaterializer _materializer;
+    private readonly IFilterArtifactStore _filterArtifacts;
     private readonly RouterOsReadTarget _target;
     private AuthenticatedRosConnection? _connection;
     private RouterOsDeploymentSession? _session;
@@ -37,6 +39,7 @@ public sealed class RouterOsDeploymentDeviceSession
         DeploymentOperationId operationId,
         RouterOsReadTarget target,
         IRouterOsConnectionMaterializer materializer,
+        IFilterArtifactStore filterArtifacts,
         AuthenticatedRosConnection connection)
     {
         DeviceId = deviceId;
@@ -44,6 +47,7 @@ public sealed class RouterOsDeploymentDeviceSession
         _operationId = operationId;
         _target = target;
         _materializer = materializer;
+        _filterArtifacts = filterArtifacts;
         _connection = connection;
         _session = new RouterOsDeploymentSession(new RouterOsDeploymentWriteChannel(connection.Session));
         _freshSessions = new RouterOsDeploymentFreshSessionFactory(_target, _materializer);
@@ -110,12 +114,53 @@ public sealed class RouterOsDeploymentDeviceSession
             _devicePlan.OldAnchorTargets,
             _devicePlan.NewAnchorTargets,
             jumps);
-        return classified switch
+        Hash256 expectedHash = classified switch
         {
             DeploymentAnchorSetState.AllNew => _devicePlan.NewArtifactHash,
             DeploymentAnchorSetState.AllOld => _devicePlan.OldArtifactHash,
-            _ => _devicePlan.NewArtifactHash,
+            _ => throw new DomainInvariantException(
+                $"{DeploymentCodes.RecoveryRequired}: mixed or incomplete anchors block managed resource hash observation."),
         };
+
+        byte[]? canonical = await _filterArtifacts
+            .GetCanonicalBytesByResourceHashAsync(expectedHash, cancellationToken)
+            .ConfigureAwait(false);
+        StoredFilterArtifact? meta = await _filterArtifacts
+            .GetByResourceHashAsync(expectedHash, cancellationToken)
+            .ConfigureAwait(false);
+        if (canonical is null || canonical.Length == 0 || meta is null)
+        {
+            throw new DomainInvariantException(
+                $"{DeploymentCodes.ActiveArtifactHashMismatch}: sealed filter artifact body is missing for observed hash.");
+        }
+
+        RouterOsFilterArtifactReader.ParsedBody body = RouterOsFilterArtifactReader.Read(canonical);
+        RouterOsFilterArtifact expected = RouterOsFilterArtifact.Create(
+            meta.CompilerProfileHash,
+            meta.PhysicalSemanticsHash,
+            meta.DeviceId,
+            body.AddressLists,
+            body.Chains,
+            body.Anchors,
+            body.LayoutVersion);
+        if (!expected.ResourceHash.Equals(expectedHash))
+        {
+            throw new DomainInvariantException(
+                $"{DeploymentCodes.ActiveArtifactHashMismatch}: resealed filter artifact diverges from plan hash.");
+        }
+
+        ActualManagedState state = await EnsureSession().ReadManagedStateAsync(cancellationToken).ConfigureAwait(false);
+        if (!ManagedResourceHashObservation.TryComputeFromManagedState(
+                expected,
+                state,
+                out Hash256 observed,
+                out string? error))
+        {
+            throw new DomainInvariantException(
+                $"{DeploymentCodes.ActiveArtifactHashMismatch}: {error ?? "observed managed resources diverge."}");
+        }
+
+        return observed;
     }
 
     public Task<IDeploymentFreshSessionFactory> CreateFreshSessionFactoryAsync(
@@ -227,18 +272,27 @@ public sealed class RouterOsDeploymentDeviceSession
         DeploymentOperationId operationId,
         RouterOsReadTarget target,
         IRouterOsConnectionMaterializer materializer,
+        IFilterArtifactStore filterArtifacts,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(devicePlan);
         ArgumentNullException.ThrowIfNull(target);
         ArgumentNullException.ThrowIfNull(materializer);
+        ArgumentNullException.ThrowIfNull(filterArtifacts);
         using RouterOsConnectionMaterial material = await materializer.MaterializeAsync(target, cancellationToken)
             .ConfigureAwait(false);
         using SecretLease password = new(material.Password.Plaintext);
         ApiSslConnectOptions options = RouterOsApiSslConnectOptionsBuilder.Build(material, password);
         AuthenticatedRosConnection connection = await AuthenticatedRosConnection.ConnectAsync(options, cancellationToken)
             .ConfigureAwait(false);
-        return new RouterOsDeploymentDeviceSession(deviceId, devicePlan, operationId, target, materializer, connection);
+        return new RouterOsDeploymentDeviceSession(
+            deviceId,
+            devicePlan,
+            operationId,
+            target,
+            materializer,
+            filterArtifacts,
+            connection);
     }
 
     private static IReadOnlyDictionary<string, string>? FindAnchorRow(ActualManagedState state, AnchorKey key)

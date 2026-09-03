@@ -188,6 +188,21 @@ Issue [#371](https://github.com/sesquicadaver/MTDirector/issues/371) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~GrpcRequestActorResolverTests"`.
 
+## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
+
+Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Canonical filter artifact reader round-trip | `RouterOsFilterArtifactReader` | `Ac1ReaderRoundTripsCanonicalFilterArtifactBody` |
+| Staging loads AddressLists/Chains from store | `FilterArtifactStoreDeploymentArtifactMaterializer` | `Ac2MaterializerLoadsListsAndChainsFromStore` |
+| Missing artifact fail-closed | same | `Ac3MaterializerFailsClosedWhenArtifactMissing` |
+| Observed hash from live lists/chains/anchors | `ObservedManagedResourceHash` | `Ac4ObservedHashMatchesSealedWhenLiveStateAligns` |
+| Divergent jump changes hash | same | `Ac5ObservedHashFailsWhenLiveJumpDiverges` |
+| WriteEnabled DI not AnchorOnly | `AddRouterOsWriteServices` | `WritePathReadinessLivingSpecTests.Ac3…` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DeploymentArtifactMaterializerSec02|FullyQualifiedName~WritePathReadinessLivingSpecTests.Ac3"`.
+
 ## Living Specification — desktop snapshot viewer (M1-28)
 
 Initial Issue Set M1-28 AC → module → tests:
@@ -2067,7 +2082,7 @@ Issue Set M6-09. **M6 CLOSED**. Live CHR / live physical CRS OFF — E2E Living 
 
 | AC / вимога | Модуль | Тест / артефакт |
 |-------------|--------|-----------------|
-| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md`; §3.C NEXT = SEC-02 | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
+| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md`; §3.C NEXT = SEC-03 | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
 | AC#2 Release gates executed | `docs/release/release-gates.md` | `Ac2ReleaseGatesChecklistExists` |
 | AC#3 CHR matrix green | E2E Living Specs (substitute) | `Ac3ChrMatrixSubstitutedByE2ELivingSpecs` |
 | AC#4 Physical CRS green | `VrrpCrsE2E` + `crs-switch` | `Ac4PhysicalCrsSubstitutedByScriptedFixture` |

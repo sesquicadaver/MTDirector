@@ -47,6 +47,7 @@ public static class VerifyDeploymentActivationUseCase
         Hash256 observedManagedResourceHash,
         DeploymentWatchdogBundle armedWatchdog,
         TimeSpan remainingWatchdogTtl,
+        RouterOsFilterArtifact? observeFromArtifact = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(devicePlan);
@@ -62,13 +63,18 @@ public static class VerifyDeploymentActivationUseCase
             return Fail(findings, usedFresh: false, probeCount: 0);
         }
 
-        ManagedIntegrityResult hashCheck = PostActivationVerification.VerifyManagedResourceHash(
-            devicePlan.NewArtifactHash,
-            observedManagedResourceHash);
-        findings.AddRange(hashCheck.Findings);
-        if (!hashCheck.Passed)
+        // SEC-02: when a sealed artifact is supplied, measure hash from the fresh session after activation.
+        // Harness paths without a body keep the precomputed hash check (fail-closed tautology only in tests).
+        if (observeFromArtifact is null)
         {
-            return Fail(findings, usedFresh: false, probeCount: 0);
+            ManagedIntegrityResult hashCheck = PostActivationVerification.VerifyManagedResourceHash(
+                devicePlan.NewArtifactHash,
+                observedManagedResourceHash);
+            findings.AddRange(hashCheck.Findings);
+            if (!hashCheck.Passed)
+            {
+                return Fail(findings, usedFresh: false, probeCount: 0);
+            }
         }
 
         IRouterOsDeploymentSession fresh;
@@ -130,6 +136,35 @@ public static class VerifyDeploymentActivationUseCase
             if (!anchors.Passed)
             {
                 return Fail(findings, usedFresh: true, probeCount: 0);
+            }
+
+            if (observeFromArtifact is not null)
+            {
+                if (!ManagedResourceHashObservation.TryComputeFromManagedState(
+                        observeFromArtifact,
+                        state,
+                        out Hash256 measured,
+                        out _))
+                {
+                    findings.Add(new DeploymentVerificationFinding
+                    {
+                        Code = DeploymentCodes.ActiveArtifactHashMismatch,
+                        Severity = DeploymentCodes.SeverityBlocker,
+                        Message = "Observed managed resources do not match the sealed filter artifact.",
+                        Target = "resource_hash",
+                        RequiresRollback = true,
+                    });
+                    return Fail(findings, usedFresh: true, probeCount: 0);
+                }
+
+                ManagedIntegrityResult measuredHash = PostActivationVerification.VerifyManagedResourceHash(
+                    devicePlan.NewArtifactHash,
+                    measured);
+                findings.AddRange(measuredHash.Findings);
+                if (!measuredHash.Passed)
+                {
+                    return Fail(findings, usedFresh: true, probeCount: 0);
+                }
             }
 
             int probeCount = 0;

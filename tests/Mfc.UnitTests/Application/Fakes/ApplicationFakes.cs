@@ -1225,6 +1225,7 @@ internal sealed class FakePolicyApprovalStore : IPolicyApprovalStore
 internal sealed class FakeFilterArtifactStore : IFilterArtifactStore
 {
     public Dictionary<string, StoredFilterArtifact> ByHash { get; } = new(StringComparer.Ordinal);
+    public Dictionary<string, byte[]> CanonicalBytesByHash { get; } = new(StringComparer.Ordinal);
     public List<(RouterOsFilterArtifact Artifact, CompilationProvenance Provenance)> Puts { get; } = [];
 
     public Task<StoredFilterArtifact?> GetByResourceHashAsync(
@@ -1236,6 +1237,19 @@ internal sealed class FakeFilterArtifactStore : IFilterArtifactStore
             ByHash.TryGetValue(resourceHash.ToString(), out StoredFilterArtifact? stored) ? stored : null);
     }
 
+    public Task<byte[]?> GetCanonicalBytesByResourceHashAsync(
+        Hash256 resourceHash,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(resourceHash);
+        if (CanonicalBytesByHash.TryGetValue(resourceHash.ToString(), out byte[]? bytes))
+        {
+            return Task.FromResult<byte[]?>(bytes);
+        }
+
+        return Task.FromResult<byte[]?>(null);
+    }
+
     public Task<StoredFilterArtifact> PutIfAbsentAsync(
         RouterOsFilterArtifact artifact,
         CompilationProvenance provenance,
@@ -1245,6 +1259,7 @@ internal sealed class FakeFilterArtifactStore : IFilterArtifactStore
         ArgumentNullException.ThrowIfNull(provenance);
         Puts.Add((artifact, provenance));
         string key = artifact.ResourceHash.ToString();
+        CanonicalBytesByHash[key] = artifact.CanonicalBytes.ToArray();
         if (ByHash.TryGetValue(key, out StoredFilterArtifact? existing))
         {
             return Task.FromResult(new StoredFilterArtifact

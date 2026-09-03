@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **SEC-02** ([#372](https://github.com/sesquicadaver/MTDirector/issues/372)): production WriteEnabled DI uses `FilterArtifactStoreDeploymentArtifactMaterializer` (not AnchorOnly); staging loads AddressLists/Chains from sealed filter artifact; post-activation / recovery observe `resource_hash` from live managed state (`ObservedManagedResourceHash`); fail-closed when body missing. Living Spec `DeploymentArtifactMaterializerSec02LivingSpecTests`. **§3.C NEXT = SEC-03**.
 - **SEC-01** ([#371](https://github.com/sesquicadaver/MTDirector/issues/371)): reject reserved `SystemActor` asserted via `x-mfc-actor` gRPC metadata (`GrpcRequestActorResolver`); in-process operational jobs unchanged. Living Spec `GrpcRequestActorResolverTests`. Seeded SEC-02 (#372) / SEC-03 (#373). **§3.C NEXT = SEC-02**.
 - **W6-09** ([#369](https://github.com/sesquicadaver/MTDirector/issues/369)): Policies Move up/down reorder from selected rule via existing `ReorderRules` (no UUID paste). Living Spec `Ac5i`. **§3.C NEXT = residual (CRS lab ops)**.
 - **W6-08** ([#366](https://github.com/sesquicadaver/MTDirector/issues/366)): durable GetNode Unreachable via `Device.LastObservedReachability` (EF); DiscoverDevice persists connectivity failures; fail-closed not_configured still does not claim Unreachable. Living Spec `DiscoverDevicePersistsUnreachableAcrossEmptyObservationStore`. **§3.C NEXT = residual (CRS lab ops)**.

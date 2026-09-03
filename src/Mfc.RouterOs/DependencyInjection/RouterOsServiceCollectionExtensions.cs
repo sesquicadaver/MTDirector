@@ -85,7 +85,7 @@ public static class RouterOsServiceCollectionExtensions
 
     private static void RegisterWriteServices(IServiceCollection services)
     {
-        services.AddScoped<IDeploymentArtifactMaterializer, AnchorOnlyDeploymentArtifactMaterializer>();
+        services.AddScoped<IDeploymentArtifactMaterializer, FilterArtifactStoreDeploymentArtifactMaterializer>();
         services.AddScoped<IRouterOsOnboardingSessionFactory, RouterOsOnboardingSessionFactory>();
         services.AddScoped<IOnboardingRuntime, RouterOsOnboardingRuntime>();
         services.AddScoped<IRouterOsDeploymentSessionFactory, RouterOsDeploymentSessionFactory>();
