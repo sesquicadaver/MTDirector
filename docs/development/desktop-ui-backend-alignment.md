@@ -363,4 +363,4 @@ residual: CRS / physical lab runner (ops, not §3)
 - **Перевірка:** `Ac5iPoliciesReorderMovesSelectedRuleWithoutUuidPaste`; `MoveRuleDownBuildsStageOrderWithoutUuidPaste`; `MoveRuleUpAtFirstReportsBoundaryWithoutRpc`
 - **Файли:** `PoliciesViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **§3.C SEC tranche CLOSED** (SEC-15 **DONE**). Physical CRS runner stays ops.
+**NEXT (alignment / §3):** **§3.C NEXT = W7-02 (#402)**. W7-01 Desktop MikroTik labels **DONE**. Physical CRS runner stays ops.

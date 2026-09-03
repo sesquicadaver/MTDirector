@@ -6,6 +6,8 @@ public sealed class SnapshotDiffFieldLine
     public required string FieldName { get; init; }
 
     public required string Summary { get; init; }
+
+    public string FriendlySummary => DesktopDisplayLabels.FormatDiffFieldSummary(FieldName, Summary);
 }
 
 /// <summary>One DiffEntry presentation row for virtualized ListBox binding.</summary>
@@ -44,8 +46,13 @@ public sealed class SnapshotDiffEntryItem
     public string DisplayIdentity =>
         SnapshotPresentationIdentity.FormatDiffIdentity(RecordKey, OrdinalText, FieldLines);
 
+    public string OperatorDisplayIdentity =>
+        DesktopDisplayLabels.FormatDiffIdentityFriendly(RecordKey, OrdinalText, FieldLines);
+
+    public string SectionTitle => DesktopDisplayLabels.FormatSectionTitle(SectionId);
+
     public string HeaderLine =>
-        $"{SectionId} · {DomainText} · {ChangesText} · {DisplayIdentity} · {OrdinalText}";
+        $"{SectionTitle} · {DomainText} · {ChangesText} · {OperatorDisplayIdentity} · {OrdinalText}";
 }
 
 /// <summary>Section group for sidebar navigation.</summary>
@@ -56,6 +63,8 @@ public sealed class SnapshotDiffSectionGroup
     public required int EntryCount { get; init; }
 
     public required IReadOnlyList<SnapshotDiffEntryItem> Entries { get; init; }
+
+    public string SectionTitle => DesktopDisplayLabels.FormatSectionTitle(SectionId);
 }
 
 /// <summary>Result of a server CompareSnapshots load for Desktop presentation.</summary>
