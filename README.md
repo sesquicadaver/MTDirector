@@ -11,7 +11,7 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 | P2 Pilot (RouterOS wiring) | read path **CLOSED** (P2-04…P2-06); write path **CLOSED** (P2-07…P2-11) |
 | Release | [`v0.2.0`](https://github.com/sesquicadaver/MTDirector/releases/tag/v0.2.0) (2026-08-24) |
 
-**Queue (§3.C):** **§3.C NEXT = SEC-14 (#396)** — SEC-13 ([#394](https://github.com/sesquicadaver/MTDirector/issues/394)) **DONE**. [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md). Pilot (parallel): [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) (`Enabled` / `WriteEnabled`).  
+**Queue (§3.C):** **§3.C NEXT = SEC-15 (#398)** — SEC-14 ([#396](https://github.com/sesquicadaver/MTDirector/issues/396)) **DONE**. [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md). Pilot (parallel): [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) (`Enabled` / `WriteEnabled`).  
 **Alignment P0–P2 (2026-08-30…31):** Desktop W1–W4 / W2.1–W2.2 **DONE**. Add router ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)) remains the inventory registration path.
 
 Лінійна черга: [`ROADMAP.md`](ROADMAP.md) §3.C. Мапінг issues: [`ISSUES.md`](ISSUES.md).
@@ -61,7 +61,7 @@ M0 → M1 → M2 → M3 → M5 → M4 → M6 → MVP CLOSED
 → W5-01 (#342) → **DONE**
 → W5-02 (#343) → **DONE**
 → W5-03 (#344) → **DONE**
-→ **§3.C NEXT = SEC-14 (#396)**
+→ **§3.C NEXT = SEC-15 (#398)**
 ```
 
 ## Стек

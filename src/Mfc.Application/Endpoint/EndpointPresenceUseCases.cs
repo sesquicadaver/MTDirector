@@ -54,24 +54,28 @@ public sealed class OpenEndpointPresenceUseCase
     private readonly IResponseAssessmentStore _assessments;
     private readonly IRoutingAssuranceStateStore _routingStates;
     private readonly IClock _clock;
+    private readonly IUnitOfWork _unitOfWork;
 
     public OpenEndpointPresenceUseCase(
         IAuthorizationBoundary auth,
         IEndpointPresenceStore presence,
         IResponseAssessmentStore assessments,
         IRoutingAssuranceStateStore routingStates,
-        IClock clock)
+        IClock clock,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(presence);
         ArgumentNullException.ThrowIfNull(assessments);
         ArgumentNullException.ThrowIfNull(routingStates);
         ArgumentNullException.ThrowIfNull(clock);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _presence = presence;
         _assessments = assessments;
         _routingStates = routingStates;
         _clock = clock;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<EndpointPresenceUpsertResultView>> ExecuteAsync(
@@ -113,15 +117,20 @@ public sealed class OpenEndpointPresenceUseCase
             activeAssessment,
             routingState,
             validFrom);
-        if (plan.InvalidatedAssessment is not null)
-        {
-            await _assessments.SaveAsync(plan.InvalidatedAssessment, cancellationToken).ConfigureAwait(false);
-        }
+        await _unitOfWork.ExecuteAsync(
+            async ct =>
+            {
+                if (plan.InvalidatedAssessment is not null)
+                {
+                    await _assessments.SaveAsync(plan.InvalidatedAssessment, ct).ConfigureAwait(false);
+                }
 
-        await _presence.SaveMigrationAsync(
-            migration.ClosedInterval,
-            migration.OpenedInterval,
-            plan.RoutingContext,
+                await _presence.SaveMigrationAsync(
+                    migration.ClosedInterval,
+                    migration.OpenedInterval,
+                    plan.RoutingContext,
+                    ct).ConfigureAwait(false);
+            },
             cancellationToken).ConfigureAwait(false);
 
         return ApplicationResults.Ok(new EndpointPresenceUpsertResultView
