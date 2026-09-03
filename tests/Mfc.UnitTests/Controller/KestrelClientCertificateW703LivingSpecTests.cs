@@ -76,7 +76,8 @@ public sealed class KestrelClientCertificateW703LivingSpecTests
             using X509Certificate2 cert = request.CreateSelfSigned(
                 DateTimeOffset.UtcNow.AddDays(-1),
                 DateTimeOffset.UtcNow.AddDays(30));
-            byte[] pfx = cert.Export(X509ContentType.Pfx, "lab-pass");
+            // Passwordless test PFX — avoids secret-scanner false positives on fixture strings.
+            byte[] pfx = cert.Export(X509ContentType.Pfx);
             File.WriteAllBytes(path, pfx);
 
             DesktopOptions options = new()
@@ -84,7 +85,6 @@ public sealed class KestrelClientCertificateW703LivingSpecTests
                 ControllerEndpoint = "https://127.0.0.1:5101",
                 HealthCheckTimeoutSeconds = 5,
                 ClientCertificatePath = path,
-                ClientCertificatePassword = "lab-pass",
             };
 
             using SocketsHttpHandler handler = DesktopGrpcHttpHandlerFactory.Create(options);
