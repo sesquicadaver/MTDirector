@@ -518,7 +518,7 @@ public sealed class InventoryUseCaseTests
         FakeConnectionProfileService profiles = new();
         FakeIdempotencyStore idempotency = new();
         ApplicationResult<ConnectionProfileView> result =
-            await new UpdateConnectionProfileUseCase(auth, profiles, idempotency).ExecuteAsync(
+            await new UpdateConnectionProfileUseCase(auth, profiles, idempotency, new FakeUnitOfWork()).ExecuteAsync(
                 new UpsertConnectionProfileCommand
                 {
                     Actor = "admin",
@@ -543,7 +543,7 @@ public sealed class InventoryUseCaseTests
         FakeAuthorizationBoundary auth = new();
         FakeConnectionProfileService profiles = new();
         FakeIdempotencyStore idempotency = new();
-        UpdateConnectionProfileUseCase useCase = new(auth, profiles, idempotency);
+        UpdateConnectionProfileUseCase useCase = new(auth, profiles, idempotency, new FakeUnitOfWork());
         UpsertConnectionProfileCommand command = new()
         {
             Actor = "admin",

@@ -244,6 +244,16 @@ Issue [#378](https://github.com/sesquicadaver/MTDirector/issues/378) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec05"`.
 
+## Living Specification — Connection profile + deployment UoW (SEC-08)
+
+| ТЗ / AC | Модуль | Тест |
+|---------|--------|------|
+| Profile upsert + idempotency in one UoW | `UpdateConnectionProfileUseCase` | `MutationAtomicitySec08LivingSpecTests.Ac1` |
+| Deployment plan/start/rollback terminal UoW | `DeploymentWorkflowUseCases` | `Ac2` |
+| known-limitations residual cleared | `known-limitations.md` | `Ac3` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec08"`.
+
 ## Living Specification — Extended atomic mutation boundary (SEC-07)
 
 | ТЗ / AC | Модуль | Тест |

@@ -190,6 +190,7 @@ public sealed class CreateDeploymentPlanUseCase
     private readonly IAuditEventWriter _audit;
     private readonly IClock _clock;
     private readonly VrrpPairConsistencyLoader _vrrpPair;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CreateDeploymentPlanUseCase(
         IAuthorizationBoundary auth,
@@ -198,7 +199,8 @@ public sealed class CreateDeploymentPlanUseCase
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
         IClock clock,
-        VrrpPairConsistencyLoader vrrpPair)
+        VrrpPairConsistencyLoader vrrpPair,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
@@ -207,6 +209,7 @@ public sealed class CreateDeploymentPlanUseCase
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(clock);
         ArgumentNullException.ThrowIfNull(vrrpPair);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _nodes = nodes;
         _deployments = deployments;
@@ -214,6 +217,7 @@ public sealed class CreateDeploymentPlanUseCase
         _audit = audit;
         _clock = clock;
         _vrrpPair = vrrpPair;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<DeploymentPlanSummaryView>> ExecuteAsync(
@@ -286,14 +290,19 @@ public sealed class CreateDeploymentPlanUseCase
                 command.DevicePlans,
                 new UserId(ActorKey.FromActor(command.Actor)),
                 _clock.UtcNow);
-            await _deployments.AddPlanAsync(plan, cancellationToken).ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                command.Actor, Operation, command.IdempotencyKey, requestHash, plan.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new { plan_id = plan.Id.Value, node_id = plan.NodeId.Value }),
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
+                {
+                    await _deployments.AddPlanAsync(plan, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, plan.Id.Value, ct)
+                        .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new { plan_id = plan.Id.Value, node_id = plan.NodeId.Value }),
+                            ct).ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ToPlanView(plan));
         }
@@ -392,6 +401,7 @@ public sealed class StartDeploymentUseCase
     private readonly IAuditEventWriter _audit;
     private readonly IClock _clock;
     private readonly IDeploymentRuntime _runtime;
+    private readonly IUnitOfWork _unitOfWork;
 
     public StartDeploymentUseCase(
         IAuthorizationBoundary auth,
@@ -401,7 +411,8 @@ public sealed class StartDeploymentUseCase
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
         IClock clock,
-        IDeploymentRuntime runtime)
+        IDeploymentRuntime runtime,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
@@ -411,6 +422,7 @@ public sealed class StartDeploymentUseCase
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(clock);
         ArgumentNullException.ThrowIfNull(runtime);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _nodes = nodes;
         _deployments = deployments;
@@ -419,6 +431,7 @@ public sealed class StartDeploymentUseCase
         _audit = audit;
         _clock = clock;
         _runtime = runtime;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<DeploymentOperationSummaryView>> ExecuteAsync(
@@ -519,24 +532,29 @@ public sealed class StartDeploymentUseCase
                     DeploymentWorkflowRollbackResult rolled = await _runtime
                         .RollbackAsync(node, plan, operation, now, CancellationToken.None)
                         .ConfigureAwait(false);
-                    await _deployments.SaveOperationAsync(operation, CancellationToken.None).ConfigureAwait(false);
-                    await _idempotency.SaveAsync(
-                        command.Actor,
-                        Operation,
-                        command.IdempotencyKey,
-                        requestHash,
-                        operation.Id.Value,
-                        CancellationToken.None).ConfigureAwait(false);
-                    await _audit.AppendAsync(
-                        command.Actor,
-                        Operation,
-                        JsonSerializer.Serialize(new
+                    await _unitOfWork.ExecuteAsync(
+                        async ct =>
                         {
-                            operation_id = operation.Id.Value,
-                            plan_id = plan.Id.Value,
-                            state = operation.State.ToString(),
-                            canceled_after_activation = true,
-                        }),
+                            await _deployments.SaveOperationAsync(operation, ct).ConfigureAwait(false);
+                            await _idempotency.SaveAsync(
+                                    command.Actor,
+                                    Operation,
+                                    command.IdempotencyKey,
+                                    requestHash,
+                                    operation.Id.Value,
+                                    ct).ConfigureAwait(false);
+                            await _audit.AppendAsync(
+                                    command.Actor,
+                                    Operation,
+                                    JsonSerializer.Serialize(new
+                                    {
+                                        operation_id = operation.Id.Value,
+                                        plan_id = plan.Id.Value,
+                                        state = operation.State.ToString(),
+                                        canceled_after_activation = true,
+                                    }),
+                                    ct).ConfigureAwait(false);
+                        },
                         CancellationToken.None).ConfigureAwait(false);
                     return ApplicationResults.Ok(ToOperationView(operation, rolled.Timeline));
                 }
@@ -555,19 +573,24 @@ public sealed class StartDeploymentUseCase
                 return ApplicationResults.Fail(ApplicationError.Failed(ex.Message));
             }
 
-            await _deployments.SaveOperationAsync(operation, cancellationToken).ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
                 {
-                    operation_id = operation.Id.Value,
-                    plan_id = plan.Id.Value,
-                    state = operation.State.ToString(),
-                }),
+                    await _deployments.SaveOperationAsync(operation, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, ct)
+                        .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new
+                            {
+                                operation_id = operation.Id.Value,
+                                plan_id = plan.Id.Value,
+                                state = operation.State.ToString(),
+                            }),
+                            ct).ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ToOperationView(operation, executed.Timeline));
         }
@@ -626,6 +649,7 @@ public sealed class RollbackDeploymentWorkflowUseCase
     private readonly IAuditEventWriter _audit;
     private readonly IClock _clock;
     private readonly IDeploymentRuntime _runtime;
+    private readonly IUnitOfWork _unitOfWork;
 
     public RollbackDeploymentWorkflowUseCase(
         IAuthorizationBoundary auth,
@@ -634,7 +658,8 @@ public sealed class RollbackDeploymentWorkflowUseCase
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
         IClock clock,
-        IDeploymentRuntime runtime)
+        IDeploymentRuntime runtime,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
@@ -643,6 +668,7 @@ public sealed class RollbackDeploymentWorkflowUseCase
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(clock);
         ArgumentNullException.ThrowIfNull(runtime);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _nodes = nodes;
         _deployments = deployments;
@@ -650,6 +676,7 @@ public sealed class RollbackDeploymentWorkflowUseCase
         _audit = audit;
         _clock = clock;
         _runtime = runtime;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<DeploymentOperationSummaryView>> ExecuteAsync(
@@ -718,18 +745,23 @@ public sealed class RollbackDeploymentWorkflowUseCase
             DeploymentWorkflowRollbackResult rolled = await _runtime
                 .RollbackAsync(node, plan, operation, _clock.UtcNow, cancellationToken)
                 .ConfigureAwait(false);
-            await _deployments.SaveOperationAsync(operation, cancellationToken).ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
                 {
-                    operation_id = operation.Id.Value,
-                    state = operation.State.ToString(),
-                }),
+                    await _deployments.SaveOperationAsync(operation, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, ct)
+                        .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new
+                            {
+                                operation_id = operation.Id.Value,
+                                state = operation.State.ToString(),
+                            }),
+                            ct).ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(StartDeploymentUseCase.ToOperationView(operation, rolled.Timeline));
         }

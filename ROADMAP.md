@@ -1,9 +1,9 @@
 # MTDirector — ROADMAP реалізації v0.2
 
-**Дата оновлення:** 3 вересня 2026 (SEC-07 extend atomic mutation boundary)
+**Дата оновлення:** 3 вересня 2026 (SEC-08 connection profile + deployment UoW)
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** `main` @ post-SEC-07 — M7.4 CLOSED; W6-01…W6-09 DONE; SEC-01…07 DONE; **§3.C NEXT = residual (CRS lab ops)**
+**Базовий коміт аудиту:** `main` @ post-SEC-08 — M7.4 CLOSED; W6-01…W6-09 DONE; SEC-01…08 DONE; **§3.C NEXT = residual (CRS lab ops)**
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -55,9 +55,9 @@
 | P2 Pilot (read path) | 3 | 0 | 100% |
 | Queue integrity + planning | 3 | 0 | TRACKER-01 + PLAN-01 + **PLAN-02 DONE** |
 | P2 Pilot (write path) | 5 | 0 | **CLOSED** (P2-07…P2-11) |
-| §3.C Continuous (glue + W5 + W6 + SEC) | 21 | 0 | CONT…W6-09 + SEC-01…07 **DONE**; **NEXT = residual** |
-| **Разом (код)** | **148** | **0** | SEC tranche closed |
-| **Разом (черга §3)** | **150** | **0** | **NEXT = residual (CRS lab ops)** |
+| §3.C Continuous (glue + W5 + W6 + SEC) | 22 | 0 | CONT…W6-09 + SEC-01…08 **DONE**; **NEXT = residual** |
+| **Разом (код)** | **149** | **0** | SEC tranche closed |
+| **Разом (черга §3)** | **151** | **0** | **NEXT = residual (CRS lab ops)** |
 
 MVP issues (109) = **109 done + 0 remaining** — **MVP CLOSED (100%)**.  
 M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** **M7.2-04 DONE. M7.2 CLOSED.** **M7.3-01 DONE.** **M7.3-02 DONE.** **M7.3-03 DONE.** **M7.3-04 DONE.** **M7.3-05 DONE.** **M7.3-06 DONE. M7.3 CLOSED.** **M7.4-01 DONE.** **M7.4-02 DONE.** **M7.4-03 DONE.** **M7.4-04 DONE.** **M7.4-05 DONE.** **M7.4-06 DONE. M7.4 CLOSED.** Post-MVP M7 = **0** open. Release **`v0.2.0`**. **P2 read path CLOSED** (P2-04…P2-06). **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **P2-07 DONE** (#293). **P2-08 DONE** (#294). **P2-09 DONE** (#295). **P2-10 DONE** (#296). **P2-11 DONE** (#297). **P2 write-path CLOSED.** Desktop Add router UX [#309](https://github.com/sesquicadaver/MTDirector/pull/309) DONE. Alignment W1–W4 / W2.1–W2.2 DONE. **PLAN-02 DONE** (#339 / [#345](https://github.com/sesquicadaver/MTDirector/pull/345)). **CONT-01 DONE** (#340). **CONT-02 DONE** (#341). **W5-01 DONE** (#342). **W5-02 DONE** (#343). **W5-03 DONE** (#344). **W6-01 DONE** (#352). **§3.C NEXT = residual (CRS lab ops)**.
@@ -201,7 +201,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 
 ## 3. Лінійна черга (стан)
 
-**Статус:** **§3.C NEXT = residual (CRS lab ops).** SEC-01…07 **DONE**. W6-01…W6-09 **DONE**. Physical CRS runner remains ops residual.  
+**Статус:** **§3.C NEXT = residual (CRS lab ops).** SEC-01…08 **DONE**. W6-01…W6-09 **DONE**. Physical CRS runner remains ops residual.  
 Канонічний план: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).  
 **Lab/CHR/`WriteEnabled` не є попередниками §3**. Production blockers (private audit): SEC-01…03 **DONE**. CRS runner remains ops residual.
 
@@ -235,6 +235,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | 152 | SEC-05 | [#378](https://github.com/sesquicadaver/MTDirector/issues/378) | Atomic mutation + idempotency + audit boundary | **DONE** |
 | 153 | SEC-06 | [#380](https://github.com/sesquicadaver/MTDirector/issues/380) | Incident assessment gRPC surface | **DONE** |
 | 154 | SEC-07 | [#383](https://github.com/sesquicadaver/MTDirector/issues/383) | Extend atomic mutation boundary | **DONE** |
+| 155 | SEC-08 | [#385](https://github.com/sesquicadaver/MTDirector/issues/385) | Connection profile + deployment UoW | **DONE** |
 
 Повна історія закритих рядків §3.A / §3.B (M0–M6 + N1 + M7 + P2) збережена в git history (до docs-purge) і зведена в [`ISSUES.md`](ISSUES.md) + §2.2 DONE.
 
@@ -246,7 +247,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | §3.B6 Tracker / plan | TRACKER-01 (#289), PLAN-01 (#290) — **DONE** |
 | §3.B7 P2 write path | P2-07…P2-11 — **CLOSED** |
 | Поза чергою (історія) | Desktop Add router — [PR #309](https://github.com/sesquicadaver/MTDirector/pull/309); alignment W1–W4 / W2.1–W2.2 — **DONE** |
-| **§3.C Continuous** | PLAN-02 + CONT-01…02 + W5 + W6 + SEC-01…07 — **DONE**; **NEXT = residual** |
+| **§3.C Continuous** | PLAN-02 + CONT-01…02 + W5 + W6 + SEC-01…08 — **DONE**; **NEXT = residual** |
 
 Pilot (ops, parallel): [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md).
 
@@ -260,7 +261,7 @@ Pilot (ops, parallel): [`docs/operations/pilot-runbook.md`](docs/operations/pilo
 | P2 Pilot (read path) | 0 | **CLOSED** (P2-04…P2-06) |
 | Queue integrity + planning | 0 | TRACKER-01 + PLAN-01 + PLAN-02 **DONE** |
 | P2 Pilot (write path) | 0 | **CLOSED** (P2-07…P2-11) |
-| §3.C Continuous | 0 | SEC-01…07 **DONE**; residual CRS lab ops |
+| §3.C Continuous | 0 | SEC-01…08 **DONE**; residual CRS lab ops |
 | **Нереалізовано (§3)** | **0** | **§3.C NEXT = residual (CRS lab ops)** |
 | DONE у коді (§2.2) | 139 | …+P2-06; release **`v0.2.0`**; alignment P0–P2 DONE |
 
@@ -376,6 +377,7 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 | Atomic mutation + idempotency + audit | SEC-05 | `IUnitOfWork` inventory/policy + ambient audit join; Living Spec `MutationAtomicitySec05LivingSpecTests` | **DONE** (#378) |
 | Incident assessment gRPC | SEC-06 | `incident.proto` + `IncidentGrpcService`; Living Spec `IncidentGrpcSec06LivingSpecTests` | **DONE** (#380) |
 | Extended atomic mutation boundary | SEC-07 | Zones + policy draft/rules/approval/validate/exception metadata via `IUnitOfWork`; Living Spec `MutationAtomicitySec07LivingSpecTests` | **DONE** (#383) |
+| Connection profile + deployment UoW | SEC-08 | Profile upsert + deployment plan/start/rollback terminal persists; Living Spec `MutationAtomicitySec08LivingSpecTests` | **DONE** (#385) |
 | Production onboarding runtime | P2-07 | `RouterOsOnboardingRuntime` over onboarding writers | **DONE** (#293) |
 | Production deployment runtime | P2-08 | `RouterOsDeploymentRuntime` over deployment session | **DONE** (#294) |
 | Watchdog residue cleanup | P2-09 | Production `RouterOsWatchdogResidueCleanupPort` | **DONE** (#295) |

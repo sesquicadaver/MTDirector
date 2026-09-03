@@ -291,7 +291,8 @@ public sealed class IncidentDenyOverlayRemovalLivingSpecTests
             CreateDeploymentPlanUseCase createPlan = new(
                 auth, fx.Nodes, deployments, idempotency, audit, clock,
                 new Mfc.Application.Topology.VrrpPairConsistencyLoader(
-                    new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore()));
+                    new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore()),
+                new FakeUnitOfWork());
             PlanIncidentDenyOverlayRemovalUseCase plan = new(
                 auth, fx.Policies, fx.Approvals, audit, expire, fx.UseCase, createPlan, feedback);
             DomainPolicy overlay = (await fx.Policies.ListActiveByOwnerAsync(
