@@ -154,7 +154,7 @@ public sealed class RoutingDriftLivingSpecTests
         Device device = CreateDevice();
         await devices.AddAsync(device);
 
-        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         RoutingConfigurationSnapshot baselineConfig = Config(["rtab.main.fib"], "yes");
         RoutingOperationalSnapshot baselineOps = Ops(["route.4:main:0.0.0.0/0:1.1.1.1.active"], "true");
 

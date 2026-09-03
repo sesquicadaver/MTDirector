@@ -242,7 +242,7 @@ public sealed class RouteResolutionTraceLivingSpecTests
         RoutingOperationalSnapshot operational = Ops(
             [Obs("0.0.0.0/0", "1.1.1.1", "main", immediateGw: "1.1.1.1%ether1")]);
 
-        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         ApplicationResult<RoutingAssuranceStateView> written = await upsert.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
             {

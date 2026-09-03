@@ -47,7 +47,7 @@ public sealed class RoutingAssuranceChrAcceptanceLivingSpecTests
             },
         };
 
-        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         ApplicationResult<RoutingAssuranceStateView> result = await upsert.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
             {
@@ -96,7 +96,7 @@ public sealed class RoutingAssuranceChrAcceptanceLivingSpecTests
             RoutingMark = "wan-backup-mark",
         };
 
-        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         ApplicationResult<RoutingAssuranceStateView> result = await upsert.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
             {
@@ -141,7 +141,7 @@ public sealed class RoutingAssuranceChrAcceptanceLivingSpecTests
             "10.80.0.0/16",
             allowedNextHops: ["10.0.0.3"]);
 
-        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         ApplicationResult<RoutingAssuranceStateView> result = await upsert.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
             {
@@ -188,7 +188,7 @@ public sealed class RoutingAssuranceChrAcceptanceLivingSpecTests
             expectedTable: "corp",
             expectedVrf: "corp");
 
-        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         ApplicationResult<RoutingAssuranceStateView> result = await upsert.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
             {
@@ -229,7 +229,7 @@ public sealed class RoutingAssuranceChrAcceptanceLivingSpecTests
             Expectation("10.20.0.0/16", allowedEgressInterfaces: ["ether2"], critical: true),
         ];
 
-        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         ApplicationResult<RoutingAssuranceStateView> result = await upsert.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
             {
@@ -280,7 +280,7 @@ public sealed class RoutingAssuranceChrAcceptanceLivingSpecTests
             ("route.4:wan-backup:0.0.0.0/0:203.0.113.1.active", "true"),
         ]);
 
-        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         Assert.True((await upsert.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
             {
@@ -337,7 +337,7 @@ public sealed class RoutingAssuranceChrAcceptanceLivingSpecTests
             MaxRtt = 100,
         };
 
-        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         ApplicationResult<RoutingAssuranceStateView> result = await upsert.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
             {
@@ -396,7 +396,7 @@ public sealed class RoutingAssuranceChrAcceptanceLivingSpecTests
             DestinationAddress = "10.10.0.20",
         };
 
-        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         Assert.True((await upsert.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
             {

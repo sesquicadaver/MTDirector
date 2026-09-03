@@ -29,7 +29,7 @@ public sealed class RoutingAssuranceStateLivingSpecTests
 
         RoutingConfigurationSnapshot configuration = SampleConfiguration();
         RoutingOperationalSnapshot operational = SampleOperational();
-        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         ApplicationResult<RoutingAssuranceStateView> written = await upsert.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
             {
@@ -208,7 +208,8 @@ public sealed class RoutingAssuranceStateLivingSpecTests
             auth,
             new FakeDeviceStore(),
             new FakeRoutingAssuranceStateStore(),
-            new FakeClock());
+            new FakeClock(),
+            new FakeUnitOfWork());
         ApplicationResult<RoutingAssuranceStateView> result = await useCase.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
             {

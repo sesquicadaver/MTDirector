@@ -244,6 +244,16 @@ Issue [#378](https://github.com/sesquicadaver/MTDirector/issues/378) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec05"`.
 
+## Living Specification — UpsertRoutingAssuranceState UoW (SEC-15)
+
+| ТЗ / AC | Модуль | Тест |
+|---------|--------|------|
+| Upsert in one UoW | `UpsertRoutingAssuranceStateUseCase` | `MutationAtomicitySec15LivingSpecTests.Ac1` |
+| Source boundary | `RoutingAssuranceUseCases` | `Ac2` |
+| known-limitations | `known-limitations.md` | `Ac3` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec15"`.
+
 ## Living Specification — OpenEndpointPresence multi-store UoW (SEC-14)
 
 | ТЗ / AC | Модуль | Тест |

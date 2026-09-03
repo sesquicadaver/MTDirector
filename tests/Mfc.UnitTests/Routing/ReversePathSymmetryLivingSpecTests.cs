@@ -200,7 +200,7 @@ public sealed class ReversePathSymmetryLivingSpecTests
             Obs("192.168.0.0/16", "10.0.0.2", "main", immediateGw: "10.0.0.2%ether1"),
         ]);
 
-        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         ApplicationResult<RoutingAssuranceStateView> written = await upsert.ExecuteAsync(
             new UpsertRoutingAssuranceStateCommand
             {

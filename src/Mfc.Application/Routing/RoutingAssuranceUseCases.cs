@@ -49,21 +49,25 @@ public sealed class UpsertRoutingAssuranceStateUseCase
     private readonly IDeviceStore _devices;
     private readonly IRoutingAssuranceStateStore _states;
     private readonly IClock _clock;
+    private readonly IUnitOfWork _unitOfWork;
 
     public UpsertRoutingAssuranceStateUseCase(
         IAuthorizationBoundary auth,
         IDeviceStore devices,
         IRoutingAssuranceStateStore states,
-        IClock clock)
+        IClock clock,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(devices);
         ArgumentNullException.ThrowIfNull(states);
         ArgumentNullException.ThrowIfNull(clock);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _devices = devices;
         _states = states;
         _clock = clock;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<RoutingAssuranceStateView>> ExecuteAsync(
@@ -150,7 +154,9 @@ public sealed class UpsertRoutingAssuranceStateUseCase
                 routeFindings,
                 resolutionTraces);
 
-        await _states.UpsertAsync(state, cancellationToken).ConfigureAwait(false);
+        await _unitOfWork.ExecuteAsync(
+            async ct => await _states.UpsertAsync(state, ct).ConfigureAwait(false),
+            cancellationToken).ConfigureAwait(false);
         return ApplicationResults.Ok(RoutingAssuranceViewMapper.ToView(state));
     }
 

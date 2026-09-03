@@ -108,7 +108,7 @@ public sealed class RoutingDriftCoverageTests
             lastCompletedCaptureId: null);
         await devices.AddAsync(device);
 
-        UpsertRoutingAssuranceStateUseCase upsert = new(new FakeAuthorizationBoundary(), devices, store, clock);
+        UpsertRoutingAssuranceStateUseCase upsert = new(new FakeAuthorizationBoundary(), devices, store, clock, new FakeUnitOfWork());
         RoutingConfigurationSnapshot config = SnapshotConfig("yes");
         RoutingOperationalSnapshot ops = SnapshotOps("true");
 

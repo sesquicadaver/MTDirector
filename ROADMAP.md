@@ -3,7 +3,7 @@
 **Дата оновлення:** 3 вересня 2026 (SEC-14 OpenEndpointPresence UoW)
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** `main` @ post-SEC-14 — M7.4 CLOSED; W6-01…W6-09 DONE; SEC-01…14 DONE; **§3.C NEXT = SEC-15 (#398)**
+**Базовий коміт аудиту:** `main` @ post-SEC-15 — M7.4 CLOSED; W6-01…W6-09 DONE; SEC-01…15 DONE; **§3.C SEC tranche CLOSED — NEXT = residual (CRS lab ops)**
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -55,9 +55,9 @@
 | P2 Pilot (read path) | 3 | 0 | 100% |
 | Queue integrity + planning | 3 | 0 | TRACKER-01 + PLAN-01 + **PLAN-02 DONE** |
 | P2 Pilot (write path) | 5 | 0 | **CLOSED** (P2-07…P2-11) |
-| §3.C Continuous (glue + W5 + W6 + SEC) | 28 | 1 | CONT…W6-09 + SEC-01…14 **DONE**; **NEXT = SEC-15** |
+| §3.C Continuous (glue + W5 + W6 + SEC) | 28 | 0 | CONT…W6-09 + SEC-01…15 **DONE**; **NEXT = residual (CRS lab ops)** |
 | **Разом (код)** | **155** | **0** | SEC-14 closed in Application |
-| **Разом (черга §3)** | **157** | **1** | **NEXT = SEC-15 (#398)** |
+| **Разом (черга §3)** | **157** | **0** | **SEC tranche CLOSED — NEXT = residual (CRS lab ops)** |
 
 MVP issues (109) = **109 done + 0 remaining** — **MVP CLOSED (100%)**.  
 M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** **M7.2-04 DONE. M7.2 CLOSED.** **M7.3-01 DONE.** **M7.3-02 DONE.** **M7.3-03 DONE.** **M7.3-04 DONE.** **M7.3-05 DONE.** **M7.3-06 DONE. M7.3 CLOSED.** **M7.4-01 DONE.** **M7.4-02 DONE.** **M7.4-03 DONE.** **M7.4-04 DONE.** **M7.4-05 DONE.** **M7.4-06 DONE. M7.4 CLOSED.** Post-MVP M7 = **0** open. Release **`v0.2.0`**. **P2 read path CLOSED** (P2-04…P2-06). **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **P2-07 DONE** (#293). **P2-08 DONE** (#294). **P2-09 DONE** (#295). **P2-10 DONE** (#296). **P2-11 DONE** (#297). **P2 write-path CLOSED.** Desktop Add router UX [#309](https://github.com/sesquicadaver/MTDirector/pull/309) DONE. Alignment W1–W4 / W2.1–W2.2 DONE. **PLAN-02 DONE** (#339 / [#345](https://github.com/sesquicadaver/MTDirector/pull/345)). **CONT-01 DONE** (#340). **CONT-02 DONE** (#341). **W5-01 DONE** (#342). **W5-02 DONE** (#343). **W5-03 DONE** (#344). **W6-01 DONE** (#352). **§3.C NEXT = SEC-15 (#398)**.
@@ -201,7 +201,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 
 ## 3. Лінійна черга (стан)
 
-**Статус:** **§3.C NEXT = SEC-15 (#398).** SEC-01…14 **DONE**. W6-01…W6-09 **DONE**. Physical CRS runner remains ops residual.  
+**Статус:** **§3.C SEC tranche CLOSED.** SEC-01…15 **DONE**. W6-01…W6-09 **DONE**. Physical CRS runner remains ops residual until next PLAN seed.  
 Канонічний план: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).  
 **Lab/CHR/`WriteEnabled` не є попередниками §3**. Production blockers (private audit): SEC-01…03 **DONE**. CRS runner remains ops residual.
 
@@ -242,7 +242,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | 159 | SEC-12 | [#392](https://github.com/sesquicadaver/MTDirector/issues/392) | CaptureSnapshot persist+audit UoW | **DONE** |
 | 160 | SEC-13 | [#394](https://github.com/sesquicadaver/MTDirector/issues/394) | UpsertDeviceHashState UoW | **DONE** |
 | 161 | SEC-14 | [#396](https://github.com/sesquicadaver/MTDirector/issues/396) | OpenEndpointPresence UoW | **DONE** |
-| 162 | SEC-15 | [#398](https://github.com/sesquicadaver/MTDirector/issues/398) | UpsertRoutingAssuranceState UoW | **OPEN** |
+| 162 | SEC-15 | [#398](https://github.com/sesquicadaver/MTDirector/issues/398) | UpsertRoutingAssuranceState UoW | **DONE** |
 
 Повна історія закритих рядків §3.A / §3.B (M0–M6 + N1 + M7 + P2) збережена в git history (до docs-purge) і зведена в [`ISSUES.md`](ISSUES.md) + §2.2 DONE.
 
@@ -254,7 +254,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | §3.B6 Tracker / plan | TRACKER-01 (#289), PLAN-01 (#290) — **DONE** |
 | §3.B7 P2 write path | P2-07…P2-11 — **CLOSED** |
 | Поза чергою (історія) | Desktop Add router — [PR #309](https://github.com/sesquicadaver/MTDirector/pull/309); alignment W1–W4 / W2.1–W2.2 — **DONE** |
-| **§3.C Continuous** | PLAN-02 + CONT-01…02 + W5 + W6 + SEC-01…14 — **DONE**; **NEXT = SEC-15** |
+| **§3.C Continuous** | PLAN-02 + CONT-01…02 + W5 + W6 + SEC-01…15 — **DONE**; **NEXT = residual (CRS lab ops)** |
 
 Pilot (ops, parallel): [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md).
 
@@ -268,8 +268,8 @@ Pilot (ops, parallel): [`docs/operations/pilot-runbook.md`](docs/operations/pilo
 | P2 Pilot (read path) | 0 | **CLOSED** (P2-04…P2-06) |
 | Queue integrity + planning | 0 | TRACKER-01 + PLAN-01 + PLAN-02 **DONE** |
 | P2 Pilot (write path) | 0 | **CLOSED** (P2-07…P2-11) |
-| §3.C Continuous | 1 | SEC-01…14 **DONE**; SEC-15 **OPEN** |
-| **Нереалізовано (§3)** | **1** | **§3.C NEXT = SEC-15 (#398)** |
+| §3.C Continuous | 0 | SEC-01…15 **DONE**; queue empty until next PLAN seed |
+| **Нереалізовано (§3)** | **0** | **§3.C SEC tranche CLOSED — NEXT = residual (CRS lab ops)** |
 | DONE у коді (§2.2) | 139 | …+P2-06; release **`v0.2.0`**; alignment P0–P2 DONE |
 
 GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale OPEN #91–#95, #125–#136 closed. Хвиля 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
@@ -391,7 +391,7 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 | CaptureSnapshot persist+audit UoW | SEC-12 | `CaptureSnapshotUseCase` persist+audit UoW; Living Spec `MutationAtomicitySec12LivingSpecTests` | **DONE** (#392) |
 | Device hash-state upsert UoW | SEC-13 | `UpsertDeviceHashStateUseCase` UoW; Living Spec `MutationAtomicitySec13LivingSpecTests` | **DONE** (#394) |
 | Endpoint presence multi-store UoW | SEC-14 | `OpenEndpointPresenceUseCase` UoW; Living Spec `MutationAtomicitySec14LivingSpecTests` | **DONE** (#396) |
-| Routing assurance state upsert UoW | SEC-15 | `UpsertRoutingAssuranceStateUseCase` UoW | **OPEN** (#398) |
+| Routing assurance state upsert UoW | SEC-15 | `UpsertRoutingAssuranceStateUseCase` UoW | **DONE** (#398) |
 | Production onboarding runtime | P2-07 | `RouterOsOnboardingRuntime` over onboarding writers | **DONE** (#293) |
 | Production deployment runtime | P2-08 | `RouterOsDeploymentRuntime` over deployment session | **DONE** (#294) |
 | Watchdog residue cleanup | P2-09 | Production `RouterOsWatchdogResidueCleanupPort` | **DONE** (#295) |
@@ -405,7 +405,7 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 | ManagementPath / FastTrack Desktop | W5-02 | RPC + Desktop surface of existing analysis | **DONE** (#343) |
 | Typed deploy policy semantic diff | W5-03 | Contracts typed entries (not only `repeated string`); Living Spec `Ac6f` | **DONE** (#344) |
 
-Оновлювати рядок **Статус** при закритті issue; **§3.C NEXT = SEC-15 (#398)**. SEC-14 **DONE**. CRS/physical lab runner stays ops residual.
+Оновлювати рядок **Статус** при закритті issue; **§3.C SEC tranche CLOSED** after SEC-15. CRS/physical lab runner stays ops residual until next PLAN seed.
 
 ---
 
@@ -427,7 +427,7 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 
 ## 7. Операційний старт
 
-1. **§3.C NEXT = SEC-15 (#398)**. SEC-14 **DONE**. Береться лише відкритий рядок §3; лаба **не** блокує. Physical CRS runner — ops residual.
+1. **§3.C SEC tranche CLOSED** (SEC-01…15 **DONE**). **NEXT = residual (CRS lab ops)** until next PLAN seed. Береться лише відкритий рядок §3; лаба **не** блокує. Physical CRS runner — ops residual.
 2. Lab/pilot RouterOS (паралельно): [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) (`Enabled` / `WriteEnabled`).
 3. Desktop реєстрація пристрою: Inventory **Add router** — [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
 4. Acceptance / readiness: [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md), [`docs/release/readiness.md`](docs/release/readiness.md). Continuous plan: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).
