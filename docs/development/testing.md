@@ -244,6 +244,16 @@ Issue [#378](https://github.com/sesquicadaver/MTDirector/issues/378) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec05"`.
 
+## Living Specification — Extended atomic mutation boundary (SEC-07)
+
+| ТЗ / AC | Модуль | Тест |
+|---------|--------|------|
+| Zone create/update/delete + binding upsert/delete in one UoW | `ZoneDefinitionUseCases` / `NodeZoneBindingUseCases` | `MutationAtomicitySec07LivingSpecTests.Ac1` |
+| Policy draft/rules/approval/validate/exception metadata use UoW | `PolicyRuleUseCases` / `PolicyApprovalUseCases` / `ValidateRevisionUseCase` / `UpdateExceptionMetadataUseCase` | `Ac2` |
+| Documented residual (deploy + connection profile) | `known-limitations.md` | `Ac3` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec07"`.
+
 ## Living Specification — Incident assessment gRPC (SEC-06)
 
 Issue [#380](https://github.com/sesquicadaver/MTDirector/issues/380) AC → module → tests:

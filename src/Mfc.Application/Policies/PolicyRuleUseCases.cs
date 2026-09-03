@@ -40,21 +40,25 @@ public sealed class CreateDraftPolicyUseCase
     private readonly IPolicyStore _policies;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CreateDraftPolicyUseCase(
         IAuthorizationBoundary auth,
         IPolicyStore policies,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _policies = policies;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<PolicyDraftView>> ExecuteAsync(
@@ -145,20 +149,25 @@ public sealed class CreateDraftPolicyUseCase
                 new UserId(ActorKey.FromActor(command.Actor)),
                 DateTimeOffset.UtcNow);
 
-            await _policies.AddPolicyAsync(policy, cancellationToken).ConfigureAwait(false);
-            await _policies.AddRevisionAsync(revision, cancellationToken).ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                command.Actor, Operation, command.IdempotencyKey, requestHash, policy.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
                 {
-                    policy_id = policy.Id.Value,
-                    revision_id = revision.Id.Value,
-                    content_hash = revision.ContentHash.ToString(),
-                }),
+                    await _policies.AddPolicyAsync(policy, ct).ConfigureAwait(false);
+                    await _policies.AddRevisionAsync(revision, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, policy.Id.Value, ct)
+                        .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new
+                            {
+                                policy_id = policy.Id.Value,
+                                revision_id = revision.Id.Value,
+                                content_hash = revision.ContentHash.ToString(),
+                            }),
+                            ct).ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ToDraftView(policy, revision));
         }
@@ -396,24 +405,28 @@ public sealed class AddRuleUseCase
     private readonly IZoneDefinitionStore _zones;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public AddRuleUseCase(
         IAuthorizationBoundary auth,
         IPolicyStore policies,
         IZoneDefinitionStore zones,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
         ArgumentNullException.ThrowIfNull(zones);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _policies = policies;
         _zones = zones;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<PolicyRuleMutationView>> ExecuteAsync(
@@ -540,6 +553,7 @@ public sealed class AddRuleUseCase
             _zones,
             _idempotency,
             _audit,
+            _unitOfWork,
             revisionId,
             expectedContentHash,
             mutate,
@@ -592,24 +606,28 @@ public sealed class UpdateRuleUseCase
     private readonly IZoneDefinitionStore _zones;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public UpdateRuleUseCase(
         IAuthorizationBoundary auth,
         IPolicyStore policies,
         IZoneDefinitionStore zones,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
         ArgumentNullException.ThrowIfNull(zones);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _policies = policies;
         _zones = zones;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<PolicyRuleMutationView>> ExecuteAsync(
@@ -696,6 +714,7 @@ public sealed class UpdateRuleUseCase
             _zones,
             _idempotency,
             _audit,
+            _unitOfWork,
             command.RevisionId,
             command.ExpectedContentHash,
             document =>
@@ -750,24 +769,28 @@ public sealed class DeleteRuleUseCase
     private readonly IZoneDefinitionStore _zones;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public DeleteRuleUseCase(
         IAuthorizationBoundary auth,
         IPolicyStore policies,
         IZoneDefinitionStore zones,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
         ArgumentNullException.ThrowIfNull(zones);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _policies = policies;
         _zones = zones;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<PolicyRuleMutationView>> ExecuteAsync(
@@ -837,6 +860,7 @@ public sealed class DeleteRuleUseCase
             _zones,
             _idempotency,
             _audit,
+            _unitOfWork,
             command.RevisionId,
             command.ExpectedContentHash,
             document =>
@@ -880,24 +904,28 @@ public sealed class ReorderRulesUseCase
     private readonly IZoneDefinitionStore _zones;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public ReorderRulesUseCase(
         IAuthorizationBoundary auth,
         IPolicyStore policies,
         IZoneDefinitionStore zones,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
         ArgumentNullException.ThrowIfNull(zones);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _policies = policies;
         _zones = zones;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<PolicyRuleMutationView>> ExecuteAsync(
@@ -970,6 +998,7 @@ public sealed class ReorderRulesUseCase
             _zones,
             _idempotency,
             _audit,
+            _unitOfWork,
             command.RevisionId,
             command.ExpectedContentHash,
             document =>
@@ -999,6 +1028,7 @@ internal static class PolicyRuleMutationPipeline
         IZoneDefinitionStore zones,
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
+        IUnitOfWork unitOfWork,
         Guid revisionId,
         byte[] expectedContentHash,
         Func<PolicyDocument, (PolicyDocument Next, Guid ResourceId, RuleId FocusRuleId)> mutate,
@@ -1008,6 +1038,7 @@ internal static class PolicyRuleMutationPipeline
         byte[] requestHash,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _ = auth;
         (PolicyRevision? revision, ApplicationError? loadError) = await PolicyRevisionSupport
             .LoadRevisionAsync(policies, revisionId, cancellationToken)
@@ -1061,19 +1092,24 @@ internal static class PolicyRuleMutationPipeline
             }
 
             revision!.ReplaceDocument(next, revision.ParentContextHash);
-            await policies.SaveRevisionAsync(revision, cancellationToken).ConfigureAwait(false);
-            await idempotency.SaveAsync(
-                actor, operation, idempotencyKey, requestHash, resourceId, cancellationToken)
-                .ConfigureAwait(false);
-            await audit.AppendAsync(
-                actor,
-                operation,
-                JsonSerializer.Serialize(new
+            await unitOfWork.ExecuteAsync(
+                async ct =>
                 {
-                    revision_id = revision.Id.Value,
-                    content_hash = revision.ContentHash.ToString(),
-                    resource_id = resourceId,
-                }),
+                    await policies.SaveRevisionAsync(revision, ct).ConfigureAwait(false);
+                    await idempotency.SaveAsync(
+                            actor, operation, idempotencyKey, requestHash, resourceId, ct)
+                        .ConfigureAwait(false);
+                    await audit.AppendAsync(
+                            actor,
+                            operation,
+                            JsonSerializer.Serialize(new
+                            {
+                                revision_id = revision.Id.Value,
+                                content_hash = revision.ContentHash.ToString(),
+                                resource_id = resourceId,
+                            }),
+                            ct).ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
 
             PolicyRuleView[] rules = next.Rules.Select(r => ViewMapper.ToView(r, next)).ToArray();

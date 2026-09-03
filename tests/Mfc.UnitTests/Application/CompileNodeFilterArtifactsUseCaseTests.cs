@@ -473,7 +473,7 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
         FakeSnapshotStore snapshots = new();
         FakeFilterArtifactStore artifacts = new();
 
-        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit);
+        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyDraftView> draft = await create.ExecuteAsync(new CreateDraftPolicyCommand
         {
             Actor = "author",
@@ -488,7 +488,7 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
 
         if (withChainContracts)
         {
-            ReplaceChainContractsUseCase replace = new(auth, policies, idempotency, audit);
+            ReplaceChainContractsUseCase replace = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
             ApplicationResult<PolicyRevisionView> replaced = await replace.ExecuteAsync(new ReplaceChainContractsCommand
             {
                 Actor = "author",
@@ -513,7 +513,7 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
         revision!.MarkValidated();
         await policies.SaveRevisionAsync(revision);
 
-        SubmitRevisionForReviewUseCase submit = new(auth, policies, idempotency, audit);
+        SubmitRevisionForReviewUseCase submit = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         Assert.True((await submit.ExecuteAsync(new SubmitRevisionForReviewCommand
         {
             Actor = "author",
@@ -526,7 +526,7 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
         Hash256 logical = logicalHash ?? ComposeLogical(revision, document);
 
         byte[] fingerprint = PolicyApprovalHasher.HashDependencyFingerprint(Vector()).Bytes.ToArray();
-        RecordAnalysisRunUseCase record = new(auth, policies, approvals, idempotency, audit);
+        RecordAnalysisRunUseCase record = new(auth, policies, approvals, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyAnalysisRunView> run = await record.ExecuteAsync(new RecordAnalysisRunCommand
         {
             Actor = "author",

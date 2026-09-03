@@ -24,7 +24,7 @@ public sealed class UpdateExceptionMetadataUseCaseTests
         FakePolicyStore policies = new();
         FakeIdempotencyStore idempotency = new();
         FakeAuditEventWriter audit = new();
-        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit);
+        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyDraftView> result = await create.ExecuteAsync(new CreateDraftPolicyCommand
         {
             Actor = "admin",
@@ -153,7 +153,7 @@ public sealed class UpdateExceptionMetadataUseCaseTests
             DateTimeOffset.UtcNow);
         await policies.AddRevisionAsync(draft);
 
-        UpdateExceptionMetadataUseCase useCase = new(auth, policies, nodes, idempotency, audit);
+        UpdateExceptionMetadataUseCase useCase = new(auth, policies, nodes, idempotency, audit, new FakeUnitOfWork());
         return (useCase, policies, node, draft, deny, companyRev);
     }
 

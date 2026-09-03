@@ -20,7 +20,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 ## Live lab residuals (optional)
 
 - Live CHR matrix is **OFF**. Scripted E2E Living Specs (M6-05…M6-07 + N1-07 + M7.1-11 + M7.2-04 + M7.4-06) are the DoD substitute.
-- Live physical CRS hardware exercise is **OFF**. Scripted CRS fixture + `VrrpCrsE2ELivingSpecTests` AC11 are the DoD substitute. Physical CRS is **ops residual**, not a §3 stop-gate. **§3.C NEXT = residual (CRS lab ops)** after SEC-04.
+- Live physical CRS hardware exercise is **OFF**. Scripted CRS fixture + `VrrpCrsE2ELivingSpecTests` AC11 are the DoD substitute. Physical CRS is **ops residual**, not a §3 stop-gate. **§3.C NEXT = residual (CRS lab ops)** after SEC-07.
 - Golden live CHR hashes remain env-gated until an isolated runner exists.
 
 ## Packaging / signing residuals
@@ -34,6 +34,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - No NAT / RAW / Mangle / routing / VRRP / bridge / VLAN **writes** beyond managed filter/onboarding/deploy allowlists.
 - No campaigns, auto-deploy, auto-fix drift, web/mobile UI, multi-tenant, microservices/Redis/K8s, multi-vendor, SIEM/SOAR in Controller.
 - `IResponseFeedbackDeliveryPort` defaults to **not configured** until an external analytics complex is wired.
+- **SEC-07 residual:** Application zone/policy mutation paths that persist entity + idempotency + audit now share `IUnitOfWork` (including policy catalog pipeline). Still outside that boundary (candidate SEC-08): `DeploymentWorkflowUseCases` and `UpdateConnectionProfileUseCase` (and resolve-only zone updates without idempotency/audit triples).
 
 ## Operational notes
 

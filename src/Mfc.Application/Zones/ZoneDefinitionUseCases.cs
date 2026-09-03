@@ -39,21 +39,25 @@ public sealed class CreateZoneDefinitionUseCase
     private readonly IZoneDefinitionStore _zones;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CreateZoneDefinitionUseCase(
         IAuthorizationBoundary auth,
         IZoneDefinitionStore zones,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(zones);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _zones = zones;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<ZoneDefinitionView>> ExecuteAsync(
@@ -118,14 +122,20 @@ public sealed class CreateZoneDefinitionUseCase
                 key,
                 name,
                 command.Description);
-            await _zones.AddAsync(zone, cancellationToken).ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                command.Actor, Operation, command.IdempotencyKey, requestHash, zone.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new { zone_id = zone.Id.Value, key = zone.Key.Value }),
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
+                {
+                    await _zones.AddAsync(zone, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, zone.Id.Value, ct)
+                        .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new { zone_id = zone.Id.Value, key = zone.Key.Value }),
+                            ct)
+                        .ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ViewMapper.ToView(zone));
         }
@@ -165,21 +175,25 @@ public sealed class UpdateZoneDefinitionUseCase
     private readonly IZoneDefinitionStore _zones;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public UpdateZoneDefinitionUseCase(
         IAuthorizationBoundary auth,
         IZoneDefinitionStore zones,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(zones);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _zones = zones;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<ZoneDefinitionView>> ExecuteAsync(
@@ -257,14 +271,20 @@ public sealed class UpdateZoneDefinitionUseCase
                 zone.SetDescription(command.Description);
             }
 
-            await _zones.UpdateAsync(zone, cancellationToken).ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                command.Actor, Operation, command.IdempotencyKey, requestHash, zone.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new { zone_id = zone.Id.Value, row_version = zone.RowVersion }),
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
+                {
+                    await _zones.UpdateAsync(zone, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, zone.Id.Value, ct)
+                        .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new { zone_id = zone.Id.Value, row_version = zone.RowVersion }),
+                            ct)
+                        .ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ViewMapper.ToView(zone));
         }
@@ -341,24 +361,28 @@ public sealed class DeleteZoneDefinitionUseCase
     private readonly INodeZoneBindingStore _bindings;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public DeleteZoneDefinitionUseCase(
         IAuthorizationBoundary auth,
         IZoneDefinitionStore zones,
         INodeZoneBindingStore bindings,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(zones);
         ArgumentNullException.ThrowIfNull(bindings);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _zones = zones;
         _bindings = bindings;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<bool>> ExecuteAsync(
@@ -419,14 +443,20 @@ public sealed class DeleteZoneDefinitionUseCase
                     $"Zone '{command.ZoneId}' still has {bindingCount} node binding(s); delete bindings first."));
         }
 
-        await _zones.DeleteAsync(zoneId, cancellationToken).ConfigureAwait(false);
-        await _idempotency.SaveAsync(
-            command.Actor, Operation, command.IdempotencyKey, requestHash, zoneId.Value, cancellationToken)
-            .ConfigureAwait(false);
-        await _audit.AppendAsync(
-            command.Actor,
-            Operation,
-            JsonSerializer.Serialize(new { zone_id = zoneId.Value }),
+        await _unitOfWork.ExecuteAsync(
+            async ct =>
+            {
+                await _zones.DeleteAsync(zoneId, ct).ConfigureAwait(false);
+                await _idempotency.SaveAsync(
+                        command.Actor, Operation, command.IdempotencyKey, requestHash, zoneId.Value, ct)
+                    .ConfigureAwait(false);
+                await _audit.AppendAsync(
+                        command.Actor,
+                        Operation,
+                        JsonSerializer.Serialize(new { zone_id = zoneId.Value }),
+                        ct)
+                    .ConfigureAwait(false);
+            },
             cancellationToken).ConfigureAwait(false);
         return ApplicationResults.Ok(true);
     }

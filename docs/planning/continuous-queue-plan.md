@@ -57,6 +57,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | INTERNAL_CA empty CA store + RevocationMode.NoCheck | `IRouterOsTrustedCaStore` / `ApiSslCertificateValidator` | **SEC-04 DONE** |
 | Non-atomic mutation vs idempotency/audit | write path | **SEC-05 DONE** |
 | No Incident gRPC surface | Contracts / Controller | **SEC-06 DONE** |
+| Partial UoW on mutations | Application write paths | **SEC-07 DONE** (deploy/profile residual) |
 
 ### P3 / new Contracts (evidence)
 
@@ -101,6 +102,7 @@ SEC-03 Audit hash chain **DONE**
 SEC-04 INTERNAL_CA trusted CA store **DONE**
 SEC-05 Atomic mutation/idempotency/audit **DONE**
 SEC-06 Incident assessment gRPC **DONE**
+SEC-07 Extend atomic mutation boundary **DONE**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -131,8 +133,9 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 19 | SEC-04 | [#377](https://github.com/sesquicadaver/MTDirector/issues/377) | INTERNAL_CA directory trusted CA store + revocation | **DONE** |
 | 20 | SEC-05 | [#378](https://github.com/sesquicadaver/MTDirector/issues/378) | Atomic mutation + idempotency + audit boundary | **DONE** |
 | 21 | SEC-06 | [#380](https://github.com/sesquicadaver/MTDirector/issues/380) | Incident assessment gRPC surface | **DONE** |
+| 22 | SEC-07 | [#383](https://github.com/sesquicadaver/MTDirector/issues/383) | Extend atomic mutation boundary | **DONE** |
 
-**§3.C NEXT = residual (CRS lab ops)**. SEC-06 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = residual (CRS lab ops)**. SEC-07 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

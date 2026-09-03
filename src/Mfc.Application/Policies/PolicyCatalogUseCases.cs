@@ -93,21 +93,25 @@ public sealed class UpsertAddressObjectUseCase
     private readonly IPolicyStore _policies;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public UpsertAddressObjectUseCase(
         IAuthorizationBoundary auth,
         IPolicyStore policies,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _policies = policies;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public Task<ApplicationResult<PolicyRevisionView>> ExecuteAsync(
@@ -137,6 +141,7 @@ public sealed class UpsertAddressObjectUseCase
             _policies,
             _idempotency,
             _audit,
+            _unitOfWork,
             command.Actor,
             Operation,
             command.IdempotencyKey,
@@ -213,21 +218,25 @@ public sealed class UpsertServiceObjectUseCase
     private readonly IPolicyStore _policies;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public UpsertServiceObjectUseCase(
         IAuthorizationBoundary auth,
         IPolicyStore policies,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _policies = policies;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public Task<ApplicationResult<PolicyRevisionView>> ExecuteAsync(
@@ -257,6 +266,7 @@ public sealed class UpsertServiceObjectUseCase
             _policies,
             _idempotency,
             _audit,
+            _unitOfWork,
             command.Actor,
             Operation,
             command.IdempotencyKey,
@@ -329,21 +339,25 @@ public sealed class ReplaceChainContractsUseCase
     private readonly IPolicyStore _policies;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public ReplaceChainContractsUseCase(
         IAuthorizationBoundary auth,
         IPolicyStore policies,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _policies = policies;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public Task<ApplicationResult<PolicyRevisionView>> ExecuteAsync(
@@ -368,6 +382,7 @@ public sealed class ReplaceChainContractsUseCase
             _policies,
             _idempotency,
             _audit,
+            _unitOfWork,
             command.Actor,
             Operation,
             command.IdempotencyKey,
@@ -424,21 +439,25 @@ public sealed class ReplacePolicyTestsUseCase
     private readonly IPolicyStore _policies;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public ReplacePolicyTestsUseCase(
         IAuthorizationBoundary auth,
         IPolicyStore policies,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _policies = policies;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public Task<ApplicationResult<PolicyRevisionView>> ExecuteAsync(
@@ -458,6 +477,7 @@ public sealed class ReplacePolicyTestsUseCase
             _policies,
             _idempotency,
             _audit,
+            _unitOfWork,
             command.Actor,
             Operation,
             command.IdempotencyKey,
@@ -515,6 +535,7 @@ internal static class PolicyCatalogMutationPipeline
         IPolicyStore policies,
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
+        IUnitOfWork unitOfWork,
         string actor,
         string operation,
         Guid idempotencyKey,
@@ -524,6 +545,7 @@ internal static class PolicyCatalogMutationPipeline
         Func<Policy, PolicyRevision, PolicyDocument, (PolicyDocument Next, Guid ResourceId)> mutate,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         ApplicationError? authError = await Auth.EnsureAsync(
             auth, actor, ApplicationPermissions.PolicyWrite, cancellationToken).ConfigureAwait(false);
         if (authError is not null)
@@ -597,19 +619,24 @@ internal static class PolicyCatalogMutationPipeline
             }
 
             revision.ReplaceDocument(next, revision.ParentContextHash);
-            await policies.SaveRevisionAsync(revision, cancellationToken).ConfigureAwait(false);
-            await idempotency.SaveAsync(
-                actor, operation, idempotencyKey, requestHash, resourceId, cancellationToken)
-                .ConfigureAwait(false);
-            await audit.AppendAsync(
-                actor,
-                operation,
-                JsonSerializer.Serialize(new
+            await unitOfWork.ExecuteAsync(
+                async ct =>
                 {
-                    revision_id = revision.Id.Value,
-                    content_hash = revision.ContentHash.ToString(),
-                    resource_id = resourceId,
-                }),
+                    await policies.SaveRevisionAsync(revision, ct).ConfigureAwait(false);
+                    await idempotency.SaveAsync(
+                            actor, operation, idempotencyKey, requestHash, resourceId, ct)
+                        .ConfigureAwait(false);
+                    await audit.AppendAsync(
+                            actor,
+                            operation,
+                            JsonSerializer.Serialize(new
+                            {
+                                revision_id = revision.Id.Value,
+                                content_hash = revision.ContentHash.ToString(),
+                                resource_id = resourceId,
+                            }),
+                            ct).ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ViewMapper.ToView(revision, next));
         }

@@ -157,24 +157,28 @@ public sealed class RecordAnalysisRunUseCase
     private readonly IPolicyApprovalStore _approvals;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public RecordAnalysisRunUseCase(
         IAuthorizationBoundary auth,
         IPolicyStore policies,
         IPolicyApprovalStore approvals,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
         ArgumentNullException.ThrowIfNull(approvals);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _policies = policies;
         _approvals = approvals;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<PolicyAnalysisRunView>> ExecuteAsync(
@@ -303,20 +307,25 @@ public sealed class RecordAnalysisRunUseCase
             return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
         }
 
-        await _approvals.AddAnalysisRunAsync(run, cancellationToken).ConfigureAwait(false);
-        await _idempotency.SaveAsync(
-            command.Actor, Operation, command.IdempotencyKey, requestHash, run.Id.Value, cancellationToken)
-            .ConfigureAwait(false);
-        await _audit.AppendAsync(
-            command.Actor,
-            Operation,
-            JsonSerializer.Serialize(new
+        await _unitOfWork.ExecuteAsync(
+            async ct =>
             {
-                revision_id = revision.Id.Value,
-                analysis_run_id = run.Id.Value,
-                bundle_hash = run.BundleHash.ToString(),
-                risk = run.EffectiveRiskLevel(),
-            }),
+                await _approvals.AddAnalysisRunAsync(run, ct).ConfigureAwait(false);
+                await _idempotency.SaveAsync(
+                        command.Actor, Operation, command.IdempotencyKey, requestHash, run.Id.Value, ct)
+                    .ConfigureAwait(false);
+                await _audit.AppendAsync(
+                        command.Actor,
+                        Operation,
+                        JsonSerializer.Serialize(new
+                        {
+                            revision_id = revision.Id.Value,
+                            analysis_run_id = run.Id.Value,
+                            bundle_hash = run.BundleHash.ToString(),
+                            risk = run.EffectiveRiskLevel(),
+                        }),
+                        ct).ConfigureAwait(false);
+            },
             cancellationToken).ConfigureAwait(false);
         return ApplicationResults.Ok(ToRunView(run));
     }
@@ -422,21 +431,25 @@ public sealed class AcknowledgeWarningUseCase
     private readonly IPolicyApprovalStore _approvals;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public AcknowledgeWarningUseCase(
         IAuthorizationBoundary auth,
         IPolicyApprovalStore approvals,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(approvals);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _approvals = approvals;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<PolicyAnalysisRunView>> ExecuteAsync(
@@ -509,18 +522,23 @@ public sealed class AcknowledgeWarningUseCase
             warningHash!,
             new UserId(ActorKey.FromActor(command.Actor)),
             DateTimeOffset.UtcNow);
-        await _approvals.AddWarningAcknowledgmentAsync(ack, cancellationToken).ConfigureAwait(false);
-        await _idempotency.SaveAsync(
-            command.Actor, Operation, command.IdempotencyKey, requestHash, run.Id.Value, cancellationToken)
-            .ConfigureAwait(false);
-        await _audit.AppendAsync(
-            command.Actor,
-            Operation,
-            JsonSerializer.Serialize(new
+        await _unitOfWork.ExecuteAsync(
+            async ct =>
             {
-                analysis_run_id = run.Id.Value,
-                warning_hash = warningHash!.ToString(),
-            }),
+                await _approvals.AddWarningAcknowledgmentAsync(ack, ct).ConfigureAwait(false);
+                await _idempotency.SaveAsync(
+                        command.Actor, Operation, command.IdempotencyKey, requestHash, run.Id.Value, ct)
+                    .ConfigureAwait(false);
+                await _audit.AppendAsync(
+                        command.Actor,
+                        Operation,
+                        JsonSerializer.Serialize(new
+                        {
+                            analysis_run_id = run.Id.Value,
+                            warning_hash = warningHash!.ToString(),
+                        }),
+                        ct).ConfigureAwait(false);
+            },
             cancellationToken).ConfigureAwait(false);
         return ApplicationResults.Ok(ToView(run));
     }
@@ -547,21 +565,25 @@ public sealed class SubmitRevisionForReviewUseCase
     private readonly IPolicyStore _policies;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public SubmitRevisionForReviewUseCase(
         IAuthorizationBoundary auth,
         IPolicyStore policies,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _policies = policies;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<PolicyRevisionView>> ExecuteAsync(
@@ -623,14 +645,19 @@ public sealed class SubmitRevisionForReviewUseCase
             return ApplicationResults.Fail(new ApplicationError(PolicyApprovalCodes.NotInReview, ex.Message));
         }
 
-        await _policies.SaveRevisionAsync(revision, cancellationToken).ConfigureAwait(false);
-        await _idempotency.SaveAsync(
-            command.Actor, Operation, command.IdempotencyKey, requestHash, revision.Id.Value, cancellationToken)
-            .ConfigureAwait(false);
-        await _audit.AppendAsync(
-            command.Actor,
-            Operation,
-            JsonSerializer.Serialize(new { revision_id = revision.Id.Value, state = revision.State.ToString() }),
+        await _unitOfWork.ExecuteAsync(
+            async ct =>
+            {
+                await _policies.SaveRevisionAsync(revision, ct).ConfigureAwait(false);
+                await _idempotency.SaveAsync(
+                        command.Actor, Operation, command.IdempotencyKey, requestHash, revision.Id.Value, ct)
+                    .ConfigureAwait(false);
+                await _audit.AppendAsync(
+                        command.Actor,
+                        Operation,
+                        JsonSerializer.Serialize(new { revision_id = revision.Id.Value, state = revision.State.ToString() }),
+                        ct).ConfigureAwait(false);
+            },
             cancellationToken).ConfigureAwait(false);
         return await LoadRevisionViewAsync(revision.Id.Value, cancellationToken).ConfigureAwait(false);
     }

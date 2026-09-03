@@ -534,7 +534,7 @@ public sealed class PolicyApprovalUseCaseTests
         FakeIdempotencyStore idempotency = new();
         FakeAuditEventWriter audit = new();
         FakeClock clock = new();
-        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit);
+        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyDraftView> draft = await create.ExecuteAsync(new CreateDraftPolicyCommand
         {
             Actor = author,
@@ -549,7 +549,7 @@ public sealed class PolicyApprovalUseCaseTests
         revision!.MarkValidated();
         await policies.SaveRevisionAsync(revision);
 
-        SubmitRevisionForReviewUseCase submit = new(auth, policies, idempotency, audit);
+        SubmitRevisionForReviewUseCase submit = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyRevisionView> submitted = await submit.ExecuteAsync(new SubmitRevisionForReviewCommand
         {
             Actor = author,
@@ -560,7 +560,7 @@ public sealed class PolicyApprovalUseCaseTests
         Assert.True(submitted.IsSuccess);
 
         byte[] fingerprint = PolicyApprovalHasher.HashDependencyFingerprint(Vector()).Bytes.ToArray();
-        RecordAnalysisRunUseCase record = new(auth, policies, approvals, idempotency, audit);
+        RecordAnalysisRunUseCase record = new(auth, policies, approvals, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyAnalysisRunView> run = await record.ExecuteAsync(new RecordAnalysisRunCommand
         {
             Actor = author,
@@ -602,7 +602,7 @@ public sealed class PolicyApprovalUseCaseTests
             Record = record,
             Submit = submit,
             Approve = new ApproveRevisionUseCase(auth, policies, approvals, idempotency, audit, new FakeUnitOfWork()),
-            Ack = new AcknowledgeWarningUseCase(auth, approvals, idempotency, audit),
+            Ack = new AcknowledgeWarningUseCase(auth, approvals, idempotency, audit, new FakeUnitOfWork()),
             Bind = new ActivateDesiredBindingUseCase(auth, policies, approvals, idempotency, audit, clock, new FakeUnitOfWork()),
             Expire = new ExpireExceptionBindingUseCase(auth, approvals, idempotency, audit, clock, new FakeUnitOfWork()),
             RevisionId = revision.Id.Value,

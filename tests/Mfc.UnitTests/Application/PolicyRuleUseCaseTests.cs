@@ -33,7 +33,7 @@ public sealed class PolicyRuleUseCaseTests
         revision.Approve(DateTimeOffset.UtcNow);
         await policies.SaveRevisionAsync(revision);
 
-        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit);
+        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyRuleMutationView> result = await add.ExecuteAsync(new AddRuleCommand
         {
             Actor = "admin",
@@ -61,7 +61,7 @@ public sealed class PolicyRuleUseCaseTests
 
         ApplicationResult<PolicyDraftView> draft = await CreateDraftAsync(auth, policies, idempotency, audit);
         byte[] hash = Convert.FromHexString(draft.Value!.ContentHashHex);
-        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit);
+        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
 
         ApplicationResult<PolicyRuleMutationView> first = await add.ExecuteAsync(CreateAcceptRule(
             draft.Value.RevisionId, hash, ordinal: 5));
@@ -87,7 +87,7 @@ public sealed class PolicyRuleUseCaseTests
 
         ApplicationResult<PolicyDraftView> draft = await CreateDraftAsync(auth, policies, idempotency, audit);
         byte[] stale = Convert.FromHexString(draft.Value!.ContentHashHex);
-        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit);
+        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyRuleMutationView> first = await add.ExecuteAsync(CreateAcceptRule(
             draft.Value.RevisionId, stale));
         Assert.True(first.IsSuccess);
@@ -110,7 +110,7 @@ public sealed class PolicyRuleUseCaseTests
 
         ApplicationResult<PolicyDraftView> draft = await CreateDraftAsync(auth, policies, idempotency, audit);
         byte[] hash = Convert.FromHexString(draft.Value!.ContentHashHex);
-        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit);
+        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
         AddRuleCommand disabled = CreateAcceptRule(draft.Value.RevisionId, hash);
         disabled = new AddRuleCommand
         {
@@ -160,7 +160,7 @@ public sealed class PolicyRuleUseCaseTests
 
         ApplicationResult<PolicyDraftView> draft = await CreateDraftAsync(auth, policies, idempotency, audit);
         byte[] hash = Convert.FromHexString(draft.Value!.ContentHashHex);
-        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit);
+        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
 
         Guid missingZone = Guid.NewGuid();
         ApplicationResult<PolicyRuleMutationView> missing = await add.ExecuteAsync(new AddRuleCommand
@@ -248,7 +248,7 @@ public sealed class PolicyRuleUseCaseTests
         await policies.SaveRevisionAsync(revision);
 
         byte[] hash = revision.ContentHash.Bytes.ToArray();
-        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit);
+        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
 
         ApplicationResult<PolicyRuleMutationView> missing = await add.ExecuteAsync(new AddRuleCommand
         {
@@ -300,7 +300,7 @@ public sealed class PolicyRuleUseCaseTests
 
         ApplicationResult<PolicyDraftView> draft = await CreateDraftAsync(auth, policies, idempotency, audit);
         byte[] hash = Convert.FromHexString(draft.Value!.ContentHashHex);
-        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit);
+        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyRuleMutationView> added = await add.ExecuteAsync(CreateAcceptRule(
             draft.Value.RevisionId, hash));
         Assert.True(added.IsSuccess);
@@ -352,7 +352,7 @@ public sealed class PolicyRuleUseCaseTests
         ApplicationResult<PolicyDraftView> draft = await CreateDraftAsync(auth, policies, idempotency, audit);
         Guid revisionId = draft.Value!.RevisionId;
         byte[] hash = Convert.FromHexString(draft.Value.ContentHashHex);
-        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit);
+        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
 
         ApplicationResult<PolicyRuleMutationView> first = await add.ExecuteAsync(CreateAcceptRule(revisionId, hash));
         Assert.True(first.IsSuccess);
@@ -365,7 +365,7 @@ public sealed class PolicyRuleUseCaseTests
         Guid ruleB = second.Value.Rule!.Id;
 
         Guid updateKey = Guid.NewGuid();
-        UpdateRuleUseCase update = new(auth, policies, zones, idempotency, audit);
+        UpdateRuleUseCase update = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
         UpdateRuleCommand updateCommand = new()
         {
             Actor = "admin",
@@ -395,7 +395,7 @@ public sealed class PolicyRuleUseCaseTests
         Assert.True(replayUpdate.IsSuccess);
         Assert.Equal(updated.Value.Rule.Id, replayUpdate.Value!.Rule!.Id);
 
-        ReorderRulesUseCase reorder = new(auth, policies, zones, idempotency, audit);
+        ReorderRulesUseCase reorder = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyRuleMutationView> reordered = await reorder.ExecuteAsync(new ReorderRulesCommand
         {
             Actor = "admin",
@@ -412,7 +412,7 @@ public sealed class PolicyRuleUseCaseTests
         Assert.Equal(1u, reordered.Value.Rules.Single(r => r.Id == ruleA).Ordinal);
         hash = Convert.FromHexString(reordered.Value.ContentHashHex);
 
-        DeleteRuleUseCase delete = new(auth, policies, zones, idempotency, audit);
+        DeleteRuleUseCase delete = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
         Guid deleteKey = Guid.NewGuid();
         DeleteRuleCommand deleteCommand = new()
         {
@@ -457,7 +457,7 @@ public sealed class PolicyRuleUseCaseTests
             FakeIdempotencyStore idempotency,
             FakeAuditEventWriter audit) = CreateDeps();
 
-        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit);
+        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyRuleMutationView> badKey = await add.ExecuteAsync(new AddRuleCommand
         {
             Actor = "admin",
@@ -487,7 +487,7 @@ public sealed class PolicyRuleUseCaseTests
             FakeAuditEventWriter audit) = CreateDeps();
 
         Guid draftKey = Guid.NewGuid();
-        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit);
+        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         CreateDraftPolicyCommand draftCommand = new()
         {
             Actor = "admin",
@@ -540,7 +540,7 @@ public sealed class PolicyRuleUseCaseTests
         await policies.SaveRevisionAsync(revision);
         byte[] hash = revision.ContentHash.Bytes.ToArray();
 
-        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit);
+        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
         Guid addKey = Guid.NewGuid();
         AddRuleCommand addCommand = new()
         {
@@ -585,7 +585,7 @@ public sealed class PolicyRuleUseCaseTests
         Assert.True(replayAdd.IsSuccess);
         hash = Convert.FromHexString(added.Value!.ContentHashHex);
 
-        ReorderRulesUseCase reorder = new(auth, policies, zones, idempotency, audit);
+        ReorderRulesUseCase reorder = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
         Guid reorderKey = Guid.NewGuid();
         ReorderRulesCommand reorderCommand = new()
         {
@@ -642,7 +642,7 @@ public sealed class PolicyRuleUseCaseTests
         FakeIdempotencyStore idempotency,
         FakeAuditEventWriter audit)
     {
-        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit);
+        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         return await create.ExecuteAsync(new CreateDraftPolicyCommand
         {
             Actor = "admin",
