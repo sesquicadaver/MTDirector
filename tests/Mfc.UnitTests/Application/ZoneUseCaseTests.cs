@@ -20,7 +20,7 @@ public sealed class ZoneUseCaseTests
         FakeIdempotencyStore idempotency = new();
         FakeAuditEventWriter audit = new();
 
-        CreateZoneDefinitionUseCase create = new(auth, zones, idempotency, audit);
+        CreateZoneDefinitionUseCase create = new(auth, zones, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<ZoneDefinitionView> created = await create.ExecuteAsync(new CreateZoneDefinitionCommand
         {
             Actor = "admin",
@@ -32,7 +32,7 @@ public sealed class ZoneUseCaseTests
         Assert.True(created.IsSuccess);
         Assert.Equal(1UL, created.Value!.RowVersion);
 
-        UpdateZoneDefinitionUseCase update = new(auth, zones, idempotency, audit);
+        UpdateZoneDefinitionUseCase update = new(auth, zones, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<ZoneDefinitionView> updated = await update.ExecuteAsync(new UpdateZoneDefinitionCommand
         {
             Actor = "admin",
@@ -87,7 +87,7 @@ public sealed class ZoneUseCaseTests
             NonEmptyName.Create("LAN"));
         await zones.AddAsync(zone);
 
-        UpsertNodeZoneBindingUseCase upsert = new(auth, nodes, zones, bindings, idempotency, audit);
+        UpsertNodeZoneBindingUseCase upsert = new(auth, nodes, zones, bindings, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<NodeZoneBindingView> binding = await upsert.ExecuteAsync(new UpsertNodeZoneBindingCommand
         {
             Actor = "admin",
@@ -157,7 +157,7 @@ public sealed class ZoneUseCaseTests
             NonEmptyName.Create("WAN"));
         await zones.AddAsync(zone);
 
-        UpsertNodeZoneBindingUseCase upsert = new(auth, nodes, zones, bindings, idempotency, audit);
+        UpsertNodeZoneBindingUseCase upsert = new(auth, nodes, zones, bindings, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<NodeZoneBindingView> binding = await upsert.ExecuteAsync(new UpsertNodeZoneBindingCommand
         {
             Actor = "admin",
@@ -296,7 +296,7 @@ public sealed class ZoneUseCaseTests
         Node node = Node.Create(site.Id, NonEmptyName.Create("edge"), NodeKind.Router, DeclaredUplinkMode.One);
         await nodes.AddAsync(node);
 
-        CreateZoneDefinitionUseCase create = new(auth, zones, idempotency, audit);
+        CreateZoneDefinitionUseCase create = new(auth, zones, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<ZoneDefinitionView> created = await create.ExecuteAsync(new CreateZoneDefinitionCommand
         {
             Actor = "admin",
@@ -329,7 +329,7 @@ public sealed class ZoneUseCaseTests
         Assert.True(listed.IsSuccess);
         Assert.Contains(listed.Value!, z => z.Key == "dmz");
 
-        UpdateZoneDefinitionUseCase update = new(auth, zones, idempotency, audit);
+        UpdateZoneDefinitionUseCase update = new(auth, zones, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<ZoneDefinitionView> cleared = await update.ExecuteAsync(new UpdateZoneDefinitionCommand
         {
             Actor = "admin",
@@ -352,7 +352,7 @@ public sealed class ZoneUseCaseTests
         Assert.True(described.IsSuccess);
         Assert.Equal("updated", described.Value!.Description);
 
-        UpsertNodeZoneBindingUseCase upsert = new(auth, nodes, zones, bindings, idempotency, audit);
+        UpsertNodeZoneBindingUseCase upsert = new(auth, nodes, zones, bindings, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<NodeZoneBindingView> binding = await upsert.ExecuteAsync(new UpsertNodeZoneBindingCommand
         {
             Actor = "admin",
@@ -413,7 +413,7 @@ public sealed class ZoneUseCaseTests
         Assert.True(listedBindings.IsSuccess);
         Assert.Single(listedBindings.Value!);
 
-        DeleteZoneDefinitionUseCase deleteZone = new(auth, zones, bindings, idempotency, audit);
+        DeleteZoneDefinitionUseCase deleteZone = new(auth, zones, bindings, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<bool> blockedDelete = await deleteZone.ExecuteAsync(new DeleteZoneDefinitionCommand
         {
             Actor = "admin",
@@ -424,7 +424,7 @@ public sealed class ZoneUseCaseTests
         Assert.True(blockedDelete.IsFailure);
         Assert.Equal("conflict", blockedDelete.Error!.Code);
 
-        DeleteNodeZoneBindingUseCase deleteBinding = new(auth, bindings, idempotency, audit);
+        DeleteNodeZoneBindingUseCase deleteBinding = new(auth, bindings, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<bool> deletedBinding = await deleteBinding.ExecuteAsync(new DeleteNodeZoneBindingCommand
         {
             Actor = "admin",

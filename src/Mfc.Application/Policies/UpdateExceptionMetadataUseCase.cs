@@ -59,24 +59,28 @@ public sealed class UpdateExceptionMetadataUseCase
     private readonly INodeStore _nodes;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public UpdateExceptionMetadataUseCase(
         IAuthorizationBoundary auth,
         IPolicyStore policies,
         INodeStore nodes,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
         ArgumentNullException.ThrowIfNull(nodes);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _policies = policies;
         _nodes = nodes;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<PolicyRevisionView>> ExecuteAsync(
@@ -207,18 +211,23 @@ public sealed class UpdateExceptionMetadataUseCase
             return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
         }
 
-        await _policies.SaveRevisionAsync(revision, cancellationToken).ConfigureAwait(false);
-        await _idempotency.SaveAsync(
-            command.Actor, Operation, command.IdempotencyKey, requestHash, revision.Id.Value, cancellationToken)
-            .ConfigureAwait(false);
-        await _audit.AppendAsync(
-            command.Actor,
-            Operation,
-            JsonSerializer.Serialize(new
+        await _unitOfWork.ExecuteAsync(
+            async ct =>
             {
-                revision_id = revision.Id.Value,
-                content_hash = revision.ContentHash.ToString(),
-            }),
+                await _policies.SaveRevisionAsync(revision, ct).ConfigureAwait(false);
+                await _idempotency.SaveAsync(
+                        command.Actor, Operation, command.IdempotencyKey, requestHash, revision.Id.Value, ct)
+                    .ConfigureAwait(false);
+                await _audit.AppendAsync(
+                        command.Actor,
+                        Operation,
+                        JsonSerializer.Serialize(new
+                        {
+                            revision_id = revision.Id.Value,
+                            content_hash = revision.ContentHash.ToString(),
+                        }),
+                        ct).ConfigureAwait(false);
+            },
             cancellationToken).ConfigureAwait(false);
 
         return ApplicationResults.Ok(ViewMapper.ToView(revision, next));

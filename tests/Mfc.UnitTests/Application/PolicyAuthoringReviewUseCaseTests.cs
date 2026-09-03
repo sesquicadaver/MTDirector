@@ -23,7 +23,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
         Assert.True(draft.IsSuccess);
         byte[] hash = Convert.FromHexString(draft.Value!.ContentHashHex);
         Guid key = Guid.NewGuid();
-        ValidateRevisionUseCase useCase = new(auth, policies, idempotency, audit);
+        ValidateRevisionUseCase useCase = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ValidateRevisionCommand command = new()
         {
             Actor = "admin",
@@ -58,7 +58,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
             CreateDeps();
         ApplicationResult<PolicyDraftView> draft = await CreateDraftAsync(auth, policies, idempotency, audit);
         byte[] hash = Convert.FromHexString(draft.Value!.ContentHashHex);
-        UpsertAddressObjectUseCase useCase = new(auth, policies, idempotency, audit);
+        UpsertAddressObjectUseCase useCase = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyRevisionView> created = await useCase.ExecuteAsync(new UpsertAddressObjectCommand
         {
             Actor = "admin",
@@ -104,7 +104,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
             CreateDeps();
         ApplicationResult<PolicyDraftView> draft = await CreateDraftAsync(auth, policies, idempotency, audit);
         byte[] hash = Convert.FromHexString(draft.Value!.ContentHashHex);
-        UpsertServiceObjectUseCase upsert = new(auth, policies, idempotency, audit);
+        UpsertServiceObjectUseCase upsert = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyRevisionView> service = await upsert.ExecuteAsync(new UpsertServiceObjectCommand
         {
             Actor = "admin",
@@ -125,7 +125,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
         Assert.Single(service.Value!.ServiceObjects);
         hash = Convert.FromHexString(service.Value.ContentHashHex);
 
-        ReplacePolicyTestsUseCase replaceTests = new(auth, policies, idempotency, audit);
+        ReplacePolicyTestsUseCase replaceTests = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyRevisionView> withTests = await replaceTests.ExecuteAsync(new ReplacePolicyTestsCommand
         {
             Actor = "admin",
@@ -145,7 +145,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
             CreateDeps();
         ApplicationResult<PolicyDraftView> draft = await CreateDraftAsync(auth, policies, idempotency, audit);
         byte[] hash = Convert.FromHexString(draft.Value!.ContentHashHex);
-        ReplaceChainContractsUseCase useCase = new(auth, policies, idempotency, audit);
+        ReplaceChainContractsUseCase useCase = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyRevisionView> ok = await useCase.ExecuteAsync(new ReplaceChainContractsCommand
         {
             Actor = "admin",
@@ -175,7 +175,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
         ApplicationResult<PolicyDraftView> beforeDraft = await CreateDraftAsync(auth, policies, idempotency, audit);
         ApplicationResult<PolicyDraftView> afterDraft = await CreateDraftAsync(auth, policies, idempotency, audit, "after");
         FakeZoneDefinitionStore zones = new();
-        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit);
+        AddRuleUseCase add = new(auth, policies, zones, idempotency, audit, new FakeUnitOfWork());
         byte[] afterHash = Convert.FromHexString(afterDraft.Value!.ContentHashHex);
         ApplicationResult<PolicyRuleMutationView> added = await add.ExecuteAsync(new AddRuleCommand
         {
@@ -212,7 +212,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
             CreateDeps();
         ApplicationResult<PolicyDraftView> draft = await CreateDraftAsync(auth, policies, idempotency, audit);
         byte[] hash = Convert.FromHexString(draft.Value!.ContentHashHex);
-        ValidateRevisionUseCase useCase = new(auth, policies, idempotency, audit);
+        ValidateRevisionUseCase useCase = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
 
         auth.DeniedPermissions.Add(ApplicationPermissions.PolicyWrite);
         ApplicationResult<PolicyRevisionView> forbidden = await useCase.ExecuteAsync(new ValidateRevisionCommand
@@ -269,9 +269,9 @@ public sealed class PolicyAuthoringReviewUseCaseTests
             CreateDeps();
         ApplicationResult<PolicyDraftView> draft = await CreateDraftAsync(auth, policies, idempotency, audit);
         byte[] hash = Convert.FromHexString(draft.Value!.ContentHashHex);
-        UpsertAddressObjectUseCase upsertAddress = new(auth, policies, idempotency, audit);
-        ReplaceChainContractsUseCase replaceContracts = new(auth, policies, idempotency, audit);
-        ReplacePolicyTestsUseCase replaceTests = new(auth, policies, idempotency, audit);
+        UpsertAddressObjectUseCase upsertAddress = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
+        ReplaceChainContractsUseCase replaceContracts = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
+        ReplacePolicyTestsUseCase replaceTests = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
 
         auth.DeniedPermissions.Add(ApplicationPermissions.PolicyWrite);
         ApplicationResult<PolicyRevisionView> forbidden = await upsertAddress.ExecuteAsync(new UpsertAddressObjectCommand
@@ -459,7 +459,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
     {
         (FakeAuthorizationBoundary auth, FakePolicyStore policies, FakeIdempotencyStore idempotency, FakeAuditEventWriter audit) =
             CreateDeps();
-        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit);
+        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyDraftView> overlay = await create.ExecuteAsync(new CreateDraftPolicyCommand
         {
             Actor = "admin",
@@ -471,7 +471,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
             ParentContextHash = new byte[32],
         });
         Assert.True(overlay.IsSuccess);
-        ReplaceChainContractsUseCase useCase = new(auth, policies, idempotency, audit);
+        ReplaceChainContractsUseCase useCase = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyRevisionView> blocked = await useCase.ExecuteAsync(new ReplaceChainContractsCommand
         {
             Actor = "admin",
@@ -529,7 +529,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
             CreateDeps();
         ApplicationResult<PolicyDraftView> draft = await CreateDraftAsync(auth, policies, idempotency, audit);
         byte[] hash = Convert.FromHexString(draft.Value!.ContentHashHex);
-        ReplaceChainContractsUseCase useCase = new(auth, policies, idempotency, audit);
+        ReplaceChainContractsUseCase useCase = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         Guid key = Guid.NewGuid();
         ReplaceChainContractsCommand command = new()
         {
@@ -563,8 +563,8 @@ public sealed class PolicyAuthoringReviewUseCaseTests
             CreateDeps();
         ApplicationResult<PolicyDraftView> draft = await CreateDraftAsync(auth, policies, idempotency, audit);
         byte[] hash = Convert.FromHexString(draft.Value!.ContentHashHex);
-        UpsertAddressObjectUseCase upsertAddress = new(auth, policies, idempotency, audit);
-        UpsertServiceObjectUseCase upsertService = new(auth, policies, idempotency, audit);
+        UpsertAddressObjectUseCase upsertAddress = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
+        UpsertServiceObjectUseCase upsertService = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         GetPolicyRevisionUseCase get = new(auth, policies);
 
         ApplicationResult<PolicyRevisionView> withAddress = await upsertAddress.ExecuteAsync(new UpsertAddressObjectCommand
@@ -760,7 +760,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
             CreateDeps();
         ApplicationResult<PolicyDraftView> before = await CreateDraftAsync(auth, policies, idempotency, audit, "before");
         ApplicationResult<PolicyDraftView> after = await CreateDraftAsync(auth, policies, idempotency, audit, "after");
-        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit);
+        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyDraftView> nodeOverlay = await create.ExecuteAsync(new CreateDraftPolicyCommand
         {
             Actor = "admin",
@@ -856,7 +856,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
         Assert.Empty(loadedCorrupt.Value!.AddressObjects);
 
         ApplicationResult<PolicyRevisionView> exceptionAddressBlocked = await new UpsertAddressObjectUseCase(
-            auth, policies, idempotency, audit).ExecuteAsync(new UpsertAddressObjectCommand
+            auth, policies, idempotency, audit, new FakeUnitOfWork()).ExecuteAsync(new UpsertAddressObjectCommand
             {
                 Actor = "admin",
                 IdempotencyKey = Guid.NewGuid(),
@@ -870,7 +870,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
         Assert.Contains("EXCEPTION", exceptionAddressBlocked.Error!.Message, StringComparison.Ordinal);
 
         ApplicationResult<PolicyRevisionView> exceptionServiceBlocked = await new UpsertServiceObjectUseCase(
-            auth, policies, idempotency, audit).ExecuteAsync(new UpsertServiceObjectCommand
+            auth, policies, idempotency, audit, new FakeUnitOfWork()).ExecuteAsync(new UpsertServiceObjectCommand
             {
                 Actor = "admin",
                 IdempotencyKey = Guid.NewGuid(),
@@ -895,7 +895,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
         (FakeAuthorizationBoundary auth, FakePolicyStore policies, FakeIdempotencyStore idempotency, FakeAuditEventWriter audit) =
             CreateDeps();
         ApplicationResult<PolicyDraftView> draft = await CreateDraftAsync(auth, policies, idempotency, audit);
-        ReplacePolicyTestsUseCase replaceTests = new(auth, policies, idempotency, audit);
+        ReplacePolicyTestsUseCase replaceTests = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyRevisionView> badJson = await replaceTests.ExecuteAsync(new ReplacePolicyTestsCommand
         {
             Actor = "admin",
@@ -922,7 +922,7 @@ public sealed class PolicyAuthoringReviewUseCaseTests
         FakeAuditEventWriter audit,
         string name = "baseline")
     {
-        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit);
+        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         return await create.ExecuteAsync(new CreateDraftPolicyCommand
         {
             Actor = "admin",

@@ -34,7 +34,7 @@ public sealed class ListPoliciesUseCaseTests
         FakePolicyStore policies = new();
         FakeIdempotencyStore idempotency = new();
         FakeAuditEventWriter audit = new();
-        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit);
+        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
 
         ApplicationResult<PolicyDraftView> beta = await create.ExecuteAsync(new CreateDraftPolicyCommand
         {
@@ -80,7 +80,7 @@ public sealed class ListPoliciesUseCaseTests
         FakePolicyStore policies = new();
         FakeIdempotencyStore idempotency = new();
         FakeAuditEventWriter audit = new();
-        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit);
+        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyDraftView> company = await create.ExecuteAsync(new CreateDraftPolicyCommand
         {
             Actor = "admin",
@@ -117,7 +117,7 @@ public sealed class ListPoliciesUseCaseTests
         FakePolicyStore policies = new();
         FakeIdempotencyStore idempotency = new();
         FakeAuditEventWriter audit = new();
-        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit);
+        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyDraftView> draft = await create.ExecuteAsync(new CreateDraftPolicyCommand
         {
             Actor = "admin",

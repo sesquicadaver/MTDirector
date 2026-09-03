@@ -45,6 +45,7 @@ public sealed class UpsertNodeZoneBindingUseCase
     private readonly INodeZoneBindingStore _bindings;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public UpsertNodeZoneBindingUseCase(
         IAuthorizationBoundary auth,
@@ -52,7 +53,8 @@ public sealed class UpsertNodeZoneBindingUseCase
         IZoneDefinitionStore zones,
         INodeZoneBindingStore bindings,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
@@ -60,12 +62,14 @@ public sealed class UpsertNodeZoneBindingUseCase
         ArgumentNullException.ThrowIfNull(bindings);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _nodes = nodes;
         _zones = zones;
         _bindings = bindings;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<NodeZoneBindingView>> ExecuteAsync(
@@ -146,20 +150,26 @@ public sealed class UpsertNodeZoneBindingUseCase
                     command.Kind,
                     command.Values,
                     expectedHash);
-                await _bindings.AddAsync(created, cancellationToken).ConfigureAwait(false);
-                await _idempotency.SaveAsync(
-                    command.Actor, Operation, command.IdempotencyKey, requestHash, created.Id.Value, cancellationToken)
-                    .ConfigureAwait(false);
-                await _audit.AppendAsync(
-                    command.Actor,
-                    Operation,
-                    JsonSerializer.Serialize(new
+                await _unitOfWork.ExecuteAsync(
+                    async ct =>
                     {
-                        binding_id = created.Id.Value,
-                        node_id = nodeId.Value,
-                        zone_id = zoneId.Value,
-                        action = "create",
-                    }),
+                        await _bindings.AddAsync(created, ct).ConfigureAwait(false);
+                        await _idempotency.SaveAsync(
+                                command.Actor, Operation, command.IdempotencyKey, requestHash, created.Id.Value, ct)
+                            .ConfigureAwait(false);
+                        await _audit.AppendAsync(
+                                command.Actor,
+                                Operation,
+                                JsonSerializer.Serialize(new
+                                {
+                                    binding_id = created.Id.Value,
+                                    node_id = nodeId.Value,
+                                    zone_id = zoneId.Value,
+                                    action = "create",
+                                }),
+                                ct)
+                            .ConfigureAwait(false);
+                    },
                     cancellationToken).ConfigureAwait(false);
                 return ApplicationResults.Ok(ViewMapper.ToView(created));
             }
@@ -178,21 +188,27 @@ public sealed class UpsertNodeZoneBindingUseCase
             }
 
             existing.ReplaceBinding(command.Kind, command.Values, expectedHash);
-            await _bindings.UpdateAsync(existing, cancellationToken).ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                command.Actor, Operation, command.IdempotencyKey, requestHash, existing.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
                 {
-                    binding_id = existing.Id.Value,
-                    node_id = nodeId.Value,
-                    zone_id = zoneId.Value,
-                    action = "update",
-                    row_version = existing.RowVersion,
-                }),
+                    await _bindings.UpdateAsync(existing, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, existing.Id.Value, ct)
+                        .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new
+                            {
+                                binding_id = existing.Id.Value,
+                                node_id = nodeId.Value,
+                                zone_id = zoneId.Value,
+                                action = "update",
+                                row_version = existing.RowVersion,
+                            }),
+                            ct)
+                        .ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ViewMapper.ToView(existing));
         }
@@ -244,21 +260,25 @@ public sealed class DeleteNodeZoneBindingUseCase
     private readonly INodeZoneBindingStore _bindings;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public DeleteNodeZoneBindingUseCase(
         IAuthorizationBoundary auth,
         INodeZoneBindingStore bindings,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(bindings);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _bindings = bindings;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<bool>> ExecuteAsync(
@@ -311,14 +331,20 @@ public sealed class DeleteNodeZoneBindingUseCase
                     $"Binding row_version mismatch: expected {command.ExpectedRowVersion}, actual {binding.RowVersion}."));
         }
 
-        await _bindings.DeleteAsync(bindingId, cancellationToken).ConfigureAwait(false);
-        await _idempotency.SaveAsync(
-            command.Actor, Operation, command.IdempotencyKey, requestHash, bindingId.Value, cancellationToken)
-            .ConfigureAwait(false);
-        await _audit.AppendAsync(
-            command.Actor,
-            Operation,
-            JsonSerializer.Serialize(new { binding_id = bindingId.Value }),
+        await _unitOfWork.ExecuteAsync(
+            async ct =>
+            {
+                await _bindings.DeleteAsync(bindingId, ct).ConfigureAwait(false);
+                await _idempotency.SaveAsync(
+                        command.Actor, Operation, command.IdempotencyKey, requestHash, bindingId.Value, ct)
+                    .ConfigureAwait(false);
+                await _audit.AppendAsync(
+                        command.Actor,
+                        Operation,
+                        JsonSerializer.Serialize(new { binding_id = bindingId.Value }),
+                        ct)
+                    .ConfigureAwait(false);
+            },
             cancellationToken).ConfigureAwait(false);
         return ApplicationResults.Ok(true);
     }
