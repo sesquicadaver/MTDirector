@@ -79,7 +79,7 @@ public sealed class ResponseFeedbackLivingSpecTests
         FakeAuditEventWriter audit = new();
         FakeClock clock = new() { UtcNow = T0 };
         NotConfiguredResponseFeedbackDeliveryPort delivery = new();
-        EmitResponseFeedbackUseCase emit = new(auth, store, delivery, audit, clock);
+        EmitResponseFeedbackUseCase emit = new(auth, store, delivery, audit, clock, new FakeUnitOfWork());
         ApplicationResult<ResponseFeedbackEventView> result = await emit.ExecuteAsync(SampleCommand());
         Assert.True(result.IsSuccess, result.Error?.Message);
         Assert.Equal(ResponseFeedbackDeliveryOutcome.NotConfigured, result.Value!.DeliveryOutcome);

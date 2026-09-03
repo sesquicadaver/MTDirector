@@ -61,6 +61,7 @@ public sealed class DetectManagedDriftUseCase
     private readonly IDriftEventStore _driftEvents;
     private readonly IAuditEventWriter _audit;
     private readonly IClock _clock;
+    private readonly IUnitOfWork _unitOfWork;
 
     public DetectManagedDriftUseCase(
         IAuthorizationBoundary auth,
@@ -68,7 +69,8 @@ public sealed class DetectManagedDriftUseCase
         IDeviceHashStateStore hashStates,
         IDriftEventStore driftEvents,
         IAuditEventWriter audit,
-        IClock clock)
+        IClock clock,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(devices);
@@ -76,12 +78,14 @@ public sealed class DetectManagedDriftUseCase
         ArgumentNullException.ThrowIfNull(driftEvents);
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(clock);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _devices = devices;
         _hashStates = hashStates;
         _driftEvents = driftEvents;
         _audit = audit;
         _clock = clock;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<DriftEventView>> ExecuteAsync(
@@ -141,40 +145,45 @@ public sealed class DetectManagedDriftUseCase
 
         DateTimeOffset now = _clock.UtcNow;
         DriftEvent driftEvent = DriftEvent.Create(deviceId, device.NodeId, evaluation, now);
-        await _driftEvents.AppendAsync(driftEvent, cancellationToken).ConfigureAwait(false);
-
-        if (command.PersistActualHash && actual is not null)
-        {
-            DeviceHashState updated = hashState.With(
-                hashState.DesiredPolicyHash,
-                hashState.DesiredArtifactHash,
-                hashState.LastCommittedPolicyHash,
-                hashState.LastCommittedArtifactHash,
-                actual,
-                actualKnown: true,
-                hashState.AnchorKnown,
-                now);
-            await _hashStates.UpsertAsync(updated, cancellationToken).ConfigureAwait(false);
-        }
-
-        await _audit.AppendAsync(
-            command.Actor,
-            AuditAction,
-            JsonSerializer.Serialize(new
+        await _unitOfWork.ExecuteAsync(
+            async ct =>
             {
-                drift_event_id = driftEvent.Id.Value,
-                device_id = deviceId.Value,
-                node_id = device.NodeId.Value,
-                outcome = driftEvent.Outcome.ToString(),
-                configuration_drift = driftEvent.ConfigurationDriftPresent,
-                blocks_deployment = driftEvent.BlocksDeployment,
-                baseline_committed = driftEvent.BaselineCommittedHash?.ToString(),
-                actual = driftEvent.ActualManagedResourceHash?.ToString(),
-                desired_ignored_for_baseline = driftEvent.DesiredArtifactHashIgnoredForBaseline?.ToString(),
-                semantic_diff_hash = driftEvent.SemanticDiffHash?.ToString(),
-                finding_kinds = driftEvent.Findings.Select(static f => f.Kind.ToString()).ToArray(),
-                immutable = true,
-            }),
+                await _driftEvents.AppendAsync(driftEvent, ct).ConfigureAwait(false);
+
+                if (command.PersistActualHash && actual is not null)
+                {
+                    DeviceHashState updated = hashState.With(
+                        hashState.DesiredPolicyHash,
+                        hashState.DesiredArtifactHash,
+                        hashState.LastCommittedPolicyHash,
+                        hashState.LastCommittedArtifactHash,
+                        actual,
+                        actualKnown: true,
+                        hashState.AnchorKnown,
+                        now);
+                    await _hashStates.UpsertAsync(updated, ct).ConfigureAwait(false);
+                }
+
+                await _audit.AppendAsync(
+                        command.Actor,
+                        AuditAction,
+                        JsonSerializer.Serialize(new
+                        {
+                            drift_event_id = driftEvent.Id.Value,
+                            device_id = deviceId.Value,
+                            node_id = device.NodeId.Value,
+                            outcome = driftEvent.Outcome.ToString(),
+                            configuration_drift = driftEvent.ConfigurationDriftPresent,
+                            blocks_deployment = driftEvent.BlocksDeployment,
+                            baseline_committed = driftEvent.BaselineCommittedHash?.ToString(),
+                            actual = driftEvent.ActualManagedResourceHash?.ToString(),
+                            desired_ignored_for_baseline = driftEvent.DesiredArtifactHashIgnoredForBaseline?.ToString(),
+                            semantic_diff_hash = driftEvent.SemanticDiffHash?.ToString(),
+                            finding_kinds = driftEvent.Findings.Select(static f => f.Kind.ToString()).ToArray(),
+                            immutable = true,
+                        }),
+                        ct).ConfigureAwait(false);
+            },
             cancellationToken).ConfigureAwait(false);
 
         return ApplicationResults.Ok(DriftViewMapper.ToView(driftEvent));

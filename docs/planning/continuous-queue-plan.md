@@ -61,6 +61,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Deploy/profile UoW residual | Application write paths | **SEC-08 DONE** |
 | Onboarding UoW residual | Application write paths | **SEC-09 DONE** |
 | Incident overlay expire UoW | Application write paths | **SEC-10 DONE** |
+| Drift detect + response-feedback UoW | Application write paths | **SEC-11 DONE** |
+| CaptureSnapshot persist+audit UoW | Application write paths | **SEC-12 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -109,6 +111,8 @@ SEC-07 Extend atomic mutation boundary **DONE**
 SEC-08 Connection profile + deployment UoW **DONE**
 SEC-09 Onboarding workflow UoW **DONE**
 SEC-10 Incident overlay expire UoW **DONE**
+SEC-11 Drift detect + response-feedback UoW **DONE**
+SEC-12 CaptureSnapshot persist+audit UoW **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -143,8 +147,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 23 | SEC-08 | [#385](https://github.com/sesquicadaver/MTDirector/issues/385) | Connection profile + deployment UoW | **DONE** |
 | 24 | SEC-09 | [#387](https://github.com/sesquicadaver/MTDirector/issues/387) | Onboarding workflow UoW | **DONE** |
 | 25 | SEC-10 | [#389](https://github.com/sesquicadaver/MTDirector/issues/389) | Incident overlay expire UoW | **DONE** |
+| 26 | SEC-11 | [#391](https://github.com/sesquicadaver/MTDirector/issues/391) | Drift detect + response-feedback UoW | **DONE** |
+| 27 | SEC-12 | [#392](https://github.com/sesquicadaver/MTDirector/issues/392) | CaptureSnapshot persist+audit UoW | **OPEN** |
 
-**§3.C NEXT = residual (CRS lab ops)**. SEC-10 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = SEC-12 (#392)**. SEC-11 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

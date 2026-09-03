@@ -244,6 +244,16 @@ Issue [#378](https://github.com/sesquicadaver/MTDirector/issues/378) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec05"`.
 
+## Living Specification — Drift detect + response-feedback UoW (SEC-11)
+
+| ТЗ / AC | Модуль | Тест |
+|---------|--------|------|
+| Drift event/hash/audit in one UoW | `DetectManagedDriftUseCase` | `MutationAtomicitySec11LivingSpecTests.Ac1` |
+| Feedback store+audit in one UoW; delivery outside | `EmitResponseFeedbackUseCase` | `Ac2` / `Ac3` |
+| known-limitations | `known-limitations.md` | `Ac4` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec11"`.
+
 ## Living Specification — Incident overlay expiry UoW (SEC-10)
 
 | ТЗ / AC | Модуль | Тест |

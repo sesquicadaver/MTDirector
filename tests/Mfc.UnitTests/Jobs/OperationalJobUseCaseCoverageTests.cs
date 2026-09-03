@@ -98,7 +98,7 @@ public sealed class OperationalJobUseCaseCoverageTests
 
         PollManagedDriftJobUseCase useCase = new(
             hashes,
-            new DetectManagedDriftUseCase(auth, devices, hashes, drift, audit, clock));
+            new DetectManagedDriftUseCase(auth, devices, hashes, drift, audit, clock, new FakeUnitOfWork()));
         var result = await useCase.ExecuteAsync("tester", batchSize: 10);
         Assert.True(result.IsSuccess);
         Assert.Contains(device.Id.Value, result.Value!.DeviceIdsPolled);
@@ -116,7 +116,8 @@ public sealed class OperationalJobUseCaseCoverageTests
                     new FakeDeviceHashStateStore(),
                     new FakeDriftEventStore(),
                     new FakeAuditEventWriter(),
-                    new FakeClock()))
+                    new FakeClock(),
+                    new FakeUnitOfWork()))
             .ExecuteAsync("tester", batchSize: 0);
         Assert.False(result.IsSuccess);
     }

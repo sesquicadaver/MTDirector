@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **SEC-11** ([#391](https://github.com/sesquicadaver/MTDirector/issues/391)): `DetectManagedDriftUseCase` and `EmitResponseFeedbackUseCase` persist event/store+audit inside `IUnitOfWork`; feedback delivery stays outside. Living Spec `MutationAtomicitySec11LivingSpecTests`. Seeded SEC-12 (#392). **§3.C NEXT = SEC-12 (#392)**.
 - **SEC-10** ([#389](https://github.com/sesquicadaver/MTDirector/issues/389)): `ExpireIncidentDenyOverlayBindingUseCase` persists binding+idempotency+audit inside `IUnitOfWork`. Living Spec `MutationAtomicitySec10LivingSpecTests`. **§3.C NEXT = residual (CRS lab ops)**.
 - **SEC-09** ([#387](https://github.com/sesquicadaver/MTDirector/issues/387)): onboarding plan/start/rollback terminal writes share `IUnitOfWork`. Living Spec `MutationAtomicitySec09LivingSpecTests`. **§3.C NEXT = residual (CRS lab ops)**.
 - **SEC-08** ([#385](https://github.com/sesquicadaver/MTDirector/issues/385)): `UpdateConnectionProfileUseCase` + deployment plan/start/rollback terminal writes share `IUnitOfWork`. Living Spec `MutationAtomicitySec08LivingSpecTests`. **§3.C NEXT = residual (CRS lab ops)**.
