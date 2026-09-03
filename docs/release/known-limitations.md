@@ -34,7 +34,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - No NAT / RAW / Mangle / routing / VRRP / bridge / VLAN **writes** beyond managed filter/onboarding/deploy allowlists.
 - No campaigns, auto-deploy, auto-fix drift, web/mobile UI, multi-tenant, microservices/Redis/K8s, multi-vendor, SIEM/SOAR in Controller.
 - `IResponseFeedbackDeliveryPort` defaults to **not configured** until an external analytics complex is wired.
-- **SEC-08 DONE:** `UpdateConnectionProfileUseCase` and deployment plan/start/rollback terminal persists share `IUnitOfWork`. Intentional residual: resolve-only zone updates (no idempotency/audit triple); `StartDeployment` pre-runtime `AddOperationAsync` stays outside UoW so RouterOS work is not held inside a DB transaction.
+- **SEC-07 / SEC-08 DONE:** Application zone/policy mutation paths (SEC-07) and `UpdateConnectionProfileUseCase` plus deployment plan/start/rollback terminal persists (SEC-08) share `IUnitOfWork`. Intentional residual: resolve-only zone updates (no idempotency/audit triple); `StartDeployment` pre-runtime `AddOperationAsync` stays outside UoW so RouterOS work is not held inside a DB transaction.
 
 ## Operational notes
 

@@ -87,6 +87,7 @@ public sealed class MutationAtomicitySec07LivingSpecTests
         string path = Path.Combine(FindRepoRoot(), "docs", "release", "known-limitations.md");
         string source = File.ReadAllText(path);
         Assert.Contains("SEC-07", source, StringComparison.Ordinal);
+        // Deploy/profile residual was closed by SEC-08; keep marker strings for Living Spec continuity.
         Assert.Contains("DeploymentWorkflow", source, StringComparison.Ordinal);
         Assert.Contains("UpdateConnectionProfile", source, StringComparison.Ordinal);
     }
