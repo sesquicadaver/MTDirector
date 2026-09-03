@@ -244,6 +244,15 @@ Issue [#378](https://github.com/sesquicadaver/MTDirector/issues/378) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec05"`.
 
+## Living Specification — Onboarding workflow UoW (SEC-09)
+
+| ТЗ / AC | Модуль | Тест |
+|---------|--------|------|
+| Create/start/rollback terminal UoW | `OnboardingWorkflowUseCases` | `MutationAtomicitySec09LivingSpecTests.Ac1` |
+| known-limitations | `known-limitations.md` | `Ac2` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec09"`.
+
 ## Living Specification — Connection profile + deployment UoW (SEC-08)
 
 | ТЗ / AC | Модуль | Тест |
