@@ -70,6 +70,17 @@ public sealed class MutationAtomicitySec12LivingSpecTests
         int captureIdx = source.IndexOf("_capture.CaptureAsync", StringComparison.Ordinal);
         int persistIdx = source.IndexOf("PersistCompletedAsync", StringComparison.Ordinal);
         Assert.True(captureIdx >= 0 && persistIdx > captureIdx);
+
+        string storePath = Path.Combine(
+            FindRepoRoot(),
+            "src",
+            "Mfc.Infrastructure",
+            "Persistence",
+            "Snapshots",
+            "EfSnapshotStore.cs");
+        string storeSource = File.ReadAllText(storePath);
+        Assert.Contains("CurrentTransaction", storeSource, StringComparison.Ordinal);
+        Assert.Contains("ownsTransaction", storeSource, StringComparison.Ordinal);
     }
 
     [Fact]
