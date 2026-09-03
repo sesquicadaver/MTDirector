@@ -625,6 +625,28 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.DoesNotContain("SemanticDiffEngine", vm, StringComparison.Ordinal);
     }
 
+    /// <summary>W6-09: stage reorder via Move up/down on selected rule (no UUID paste ritual).</summary>
+    [Fact]
+    public void Ac5iPoliciesReorderMovesSelectedRuleWithoutUuidPaste()
+    {
+        Type policies = typeof(PoliciesViewModel);
+        Assert.NotNull(policies.GetProperty("MoveRuleUpCommand"));
+        Assert.NotNull(policies.GetProperty("MoveRuleDownCommand"));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.SelectedRule)));
+        Assert.NotNull(policies.GetProperty(nameof(PoliciesViewModel.ReorderRuleIdsText)));
+
+        string axaml = ReadMainWindowAxaml();
+        Assert.Contains("Policies.MoveRuleUpCommand", axaml, StringComparison.Ordinal);
+        Assert.Contains("Policies.MoveRuleDownCommand", axaml, StringComparison.Ordinal);
+        Assert.DoesNotContain("Policies.ReorderRuleIdsText", axaml, StringComparison.Ordinal);
+
+        string vmSource = ReadSource("src/Mfc.Desktop/ViewModels/PoliciesViewModel.cs");
+        Assert.Contains("MoveSelectedRuleAsync", vmSource, StringComparison.Ordinal);
+        Assert.Contains("ReorderRulesInStageAsync", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteEnabled", vmSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("SemanticDiffEngine", vmSource, StringComparison.Ordinal);
+    }
+
     /// <summary>W3.6: Policies mutate rules, ack recorded warnings, and compile semantic artifacts.</summary>
     [Fact]
     public void Ac5cPoliciesMutateRulesAckWarningsAndCompile()

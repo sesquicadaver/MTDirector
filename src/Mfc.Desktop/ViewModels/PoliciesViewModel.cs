@@ -459,6 +459,76 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         }).ConfigureAwait(true);
     }
 
+    /// <summary>W6-09: move selected rule one step within its family/chain/stage (no UUID paste).</summary>
+    [RelayCommand(CanExecute = nameof(CanMoveSelectedRule))]
+    private Task MoveRuleUpAsync() => MoveSelectedRuleAsync(delta: -1);
+
+    /// <summary>W6-09: move selected rule one step within its family/chain/stage (no UUID paste).</summary>
+    [RelayCommand(CanExecute = nameof(CanMoveSelectedRule))]
+    private Task MoveRuleDownAsync() => MoveSelectedRuleAsync(delta: 1);
+
+    private bool CanMoveSelectedRule() => CanMutate() && SelectedRule is not null;
+
+    private async Task MoveSelectedRuleAsync(int delta)
+    {
+        if (!TryRequireMutableRevision(out Guid revisionId, out byte[] hash))
+        {
+            return;
+        }
+
+        if (SelectedRule is null)
+        {
+            ErrorText = "Select a rule to reorder.";
+            return;
+        }
+
+        PolicyRuleListItem selected = SelectedRule;
+        List<PolicyRuleListItem> stageRules = Rules
+            .Where(r => r.Family == selected.Family
+                        && r.Chain == selected.Chain
+                        && r.Stage == selected.Stage)
+            .OrderBy(r => r.Ordinal)
+            .ThenBy(r => r.Id)
+            .ToList();
+
+        int index = stageRules.FindIndex(r => r.Id == selected.Id);
+        if (index < 0)
+        {
+            ErrorText = "Selected rule is not in the loaded revision rules list.";
+            return;
+        }
+
+        int target = index + delta;
+        if (target < 0 || target >= stageRules.Count)
+        {
+            ErrorText = delta < 0
+                ? "Rule is already first in its family/chain/stage."
+                : "Rule is already last in its family/chain/stage.";
+            return;
+        }
+
+        (stageRules[index], stageRules[target]) = (stageRules[target], stageRules[index]);
+        List<Guid> orderedIds = stageRules.Select(static r => r.Id).ToList();
+        Guid selectedId = selected.Id;
+
+        await RunBusyAsync(async ct =>
+        {
+            ApplyState(await Task.Run(
+                    async () => await _policies.ReorderRulesInStageAsync(
+                            revisionId,
+                            hash,
+                            selected.Family,
+                            selected.Chain,
+                            selected.Stage,
+                            orderedIds,
+                            ct)
+                        .ConfigureAwait(false),
+                    ct)
+                .ConfigureAwait(true));
+            SelectedRule = Rules.FirstOrDefault(r => r.Id == selectedId);
+        }).ConfigureAwait(true);
+    }
+
     [RelayCommand(CanExecute = nameof(CanMutate))]
     private async Task UpsertAddressAsync()
     {
@@ -1126,6 +1196,8 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         UpdateRuleCommand.NotifyCanExecuteChanged();
         DeleteRuleCommand.NotifyCanExecuteChanged();
         ReorderRulesCommand.NotifyCanExecuteChanged();
+        MoveRuleUpCommand.NotifyCanExecuteChanged();
+        MoveRuleDownCommand.NotifyCanExecuteChanged();
         UpsertAddressCommand.NotifyCanExecuteChanged();
         UpsertServiceCommand.NotifyCanExecuteChanged();
         ReplaceContractsCommand.NotifyCanExecuteChanged();
@@ -1271,6 +1343,8 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
     {
         if (value is null)
         {
+            MoveRuleUpCommand.NotifyCanExecuteChanged();
+            MoveRuleDownCommand.NotifyCanExecuteChanged();
             return;
         }
 
@@ -1279,6 +1353,8 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         SelectedStage = value.Stage;
         SelectedEffect = value.Effect;
         RuleDescriptionText = value.Description;
+        MoveRuleUpCommand.NotifyCanExecuteChanged();
+        MoveRuleDownCommand.NotifyCanExecuteChanged();
     }
 
     private static byte[] ParseSha256Hex(string text, string fieldName)

@@ -205,7 +205,7 @@ residual: CRS / physical lab runner (ops, not §3)
 | W4.4 | **DONE** (VRRP per-member capture guidance; compare shows why a-against-b is forbidden) |
 | W2.1 | **DONE** (Diff Before/After record detail; Compare warnings truncated) |
 | W2.2 | **DONE** (Routing assurance next-hop values + finding subject fields) |
-| W5 | W5-01…03 **DONE**; W6-01…W6-08 **DONE**; residual CRS lab ops |
+| W5 | W5-01…03 **DONE**; W6-01…W6-09 **DONE**; residual CRS lab ops |
 | CONT-01 | **DONE** Rollback Watch (#340) |
 | CONT-02 | **DONE** neighbor → member b (#341) |
 
@@ -356,4 +356,11 @@ residual: CRS / physical lab runner (ops, not §3)
 - **Перевірка:** `Ac5hPoliciesDiffBaselinePicksFromCatalogWithoutUuidRitual`; `DiffBaselineCatalogItemFillsBaselineUuidWithoutLoadingRevision`
 - **Файли:** `PoliciesViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-08 durable Unreachable **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.
+### W6-09 Policies: ReorderRules via Move up/down — **DONE**
+- **Дані:** existing `ReorderRules` / `PolicyPanelService.ReorderRulesInStageAsync` (Ac2/Ac3); VM had UUID-paste `ReorderRuleIdsText` only
+- **Зроблено:** `MoveRuleUp` / `MoveRuleDown` from `SelectedRule` build contiguous same family/chain/stage order; axaml binds Move buttons; paste field stays unbound secondary
+- **Не чіпали:** Save and Deploy; WriteEnabled; CRS; Domain reorder semantics; local SemanticDiffEngine
+- **Перевірка:** `Ac5iPoliciesReorderMovesSelectedRuleWithoutUuidPaste`; `MoveRuleDownBuildsStageOrderWithoutUuidPaste`; `MoveRuleUpAtFirstReportsBoundaryWithoutRpc`
+- **Файли:** `PoliciesViewModel`, `MainWindow.axaml`
+
+**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-09 Policies Move up/down **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.

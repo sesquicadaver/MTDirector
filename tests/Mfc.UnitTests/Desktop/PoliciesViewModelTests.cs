@@ -269,6 +269,135 @@ public sealed class PoliciesViewModelTests
     }
 
     [Fact]
+    public async Task MoveRuleDownBuildsStageOrderWithoutUuidPaste()
+    {
+        Guid revisionId = Guid.Parse("99999999-aaaa-bbbb-cccc-dddddddddddd");
+        Guid ruleA = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid ruleB = Guid.Parse("22222222-3333-4444-5555-666666666666");
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        RecordingPolicyPanel panel = new()
+        {
+            DraftState = EmptyDraft(
+                revisionId,
+                rules:
+                [
+                    new PolicyRuleListItem
+                    {
+                        Id = ruleA,
+                        Family = IpAddressFamily.Ipv4,
+                        Chain = PolicyFilterChain.Forward,
+                        Stage = PolicyPipelineStage.CompanyAllow,
+                        FamilyText = "Ipv4",
+                        ChainText = "Forward",
+                        StageText = "CompanyAllow",
+                        Ordinal = 0,
+                        Enabled = true,
+                        Effect = PolicyRuleEffect.Accept,
+                        EffectText = "Accept",
+                        Description = "first",
+                        WarningLines = [],
+                    },
+                    new PolicyRuleListItem
+                    {
+                        Id = ruleB,
+                        Family = IpAddressFamily.Ipv4,
+                        Chain = PolicyFilterChain.Forward,
+                        Stage = PolicyPipelineStage.CompanyAllow,
+                        FamilyText = "Ipv4",
+                        ChainText = "Forward",
+                        StageText = "CompanyAllow",
+                        Ordinal = 1,
+                        Enabled = true,
+                        Effect = PolicyRuleEffect.Drop,
+                        EffectText = "Drop",
+                        Description = "second",
+                        WarningLines = [],
+                    },
+                ]),
+        };
+        using PoliciesViewModel vm = new(panel, connection, inventory)
+        {
+            DraftNameText = "lab-baseline",
+        };
+        await vm.CreateDraftCommand.ExecuteAsync(null);
+        Assert.Equal(2, vm.Rules.Count);
+        vm.SelectedRule = vm.Rules.Single(r => r.Id == ruleA);
+
+        await vm.MoveRuleDownCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Equal(1, panel.ReorderCalls);
+        Assert.Equal([ruleB, ruleA], panel.LastReorderIds);
+        Assert.Equal(IpAddressFamily.Ipv4, panel.LastReorderFamily);
+        Assert.Equal(PolicyFilterChain.Forward, panel.LastReorderChain);
+        Assert.Equal(PolicyPipelineStage.CompanyAllow, panel.LastReorderStage);
+        Assert.Equal(ruleA, vm.SelectedRule?.Id);
+        Assert.True(string.IsNullOrWhiteSpace(vm.ReorderRuleIdsText));
+    }
+
+    [Fact]
+    public async Task MoveRuleUpAtFirstReportsBoundaryWithoutRpc()
+    {
+        Guid revisionId = Guid.Parse("99999999-aaaa-bbbb-cccc-dddddddddddd");
+        Guid ruleA = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid ruleB = Guid.Parse("22222222-3333-4444-5555-666666666666");
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        RecordingPolicyPanel panel = new()
+        {
+            DraftState = EmptyDraft(
+                revisionId,
+                rules:
+                [
+                    new PolicyRuleListItem
+                    {
+                        Id = ruleA,
+                        Family = IpAddressFamily.Ipv4,
+                        Chain = PolicyFilterChain.Forward,
+                        Stage = PolicyPipelineStage.CompanyAllow,
+                        FamilyText = "Ipv4",
+                        ChainText = "Forward",
+                        StageText = "CompanyAllow",
+                        Ordinal = 0,
+                        Enabled = true,
+                        Effect = PolicyRuleEffect.Accept,
+                        EffectText = "Accept",
+                        Description = "first",
+                        WarningLines = [],
+                    },
+                    new PolicyRuleListItem
+                    {
+                        Id = ruleB,
+                        Family = IpAddressFamily.Ipv4,
+                        Chain = PolicyFilterChain.Forward,
+                        Stage = PolicyPipelineStage.CompanyAllow,
+                        FamilyText = "Ipv4",
+                        ChainText = "Forward",
+                        StageText = "CompanyAllow",
+                        Ordinal = 1,
+                        Enabled = true,
+                        Effect = PolicyRuleEffect.Drop,
+                        EffectText = "Drop",
+                        Description = "second",
+                        WarningLines = [],
+                    },
+                ]),
+        };
+        using PoliciesViewModel vm = new(panel, connection, inventory)
+        {
+            DraftNameText = "lab-baseline",
+        };
+        await vm.CreateDraftCommand.ExecuteAsync(null);
+        vm.SelectedRule = vm.Rules.Single(r => r.Id == ruleA);
+
+        await vm.MoveRuleUpCommand.ExecuteAsync(null);
+
+        Assert.Contains("already first", vm.ErrorText, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(0, panel.ReorderCalls);
+    }
+
+    [Fact]
     public async Task DeleteRuleCommandRemovesSelectedRule()
     {
         Guid revisionId = Guid.Parse("99999999-aaaa-bbbb-cccc-dddddddddddd");
@@ -664,6 +793,16 @@ public sealed class PoliciesViewModelTests
 
         public byte[]? LastCompileCapabilityHash { get; private set; }
 
+        public int ReorderCalls { get; private set; }
+
+        public IReadOnlyList<Guid>? LastReorderIds { get; private set; }
+
+        public IpAddressFamily? LastReorderFamily { get; private set; }
+
+        public PolicyFilterChain? LastReorderChain { get; private set; }
+
+        public PolicyPipelineStage? LastReorderStage { get; private set; }
+
         public Task<PolicyRevisionPanelState> CreateDraftAsync(
             string name,
             PolicyKind kind = PolicyKind.CompanyBaseline,
@@ -770,7 +909,45 @@ public sealed class PoliciesViewModelTests
             PolicyPipelineStage stage,
             IReadOnlyList<Guid> orderedRuleIds,
             CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
+        {
+            ReorderCalls++;
+            LastReorderFamily = family;
+            LastReorderChain = chain;
+            LastReorderStage = stage;
+            LastReorderIds = orderedRuleIds.ToArray();
+            PolicyRevisionPanelState draft = DraftState ?? throw new InvalidOperationException("DraftState not set.");
+            Dictionary<Guid, PolicyRuleListItem> byId = draft.Rules.ToDictionary(static r => r.Id);
+            List<PolicyRuleListItem> reordered = [];
+            uint ordinal = 0;
+            foreach (Guid id in orderedRuleIds)
+            {
+                PolicyRuleListItem source = byId[id];
+                reordered.Add(new PolicyRuleListItem
+                {
+                    Id = source.Id,
+                    Family = source.Family,
+                    Chain = source.Chain,
+                    Stage = source.Stage,
+                    FamilyText = source.FamilyText,
+                    ChainText = source.ChainText,
+                    StageText = source.StageText,
+                    Ordinal = ordinal++,
+                    Enabled = source.Enabled,
+                    Effect = source.Effect,
+                    EffectText = source.EffectText,
+                    Description = source.Description,
+                    WarningLines = source.WarningLines,
+                });
+            }
+
+            foreach (PolicyRuleListItem other in draft.Rules.Where(r =>
+                         r.Family != family || r.Chain != chain || r.Stage != stage))
+            {
+                reordered.Add(other);
+            }
+
+            return Task.FromResult(CloneDraft(draft, reordered));
+        }
 
         public Task<PolicyRevisionPanelState> UpsertAddressObjectAsync(
             Guid revisionId,
