@@ -229,7 +229,7 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
                 TopologyText = "Topology: —";
                 WorkflowStatusText = "—";
                 OnboardingReadinessText = _onboarding.StatusText;
-                DeploymentReadinessText = "Select a Node to load GetNodeWorkflow.";
+                DeploymentReadinessText = "Select a Node to load deployment readiness.";
                 IsVrrpNode = false;
                 VrrpPairHint = string.Empty;
                 NotifyDeviceMembersChanged();
@@ -244,8 +244,8 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
                 ? "—"
                 : _onboarding.StatusText;
             DeploymentReadinessText = _connection.State == ControllerConnectionState.Connected
-                ? "Loading GetNodeWorkflow…"
-                : "Connect to Controller to load GetNodeWorkflow.";
+            ? "Loading deployment readiness…"
+            : "Connect to Controller to load deployment readiness.";
 
             IsVrrpNode = string.Equals(node.NodeKindText, "Vrrp", StringComparison.Ordinal);
             VrrpPairHint = IsVrrpNode
@@ -259,8 +259,8 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
             {
                 DeviceMembers.Add(device);
                 DeviceHashLines.Add(
-                    $"{device.DisplayName}: desired={OrDash(device.DesiredHashText)} " +
-                    $"committed={OrDash(device.CommittedHashText)} actual={OrDash(device.ActualHashText)} " +
+                    $"{device.DisplayName}: desired policy digest={OrDash(device.DesiredHashText)} " +
+                    $"committed policy digest={OrDash(device.CommittedHashText)} actual managed digest={OrDash(device.ActualHashText)} " +
                     $"({OrDash(device.SupportStateText)} / {OrDash(device.ReachabilityText)})");
                 if (IsVrrpNode)
                 {
@@ -306,7 +306,7 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
 
         if (_connection.State != ControllerConnectionState.Connected)
         {
-            DeploymentReadinessText = "Connect to Controller to load GetNodeWorkflow.";
+            DeploymentReadinessText = "Connect to Controller to load deployment readiness.";
             return;
         }
 

@@ -181,7 +181,9 @@ public sealed class SnapshotDiffServiceTests
         Assert.DoesNotContain(fingerprint, added.HeaderLine, StringComparison.Ordinal);
         Assert.Contains(added.FieldLines, f => f.Summary == "chain=forward");
         Assert.Contains(added.FieldLines, f => f.Summary == "action=drop");
-        Assert.Contains("chain=forward", added.HeaderLine, StringComparison.Ordinal);
+        Assert.Contains("Chain: forward", added.HeaderLine, StringComparison.Ordinal);
+        Assert.Contains(added.FieldLines, f => f.FriendlySummary == "Chain: forward");
+        Assert.Contains(added.FieldLines, f => f.FriendlySummary == "Action: drop");
     }
 
     [Fact]

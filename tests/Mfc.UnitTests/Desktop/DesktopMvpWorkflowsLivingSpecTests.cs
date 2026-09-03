@@ -316,7 +316,8 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
 
         string axaml = ReadMainWindowAxaml();
         Assert.Contains("Node.WorkflowDeviceLines", axaml, StringComparison.Ordinal);
-        Assert.Contains("Device workflow (GetNodeWorkflow)", axaml, StringComparison.Ordinal);
+        Assert.Contains("Device workflow", axaml, StringComparison.Ordinal);
+        Assert.DoesNotContain("Device workflow (GetNodeWorkflow)", axaml, StringComparison.Ordinal);
         Assert.Contains("Node.HasNoWorkflowDeviceLines", axaml, StringComparison.Ordinal);
         Assert.Contains("Node.HasWorkflowDeviceLines", axaml, StringComparison.Ordinal);
 
@@ -387,6 +388,7 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.NotNull(typeof(SnapshotRecordListItem).GetProperty(nameof(SnapshotRecordListItem.Fields)));
         Assert.NotNull(typeof(SnapshotRecordListItem).GetProperty(nameof(SnapshotRecordListItem.HasMoreFields)));
         Assert.NotNull(typeof(SnapshotFieldLine).GetProperty(nameof(SnapshotFieldLine.DisplayLine)));
+        Assert.NotNull(typeof(SnapshotFieldLine).GetProperty(nameof(SnapshotFieldLine.DisplayLineFriendly)));
 
         string axaml = ReadMainWindowAxaml();
         Assert.Contains("Selected record fields", axaml, StringComparison.Ordinal);
@@ -395,7 +397,7 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.Contains("Snapshot.SelectedRecordFields", axaml, StringComparison.Ordinal);
         Assert.Contains("Snapshot.HasSelectedRecord", axaml, StringComparison.Ordinal);
         Assert.Contains("Snapshot.HasNoSelectedRecord", axaml, StringComparison.Ordinal);
-        Assert.Contains("DisplayLine", axaml, StringComparison.Ordinal);
+        Assert.Contains("DisplayLineFriendly", axaml, StringComparison.Ordinal);
         Assert.Contains("Select a record to see all fields.", axaml, StringComparison.Ordinal);
     }
 

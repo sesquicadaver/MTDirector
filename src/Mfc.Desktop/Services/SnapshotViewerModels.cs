@@ -33,6 +33,9 @@ public sealed class SnapshotSectionListItem
     public required int ObservationRecordCount { get; init; }
 
     public required bool IsTechnicalOnly { get; init; }
+
+    /// <summary>MikroTik menu path for operators (Winbox-style).</summary>
+    public string SectionTitle => DesktopDisplayLabels.FormatSectionTitle(SectionId);
 }
 
 /// <summary>One field line inside a record (read-only, sanitized).</summary>
@@ -43,6 +46,9 @@ public sealed class SnapshotFieldLine
     public required string Value { get; init; }
 
     public string DisplayLine => $"{Name}={Value}";
+
+    /// <summary>Winbox-style operator line (UI default).</summary>
+    public string DisplayLineFriendly => DesktopDisplayLabels.FormatPropertyLine(Name, Value);
 }
 
 /// <summary>One canonical record row for virtualized ListBox binding.</summary>
@@ -68,6 +74,10 @@ public sealed class SnapshotRecordListItem
 
     public string SummaryLine
         => SnapshotPresentationIdentity.FormatRecordSummary(StableKey, OrdinalText, Fields, HasMoreFields);
+
+    /// <summary>Operator-facing list line with MikroTik property labels.</summary>
+    public string OperatorSummaryLine
+        => DesktopDisplayLabels.FormatRecordSummaryFriendly(StableKey, OrdinalText, Fields, HasMoreFields);
 }
 
 /// <summary>Loaded capture header + sections for the viewer.</summary>

@@ -186,11 +186,11 @@
                          IsVisible="{Binding AddRouter.HasProbeResult}" />
             </StackPanel>
             <TextBlock Classes="mfc-label" Text="Device hashes" />
-            <TextBlock Text="{Binding Inventory.SelectedNode.DesiredHashText, StringFormat=desired: {0}}"
+            <TextBlock Text="{Binding Inventory.SelectedNode.DesiredHashText, StringFormat=Desired policy digest: {0}}"
                        Classes="mfc-mono" />
-            <TextBlock Text="{Binding Inventory.SelectedNode.CommittedHashText, StringFormat=committed: {0}}"
+            <TextBlock Text="{Binding Inventory.SelectedNode.CommittedHashText, StringFormat=Committed policy digest: {0}}"
                        Classes="mfc-mono" />
-            <TextBlock Text="{Binding Inventory.SelectedNode.ActualHashText, StringFormat=actual: {0}}"
+            <TextBlock Text="{Binding Inventory.SelectedNode.ActualHashText, StringFormat=Actual managed digest: {0}}"
                        Classes="mfc-mono" />
 
             <Border Classes="mfc-panel" Margin="0,12,0,0">
@@ -448,7 +448,7 @@
                        Classes="mfc-muted"
                        TextWrapping="Wrap"
                        IsVisible="{Binding Node.HasError}" />
-            <TextBlock Classes="mfc-label" Text="Device workflow (GetNodeWorkflow)" />
+            <TextBlock Classes="mfc-label" Text="Device workflow" />
             <TextBlock Classes="mfc-muted"
                        Text="No device workflow projections."
                        IsVisible="{Binding Node.HasNoWorkflowDeviceLines}" />
@@ -595,9 +595,9 @@
                 <TextBlock Classes="mfc-error"
                            Text="{Binding RoutingAssurance.ErrorText}"
                            IsVisible="{Binding RoutingAssurance.HasError}" />
-                <TextBlock Text="{Binding RoutingAssurance.ConfigurationHashText, StringFormat=configuration_hash: {0}}"
+                <TextBlock Text="{Binding RoutingAssurance.ConfigurationHashText, StringFormat=Configuration digest: {0}}"
                            Classes="mfc-mono" />
-                <TextBlock Text="{Binding RoutingAssurance.OperationalHashText, StringFormat=operational_hash: {0}}"
+                <TextBlock Text="{Binding RoutingAssurance.OperationalHashText, StringFormat=Operational digest: {0}}"
                            Classes="mfc-mono" />
                 <TextBlock Classes="mfc-label" Text="Route expectations" />
                 <ListBox ItemsSource="{Binding RoutingAssurance.ExpectationLines}" MaxHeight="160">
@@ -610,16 +610,16 @@
                     <DataTemplate DataType="vm:RouteExpectationLineItem">
                       <StackPanel Spacing="2" Margin="2">
                         <TextBlock Text="{Binding SummaryLine}" FontWeight="SemiBold" TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding AllowedNextHopsText, StringFormat=next-hops: {0}}"
+                        <TextBlock Text="{Binding AllowedNextHopsText, StringFormat=Next hops: {0}}"
                                    Classes="mfc-mono"
                                    TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding ExpectedTableText, StringFormat=table: {0}}"
+                        <TextBlock Text="{Binding ExpectedTableText, StringFormat=Routing table: {0}}"
                                    Classes="mfc-muted"
                                    TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding ExpectedVrfText, StringFormat=vrf: {0}}"
+                        <TextBlock Text="{Binding ExpectedVrfText, StringFormat=VRF: {0}}"
                                    Classes="mfc-muted"
                                    TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding AllowedEgressInterfacesText, StringFormat=egress-if: {0}}"
+                        <TextBlock Text="{Binding AllowedEgressInterfacesText, StringFormat=Egress interface: {0}}"
                                    Classes="mfc-muted"
                                    TextWrapping="Wrap" />
                       </StackPanel>
@@ -637,7 +637,7 @@
                     <DataTemplate DataType="vm:RouteFindingLineItem">
                       <StackPanel Spacing="2" Margin="2">
                         <TextBlock Text="{Binding SummaryLine}" FontWeight="SemiBold" TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding SubjectText, StringFormat=subject: {0}}"
+                        <TextBlock Text="{Binding SubjectText, StringFormat=Subject: {0}}"
                                    Classes="mfc-mono"
                                    TextWrapping="Wrap" />
                       </StackPanel>
@@ -655,19 +655,19 @@
                     <DataTemplate DataType="vm:RouteResolutionTraceSummaryLineItem">
                       <StackPanel Spacing="2" Margin="2">
                         <TextBlock Text="{Binding SummaryLine}" FontWeight="SemiBold" TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding NextHopGatewaysText, StringFormat=next-hops: {0}}"
+                        <TextBlock Text="{Binding NextHopGatewaysText, StringFormat=Next hops: {0}}"
                                    Classes="mfc-mono"
                                    TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding EgressInterfacesText, StringFormat=egress-if: {0}}"
+                        <TextBlock Text="{Binding EgressInterfacesText, StringFormat=Egress interface: {0}}"
                                    Classes="mfc-muted"
                                    TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding SelectedVrfText, StringFormat=vrf: {0}}"
+                        <TextBlock Text="{Binding SelectedVrfText, StringFormat=VRF: {0}}"
                                    Classes="mfc-muted"
                                    TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding MatchedPrefixText, StringFormat=prefix: {0}}"
+                        <TextBlock Text="{Binding MatchedPrefixText, StringFormat=Matched prefix: {0}}"
                                    Classes="mfc-muted"
                                    TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding ExecutionPathText, StringFormat=path: {0}}"
+                        <TextBlock Text="{Binding ExecutionPathText, StringFormat=Execution path: {0}}"
                                    Classes="mfc-muted"
                                    TextWrapping="Wrap" />
                       </StackPanel>
@@ -719,7 +719,7 @@
                   <ListBox.ItemTemplate>
                     <DataTemplate DataType="svc:SnapshotSectionListItem">
                       <StackPanel Spacing="2" Margin="2">
-                        <TextBlock Text="{Binding SectionId}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding SectionTitle}" FontWeight="SemiBold" TextWrapping="Wrap" />
                         <TextBlock Opacity="0.75" Text="{Binding StatusText, StringFormat=Status: {0}}" />
                       </StackPanel>
                     </DataTemplate>
@@ -757,11 +757,11 @@
                     <TextBlock Text="{Binding Snapshot.HintText}" Classes="mfc-muted" TextWrapping="Wrap" />
                     <TextBlock Text="{Binding Snapshot.StatusText, StringFormat=Capture status: {0}}" TextWrapping="Wrap" />
                     <TextBlock Text="{Binding Snapshot.SchemaVersionText, StringFormat=Schema version: {0}}" TextWrapping="Wrap" />
-                    <TextBlock Text="{Binding Snapshot.ConfigurationHashText, StringFormat=configuration_hash: {0}}"
+                    <TextBlock Text="{Binding Snapshot.ConfigurationHashText, StringFormat=Configuration digest: {0}}"
                                Classes="mfc-mono" />
-                    <TextBlock Text="{Binding Snapshot.ObservationHashText, StringFormat=observation_hash: {0}}"
+                    <TextBlock Text="{Binding Snapshot.ObservationHashText, StringFormat=Observation digest: {0}}"
                                Classes="mfc-mono" />
-                    <TextBlock Text="{Binding Snapshot.CapabilityHashText, StringFormat=capability_hash: {0}}"
+                    <TextBlock Text="{Binding Snapshot.CapabilityHashText, StringFormat=Capability digest: {0}}"
                                Classes="mfc-mono" />
                     <ComboBox Classes="mfc-field"
                               ItemsSource="{Binding Snapshot.Captures}"
@@ -790,7 +790,7 @@
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
                       <DataTemplate DataType="svc:SnapshotRecordListItem">
-                        <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
+                        <TextBlock Text="{Binding OperatorSummaryLine}" TextWrapping="Wrap" Margin="2" />
                       </DataTemplate>
                     </ListBox.ItemTemplate>
                   </ListBox>
@@ -807,7 +807,7 @@
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
                       <DataTemplate DataType="svc:SnapshotRecordListItem">
-                        <TextBlock Text="{Binding SummaryLine}" TextWrapping="Wrap" Margin="2" />
+                        <TextBlock Text="{Binding OperatorSummaryLine}" TextWrapping="Wrap" Margin="2" />
                       </DataTemplate>
                     </ListBox.ItemTemplate>
                   </ListBox>
@@ -837,7 +837,7 @@
                           <ItemsControl ItemsSource="{Binding Snapshot.SelectedRecordFields}">
                             <ItemsControl.ItemTemplate>
                               <DataTemplate DataType="svc:SnapshotFieldLine">
-                                <TextBlock Text="{Binding DisplayLine}"
+                                <TextBlock Text="{Binding DisplayLineFriendly}"
                                            Classes="mfc-mono"
                                            TextWrapping="Wrap"
                                            Margin="8,0,4,2" />
@@ -946,7 +946,7 @@
                   <ListBox.ItemTemplate>
                     <DataTemplate DataType="svc:SnapshotDiffSectionGroup">
                       <StackPanel Spacing="2" Margin="2">
-                        <TextBlock Text="{Binding SectionId}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding SectionTitle}" FontWeight="SemiBold" TextWrapping="Wrap" />
                         <TextBlock Opacity="0.75" Text="{Binding EntryCount, StringFormat={}{0} entries}" />
                       </StackPanel>
                     </DataTemplate>
@@ -974,7 +974,7 @@
                           <ItemsControl ItemsSource="{Binding FieldLines}">
                             <ItemsControl.ItemTemplate>
                               <DataTemplate DataType="svc:SnapshotDiffFieldLine">
-                                <TextBlock Text="{Binding Summary}"
+                                <TextBlock Text="{Binding FriendlySummary}"
                                            Classes="mfc-muted"
                                            TextWrapping="Wrap"
                                            Margin="8,0,0,2" />
@@ -1015,7 +1015,7 @@
                         <ItemsControl ItemsSource="{Binding Diff.SelectedEntry.BeforeRecordFields}">
                           <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="svc:SnapshotDiffFieldLine">
-                              <TextBlock Text="{Binding Summary}"
+                              <TextBlock Text="{Binding FriendlySummary}"
                                          Classes="mfc-mono"
                                          TextWrapping="Wrap"
                                          Margin="0,0,0,2" />
@@ -1036,7 +1036,7 @@
                         <ItemsControl ItemsSource="{Binding Diff.SelectedEntry.AfterRecordFields}">
                           <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="svc:SnapshotDiffFieldLine">
-                              <TextBlock Text="{Binding Summary}"
+                              <TextBlock Text="{Binding FriendlySummary}"
                                          Classes="mfc-mono"
                                          TextWrapping="Wrap"
                                          Margin="0,0,0,2" />
@@ -1098,7 +1098,7 @@
                 <TextBlock Classes="mfc-label" Text="Revision" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"
-                           PlaceholderText="revision UUID"
+                           PlaceholderText="policy revision (from catalog)"
                            Text="{Binding Policies.RevisionIdText}"
                            MinWidth="240"
                            Width="320" />
@@ -1136,7 +1136,7 @@
                            TextWrapping="Wrap" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"
-                           PlaceholderText="device UUID"
+                           PlaceholderText="device (from inventory tree)"
                            Text="{Binding Policies.SafetyDeviceIdText}"
                            MinWidth="240"
                            Width="320" />
@@ -1150,10 +1150,10 @@
                           Command="{Binding Policies.RefreshSafetyAnalysisCommand}"
                           MinWidth="130" />
                 </WrapPanel>
-                <TextBlock Text="{Binding Policies.ManagementPathContextHashText, StringFormat=ManagementPath hash: {0}}"
+                <TextBlock Text="{Binding Policies.ManagementPathContextHashText, StringFormat=Management-path context digest: {0}}"
                            Classes="mfc-mono"
                            TextWrapping="Wrap" />
-                <TextBlock Text="{Binding Policies.FastTrackContextHashText, StringFormat=FastTrack hash: {0}}"
+                <TextBlock Text="{Binding Policies.FastTrackContextHashText, StringFormat=FastTrack context digest: {0}}"
                            Classes="mfc-mono"
                            TextWrapping="Wrap" />
                 <TextBlock Text="{Binding Policies.SafetyFlagsText}" TextWrapping="Wrap" />
@@ -1370,7 +1370,7 @@
                            Text="Compose node UUID defaults from the selected inventory Node (or the parent Node of a Device). Create draft fills the revision id; Load remains optional." />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"
-                           PlaceholderText="compose node UUID"
+                           PlaceholderText="node (from inventory tree)"
                            Text="{Binding Policies.ComposeNodeIdText}"
                            MinWidth="240"
                            Width="320" />
@@ -1707,11 +1707,11 @@
                            Text="List hashes stay truncated; GetDriftEvent fills full hashes, desired (ignored for baseline), semantic_diff_hash, node id, immutable."
                            IsVisible="{Binding Drift.HasNoSelectedEventDetail}" />
                 <StackPanel IsVisible="{Binding Drift.HasSelectedEventDetail}" Spacing="2">
-                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailNodeIdText, StringFormat=node: {0}}" TextWrapping="Wrap" />
-                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailBaselineHashText, StringFormat=baseline: {0}}" TextWrapping="Wrap" />
-                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailActualHashText, StringFormat=actual: {0}}" TextWrapping="Wrap" />
-                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailDesiredHashText, StringFormat=desired (ignored for baseline): {0}}" TextWrapping="Wrap" />
-                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailSemanticDiffHashText, StringFormat=semantic_diff_hash: {0}}" TextWrapping="Wrap" />
+                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailNodeIdText, StringFormat=Node: {0}}" TextWrapping="Wrap" />
+                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailBaselineHashText, StringFormat=Baseline digest: {0}}" TextWrapping="Wrap" />
+                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailActualHashText, StringFormat=Actual digest: {0}}" TextWrapping="Wrap" />
+                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailDesiredHashText, StringFormat=Desired digest (ignored for baseline): {0}}" TextWrapping="Wrap" />
+                  <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailSemanticDiffHashText, StringFormat=Semantic diff digest: {0}}" TextWrapping="Wrap" />
                   <TextBlock Classes="mfc-mono" Text="{Binding Drift.DetailImmutableText}" />
                 </StackPanel>
                 <TextBlock Classes="mfc-label" Text="Semantic diff" Margin="0,8,0,0" />

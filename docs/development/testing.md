@@ -244,6 +244,16 @@ Issue [#378](https://github.com/sesquicadaver/MTDirector/issues/378) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec05"`.
 
+## Living Specification — Desktop MikroTik/Winbox display labels (W7-01)
+
+| ТЗ / AC | Модуль | Тест |
+|---------|--------|------|
+| Section + property labels | `DesktopDisplayLabels` | `DesktopDisplayLabelsTests` |
+| Snapshot/Diff bind friendly lines | `SnapshotViewerModels` / `SnapshotDiffModels` / `MainWindow.axaml` | `DesktopMvpWorkflowsLivingSpecTests` |
+| Wire export unchanged | `DisplayLine` / export | `SnapshotViewerServiceTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopDisplayLabels|FullyQualifiedName~DesktopMvpWorkflows"`.
+
 ## Living Specification — UpsertRoutingAssuranceState UoW (SEC-15)
 
 | ТЗ / AC | Модуль | Тест |

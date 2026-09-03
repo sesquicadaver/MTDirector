@@ -115,8 +115,8 @@ public sealed partial class InventoryNodeViewModel : ObservableObject
             $"Version: {OrDash(RouterOsVersionText)}; Model: {OrDash(ModelText)}; " +
             $"VRRP: {OrDash(VrrpRolesText)}; Last snapshot: {OrDash(LastSnapshotText)}; " +
             $"Mgmt: {OrDash(ManagementHostText)}; " +
-            $"Desired: {OrDash(DesiredHashText)}; Committed: {OrDash(CommittedHashText)}; " +
-            $"Actual: {OrDash(ActualHashText)}",
+            $"Desired policy digest: {OrDash(DesiredHashText)}; Committed policy digest: {OrDash(CommittedHashText)}; " +
+            $"Actual managed digest: {OrDash(ActualHashText)}",
         _ => string.Empty,
     };
 

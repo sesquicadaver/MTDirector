@@ -255,9 +255,9 @@ public sealed class DeviceStateProjectionLivingSpecTests
             ActualHashText = "77889900aabb",
         };
         InventoryNodeViewModel viewModel = new(deviceItem);
-        Assert.Contains("Desired:", viewModel.DetailSummary, StringComparison.Ordinal);
-        Assert.Contains("Committed:", viewModel.DetailSummary, StringComparison.Ordinal);
-        Assert.Contains("Actual:", viewModel.DetailSummary, StringComparison.Ordinal);
+        Assert.Contains("Desired policy digest:", viewModel.DetailSummary, StringComparison.Ordinal);
+        Assert.Contains("Committed policy digest:", viewModel.DetailSummary, StringComparison.Ordinal);
+        Assert.Contains("Actual managed digest:", viewModel.DetailSummary, StringComparison.Ordinal);
         Assert.Contains(deviceItem.DesiredHashText, viewModel.DetailSummary, StringComparison.Ordinal);
     }
 }
