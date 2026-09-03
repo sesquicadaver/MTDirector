@@ -32,6 +32,28 @@ public sealed class EfFilterArtifactStore : IFilterArtifactStore
         return entity is null ? null : ToStored(entity, inserted: false);
     }
 
+    public async Task<byte[]?> GetCanonicalBytesByResourceHashAsync(
+        Hash256 resourceHash,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(resourceHash);
+        byte[] key = resourceHash.Bytes.ToArray();
+        FilterArtifactEntity? entity = await _db.FilterArtifacts
+            .AsNoTracking()
+            .FirstOrDefaultAsync(e => e.ResourceHash == key, cancellationToken)
+            .ConfigureAwait(false);
+        if (entity is null)
+        {
+            return null;
+        }
+
+        return BrotliPayloadCodec.DecodeAndVerify(
+            entity.CompressedPayload,
+            (SnapshotCompression)entity.Compression,
+            entity.UncompressedSize,
+            entity.ResourceHash);
+    }
+
     public async Task<StoredFilterArtifact> PutIfAbsentAsync(
         RouterOsFilterArtifact artifact,
         CompilationProvenance provenance,

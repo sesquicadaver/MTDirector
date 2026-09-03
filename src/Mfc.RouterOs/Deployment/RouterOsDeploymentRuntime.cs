@@ -98,6 +98,7 @@ public sealed class RouterOsDeploymentRuntime : IDeploymentRuntime
             devicePlan.NewArtifactHash,
             nowUtc,
             nowUtc,
+            observeFromArtifact: staging.SealedArtifact,
             cancellationToken: cancellationToken).ConfigureAwait(false);
         return new DeploymentWorkflowExecutionResult
         {

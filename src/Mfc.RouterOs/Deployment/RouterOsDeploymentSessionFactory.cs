@@ -14,15 +14,19 @@ public sealed class RouterOsDeploymentSessionFactory : IRouterOsDeploymentSessio
 {
     private readonly IConnectionProfileReadStore _profiles;
     private readonly IRouterOsConnectionMaterializer _materializer;
+    private readonly IFilterArtifactStore _filterArtifacts;
 
     public RouterOsDeploymentSessionFactory(
         IConnectionProfileReadStore profiles,
-        IRouterOsConnectionMaterializer materializer)
+        IRouterOsConnectionMaterializer materializer,
+        IFilterArtifactStore filterArtifacts)
     {
         ArgumentNullException.ThrowIfNull(profiles);
         ArgumentNullException.ThrowIfNull(materializer);
+        ArgumentNullException.ThrowIfNull(filterArtifacts);
         _profiles = profiles;
         _materializer = materializer;
+        _filterArtifacts = filterArtifacts;
     }
 
     public async Task<RouterOsDeploymentScopedSessions> OpenAsync(
@@ -66,7 +70,14 @@ public sealed class RouterOsDeploymentSessionFactory : IRouterOsDeploymentSessio
                 PinnedSpkiSha256 = profile.PinnedSpkiSha256,
             };
             RouterOsDeploymentDeviceSession session = await RouterOsDeploymentDeviceSession
-                .OpenAsync(device.Id, devicePlan, operationId, target, _materializer, cancellationToken)
+                .OpenAsync(
+                    device.Id,
+                    devicePlan,
+                    operationId,
+                    target,
+                    _materializer,
+                    _filterArtifacts,
+                    cancellationToken)
                 .ConfigureAwait(false);
             sessions.Add(session);
         }

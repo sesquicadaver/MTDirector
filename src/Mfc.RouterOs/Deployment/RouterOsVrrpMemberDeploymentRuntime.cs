@@ -131,7 +131,8 @@ internal sealed class RouterOsVrrpMemberDeploymentRuntime : IVrrpMemberDeploymen
             _devicePlan.NewArtifactHash,
             _armed,
             _devicePlan.RollbackTtl,
-            cancellationToken).ConfigureAwait(false);
+            observeFromArtifact: _artifacts.SealedArtifact,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
         if (!verified.Succeeded)
         {
             throw new DomainInvariantException(verified.Code ?? DeploymentCodes.DeploymentProbeFailed);

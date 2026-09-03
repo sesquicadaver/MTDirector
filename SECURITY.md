@@ -26,6 +26,7 @@ You should receive an acknowledgement within a reasonable time. We will coordina
 - Audit trail must not contain passwords, tokens, or private keys.
 - Production RouterOS write paths require CODEOWNERS review.
 - Reserved `Mfc:OperationalJobs:SystemActor` is for **in-process** operational jobs only. gRPC clients must not assert it via `x-mfc-actor` (SEC-01 / `GrpcRequestActorResolver`).
+- WriteEnabled production DI loads staging drafts from `IFilterArtifactStore` (`FilterArtifactStoreDeploymentArtifactMaterializer`); observed managed `resource_hash` is measured from live RouterOS state (SEC-02), not echoed from the plan.
 
 ## Safe Harbor
 

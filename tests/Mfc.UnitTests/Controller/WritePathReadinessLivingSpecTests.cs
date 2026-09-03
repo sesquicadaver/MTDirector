@@ -50,7 +50,7 @@ public sealed class WritePathReadinessLivingSpecTests
             scope.ServiceProvider.GetRequiredService<IRouterOsDeploymentSessionFactory>());
         Assert.IsType<RouterOsWatchdogResidueSessionFactory>(
             scope.ServiceProvider.GetRequiredService<IRouterOsWatchdogResidueSessionFactory>());
-        Assert.IsType<Mfc.Application.Deployment.AnchorOnlyDeploymentArtifactMaterializer>(
+        Assert.IsType<Mfc.Application.Deployment.FilterArtifactStoreDeploymentArtifactMaterializer>(
             scope.ServiceProvider.GetRequiredService<Mfc.Application.Deployment.IDeploymentArtifactMaterializer>());
     }
 

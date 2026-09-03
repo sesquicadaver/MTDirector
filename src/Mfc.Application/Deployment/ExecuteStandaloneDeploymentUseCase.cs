@@ -78,6 +78,7 @@ public static class ExecuteStandaloneDeploymentUseCase
         DateTimeOffset nowUtc,
         DateTimeOffset routerClock,
         TimeSpan? remainingWatchdogTtl = null,
+        RouterOsFilterArtifact? observeFromArtifact = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(node);
@@ -288,6 +289,7 @@ public static class ExecuteStandaloneDeploymentUseCase
                 observedResourceHashAfterStaging,
                 armed,
                 margin,
+                observeFromArtifact,
                 cancellationToken).ConfigureAwait(false);
             if (!verified.Succeeded)
             {

@@ -323,6 +323,17 @@ public static class RouterOsFilterArtifactIdentity
             _ => throw new DomainInvariantException($"Unsupported address family '{family}'."),
         };
 
+    public static IpAddressFamily ParseFamily(string value)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(value);
+        return value.Trim() switch
+        {
+            "IPv4" => IpAddressFamily.IPv4,
+            "IPv6" => IpAddressFamily.IPv6,
+            _ => throw new DomainInvariantException($"Unsupported address family '{value}'."),
+        };
+    }
+
     public static string FormatBuiltIn(FilterBuiltInContext context)
         => context switch
         {
@@ -331,6 +342,18 @@ public static class RouterOsFilterArtifactIdentity
             FilterBuiltInContext.Output => "output",
             _ => throw new DomainInvariantException($"Unsupported built-in context '{context}'."),
         };
+
+    public static FilterBuiltInContext ParseBuiltIn(string value)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(value);
+        return value.Trim() switch
+        {
+            "input" => FilterBuiltInContext.Input,
+            "forward" => FilterBuiltInContext.Forward,
+            "output" => FilterBuiltInContext.Output,
+            _ => throw new DomainInvariantException($"Unsupported built-in context '{value}'."),
+        };
+    }
 
     public static string FormatRole(FilterChainArtifactRole role)
         => role switch
@@ -341,6 +364,19 @@ public static class RouterOsFilterArtifactIdentity
             FilterChainArtifactRole.NodeDeny => "node_deny",
             _ => throw new DomainInvariantException($"Unsupported chain role '{role}'."),
         };
+
+    public static FilterChainArtifactRole ParseRole(string value)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(value);
+        return value.Trim() switch
+        {
+            "root" => FilterChainArtifactRole.Root,
+            "company_deny" => FilterChainArtifactRole.CompanyDeny,
+            "site_deny" => FilterChainArtifactRole.SiteDeny,
+            "node_deny" => FilterChainArtifactRole.NodeDeny,
+            _ => throw new DomainInvariantException($"Unsupported chain role '{value}'."),
+        };
+    }
 
     private static void WriteGuidArray(CanonicalJsonWriter writer, Guid[] values)
     {

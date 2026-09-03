@@ -6,8 +6,15 @@ namespace Mfc.Application.Abstractions.Persistence;
 /// <summary>Content-addressed RouterOS filter artifact store (Compiler Spec §6 / M3-07).</summary>
 public interface IFilterArtifactStore
 {
-    /// <summary>Returns the stored body when <paramref name="resourceHash"/> already exists.</summary>
+    /// <summary>Returns the stored metadata when <paramref name="resourceHash"/> already exists.</summary>
     Task<StoredFilterArtifact?> GetByResourceHashAsync(
+        Hash256 resourceHash,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Returns uncompressed MFC-CJ1 canonical bytes for <paramref name="resourceHash"/>, or null when absent.
+    /// </summary>
+    Task<byte[]?> GetCanonicalBytesByResourceHashAsync(
         Hash256 resourceHash,
         CancellationToken cancellationToken = default);
 
