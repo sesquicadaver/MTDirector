@@ -231,6 +231,19 @@ Issue [#377](https://github.com/sesquicadaver/MTDirector/issues/377) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~TrustedCaStoreSec04"`.
 
+## Living Specification — Atomic mutation boundary (SEC-05)
+
+Issue [#378](https://github.com/sesquicadaver/MTDirector/issues/378) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| CreateSite mutation+idempotency+audit in one UoW | `CreateSiteUseCase` + `IUnitOfWork` | `Ac1CreateSiteRunsMutationIdempotencyAndAuditInsideOneUnitOfWork` |
+| Failure mid-boundary compensates | same | `Ac2FailureAfterSiteAddRollsBackWhenUnitOfWorkCompensates` |
+| Audit joins ambient transaction | `EfAuditEventWriter` | `Ac3AuditWriterJoinsAmbientTransactionInsteadOfNesting` |
+| Inventory sources use UoW | `InventoryUseCases` | `Ac4InventoryCreateSiteSourceUsesUnitOfWorkBoundary` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec05"`.
+
 ## Living Specification — desktop snapshot viewer (M1-28)
 
 Initial Issue Set M1-28 AC → module → tests:

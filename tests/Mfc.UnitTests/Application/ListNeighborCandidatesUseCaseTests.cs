@@ -14,19 +14,19 @@ namespace Mfc.UnitTests.Application;
 public sealed class ListNeighborCandidatesUseCaseTests
 {
     private static CreateSiteUseCase CreateSite(FakeAuthorizationBoundary auth, FakeSiteStore sites)
-        => new(auth, sites, new FakeIdempotencyStore(), new FakeAuditEventWriter());
+        => new(auth, sites, new FakeIdempotencyStore(), new FakeAuditEventWriter(), new FakeUnitOfWork());
 
     private static CreateNodeUseCase CreateNode(
         FakeAuthorizationBoundary auth,
         FakeSiteStore sites,
         FakeNodeStore nodes)
-        => new(auth, sites, nodes, new FakeIdempotencyStore(), new FakeAuditEventWriter());
+        => new(auth, sites, nodes, new FakeIdempotencyStore(), new FakeAuditEventWriter(), new FakeUnitOfWork());
 
     private static RegisterDeviceUseCase RegisterDevice(
         FakeAuthorizationBoundary auth,
         FakeNodeStore nodes,
         FakeDeviceStore devices)
-        => new(auth, nodes, devices, new FakeIdempotencyStore(), new FakeAuditEventWriter());
+        => new(auth, nodes, devices, new FakeIdempotencyStore(), new FakeAuditEventWriter(), new FakeUnitOfWork());
 
     [Fact]
     public void FilterKeepsOnlyMikroTikWithAddressAndDedupsKnownHosts()

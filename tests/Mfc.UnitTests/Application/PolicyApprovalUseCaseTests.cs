@@ -604,7 +604,7 @@ public sealed class PolicyApprovalUseCaseTests
             Approve = new ApproveRevisionUseCase(auth, policies, approvals, idempotency, audit, new FakeUnitOfWork()),
             Ack = new AcknowledgeWarningUseCase(auth, approvals, idempotency, audit),
             Bind = new ActivateDesiredBindingUseCase(auth, policies, approvals, idempotency, audit, clock, new FakeUnitOfWork()),
-            Expire = new ExpireExceptionBindingUseCase(auth, approvals, idempotency, audit, clock),
+            Expire = new ExpireExceptionBindingUseCase(auth, approvals, idempotency, audit, clock, new FakeUnitOfWork()),
             RevisionId = revision.Id.Value,
             RunId = run.Value!.Id,
             ContentHash = revision.ContentHash.Bytes.ToArray(),
