@@ -1907,6 +1907,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | W1.6 Inventory/Node device fields | reachability/model/ROS/VRRP(when present)/last snapshot | `Ac3bInventoryAndNodeShowExplicitDeviceFields` + `InventoryNodeViewModelTests` + `NodeDetailViewModelTests` |
 | W6-05 GetNode Reachability from probe | LastSupportState → Reachable; Unreachable observation; Probe refresh | `DeviceReachabilityProjectorTests` + `Ac2eInventoryProbeRefreshesTreeAfterValidateDeviceConnection` |
 | W6-08 Durable Unreachable | LastObservedReachability on Device; GetNode without in-memory store | `DiscoverDevicePersistsUnreachableAcrossEmptyObservationStore` + projector durable tests |
+| W6-09 Policies Move up/down reorder | SelectedRule → ReorderRulesInStage; no UUID paste | `Ac5iPoliciesReorderMovesSelectedRuleWithoutUuidPaste` + `MoveRuleDownBuildsStageOrderWithoutUuidPaste` |
 | W6-06 Policies typed Diff rows | KindText/DetailText DiffRows; DiffLines secondary | `Ac5gPoliciesRevisionDiffBindsTypedKindDetailRows` + `PolicyDesktopServiceTests` |
 | W6-07 Policies Diff baseline catalog | DiffBaselineCatalogItem → baseline UUID; no LoadRevision | `Ac5hPoliciesDiffBaselinePicksFromCatalogWithoutUuidRitual` + `PoliciesViewModelTests` |
 | W3.4 GetNodeWorkflow | Node `WorkflowDeviceLines` + canonical readiness | `Ac3cNodeLoadsGetNodeWorkflowInsteadOfAdHocReadinessMashup` + `NodeDetailViewModelTests` |
