@@ -37,6 +37,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
     private readonly DiffPolicyRevisionsUseCase _diffRevisions;
     private readonly CompileNodeFilterArtifactsUseCase _compileNodeArtifacts;
     private readonly GetDevicePolicySafetyAnalysisUseCase _policySafetyAnalysis;
+    private readonly GrpcRequestActorResolver _actors;
     private readonly IHostEnvironment _environment;
 
     public PolicyGrpcService(
@@ -65,6 +66,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         DiffPolicyRevisionsUseCase diffRevisions,
         CompileNodeFilterArtifactsUseCase compileNodeArtifacts,
         GetDevicePolicySafetyAnalysisUseCase policySafetyAnalysis,
+        GrpcRequestActorResolver actors,
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(createDraft);
@@ -92,6 +94,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         ArgumentNullException.ThrowIfNull(diffRevisions);
         ArgumentNullException.ThrowIfNull(compileNodeArtifacts);
         ArgumentNullException.ThrowIfNull(policySafetyAnalysis);
+        ArgumentNullException.ThrowIfNull(actors);
         ArgumentNullException.ThrowIfNull(environment);
         _createDraft = createDraft;
         _listPolicies = listPolicies;
@@ -118,6 +121,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         _diffRevisions = diffRevisions;
         _compileNodeArtifacts = compileNodeArtifacts;
         _policySafetyAnalysis = policySafetyAnalysis;
+        _actors = actors;
         _environment = environment;
     }
 
@@ -620,22 +624,8 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
         return PolicyProtoMapper.ToProto(Unwrap(result));
     }
 
-    private string ResolveActor(ServerCallContext context)
-    {
-        string? actor = context.RequestHeaders.GetValue(ActorMetadataKey);
-        if (!string.IsNullOrWhiteSpace(actor))
-        {
-            return actor.Trim();
-        }
-
-        if (_environment.IsDevelopment())
-        {
-            return "dev-actor";
-        }
-
-        throw GrpcApplicationErrorMapper.ToRpcException(
-            ApplicationError.Unauthorized("x-mfc-actor metadata is required."));
-    }
+    private string ResolveActor(ServerCallContext context) =>
+        _actors.Resolve(context, _environment, "dev-actor");
 
     private static T Unwrap<T>(ApplicationResult<T> result)
     {

@@ -17,6 +17,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
     private readonly RollbackDeploymentWorkflowUseCase _rollback;
     private readonly GetDeploymentRecoveryStatusUseCase _recovery;
     private readonly DeploymentProgressHub _progress;
+    private readonly GrpcRequestActorResolver _actors;
     private readonly IHostEnvironment _environment;
 
     public DeploymentGrpcService(
@@ -25,6 +26,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         RollbackDeploymentWorkflowUseCase rollback,
         GetDeploymentRecoveryStatusUseCase recovery,
         DeploymentProgressHub progress,
+        GrpcRequestActorResolver actors,
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(createPlan);
@@ -32,12 +34,14 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         ArgumentNullException.ThrowIfNull(rollback);
         ArgumentNullException.ThrowIfNull(recovery);
         ArgumentNullException.ThrowIfNull(progress);
+        ArgumentNullException.ThrowIfNull(actors);
         ArgumentNullException.ThrowIfNull(environment);
         _createPlan = createPlan;
         _start = start;
         _rollback = rollback;
         _recovery = recovery;
         _progress = progress;
+        _actors = actors;
         _environment = environment;
     }
 
@@ -174,21 +178,8 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         }
     }
 
-    private string ResolveActor(ServerCallContext context)
-    {
-        string? actor = context.RequestHeaders.GetValue(ActorMetadataKey);
-        if (string.IsNullOrWhiteSpace(actor))
-        {
-            if (_environment.IsDevelopment())
-            {
-                return "development";
-            }
-
-            throw GrpcApplicationErrorMapper.ToRpcException(ApplicationError.Unauthorized());
-        }
-
-        return actor;
-    }
+    private string ResolveActor(ServerCallContext context) =>
+        _actors.Resolve(context, _environment, "development");
 
     private static T Unwrap<T>(ApplicationResult<T> result)
     {

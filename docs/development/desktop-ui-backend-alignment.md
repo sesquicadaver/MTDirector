@@ -363,4 +363,4 @@ residual: CRS / physical lab runner (ops, not §3)
 - **Перевірка:** `Ac5iPoliciesReorderMovesSelectedRuleWithoutUuidPaste`; `MoveRuleDownBuildsStageOrderWithoutUuidPaste`; `MoveRuleUpAtFirstReportsBoundaryWithoutRpc`
 - **Файли:** `PoliciesViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **§3.C NEXT = residual (CRS lab ops)**. W6-09 Policies Move up/down **DONE**. Physical CRS runner stays ops (`known-limitations.md`), not a §3 product row.
+**NEXT (alignment / §3):** **§3.C NEXT = SEC-02** (#372). SEC-01 system-actor gRPC reject **DONE**. Physical CRS runner stays ops.

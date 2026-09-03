@@ -51,6 +51,9 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Diff baseline UUID paste ritual | `PoliciesViewModel.DiffBaselineRevisionIdText` | **W6-07 DONE** |
 | Unreachable lost on Controller restart | `IDeviceReachabilityObservationStore` (process-local) | **W6-08 DONE** |
 | ReorderRules only via UUID paste | `PoliciesViewModel.ReorderRuleIdsText` | **W6-09 DONE** |
+| System actor spoofable via `x-mfc-actor` | `SystemActorAuthorizationBoundary` + gRPC ResolveActor | **SEC-01 DONE** |
+| AnchorOnly empty deploy materializer in production | `AnchorOnlyDeploymentArtifactMaterializer` | **SEC-02** |
+| Audit hash uses predecessor length only | `EfAuditEventWriter` | **SEC-03** |
 
 ### P3 / new Contracts (evidence)
 
@@ -89,7 +92,10 @@ W6-06 Policies typed Diff rows **DONE**
 W6-07 Diff baseline catalog **DONE**
 W6-08 Durable Unreachable **DONE**
 W6-09 Policies Move up/down reorder **DONE**
-residual: CRS / physical lab runner (ops, not §3)
+SEC-01 Reject system actor gRPC spoof **DONE**
+SEC-02 Deploy artifact materializer **OPEN**
+SEC-03 Audit hash chain **OPEN**
+residual ops: CRS / physical lab runner (not §3)
 ```
 
 `/autopilot` always takes **§3 NEXT**. It does not wait for lab phase transitions.
@@ -113,8 +119,11 @@ residual: CRS / physical lab runner (ops, not §3)
 | 13 | W6-07 | [#364](https://github.com/sesquicadaver/MTDirector/issues/364) | Diff baseline from catalog picker | **DONE** |
 | 14 | W6-08 | [#366](https://github.com/sesquicadaver/MTDirector/issues/366) | Durable GetNode Unreachable | **DONE** |
 | 15 | W6-09 | [#369](https://github.com/sesquicadaver/MTDirector/issues/369) | Policies Reorder via Move up/down | **DONE** |
+| 16 | SEC-01 | [#371](https://github.com/sesquicadaver/MTDirector/issues/371) | Reject system actor via gRPC metadata | **DONE** |
+| 17 | SEC-02 | [#372](https://github.com/sesquicadaver/MTDirector/issues/372) | Deploy artifact materializer + observed hash | **OPEN** |
+| 18 | SEC-03 | [#373](https://github.com/sesquicadaver/MTDirector/issues/373) | Audit hash chain includes predecessor bytes | **OPEN** |
 
-**§3.C NEXT = residual (CRS lab ops).** W6-09 is closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row. Empty §3 without that residual sentence would be a process defect — the residual is documented here.
+**§3.C NEXT = SEC-02** (#372). SEC-01 closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row.
 
 ## Anti-goals (unchanged)
 

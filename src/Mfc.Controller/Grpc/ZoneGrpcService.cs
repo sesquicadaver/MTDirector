@@ -20,6 +20,7 @@ public sealed class ZoneGrpcService : ZoneService.ZoneServiceBase
     private readonly ListNodeZoneBindingsUseCase _listBindings;
     private readonly ResolveZonesForDeviceUseCase _resolveDevice;
     private readonly ResolveZonesForNodeUseCase _resolveNode;
+    private readonly GrpcRequestActorResolver _actors;
     private readonly IHostEnvironment _environment;
 
     public ZoneGrpcService(
@@ -32,6 +33,7 @@ public sealed class ZoneGrpcService : ZoneService.ZoneServiceBase
         ListNodeZoneBindingsUseCase listBindings,
         ResolveZonesForDeviceUseCase resolveDevice,
         ResolveZonesForNodeUseCase resolveNode,
+        GrpcRequestActorResolver actors,
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(createZone);
@@ -43,6 +45,7 @@ public sealed class ZoneGrpcService : ZoneService.ZoneServiceBase
         ArgumentNullException.ThrowIfNull(listBindings);
         ArgumentNullException.ThrowIfNull(resolveDevice);
         ArgumentNullException.ThrowIfNull(resolveNode);
+        ArgumentNullException.ThrowIfNull(actors);
         ArgumentNullException.ThrowIfNull(environment);
         _createZone = createZone;
         _updateZone = updateZone;
@@ -53,6 +56,7 @@ public sealed class ZoneGrpcService : ZoneService.ZoneServiceBase
         _listBindings = listBindings;
         _resolveDevice = resolveDevice;
         _resolveNode = resolveNode;
+        _actors = actors;
         _environment = environment;
     }
 
@@ -220,22 +224,8 @@ public sealed class ZoneGrpcService : ZoneService.ZoneServiceBase
         return response;
     }
 
-    private string ResolveActor(ServerCallContext context)
-    {
-        string? actor = context.RequestHeaders.GetValue(ActorMetadataKey);
-        if (!string.IsNullOrWhiteSpace(actor))
-        {
-            return actor.Trim();
-        }
-
-        if (_environment.IsDevelopment())
-        {
-            return "dev-actor";
-        }
-
-        throw GrpcApplicationErrorMapper.ToRpcException(
-            ApplicationError.Unauthorized("x-mfc-actor metadata is required."));
-    }
+    private string ResolveActor(ServerCallContext context) =>
+        _actors.Resolve(context, _environment, "dev-actor");
 
     private static T Unwrap<T>(ApplicationResult<T> result)
     {

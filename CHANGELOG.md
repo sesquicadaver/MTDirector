@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **SEC-01** ([#371](https://github.com/sesquicadaver/MTDirector/issues/371)): reject reserved `SystemActor` asserted via `x-mfc-actor` gRPC metadata (`GrpcRequestActorResolver`); in-process operational jobs unchanged. Living Spec `GrpcRequestActorResolverTests`. Seeded SEC-02 (#372) / SEC-03 (#373). **§3.C NEXT = SEC-02**.
 - **W6-09** ([#369](https://github.com/sesquicadaver/MTDirector/issues/369)): Policies Move up/down reorder from selected rule via existing `ReorderRules` (no UUID paste). Living Spec `Ac5i`. **§3.C NEXT = residual (CRS lab ops)**.
 - **W6-08** ([#366](https://github.com/sesquicadaver/MTDirector/issues/366)): durable GetNode Unreachable via `Device.LastObservedReachability` (EF); DiscoverDevice persists connectivity failures; fail-closed not_configured still does not claim Unreachable. Living Spec `DiscoverDevicePersistsUnreachableAcrossEmptyObservationStore`. **§3.C NEXT = residual (CRS lab ops)**.
 - **W6-03** ([#356](https://github.com/sesquicadaver/MTDirector/issues/356)): `StartCapture(node_id)` fans out to all Node devices under one WatchCapture stream; Desktop Capture-all uses it. Living Spec W6-03. **§3.C NEXT = residual (CRS lab ops)**.

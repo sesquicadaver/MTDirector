@@ -13,18 +13,22 @@ public sealed class DriftGrpcService : DriftService.DriftServiceBase
 
     private readonly ListDeviceDriftEventsUseCase _listDevice;
     private readonly GetDriftEventUseCase _getEvent;
+    private readonly GrpcRequestActorResolver _actors;
     private readonly IHostEnvironment _environment;
 
     public DriftGrpcService(
         ListDeviceDriftEventsUseCase listDevice,
         GetDriftEventUseCase getEvent,
+        GrpcRequestActorResolver actors,
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(listDevice);
         ArgumentNullException.ThrowIfNull(getEvent);
+        ArgumentNullException.ThrowIfNull(actors);
         ArgumentNullException.ThrowIfNull(environment);
         _listDevice = listDevice;
         _getEvent = getEvent;
+        _actors = actors;
         _environment = environment;
     }
 
@@ -60,21 +64,8 @@ public sealed class DriftGrpcService : DriftService.DriftServiceBase
         return DriftProtoMapper.ToProto(Unwrap(result));
     }
 
-    private string ResolveActor(ServerCallContext context)
-    {
-        string? actor = context.RequestHeaders.GetValue(ActorMetadataKey);
-        if (string.IsNullOrWhiteSpace(actor))
-        {
-            if (_environment.IsDevelopment())
-            {
-                return "development";
-            }
-
-            throw GrpcApplicationErrorMapper.ToRpcException(ApplicationError.Unauthorized());
-        }
-
-        return actor;
-    }
+    private string ResolveActor(ServerCallContext context) =>
+        _actors.Resolve(context, _environment, "development");
 
     private static T Unwrap<T>(ApplicationResult<T> result)
     {
