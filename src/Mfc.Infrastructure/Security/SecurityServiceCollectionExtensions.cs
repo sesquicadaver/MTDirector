@@ -33,7 +33,9 @@ public static class SecurityServiceCollectionExtensions
         }
 
         services.AddSingleton<ISecretProtector, AesGcmSecretProtector>();
-        services.AddSingleton<IRouterOsTrustedCaStore, NotConfiguredRouterOsTrustedCaStore>();
+        services.AddOptions<TrustedCaStoreOptions>();
+        // SEC-04: directory-backed store (empty until ProfilesDirectory is configured; fail-closed).
+        services.AddSingleton<IRouterOsTrustedCaStore, DirectoryRouterOsTrustedCaStore>();
         services.AddScoped<IRouterOsConnectionMaterializer, EfRouterOsConnectionMaterializer>();
         services.AddScoped<IAuditEventWriter, EfAuditEventWriter>();
         services.AddScoped<IAuditEventReadStore, EfAuditEventReadStore>();

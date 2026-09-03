@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using Mfc.Application.Abstractions.Secrets;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
@@ -34,6 +35,11 @@ public sealed class RouterOsConnectionMaterial : IDisposable
     public Hash256? PinnedSpkiSha256 { get; init; }
 
     public IReadOnlyList<byte[]> TrustedCaCertificatesDer { get; init; } = [];
+
+    /// <summary>
+    /// Revocation mode for INTERNAL_CA chain builds (SEC-04). SPKI_PIN ignores this.
+    /// </summary>
+    public X509RevocationMode CertificateRevocationMode { get; init; } = X509RevocationMode.Online;
 
     public int ConnectTimeoutMs { get; init; }
 

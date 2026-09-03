@@ -216,6 +216,21 @@ Issue [#373](https://github.com/sesquicadaver/MTDirector/issues/373) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~AuditEventHashChainSec03"`.
 
+## Living Specification — INTERNAL_CA trusted CA store (SEC-04)
+
+Issue [#377](https://github.com/sesquicadaver/MTDirector/issues/377) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Directory store loads PEM/DER by CaProfileRef | `DirectoryRouterOsTrustedCaStore` | `Ac1DirectoryStoreLoadsPemForProfileRef` |
+| Missing profile → empty (materializer fail-closed) | same | `Ac2MissingProfileOrDirectoryIsEmptyFailClosedMaterial` |
+| Path traversal rejected | same | `Ac3PathTraversalCaProfileRefIsRejected` |
+| RevocationMode applied (not hardcoded NoCheck) | `ApiSslCertificateValidator` | `Ac4InternalCaRevocationModeIsAppliedNotHardcodedNoCheck` |
+| Production DI uses Directory store | `AddMfcSecrets` | `Ac5ProductionDiRegistersDirectoryStoreNotNotConfigured` |
+| RevocationMode parser | `TrustedCaRevocationModes` | `Ac6RevocationModeParserDefaultsToOnlineAndRejectsUnknown` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~TrustedCaStoreSec04"`.
+
 ## Living Specification — desktop snapshot viewer (M1-28)
 
 Initial Issue Set M1-28 AC → module → tests:
@@ -2095,7 +2110,7 @@ Issue Set M6-09. **M6 CLOSED**. Live CHR / live physical CRS OFF — E2E Living 
 
 | AC / вимога | Модуль | Тест / артефакт |
 |-------------|--------|-----------------|
-| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md`; §3.C NEXT = residual | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
+| AC#1 M0–M6 issues closed | ROADMAP / ISSUES / `mvp-acceptance.md`; §3.C NEXT = SEC-05 | `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
 | AC#2 Release gates executed | `docs/release/release-gates.md` | `Ac2ReleaseGatesChecklistExists` |
 | AC#3 CHR matrix green | E2E Living Specs (substitute) | `Ac3ChrMatrixSubstitutedByE2ELivingSpecs` |
 | AC#4 Physical CRS green | `VrrpCrsE2E` + `crs-switch` | `Ac4PhysicalCrsSubstitutedByScriptedFixture` |

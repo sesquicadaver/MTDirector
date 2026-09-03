@@ -51,6 +51,22 @@ public sealed class SecurityHostOptions
     [Required]
     [MinLength(1)]
     public string MasterKeyProvider { get; init; } = string.Empty;
+
+    /// <summary>INTERNAL_CA trusted roots + revocation policy (SEC-04).</summary>
+    public TrustedCaHostOptions TrustedCa { get; init; } = new();
+}
+
+/// <summary>Directory layout and revocation mode for INTERNAL_CA profiles.</summary>
+public sealed class TrustedCaHostOptions
+{
+    /// <summary>
+    /// Root directory with one subdirectory per <c>CaProfileRef</c> containing PEM/DER/CRT/CER files.
+    /// Empty keeps the store fail-closed until operators configure profiles.
+    /// </summary>
+    public string? ProfilesDirectory { get; init; }
+
+    /// <summary>Online (default), Offline, or NoCheck. Production should keep Online/Offline with CRL/OCSP material.</summary>
+    public string RevocationMode { get; init; } = "Online";
 }
 
 public sealed class AuthenticationHostOptions

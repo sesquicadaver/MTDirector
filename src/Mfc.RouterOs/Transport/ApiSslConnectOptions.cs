@@ -24,6 +24,12 @@ public sealed class ApiSslConnectOptions
     /// <summary>Trusted internal CA certificates for <see cref="CertificateTrustMode.InternalCa"/>.</summary>
     public X509Certificate2Collection? TrustedRootCertificates { get; init; }
 
+    /// <summary>
+    /// Revocation mode for INTERNAL_CA custom-chain builds (SEC-04). Default <see cref="X509RevocationMode.Online"/>.
+    /// SPKI_PIN path does not build a CA chain.
+    /// </summary>
+    public X509RevocationMode CertificateRevocationMode { get; init; } = X509RevocationMode.Online;
+
     /// <summary>Expected SPKI SHA-256 for <see cref="CertificateTrustMode.SpkiPin"/>.</summary>
     public Hash256? PinnedSpkiSha256 { get; init; }
 

@@ -128,6 +128,9 @@ public static class Program
         });
 
         builder.Services.AddMfcPersistence(options.Database.ConnectionString);
+        builder.Services
+            .AddOptions<Mfc.Infrastructure.Security.TrustedCaStoreOptions>()
+            .Bind(builder.Configuration.GetSection(Mfc.Infrastructure.Security.TrustedCaStoreOptions.SectionPath));
         builder.Services.AddMfcSecrets(options.Security.MasterKeyProvider);
 
         RegisterAuthorization(builder.Services, options, jobOptions, builder.Environment.EnvironmentName);

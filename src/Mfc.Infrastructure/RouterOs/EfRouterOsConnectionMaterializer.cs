@@ -1,10 +1,13 @@
+using System.Security.Cryptography.X509Certificates;
 using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Abstractions.Secrets;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Infrastructure.Persistence;
 using Mfc.Infrastructure.Persistence.Entities;
+using Mfc.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Mfc.Infrastructure.RouterOs;
 
@@ -14,18 +17,22 @@ public sealed class EfRouterOsConnectionMaterializer : IRouterOsConnectionMateri
     private readonly MfcDbContext _db;
     private readonly ISecretProtector _protector;
     private readonly IRouterOsTrustedCaStore _trustedCaStore;
+    private readonly TrustedCaStoreOptions _trustedCaOptions;
 
     public EfRouterOsConnectionMaterializer(
         MfcDbContext db,
         ISecretProtector protector,
-        IRouterOsTrustedCaStore trustedCaStore)
+        IRouterOsTrustedCaStore trustedCaStore,
+        IOptions<TrustedCaStoreOptions> trustedCaOptions)
     {
         ArgumentNullException.ThrowIfNull(db);
         ArgumentNullException.ThrowIfNull(protector);
         ArgumentNullException.ThrowIfNull(trustedCaStore);
+        ArgumentNullException.ThrowIfNull(trustedCaOptions);
         _db = db;
         _protector = protector;
         _trustedCaStore = trustedCaStore;
+        _trustedCaOptions = trustedCaOptions.Value ?? new TrustedCaStoreOptions();
     }
 
     public async Task<RouterOsConnectionMaterial> MaterializeAsync(
@@ -68,6 +75,7 @@ public sealed class EfRouterOsConnectionMaterializer : IRouterOsConnectionMateri
         CertificateTrustMode trustMode = (CertificateTrustMode)profile.TrustMode;
         Hash256? pin = profile.PinnedSpkiSha256 is null ? null : Hash256.Create(profile.PinnedSpkiSha256);
         IReadOnlyList<byte[]> trustedCa = [];
+        X509RevocationMode revocationMode = X509RevocationMode.NoCheck;
         if (trustMode == CertificateTrustMode.InternalCa)
         {
             if (string.IsNullOrWhiteSpace(profile.CaProfileRef))
@@ -84,6 +92,16 @@ public sealed class EfRouterOsConnectionMaterializer : IRouterOsConnectionMateri
                 throw new InvalidOperationException(
                     $"Trusted CA profile '{profile.CaProfileRef}' is not configured on the Controller.");
             }
+
+            try
+            {
+                revocationMode = TrustedCaRevocationModes.Parse(_trustedCaOptions.RevocationMode);
+            }
+            catch
+            {
+                password.Dispose();
+                throw;
+            }
         }
 
         return new RouterOsConnectionMaterial
@@ -95,6 +113,7 @@ public sealed class EfRouterOsConnectionMaterializer : IRouterOsConnectionMateri
             TrustMode = trustMode,
             PinnedSpkiSha256 = pin,
             TrustedCaCertificatesDer = trustedCa,
+            CertificateRevocationMode = revocationMode,
             ConnectTimeoutMs = profile.ConnectTimeoutMs,
             CommandTimeoutMs = profile.CommandTimeoutMs,
         };
