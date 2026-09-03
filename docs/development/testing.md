@@ -244,6 +244,16 @@ Issue [#378](https://github.com/sesquicadaver/MTDirector/issues/378) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec05"`.
 
+## Living Specification — UpsertDeviceHashState UoW (SEC-13)
+
+| ТЗ / AC | Модуль | Тест |
+|---------|--------|------|
+| Upsert in one UoW | `UpsertDeviceHashStateUseCase` | `MutationAtomicitySec13LivingSpecTests.Ac1` |
+| Source boundary | `WorkflowUseCases` | `Ac2` |
+| known-limitations | `known-limitations.md` | `Ac3` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MutationAtomicitySec13"`.
+
 ## Living Specification — CaptureSnapshot persist+audit UoW (SEC-12)
 
 | ТЗ / AC | Модуль | Тест |

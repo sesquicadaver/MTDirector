@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **SEC-13** ([#394](https://github.com/sesquicadaver/MTDirector/issues/394)): `UpsertDeviceHashStateUseCase` upsert inside `IUnitOfWork`. Living Spec `MutationAtomicitySec13LivingSpecTests`. Seeded SEC-14 (#396). **§3.C NEXT = SEC-14 (#396)**.
 - **SEC-12** ([#392](https://github.com/sesquicadaver/MTDirector/issues/392)): `CaptureSnapshotUseCase` persist+audit inside `IUnitOfWork`; RouterOS capture stays outside. Living Spec `MutationAtomicitySec12LivingSpecTests`. Seeded SEC-13 (#394). **§3.C NEXT = SEC-13 (#394)**.
 - **SEC-11** ([#391](https://github.com/sesquicadaver/MTDirector/issues/391)): `DetectManagedDriftUseCase` and `EmitResponseFeedbackUseCase` persist event/store+audit inside `IUnitOfWork`; feedback delivery stays outside. Living Spec `MutationAtomicitySec11LivingSpecTests`. Seeded SEC-12 (#392). **§3.C NEXT = SEC-12 (#392)**.
 - **SEC-10** ([#389](https://github.com/sesquicadaver/MTDirector/issues/389)): `ExpireIncidentDenyOverlayBindingUseCase` persists binding+idempotency+audit inside `IUnitOfWork`. Living Spec `MutationAtomicitySec10LivingSpecTests`. **§3.C NEXT = residual (CRS lab ops)**.

@@ -60,7 +60,7 @@ public sealed class DeviceStateProjectionLivingSpecTests
         Hash256 desired = Hash(1);
         Hash256 committed = Hash(2);
         Hash256 actual = Hash(2);
-        UpsertDeviceHashStateUseCase upsert = new(auth, devices, store, clock);
+        UpsertDeviceHashStateUseCase upsert = new(auth, devices, store, clock, new FakeUnitOfWork());
         ApplicationResult<DeviceHashStateView> written = await upsert.ExecuteAsync(
             new UpsertDeviceHashStateCommand
             {
