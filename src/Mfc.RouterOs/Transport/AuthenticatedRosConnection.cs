@@ -96,6 +96,9 @@ public sealed class AuthenticatedRosConnection : IAsyncDisposable
                         out validationError);
                 });
 
+            // Custom RemoteCertificateValidationCallback owns trust/revocation policy.
+            // Keep SslStream OS revocation off so INTERNAL_CA CustomRootTrust + options.CertificateRevocationMode
+            // are the single source of truth (SEC-04).
             SslClientAuthenticationOptions sslOptions = new()
             {
                 TargetHost = options.Host,

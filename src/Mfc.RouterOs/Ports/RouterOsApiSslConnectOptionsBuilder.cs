@@ -37,6 +37,9 @@ internal static class RouterOsApiSslConnectOptionsBuilder
             Password = password,
             TrustMode = material.TrustMode,
             TrustedRootCertificates = trustedRoots,
+            CertificateRevocationMode = material.TrustMode == CertificateTrustMode.InternalCa
+                ? material.CertificateRevocationMode
+                : X509RevocationMode.NoCheck,
             PinnedSpkiSha256 = material.PinnedSpkiSha256,
             ConnectTimeout = connectTimeout,
             TlsAndLoginTimeout = TimeSpan.FromTicks(connectTimeout.Ticks + commandTimeout.Ticks),

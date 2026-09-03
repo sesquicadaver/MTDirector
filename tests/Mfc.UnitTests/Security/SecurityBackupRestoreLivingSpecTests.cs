@@ -448,6 +448,7 @@ public sealed class SecurityBackupRestoreLivingSpecTests
             Password = password,
             TrustMode = mode,
             TrustedRootCertificates = trustedRoots,
+            CertificateRevocationMode = X509RevocationMode.NoCheck,
             PinnedSpkiSha256 = pinnedSpki,
         };
 

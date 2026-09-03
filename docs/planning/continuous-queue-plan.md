@@ -54,6 +54,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | System actor spoofable via `x-mfc-actor` | `SystemActorAuthorizationBoundary` + gRPC ResolveActor | **SEC-01 DONE** |
 | AnchorOnly empty deploy materializer in production | `AnchorOnlyDeploymentArtifactMaterializer` | **SEC-02 DONE** |
 | Audit hash uses predecessor length only | `EfAuditEventWriter` | **SEC-03 DONE** |
+| INTERNAL_CA empty CA store + RevocationMode.NoCheck | `IRouterOsTrustedCaStore` / `ApiSslCertificateValidator` | **SEC-04 DONE** |
+| Non-atomic mutation vs idempotency/audit | write path | **SEC-05 OPEN** (#378) |
 
 ### P3 / new Contracts (evidence)
 
@@ -95,7 +97,9 @@ W6-09 Policies Move up/down reorder **DONE**
 SEC-01 Reject system actor gRPC spoof **DONE**
 SEC-02 Deploy artifact materializer **DONE**
 SEC-03 Audit hash chain **DONE**
-residual ops: CRS / physical lab runner (not §3)
+SEC-04 INTERNAL_CA trusted CA store **DONE**
+SEC-05 Atomic mutation/idempotency/audit **OPEN** ← NEXT
+residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
 `/autopilot` always takes **§3 NEXT**. It does not wait for lab phase transitions.
@@ -122,8 +126,10 @@ residual ops: CRS / physical lab runner (not §3)
 | 16 | SEC-01 | [#371](https://github.com/sesquicadaver/MTDirector/issues/371) | Reject system actor via gRPC metadata | **DONE** |
 | 17 | SEC-02 | [#372](https://github.com/sesquicadaver/MTDirector/issues/372) | Deploy artifact materializer + observed hash | **DONE** |
 | 18 | SEC-03 | [#373](https://github.com/sesquicadaver/MTDirector/issues/373) | Audit hash chain includes predecessor bytes | **DONE** |
+| 19 | SEC-04 | [#377](https://github.com/sesquicadaver/MTDirector/issues/377) | INTERNAL_CA directory trusted CA store + revocation | **DONE** |
+| 20 | SEC-05 | [#378](https://github.com/sesquicadaver/MTDirector/issues/378) | Atomic mutation + idempotency + audit boundary | **OPEN** |
 
-**§3.C NEXT = residual (CRS lab ops)**. SEC tranche closed. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 row.
+**§3.C NEXT = SEC-05 (#378)**. SEC-04 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

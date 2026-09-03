@@ -46,6 +46,8 @@ public static class ControllerOptionsValidator
             throw new InvalidOperationException("Mfc:Security:MasterKeyProvider is required.");
         }
 
+        ValidateTrustedCa(options.Security.TrustedCa);
+
         if (!isDevelopment)
         {
             if (options.Grpc.AllowInsecureLoopback)
@@ -105,6 +107,31 @@ public static class ControllerOptionsValidator
         }
 
         return false;
+    }
+
+    private static void ValidateTrustedCa(TrustedCaHostOptions trustedCa)
+    {
+        ArgumentNullException.ThrowIfNull(trustedCa);
+        string mode = trustedCa.RevocationMode?.Trim() ?? string.Empty;
+        if (mode.Length == 0)
+        {
+            throw new InvalidOperationException("Mfc:Security:TrustedCa:RevocationMode is required.");
+        }
+
+        if (!string.Equals(mode, "Online", StringComparison.OrdinalIgnoreCase)
+            && !string.Equals(mode, "Offline", StringComparison.OrdinalIgnoreCase)
+            && !string.Equals(mode, "NoCheck", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException(
+                $"Unknown Mfc:Security:TrustedCa:RevocationMode '{trustedCa.RevocationMode}'. Supported: Online, Offline, NoCheck.");
+        }
+
+        if (!string.IsNullOrWhiteSpace(trustedCa.ProfilesDirectory)
+            && !Path.IsPathRooted(trustedCa.ProfilesDirectory.Trim()))
+        {
+            throw new InvalidOperationException(
+                "Mfc:Security:TrustedCa:ProfilesDirectory must be an absolute path when set.");
+        }
     }
 
     private static bool ContainsSqlite(string connectionString)

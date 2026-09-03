@@ -82,7 +82,8 @@ public static class ApiSslCertificateValidator
         using X509Chain custom = new();
         custom.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
         custom.ChainPolicy.CustomTrustStore.AddRange(options.TrustedRootCertificates);
-        custom.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
+        custom.ChainPolicy.RevocationMode = options.CertificateRevocationMode;
+        custom.ChainPolicy.RevocationFlag = X509RevocationFlag.ExcludeRoot;
         custom.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
         if (!custom.Build(certificate))
         {

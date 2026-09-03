@@ -18,6 +18,8 @@ Configuration sources (highest wins last):
 | `Security:RequireTls` | Reject non-TLS production binds |
 | `Security:MasterKeyProvider` | Named master-key provider (`Development` or `OsKeyStore`; `Development` forbidden outside Development) |
 | `Security:MasterKeyBase64` (env `MFC__Security__MasterKeyBase64`) | Required for `OsKeyStore`: base64 of a 32-byte master key (never stored in PostgreSQL) |
+| `Security:TrustedCa:ProfilesDirectory` | Absolute path; `{dir}/{CaProfileRef}/*.{pem,crt,cer,der}` for INTERNAL_CA (SEC-04). Empty → fail-closed at materialize |
+| `Security:TrustedCa:RevocationMode` | `Online` (default), `Offline`, or `NoCheck` for INTERNAL_CA custom-chain builds |
 | `Authentication:AllowDevelopmentAuthentication` | Dev-only; loopback bind required |
 | `Database:ConnectionString` | PostgreSQL only |
 
@@ -61,7 +63,11 @@ Pilot checklist: [`pilot-runbook.md`](pilot-runbook.md).
 ```bash
 export MFC__Database__ConnectionString='Host=127.0.0.1;Port=5432;Database=mfc;Username=mfc;Password=...'
 export MFC__Security__MasterKeyProvider=Development
+export MFC__Security__TrustedCa__ProfilesDirectory=/var/lib/mfc/trusted-ca
+export MFC__Security__TrustedCa__RevocationMode=Online
 export ASPNETCORE_ENVIRONMENT=Development
 ```
+
+Layout example: `/var/lib/mfc/trusted-ca/lab-ca/root.pem`. INTERNAL_CA profiles without files fail closed. Private CAs must publish CRL/OCSP for `Online`/`Offline`, or use `SPKI_PIN` / explicit `NoCheck` only in controlled labs.
 
 Never commit production connection strings or master keys. Connection strings are redacted in Controller JSON logs.

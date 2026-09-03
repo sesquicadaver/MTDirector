@@ -216,6 +216,21 @@ Issue [#373](https://github.com/sesquicadaver/MTDirector/issues/373) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~AuditEventHashChainSec03"`.
 
+## Living Specification — INTERNAL_CA trusted CA store (SEC-04)
+
+Issue [#377](https://github.com/sesquicadaver/MTDirector/issues/377) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Directory store loads PEM/DER by CaProfileRef | `DirectoryRouterOsTrustedCaStore` | `Ac1DirectoryStoreLoadsPemForProfileRef` |
+| Missing profile → empty (materializer fail-closed) | same | `Ac2MissingProfileOrDirectoryIsEmptyFailClosedMaterial` |
+| Path traversal rejected | same | `Ac3PathTraversalCaProfileRefIsRejected` |
+| RevocationMode applied (not hardcoded NoCheck) | `ApiSslCertificateValidator` | `Ac4InternalCaRevocationModeIsAppliedNotHardcodedNoCheck` |
+| Production DI uses Directory store | `AddMfcSecrets` | `Ac5ProductionDiRegistersDirectoryStoreNotNotConfigured` |
+| RevocationMode parser | `TrustedCaRevocationModes` | `Ac6RevocationModeParserDefaultsToOnlineAndRejectsUnknown` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~TrustedCaStoreSec04"`.
+
 ## Living Specification — desktop snapshot viewer (M1-28)
 
 Initial Issue Set M1-28 AC → module → tests:

@@ -31,6 +31,7 @@ public sealed class ApiSslConnectionTests
                 Password = password,
                 TrustMode = CertificateTrustMode.InternalCa,
                 TrustedRootCertificates = server.TrustedRoots,
+                CertificateRevocationMode = X509RevocationMode.NoCheck,
             });
 
         Assert.False(connection.Session.IsFaulted);
@@ -73,6 +74,7 @@ public sealed class ApiSslConnectionTests
                 Password = password,
                 TrustMode = CertificateTrustMode.InternalCa,
                 TrustedRootCertificates = server.TrustedRoots,
+                CertificateRevocationMode = X509RevocationMode.NoCheck,
             }));
 
         Assert.Equal(ApiSslErrors.CertificateExpired, ex.Code);
@@ -94,6 +96,7 @@ public sealed class ApiSslConnectionTests
                 Password = password,
                 TrustMode = CertificateTrustMode.InternalCa,
                 TrustedRootCertificates = server.TrustedRoots,
+                CertificateRevocationMode = X509RevocationMode.NoCheck,
             }));
 
         Assert.Equal(ApiSslErrors.HostnameMismatch, ex.Code);
@@ -132,6 +135,7 @@ public sealed class ApiSslConnectionTests
                 Password = password,
                 TrustMode = CertificateTrustMode.InternalCa,
                 TrustedRootCertificates = server.TrustedRoots,
+                CertificateRevocationMode = X509RevocationMode.NoCheck,
             }));
 
         Assert.Equal(ApiSslErrors.AuthenticationFailed, ex.Code);
@@ -152,6 +156,7 @@ public sealed class ApiSslConnectionTests
                 Password = password,
                 TrustMode = CertificateTrustMode.InternalCa,
                 TrustedRootCertificates = server.TrustedRoots,
+                CertificateRevocationMode = X509RevocationMode.NoCheck,
             }));
 
         Assert.Equal(ApiSslErrors.UnsupportedLegacyAuth, ex.Code);
