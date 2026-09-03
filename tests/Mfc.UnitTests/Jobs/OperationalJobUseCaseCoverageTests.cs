@@ -190,7 +190,7 @@ public sealed class OperationalJobUseCaseCoverageTests
 
         ReconcileExpiredExceptionBindingsJobUseCase useCase = new(
             approvals,
-            new ExpireExceptionBindingUseCase(auth, approvals, idempotency, audit, clock),
+            new ExpireExceptionBindingUseCase(auth, approvals, idempotency, audit, clock, new FakeUnitOfWork()),
             clock);
         var result = await useCase.ExecuteAsync("system:operational-jobs", 8);
         Assert.True(result.IsSuccess);

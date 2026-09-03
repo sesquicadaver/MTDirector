@@ -856,6 +856,19 @@ public sealed class ApproveRevisionUseCase
                     await _idempotency.SaveAsync(
                         command.Actor, Operation, command.IdempotencyKey, requestHash, vote.Id.Value, ct)
                         .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                        command.Actor,
+                        Operation,
+                        JsonSerializer.Serialize(new
+                        {
+                            revision_id = revision.Id.Value,
+                            analysis_run_id = run.Id.Value,
+                            approval_id = vote.Id.Value,
+                            completes_approval = evaluation.CompletesApproval,
+                            state = revision.State.ToString(),
+                            binding_activated = false,
+                        }),
+                        ct).ConfigureAwait(false);
                 },
                 cancellationToken).ConfigureAwait(false);
         }
@@ -864,19 +877,6 @@ public sealed class ApproveRevisionUseCase
             return ApplicationResults.Fail(new ApplicationError(ex.Code, ex.Message));
         }
 
-        await _audit.AppendAsync(
-            command.Actor,
-            Operation,
-            JsonSerializer.Serialize(new
-            {
-                revision_id = revision.Id.Value,
-                analysis_run_id = run.Id.Value,
-                approval_id = vote.Id.Value,
-                completes_approval = evaluation.CompletesApproval,
-                state = revision.State.ToString(),
-                binding_activated = false,
-            }),
-            cancellationToken).ConfigureAwait(false);
         return ApplicationResults.Ok(ToVoteView(vote, revision, evaluation.CompletesApproval));
     }
 
@@ -948,29 +948,28 @@ public sealed class ApproveRevisionUseCase
                     await _idempotency.SaveAsync(
                         command.Actor, Operation, command.IdempotencyKey, requestHash, existingVote.Id.Value, ct)
                         .ConfigureAwait(false);
+                    if (persistApproval)
+                    {
+                        await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new
+                            {
+                                revision_id = revision.Id.Value,
+                                analysis_run_id = run.Id.Value,
+                                approval_id = existingVote.Id.Value,
+                                completes_approval = true,
+                                state = revision.State.ToString(),
+                                binding_activated = false,
+                            }),
+                            ct).ConfigureAwait(false);
+                    }
                 },
                 cancellationToken).ConfigureAwait(false);
         }
         catch (PersistenceConflictException ex)
         {
             return ApplicationResults.Fail(new ApplicationError(ex.Code, ex.Message));
-        }
-
-        if (persistApproval)
-        {
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new
-                {
-                    revision_id = revision.Id.Value,
-                    analysis_run_id = run.Id.Value,
-                    approval_id = existingVote.Id.Value,
-                    completes_approval = true,
-                    state = revision.State.ToString(),
-                    binding_activated = false,
-                }),
-                cancellationToken).ConfigureAwait(false);
         }
 
         return ApplicationResults.Ok(ToVoteView(

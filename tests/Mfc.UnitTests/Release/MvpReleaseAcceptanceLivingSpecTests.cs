@@ -40,7 +40,7 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
 
     // ── AC 1 ──────────────────────────────────────────────────────────────────────
 
-    /// <summary>M0–M6 + N1-07 closed in ROADMAP / ISSUES; MVP CLOSED; post-MVP M7 closed; §3.C NEXT = SEC-05.</summary>
+    /// <summary>M0–M6 + N1-07 closed in ROADMAP / ISSUES; MVP CLOSED; post-MVP M7 closed; §3.C NEXT = SEC-06.</summary>
     [Fact]
     public void Ac1M0ThroughM6IssuesAreClosedInRoadmap()
     {
@@ -55,8 +55,8 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         Assert.Contains("M7.2 CLOSED", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.3 CLOSED", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.4 CLOSED", roadmap, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = SEC-05 (#378)", roadmap, StringComparison.Ordinal);
-        Assert.Contains("SEC-04", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = SEC-06 (#380)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("SEC-05", roadmap, StringComparison.Ordinal);
         Assert.Contains("W5-03", roadmap, StringComparison.Ordinal);
         Assert.Contains("W6-01", roadmap, StringComparison.Ordinal);
         Assert.Contains("W5-02", roadmap, StringComparison.Ordinal);

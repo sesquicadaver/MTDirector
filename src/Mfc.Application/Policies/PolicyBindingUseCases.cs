@@ -219,6 +219,17 @@ public sealed class ActivateDesiredBindingUseCase
                     await _idempotency.SaveAsync(
                         command.Actor, Operation, command.IdempotencyKey, requestHash, binding.Id.Value, ct)
                         .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                        command.Actor,
+                        Operation,
+                        JsonSerializer.Serialize(new
+                        {
+                            binding_id = binding.Id.Value,
+                            revision_id = revision.Id.Value,
+                            state = binding.State.ToString(),
+                            deployment_started = false,
+                        }),
+                        ct).ConfigureAwait(false);
                 },
                 cancellationToken).ConfigureAwait(false);
         }
@@ -226,17 +237,6 @@ public sealed class ActivateDesiredBindingUseCase
         {
             return ApplicationResults.Fail(new ApplicationError(ex.Code, ex.Message));
         }
-        await _audit.AppendAsync(
-            command.Actor,
-            Operation,
-            JsonSerializer.Serialize(new
-            {
-                binding_id = binding.Id.Value,
-                revision_id = revision.Id.Value,
-                state = binding.State.ToString(),
-                deployment_started = false,
-            }),
-            cancellationToken).ConfigureAwait(false);
         return ApplicationResults.Ok(ToView(binding));
     }
 
@@ -280,24 +280,28 @@ public sealed class ExpireExceptionBindingUseCase
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
     private readonly IClock _clock;
+    private readonly IUnitOfWork _unitOfWork;
 
     public ExpireExceptionBindingUseCase(
         IAuthorizationBoundary auth,
         IPolicyApprovalStore approvals,
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
-        IClock clock)
+        IClock clock,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(approvals);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(clock);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _approvals = approvals;
         _idempotency = idempotency;
         _audit = audit;
         _clock = clock;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<PolicyBindingView>> ExecuteAsync(
@@ -375,19 +379,24 @@ public sealed class ExpireExceptionBindingUseCase
             return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
         }
 
-        await _approvals.SaveBindingAsync(binding, cancellationToken).ConfigureAwait(false);
-        await _idempotency.SaveAsync(
-            command.Actor, Operation, command.IdempotencyKey, requestHash, binding.Id.Value, cancellationToken)
-            .ConfigureAwait(false);
-        await _audit.AppendAsync(
-            command.Actor,
-            Operation,
-            JsonSerializer.Serialize(new
+        await _unitOfWork.ExecuteAsync(
+            async ct =>
             {
-                binding_id = binding.Id.Value,
-                state = binding.State.ToString(),
-                deployment_started = false,
-            }),
+                await _approvals.SaveBindingAsync(binding, ct).ConfigureAwait(false);
+                await _idempotency.SaveAsync(
+                    command.Actor, Operation, command.IdempotencyKey, requestHash, binding.Id.Value, ct)
+                    .ConfigureAwait(false);
+                await _audit.AppendAsync(
+                    command.Actor,
+                    Operation,
+                    JsonSerializer.Serialize(new
+                    {
+                        binding_id = binding.Id.Value,
+                        state = binding.State.ToString(),
+                        deployment_started = false,
+                    }),
+                    ct).ConfigureAwait(false);
+            },
             cancellationToken).ConfigureAwait(false);
         return ApplicationResults.Ok(ActivateDesiredBindingUseCase.ToView(binding));
     }

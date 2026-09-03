@@ -4,12 +4,14 @@ using Mfc.Application.Abstractions.Audit;
 using Mfc.Infrastructure.Persistence;
 using Mfc.Infrastructure.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Mfc.Infrastructure.Audit;
 
 /// <summary>
 /// Appends hash-chained audit events (SEC-03). Callers must never pass credential material in payloadJson.
-/// Appends run under a serializable transaction so concurrent writers cannot fork the tip silently.
+/// When no ambient transaction exists, appends under Serializable + advisory lock (SEC-03).
+/// When called inside <see cref="IUnitOfWork"/>, joins the ambient transaction (SEC-05).
 /// </summary>
 public sealed class EfAuditEventWriter : IAuditEventWriter
 {
@@ -35,10 +37,15 @@ public sealed class EfAuditEventWriter : IAuditEventWriter
         string trimmedActor = actor.Trim();
         string trimmedAction = action.Trim();
 
-        // Serializable tip read + insert: concurrent appends must serialize or fail closed.
-        await using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction tx = await _db.Database
-            .BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken)
-            .ConfigureAwait(false);
+        IDbContextTransaction? ambient = _db.Database.CurrentTransaction;
+        bool ownsTransaction = ambient is null;
+        IDbContextTransaction? tx = ambient;
+        if (ownsTransaction)
+        {
+            tx = await _db.Database
+                .BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken)
+                .ConfigureAwait(false);
+        }
 
         try
         {
@@ -74,12 +81,26 @@ public sealed class EfAuditEventWriter : IAuditEventWriter
             });
 
             await _db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-            await tx.CommitAsync(cancellationToken).ConfigureAwait(false);
+            if (ownsTransaction)
+            {
+                await tx!.CommitAsync(cancellationToken).ConfigureAwait(false);
+            }
         }
         catch
         {
-            await tx.RollbackAsync(cancellationToken).ConfigureAwait(false);
+            if (ownsTransaction && tx is not null)
+            {
+                await tx.RollbackAsync(cancellationToken).ConfigureAwait(false);
+            }
+
             throw;
+        }
+        finally
+        {
+            if (ownsTransaction && tx is not null)
+            {
+                await tx.DisposeAsync().ConfigureAwait(false);
+            }
         }
     }
 

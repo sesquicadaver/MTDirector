@@ -35,21 +35,25 @@ public sealed class CreateSiteUseCase
     private readonly ISiteStore _sites;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CreateSiteUseCase(
         IAuthorizationBoundary auth,
         ISiteStore sites,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(sites);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _sites = sites;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<SiteView>> ExecuteAsync(
@@ -105,14 +109,20 @@ public sealed class CreateSiteUseCase
             }
 
             Site site = Site.Create(code, name);
-            await _sites.AddAsync(site, cancellationToken).ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                command.Actor, Operation, command.IdempotencyKey, requestHash, site.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new { site_id = site.Id.Value, code = site.Code.Value }),
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
+                {
+                    await _sites.AddAsync(site, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, site.Id.Value, ct)
+                        .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new { site_id = site.Id.Value, code = site.Code.Value }),
+                            ct)
+                        .ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ViewMapper.ToView(site));
         }
@@ -302,24 +312,28 @@ public sealed class CreateNodeUseCase
     private readonly INodeStore _nodes;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CreateNodeUseCase(
         IAuthorizationBoundary auth,
         ISiteStore sites,
         INodeStore nodes,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(sites);
         ArgumentNullException.ThrowIfNull(nodes);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _sites = sites;
         _nodes = nodes;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<NodeView>> ExecuteAsync(
@@ -383,14 +397,20 @@ public sealed class CreateNodeUseCase
             }
 
             Node node = Node.Create(siteId, name, command.DeclaredKind, command.DeclaredUplinkMode);
-            await _nodes.AddAsync(node, cancellationToken).ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                command.Actor, Operation, command.IdempotencyKey, requestHash, node.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new { node_id = node.Id.Value, site_id = siteId.Value }),
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
+                {
+                    await _nodes.AddAsync(node, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, node.Id.Value, ct)
+                        .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new { node_id = node.Id.Value, site_id = siteId.Value }),
+                            ct)
+                        .ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ViewMapper.ToView(node));
         }
@@ -613,24 +633,28 @@ public sealed class RegisterDeviceUseCase
     private readonly IDeviceStore _devices;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public RegisterDeviceUseCase(
         IAuthorizationBoundary auth,
         INodeStore nodes,
         IDeviceStore devices,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
         ArgumentNullException.ThrowIfNull(devices);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _nodes = nodes;
         _devices = devices;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<DeviceView>> ExecuteAsync(
@@ -691,20 +715,26 @@ public sealed class RegisterDeviceUseCase
                 NonEmptyName.Create(command.DisplayName),
                 ManagementEndpoint.Create(command.ManagementHost, command.ManagementPort),
                 command.Role);
-            await _devices.AddAsync(device, cancellationToken).ConfigureAwait(false);
-            await _nodes.UpdateAsync(node, cancellationToken).ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                command.Actor, Operation, command.IdempotencyKey, requestHash, device.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
                 {
-                    device_id = device.Id.Value,
-                    node_id = nodeId.Value,
-                    management_host = device.ManagementEndpoint.Host.Value,
-                }),
+                    await _devices.AddAsync(device, ct).ConfigureAwait(false);
+                    await _nodes.UpdateAsync(node, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, device.Id.Value, ct)
+                        .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new
+                            {
+                                device_id = device.Id.Value,
+                                node_id = nodeId.Value,
+                                management_host = device.ManagementEndpoint.Host.Value,
+                            }),
+                            ct)
+                        .ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ViewMapper.ToView(device));
         }
@@ -748,21 +778,25 @@ public sealed class UpdateDeviceUseCase
     private readonly IDeviceStore _devices;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
+    private readonly IUnitOfWork _unitOfWork;
 
     public UpdateDeviceUseCase(
         IAuthorizationBoundary auth,
         IDeviceStore devices,
         IIdempotencyStore idempotency,
-        IAuditEventWriter audit)
+        IAuditEventWriter audit,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(devices);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
         _devices = devices;
         _idempotency = idempotency;
         _audit = audit;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<DeviceView>> ExecuteAsync(
@@ -850,18 +884,24 @@ public sealed class UpdateDeviceUseCase
                 device.SetRole(command.Role.Value);
             }
 
-            await _devices.UpdateAsync(device, cancellationToken).ConfigureAwait(false);
-            await _idempotency.SaveAsync(
-                command.Actor, Operation, command.IdempotencyKey, requestHash, device.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            await _audit.AppendAsync(
-                command.Actor,
-                Operation,
-                JsonSerializer.Serialize(new
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
                 {
-                    device_id = device.Id.Value,
-                    row_version = device.RowVersion,
-                }),
+                    await _devices.UpdateAsync(device, ct).ConfigureAwait(false);
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, device.Id.Value, ct)
+                        .ConfigureAwait(false);
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new
+                            {
+                                device_id = device.Id.Value,
+                                row_version = device.RowVersion,
+                            }),
+                            ct)
+                        .ConfigureAwait(false);
+                },
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ViewMapper.ToView(device));
         }

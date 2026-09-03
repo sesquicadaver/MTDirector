@@ -26,7 +26,7 @@ public sealed class InventoryUseCaseTests
         FakeSiteStore sites,
         FakeIdempotencyStore? idempotency = null,
         FakeAuditEventWriter? audit = null)
-        => new(auth, sites, idempotency ?? new FakeIdempotencyStore(), audit ?? new FakeAuditEventWriter());
+        => new(auth, sites, idempotency ?? new FakeIdempotencyStore(), audit ?? new FakeAuditEventWriter(), new FakeUnitOfWork());
 
     private static CreateNodeUseCase CreateNode(
         FakeAuthorizationBoundary auth,
@@ -34,7 +34,7 @@ public sealed class InventoryUseCaseTests
         FakeNodeStore nodes,
         FakeIdempotencyStore? idempotency = null,
         FakeAuditEventWriter? audit = null)
-        => new(auth, sites, nodes, idempotency ?? new FakeIdempotencyStore(), audit ?? new FakeAuditEventWriter());
+        => new(auth, sites, nodes, idempotency ?? new FakeIdempotencyStore(), audit ?? new FakeAuditEventWriter(), new FakeUnitOfWork());
 
     private static RegisterDeviceUseCase RegisterDevice(
         FakeAuthorizationBoundary auth,
@@ -42,7 +42,7 @@ public sealed class InventoryUseCaseTests
         FakeDeviceStore devices,
         FakeIdempotencyStore? idempotency = null,
         FakeAuditEventWriter? audit = null)
-        => new(auth, nodes, devices, idempotency ?? new FakeIdempotencyStore(), audit ?? new FakeAuditEventWriter());
+        => new(auth, nodes, devices, idempotency ?? new FakeIdempotencyStore(), audit ?? new FakeAuditEventWriter(), new FakeUnitOfWork());
 
     [Fact]
     public async Task CreateSiteAndNodeAndRegisterDevice()
@@ -307,7 +307,7 @@ public sealed class InventoryUseCaseTests
                 Role = DeviceRole.Router,
             })).Value!;
 
-        UpdateDeviceUseCase update = new(auth, devices, idempotency, new FakeAuditEventWriter());
+        UpdateDeviceUseCase update = new(auth, devices, idempotency, new FakeAuditEventWriter(), new FakeUnitOfWork());
         Guid key = Guid.NewGuid();
         ApplicationResult<DeviceView> first = await update.ExecuteAsync(new UpdateDeviceCommand
         {
@@ -592,19 +592,19 @@ public sealed class InventoryUseCaseTests
 public sealed class SnapshotUseCaseTests
 {
     private static CreateSiteUseCase CreateSite(FakeAuthorizationBoundary auth, FakeSiteStore sites)
-        => new(auth, sites, new FakeIdempotencyStore(), new FakeAuditEventWriter());
+        => new(auth, sites, new FakeIdempotencyStore(), new FakeAuditEventWriter(), new FakeUnitOfWork());
 
     private static CreateNodeUseCase CreateNode(
         FakeAuthorizationBoundary auth,
         FakeSiteStore sites,
         FakeNodeStore nodes)
-        => new(auth, sites, nodes, new FakeIdempotencyStore(), new FakeAuditEventWriter());
+        => new(auth, sites, nodes, new FakeIdempotencyStore(), new FakeAuditEventWriter(), new FakeUnitOfWork());
 
     private static RegisterDeviceUseCase RegisterDevice(
         FakeAuthorizationBoundary auth,
         FakeNodeStore nodes,
         FakeDeviceStore devices)
-        => new(auth, nodes, devices, new FakeIdempotencyStore(), new FakeAuditEventWriter());
+        => new(auth, nodes, devices, new FakeIdempotencyStore(), new FakeAuditEventWriter(), new FakeUnitOfWork());
 
     [Fact]
     public async Task DiscoverDeviceIsReadOnlyAndCaptureIsIdempotentByHash()

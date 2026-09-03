@@ -1055,9 +1055,14 @@ internal sealed class FakeClock : Mfc.Application.Abstractions.Time.IClock
 
 internal sealed class FakeUnitOfWork : IUnitOfWork
 {
+    public int ExecuteCount { get; private set; }
+
+    public List<string> NestedSteps { get; } = [];
+
     public Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(action);
+        ExecuteCount++;
         return action(cancellationToken);
     }
 }

@@ -407,7 +407,7 @@ public sealed class StandaloneDualStackE2ELivingSpecTests
         FakeIdempotencyStore idempotency = new();
         FakeAuditEventWriter audit = new();
         FakeClock clock = new() { UtcNow = T0 };
-        ExpireExceptionBindingUseCase expire = new(auth, approvals, idempotency, audit, clock);
+        ExpireExceptionBindingUseCase expire = new(auth, approvals, idempotency, audit, clock, new FakeUnitOfWork());
 
         PolicyDesiredBinding binding = PolicyDesiredBinding.Reconstitute(
             PolicyBindingId.New(),
