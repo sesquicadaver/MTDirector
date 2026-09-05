@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-28** ([#455](https://github.com/sesquicadaver/MTDirector/issues/455)): Living Spec locks intentional Golden live CHR hashes env-gated residual in known-limitations. Seeded W7-29 (#457). **§3.C NEXT = W7-29 (#457)**.
 - **W7-27** ([#453](https://github.com/sesquicadaver/MTDirector/issues/453)): Living Spec locks intentional Live CHR matrix OFF residual in known-limitations. Seeded W7-28 (#455). **§3.C NEXT = W7-28 (#455)**.
 - **W7-26** ([#451](https://github.com/sesquicadaver/MTDirector/issues/451)): Living Spec locks intentional MVP scope-lock no-campaigns/auto-deploy residual in known-limitations. Seeded W7-27 (#453). **§3.C NEXT = W7-27 (#453)**.
 - **W7-25** ([#449](https://github.com/sesquicadaver/MTDirector/issues/449)): Living Spec locks intentional MVP scope-lock no-NAT/RAW writes residual in known-limitations. Seeded W7-26 (#451). **§3.C NEXT = W7-26 (#451)**.
