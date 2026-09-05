@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-34** ([#466](https://github.com/sesquicadaver/MTDirector/issues/466)): Living Spec locks intentional Desktop window does not stop Controller residual in known-limitations. Seeded W7-35 (#468) / W7-36 (#470). **§3.C NEXT = W7-35 (#468)**.
 - **W7-33** ([#464](https://github.com/sesquicadaver/MTDirector/issues/464)): Living Spec locks continuous residual tranche seed after CI billing → W7-34 Desktop window. Seeded W7-34 (#466) / W7-35 (#468). **§3.C NEXT = W7-34 (#466)**.
 - **W7-32** ([#462](https://github.com/sesquicadaver/MTDirector/issues/462)): Living Spec locks intentional GitHub-hosted CI billing-limited residual in known-limitations. Seeded W7-33 (#464) / W7-34 (#466). **§3.C NEXT = W7-33 (#464)**.
 - **W7-31** ([#460](https://github.com/sesquicadaver/MTDirector/issues/460)): Living Spec locks intentional Development master-key provider residual in known-limitations. Seeded W7-32 (#462) / W7-33 (#464). **§3.C NEXT = W7-32 (#462)**.
