@@ -452,6 +452,16 @@ Issue [#447](https://github.com/sesquicadaver/MTDirector/issues/447) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~CycloneDxLiteSbomResidualW724"`.
 
+## Living Specification — MVP scope-lock no-NAT/RAW writes residual (W7-25)
+
+Issue [#449](https://github.com/sesquicadaver/MTDirector/issues/449) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents MVP no-NAT/RAW writes residual | `docs/release/known-limitations.md` | `MvpNoNatRawWritesResidualW725LivingSpecTests.Ac1KnownLimitationsDocumentsMvpNoNatRawWritesResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MvpNoNatRawWritesResidualW725"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:

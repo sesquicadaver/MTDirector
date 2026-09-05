@@ -20,7 +20,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 ## Live lab residuals (optional)
 
 - Live CHR matrix is **OFF**. Scripted E2E Living Specs (M6-05…M6-07 + N1-07 + M7.1-11 + M7.2-04 + M7.4-06) are the DoD substitute.
-- Live physical CRS hardware exercise is **OFF**. Scripted CRS fixture + `VrrpCrsE2ELivingSpecTests` AC11 are the DoD substitute. Physical CRS is **ops residual**, not a §3 stop-gate. **§3.C NEXT = W7-25 (#449)** after W7-24.
+- Live physical CRS hardware exercise is **OFF**. Scripted CRS fixture + `VrrpCrsE2ELivingSpecTests` AC11 are the DoD substitute. Physical CRS is **ops residual**, not a §3 stop-gate. **§3.C NEXT = W7-26 (#451)** after W7-25.
 - Golden live CHR hashes remain env-gated until an isolated runner exists.
 
 ## Packaging / signing residuals
@@ -31,7 +31,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 
 ## Product scope lock (out of MVP / M7)
 
-- No NAT / RAW / Mangle / routing / VRRP / bridge / VLAN **writes** beyond managed filter/onboarding/deploy allowlists.
+- Intentional residual (W7-25 Living Spec lock): No NAT / RAW / Mangle / routing / VRRP / bridge / VLAN **writes** beyond managed filter/onboarding/deploy allowlists.
 - No campaigns, auto-deploy, auto-fix drift, web/mobile UI, multi-tenant, microservices/Redis/K8s, multi-vendor, SIEM/SOAR in Controller.
 - Intentional residual (W7-21 Living Spec lock): `IResponseFeedbackDeliveryPort` defaults to **not configured** until an external analytics complex is wired.
 - **SEC-07…SEC-15 DONE:** Zone/policy (SEC-07), `UpdateConnectionProfileUseCase` + `DeploymentWorkflowUseCases` (SEC-08), `OnboardingWorkflowUseCases` (SEC-09), `ExpireIncidentDenyOverlayBindingUseCase` (SEC-10), `DetectManagedDriftUseCase` + `EmitResponseFeedbackUseCase` store+audit (SEC-11), `CaptureSnapshotUseCase` persist+audit (SEC-12), `UpsertDeviceHashStateUseCase` (SEC-13), `OpenEndpointPresenceUseCase` multi-store writes (SEC-14), and `UpsertRoutingAssuranceStateUseCase` (SEC-15) share `IUnitOfWork` for entity+idempotency+audit co-writes. Intentional residual (W7-20 Living Spec lock): Feedback **delivery** and RouterOS capture remain outside the DB boundary. Intentional residual (W7-17 Living Spec lock): **resolve-only zone updates** (no idempotency/audit triple); Intentional residual (W7-18 Living Spec lock): Start* pre-runtime `AddOperationAsync` stays outside UoW; Intentional residual (W7-19 Living Spec lock): orchestrator-only audit append after nested use cases (e.g. incident overlay deploy) stays outside UoW.

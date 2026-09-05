@@ -90,7 +90,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Lock Desktop zip/tar installer packaging residual Living Spec | Docs / packaging residual | **W7-22 DONE** |
 | Lock SHA256SUMS attestation packaging residual Living Spec | Docs / packaging residual | **W7-23 DONE** |
 | Lock CycloneDX-lite SBOM packaging residual Living Spec | Docs / packaging residual | **W7-24 DONE** |
-| Lock MVP scope-lock no-NAT/RAW writes residual Living Spec | Docs / scope residual | **W7-25 OPEN** |
+| Lock MVP scope-lock no-NAT/RAW writes residual Living Spec | Docs / scope residual | **W7-25 DONE** |
+| Lock MVP scope-lock no-campaigns/auto-deploy residual Living Spec | Docs / scope residual | **W7-26 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -168,7 +169,8 @@ W7-21 Lock IResponseFeedbackDeliveryPort not-configured residual Living Spec **D
 W7-22 Lock Desktop zip/tar installer packaging residual Living Spec **DONE**
 W7-23 Lock SHA256SUMS attestation packaging residual Living Spec **DONE**
 W7-24 Lock CycloneDX-lite SBOM packaging residual Living Spec **DONE**
-W7-25 Lock MVP scope-lock no-NAT/RAW writes residual Living Spec **OPEN**
+W7-25 Lock MVP scope-lock no-NAT/RAW writes residual Living Spec **DONE**
+W7-26 Lock MVP scope-lock no-campaigns/auto-deploy residual Living Spec **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -232,9 +234,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 52 | W7-22 | [#443](https://github.com/sesquicadaver/MTDirector/issues/443) | Lock Desktop zip/tar installer packaging residual Living Spec | **DONE** |
 | 53 | W7-23 | [#445](https://github.com/sesquicadaver/MTDirector/issues/445) | Lock SHA256SUMS attestation packaging residual Living Spec | **DONE** |
 | 54 | W7-24 | [#447](https://github.com/sesquicadaver/MTDirector/issues/447) | Lock CycloneDX-lite SBOM packaging residual Living Spec | **DONE** |
-| 55 | W7-25 | [#449](https://github.com/sesquicadaver/MTDirector/issues/449) | Lock MVP scope-lock no-NAT/RAW writes residual Living Spec | **OPEN** |
+| 55 | W7-25 | [#449](https://github.com/sesquicadaver/MTDirector/issues/449) | Lock MVP scope-lock no-NAT/RAW writes residual Living Spec | **DONE** |
+| 56 | W7-26 | [#451](https://github.com/sesquicadaver/MTDirector/issues/451) | Lock MVP scope-lock no-campaigns/auto-deploy residual Living Spec | **OPEN** |
 
-**§3.C NEXT = W7-25 (#449)**. W7-24 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-26 (#451)**. W7-25 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
