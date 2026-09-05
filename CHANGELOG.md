@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-14** ([#427](https://github.com/sesquicadaver/MTDirector/issues/427)): SECURITY.md documents Information-level mTLS map log `TraceIdentifier=` correlation. Living Spec `SecurityMtlsTraceIdentifierW714LivingSpecTests`. Seeded W7-15 (#429). **§3.C NEXT = W7-15 (#429)**.
 - **W7-13** ([#425](https://github.com/sesquicadaver/MTDirector/issues/425)): mTLS principal-map Information log includes `HttpContext.TraceIdentifier`. Living Spec `MtlsPrincipalMapTraceIdW713LivingSpecTests`. Seeded W7-14 (#427). **§3.C NEXT = W7-14 (#427)**.
 - **W7-12** ([#423](https://github.com/sesquicadaver/MTDirector/issues/423)): Living Spec locks AuthenticationFailed and all non-Connected Desktop status labels without actor suffix. Seeded W7-13 (#425). **§3.C NEXT = W7-13 (#425)**.
 - **W7-11** ([#421](https://github.com/sesquicadaver/MTDirector/issues/421)): SessionFaultInjection timeout/cancel pending clear uses bounded poll (`WaitUntilPendingClearedAsync`). Living Spec `SessionTimeoutPendingClearW711LivingSpecTests`. Seeded W7-12 (#423). **§3.C NEXT = W7-12 (#423)**.
