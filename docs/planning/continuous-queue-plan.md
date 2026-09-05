@@ -74,7 +74,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Map mTLS client cert to HttpContext.User | Controller authn | **W7-06 DONE** |
 | Prefer HttpContext.User over gRPC peer identity | Controller authn | **W7-07 DONE** |
 | Desktop status shows resolved mTLS actor | Desktop UX | **W7-08 DONE** |
-| Production mTLS operator checklist | Ops docs | **W7-09 OPEN** |
+| Production mTLS operator checklist | Ops docs | **W7-09 DONE** |
+| Log redacted client-cert thumbprint on mTLS principal map | Controller observability | **W7-10 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -136,7 +137,8 @@ W7-05 Bind Desktop actor from client cert CN **DONE**
 W7-06 Map mTLS client cert to HttpContext.User **DONE**
 W7-07 Prefer HttpContext.User over gRPC peer identity for actor **DONE**
 W7-08 Desktop status shows resolved mTLS actor **DONE**
-W7-09 Production mTLS operator checklist **OPEN**
+W7-09 Production mTLS operator checklist **DONE**
+W7-10 Log redacted client-cert thumbprint on mTLS principal map **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -184,9 +186,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 36 | W7-06 | [#411](https://github.com/sesquicadaver/MTDirector/issues/411) | Map mTLS client cert to HttpContext.User | **DONE** |
 | 37 | W7-07 | [#413](https://github.com/sesquicadaver/MTDirector/issues/413) | Prefer HttpContext.User over gRPC peer identity for actor | **DONE** |
 | 38 | W7-08 | [#415](https://github.com/sesquicadaver/MTDirector/issues/415) | Desktop status shows resolved mTLS actor | **DONE** |
-| 39 | W7-09 | [#417](https://github.com/sesquicadaver/MTDirector/issues/417) | Production mTLS operator checklist | **OPEN** |
+| 39 | W7-09 | [#417](https://github.com/sesquicadaver/MTDirector/issues/417) | Production mTLS operator checklist | **DONE** |
+| 40 | W7-10 | [#419](https://github.com/sesquicadaver/MTDirector/issues/419) | Log redacted client-cert thumbprint on mTLS principal map | **OPEN** |
 
-**§3.C NEXT = W7-09 (#417)**. W7-08 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-10 (#419)**. W7-09 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

@@ -276,6 +276,18 @@ Issue [#415](https://github.com/sesquicadaver/MTDirector/issues/415) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopConnectionStatusActorW708"`.
 
+
+## Living Specification — Production mTLS operator checklist (W7-09)
+
+Issue [#417](https://github.com/sesquicadaver/MTDirector/issues/417) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Pilot runbook mTLS checklist anchors | `docs/operations/pilot-runbook.md` | `ProductionMtlsChecklistW709LivingSpecTests.Ac1PilotRunbookDocumentsProductionMtlsChecklist` |
+| Controller config documents mTLS keys | `controller-configuration.md` | `Ac1ControllerConfigurationDocumentsMtlsKeys` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductionMtlsChecklistW709"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
