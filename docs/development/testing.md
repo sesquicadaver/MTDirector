@@ -338,6 +338,17 @@ Issue [#425](https://github.com/sesquicadaver/MTDirector/issues/425) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MtlsPrincipalMapTraceIdW713"`.
 
+
+## Living Specification — SECURITY.md TraceIdentifier on mTLS map log (W7-14)
+
+Issue [#427](https://github.com/sesquicadaver/MTDirector/issues/427) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| SECURITY.md documents TraceIdentifier Information log | `SECURITY.md` | `SecurityMtlsTraceIdentifierW714LivingSpecTests.Ac1SecurityMdDocumentsTraceIdentifierOnMtlsMapLog` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~SecurityMtlsTraceIdentifierW714"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
