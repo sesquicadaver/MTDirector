@@ -20,14 +20,14 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 ## Live lab residuals (optional)
 
 - Live CHR matrix is **OFF**. Scripted E2E Living Specs (M6-05…M6-07 + N1-07 + M7.1-11 + M7.2-04 + M7.4-06) are the DoD substitute.
-- Live physical CRS hardware exercise is **OFF**. Scripted CRS fixture + `VrrpCrsE2ELivingSpecTests` AC11 are the DoD substitute. Physical CRS is **ops residual**, not a §3 stop-gate. **§3.C NEXT = W7-24 (#447)** after W7-23.
+- Live physical CRS hardware exercise is **OFF**. Scripted CRS fixture + `VrrpCrsE2ELivingSpecTests` AC11 are the DoD substitute. Physical CRS is **ops residual**, not a §3 stop-gate. **§3.C NEXT = W7-25 (#449)** after W7-24.
 - Golden live CHR hashes remain env-gated until an isolated runner exists.
 
 ## Packaging / signing residuals
 
 - Intentional residual (W7-22 Living Spec lock): Desktop “installer” for MVP is a **zip/tar publish directory** (Avalonia), not MSI/setup.exe.
 - Intentional residual (W7-23 Living Spec lock): Artifact “signing” for MVP is **cleartext `SHA256SUMS` + documented attestation**; cryptographic GPG/Sigstore is a CI signing gate (see [`RELEASE_SIGNING.md`](RELEASE_SIGNING.md)).
-- CycloneDX CLI is optional; SBOM script falls back to CycloneDX-lite metadata + package inventory.
+- Intentional residual (W7-24 Living Spec lock): CycloneDX CLI is optional; SBOM script falls back to CycloneDX-lite metadata + package inventory.
 
 ## Product scope lock (out of MVP / M7)
 

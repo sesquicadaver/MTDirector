@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-24** ([#447](https://github.com/sesquicadaver/MTDirector/issues/447)): Living Spec locks intentional CycloneDX-lite SBOM packaging residual in known-limitations. Seeded W7-25 (#449). **§3.C NEXT = W7-25 (#449)**.
 - **W7-23** ([#445](https://github.com/sesquicadaver/MTDirector/issues/445)): Living Spec locks intentional SHA256SUMS attestation packaging residual in known-limitations. Seeded W7-24 (#447). **§3.C NEXT = W7-24 (#447)**.
 - **W7-22** ([#443](https://github.com/sesquicadaver/MTDirector/issues/443)): Living Spec locks intentional Desktop zip/tar installer packaging residual in known-limitations. Seeded W7-23 (#445). **§3.C NEXT = W7-23 (#445)**.
 - **W7-21** ([#441](https://github.com/sesquicadaver/MTDirector/issues/441)): Living Spec locks intentional `IResponseFeedbackDeliveryPort` not-configured residual in known-limitations. Seeded W7-22 (#443). **§3.C NEXT = W7-22 (#443)**.

@@ -442,6 +442,16 @@ Issue [#445](https://github.com/sesquicadaver/MTDirector/issues/445) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Sha256SumsAttestationResidualW723"`.
 
+## Living Specification — CycloneDX-lite SBOM packaging residual (W7-24)
+
+Issue [#447](https://github.com/sesquicadaver/MTDirector/issues/447) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents CycloneDX-lite SBOM residual | `docs/release/known-limitations.md` | `CycloneDxLiteSbomResidualW724LivingSpecTests.Ac1KnownLimitationsDocumentsCycloneDxLiteSbomResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~CycloneDxLiteSbomResidualW724"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
