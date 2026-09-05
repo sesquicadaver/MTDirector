@@ -81,7 +81,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | mTLS map log includes request TraceIdentifier | Controller observability | **W7-13 DONE** |
 | SECURITY.md documents TraceIdentifier on mTLS map log | Security docs | **W7-14 DONE** |
 | Pilot runbook TraceIdentifier for mTLS Connect correlation | Ops docs | **W7-15 DONE** |
-| controller-configuration.md TraceIdentifier cross-link | Ops docs | **W7-16 OPEN** |
+| controller-configuration.md TraceIdentifier cross-link | Ops docs | **W7-16 DONE** |
+| Lock resolve-only zone UoW residual Living Spec | Docs / SEC residual | **W7-17 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -150,7 +151,8 @@ W7-12 Desktop AuthenticationFailed status Living Spec **DONE**
 W7-13 mTLS map log includes request TraceIdentifier **DONE**
 W7-14 SECURITY.md documents TraceIdentifier on mTLS map log **DONE**
 W7-15 Pilot runbook TraceIdentifier for mTLS Connect correlation **DONE**
-W7-16 controller-configuration.md TraceIdentifier cross-link **OPEN**
+W7-16 controller-configuration.md TraceIdentifier cross-link **DONE**
+W7-17 Lock resolve-only zone UoW residual Living Spec **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -205,9 +207,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 43 | W7-13 | [#425](https://github.com/sesquicadaver/MTDirector/issues/425) | mTLS map log includes request TraceIdentifier | **DONE** |
 | 44 | W7-14 | [#427](https://github.com/sesquicadaver/MTDirector/issues/427) | SECURITY.md documents TraceIdentifier on mTLS map log | **DONE** |
 | 45 | W7-15 | [#429](https://github.com/sesquicadaver/MTDirector/issues/429) | Pilot runbook TraceIdentifier for mTLS Connect correlation | **DONE** |
-| 46 | W7-16 | [#431](https://github.com/sesquicadaver/MTDirector/issues/431) | controller-configuration.md TraceIdentifier cross-link | **OPEN** |
+| 46 | W7-16 | [#431](https://github.com/sesquicadaver/MTDirector/issues/431) | controller-configuration.md TraceIdentifier cross-link | **DONE** |
+| 47 | W7-17 | [#433](https://github.com/sesquicadaver/MTDirector/issues/433) | Lock resolve-only zone UoW residual Living Spec | **OPEN** |
 
-**§3.C NEXT = W7-16 (#431)**. W7-15 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-17 (#433)**. W7-16 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

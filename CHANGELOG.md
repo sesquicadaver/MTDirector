@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-16** ([#431](https://github.com/sesquicadaver/MTDirector/issues/431)): controller-configuration.md cross-links `TraceIdentifier=` mTLS correlation to SECURITY + pilot-runbook. Living Spec `ControllerConfigTraceIdentifierW716LivingSpecTests`. Seeded W7-17 (#433). **§3.C NEXT = W7-17 (#433)**.
 - **W7-15** ([#429](https://github.com/sesquicadaver/MTDirector/issues/429)): pilot-runbook Production mTLS checklist correlates Connect via `TraceIdentifier=`. Living Spec `PilotMtlsTraceIdentifierW715LivingSpecTests`. Seeded W7-16 (#431). **§3.C NEXT = W7-16 (#431)**.
 - **W7-14** ([#427](https://github.com/sesquicadaver/MTDirector/issues/427)): SECURITY.md documents Information-level mTLS map log `TraceIdentifier=` correlation. Living Spec `SecurityMtlsTraceIdentifierW714LivingSpecTests`. Seeded W7-15 (#429). **§3.C NEXT = W7-15 (#429)**.
 - **W7-13** ([#425](https://github.com/sesquicadaver/MTDirector/issues/425)): mTLS principal-map Information log includes `HttpContext.TraceIdentifier`. Living Spec `MtlsPrincipalMapTraceIdW713LivingSpecTests`. Seeded W7-14 (#427). **§3.C NEXT = W7-14 (#427)**.

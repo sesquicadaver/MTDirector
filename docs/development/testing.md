@@ -360,6 +360,17 @@ Issue [#429](https://github.com/sesquicadaver/MTDirector/issues/429) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~PilotMtlsTraceIdentifierW715"`.
 
+
+## Living Specification — controller-configuration TraceIdentifier cross-link (W7-16)
+
+Issue [#431](https://github.com/sesquicadaver/MTDirector/issues/431) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Config doc documents TraceIdentifier= + SECURITY/pilot links | `docs/operations/controller-configuration.md` | `ControllerConfigTraceIdentifierW716LivingSpecTests.Ac1ControllerConfigurationDocumentsTraceIdentifierCorrelation` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ControllerConfigTraceIdentifierW716"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
