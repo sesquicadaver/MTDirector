@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Mfc.Controller.Security;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace Mfc.UnitTests.Controller;
@@ -35,11 +36,13 @@ public sealed class MtlsHttpContextUserW706LivingSpecTests
     {
         using X509Certificate2 cert = CreateSelfSigned("CN=middleware-operator");
         bool nextCalled = false;
-        MtlsClientCertificatePrincipalMiddleware middleware = new(_ =>
-        {
-            nextCalled = true;
-            return Task.CompletedTask;
-        });
+        MtlsClientCertificatePrincipalMiddleware middleware = new(
+            _ =>
+            {
+                nextCalled = true;
+                return Task.CompletedTask;
+            },
+            NullLogger<MtlsClientCertificatePrincipalMiddleware>.Instance);
 
         DefaultHttpContext http = new();
         http.Connection.ClientCertificate = cert;
@@ -64,7 +67,9 @@ public sealed class MtlsHttpContextUserW706LivingSpecTests
         };
         http.Connection.ClientCertificate = cert;
 
-        MtlsClientCertificatePrincipalMiddleware middleware = new(_ => Task.CompletedTask);
+        MtlsClientCertificatePrincipalMiddleware middleware = new(
+            _ => Task.CompletedTask,
+            NullLogger<MtlsClientCertificatePrincipalMiddleware>.Instance);
         await middleware.InvokeAsync(http);
 
         Assert.Equal("existing-operator", http.User.Identity!.Name);

@@ -288,6 +288,19 @@ Issue [#417](https://github.com/sesquicadaver/MTDirector/issues/417) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductionMtlsChecklistW709"`.
 
+
+## Living Specification — mTLS principal redacted log (W7-10)
+
+Issue [#419](https://github.com/sesquicadaver/MTDirector/issues/419) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Thumbprint prefix only | `MtlsClientCertificateIdentityLog` | `MtlsPrincipalRedactedLogW710LivingSpecTests.Ac1FormatRedactedUsesThumbprintPrefixOnly` |
+| Middleware logs on map | `MtlsClientCertificatePrincipalMiddleware` | `Ac1MiddlewareLogsRedactedIdentityOnPrincipalMap` |
+| No log when User already set | same | `Ac1MiddlewareDoesNotLogWhenUserAlreadyAuthenticated` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MtlsPrincipalRedactedLogW710"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:

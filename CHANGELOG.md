@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-10** ([#419](https://github.com/sesquicadaver/MTDirector/issues/419)): mTLS principal map logs redacted CN + thumbprint prefix (`MtlsClientCertificateIdentityLog`). Living Spec `MtlsPrincipalRedactedLogW710LivingSpecTests`. Seeded W7-11 (#421). **§3.C NEXT = W7-11 (#421)**.
 - **W7-09** ([#417](https://github.com/sesquicadaver/MTDirector/issues/417)): Production mTLS operator checklist in `pilot-runbook.md`. Living Spec `ProductionMtlsChecklistW709LivingSpecTests`. Seeded W7-10 (#419). **§3.C NEXT = W7-10 (#419)**.
 - **W7-08** ([#415](https://github.com/sesquicadaver/MTDirector/issues/415)): Desktop Connected status shows resolved gRPC actor (`DesktopConnectionStatusText` + `DesktopGrpcActorResolver`). Living Spec `DesktopConnectionStatusActorW708LivingSpecTests`. Seeded W7-09 (#417). **§3.C NEXT = W7-09 (#417)**.
 - **W7-07** ([#413](https://github.com/sesquicadaver/MTDirector/issues/413)): document and Living-Spec actor principal precedence — authenticated `HttpContext.User` over connection cert / gRPC peer identity. Seeded W7-08 (#415). **§3.C NEXT = W7-08 (#415)**.
