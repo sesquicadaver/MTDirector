@@ -402,6 +402,16 @@ Issue [#437](https://github.com/sesquicadaver/MTDirector/issues/437) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~OrchestratorOnlyAuditResidualW719"`.
 
+## Living Specification — Feedback delivery / RouterOS capture outside-DB residual (W7-20)
+
+Issue [#439](https://github.com/sesquicadaver/MTDirector/issues/439) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents Feedback delivery / RouterOS capture residual | `docs/release/known-limitations.md` | `FeedbackDeliveryOutsideDbResidualW720LivingSpecTests.Ac1KnownLimitationsDocumentsFeedbackDeliveryOutsideDbResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~FeedbackDeliveryOutsideDbResidualW720"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
