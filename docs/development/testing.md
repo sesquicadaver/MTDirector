@@ -492,6 +492,16 @@ Issue [#455](https://github.com/sesquicadaver/MTDirector/issues/455) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~GoldenChrHashesEnvGatedResidualW728"`.
 
+## Living Specification — Live physical CRS hardware OFF ops residual (W7-29)
+
+Issue [#457](https://github.com/sesquicadaver/MTDirector/issues/457) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents Live physical CRS OFF ops residual | `docs/release/known-limitations.md` | `LivePhysicalCrsOffOpsResidualW729LivingSpecTests.Ac1KnownLimitationsDocumentsLivePhysicalCrsOffOpsResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~LivePhysicalCrsOffOpsResidualW729"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
