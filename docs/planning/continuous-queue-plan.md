@@ -87,7 +87,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Lock orchestrator-only audit residual Living Spec | Docs / SEC residual | **W7-19 DONE** |
 | Lock Feedback delivery / RouterOS capture outside-DB residual Living Spec | Docs / SEC residual | **W7-20 DONE** |
 | Lock IResponseFeedbackDeliveryPort not-configured residual Living Spec | Docs / SEC residual | **W7-21 DONE** |
-| Lock Desktop zip/tar installer packaging residual Living Spec | Docs / packaging residual | **W7-22 OPEN** |
+| Lock Desktop zip/tar installer packaging residual Living Spec | Docs / packaging residual | **W7-22 DONE** |
+| Lock SHA256SUMS attestation packaging residual Living Spec | Docs / packaging residual | **W7-23 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -162,7 +163,8 @@ W7-18 Lock Start* AddOperationAsync outside-UoW residual Living Spec **DONE**
 W7-19 Lock orchestrator-only audit residual Living Spec **DONE**
 W7-20 Lock Feedback delivery / RouterOS capture outside-DB residual Living Spec **DONE**
 W7-21 Lock IResponseFeedbackDeliveryPort not-configured residual Living Spec **DONE**
-W7-22 Lock Desktop zip/tar installer packaging residual Living Spec **OPEN**
+W7-22 Lock Desktop zip/tar installer packaging residual Living Spec **DONE**
+W7-23 Lock SHA256SUMS attestation packaging residual Living Spec **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -223,9 +225,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 49 | W7-19 | [#437](https://github.com/sesquicadaver/MTDirector/issues/437) | Lock orchestrator-only audit residual Living Spec | **DONE** |
 | 50 | W7-20 | [#439](https://github.com/sesquicadaver/MTDirector/issues/439) | Lock Feedback delivery / RouterOS capture outside-DB residual Living Spec | **DONE** |
 | 51 | W7-21 | [#441](https://github.com/sesquicadaver/MTDirector/issues/441) | Lock IResponseFeedbackDeliveryPort not-configured residual Living Spec | **DONE** |
-| 52 | W7-22 | [#443](https://github.com/sesquicadaver/MTDirector/issues/443) | Lock Desktop zip/tar installer packaging residual Living Spec | **OPEN** |
+| 52 | W7-22 | [#443](https://github.com/sesquicadaver/MTDirector/issues/443) | Lock Desktop zip/tar installer packaging residual Living Spec | **DONE** |
+| 53 | W7-23 | [#445](https://github.com/sesquicadaver/MTDirector/issues/445) | Lock SHA256SUMS attestation packaging residual Living Spec | **OPEN** |
 
-**§3.C NEXT = W7-22 (#443)**. W7-21 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-23 (#445)**. W7-22 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
