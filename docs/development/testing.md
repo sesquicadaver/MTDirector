@@ -301,6 +301,18 @@ Issue [#419](https://github.com/sesquicadaver/MTDirector/issues/419) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MtlsPrincipalRedactedLogW710"`.
 
+
+## Living Specification — SessionFaultInjection pending clear (W7-11)
+
+Issue [#421](https://github.com/sesquicadaver/MTDirector/issues/421) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Timeout waits until PendingCount=0 | `SessionFaultInjectionMatrixTests` / poll helper | `SessionTimeoutPendingClearW711LivingSpecTests.Ac1CommandTimeoutWaitsUntilPendingClearedWithoutFixedSleepOnly` |
+| Matrix test dropped fixed 50ms sleep | `SessionFaultInjectionMatrixTests.cs` | `Ac1MatrixTestUsesBoundedPendingPollHelper` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~SessionTimeoutPendingClearW711"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
