@@ -326,6 +326,18 @@ Issue [#423](https://github.com/sesquicadaver/MTDirector/issues/423) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopConnectionStatusAuthFailedW712"`.
 
+
+## Living Specification — mTLS principal map TraceIdentifier (W7-13)
+
+Issue [#425](https://github.com/sesquicadaver/MTDirector/issues/425) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Log includes TraceIdentifier | `MtlsClientCertificatePrincipalMiddleware` | `MtlsPrincipalMapTraceIdW713LivingSpecTests.Ac1MiddlewareLogIncludesTraceIdentifier` |
+| Still no full thumbprint | same | `Ac1MiddlewareStillOmitsFullThumbprintWithTraceId` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MtlsPrincipalMapTraceIdW713"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:

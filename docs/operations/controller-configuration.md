@@ -73,7 +73,7 @@ When Controller HTTPS uses `AllowCertificate` / `RequireCertificate`, Desktop ca
 
 When Connected, the Desktop shell status line shows the same resolved actor (`Connected · actor: …`) via `DesktopConnectionStatusText` (W7-08).
 
-When `ClientCertificateMode` is `AllowCertificate` / `RequireCertificate`, Controller also installs `MtlsClientCertificatePrincipalMiddleware` so an accepted client certificate becomes authenticated `HttpContext.User` (CN as Name) for actor resolution (W7-06). Actor binding then prefers that User over connection cert CN / gRPC peer identity (W7-07; `GrpcRequestActorResolver`). Successful maps log CN + truncated thumbprint only (W7-10; no PEM).
+When `ClientCertificateMode` is `AllowCertificate` / `RequireCertificate`, Controller also installs `MtlsClientCertificatePrincipalMiddleware` so an accepted client certificate becomes authenticated `HttpContext.User` (CN as Name) for actor resolution (W7-06). Actor binding then prefers that User over connection cert CN / gRPC peer identity (W7-07; `GrpcRequestActorResolver`). Successful maps log CN + truncated thumbprint only (W7-10; no PEM) plus `TraceIdentifier` (W7-13).
 
 ## Examples
 
