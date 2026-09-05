@@ -32,6 +32,7 @@ You should receive an acknowledgement within a reasonable time. We will coordina
 - **W7-05:** Desktop `x-mfc-actor` is derived from the client certificate CN when `Desktop:ClientCertificatePath` is set (`DesktopGrpcActorResolver`); free-form `Desktop:Actor` remains the fallback without a cert.
 - **W7-06:** when ClientCertificateMode allows/requires client certs, Controller middleware maps the connection client certificate to an authenticated `HttpContext.User` (CN / thumbprint claims) so actor resolution can use the ASP.NET principal.
 - **W7-07:** actor principal precedence is locked: authenticated `HttpContext.User` → connection client cert CN → gRPC peer identity → Development metadata (`GrpcRequestActorResolver`).
+- **W7-08:** Desktop Connected chrome shows the same actor string that will be sent as `x-mfc-actor` (`DesktopConnectionStatusText` / `DesktopGrpcActorResolver`).
 - WriteEnabled production DI loads staging drafts from `IFilterArtifactStore` (`FilterArtifactStoreDeploymentArtifactMaterializer`); observed managed `resource_hash` is measured from live RouterOS state (SEC-02), not echoed from the plan.
 - Audit `EventHash` chains predecessor **bytes** (not length) plus event id; appends use Serializable + `pg_advisory_xact_lock` and a unique index on `PreviousEventHash` (SEC-03 / `AuditEventHashing`).
 

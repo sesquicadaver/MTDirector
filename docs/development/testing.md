@@ -263,6 +263,19 @@ Issue [#413](https://github.com/sesquicadaver/MTDirector/issues/413) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ActorPrincipalPrecedenceW707"`.
 
+## Living Specification — Desktop Connected status shows resolved actor (W7-08)
+
+Issue [#415](https://github.com/sesquicadaver/MTDirector/issues/415) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Connected includes configured Actor | `DesktopConnectionStatusText` | `DesktopConnectionStatusActorW708LivingSpecTests.Ac1ConnectedStatusIncludesConfiguredActor` |
+| Connected includes cert CN | same + `DesktopGrpcActorResolver` | `Ac1ConnectedStatusIncludesClientCertificateCn` |
+| Non-connected omits actor | same | `Ac1DisconnectedStatusOmitsActor` |
+| Shell uses formatter + Status binding | `ShellViewModel` / `MainWindow.axaml` | `Ac1ShellUsesFormatterAndStatusBinding` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopConnectionStatusActorW708"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:

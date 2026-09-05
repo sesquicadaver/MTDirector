@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-08** ([#415](https://github.com/sesquicadaver/MTDirector/issues/415)): Desktop Connected status shows resolved gRPC actor (`DesktopConnectionStatusText` + `DesktopGrpcActorResolver`). Living Spec `DesktopConnectionStatusActorW708LivingSpecTests`. Seeded W7-09 (#417). **§3.C NEXT = W7-09 (#417)**.
 - **W7-07** ([#413](https://github.com/sesquicadaver/MTDirector/issues/413)): document and Living-Spec actor principal precedence — authenticated `HttpContext.User` over connection cert / gRPC peer identity. Seeded W7-08 (#415). **§3.C NEXT = W7-08 (#415)**.
 - **W7-06** ([#411](https://github.com/sesquicadaver/MTDirector/issues/411)): mTLS client certificate mapped to authenticated `HttpContext.User` (`MtlsClientCertificatePrincipalMiddleware`) when ClientCertificateMode allows/requires certs. Living Spec `MtlsHttpContextUserW706LivingSpecTests`. Seeded W7-07 (#413). **§3.C NEXT = W7-07 (#413)**.
 - **W7-05** ([#409](https://github.com/sesquicadaver/MTDirector/issues/409)): Desktop `x-mfc-actor` from client certificate CN when PFX configured (`DesktopGrpcActorResolver`); `Desktop:Actor` is fallback without cert. Living Spec `DesktopGrpcActorFromCertCnW705LivingSpecTests`. Seeded W7-06 (#411). **§3.C NEXT = W7-06 (#411)**.

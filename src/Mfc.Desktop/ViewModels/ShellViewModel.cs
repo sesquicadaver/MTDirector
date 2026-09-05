@@ -190,15 +190,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
     {
         ConnectionState = _connection.State;
         ErrorText = _connection.LastError;
-        StatusText = ConnectionState switch
-        {
-            ControllerConnectionState.Connecting => "Connecting",
-            ControllerConnectionState.Connected => "Connected",
-            ControllerConnectionState.Disconnected => "Disconnected",
-            ControllerConnectionState.AuthenticationFailed => "AuthenticationFailed",
-            ControllerConnectionState.TlsError => "TlsError",
-            _ => ConnectionState.ToString(),
-        };
+        StatusText = DesktopConnectionStatusText.Format(ConnectionState, _options);
         ConnectCommand.NotifyCanExecuteChanged();
         DisconnectCommand.NotifyCanExecuteChanged();
     }
