@@ -482,6 +482,16 @@ Issue [#453](https://github.com/sesquicadaver/MTDirector/issues/453) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~LiveChrMatrixOffResidualW727"`.
 
+## Living Specification — Golden live CHR hashes env-gated residual (W7-28)
+
+Issue [#455](https://github.com/sesquicadaver/MTDirector/issues/455) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents Golden live CHR hashes env-gated residual | `docs/release/known-limitations.md` | `GoldenChrHashesEnvGatedResidualW728LivingSpecTests.Ac1KnownLimitationsDocumentsGoldenChrHashesEnvGatedResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~GoldenChrHashesEnvGatedResidualW728"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
