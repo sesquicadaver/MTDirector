@@ -20,7 +20,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 ## Live lab residuals (optional)
 
 - Intentional residual (W7-27 Living Spec lock): Live CHR matrix is **OFF**. Scripted E2E Living Specs (M6-05…M6-07 + N1-07 + M7.1-11 + M7.2-04 + M7.4-06) are the DoD substitute.
-- Intentional residual (W7-29 Living Spec lock): Live physical CRS hardware exercise is **OFF**. Scripted CRS fixture + `VrrpCrsE2ELivingSpecTests` AC11 are the DoD substitute. Physical CRS is **ops residual**, not a §3 stop-gate. **§3.C NEXT = W7-30 (#459)** after W7-29.
+- Intentional residual (W7-29 Living Spec lock): Live physical CRS hardware exercise is **OFF**. Scripted CRS fixture + `VrrpCrsE2ELivingSpecTests` AC11 are the DoD substitute. Physical CRS is **ops residual**, not a §3 stop-gate.
 - Intentional residual (W7-28 Living Spec lock): Golden live CHR hashes remain env-gated until an isolated runner exists.
 
 ## Packaging / signing residuals
@@ -38,6 +38,6 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 
 ## Operational notes
 
-- Controller does not migrate on normal startup; use `--migrate-only` or the EF migrations bundle.
+- Intentional residual (W7-30 Living Spec lock): Controller does not migrate on normal startup; use `--migrate-only` or the EF migrations bundle. **§3.C NEXT = W7-31 (#460)** after W7-30.
 - Development master-key provider is forbidden outside Development.
 - GitHub-hosted CI may be billing-limited; local gates in [`release-gates.md`](release-gates.md) remain authoritative for acceptance.

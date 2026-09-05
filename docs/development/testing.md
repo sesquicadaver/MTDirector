@@ -502,6 +502,16 @@ Issue [#457](https://github.com/sesquicadaver/MTDirector/issues/457) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~LivePhysicalCrsOffOpsResidualW729"`.
 
+## Living Specification — Controller migrate-only startup residual (W7-30)
+
+Issue [#459](https://github.com/sesquicadaver/MTDirector/issues/459) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents Controller migrate-only startup residual | `docs/release/known-limitations.md` | `ControllerMigrateOnlyStartupResidualW730LivingSpecTests.Ac1KnownLimitationsDocumentsControllerMigrateOnlyStartupResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ControllerMigrateOnlyStartupResidualW730"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
