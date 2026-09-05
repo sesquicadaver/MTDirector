@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-12** ([#423](https://github.com/sesquicadaver/MTDirector/issues/423)): Living Spec locks AuthenticationFailed and all non-Connected Desktop status labels without actor suffix. Seeded W7-13 (#425). **§3.C NEXT = W7-13 (#425)**.
 - **W7-11** ([#421](https://github.com/sesquicadaver/MTDirector/issues/421)): SessionFaultInjection timeout/cancel pending clear uses bounded poll (`WaitUntilPendingClearedAsync`). Living Spec `SessionTimeoutPendingClearW711LivingSpecTests`. Seeded W7-12 (#423). **§3.C NEXT = W7-12 (#423)**.
 - **W7-10** ([#419](https://github.com/sesquicadaver/MTDirector/issues/419)): mTLS principal map logs redacted CN + thumbprint prefix (`MtlsClientCertificateIdentityLog`). Living Spec `MtlsPrincipalRedactedLogW710LivingSpecTests`. Seeded W7-11 (#421). **§3.C NEXT = W7-11 (#421)**.
 - **W7-09** ([#417](https://github.com/sesquicadaver/MTDirector/issues/417)): Production mTLS operator checklist in `pilot-runbook.md`. Living Spec `ProductionMtlsChecklistW709LivingSpecTests`. Seeded W7-10 (#419). **§3.C NEXT = W7-10 (#419)**.

@@ -2,7 +2,7 @@
 
 **Release:** `v0.2.0` (2026-08-24) — MVP + Post-MVP M7 CLOSED.  
 **Pilot:** P2 read + write path CLOSED — [`operations/pilot-runbook.md`](operations/pilot-runbook.md).  
-**Next delivery (§3):** **§3.C NEXT = W7-12 (#423)** — W7-11 ([#421](https://github.com/sesquicadaver/MTDirector/issues/421)) **DONE**. CRS/physical lab runner stays ops.  
+**Next delivery (§3):** **§3.C NEXT = W7-13 (#425)** — W7-12 ([#423](https://github.com/sesquicadaver/MTDirector/issues/423)) **DONE**. CRS/physical lab runner stays ops.  
 **Alignment P0–P2:** W1–W4 / W2.1–W2.2 **DONE** (`877a529`).
 
 ## Planning and tracking

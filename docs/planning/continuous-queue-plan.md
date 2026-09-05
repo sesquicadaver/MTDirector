@@ -77,7 +77,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Production mTLS operator checklist | Ops docs | **W7-09 DONE** |
 | Log redacted client-cert thumbprint on mTLS principal map | Controller observability | **W7-10 DONE** |
 | Harden SessionFaultInjection timeout pending-clear | RouterOS session tests | **W7-11 DONE** |
-| Desktop AuthenticationFailed status Living Spec | Desktop UX tests | **W7-12 OPEN** |
+| Desktop AuthenticationFailed status Living Spec | Desktop UX tests | **W7-12 DONE** |
+| mTLS map log includes request TraceIdentifier | Controller observability | **W7-13 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -142,7 +143,8 @@ W7-08 Desktop status shows resolved mTLS actor **DONE**
 W7-09 Production mTLS operator checklist **DONE**
 W7-10 Log redacted client-cert thumbprint on mTLS principal map **DONE**
 W7-11 Harden SessionFaultInjection timeout pending-clear **DONE**
-W7-12 Desktop AuthenticationFailed status Living Spec **OPEN**
+W7-12 Desktop AuthenticationFailed status Living Spec **DONE**
+W7-13 mTLS map log includes request TraceIdentifier **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -193,9 +195,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 39 | W7-09 | [#417](https://github.com/sesquicadaver/MTDirector/issues/417) | Production mTLS operator checklist | **DONE** |
 | 40 | W7-10 | [#419](https://github.com/sesquicadaver/MTDirector/issues/419) | Log redacted client-cert thumbprint on mTLS principal map | **DONE** |
 | 41 | W7-11 | [#421](https://github.com/sesquicadaver/MTDirector/issues/421) | Harden SessionFaultInjection timeout pending-clear assertion | **DONE** |
-| 42 | W7-12 | [#423](https://github.com/sesquicadaver/MTDirector/issues/423) | Desktop status Living Spec covers AuthenticationFailed | **OPEN** |
+| 42 | W7-12 | [#423](https://github.com/sesquicadaver/MTDirector/issues/423) | Desktop status Living Spec covers AuthenticationFailed | **DONE** |
+| 43 | W7-13 | [#425](https://github.com/sesquicadaver/MTDirector/issues/425) | mTLS map log includes request TraceIdentifier | **OPEN** |
 
-**§3.C NEXT = W7-12 (#423)**. W7-11 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-13 (#425)**. W7-12 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
