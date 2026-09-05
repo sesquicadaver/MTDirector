@@ -392,6 +392,16 @@ Issue [#435](https://github.com/sesquicadaver/MTDirector/issues/435) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~StartAddOperationOutsideUowResidualW718"`.
 
+## Living Specification — Orchestrator-only audit residual (W7-19)
+
+Issue [#437](https://github.com/sesquicadaver/MTDirector/issues/437) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents orchestrator-only audit residual | `docs/release/known-limitations.md` | `OrchestratorOnlyAuditResidualW719LivingSpecTests.Ac1KnownLimitationsDocumentsOrchestratorOnlyAuditResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~OrchestratorOnlyAuditResidualW719"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
