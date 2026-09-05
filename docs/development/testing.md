@@ -382,6 +382,16 @@ Issue [#433](https://github.com/sesquicadaver/MTDirector/issues/433) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ResolveOnlyZoneUowResidualW717"`.
 
+## Living Specification — Start* AddOperationAsync outside-UoW residual (W7-18)
+
+Issue [#435](https://github.com/sesquicadaver/MTDirector/issues/435) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents Start* AddOperationAsync residual | `docs/release/known-limitations.md` | `StartAddOperationOutsideUowResidualW718LivingSpecTests.Ac1KnownLimitationsDocumentsStartAddOperationOutsideUowResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~StartAddOperationOutsideUowResidualW718"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
