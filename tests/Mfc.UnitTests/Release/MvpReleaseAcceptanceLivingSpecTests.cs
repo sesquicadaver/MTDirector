@@ -55,8 +55,8 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         Assert.Contains("M7.2 CLOSED", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.3 CLOSED", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.4 CLOSED", roadmap, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-06 (#411)", roadmap, StringComparison.Ordinal);
-        Assert.Contains("W7-05", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-07 (#413)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("W7-06", roadmap, StringComparison.Ordinal);
         Assert.Contains("SEC-06", roadmap, StringComparison.Ordinal);
         Assert.Contains("SEC-11", roadmap, StringComparison.Ordinal);
         Assert.Contains("SEC-12", roadmap, StringComparison.Ordinal);
