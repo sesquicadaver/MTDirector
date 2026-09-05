@@ -20,7 +20,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 ## Live lab residuals (optional)
 
 - Live CHR matrix is **OFF**. Scripted E2E Living Specs (M6-05…M6-07 + N1-07 + M7.1-11 + M7.2-04 + M7.4-06) are the DoD substitute.
-- Live physical CRS hardware exercise is **OFF**. Scripted CRS fixture + `VrrpCrsE2ELivingSpecTests` AC11 are the DoD substitute. Physical CRS is **ops residual**, not a §3 stop-gate. **§3.C NEXT = W7-08 (#415)** after W7-07.
+- Live physical CRS hardware exercise is **OFF**. Scripted CRS fixture + `VrrpCrsE2ELivingSpecTests` AC11 are the DoD substitute. Physical CRS is **ops residual**, not a §3 stop-gate. **§3.C NEXT = W7-09 (#417)** after W7-08.
 - Golden live CHR hashes remain env-gated until an isolated runner exists.
 
 ## Packaging / signing residuals
