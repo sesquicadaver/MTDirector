@@ -224,6 +224,19 @@ Issue [#406](https://github.com/sesquicadaver/MTDirector/issues/406) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~TrustedCaClientCertificateW704"`.
 
+## Living Specification — Desktop actor from client cert CN (W7-05)
+
+Issue [#409](https://github.com/sesquicadaver/MTDirector/issues/409) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| No cert → configured Actor | `DesktopGrpcActorResolver` | `DesktopGrpcActorFromCertCnW705LivingSpecTests.Ac1UsesConfiguredActorWhenNoClientCertificate` |
+| No cert / empty Actor → `desktop` | same | `Ac1DefaultsToDesktopWhenActorMissingAndNoCert` |
+| Cert CN preferred over Actor | same | `Ac1PrefersClientCertificateCnOverConfiguredActor` |
+| Missing PFX fail-closed | same | `Ac1MissingClientCertificateFileFailsClosed` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopGrpcActorFromCertCnW705"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:

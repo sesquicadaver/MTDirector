@@ -39,6 +39,5 @@ public sealed class GrpcRoutingAssuranceServiceClient : IRoutingAssuranceService
         return new RoutingAssuranceService.RoutingAssuranceServiceClient(channel);
     }
 
-    private Metadata ActorHeaders()
-        => new() { { "x-mfc-actor", string.IsNullOrWhiteSpace(_options.Actor) ? "desktop" : _options.Actor } };
+    private Metadata ActorHeaders() => DesktopGrpcActorResolver.CreateHeaders(_options);
 }
