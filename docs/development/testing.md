@@ -250,6 +250,19 @@ Issue [#411](https://github.com/sesquicadaver/MTDirector/issues/411) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MtlsHttpContextUserW706"`.
 
+## Living Specification — Prefer HttpContext.User over peer identity (W7-07)
+
+Issue [#413](https://github.com/sesquicadaver/MTDirector/issues/413) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| User wins over different peer identity | `GrpcRequestActorResolver` | `ActorPrincipalPrecedenceW707LivingSpecTests.Ac1AuthenticatedUserWinsOverDifferentPeerIdentity` |
+| User wins over connection cert CN | same | `Ac1AuthenticatedUserWinsOverConnectionClientCertificate` |
+| Cert used when User anonymous | same | `Ac1ClientCertificateUsedWhenUserNotAuthenticated` |
+| Peer identity when User/cert absent | same | `Ac1PeerIdentityUsedWhenUserAndCertAbsent` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ActorPrincipalPrecedenceW707"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
