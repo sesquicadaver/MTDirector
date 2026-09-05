@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.Jobs;
 using Mfc.Application.Abstractions.Persistence;
@@ -21,8 +22,10 @@ using Mfc.Controller.Authorization;
 using Mfc.Controller.Configuration;
 using Mfc.Controller.Grpc;
 using Mfc.Controller.Jobs;
+using Mfc.Controller.Security;
 using Mfc.Infrastructure.Persistence;
 using Mfc.Infrastructure.Persistence.Logging;
+using Mfc.Infrastructure.RouterOs;
 using Mfc.Infrastructure.Security;
 using Mfc.RouterOs.DependencyInjection;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -165,9 +168,31 @@ public static class Program
 
             ClientCertificateMode clientCertificateMode =
                 GrpcClientCertificateModeParser.Parse(options.Grpc.ClientCertificateMode);
+            IReadOnlyList<X509Certificate2>? mtlsTrustedRoots = null;
+            X509RevocationMode mtlsRevocationMode = X509RevocationMode.Online;
+            if (GrpcClientCertificateModeParser.RequestsOrAllowsClientCertificate(clientCertificateMode))
+            {
+                mtlsTrustedRoots = LoadMtlsTrustedRoots(options.Security.TrustedCa);
+                mtlsRevocationMode = TrustedCaRevocationModes.Parse(options.Security.TrustedCa.RevocationMode);
+            }
+
             kestrel.ConfigureHttpsDefaults(https =>
             {
                 https.ClientCertificateMode = clientCertificateMode;
+                if (mtlsTrustedRoots is not null)
+                {
+                    IReadOnlyList<X509Certificate2> roots = mtlsTrustedRoots;
+                    X509RevocationMode revocation = mtlsRevocationMode;
+                    ClientCertificateMode mode = clientCertificateMode;
+                    https.ClientCertificateValidation = (certificate, chain, errors) =>
+                        TrustedCaClientCertificateValidator.Validate(
+                            certificate,
+                            chain,
+                            errors,
+                            mode,
+                            roots,
+                            revocation);
+                }
             });
         });
 
@@ -371,5 +396,31 @@ public static class Program
         return Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
             ?? Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")
             ?? Environments.Production;
+    }
+
+    /// <summary>
+    /// Loads TrustedCa roots for inbound mTLS (W7-04). Fail-closed when profile material is missing.
+    /// </summary>
+    private static IReadOnlyList<X509Certificate2> LoadMtlsTrustedRoots(TrustedCaHostOptions trustedCa)
+    {
+        string profileRef = trustedCa.ClientCaProfileRef?.Trim()
+            ?? throw new InvalidOperationException("Mfc:Security:TrustedCa:ClientCaProfileRef is required for mTLS.");
+
+        DirectoryRouterOsTrustedCaStore store = new(new TrustedCaStoreOptions
+        {
+            ProfilesDirectory = trustedCa.ProfilesDirectory,
+            RevocationMode = trustedCa.RevocationMode,
+            ClientCaProfileRef = profileRef,
+        });
+
+        IReadOnlyList<byte[]> der = store.GetCertificateDerBytes(profileRef);
+        IReadOnlyList<X509Certificate2> roots = TrustedCaClientCertificateValidator.LoadTrustedRoots(der);
+        if (roots.Count == 0)
+        {
+            throw new InvalidOperationException(
+                $"mTLS TrustedCa profile '{profileRef}' has no certificate material under ProfilesDirectory. Fail-closed.");
+        }
+
+        return roots;
     }
 }

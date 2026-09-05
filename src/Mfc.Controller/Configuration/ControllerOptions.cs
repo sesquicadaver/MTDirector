@@ -73,6 +73,12 @@ public sealed class TrustedCaHostOptions
 
     /// <summary>Online (default), Offline, or NoCheck. Production should keep Online/Offline with CRL/OCSP material.</summary>
     public string RevocationMode { get; init; } = "Online";
+
+    /// <summary>
+    /// Profile subdirectory for inbound mTLS client-certificate trust (W7-04).
+    /// Required when <see cref="GrpcHostOptions.ClientCertificateMode"/> is AllowCertificate or RequireCertificate.
+    /// </summary>
+    public string? ClientCaProfileRef { get; init; }
 }
 
 public sealed class AuthenticationHostOptions

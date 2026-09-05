@@ -112,6 +112,23 @@ public static class ControllerOptionsValidator
             throw new InvalidOperationException(
                 "Mfc:Grpc:ClientCertificateMode other than NoCertificate requires an https:// ListenAddress.");
         }
+
+        if (GrpcClientCertificateModeParser.RequestsOrAllowsClientCertificate(clientCertMode))
+        {
+            if (string.IsNullOrWhiteSpace(options.Security.TrustedCa.ProfilesDirectory))
+            {
+                throw new InvalidOperationException(
+                    "Mfc:Security:TrustedCa:ProfilesDirectory is required when ClientCertificateMode allows or requires client certificates.");
+            }
+
+            if (string.IsNullOrWhiteSpace(options.Security.TrustedCa.ClientCaProfileRef))
+            {
+                throw new InvalidOperationException(
+                    "Mfc:Security:TrustedCa:ClientCaProfileRef is required when ClientCertificateMode allows or requires client certificates.");
+            }
+
+            ValidateClientCaProfileRef(options.Security.TrustedCa.ClientCaProfileRef);
+        }
     }
 
     public static bool IsLoopback(Uri listenUri)
@@ -127,6 +144,24 @@ public static class ControllerOptionsValidator
         }
 
         return false;
+    }
+
+    private static void ValidateClientCaProfileRef(string? profileRef)
+    {
+        string key = profileRef?.Trim() ?? string.Empty;
+        if (key.Length == 0)
+        {
+            return;
+        }
+
+        if (key.Contains("..", StringComparison.Ordinal)
+            || key.Contains('/', StringComparison.Ordinal)
+            || key.Contains('\\', StringComparison.Ordinal)
+            || Path.IsPathRooted(key))
+        {
+            throw new InvalidOperationException(
+                $"Invalid Mfc:Security:TrustedCa:ClientCaProfileRef '{profileRef}'.");
+        }
     }
 
     private static void ValidateTrustedCa(TrustedCaHostOptions trustedCa)
@@ -151,6 +186,11 @@ public static class ControllerOptionsValidator
         {
             throw new InvalidOperationException(
                 "Mfc:Security:TrustedCa:ProfilesDirectory must be an absolute path when set.");
+        }
+
+        if (!string.IsNullOrWhiteSpace(trustedCa.ClientCaProfileRef))
+        {
+            ValidateClientCaProfileRef(trustedCa.ClientCaProfileRef);
         }
     }
 
