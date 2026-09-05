@@ -412,6 +412,16 @@ Issue [#439](https://github.com/sesquicadaver/MTDirector/issues/439) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~FeedbackDeliveryOutsideDbResidualW720"`.
 
+## Living Specification — IResponseFeedbackDeliveryPort not-configured residual (W7-21)
+
+Issue [#441](https://github.com/sesquicadaver/MTDirector/issues/441) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents IResponseFeedbackDeliveryPort not-configured residual | `docs/release/known-limitations.md` | `FeedbackDeliveryPortNotConfiguredResidualW721LivingSpecTests.Ac1KnownLimitationsDocumentsFeedbackDeliveryPortNotConfiguredResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~FeedbackDeliveryPortNotConfiguredResidualW721"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
