@@ -87,6 +87,7 @@ Use when Desktop→Controller identity must be certificate-bound (not Developmen
 2. **Client PFX** — `Desktop:ClientCertificatePath` (+ optional `Desktop:ClientCertificatePassword`) presents a cert issued under the TrustedCa client profile.
 3. **Actor chrome** — after Connect, status shows `Connected · actor: <CN>` (same string as `x-mfc-actor` via `DesktopGrpcActorResolver` / W7-08). Without a PFX, actor falls back to `Desktop:Actor`.
 4. **Verify** — Connect succeeds; AuthenticationFailed / TlsError must not appear when trust material is correct.
+5. **Correlate logs (W7-15)** — on Controller, search Information logs for `TraceIdentifier=` on the mTLS principal-map line (redacted CN + thumbprint prefix). Do **not** expect PEM or full thumbprint in logs ([`SECURITY.md`](../../SECURITY.md)).
 
 ### Fail-closed checks
 
@@ -111,4 +112,4 @@ No database migration rollback required for either gate.
 - [`known-limitations.md`](../release/known-limitations.md) — lab residuals
 - [`../release/readiness.md`](../release/readiness.md) — readiness baseline
 - [`ROADMAP.md`](../../ROADMAP.md) §3.B7 — P2 write-path queue (**CLOSED** / empty); §3.C W7 mTLS
-- Living Specs: `PilotReadinessLivingSpecTests` (read), `WritePathReadinessLivingSpecTests` (DI gate), `WritePathPilotLivingSpecTests` (pilot), `ProductionMtlsChecklistW709LivingSpecTests` (mTLS), `AddRouterWizardViewModelTests` / Desktop AC#2b
+- Living Specs: `PilotReadinessLivingSpecTests` (read), `WritePathReadinessLivingSpecTests` (DI gate), `WritePathPilotLivingSpecTests` (pilot), `ProductionMtlsChecklistW709LivingSpecTests` (mTLS), `PilotMtlsTraceIdentifierW715LivingSpecTests` (TraceIdentifier), `AddRouterWizardViewModelTests` / Desktop AC#2b
