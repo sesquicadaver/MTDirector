@@ -472,6 +472,16 @@ Issue [#451](https://github.com/sesquicadaver/MTDirector/issues/451) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MvpNoCampaignsAutoDeployResidualW726"`.
 
+## Living Specification — Live CHR matrix OFF residual (W7-27)
+
+Issue [#453](https://github.com/sesquicadaver/MTDirector/issues/453) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents Live CHR matrix OFF residual | `docs/release/known-limitations.md` | `LiveChrMatrixOffResidualW727LivingSpecTests.Ac1KnownLimitationsDocumentsLiveChrMatrixOffResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~LiveChrMatrixOffResidualW727"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
