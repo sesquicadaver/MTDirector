@@ -89,8 +89,7 @@ public sealed class SessionFaultInjectionMatrixTests
             .WaitAsync(TimeSpan.FromSeconds(5));
         Assert.Equal(RosCommandLifecycle.TimedOut, result.Lifecycle);
         Assert.Equal("API_COMMAND_TIMEOUT", result.Error!.Code);
-        await Task.Delay(50);
-        Assert.Equal(0, harness.Session.PendingCount);
+        await WaitUntilPendingClearedAsync(harness.Session);
     }
 
     [Theory]
@@ -180,7 +179,22 @@ public sealed class SessionFaultInjectionMatrixTests
             .WaitAsync(TimeSpan.FromSeconds(5));
         Assert.Equal(RosCommandLifecycle.Cancelled, result.Lifecycle);
         Assert.Equal("API_COMMAND_CANCELLED", result.Error!.Code);
-        await Task.Delay(50);
-        Assert.Equal(0, harness.Session.PendingCount);
+        await WaitUntilPendingClearedAsync(harness.Session);
+    }
+
+    /// <summary>W7-11: poll until cancel-grace clears pending (no fixed short sleep).</summary>
+    private static async Task WaitUntilPendingClearedAsync(
+        RosSession session,
+        TimeSpan? timeout = null)
+    {
+        TimeSpan limit = timeout ?? TimeSpan.FromSeconds(2);
+        using CancellationTokenSource cts = new(limit);
+        while (session.PendingCount != 0)
+        {
+            cts.Token.ThrowIfCancellationRequested();
+            await Task.Delay(10, cts.Token);
+        }
+
+        Assert.Equal(0, session.PendingCount);
     }
 }
