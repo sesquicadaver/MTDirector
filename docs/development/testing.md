@@ -371,6 +371,17 @@ Issue [#431](https://github.com/sesquicadaver/MTDirector/issues/431) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ControllerConfigTraceIdentifierW716"`.
 
+
+## Living Specification — Resolve-only zone UoW residual (W7-17)
+
+Issue [#433](https://github.com/sesquicadaver/MTDirector/issues/433) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents resolve-only zone residual | `docs/release/known-limitations.md` | `ResolveOnlyZoneUowResidualW717LivingSpecTests.Ac1KnownLimitationsDocumentsResolveOnlyZoneUowResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ResolveOnlyZoneUowResidualW717"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
