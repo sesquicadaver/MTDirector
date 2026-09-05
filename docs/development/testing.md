@@ -349,6 +349,17 @@ Issue [#427](https://github.com/sesquicadaver/MTDirector/issues/427) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~SecurityMtlsTraceIdentifierW714"`.
 
+
+## Living Specification — Pilot runbook TraceIdentifier mTLS correlation (W7-15)
+
+Issue [#429](https://github.com/sesquicadaver/MTDirector/issues/429) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Pilot checklist documents TraceIdentifier= | `docs/operations/pilot-runbook.md` | `PilotMtlsTraceIdentifierW715LivingSpecTests.Ac1PilotRunbookDocumentsTraceIdentifierCorrelation` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~PilotMtlsTraceIdentifierW715"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
