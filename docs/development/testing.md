@@ -432,6 +432,16 @@ Issue [#443](https://github.com/sesquicadaver/MTDirector/issues/443) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopZipTarInstallerResidualW722"`.
 
+## Living Specification — SHA256SUMS attestation packaging residual (W7-23)
+
+Issue [#445](https://github.com/sesquicadaver/MTDirector/issues/445) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents SHA256SUMS attestation residual | `docs/release/known-limitations.md` | `Sha256SumsAttestationResidualW723LivingSpecTests.Ac1KnownLimitationsDocumentsSha256SumsAttestationResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Sha256SumsAttestationResidualW723"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
