@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-26** ([#451](https://github.com/sesquicadaver/MTDirector/issues/451)): Living Spec locks intentional MVP scope-lock no-campaigns/auto-deploy residual in known-limitations. Seeded W7-27 (#453). **§3.C NEXT = W7-27 (#453)**.
 - **W7-25** ([#449](https://github.com/sesquicadaver/MTDirector/issues/449)): Living Spec locks intentional MVP scope-lock no-NAT/RAW writes residual in known-limitations. Seeded W7-26 (#451). **§3.C NEXT = W7-26 (#451)**.
 - **W7-24** ([#447](https://github.com/sesquicadaver/MTDirector/issues/447)): Living Spec locks intentional CycloneDX-lite SBOM packaging residual in known-limitations. Seeded W7-25 (#449). **§3.C NEXT = W7-25 (#449)**.
 - **W7-23** ([#445](https://github.com/sesquicadaver/MTDirector/issues/445)): Living Spec locks intentional SHA256SUMS attestation packaging residual in known-limitations. Seeded W7-24 (#447). **§3.C NEXT = W7-24 (#447)**.
