@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-21** ([#441](https://github.com/sesquicadaver/MTDirector/issues/441)): Living Spec locks intentional `IResponseFeedbackDeliveryPort` not-configured residual in known-limitations. Seeded W7-22 (#443). **§3.C NEXT = W7-22 (#443)**.
 - **W7-20** ([#439](https://github.com/sesquicadaver/MTDirector/issues/439)): Living Spec locks intentional Feedback delivery / RouterOS capture outside-DB residual in known-limitations. Seeded W7-21 (#441). **§3.C NEXT = W7-21 (#441)**.
 - **W7-19** ([#437](https://github.com/sesquicadaver/MTDirector/issues/437)): Living Spec locks intentional orchestrator-only audit append outside-UoW residual in known-limitations. Seeded W7-20 (#439). **§3.C NEXT = W7-20 (#439)**.
 - **W7-18** ([#435](https://github.com/sesquicadaver/MTDirector/issues/435)): Living Spec locks intentional Start* pre-runtime `AddOperationAsync` outside-UoW residual in known-limitations. Seeded W7-19 (#437). **§3.C NEXT = W7-19 (#437)**.
