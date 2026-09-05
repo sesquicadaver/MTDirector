@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.Jobs;
 using Mfc.Application.Abstractions.Persistence;
@@ -31,7 +32,6 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Mfc.Controller;
 
