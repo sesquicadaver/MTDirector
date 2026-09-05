@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-04** ([#406](https://github.com/sesquicadaver/MTDirector/issues/406)): inbound mTLS client certificates validated against TrustedCa (`ClientCaProfileRef` + CustomRootTrust + revocation); fail-closed when profile material missing. Living Spec `TrustedCaClientCertificateW704LivingSpecTests`. Seeded W7-05 (#409). **§3.C NEXT = W7-05 (#409)**.
 - **W7-03** ([#404](https://github.com/sesquicadaver/MTDirector/issues/404)): configurable Kestrel `ClientCertificateMode` (`Mfc:Grpc:ClientCertificateMode`); Desktop optional PFX via `Desktop:ClientCertificatePath`. Living Spec `KestrelClientCertificateW703LivingSpecTests`. Seeded W7-04 (#406). **§3.C NEXT = W7-04 (#406)**.
 - **W7-02** ([#402](https://github.com/sesquicadaver/MTDirector/issues/402)): Production gRPC actor bound to authenticated principal (peer identity / client cert / claims); metadata spoof rejected; Development lab metadata path retained; `AllowMetadataActor` forbidden outside Development. Living Spec `GrpcRequestActorResolverTests`. Seeded W7-03 (#404). **§3.C NEXT = W7-03 (#404)**.
 - **W7-01** ([#401](https://github.com/sesquicadaver/MTDirector/issues/401)): Desktop `DesktopDisplayLabels` — MikroTik/Winbox section and property names in Snapshot/Diff/Inventory UI. Seeded W7-02 (#402). **§3.C NEXT = W7-02 (#402)**.

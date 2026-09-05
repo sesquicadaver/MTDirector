@@ -16,4 +16,10 @@ public sealed class TrustedCaStoreOptions
     /// Default <c>Online</c> (mandatory revocation policy).
     /// </summary>
     public string RevocationMode { get; init; } = "Online";
+
+    /// <summary>
+    /// CaProfileRef subdirectory under <see cref="ProfilesDirectory"/> used to validate inbound mTLS client certificates (W7-04).
+    /// Required when <c>Mfc:Grpc:ClientCertificateMode</c> is AllowCertificate or RequireCertificate.
+    /// </summary>
+    public string? ClientCaProfileRef { get; init; }
 }

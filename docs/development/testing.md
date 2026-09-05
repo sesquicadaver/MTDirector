@@ -208,6 +208,22 @@ Issue [#404](https://github.com/sesquicadaver/MTDirector/issues/404) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~KestrelClientCertificateW703"`.
 
+## Living Specification — Validate mTLS client certs against TrustedCa (W7-04)
+
+Issue [#406](https://github.com/sesquicadaver/MTDirector/issues/406) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Trusted client cert accepted | `TrustedCaClientCertificateValidator` | `TrustedCaClientCertificateW704LivingSpecTests.Ac1TrustedClientCertificateIsAccepted` |
+| Untrusted client cert rejected | same | `Ac1UntrustedClientCertificateIsRejected` |
+| Empty roots fail-closed | same | `Ac1MissingTrustedRootsFailClosed` |
+| Allow + null cert OK | same | `Ac1AllowModeAcceptsNullCertificate` |
+| Require + null cert rejected | same | `Ac1RequireModeRejectsNullCertificate` |
+| Allow/Require requires ClientCaProfileRef | `ControllerOptionsValidator` | `Ac1AllowOrRequireWithoutClientCaProfileRefIsRejected` |
+| Allow/Require requires ProfilesDirectory | same | `Ac1AllowOrRequireWithoutProfilesDirectoryIsRejected` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~TrustedCaClientCertificateW704"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:

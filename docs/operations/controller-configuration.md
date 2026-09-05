@@ -21,6 +21,7 @@ Configuration sources (highest wins last):
 | `Security:MasterKeyBase64` (env `MFC__Security__MasterKeyBase64`) | Required for `OsKeyStore`: base64 of a 32-byte master key (never stored in PostgreSQL) |
 | `Security:TrustedCa:ProfilesDirectory` | Absolute path; `{dir}/{CaProfileRef}/*.{pem,crt,cer,der}` for INTERNAL_CA (SEC-04). Empty → fail-closed at materialize |
 | `Security:TrustedCa:RevocationMode` | `Online` (default), `Offline`, or `NoCheck` for INTERNAL_CA custom-chain builds |
+| `Security:TrustedCa:ClientCaProfileRef` | W7-04: profile under ProfilesDirectory for inbound mTLS client trust; required when ClientCertificateMode is Allow/Require |
 | `Authentication:AllowDevelopmentAuthentication` | Dev-only; loopback bind required |
 | `Authentication:AllowMetadataActor` | Dev-only (W7-02); documents lab metadata actor path; **forbidden outside Development**. Production binds actor to TLS/auth principal (`GrpcRequestActorResolver`) |
 | `Database:ConnectionString` | PostgreSQL only |
