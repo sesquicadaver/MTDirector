@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-19** ([#437](https://github.com/sesquicadaver/MTDirector/issues/437)): Living Spec locks intentional orchestrator-only audit append outside-UoW residual in known-limitations. Seeded W7-20 (#439). **§3.C NEXT = W7-20 (#439)**.
 - **W7-18** ([#435](https://github.com/sesquicadaver/MTDirector/issues/435)): Living Spec locks intentional Start* pre-runtime `AddOperationAsync` outside-UoW residual in known-limitations. Seeded W7-19 (#437). **§3.C NEXT = W7-19 (#437)**.
 - **W7-17** ([#433](https://github.com/sesquicadaver/MTDirector/issues/433)): Living Spec locks intentional resolve-only zone UoW residual in known-limitations. Seeded W7-18 (#435). **§3.C NEXT = W7-18 (#435)**.
 - **W7-16** ([#431](https://github.com/sesquicadaver/MTDirector/issues/431)): controller-configuration.md cross-links `TraceIdentifier=` mTLS correlation to SECURITY + pilot-runbook. Living Spec `ControllerConfigTraceIdentifierW716LivingSpecTests`. Seeded W7-17 (#433). **§3.C NEXT = W7-17 (#433)**.
