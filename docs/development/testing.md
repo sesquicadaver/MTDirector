@@ -512,6 +512,16 @@ Issue [#459](https://github.com/sesquicadaver/MTDirector/issues/459) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ControllerMigrateOnlyStartupResidualW730"`.
 
+## Living Specification — Development master-key provider residual (W7-31)
+
+Issue [#460](https://github.com/sesquicadaver/MTDirector/issues/460) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents Development master-key provider residual | `docs/release/known-limitations.md` | `DevelopmentMasterKeyProviderResidualW731LivingSpecTests.Ac1KnownLimitationsDocumentsDevelopmentMasterKeyProviderResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DevelopmentMasterKeyProviderResidualW731"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:

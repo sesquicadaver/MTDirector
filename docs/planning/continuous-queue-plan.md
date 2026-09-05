@@ -96,7 +96,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Lock Golden live CHR hashes env-gated residual Living Spec | Docs / lab residual | **W7-28 DONE** |
 | Lock Live physical CRS hardware OFF ops residual Living Spec | Docs / lab residual | **W7-29 DONE** |
 | Lock Controller migrate-only startup residual Living Spec | Docs / ops residual | **W7-30 DONE** |
-| Lock Development master-key provider residual Living Spec | Docs / ops residual | **W7-31 OPEN** |
+| Lock Development master-key provider residual Living Spec | Docs / ops residual | **W7-31 DONE** |
+| Lock GitHub-hosted CI billing-limited residual Living Spec | Docs / ops residual | **W7-32 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -180,7 +181,8 @@ W7-27 Lock Live CHR matrix OFF residual Living Spec **DONE**
 W7-28 Lock Golden live CHR hashes env-gated residual Living Spec **DONE**
 W7-29 Lock Live physical CRS hardware OFF ops residual Living Spec **DONE**
 W7-30 Lock Controller migrate-only startup residual Living Spec **DONE**
-W7-31 Lock Development master-key provider residual Living Spec **OPEN**
+W7-31 Lock Development master-key provider residual Living Spec **DONE**
+W7-32 Lock GitHub-hosted CI billing-limited residual Living Spec **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -250,9 +252,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 58 | W7-28 | [#455](https://github.com/sesquicadaver/MTDirector/issues/455) | Lock Golden live CHR hashes env-gated residual Living Spec | **DONE** |
 | 59 | W7-29 | [#457](https://github.com/sesquicadaver/MTDirector/issues/457) | Lock Live physical CRS hardware OFF ops residual Living Spec | **DONE** |
 | 60 | W7-30 | [#459](https://github.com/sesquicadaver/MTDirector/issues/459) | Lock Controller migrate-only startup residual Living Spec | **DONE** |
-| 61 | W7-31 | [#460](https://github.com/sesquicadaver/MTDirector/issues/460) | Lock Development master-key provider residual Living Spec | **OPEN** |
+| 61 | W7-31 | [#460](https://github.com/sesquicadaver/MTDirector/issues/460) | Lock Development master-key provider residual Living Spec | **DONE** |
+| 62 | W7-32 | [#462](https://github.com/sesquicadaver/MTDirector/issues/462) | Lock GitHub-hosted CI billing-limited residual Living Spec | **OPEN** |
 
-**§3.C NEXT = W7-31 (#460)**. W7-30 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-32 (#462)**. W7-31 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

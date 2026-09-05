@@ -38,6 +38,6 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 
 ## Operational notes
 
-- Intentional residual (W7-30 Living Spec lock): Controller does not migrate on normal startup; use `--migrate-only` or the EF migrations bundle. **§3.C NEXT = W7-31 (#460)** after W7-30.
-- Development master-key provider is forbidden outside Development.
+- Intentional residual (W7-30 Living Spec lock): Controller does not migrate on normal startup; use `--migrate-only` or the EF migrations bundle.
+- Intentional residual (W7-31 Living Spec lock): Development master-key provider is forbidden outside Development. **§3.C NEXT = W7-32 (#462)** after W7-31.
 - GitHub-hosted CI may be billing-limited; local gates in [`release-gates.md`](release-gates.md) remain authoritative for acceptance.
