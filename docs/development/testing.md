@@ -532,6 +532,16 @@ Issue [#462](https://github.com/sesquicadaver/MTDirector/issues/462) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~GithubHostedCiBillingLimitedResidualW732"`.
 
+## Living Specification — Continuous residual seed after CI billing (W7-33)
+
+Issue [#464](https://github.com/sesquicadaver/MTDirector/issues/464) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed Desktop window residual as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md` | `ContinuousResidualSeedW733LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDesktopWindowResidualAsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW733"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
