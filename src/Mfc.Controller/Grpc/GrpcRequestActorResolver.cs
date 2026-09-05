@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 namespace Mfc.Controller.Grpc;
 
 /// <summary>
-/// Resolves operator actor for gRPC calls (SEC-01 + W7-02).
+/// Resolves operator actor for gRPC calls (SEC-01 + W7-02 + W7-07).
 /// Prefer authenticated TLS/auth principal. Metadata <c>x-mfc-actor</c> is Development-only
 /// (lab shortcut); Production requires a principal. Reserved
 /// <see cref="OperationalJobsOptions.SystemActor"/> is for in-process jobs only.
@@ -100,48 +100,83 @@ public sealed class GrpcRequestActorResolver
     }
 
     /// <summary>
-    /// Principal from ASP.NET identity / client certificate, or gRPC peer identity (mTLS).
+    /// Principal precedence (W7-07):
+    /// 1) authenticated <see cref="HttpContext.User"/> (mTLS middleware / claims);
+    /// 2) connection client certificate CN;
+    /// 3) gRPC <see cref="AuthContext"/> peer identity;
+    /// then Development metadata path in <see cref="Resolve"/>.
     /// </summary>
-    internal static string? TryResolvePrincipal(ServerCallContext context)
+    private static string? TryResolvePrincipal(ServerCallContext context)
     {
         HttpContext? http = TryGetHttpContext(context);
-        if (http is not null)
+        return TryResolvePrincipal(
+            http?.User,
+            http?.Connection.ClientCertificate,
+            context.AuthContext);
+    }
+
+    /// <summary>Testable principal resolution with explicit precedence inputs (W7-07).</summary>
+    public static string? TryResolvePrincipal(
+        ClaimsPrincipal? user,
+        X509Certificate2? clientCertificate,
+        AuthContext? authContext)
+    {
+        string? fromUser = TryFromAuthenticatedUser(user);
+        if (fromUser is not null)
         {
-            ClaimsPrincipal? user = http.User;
-            if (user?.Identity?.IsAuthenticated == true)
-            {
-                if (!string.IsNullOrWhiteSpace(user.Identity.Name))
-                {
-                    return user.Identity.Name.Trim();
-                }
-
-                Claim? nameId = user.FindFirst(ClaimTypes.NameIdentifier) ?? user.FindFirst("sub");
-                if (nameId is not null && !string.IsNullOrWhiteSpace(nameId.Value))
-                {
-                    return nameId.Value.Trim();
-                }
-            }
-
-            X509Certificate2? cert = http.Connection.ClientCertificate;
-            if (cert is not null)
-            {
-                string? cn = cert.GetNameInfo(X509NameType.SimpleName, forIssuer: false);
-                if (!string.IsNullOrWhiteSpace(cn))
-                {
-                    return cn.Trim();
-                }
-            }
+            return fromUser;
         }
 
-        AuthContext auth = context.AuthContext;
-        if (auth.IsPeerAuthenticated)
+        string? fromCert = TryFromClientCertificate(clientCertificate);
+        if (fromCert is not null)
         {
-            foreach (AuthProperty property in auth.PeerIdentity)
+            return fromCert;
+        }
+
+        return TryFromPeerIdentity(authContext);
+    }
+
+    private static string? TryFromAuthenticatedUser(ClaimsPrincipal? user)
+    {
+        if (user?.Identity?.IsAuthenticated != true)
+        {
+            return null;
+        }
+
+        if (!string.IsNullOrWhiteSpace(user.Identity.Name))
+        {
+            return user.Identity.Name.Trim();
+        }
+
+        Claim? nameId = user.FindFirst(ClaimTypes.NameIdentifier) ?? user.FindFirst("sub");
+        return nameId is not null && !string.IsNullOrWhiteSpace(nameId.Value)
+            ? nameId.Value.Trim()
+            : null;
+    }
+
+    private static string? TryFromClientCertificate(X509Certificate2? certificate)
+    {
+        if (certificate is null)
+        {
+            return null;
+        }
+
+        string? cn = certificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false);
+        return string.IsNullOrWhiteSpace(cn) ? null : cn.Trim();
+    }
+
+    private static string? TryFromPeerIdentity(AuthContext? auth)
+    {
+        if (auth is null || !auth.IsPeerAuthenticated)
+        {
+            return null;
+        }
+
+        foreach (AuthProperty property in auth.PeerIdentity)
+        {
+            if (!string.IsNullOrWhiteSpace(property.Value))
             {
-                if (!string.IsNullOrWhiteSpace(property.Value))
-                {
-                    return property.Value.Trim();
-                }
+                return property.Value.Trim();
             }
         }
 

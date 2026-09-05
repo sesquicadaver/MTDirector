@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-07** ([#413](https://github.com/sesquicadaver/MTDirector/issues/413)): document and Living-Spec actor principal precedence — authenticated `HttpContext.User` over connection cert / gRPC peer identity. Seeded W7-08 (#415). **§3.C NEXT = W7-08 (#415)**.
 - **W7-06** ([#411](https://github.com/sesquicadaver/MTDirector/issues/411)): mTLS client certificate mapped to authenticated `HttpContext.User` (`MtlsClientCertificatePrincipalMiddleware`) when ClientCertificateMode allows/requires certs. Living Spec `MtlsHttpContextUserW706LivingSpecTests`. Seeded W7-07 (#413). **§3.C NEXT = W7-07 (#413)**.
 - **W7-05** ([#409](https://github.com/sesquicadaver/MTDirector/issues/409)): Desktop `x-mfc-actor` from client certificate CN when PFX configured (`DesktopGrpcActorResolver`); `Desktop:Actor` is fallback without cert. Living Spec `DesktopGrpcActorFromCertCnW705LivingSpecTests`. Seeded W7-06 (#411). **§3.C NEXT = W7-06 (#411)**.
 - **W7-04** ([#406](https://github.com/sesquicadaver/MTDirector/issues/406)): inbound mTLS client certificates validated against TrustedCa (`ClientCaProfileRef` + CustomRootTrust + revocation); fail-closed when profile material missing. Living Spec `TrustedCaClientCertificateW704LivingSpecTests`. Seeded W7-05 (#409). **§3.C NEXT = W7-05 (#409)**.

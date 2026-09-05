@@ -71,7 +71,7 @@ When Controller HTTPS uses `AllowCertificate` / `RequireCertificate`, Desktop ca
 | `Desktop:ClientCertificatePassword` | Optional PFX password |
 | `Desktop:Actor` | Used as `x-mfc-actor` only when no client cert is configured; with a cert, actor is the certificate CN (W7-05) |
 
-When `ClientCertificateMode` is `AllowCertificate` / `RequireCertificate`, Controller also installs `MtlsClientCertificatePrincipalMiddleware` so an accepted client certificate becomes authenticated `HttpContext.User` (CN as Name) for actor resolution (W7-06).
+When `ClientCertificateMode` is `AllowCertificate` / `RequireCertificate`, Controller also installs `MtlsClientCertificatePrincipalMiddleware` so an accepted client certificate becomes authenticated `HttpContext.User` (CN as Name) for actor resolution (W7-06). Actor binding then prefers that User over connection cert CN / gRPC peer identity (W7-07; `GrpcRequestActorResolver`).
 
 ## Examples
 
