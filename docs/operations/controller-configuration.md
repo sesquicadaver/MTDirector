@@ -61,7 +61,7 @@ With both flags `false` (default), inventory probe/capture and write runtimes re
 
 Pilot checklist: [`pilot-runbook.md`](pilot-runbook.md).
 
-## Desktop mTLS client certificate (W7-03)
+## Desktop mTLS client certificate (W7-03 / W7-05)
 
 When Controller HTTPS uses `AllowCertificate` / `RequireCertificate`, Desktop can present a lab PFX:
 
@@ -69,6 +69,7 @@ When Controller HTTPS uses `AllowCertificate` / `RequireCertificate`, Desktop ca
 |-----|---------|
 | `Desktop:ClientCertificatePath` | Absolute path to client PFX (empty = no client cert) |
 | `Desktop:ClientCertificatePassword` | Optional PFX password |
+| `Desktop:Actor` | Used as `x-mfc-actor` only when no client cert is configured; with a cert, actor is the certificate CN (W7-05) |
 
 Development HTTP loopback keeps `ClientCertificateMode=NoCertificate` and empty Desktop cert path.
 

@@ -194,8 +194,5 @@ public sealed class GrpcSnapshotViewerClient : ISnapshotViewerClient
         return new SnapshotService.SnapshotServiceClient(channel);
     }
 
-    private Metadata ActorHeaders() => new()
-    {
-        { "x-mfc-actor", string.IsNullOrWhiteSpace(_options.Actor) ? "desktop" : _options.Actor.Trim() },
-    };
+    private Metadata ActorHeaders() => DesktopGrpcActorResolver.CreateHeaders(_options);
 }

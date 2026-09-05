@@ -248,8 +248,5 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
         return new InventoryService.InventoryServiceClient(channel);
     }
 
-    private Metadata ActorHeaders() => new()
-    {
-        { "x-mfc-actor", string.IsNullOrWhiteSpace(_options.Actor) ? "desktop" : _options.Actor.Trim() },
-    };
+    private Metadata ActorHeaders() => DesktopGrpcActorResolver.CreateHeaders(_options);
 }

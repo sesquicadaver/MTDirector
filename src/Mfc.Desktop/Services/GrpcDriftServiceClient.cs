@@ -49,6 +49,5 @@ public sealed class GrpcDriftServiceClient : IDriftServiceClient
         return new DriftService.DriftServiceClient(channel);
     }
 
-    private Metadata ActorHeaders()
-        => new() { { "x-mfc-actor", string.IsNullOrWhiteSpace(_options.Actor) ? "desktop" : _options.Actor } };
+    private Metadata ActorHeaders() => DesktopGrpcActorResolver.CreateHeaders(_options);
 }
