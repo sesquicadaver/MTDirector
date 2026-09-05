@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-32** ([#462](https://github.com/sesquicadaver/MTDirector/issues/462)): Living Spec locks intentional GitHub-hosted CI billing-limited residual in known-limitations. Seeded W7-33 (#464) / W7-34 (#466). **§3.C NEXT = W7-33 (#464)**.
 - **W7-31** ([#460](https://github.com/sesquicadaver/MTDirector/issues/460)): Living Spec locks intentional Development master-key provider residual in known-limitations. Seeded W7-32 (#462) / W7-33 (#464). **§3.C NEXT = W7-32 (#462)**.
 - **W7-30** ([#459](https://github.com/sesquicadaver/MTDirector/issues/459)): Living Spec locks intentional Controller migrate-only startup residual in known-limitations. Seeded W7-31 (#460) / W7-32 (#462). **§3.C NEXT = W7-31 (#460)**.
 - **W7-29** ([#457](https://github.com/sesquicadaver/MTDirector/issues/457)): Living Spec locks intentional Live physical CRS hardware OFF ops residual in known-limitations. Seeded W7-30 (#459) / W7-31 (#460). **§3.C NEXT = W7-30 (#459)**.

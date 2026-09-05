@@ -522,6 +522,16 @@ Issue [#460](https://github.com/sesquicadaver/MTDirector/issues/460) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DevelopmentMasterKeyProviderResidualW731"`.
 
+## Living Specification — GitHub-hosted CI billing-limited residual (W7-32)
+
+Issue [#462](https://github.com/sesquicadaver/MTDirector/issues/462) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents GitHub-hosted CI billing-limited residual | `docs/release/known-limitations.md` | `GithubHostedCiBillingLimitedResidualW732LivingSpecTests.Ac1KnownLimitationsDocumentsGithubHostedCiBillingLimitedResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~GithubHostedCiBillingLimitedResidualW732"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
