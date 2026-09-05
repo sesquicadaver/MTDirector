@@ -313,6 +313,19 @@ Issue [#421](https://github.com/sesquicadaver/MTDirector/issues/421) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~SessionTimeoutPendingClearW711"`.
 
+
+## Living Specification — Desktop AuthenticationFailed status (W7-12)
+
+Issue [#423](https://github.com/sesquicadaver/MTDirector/issues/423) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| All non-Connected states omit actor | `DesktopConnectionStatusText` | `DesktopConnectionStatusAuthFailedW712LivingSpecTests.Ac1NonConnectedStatusOmitsActorSuffix` |
+| AuthenticationFailed label locked | same | `Ac1AuthenticationFailedLabelIsLocked` |
+| Enum coverage Connected vs others | same | `Ac1AllControllerConnectionStatesAreCoveredByFormatter` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopConnectionStatusAuthFailedW712"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
