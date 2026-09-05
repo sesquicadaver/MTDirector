@@ -422,6 +422,16 @@ Issue [#441](https://github.com/sesquicadaver/MTDirector/issues/441) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~FeedbackDeliveryPortNotConfiguredResidualW721"`.
 
+## Living Specification — Desktop zip/tar installer packaging residual (W7-22)
+
+Issue [#443](https://github.com/sesquicadaver/MTDirector/issues/443) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents Desktop zip/tar installer residual | `docs/release/known-limitations.md` | `DesktopZipTarInstallerResidualW722LivingSpecTests.Ac1KnownLimitationsDocumentsDesktopZipTarInstallerResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopZipTarInstallerResidualW722"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
