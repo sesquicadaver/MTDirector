@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-06** ([#411](https://github.com/sesquicadaver/MTDirector/issues/411)): mTLS client certificate mapped to authenticated `HttpContext.User` (`MtlsClientCertificatePrincipalMiddleware`) when ClientCertificateMode allows/requires certs. Living Spec `MtlsHttpContextUserW706LivingSpecTests`. Seeded W7-07 (#413). **§3.C NEXT = W7-07 (#413)**.
 - **W7-05** ([#409](https://github.com/sesquicadaver/MTDirector/issues/409)): Desktop `x-mfc-actor` from client certificate CN when PFX configured (`DesktopGrpcActorResolver`); `Desktop:Actor` is fallback without cert. Living Spec `DesktopGrpcActorFromCertCnW705LivingSpecTests`. Seeded W7-06 (#411). **§3.C NEXT = W7-06 (#411)**.
 - **W7-04** ([#406](https://github.com/sesquicadaver/MTDirector/issues/406)): inbound mTLS client certificates validated against TrustedCa (`ClientCaProfileRef` + CustomRootTrust + revocation); fail-closed when profile material missing. Living Spec `TrustedCaClientCertificateW704LivingSpecTests`. Seeded W7-05 (#409). **§3.C NEXT = W7-05 (#409)**.
 - **W7-03** ([#404](https://github.com/sesquicadaver/MTDirector/issues/404)): configurable Kestrel `ClientCertificateMode` (`Mfc:Grpc:ClientCertificateMode`); Desktop optional PFX via `Desktop:ClientCertificatePath`. Living Spec `KestrelClientCertificateW703LivingSpecTests`. Seeded W7-04 (#406). **§3.C NEXT = W7-04 (#406)**.

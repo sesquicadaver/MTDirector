@@ -237,6 +237,19 @@ Issue [#409](https://github.com/sesquicadaver/MTDirector/issues/409) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopGrpcActorFromCertCnW705"`.
 
+## Living Specification — Map mTLS client cert to HttpContext.User (W7-06)
+
+Issue [#411](https://github.com/sesquicadaver/MTDirector/issues/411) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Principal from cert CN | `MtlsClientCertificatePrincipalFactory` | `MtlsHttpContextUserW706LivingSpecTests.Ac1CreatesAuthenticatedPrincipalFromClientCertificateCn` |
+| Null cert → null principal | same | `Ac1ReturnsNullWhenCertificateMissing` |
+| Middleware sets HttpContext.User | `MtlsClientCertificatePrincipalMiddleware` | `Ac1MiddlewareSetsHttpContextUserFromClientCertificate` |
+| Does not overwrite authenticated User | same | `Ac1MiddlewareDoesNotOverwriteExistingAuthenticatedUser` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MtlsHttpContextUserW706"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:

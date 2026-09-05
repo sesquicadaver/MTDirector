@@ -205,6 +205,14 @@ public static class Program
         configure?.Invoke(builder);
 
         WebApplication app = builder.Build();
+
+        ClientCertificateMode pipelineClientCertMode =
+            GrpcClientCertificateModeParser.Parse(options.Grpc.ClientCertificateMode);
+        if (GrpcClientCertificateModeParser.RequestsOrAllowsClientCertificate(pipelineClientCertMode))
+        {
+            app.UseMiddleware<MtlsClientCertificatePrincipalMiddleware>();
+        }
+
         app.MapGrpcHealthChecksService();
         app.MapGrpcService<InventoryGrpcService>();
         app.MapGrpcService<SnapshotGrpcService>();
