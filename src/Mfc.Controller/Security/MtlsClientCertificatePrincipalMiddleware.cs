@@ -6,7 +6,7 @@ namespace Mfc.Controller.Security;
 /// <summary>
 /// Sets <see cref="HttpContext.User"/> from the connection client certificate when not already authenticated (W7-06).
 /// Relies on prior Kestrel <c>ClientCertificateValidation</c> (TrustedCa) for trust decisions.
-/// Logs a redacted CN + thumbprint prefix on successful map (W7-10).
+/// Logs a redacted CN + thumbprint prefix and request <see cref="HttpContext.TraceIdentifier"/> on successful map (W7-10 / W7-13).
 /// </summary>
 public sealed partial class MtlsClientCertificatePrincipalMiddleware
 {
@@ -36,7 +36,7 @@ public sealed partial class MtlsClientCertificatePrincipalMiddleware
                 {
                     string cn = principal.Identity?.Name ?? string.Empty;
                     string identity = MtlsClientCertificateIdentityLog.FormatRedacted(cn, cert.Thumbprint);
-                    LogMappedPrincipal(_logger, identity);
+                    LogMappedPrincipal(_logger, identity, context.TraceIdentifier);
                 }
             }
         }
@@ -47,6 +47,6 @@ public sealed partial class MtlsClientCertificatePrincipalMiddleware
     [LoggerMessage(
         EventId = 7101,
         Level = LogLevel.Information,
-        Message = "Mapped mTLS client certificate to HttpContext.User ({Identity})")]
-    private static partial void LogMappedPrincipal(ILogger logger, string identity);
+        Message = "Mapped mTLS client certificate to HttpContext.User ({Identity}) TraceIdentifier={TraceIdentifier}")]
+    private static partial void LogMappedPrincipal(ILogger logger, string identity, string traceIdentifier);
 }

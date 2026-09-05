@@ -78,7 +78,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Log redacted client-cert thumbprint on mTLS principal map | Controller observability | **W7-10 DONE** |
 | Harden SessionFaultInjection timeout pending-clear | RouterOS session tests | **W7-11 DONE** |
 | Desktop AuthenticationFailed status Living Spec | Desktop UX tests | **W7-12 DONE** |
-| mTLS map log includes request TraceIdentifier | Controller observability | **W7-13 OPEN** |
+| mTLS map log includes request TraceIdentifier | Controller observability | **W7-13 DONE** |
+| SECURITY.md documents TraceIdentifier on mTLS map log | Security docs | **W7-14 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -144,7 +145,8 @@ W7-09 Production mTLS operator checklist **DONE**
 W7-10 Log redacted client-cert thumbprint on mTLS principal map **DONE**
 W7-11 Harden SessionFaultInjection timeout pending-clear **DONE**
 W7-12 Desktop AuthenticationFailed status Living Spec **DONE**
-W7-13 mTLS map log includes request TraceIdentifier **OPEN**
+W7-13 mTLS map log includes request TraceIdentifier **DONE**
+W7-14 SECURITY.md documents TraceIdentifier on mTLS map log **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -196,9 +198,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 40 | W7-10 | [#419](https://github.com/sesquicadaver/MTDirector/issues/419) | Log redacted client-cert thumbprint on mTLS principal map | **DONE** |
 | 41 | W7-11 | [#421](https://github.com/sesquicadaver/MTDirector/issues/421) | Harden SessionFaultInjection timeout pending-clear assertion | **DONE** |
 | 42 | W7-12 | [#423](https://github.com/sesquicadaver/MTDirector/issues/423) | Desktop status Living Spec covers AuthenticationFailed | **DONE** |
-| 43 | W7-13 | [#425](https://github.com/sesquicadaver/MTDirector/issues/425) | mTLS map log includes request TraceIdentifier | **OPEN** |
+| 43 | W7-13 | [#425](https://github.com/sesquicadaver/MTDirector/issues/425) | mTLS map log includes request TraceIdentifier | **DONE** |
+| 44 | W7-14 | [#427](https://github.com/sesquicadaver/MTDirector/issues/427) | SECURITY.md documents TraceIdentifier on mTLS map log | **OPEN** |
 
-**§3.C NEXT = W7-13 (#425)**. W7-12 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-14 (#427)**. W7-13 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

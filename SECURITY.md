@@ -35,6 +35,7 @@ You should receive an acknowledgement within a reasonable time. We will coordina
 - **W7-08:** Desktop Connected chrome shows the same actor string that will be sent as `x-mfc-actor` (`DesktopConnectionStatusText` / `DesktopGrpcActorResolver`).
 - **W7-09:** Production mTLS operator checklist (RequireCertificate + TrustedCa + Desktop PFX / actor chrome) lives in `docs/operations/pilot-runbook.md`.
 - **W7-10:** successful mTLS→User map logs CN + truncated thumbprint only (`MtlsClientCertificateIdentityLog`); never PEM/passwords.
+- **W7-13:** the same map log includes ASP.NET `HttpContext.TraceIdentifier` for request correlation (still no PEM/full thumbprint).
 - WriteEnabled production DI loads staging drafts from `IFilterArtifactStore` (`FilterArtifactStoreDeploymentArtifactMaterializer`); observed managed `resource_hash` is measured from live RouterOS state (SEC-02), not echoed from the plan.
 - Audit `EventHash` chains predecessor **bytes** (not length) plus event id; appends use Serializable + `pg_advisory_xact_lock` and a unique index on `PreviousEventHash` (SEC-03 / `AuditEventHashing`).
 
