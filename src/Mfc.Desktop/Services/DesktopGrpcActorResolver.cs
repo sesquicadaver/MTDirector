@@ -36,8 +36,8 @@ public static class DesktopGrpcActorResolver
     public static Metadata CreateHeaders(DesktopOptions options)
         => new() { { MetadataKey, Resolve(options) } };
 
-    /// <summary>Test helper: clears the cert→actor cache.</summary>
-    internal static void ClearCache() => ActorByCertificateKey.Clear();
+    /// <summary>Clears the cert→actor cache (Living Spec / tests).</summary>
+    public static void ClearCache() => ActorByCertificateKey.Clear();
 
     private static string DeriveFromClientCertificate(DesktopOptions options)
     {
