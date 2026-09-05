@@ -542,6 +542,16 @@ Issue [#464](https://github.com/sesquicadaver/MTDirector/issues/464) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW733"`.
 
+## Living Specification — Desktop window does not stop Controller residual (W7-34)
+
+Issue [#466](https://github.com/sesquicadaver/MTDirector/issues/466) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents Desktop window does not stop Controller residual | `docs/release/known-limitations.md` | `DesktopWindowDoesNotStopControllerResidualW734LivingSpecTests.Ac1KnownLimitationsDocumentsDesktopWindowDoesNotStopControllerResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopWindowDoesNotStopControllerResidualW734"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:

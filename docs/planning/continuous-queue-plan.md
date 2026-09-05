@@ -99,7 +99,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Lock Development master-key provider residual Living Spec | Docs / ops residual | **W7-31 DONE** |
 | Lock GitHub-hosted CI billing-limited residual Living Spec | Docs / ops residual | **W7-32 DONE** |
 | Seed next continuous residual after CI billing Living Spec | Docs / queue seed | **W7-33 DONE** |
-| Lock Desktop window does not stop Controller residual Living Spec | Docs / Desktop residual | **W7-34 OPEN** |
+| Lock Desktop window does not stop Controller residual Living Spec | Docs / Desktop residual | **W7-34 DONE** |
+| Lock Inventory Add router wizard DONE residual Living Spec | Docs / Desktop residual | **W7-35 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -186,7 +187,8 @@ W7-30 Lock Controller migrate-only startup residual Living Spec **DONE**
 W7-31 Lock Development master-key provider residual Living Spec **DONE**
 W7-32 Lock GitHub-hosted CI billing-limited residual Living Spec **DONE**
 W7-33 Seed next continuous residual after CI billing Living Spec **DONE**
-W7-34 Lock Desktop window does not stop Controller residual Living Spec **OPEN**
+W7-34 Lock Desktop window does not stop Controller residual Living Spec **DONE**
+W7-35 Lock Inventory Add router wizard DONE residual Living Spec **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -259,9 +261,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 61 | W7-31 | [#460](https://github.com/sesquicadaver/MTDirector/issues/460) | Lock Development master-key provider residual Living Spec | **DONE** |
 | 62 | W7-32 | [#462](https://github.com/sesquicadaver/MTDirector/issues/462) | Lock GitHub-hosted CI billing-limited residual Living Spec | **DONE** |
 | 63 | W7-33 | [#464](https://github.com/sesquicadaver/MTDirector/issues/464) | Seed next continuous residual after CI billing Living Spec | **DONE** |
-| 64 | W7-34 | [#466](https://github.com/sesquicadaver/MTDirector/issues/466) | Lock Desktop window does not stop Controller residual Living Spec | **OPEN** |
+| 64 | W7-34 | [#466](https://github.com/sesquicadaver/MTDirector/issues/466) | Lock Desktop window does not stop Controller residual Living Spec | **DONE** |
+| 65 | W7-35 | [#468](https://github.com/sesquicadaver/MTDirector/issues/468) | Lock Inventory Add router wizard DONE residual Living Spec | **OPEN** |
 
-**§3.C NEXT = W7-34 (#466)**. W7-33 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-35 (#468)**. W7-34 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

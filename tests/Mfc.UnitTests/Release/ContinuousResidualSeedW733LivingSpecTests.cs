@@ -16,7 +16,7 @@ public sealed class ContinuousResidualSeedW733LivingSpecTests
         Assert.Contains("Intentional residual (W7-33 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("Closing the Desktop window **does not** stop Controller", limitations, StringComparison.Ordinal);
         Assert.Contains("separate OS processes", limitations, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-34 (#466)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("W7-34", roadmap, StringComparison.Ordinal);
         Assert.Contains("Lock Desktop window does not stop Controller residual Living Spec", roadmap, StringComparison.Ordinal);
         Assert.Contains("W7-34", plan, StringComparison.Ordinal);
         Assert.Contains("Desktop window does not stop Controller", plan, StringComparison.Ordinal);
