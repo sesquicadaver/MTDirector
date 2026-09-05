@@ -462,6 +462,16 @@ Issue [#449](https://github.com/sesquicadaver/MTDirector/issues/449) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~MvpNoNatRawWritesResidualW725"`.
 
+## Living Specification — MVP scope-lock no-campaigns/auto-deploy residual (W7-26)
+
+Issue [#451](https://github.com/sesquicadaver/MTDirector/issues/451) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents MVP no-campaigns/auto-deploy residual | `docs/release/known-limitations.md` | `MvpNoCampaignsAutoDeployResidualW726LivingSpecTests.Ac1KnownLimitationsDocumentsMvpNoCampaignsAutoDeployResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~MvpNoCampaignsAutoDeployResidualW726"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
