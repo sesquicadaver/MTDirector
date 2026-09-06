@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-46** ([#490](https://github.com/sesquicadaver/MTDirector/issues/490)): Living Spec locks continuous residual tranche seed after M7 CLOSED → W7-47 SEC-07…SEC-15. Seeded W7-47 (#492) / W7-48 (#494). **§3.C NEXT = W7-47 (#492)**.
 - **W7-45** ([#488](https://github.com/sesquicadaver/MTDirector/issues/488)): Living Spec locks intentional M7.1…M7.4 CLOSED residual in known-limitations. Seeded W7-46 (#490) / W7-47 (#492). **§3.C NEXT = W7-46 (#490)**.
 - **W7-44** ([#486](https://github.com/sesquicadaver/MTDirector/issues/486)): Living Spec locks continuous residual tranche seed after N1-07 → W7-45 M7 CLOSED. Seeded W7-45 (#488) / W7-46 (#490). **§3.C NEXT = W7-45 (#488)**.
 - **W7-43** ([#484](https://github.com/sesquicadaver/MTDirector/issues/484)): Living Spec locks intentional N1-07 path-class E2E DONE residual in known-limitations. Seeded W7-44 (#486) / W7-45 (#488). **§3.C NEXT = W7-44 (#486)**.

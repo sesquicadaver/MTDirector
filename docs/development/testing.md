@@ -662,6 +662,16 @@ Issue [#488](https://github.com/sesquicadaver/MTDirector/issues/488) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~M7ClosedResidualW745"`.
 
+## Living Specification — Continuous residual seed after M7 CLOSED (W7-46)
+
+Issue [#490](https://github.com/sesquicadaver/MTDirector/issues/490) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed SEC-07…15 residual as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md` | `ContinuousResidualSeedW746LivingSpecTests.Ac1KnownLimitationsAndQueueSeedSecUowResidualAsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW746"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
