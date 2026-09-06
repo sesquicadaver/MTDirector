@@ -552,6 +552,16 @@ Issue [#466](https://github.com/sesquicadaver/MTDirector/issues/466) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopWindowDoesNotStopControllerResidualW734"`.
 
+## Living Specification — Inventory Add router wizard DONE residual (W7-35)
+
+Issue [#468](https://github.com/sesquicadaver/MTDirector/issues/468) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents Inventory Add router wizard DONE residual | `docs/release/known-limitations.md` | `InventoryAddRouterWizardDoneResidualW735LivingSpecTests.Ac1KnownLimitationsDocumentsInventoryAddRouterWizardDoneResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~InventoryAddRouterWizardDoneResidualW735"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
