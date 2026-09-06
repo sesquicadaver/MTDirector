@@ -682,6 +682,16 @@ Issue [#492](https://github.com/sesquicadaver/MTDirector/issues/492) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Sec0715DoneResidualW747"`.
 
+## Living Specification — Continuous residual seed after SEC-07…15 (W7-48)
+
+Issue [#494](https://github.com/sesquicadaver/MTDirector/issues/494) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed residual corpus COMPLETE as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md` | `ContinuousResidualSeedW748LivingSpecTests.Ac1KnownLimitationsAndQueueSeedResidualCorpusCompleteAsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW748"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
