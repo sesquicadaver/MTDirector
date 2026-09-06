@@ -692,6 +692,16 @@ Issue [#494](https://github.com/sesquicadaver/MTDirector/issues/494) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW748"`.
 
+## Living Specification — known-limitations residual Living Spec corpus COMPLETE (W7-49)
+
+Issue [#496](https://github.com/sesquicadaver/MTDirector/issues/496) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents residual Living Spec corpus COMPLETE | `docs/release/known-limitations.md` | `ResidualCorpusCompleteW749LivingSpecTests.Ac1KnownLimitationsDocumentsResidualCorpusComplete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ResidualCorpusCompleteW749"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
