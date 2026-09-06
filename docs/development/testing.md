@@ -582,6 +582,16 @@ Issue [#472](https://github.com/sesquicadaver/MTDirector/issues/472) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~GrpcRemainsAvailableForAutomationResidualW737"`.
 
+## Living Specification — Continuous residual seed after gRPC automation (W7-38)
+
+Issue [#474](https://github.com/sesquicadaver/MTDirector/issues/474) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed RouterOs fail-closed residual as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md` | `ContinuousResidualSeedW738LivingSpecTests.Ac1KnownLimitationsAndQueueSeedRouterOsFailClosedResidualAsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW738"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:

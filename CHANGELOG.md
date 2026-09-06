@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-38** ([#474](https://github.com/sesquicadaver/MTDirector/issues/474)): Living Spec locks continuous residual tranche seed after gRPC automation → W7-39 RouterOs fail-closed. Seeded W7-39 (#476) / W7-40 (#478). **§3.C NEXT = W7-39 (#476)**.
 - **W7-37** ([#472](https://github.com/sesquicadaver/MTDirector/issues/472)): Living Spec locks intentional gRPC remains available for automation residual in known-limitations. Seeded W7-38 (#474) / W7-39 (#476). **§3.C NEXT = W7-38 (#474)**.
 - **W7-36** ([#470](https://github.com/sesquicadaver/MTDirector/issues/470)): Living Spec locks continuous residual tranche seed after Inventory Add router → W7-37 gRPC automation. Seeded W7-37 (#472) / W7-38 (#474). **§3.C NEXT = W7-37 (#472)**.
 - **W7-35** ([#468](https://github.com/sesquicadaver/MTDirector/issues/468)): Living Spec locks intentional Inventory Add router wizard DONE residual in known-limitations. Seeded W7-36 (#470) / W7-37 (#472). **§3.C NEXT = W7-36 (#470)**.

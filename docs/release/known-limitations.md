@@ -15,7 +15,8 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 ## Desktop inventory registration
 
 - Intentional residual (W7-35 Living Spec lock): Inventory **Add router** wizard is **DONE** ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)): Site→Node→Device + `UpdateDeviceConnection` from Desktop.
-- Intentional residual (W7-37 Living Spec lock): gRPC remains available for automation. **§3.C NEXT = W7-38 (#474)** after W7-37.
+- Intentional residual (W7-37 Living Spec lock): gRPC remains available for automation.
+- Intentional residual (W7-38 Living Spec lock): §3.C continuous residual tranche after gRPC automation is seeded as **W7-39** — RouterOs Enabled default remains fail-closed (`ProbeOnlyRouterOsReadPort` / `NotConfiguredSnapshotCapturePort`). **§3.C NEXT = W7-39 (#476)** after W7-38.
 - Intentional residual (W7-36 Living Spec lock): §3.C continuous residual tranche after Inventory Add router is seeded as **W7-37** — gRPC remains available for automation.
 - Intentional residual (W7-34 Living Spec lock): Closing the Desktop window **does not** stop Controller — stop the Controller process separately (separate OS processes).
 
