@@ -632,6 +632,16 @@ Issue [#482](https://github.com/sesquicadaver/MTDirector/issues/482) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW742"`.
 
+## Living Specification — N1-07 path-class E2E DONE residual (W7-43)
+
+Issue [#484](https://github.com/sesquicadaver/MTDirector/issues/484) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents N1-07 path-class E2E DONE residual | `docs/release/known-limitations.md` | `N107PathClassE2EDoneResidualW743LivingSpecTests.Ac1KnownLimitationsDocumentsN107PathClassE2EDoneResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~N107PathClassE2EDoneResidualW743"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
