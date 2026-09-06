@@ -113,7 +113,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Lock M7.1…M7.4 CLOSED residual Living Spec | Docs / M7 residual | **W7-45 DONE** |
 | Seed next continuous residual after M7 CLOSED Living Spec | Docs / queue seed | **W7-46 DONE** |
 | Lock SEC-07…SEC-15 DONE residual Living Spec | Docs / SEC residual | **W7-47 DONE** |
-| Seed next continuous residual after SEC-07…15 Living Spec | Docs / queue seed | **W7-48 OPEN** |
+| Seed next continuous residual after SEC-07…15 Living Spec | Docs / queue seed | **W7-48 DONE** |
+| Lock known-limitations residual Living Spec corpus COMPLETE | Docs / residual corpus | **W7-49 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -214,7 +215,8 @@ W7-44 Seed next continuous residual after N1-07 Living Spec **DONE**
 W7-45 Lock M7.1…M7.4 CLOSED residual Living Spec **DONE**
 W7-46 Seed next continuous residual after M7 CLOSED Living Spec **DONE**
 W7-47 Lock SEC-07…SEC-15 DONE residual Living Spec **DONE**
-W7-48 Seed next continuous residual after SEC-07…15 Living Spec **OPEN**
+W7-48 Seed next continuous residual after SEC-07…15 Living Spec **DONE**
+W7-49 Lock known-limitations residual Living Spec corpus COMPLETE **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -301,9 +303,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 75 | W7-45 | [#488](https://github.com/sesquicadaver/MTDirector/issues/488) | Lock M7.1…M7.4 CLOSED residual Living Spec | **DONE** |
 | 76 | W7-46 | [#490](https://github.com/sesquicadaver/MTDirector/issues/490) | Seed next continuous residual after M7 CLOSED Living Spec | **DONE** |
 | 77 | W7-47 | [#492](https://github.com/sesquicadaver/MTDirector/issues/492) | Lock SEC-07…SEC-15 DONE residual Living Spec | **DONE** |
-| 78 | W7-48 | [#494](https://github.com/sesquicadaver/MTDirector/issues/494) | Seed next continuous residual after SEC-07…15 Living Spec | **OPEN** |
+| 78 | W7-48 | [#494](https://github.com/sesquicadaver/MTDirector/issues/494) | Seed next continuous residual after SEC-07…15 Living Spec | **DONE** |
+| 79 | W7-49 | [#496](https://github.com/sesquicadaver/MTDirector/issues/496) | Lock known-limitations residual Living Spec corpus COMPLETE | **OPEN** |
 
-**§3.C NEXT = W7-48 (#494)**. W7-47 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-49 (#496)**. W7-48 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

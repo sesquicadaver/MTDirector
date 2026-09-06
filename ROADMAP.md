@@ -3,7 +3,7 @@
 **Дата оновлення:** 6 вересня 2026 (W7-42 continuous residual seed after WriteEnabled)
 **Статус:** нормативний індекс + **лінійна черга** атомарних задач
 **Продукт:** MikroTik Firewall Controller (MTDirector)
-**Базовий коміт аудиту:** `main` @ post-W7-47 — M7.4 CLOSED; W6 DONE; SEC-01…15 DONE; W7-01…47 DONE; **§3.C NEXT = W7-48 (#494)**
+**Базовий коміт аудиту:** `main` @ post-W7-48 — M7.4 CLOSED; W6 DONE; SEC-01…15 DONE; W7-01…48 DONE; **§3.C NEXT = W7-49 (#496)**
 
 Цей документ — **єдиний порядок виконання**. Деталі acceptance, labels і PR titles — у Issue Sets і профільних специфікаціях.  
 Кожний пункт = **один PR / один перевірюваний результат / без заглушок**.
@@ -55,12 +55,12 @@
 | P2 Pilot (read path) | 3 | 0 | 100% |
 | Queue integrity + planning | 3 | 0 | TRACKER-01 + PLAN-01 + **PLAN-02 DONE** |
 | P2 Pilot (write path) | 5 | 0 | **CLOSED** (P2-07…P2-11) |
-| §3.C Continuous (glue + W5 + W6 + SEC + W7) | 76 | 1 | CONT…SEC-15 + W7-01…47 **DONE**; **NEXT = W7-48** |
+| §3.C Continuous (glue + W5 + W6 + SEC + W7) | 77 | 1 | CONT…SEC-15 + W7-01…48 **DONE**; **NEXT = W7-49** |
 | **Разом (код)** | **196** | **0** | W7-42 continuous residual seed after WriteEnabled |
-| **Разом (черга §3)** | **205** | **1** | **NEXT = W7-48 (#494)** |
+| **Разом (черга §3)** | **206** | **1** | **NEXT = W7-49 (#496)** |
 
 MVP issues (109) = **109 done + 0 remaining** — **MVP CLOSED (100%)**.  
-M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** **M7.2-04 DONE. M7.2 CLOSED.** **M7.3-01 DONE.** **M7.3-02 DONE.** **M7.3-03 DONE.** **M7.3-04 DONE.** **M7.3-05 DONE.** **M7.3-06 DONE. M7.3 CLOSED.** **M7.4-01 DONE.** **M7.4-02 DONE.** **M7.4-03 DONE.** **M7.4-04 DONE.** **M7.4-05 DONE.** **M7.4-06 DONE. M7.4 CLOSED.** Post-MVP M7 = **0** open. Release **`v0.2.0`**. **P2 read path CLOSED** (P2-04…P2-06). **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **P2-07 DONE** (#293). **P2-08 DONE** (#294). **P2-09 DONE** (#295). **P2-10 DONE** (#296). **P2-11 DONE** (#297). **P2 write-path CLOSED.** Desktop Add router UX [#309](https://github.com/sesquicadaver/MTDirector/pull/309) DONE. Alignment W1–W4 / W2.1–W2.2 DONE. **PLAN-02 DONE** (#339 / [#345](https://github.com/sesquicadaver/MTDirector/pull/345)). **CONT-01 DONE** (#340). **CONT-02 DONE** (#341). **W5-01 DONE** (#342). **W5-02 DONE** (#343). **W5-03 DONE** (#344). **W6-01 DONE** (#352). **§3.C NEXT = W7-48 (#494)**.
+M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DONE. M7.1-09 DONE. M7.1-10 DONE. **M7.1-11 DONE. M7.1 CLOSED.** **M7.2-01 DONE.** **M7.2-02 DONE.** **M7.2-03 DONE.** **M7.2-04 DONE. M7.2 CLOSED.** **M7.3-01 DONE.** **M7.3-02 DONE.** **M7.3-03 DONE.** **M7.3-04 DONE.** **M7.3-05 DONE.** **M7.3-06 DONE. M7.3 CLOSED.** **M7.4-01 DONE.** **M7.4-02 DONE.** **M7.4-03 DONE.** **M7.4-04 DONE.** **M7.4-05 DONE.** **M7.4-06 DONE. M7.4 CLOSED.** Post-MVP M7 = **0** open. Release **`v0.2.0`**. **P2 read path CLOSED** (P2-04…P2-06). **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **P2-07 DONE** (#293). **P2-08 DONE** (#294). **P2-09 DONE** (#295). **P2-10 DONE** (#296). **P2-11 DONE** (#297). **P2 write-path CLOSED.** Desktop Add router UX [#309](https://github.com/sesquicadaver/MTDirector/pull/309) DONE. Alignment W1–W4 / W2.1–W2.2 DONE. **PLAN-02 DONE** (#339 / [#345](https://github.com/sesquicadaver/MTDirector/pull/345)). **CONT-01 DONE** (#340). **CONT-02 DONE** (#341). **W5-01 DONE** (#342). **W5-02 DONE** (#343). **W5-03 DONE** (#344). **W6-01 DONE** (#352). **§3.C NEXT = W7-49 (#496)**.
 Операційно: read-only зріз **готовий**; policy authoring Desktop **готовий**; **M3 Compiler CLOSED**; **M5 Onboarding CLOSED**; packet-path deploy **fail-closed**; standalone deploy path **готовий**; multi-WAN verify **готовий**; VRRP coordinator **готовий**; rollback/crash recovery **готовий**; deployment API/Desktop **готовий**; fault/security acceptance **DONE**; **M4 CLOSED**; desired/committed/actual projection **готовий** (M6-01); managed drift detection **готовий** (M6-02); bounded operational jobs **готовий** (M6-03); Desktop MVP workflows **готовий** (M6-04); standalone/dual-stack E2E **готовий** (M6-05); multi-WAN E2E **готовий** (M6-06); VRRP/CRS E2E **готовий** (M6-07); security/backup/restore acceptance **готовий** (M6-08); MVP production acceptance **готовий** (M6-09); **M6 CLOSED**; path-class E2E/drift **готовий** (N1-07); **MVP CLOSED**; routing-assurance read allowlist **готовий** (M7.1-01); RoutingAssuranceState persistence **готовий** (M7.1-02); RouteResolutionTrace **готовий** (M7.1-03); ECMP ONE_OF sets **готовий** (M7.1-04); dynamic route origins **готовий** (M7.1-05); RouteExpectation evaluation **готовий** (M7.1-06); reverse-path symmetry **готовий** (M7.1-07); network path profile latency probes **готовий** (M7.1-08); routing configuration vs operational drift **готовий** (M7.1-09); routing assurance Desktop viewer **готовий** (M7.1-10); routing assurance CHR acceptance **готовий** (M7.1-11); endpoint attribution **готовий** (M7.2-01); endpoint presence **готовий** (M7.2-02); endpoint mobility **готовий** (M7.2-03); endpoint mobility CHR acceptance **готовий** (M7.2-04); incident signal ingress **готовий** (M7.3-01); active-state interval **готовий** (M7.3-02); session context **готовий** (M7.3-03); sensor correlation **готовий** (M7.3-04); assessment quality **готовий** (M7.3-05); incident assessment contract **готовий** (M7.3-06); incident deny overlay **готовий** (M7.4-01); response intent feasibility **готовий** (M7.4-02); overlay compile/deploy **готовий** (M7.4-03); TTL removal plan **готовий** (M7.4-04); RESPONSE_* feedback **готовий** (M7.4-05); incident response E2E **готовий** (M7.4-06); **M7.4 CLOSED**; Post-MVP M7 = **0** open; release tag **`v0.2.0`** (2026-08-24).
 
 ### 2.2 DONE (не в черзі)
@@ -201,7 +201,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 
 ## 3. Лінійна черга (стан)
 
-**Статус:** **§3.C NEXT = W7-48 (#494).** W7-47 **DONE**. SEC-01…15 **DONE**. Physical CRS runner remains ops residual.  
+**Статус:** **§3.C NEXT = W7-49 (#496).** W7-48 **DONE**. SEC-01…15 **DONE**. Physical CRS runner remains ops residual.  
 Канонічний план: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).  
 **Lab/CHR/`WriteEnabled` не є попередниками §3**. Production blockers (private audit): SEC-01…03 **DONE**. CRS runner remains ops residual.
 
@@ -290,7 +290,8 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | 207 | W7-45 | [#488](https://github.com/sesquicadaver/MTDirector/issues/488) | Lock M7.1…M7.4 CLOSED residual Living Spec | **DONE** |
 | 208 | W7-46 | [#490](https://github.com/sesquicadaver/MTDirector/issues/490) | Seed next continuous residual after M7 CLOSED Living Spec | **DONE** |
 | 209 | W7-47 | [#492](https://github.com/sesquicadaver/MTDirector/issues/492) | Lock SEC-07…SEC-15 DONE residual Living Spec | **DONE** |
-| 210 | W7-48 | [#494](https://github.com/sesquicadaver/MTDirector/issues/494) | Seed next continuous residual after SEC-07…15 Living Spec | **OPEN** |
+| 210 | W7-48 | [#494](https://github.com/sesquicadaver/MTDirector/issues/494) | Seed next continuous residual after SEC-07…15 Living Spec | **DONE** |
+| 211 | W7-49 | [#496](https://github.com/sesquicadaver/MTDirector/issues/496) | Lock known-limitations residual Living Spec corpus COMPLETE | **OPEN** |
 
 Повна історія закритих рядків §3.A / §3.B (M0–M6 + N1 + M7 + P2) збережена в git history (до docs-purge) і зведена в [`ISSUES.md`](ISSUES.md) + §2.2 DONE.
 
@@ -302,7 +303,7 @@ M7.1-03 DONE. M7.1-04 DONE. M7.1-05 DONE. M7.1-06 DONE. M7.1-07 DONE. M7.1-08 DO
 | §3.B6 Tracker / plan | TRACKER-01 (#289), PLAN-01 (#290) — **DONE** |
 | §3.B7 P2 write path | P2-07…P2-11 — **CLOSED** |
 | Поза чергою (історія) | Desktop Add router — [PR #309](https://github.com/sesquicadaver/MTDirector/pull/309); alignment W1–W4 / W2.1–W2.2 — **DONE** |
-| **§3.C Continuous** | PLAN-02 + CONT + W5 + W6 + SEC-01…15 + W7-01…47 — **DONE**; **NEXT = W7-48** |
+| **§3.C Continuous** | PLAN-02 + CONT + W5 + W6 + SEC-01…15 + W7-01…48 — **DONE**; **NEXT = W7-49** |
 
 Pilot (ops, parallel): [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md).
 
@@ -316,8 +317,8 @@ Pilot (ops, parallel): [`docs/operations/pilot-runbook.md`](docs/operations/pilo
 | P2 Pilot (read path) | 0 | **CLOSED** (P2-04…P2-06) |
 | Queue integrity + planning | 0 | TRACKER-01 + PLAN-01 + PLAN-02 **DONE** |
 | P2 Pilot (write path) | 0 | **CLOSED** (P2-07…P2-11) |
-| §3.C Continuous | 1 | W7-47 **DONE**; W7-48 **OPEN** |
-| **Нереалізовано (§3)** | **1** | **§3.C NEXT = W7-48 (#494)** |
+| §3.C Continuous | 1 | W7-48 **DONE**; W7-49 **OPEN** |
+| **Нереалізовано (§3)** | **1** | **§3.C NEXT = W7-49 (#496)** |
 | DONE у коді (§2.2) | 139 | …+P2-06; release **`v0.2.0`**; alignment P0–P2 DONE |
 
 GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale OPEN #91–#95, #125–#136 closed. Хвиля 0 (2026-08-15): #52, #53, #56, #67 CLOSED.
@@ -500,9 +501,10 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 | M7.1…M7.4 CLOSED residual Living Spec | W7-45 | Lock known-limitations residual | **DONE** (#488) |
 | Seed next continuous residual after M7 CLOSED Living Spec | W7-46 | Seed §3.C next residual tranche | **DONE** (#490) |
 | SEC-07…SEC-15 DONE residual Living Spec | W7-47 | Lock known-limitations residual | **DONE** (#492) |
-| Seed next continuous residual after SEC-07…15 Living Spec | W7-48 | Seed §3.C next residual tranche | **OPEN** (#494) |
+| Seed next continuous residual after SEC-07…15 Living Spec | W7-48 | Seed §3.C next residual tranche | **DONE** (#494) |
+| known-limitations residual Living Spec corpus COMPLETE | W7-49 | Lock known-limitations residual | **OPEN** (#496) |
 
-Оновлювати рядок **Статус** при закритті issue; **§3.C NEXT = W7-48 (#494)**. W7-47 **DONE**. CRS/physical lab runner stays ops residual.
+Оновлювати рядок **Статус** при закритті issue; **§3.C NEXT = W7-49 (#496)**. W7-48 **DONE**. CRS/physical lab runner stays ops residual.
 
 ---
 
@@ -524,7 +526,7 @@ GitHub-трекер вирівняно **TRACKER-01** (#289, 2026-08-26): stale 
 
 ## 7. Операційний старт
 
-1. **§3.C NEXT = W7-48 (#494)**. W7-47 **DONE**. Береться лише відкритий рядок §3; лаба **не** блокує. Physical CRS runner — ops residual.
+1. **§3.C NEXT = W7-49 (#496)**. W7-48 **DONE**. Береться лише відкритий рядок §3; лаба **не** блокує. Physical CRS runner — ops residual.
 2. Lab/pilot RouterOS (паралельно): [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) (`Enabled` / `WriteEnabled`).
 3. Desktop реєстрація пристрою: Inventory **Add router** — [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
 4. Acceptance / readiness: [`docs/release/mvp-acceptance.md`](docs/release/mvp-acceptance.md), [`docs/release/readiness.md`](docs/release/readiness.md). Continuous plan: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).

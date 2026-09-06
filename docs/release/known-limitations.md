@@ -8,6 +8,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-44 Living Spec lock): §3.C continuous residual tranche after N1-07 Living Spec is seeded as **W7-45** — **M7.1…M7.4** Post-MVP CLOSED; release tag **`v0.2.0`**.
 - Intentional residual (W7-45 Living Spec lock): **M7.1…M7.4 (#110–#136)** — Post-MVP routing assurance, endpoint mobility, external correlation, and incident enforcement are DONE. **M7.4 CLOSED**; Post-MVP M7 = **0** open. Release tag **`v0.2.0`** (2026-08-24).
 - Intentional residual (W7-46 Living Spec lock): §3.C continuous residual tranche after M7 CLOSED is seeded as **W7-47** — **SEC-07…SEC-15 DONE** share `IUnitOfWork` for entity+idempotency+audit co-writes.
+- Intentional residual (W7-48 Living Spec lock): §3.C continuous residual tranche after SEC-07…15 is seeded as **W7-49** — known-limitations intentional residual bullets are **fully Living-Spec locked** (corpus COMPLETE); next product work seeds via PLAN tranche, not idle.
 
 ## Production wiring (P2 pilot)
 

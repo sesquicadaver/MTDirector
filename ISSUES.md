@@ -230,12 +230,13 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 | `W7-47` | #492 | https://github.com/sesquicadaver/MTDirector/issues/492 |
 | `W7-48` | #494 | https://github.com/sesquicadaver/MTDirector/issues/494 |
 | `W7-49` | #496 | https://github.com/sesquicadaver/MTDirector/issues/496 |
+| `W7-50` | #498 | https://github.com/sesquicadaver/MTDirector/issues/498 |
 
-**Product issues (code):** 148 DONE (§2.2) + Desktop alignment P0–P2 DONE; SEC-01…15 + W7-01…47 DONE.  
-**Linear queue (§3.C):** **OPEN** — **§3.C NEXT = W7-48 (#494)**. W7-47 (#492) **DONE**.  
+**Product issues (code):** 148 DONE (§2.2) + Desktop alignment P0–P2 DONE; SEC-01…15 + W7-01…48 DONE.  
+**Linear queue (§3.C):** **OPEN** — **§3.C NEXT = W7-49 (#496)**. W7-48 (#494) **DONE**.  
 **TRACKER-01** (#289): **DONE**. **PLAN-01** (#290): **DONE**. **P2-07…P2-11**: **DONE**. **PLAN-NBR-01** (#314): **DONE**.  
 Lab/CHR/`WriteEnabled` — parallel ops, not §3 predecessors. Plan: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 
-Start here: [`ROADMAP.md`](ROADMAP.md) §3.C — **§3.C NEXT = W7-48 (#494)**; W7-47 (#492) **DONE**; pilot [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md); Desktop inventory [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
+Start here: [`ROADMAP.md`](ROADMAP.md) §3.C — **§3.C NEXT = W7-49 (#496)**; W7-48 (#494) **DONE**; pilot [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md); Desktop inventory [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
