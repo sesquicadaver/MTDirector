@@ -602,6 +602,16 @@ Issue [#476](https://github.com/sesquicadaver/MTDirector/issues/476) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~RouterOsEnabledDefaultFailClosedResidualW739"`.
 
+## Living Specification — Continuous residual seed after RouterOs fail-closed (W7-40)
+
+Issue [#478](https://github.com/sesquicadaver/MTDirector/issues/478) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed WriteEnabled residual as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md` | `ContinuousResidualSeedW740LivingSpecTests.Ac1KnownLimitationsAndQueueSeedWriteEnabledResidualAsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW740"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
