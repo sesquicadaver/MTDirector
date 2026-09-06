@@ -592,6 +592,16 @@ Issue [#474](https://github.com/sesquicadaver/MTDirector/issues/474) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW738"`.
 
+## Living Specification — RouterOs Enabled default fail-closed residual (W7-39)
+
+Issue [#476](https://github.com/sesquicadaver/MTDirector/issues/476) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents RouterOs Enabled default fail-closed residual | `docs/release/known-limitations.md` | `RouterOsEnabledDefaultFailClosedResidualW739LivingSpecTests.Ac1KnownLimitationsDocumentsRouterOsEnabledDefaultFailClosedResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~RouterOsEnabledDefaultFailClosedResidualW739"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
