@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-36** ([#470](https://github.com/sesquicadaver/MTDirector/issues/470)): Living Spec locks continuous residual tranche seed after Inventory Add router → W7-37 gRPC automation. Seeded W7-37 (#472) / W7-38 (#474). **§3.C NEXT = W7-37 (#472)**.
 - **W7-35** ([#468](https://github.com/sesquicadaver/MTDirector/issues/468)): Living Spec locks intentional Inventory Add router wizard DONE residual in known-limitations. Seeded W7-36 (#470) / W7-37 (#472). **§3.C NEXT = W7-36 (#470)**.
 - **W7-34** ([#466](https://github.com/sesquicadaver/MTDirector/issues/466)): Living Spec locks intentional Desktop window does not stop Controller residual in known-limitations. Seeded W7-35 (#468) / W7-36 (#470). **§3.C NEXT = W7-35 (#468)**.
 - **W7-33** ([#464](https://github.com/sesquicadaver/MTDirector/issues/464)): Living Spec locks continuous residual tranche seed after CI billing → W7-34 Desktop window. Seeded W7-34 (#466) / W7-35 (#468). **§3.C NEXT = W7-34 (#466)**.

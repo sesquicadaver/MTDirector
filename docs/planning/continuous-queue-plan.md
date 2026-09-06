@@ -101,7 +101,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Seed next continuous residual after CI billing Living Spec | Docs / queue seed | **W7-33 DONE** |
 | Lock Desktop window does not stop Controller residual Living Spec | Docs / Desktop residual | **W7-34 DONE** |
 | Lock Inventory Add router wizard DONE residual Living Spec | Docs / Desktop residual | **W7-35 DONE** |
-| Seed next continuous residual after Inventory Add router Living Spec | Docs / queue seed | **W7-36 OPEN** |
+| Seed next continuous residual after Inventory Add router Living Spec | Docs / queue seed | **W7-36 DONE** |
+| Lock gRPC remains available for automation residual Living Spec | Docs / Desktop residual | **W7-37 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -190,7 +191,8 @@ W7-32 Lock GitHub-hosted CI billing-limited residual Living Spec **DONE**
 W7-33 Seed next continuous residual after CI billing Living Spec **DONE**
 W7-34 Lock Desktop window does not stop Controller residual Living Spec **DONE**
 W7-35 Lock Inventory Add router wizard DONE residual Living Spec **DONE**
-W7-36 Seed next continuous residual after Inventory Add router Living Spec **OPEN**
+W7-36 Seed next continuous residual after Inventory Add router Living Spec **DONE**
+W7-37 Lock gRPC remains available for automation residual Living Spec **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -265,9 +267,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 63 | W7-33 | [#464](https://github.com/sesquicadaver/MTDirector/issues/464) | Seed next continuous residual after CI billing Living Spec | **DONE** |
 | 64 | W7-34 | [#466](https://github.com/sesquicadaver/MTDirector/issues/466) | Lock Desktop window does not stop Controller residual Living Spec | **DONE** |
 | 65 | W7-35 | [#468](https://github.com/sesquicadaver/MTDirector/issues/468) | Lock Inventory Add router wizard DONE residual Living Spec | **DONE** |
-| 66 | W7-36 | [#470](https://github.com/sesquicadaver/MTDirector/issues/470) | Seed next continuous residual after Inventory Add router Living Spec | **OPEN** |
+| 66 | W7-36 | [#470](https://github.com/sesquicadaver/MTDirector/issues/470) | Seed next continuous residual after Inventory Add router Living Spec | **DONE** |
+| 67 | W7-37 | [#472](https://github.com/sesquicadaver/MTDirector/issues/472) | Lock gRPC remains available for automation residual Living Spec | **OPEN** |
 
-**§3.C NEXT = W7-36 (#470)**. W7-35 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-37 (#472)**. W7-36 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
