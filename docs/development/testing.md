@@ -612,6 +612,16 @@ Issue [#478](https://github.com/sesquicadaver/MTDirector/issues/478) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW740"`.
 
+## Living Specification — RouterOs WriteEnabled operator residual (W7-41)
+
+Issue [#480](https://github.com/sesquicadaver/MTDirector/issues/480) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents RouterOs WriteEnabled operator residual | `docs/release/known-limitations.md` | `RouterOsWriteEnabledOperatorResidualW741LivingSpecTests.Ac1KnownLimitationsDocumentsRouterOsWriteEnabledOperatorResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~RouterOsWriteEnabledOperatorResidualW741"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
