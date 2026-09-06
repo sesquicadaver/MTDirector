@@ -672,6 +672,16 @@ Issue [#490](https://github.com/sesquicadaver/MTDirector/issues/490) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW746"`.
 
+## Living Specification — SEC-07…SEC-15 DONE residual (W7-47)
+
+Issue [#492](https://github.com/sesquicadaver/MTDirector/issues/492) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents SEC-07…SEC-15 DONE residual | `docs/release/known-limitations.md` | `Sec0715DoneResidualW747LivingSpecTests.Ac1KnownLimitationsDocumentsSec0715DoneResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Sec0715DoneResidualW747"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
