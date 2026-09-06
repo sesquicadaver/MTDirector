@@ -572,6 +572,16 @@ Issue [#470](https://github.com/sesquicadaver/MTDirector/issues/470) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW736"`.
 
+## Living Specification — gRPC remains available for automation residual (W7-37)
+
+Issue [#472](https://github.com/sesquicadaver/MTDirector/issues/472) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents gRPC remains available for automation residual | `docs/release/known-limitations.md` | `GrpcRemainsAvailableForAutomationResidualW737LivingSpecTests.Ac1KnownLimitationsDocumentsGrpcRemainsAvailableForAutomationResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~GrpcRemainsAvailableForAutomationResidualW737"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
