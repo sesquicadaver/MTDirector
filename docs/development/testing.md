@@ -562,6 +562,16 @@ Issue [#468](https://github.com/sesquicadaver/MTDirector/issues/468) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~InventoryAddRouterWizardDoneResidualW735"`.
 
+## Living Specification — Continuous residual seed after Inventory Add router (W7-36)
+
+Issue [#470](https://github.com/sesquicadaver/MTDirector/issues/470) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed gRPC automation residual as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md` | `ContinuousResidualSeedW736LivingSpecTests.Ac1KnownLimitationsAndQueueSeedGrpcAutomationResidualAsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW736"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
