@@ -107,7 +107,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Lock RouterOs Enabled default fail-closed residual Living Spec | Docs / P2 residual | **W7-39 DONE** |
 | Seed next continuous residual after RouterOs fail-closed Living Spec | Docs / queue seed | **W7-40 DONE** |
 | Lock RouterOs WriteEnabled operator residual Living Spec | Docs / P2 residual | **W7-41 DONE** |
-| Seed next continuous residual after WriteEnabled Living Spec | Docs / queue seed | **W7-42 OPEN** |
+| Seed next continuous residual after WriteEnabled Living Spec | Docs / queue seed | **W7-42 DONE** |
+| Lock N1-07 path-class E2E DONE residual Living Spec | Docs / MVP residual | **W7-43 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -202,7 +203,8 @@ W7-38 Seed next continuous residual after gRPC automation Living Spec **DONE**
 W7-39 Lock RouterOs Enabled default fail-closed residual Living Spec **DONE**
 W7-40 Seed next continuous residual after RouterOs fail-closed Living Spec **DONE**
 W7-41 Lock RouterOs WriteEnabled operator residual Living Spec **DONE**
-W7-42 Seed next continuous residual after WriteEnabled Living Spec **OPEN**
+W7-42 Seed next continuous residual after WriteEnabled Living Spec **DONE**
+W7-43 Lock N1-07 path-class E2E DONE residual Living Spec **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -283,9 +285,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 69 | W7-39 | [#476](https://github.com/sesquicadaver/MTDirector/issues/476) | Lock RouterOs Enabled default fail-closed residual Living Spec | **DONE** |
 | 70 | W7-40 | [#478](https://github.com/sesquicadaver/MTDirector/issues/478) | Seed next continuous residual after RouterOs fail-closed Living Spec | **DONE** |
 | 71 | W7-41 | [#480](https://github.com/sesquicadaver/MTDirector/issues/480) | Lock RouterOs WriteEnabled operator residual Living Spec | **DONE** |
-| 72 | W7-42 | [#482](https://github.com/sesquicadaver/MTDirector/issues/482) | Seed next continuous residual after WriteEnabled Living Spec | **OPEN** |
+| 72 | W7-42 | [#482](https://github.com/sesquicadaver/MTDirector/issues/482) | Seed next continuous residual after WriteEnabled Living Spec | **DONE** |
+| 73 | W7-43 | [#484](https://github.com/sesquicadaver/MTDirector/issues/484) | Lock N1-07 path-class E2E DONE residual Living Spec | **OPEN** |
 
-**§3.C NEXT = W7-42 (#482)**. W7-41 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-43 (#484)**. W7-42 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

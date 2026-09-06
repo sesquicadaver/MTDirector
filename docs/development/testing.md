@@ -622,6 +622,16 @@ Issue [#480](https://github.com/sesquicadaver/MTDirector/issues/480) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~RouterOsWriteEnabledOperatorResidualW741"`.
 
+## Living Specification — Continuous residual seed after WriteEnabled (W7-42)
+
+Issue [#482](https://github.com/sesquicadaver/MTDirector/issues/482) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed N1-07 residual as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md` | `ContinuousResidualSeedW742LivingSpecTests.Ac1KnownLimitationsAndQueueSeedN107ResidualAsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW742"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:

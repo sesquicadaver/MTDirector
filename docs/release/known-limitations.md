@@ -11,7 +11,8 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 
 - Intentional residual (W7-39 Living Spec lock): **Read path (P2-04…P2-06)** — **DONE**. Enable via `Mfc:RouterOs:Enabled=true`; default remains fail-closed (`ProbeOnlyRouterOsReadPort` / `NotConfiguredSnapshotCapturePort`). Pilot checklist: [`pilot-runbook.md`](../operations/pilot-runbook.md).
 - Intentional residual (W7-40 Living Spec lock): §3.C continuous residual tranche after RouterOs fail-closed is seeded as **W7-41** — enable write path via **`Mfc:RouterOs:WriteEnabled=true`** (P2-11 checklist).
-- Intentional residual (W7-41 Living Spec lock): Onboarding/deploy/watchdog-residue: **P2-07…P2-10 DONE** in code; enable via **`Mfc:RouterOs:WriteEnabled=true`**. Operator checklist: [`pilot-runbook.md`](../operations/pilot-runbook.md) (P2-11). **§3.C NEXT = W7-42 (#482)** after W7-41.
+- Intentional residual (W7-41 Living Spec lock): Onboarding/deploy/watchdog-residue: **P2-07…P2-10 DONE** in code; enable via **`Mfc:RouterOs:WriteEnabled=true`**. Operator checklist: [`pilot-runbook.md`](../operations/pilot-runbook.md) (P2-11).
+- Intentional residual (W7-42 Living Spec lock): §3.C continuous residual tranche after WriteEnabled is seeded as **W7-43** — **N1-07** path-class E2E/drift acceptance is DONE (`PathClassE2EDriftLivingSpecTests`). **§3.C NEXT = W7-43 (#484)** after W7-42.
 
 ## Desktop inventory registration
 

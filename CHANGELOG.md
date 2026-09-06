@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-42** ([#482](https://github.com/sesquicadaver/MTDirector/issues/482)): Living Spec locks continuous residual tranche seed after WriteEnabled → W7-43 N1-07. Seeded W7-43 (#484) / W7-44 (#486). **§3.C NEXT = W7-43 (#484)**.
 - **W7-41** ([#480](https://github.com/sesquicadaver/MTDirector/issues/480)): Living Spec locks intentional RouterOs WriteEnabled operator residual in known-limitations. Seeded W7-42 (#482) / W7-43 (#484). **§3.C NEXT = W7-42 (#482)**.
 - **W7-40** ([#478](https://github.com/sesquicadaver/MTDirector/issues/478)): Living Spec locks continuous residual tranche seed after RouterOs fail-closed → W7-41 WriteEnabled. Seeded W7-41 (#480) / W7-42 (#482). **§3.C NEXT = W7-41 (#480)**.
 - **W7-39** ([#476](https://github.com/sesquicadaver/MTDirector/issues/476)): Living Spec locks intentional RouterOs Enabled default fail-closed residual in known-limitations. Seeded W7-40 (#478) / W7-41 (#480). **§3.C NEXT = W7-40 (#478)**.
