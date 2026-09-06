@@ -652,6 +652,16 @@ Issue [#486](https://github.com/sesquicadaver/MTDirector/issues/486) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ContinuousResidualSeedW744"`.
 
+## Living Specification — M7.1…M7.4 CLOSED residual (W7-45)
+
+Issue [#488](https://github.com/sesquicadaver/MTDirector/issues/488) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations documents M7.1…M7.4 CLOSED residual | `docs/release/known-limitations.md` | `M7ClosedResidualW745LivingSpecTests.Ac1KnownLimitationsDocumentsM7ClosedResidual` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~M7ClosedResidualW745"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
