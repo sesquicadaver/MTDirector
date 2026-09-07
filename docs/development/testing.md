@@ -799,6 +799,20 @@ Issue [#524](https://github.com/sesquicadaver/MTDirector/issues/524) AC → modu
 Filter (integration): `dotnet test tests/Mfc.IntegrationTests --filter "FullyQualifiedName~RoutingAssuranceGrpcHostTests"`.
 Filter (unit Living Spec): `dotnet test --filter "FullyQualifiedName~CtRouting01RoutingAssurance"`.
 
+## Living Specification — CT-INCIDENT-01 Incident ProtoContract + GrpcHost (W7-64)
+
+Issue [#526](https://github.com/sesquicadaver/MTDirector/issues/526) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Proto surface is Ingest+Bind only (no deploy/overlay/feedback) | `IncidentProtoContractTests` | `IncidentServiceExposesIngestAndBindRpcsOnly` / `IncidentContractHasNoDeployOverlayOrFeedbackRpcs` / `IncidentSignalCarriesDeduplicationAndSeverity` |
+| Ingest + BindAssessment over Program.BuildHost | `IncidentGrpcHostTests` | `IngestAndBindAssessmentOverHost` |
+| Wire surface matches SEC-06 scoped RPCs | same | `IncidentServiceExposesOnlyIngestAndBindOnWire` |
+| Docs / PLAN-04 matrix lock | `plan-04-contract-tests.md`, `testing.md` | `CtIncident01IncidentGrpcHostLivingSpecTests.Ac1IncidentProtoAndGrpcHostTestsAndPlan04MatrixExist` |
+
+Filter (integration): `dotnet test tests/Mfc.IntegrationTests --filter "FullyQualifiedName~IncidentGrpcHostTests"`.
+Filter (unit Living Spec): `dotnet test --filter "FullyQualifiedName~CtIncident01Incident"`.
+
 ## Living Specification — PLAN-03 quality-gate inventory (W7-51)
 
 Issue [#500](https://github.com/sesquicadaver/MTDirector/issues/500) AC → module → tests:
