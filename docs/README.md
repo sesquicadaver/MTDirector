@@ -2,7 +2,7 @@
 
 **Release:** `v0.2.0` (2026-08-24) — MVP + Post-MVP M7 CLOSED.  
 **Pilot:** P2 read + write path CLOSED — [`operations/pilot-runbook.md`](operations/pilot-runbook.md).  
-**Next delivery (§3):** **§3.C NEXT = W7-53 (#504)** — W7-52 ([#502](https://github.com/sesquicadaver/MTDirector/issues/502)) **DONE**. CRS/physical lab runner stays ops.  
+**Next delivery (§3):** **§3.C NEXT = W7-54 (#506)** — W7-53 ([#504](https://github.com/sesquicadaver/MTDirector/issues/504)) **DONE**. CRS/physical lab runner stays ops.  
 **Alignment P0–P2:** W1–W4 / W2.1–W2.2 **DONE** (`877a529`).
 
 ## Planning and tracking
@@ -11,6 +11,7 @@
 |----------|---------|
 | [`ROADMAP.md`](../ROADMAP.md) | Linear atomic task queue (normative execution order) |
 | [`planning/continuous-queue-plan.md`](planning/continuous-queue-plan.md) | PLAN-02: continuous §3.C (no phase-stop idle) |
+| [`planning/plan-03-quality-gates.md`](planning/plan-03-quality-gates.md) | PLAN-03: quality-gate tranche (import-graph / docs smoke / anti-stub) |
 | [`ISSUES.md`](../ISSUES.md) | Logical ID → GitHub issue mapping |
 | [`CHANGELOG.md`](../CHANGELOG.md) | Release history |
 
@@ -31,6 +32,7 @@ Authoritative ТЗ and Issue Sets live in the repository root and are indexed in
 |----------|---------|
 | [`development/local-environment.md`](development/local-environment.md) | Workstation bootstrap |
 | [`development/testing.md`](development/testing.md) | Living Specification matrices (ТЗ → module → tests) |
+| [`development/docs-smoke.md`](development/docs-smoke.md) | QG-DOCS-01 weekly docs smoke checklist |
 | [`development/desktop-ui-backend-alignment.md`](development/desktop-ui-backend-alignment.md) | Desktop UI ↔ Controller data alignment (P0–P3); W6-01…W6-03 **DONE**; residual CRS lab ops |
 | [`development/ci.md`](development/ci.md) | CI workflow and gates |
 | [`development/git-workflow.md`](development/git-workflow.md) | Branch/PR process |
