@@ -774,6 +774,22 @@ Issue [#534](https://github.com/sesquicadaver/MTDirector/issues/534) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopDriftLivingSpecTests|CtDeskDrift01"`.
 
+## Living Specification — DESK-ZONE-01 Desktop Zones panel (W7-69)
+
+Issue [#536](https://github.com/sesquicadaver/MTDirector/issues/536) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| CRUD+resolve wire + Desktop client | `GrpcZoneServiceClient`, `ZoneService` proto | `DesktopZonesLivingSpecTests.Ac1WireAndDesktopClientExposeCrudAndResolveRpcs` |
+| ViewModel CRUD / binding / resolve commands | `ZonesViewModel` | `Ac2ViewModelExposesZoneCrudBindingAndResolveCommands` |
+| Refresh loads zones + Node bindings | `ZonesViewModel` | `Ac3RefreshLoadsZonesAndNodeBindingsWhenNodeSelected` |
+| Resolve requires Connected + inventory selection | `ZonesViewModel` | `Ac4ResolveRequiresConnectedControllerAndInventorySelection` |
+| MainWindow binds Zones CRUD/bindings/resolve | `MainWindow.axaml` | `Ac5MainWindowBindsZonesCrudBindingsAndResolve` |
+| Host CT-ZONE-01 remains present | `ZoneGrpcHostTests` | `Ac6HostContractLivingSpecRemainsPresent` |
+| Docs / PLAN-05 matrix lock | `plan-05-desktop-operator-surface.md`, `testing.md` | `CtDeskZone01DesktopZonesLivingSpecTests.Ac1DesktopZonesLivingSpecAndPlan05MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopZonesLivingSpecTests|CtDeskZone01"`.
+
 ## Living Specification — PLAN-04 contract-test inventory (W7-58)
 
 Issue [#514](https://github.com/sesquicadaver/MTDirector/issues/514) AC → module → tests:
