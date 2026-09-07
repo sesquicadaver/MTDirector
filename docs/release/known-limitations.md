@@ -21,6 +21,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-58 Living Spec lock): **PLAN-04** contract-test inventory is documented in [`plan-04-contract-tests.md`](../planning/plan-04-contract-tests.md); first atomic row **CT-DEPLOY-01** (W7-59).
 - Intentional residual (W7-59 Living Spec lock): **CT-DEPLOY-01** — `DeploymentService` has Controller GrpcHost contract coverage (`DeploymentGrpcHostTests` + `ScriptedDeploymentRuntime`).
 - Intentional residual (W7-60 Living Spec lock): **CT-ZONE-01** — `ZoneService` has Controller GrpcHost contract coverage (`ZoneGrpcHostTests`).
+- Intentional residual (W7-61 Living Spec lock): **CT-DRIFT-01** — `DriftService` has Controller GrpcHost contract coverage (`DriftGrpcHostTests`).
 
 ## Production wiring (P2 pilot)
 

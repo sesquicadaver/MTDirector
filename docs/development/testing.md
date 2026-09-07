@@ -759,6 +759,19 @@ Issue [#518](https://github.com/sesquicadaver/MTDirector/issues/518) AC → modu
 Filter (integration): `dotnet test tests/Mfc.IntegrationTests --filter "FullyQualifiedName~ZoneGrpcHostTests"`.  
 Filter (unit Living Spec): `dotnet test --filter "FullyQualifiedName~CtZone01ZoneGrpcHost"`.
 
+## Living Specification — CT-DRIFT-01 DriftService GrpcHost (W7-61)
+
+Issue [#520](https://github.com/sesquicadaver/MTDirector/issues/520) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| List empty + Get not-found + List/Get after detect | `DriftGrpcHostTests` | `ListAndGetDriftEventsAfterDetect` |
+| Wire surface is read-only (List + Get only) | same | `DriftServiceHasNoMutationRpcsOnWire` |
+| Docs / PLAN-04 matrix lock | `plan-04-contract-tests.md`, `testing.md` | `CtDrift01DriftGrpcHostLivingSpecTests.Ac1DriftGrpcHostTestsAndPlan04MatrixExist` |
+
+Filter (integration): `dotnet test tests/Mfc.IntegrationTests --filter "FullyQualifiedName~DriftGrpcHostTests"`.  
+Filter (unit Living Spec): `dotnet test --filter "FullyQualifiedName~CtDrift01DriftGrpcHost"`.
+
 ## Living Specification — PLAN-03 quality-gate inventory (W7-51)
 
 Issue [#500](https://github.com/sesquicadaver/MTDirector/issues/500) AC → module → tests:
