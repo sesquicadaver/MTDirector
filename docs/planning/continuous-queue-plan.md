@@ -128,7 +128,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | PLAN-04 — Inventory next contract-test / API Living Spec product tranche | Docs / PLAN-04 | **W7-58 DONE** |
 | CT-DEPLOY-01 — DeploymentService GrpcHost contract Living Spec | Docs / contract test | **W7-59 DONE** |
 | CT-ZONE-01 — ZoneService GrpcHost contract Living Spec | Docs / contract test | **W7-60 DONE** |
-| CT-DRIFT-01 — DriftService GrpcHost contract Living Spec | Docs / contract test | **W7-61 OPEN** |
+| CT-DRIFT-01 — DriftService GrpcHost contract Living Spec | Docs / contract test | **W7-61 DONE** |
+| CT-AUDIT-01 — AuditService GrpcHost contract Living Spec | Docs / contract test | **W7-62 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -242,7 +243,8 @@ W7-57 Seed next product tranche after PLAN-03 quality gates **DONE**
 W7-58 PLAN-04 — Inventory next contract-test / API Living Spec product tranche **DONE**
 W7-59 CT-DEPLOY-01 — DeploymentService GrpcHost contract Living Spec **DONE**
 W7-60 CT-ZONE-01 — ZoneService GrpcHost contract Living Spec **DONE**
-W7-61 CT-DRIFT-01 — DriftService GrpcHost contract Living Spec **OPEN**
+W7-61 CT-DRIFT-01 — DriftService GrpcHost contract Living Spec **DONE**
+W7-62 CT-AUDIT-01 — AuditService GrpcHost contract Living Spec **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -342,9 +344,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 88 | W7-58 | [#514](https://github.com/sesquicadaver/MTDirector/issues/514) | PLAN-04 — Inventory next contract-test / API Living Spec product tranche | **DONE** |
 | 89 | W7-59 | [#516](https://github.com/sesquicadaver/MTDirector/issues/516) | CT-DEPLOY-01 — DeploymentService GrpcHost contract Living Spec | **DONE** |
 | 90 | W7-60 | [#518](https://github.com/sesquicadaver/MTDirector/issues/518) | CT-ZONE-01 — ZoneService GrpcHost contract Living Spec | **DONE** |
-| 91 | W7-61 | [#520](https://github.com/sesquicadaver/MTDirector/issues/520) | CT-DRIFT-01 — DriftService GrpcHost contract Living Spec | **OPEN** |
+| 91 | W7-61 | [#520](https://github.com/sesquicadaver/MTDirector/issues/520) | CT-DRIFT-01 — DriftService GrpcHost contract Living Spec | **DONE** |
+| 92 | W7-62 | [#522](https://github.com/sesquicadaver/MTDirector/issues/522) | CT-AUDIT-01 — AuditService GrpcHost contract Living Spec | **OPEN** |
 
-**§3.C NEXT = W7-61 (#520)**. W7-60 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-62 (#522)**. W7-61 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
