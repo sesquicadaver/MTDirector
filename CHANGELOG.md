@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-71** ([#540](https://github.com/sesquicadaver/MTDirector/issues/540)): Seed next product tranche after PLAN-05 → **PLAN-06** Incident Desktop operator-surface inventory (W7-72). Seeded W7-72 (#542) / W7-73 (#544). **§3.C NEXT = W7-72 (#542)**.
 - **W7-70** ([#538](https://github.com/sesquicadaver/MTDirector/issues/538)): DESK-ROUTING-01 Desktop Routing assurance Living Spec deepened vs RoutingAssuranceGrpcHost (`DesktopRoutingAssuranceLivingSpecTests` Ac10–13). PLAN-05 **COMPLETE**. Seeded W7-71 (#540) / W7-72 (#542). **§3.C NEXT = W7-71 (#540)**.
 - **W7-69** ([#536](https://github.com/sesquicadaver/MTDirector/issues/536)): DESK-ZONE-01 Desktop Zones panel Living Spec (`DesktopZonesLivingSpecTests`) vs ZoneGrpcHost. Seeded W7-70 (#538) / W7-71 (#540). **§3.C NEXT = W7-70 (#538)**.
 - **W7-68** ([#534](https://github.com/sesquicadaver/MTDirector/issues/534)): DESK-DRIFT-01 Desktop Drift panel Living Spec (`DesktopDriftLivingSpecTests`) vs DriftGrpcHost. Seeded W7-69 (#536) / W7-70 (#538). **§3.C NEXT = W7-69 (#536)**.

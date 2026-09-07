@@ -41,4 +41,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-71 (#540)** — Seed next product tranche after PLAN-05 Desktop operator-surface (PLAN-06).
+**§3.C NEXT = W7-72 (#542)** — PLAN-06 Inventory next Incident Desktop operator-surface Living Spec product tranche.
