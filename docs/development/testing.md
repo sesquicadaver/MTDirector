@@ -778,6 +778,21 @@ Issue [#508](https://github.com/sesquicadaver/MTDirector/issues/508) AC → modu
 Checklist: [`livespec-matrix-gate.md`](livespec-matrix-gate.md).  
 Filter: `dotnet test --filter "FullyQualifiedName~QgLivespecMatrix01"`.
 
+## Living Specification — QG-SIGN-01 release signing residual gate (W7-56)
+
+Issue [#510](https://github.com/sesquicadaver/MTDirector/issues/510) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| MVP cleartext SHA256SUMS attestation documented | `RELEASE_SIGNING.md` | `QgSign01ReleaseSigningLivingSpecTests.Ac1ReleaseSigningDocumentsMvpCleartextSha256SumsAttestation` |
+| CI crypto signing documented as future, not default | `RELEASE_SIGNING.md` | `QgSign01ReleaseSigningLivingSpecTests.Ac2CiSigningGateDocumentedAsFutureNotDefaultEnabled` |
+| release-gates references signing policy | `release-gates.md` | `QgSign01ReleaseSigningLivingSpecTests.Ac3ReleaseGatesChecklistReferencesSigningPolicy` |
+| known-limitations keeps signing residual | `known-limitations.md` | `QgSign01ReleaseSigningLivingSpecTests.Ac4KnownLimitationsDocumentsSigningResidual` |
+| Docs matrix documents QG-SIGN-01 | `testing.md`, `signing-gate.md`, `plan-03` | `QgSign01ReleaseSigningLivingSpecTests.Ac5DocsMatrixDocumentsQgSign01` |
+
+Checklist: [`signing-gate.md`](signing-gate.md).  
+Filter: `dotnet test --filter "FullyQualifiedName~QgSign01"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
