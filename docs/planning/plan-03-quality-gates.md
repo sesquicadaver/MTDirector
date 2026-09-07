@@ -29,4 +29,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-60 (#518)** — CT-ZONE-01 ZoneService GrpcHost contract Living Spec.
+**§3.C NEXT = W7-61 (#520)** — CT-DRIFT-01 DriftService GrpcHost contract Living Spec.
