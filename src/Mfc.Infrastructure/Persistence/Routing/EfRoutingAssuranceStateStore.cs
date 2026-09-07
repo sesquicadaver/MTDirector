@@ -14,7 +14,8 @@ public sealed class EfRoutingAssuranceStateStore : IRoutingAssuranceStateStore
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        // Keep nulls so `required string?` domain facts round-trip through System.Text.Json.
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
     };
 
     private readonly MfcDbContext _db;
