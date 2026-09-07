@@ -22,6 +22,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-59 Living Spec lock): **CT-DEPLOY-01** — `DeploymentService` has Controller GrpcHost contract coverage (`DeploymentGrpcHostTests` + `ScriptedDeploymentRuntime`).
 - Intentional residual (W7-60 Living Spec lock): **CT-ZONE-01** — `ZoneService` has Controller GrpcHost contract coverage (`ZoneGrpcHostTests`).
 - Intentional residual (W7-61 Living Spec lock): **CT-DRIFT-01** — `DriftService` has Controller GrpcHost contract coverage (`DriftGrpcHostTests`).
+- Intentional residual (W7-62 Living Spec lock): **CT-AUDIT-01** — `AuditService` has Controller GrpcHost contract coverage (`AuditGrpcHostTests`).
 
 ## Production wiring (P2 pilot)
 
