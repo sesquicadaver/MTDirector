@@ -778,6 +778,20 @@ Issue [#544](https://github.com/sesquicadaver/MTDirector/issues/544) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentLivingSpecTests|CtDeskIncident01"`.
 
+## Living Specification — DESK-INCIDENT-02 Desktop Incident MainWindow panel (W7-74)
+
+Issue [#546](https://github.com/sesquicadaver/MTDirector/issues/546) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| MainWindow binds ingest form + status/error + empty-state | `MainWindow.axaml` Operations → Incident | `DesktopIncidentPanelLivingSpecTests.Ac1MainWindowBindsIncidentIngestFormStatusAndEmptyState` |
+| Panel under Operations; no 8th nav module | `ShellNavigationModule`, `MainWindow.axaml` | `Ac2PanelStaysUnderOperationsWithoutEighthNavigationModule` |
+| Empty-state / LastSignal VM surface | `IncidentViewModel` | `Ac3EmptyStateAndLastSignalSurfaceExistOnViewModel` |
+| Host CT-INCIDENT-01 remains present | `IncidentGrpcHostTests` | `Ac4HostContractLivingSpecRemainsPresent` |
+| Docs / PLAN-06 matrix lock | `plan-06-incident-desktop-operator-surface.md`, `testing.md` | `CtDeskIncident02DesktopIncidentPanelLivingSpecTests.Ac1DesktopIncidentPanelLivingSpecAndPlan06MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentPanelLivingSpecTests|CtDeskIncident02"`.
+
 ## Living Specification — DESK-AUDIT-01 Desktop Audit panel (W7-67)
 
 Issue [#532](https://github.com/sesquicadaver/MTDirector/issues/532) AC → module → tests:

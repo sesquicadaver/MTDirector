@@ -29,4 +29,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-74 (#546)** — DESK-INCIDENT-02 Desktop Incident MainWindow panel Living Spec.
+**§3.C NEXT = W7-75 (#548)** — DESK-INCIDENT-03 Desktop Incident Bind assessment Living Spec.

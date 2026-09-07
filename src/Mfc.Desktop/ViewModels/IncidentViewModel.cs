@@ -9,8 +9,8 @@ using Mfc.Desktop.Services;
 namespace Mfc.Desktop.ViewModels;
 
 /// <summary>
-/// Incident operator surface (DESK-INCIDENT-01): SEC-06 Ingest (+ Bind client) — Contracts-only.
-/// No deploy/overlay/feedback Desktop RPCs. MainWindow panel bindings land in DESK-INCIDENT-02.
+/// Incident operator surface (DESK-INCIDENT-01/02): SEC-06 Ingest (+ Bind client) — Contracts-only.
+/// No deploy/overlay/feedback Desktop RPCs. MainWindow Operations → Incident tab binds this VM.
 /// </summary>
 public sealed partial class IncidentViewModel : ObservableObject, IDisposable
 {

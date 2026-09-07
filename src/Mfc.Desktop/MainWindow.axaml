@@ -1625,6 +1625,65 @@
               </StackPanel>
             </ScrollViewer>
           </TabItem>
+
+          <TabItem Header="Incident">
+            <ScrollViewer Margin="0,8,0,0"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+              <!-- Incident (SEC-06 ingest; no deploy/overlay Desktop RPCs) -->
+              <Border Classes="mfc-panel">
+                <StackPanel Spacing="8">
+                  <DockPanel LastChildFill="True">
+                    <Button Classes="mfc-action"
+                            Content="Ingest signal"
+                            Command="{Binding Incident.IngestCommand}"
+                            DockPanel.Dock="Right"
+                            Margin="8,0,0,0"
+                            MinWidth="120" />
+                    <TextBlock Classes="mfc-section-title"
+                               Text="Incident signal ingest"
+                               VerticalAlignment="Center"
+                               TextWrapping="Wrap" />
+                  </DockPanel>
+                  <TextBlock Classes="mfc-muted"
+                             Text="SEC-06 Contracts-only ingest. No deploy/overlay/feedback actions on Desktop."
+                             TextWrapping="Wrap" />
+                  <TextBlock Text="{Binding Incident.StatusText}" Classes="mfc-muted" TextWrapping="Wrap" />
+                  <TextBlock Classes="mfc-error"
+                             Text="{Binding Incident.ErrorText}"
+                             IsVisible="{Binding Incident.HasError}"
+                             TextWrapping="Wrap" />
+                  <TextBlock Classes="mfc-muted"
+                             Text="Connect to Controller, then fill source event id, category, and deduplication key."
+                             IsVisible="{Binding !Incident.HasLastSignal}"
+                             TextWrapping="Wrap" />
+                  <TextBlock Classes="mfc-label" Text="Source event id" />
+                  <TextBox Text="{Binding Incident.SourceEventId}" Watermark="siem-evt-…" />
+                  <TextBlock Classes="mfc-label" Text="Category" />
+                  <TextBox Text="{Binding Incident.Category}" Watermark="brute_force_login" />
+                  <TextBlock Classes="mfc-label" Text="Deduplication key" />
+                  <TextBox Text="{Binding Incident.DeduplicationKey}" Watermark="dedup:…" />
+                  <TextBlock Classes="mfc-label" Text="Confidence (0–100)" />
+                  <TextBox Text="{Binding Incident.Confidence}" Watermark="50" />
+                  <StackPanel Spacing="4" IsVisible="{Binding Incident.HasLastSignal}">
+                    <TextBlock Classes="mfc-label" Text="Last ingested signal" />
+                    <TextBlock Text="{Binding Incident.LastSignal.SummaryLine}"
+                               FontWeight="SemiBold"
+                               TextWrapping="Wrap" />
+                    <TextBlock Classes="mfc-mono"
+                               Text="{Binding Incident.LastSignal.EventIdText, StringFormat=Event id: {0}}"
+                               TextWrapping="Wrap" />
+                    <TextBlock Classes="mfc-muted"
+                               Text="{Binding Incident.LastSignal.SourceTypeText, StringFormat=Source type: {0}}"
+                               TextWrapping="Wrap" />
+                    <TextBlock Classes="mfc-muted"
+                               Text="{Binding Incident.LastSignal.DeduplicationKey, StringFormat=Dedup: {0}}"
+                               TextWrapping="Wrap" />
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+            </ScrollViewer>
+          </TabItem>
         </TabControl>
 
         <!-- Drift (no automatic fix) -->
