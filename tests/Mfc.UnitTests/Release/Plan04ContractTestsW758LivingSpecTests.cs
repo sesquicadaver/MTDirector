@@ -22,7 +22,9 @@ public sealed class Plan04ContractTestsW758LivingSpecTests
         Assert.Contains("CT-ROUTING-01", plan04, StringComparison.Ordinal);
         Assert.Contains("CT-INCIDENT-01", plan04, StringComparison.Ordinal);
         Assert.Contains("W7-59", plan04, StringComparison.Ordinal);
-        Assert.Contains("missing GrpcHost", plan04, StringComparison.Ordinal);
+        // Soft-lock: inventory still lists all ranked CT IDs; host coverage advances in later rows.
+        Assert.Contains("DeploymentGrpcHostTests", plan04, StringComparison.Ordinal);
+        Assert.Contains("W7-64 DONE", plan04, StringComparison.Ordinal);
         Assert.Contains("Intentional residual (W7-58 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("PLAN-04", limitations, StringComparison.Ordinal);
         Assert.Contains("CT-DEPLOY-01", roadmap, StringComparison.Ordinal);
