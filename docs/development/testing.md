@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-DEPLOY-01 Desktop Deployment panel (W7-81)
+
+Issue [#560](https://github.com/sesquicadaver/MTDirector/issues/560) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Wire + Desktop Deployment client | `IDeploymentServiceClient`, `GrpcDeploymentServiceClient` | `DesktopDeploymentLivingSpecTests.Ac1WireAndDesktopClientExposePlanStartWatchRollbackAndRecovery` |
+| Plan/Start/Rollback/Recovery; no ForceApply/raw ROS | `DeploymentViewModel` | `Ac2ViewModelExposesPlanStartRollbackRecoveryWithoutForceApplyOrRawCommands` |
+| CreatePlan loads typed semantic diff | `DeploymentViewModel` | `Ac3CreatePlanLoadsSemanticDiffWhenNodeSelected` |
+| CreatePlan requires Node selection | `DeploymentViewModel` | `Ac4CreatePlanRequiresInventoryNodeSelection` |
+| MainWindow Deployment bindings | `MainWindow.axaml` | `Ac5MainWindowBindsDeploymentPlanStartWatchRollbackAndRecovery` |
+| Host DeploymentGrpcHost remains present | `DeploymentGrpcHostTests` | `Ac6HostContractLivingSpecRemainsPresent` |
+| Docs / PLAN-07 matrix lock | `plan-07-core-mvp-desktop-operator-surface.md`, `testing.md` | `CtDeskDeploy01DesktopDeploymentLivingSpecTests.Ac1DesktopDeploymentLivingSpecAndPlan07MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopDeploymentLivingSpecTests|CtDeskDeploy01"`.
+
 ## Living Specification — Product tranche seed after DESK-POLICY-01 (W7-80)
 
 Issue [#558](https://github.com/sesquicadaver/MTDirector/issues/558) AC → module → tests:
