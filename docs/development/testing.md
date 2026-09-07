@@ -735,6 +735,20 @@ Issue [#502](https://github.com/sesquicadaver/MTDirector/issues/502) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~QgImport01ImportGraphCycle"`.
 
+## Living Specification — QG-DOCS-01 weekly docs smoke (W7-53)
+
+Issue [#504](https://github.com/sesquicadaver/MTDirector/issues/504) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| README + docs index match ROADMAP §3.C NEXT | `README.md`, `docs/README.md`, `ROADMAP.md` | `QgDocs01WeeklyDocsSmokeLivingSpecTests.Ac1RootAndDocsReadmeMatchRoadmapNext` |
+| docs/README.md relative `.md` links resolve | `docs/README.md` | `QgDocs01WeeklyDocsSmokeLivingSpecTests.Ac2DocsIndexRelativeLinksResolve` |
+| Service/docs surface files exist | repo root + docs | `QgDocs01WeeklyDocsSmokeLivingSpecTests.Ac3ServiceSurfaceFilesExist` |
+| Weekly smoke checklist documents required checks | `docs/development/docs-smoke.md` | `QgDocs01WeeklyDocsSmokeLivingSpecTests.Ac4WeeklySmokeChecklistDocumentsRequiredChecks` |
+| Docs matrix documents QG-DOCS-01 | `testing.md`, `plan-03-quality-gates.md` | `QgDocs01WeeklyDocsSmokeLivingSpecTests.Ac5DocsMatrixDocumentsQgDocs01LivingSpec` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~QgDocs01WeeklyDocsSmoke"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:

@@ -13,6 +13,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-50 Living Spec lock): §3.C product tranche after residual corpus is seeded as **W7-51** — **PLAN-03** quality-gate inventory (import-graph / docs smoke / anti-stub); not idle; not a lab stop-gate.
 - Intentional residual (W7-51 Living Spec lock): **PLAN-03** quality-gate inventory is documented in [`plan-03-quality-gates.md`](../planning/plan-03-quality-gates.md); first atomic row **QG-IMPORT-01** (W7-52).
 - Intentional residual (W7-52 Living Spec lock): **QG-IMPORT-01** — production `Mfc.*` assembly import graph is a DAG (`ProductionImportGraph` + `QgImport01ImportGraphCycleLivingSpecTests`); complements NetArch pairwise boundaries.
+- Intentional residual (W7-53 Living Spec lock): **QG-DOCS-01** — weekly docs smoke (`docs-smoke.md` + `QgDocs01WeeklyDocsSmokeLivingSpecTests`) keeps README / docs index aligned with ROADMAP §3.C NEXT.
 
 ## Production wiring (P2 pilot)
 

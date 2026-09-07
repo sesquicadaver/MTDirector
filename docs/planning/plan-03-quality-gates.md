@@ -18,9 +18,9 @@ Desktop/Contracts product glue from PLAN-02 is **exhausted** (CONT / W5 / W6 / S
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **QG-IMPORT-01** | No dedicated import-graph / cyclic-dependency anomaly gate beyond NetArch assembly edges | User DoD (import graph + cycles); `ArchitectureBoundaryTests` covers refs only; gate: `ProductionImportGraph` + `QgImport01ImportGraphCycleLivingSpecTests` | **W7-52 DONE** (#502) |
-| 2 | **QG-DOCS-01** | Weekly README/index ↔ fact smoke is not a recurring §3 row | User DoD (weekly docs smoke); `release-gates.md` is one-shot acceptance | **W7-53 OPEN** (#504) |
-| 3 | **QG-ANTISTUB-01** | Anti-stub is DoD text; no dedicated CI scanner for stub/`NotImplemented` | ROADMAP §6 / alignment DoD | after W7-53 |
-| 4 | **QG-LIVESPEC-MATRIX-01** | Living Spec matrix update-in-PR is process text; optional gate | ROADMAP §5 | optional |
+| 2 | **QG-DOCS-01** | Weekly README/index ↔ fact smoke is not a recurring §3 row | User DoD (weekly docs smoke); checklist [`docs-smoke.md`](../development/docs-smoke.md); gate: `QgDocs01WeeklyDocsSmokeLivingSpecTests` | **W7-53 DONE** (#504) |
+| 3 | **QG-ANTISTUB-01** | Anti-stub is DoD text; no dedicated CI scanner for stub/`NotImplemented` | ROADMAP §6 / alignment DoD | **W7-54 OPEN** (#506) |
+| 4 | **QG-LIVESPEC-MATRIX-01** | Living Spec matrix update-in-PR is process text; optional gate | ROADMAP §5 | after W7-54 |
 | 5 | **QG-SIGN-01** | CI cryptographic signing remains unchecked residual | `release-gates.md` / `RELEASE_SIGNING.md`; W7-23 = cleartext SHA256SUMS | optional / ops |
 
 ## Dual track (unchanged)
@@ -29,4 +29,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-53 (#504)** — QG-DOCS-01 weekly docs smoke Living Spec gate.
+**§3.C NEXT = W7-54 (#506)** — QG-ANTISTUB-01 anti-stub CI Living Spec gate.
