@@ -35,6 +35,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-72 Living Spec lock): **PLAN-06** Incident Desktop operator-surface inventory is documented in [`plan-06-incident-desktop-operator-surface.md`](../planning/plan-06-incident-desktop-operator-surface.md); first atomic row **DESK-INCIDENT-01** (W7-73).
 - Intentional residual (W7-73 Living Spec lock): **DESK-INCIDENT-01** — Desktop Incident ViewModel + client Living Spec vs IncidentGrpcHost (`DesktopIncidentLivingSpecTests`); MainWindow panel deferred to **DESK-INCIDENT-02** (W7-74).
 - Intentional residual (W7-74 Living Spec lock): **DESK-INCIDENT-02** — Desktop Incident MainWindow Operations → Incident panel Living Spec (`DesktopIncidentPanelLivingSpecTests`); Bind assessment deferred to **DESK-INCIDENT-03** (W7-75).
+- Intentional residual (W7-75 Living Spec lock): **DESK-INCIDENT-03** — Desktop Incident Bind assessment Living Spec (`DesktopIncidentBindLivingSpecTests`); fail-closed deploy/overlay lock deferred to **DESK-INCIDENT-04** (W7-76).
 
 ## Production wiring (P2 pilot)
 

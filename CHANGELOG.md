@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-75** ([#548](https://github.com/sesquicadaver/MTDirector/issues/548)): DESK-INCIDENT-03 Desktop Incident Bind assessment Living Spec (`BindAssessmentCommand`, `DesktopIncidentBindLivingSpecTests`). Seeded W7-76 (#550) / W7-77 (#552). **§3.C NEXT = W7-76 (#550)**.
 - **W7-74** ([#546](https://github.com/sesquicadaver/MTDirector/issues/546)): DESK-INCIDENT-02 Desktop Incident MainWindow Operations → Incident panel Living Spec (`DesktopIncidentPanelLivingSpecTests`). Seeded W7-75 (#548) / W7-76 (#550). **§3.C NEXT = W7-75 (#548)**.
 - **W7-73** ([#544](https://github.com/sesquicadaver/MTDirector/issues/544)): DESK-INCIDENT-01 Desktop Incident ViewModel + client Living Spec vs IncidentGrpcHost (`IncidentViewModel`, `IIncidentServiceClient` / `GrpcIncidentServiceClient`, `DesktopIncidentLivingSpecTests`). No 8th nav module; MainWindow panel deferred to DESK-INCIDENT-02. Seeded W7-74 (#546) / W7-75 (#548). **§3.C NEXT = W7-74 (#546)**.
 - **W7-72** ([#542](https://github.com/sesquicadaver/MTDirector/issues/542)): PLAN-06 Incident Desktop operator-surface inventory (`plan-06-incident-desktop-operator-surface.md`); seeds DESK-INCIDENT-01 as W7-73 (#544) / W7-74 (#546). **§3.C NEXT = W7-73 (#544)**.

@@ -1680,6 +1680,53 @@
                                Text="{Binding Incident.LastSignal.DeduplicationKey, StringFormat=Dedup: {0}}"
                                TextWrapping="Wrap" />
                   </StackPanel>
+
+                  <Border Classes="mfc-panel" Margin="0,12,0,0" IsVisible="{Binding Incident.HasLastSignal}">
+                    <StackPanel Spacing="8">
+                      <DockPanel LastChildFill="True">
+                        <Button Classes="mfc-action"
+                                Content="Bind assessment"
+                                Command="{Binding Incident.BindAssessmentCommand}"
+                                DockPanel.Dock="Right"
+                                Margin="8,0,0,0"
+                                MinWidth="140" />
+                        <TextBlock Classes="mfc-label"
+                                   Text="Bind response assessment"
+                                   VerticalAlignment="Center"
+                                   TextWrapping="Wrap" />
+                      </DockPanel>
+                      <TextBlock Classes="mfc-muted"
+                                 Text="SEC-06 BindIncidentResponseAssessment after ingest. Session=Full, path=CpuFirewall. No deploy/overlay."
+                                 TextWrapping="Wrap" />
+                      <TextBlock Classes="mfc-label" Text="Endpoint id" />
+                      <TextBox Text="{Binding Incident.EndpointIdText}" Watermark="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+                      <TextBlock Classes="mfc-label" Text="Presence id" />
+                      <TextBox Text="{Binding Incident.PresenceIdText}" Watermark="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+                      <TextBlock Classes="mfc-label" Text="Enforcement node id" />
+                      <TextBox Text="{Binding Incident.EnforcementNodeIdText}" Watermark="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+                      <TextBlock Classes="mfc-label" Text="Flow source (optional, for correlation)" />
+                      <TextBox Text="{Binding Incident.FlowSourceAddress}" Watermark="10.0.0.8" />
+                      <TextBlock Classes="mfc-label" Text="Flow destination" />
+                      <TextBox Text="{Binding Incident.FlowDestinationAddress}" Watermark="198.51.100.10" />
+                      <TextBlock Classes="mfc-label" Text="Flow protocol" />
+                      <TextBox Text="{Binding Incident.FlowProtocol}" Watermark="tcp" />
+                      <StackPanel Spacing="4" IsVisible="{Binding Incident.HasLastBinding}">
+                        <TextBlock Classes="mfc-label" Text="Last assessment binding" />
+                        <TextBlock Text="{Binding Incident.LastBinding.SummaryLine}"
+                                   FontWeight="SemiBold"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Classes="mfc-mono"
+                                   Text="{Binding Incident.LastBinding.IncidentIdText, StringFormat=Incident id: {0}}"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Classes="mfc-muted"
+                                   Text="{Binding Incident.LastBinding.CorrelationFlowText, StringFormat=Correlation flow: {0}}"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Classes="mfc-muted"
+                                   Text="{Binding Incident.LastBinding.FeasibilityText, StringFormat=Feasibility: {0}}"
+                                   TextWrapping="Wrap" />
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
                 </StackPanel>
               </Border>
             </ScrollViewer>
