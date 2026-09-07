@@ -758,6 +758,22 @@ Issue [#532](https://github.com/sesquicadaver/MTDirector/issues/532) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopAuditLivingSpecTests|CtDeskAudit01"`.
 
+## Living Specification — DESK-DRIFT-01 Desktop Drift panel (W7-68)
+
+Issue [#534](https://github.com/sesquicadaver/MTDirector/issues/534) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| List+Get wire + Desktop client (no repair RPCs) | `GrpcDriftServiceClient`, `DriftService` proto | `DesktopDriftLivingSpecTests.Ac1WireAndDesktopClientAreListAndGetOnly` |
+| No automatic fix / ForceRepair / AutoHeal | `DriftViewModel` | `Ac2ViewModelHasNoAutomaticFixOrRepairCommands` |
+| Refresh loads List then Get detail for Device | `DriftViewModel` | `Ac3RefreshLoadsListThenGetDetailForSelectedDevice` |
+| Refresh requires Connected + selected Device | `DriftViewModel` | `Ac4RefreshRequiresConnectedControllerAndSelectedDevice` |
+| MainWindow binds Drift list/detail/refresh (no auto-fix) | `MainWindow.axaml` | `Ac5MainWindowBindsDriftListDetailAndRefreshWithoutAutoFix` |
+| Host CT-DRIFT-01 remains present | `DriftGrpcHostTests` | `Ac6HostContractLivingSpecRemainsPresent` |
+| Docs / PLAN-05 matrix lock | `plan-05-desktop-operator-surface.md`, `testing.md` | `CtDeskDrift01DesktopDriftLivingSpecTests.Ac1DesktopDriftLivingSpecAndPlan05MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopDriftLivingSpecTests|CtDeskDrift01"`.
+
 ## Living Specification — PLAN-04 contract-test inventory (W7-58)
 
 Issue [#514](https://github.com/sesquicadaver/MTDirector/issues/514) AC → module → tests:
