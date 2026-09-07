@@ -6,7 +6,7 @@
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 **PLAN-03 (quality gates):** [`plan-03-quality-gates.md`](plan-03-quality-gates.md)  
 **PLAN-04 (contract tests):** [`plan-04-contract-tests.md`](plan-04-contract-tests.md)  
-**PLAN-05 (Desktop operator-surface):** inventory lands as W7-66 (#530)
+**PLAN-05 (Desktop operator-surface):** [`plan-05-desktop-operator-surface.md`](plan-05-desktop-operator-surface.md)
 
 This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle state **NEXT = none**.
 
@@ -134,7 +134,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | CT-ROUTING-01 — RoutingAssuranceService ProtoContract + GrpcHost Living Spec | Docs / contract test | **W7-63 DONE** |
 | CT-INCIDENT-01 — IncidentService ProtoContract + GrpcHost Living Spec | Docs / contract test | **W7-64 DONE** |
 | Seed next product tranche after PLAN-04 → PLAN-05 Desktop operator-surface | Docs / product seed | **W7-65 DONE** |
-| PLAN-05 — Inventory next Desktop operator-surface Living Spec product tranche | Docs / PLAN-05 | **W7-66 OPEN** |
+| PLAN-05 — Inventory next Desktop operator-surface Living Spec product tranche | Docs / PLAN-05 | **W7-66 DONE** |
+| DESK-AUDIT-01 — Desktop Audit panel Living Spec vs AuditGrpcHost | Docs / Desktop Living Spec | **W7-67 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -253,7 +254,8 @@ W7-62 CT-AUDIT-01 — AuditService GrpcHost contract Living Spec **DONE**
 W7-63 CT-ROUTING-01 — RoutingAssuranceService ProtoContract + GrpcHost Living Spec **DONE**
 W7-64 CT-INCIDENT-01 — IncidentService ProtoContract + GrpcHost Living Spec **DONE**
 W7-65 Seed next product tranche after PLAN-04 → PLAN-05 Desktop operator-surface **DONE**
-W7-66 PLAN-05 — Inventory next Desktop operator-surface Living Spec product tranche **OPEN**
+W7-66 PLAN-05 — Inventory next Desktop operator-surface Living Spec product tranche **DONE**
+W7-67 DESK-AUDIT-01 — Desktop Audit panel Living Spec vs AuditGrpcHost **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -358,9 +360,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 93 | W7-63 | [#524](https://github.com/sesquicadaver/MTDirector/issues/524) | CT-ROUTING-01 — RoutingAssuranceService ProtoContract + GrpcHost Living Spec | **DONE** |
 | 94 | W7-64 | [#526](https://github.com/sesquicadaver/MTDirector/issues/526) | CT-INCIDENT-01 — IncidentService ProtoContract + GrpcHost Living Spec | **DONE** |
 | 95 | W7-65 | [#528](https://github.com/sesquicadaver/MTDirector/issues/528) | Seed next product tranche after PLAN-04 → PLAN-05 Desktop operator-surface | **DONE** |
-| 96 | W7-66 | [#530](https://github.com/sesquicadaver/MTDirector/issues/530) | PLAN-05 — Inventory next Desktop operator-surface Living Spec product tranche | **OPEN** |
+| 96 | W7-66 | [#530](https://github.com/sesquicadaver/MTDirector/issues/530) | PLAN-05 — Inventory next Desktop operator-surface Living Spec product tranche | **DONE** |
+| 97 | W7-67 | [#532](https://github.com/sesquicadaver/MTDirector/issues/532) | DESK-AUDIT-01 — Desktop Audit panel Living Spec vs AuditGrpcHost | **OPEN** |
 
-**§3.C NEXT = W7-66 (#530)**. W7-65 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-67 (#532)**. W7-66 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
