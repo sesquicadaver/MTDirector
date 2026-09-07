@@ -152,7 +152,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | DESK-POLICY-01 — Desktop Policies panel Living Spec vs PolicyGrpcHost | Docs / Desktop Living Spec | **W7-79 DONE** |
 | Seed next PLAN-07 row after DESK-POLICY-01 → DESK-DEPLOY-01 | Docs / PLAN-07 | **W7-80 DONE** |
 | DESK-DEPLOY-01 — Desktop Deployment Living Spec vs DeploymentGrpcHost | Docs / Desktop Living Spec | **W7-81 DONE** |
-| Seed next PLAN-07 row after DESK-DEPLOY-01 → DESK-ONBOARD-01 | Docs / PLAN-07 | **W7-82 OPEN** |
+| Seed next PLAN-07 row after DESK-DEPLOY-01 → DESK-ONBOARD-01 | Docs / PLAN-07 | **W7-82 DONE** |
+| DESK-ONBOARD-01 — Desktop Onboarding Living Spec vs OnboardingGrpcHost | Docs / Desktop Living Spec | **W7-83 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -287,8 +288,9 @@ W7-78 PLAN-07 — Inventory next Core MVP Desktop operator-surface Living Spec p
 W7-79 DESK-POLICY-01 — Desktop Policies panel Living Spec vs PolicyGrpcHost **DONE**
 W7-80 Seed next PLAN-07 row after DESK-POLICY-01 → DESK-DEPLOY-01 **DONE**
 W7-81 DESK-DEPLOY-01 — Desktop Deployment Living Spec vs DeploymentGrpcHost **DONE**
-W7-82 Seed next PLAN-07 row after DESK-DEPLOY-01 → DESK-ONBOARD-01 **OPEN**
+W7-82 Seed next PLAN-07 row after DESK-DEPLOY-01 → DESK-ONBOARD-01 **DONE**
 W7-83 DESK-ONBOARD-01 — Desktop Onboarding Living Spec vs OnboardingGrpcHost **OPEN**
+W7-84 Seed next PLAN-07 row after DESK-ONBOARD-01 **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -409,10 +411,11 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 109 | W7-79 | [#556](https://github.com/sesquicadaver/MTDirector/issues/556) | DESK-POLICY-01 — Desktop Policies panel Living Spec vs PolicyGrpcHost | **DONE** |
 | 110 | W7-80 | [#558](https://github.com/sesquicadaver/MTDirector/issues/558) | Seed next PLAN-07 row after DESK-POLICY-01 → DESK-DEPLOY-01 | **DONE** |
 | 111 | W7-81 | [#560](https://github.com/sesquicadaver/MTDirector/issues/560) | DESK-DEPLOY-01 — Desktop Deployment Living Spec vs DeploymentGrpcHost | **DONE** |
-| 112 | W7-82 | [#562](https://github.com/sesquicadaver/MTDirector/issues/562) | Seed next PLAN-07 row after DESK-DEPLOY-01 → DESK-ONBOARD-01 | **OPEN** |
+| 112 | W7-82 | [#562](https://github.com/sesquicadaver/MTDirector/issues/562) | Seed next PLAN-07 row after DESK-DEPLOY-01 → DESK-ONBOARD-01 | **DONE** |
 | 113 | W7-83 | [#564](https://github.com/sesquicadaver/MTDirector/issues/564) | DESK-ONBOARD-01 — Desktop Onboarding Living Spec vs OnboardingGrpcHost | **OPEN** |
+| 114 | W7-84 | [#566](https://github.com/sesquicadaver/MTDirector/issues/566) | Seed next PLAN-07 row after DESK-ONBOARD-01 | **OPEN** |
 
-**§3.C NEXT = W7-82 (#562)**. W7-81 **DONE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-83 (#564)**. W7-82 **DONE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
