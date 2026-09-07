@@ -83,6 +83,7 @@ public sealed class QgDocs01WeeklyDocsSmokeLivingSpecTests
             "docs/release/known-limitations.md",
             "docs/development/docs-smoke.md",
             "docs/planning/plan-03-quality-gates.md",
+            "docs/planning/plan-04-contract-tests.md",
         ];
 
         foreach (string relative in required)
