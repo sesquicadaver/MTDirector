@@ -39,8 +39,8 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## Successor
 
-After PLAN-06 **COMPLETE**, §3.C seeds the next product tranche (W7-77) → PLAN-07 inventory (W7-78).
+After PLAN-06 **COMPLETE**, §3.C product seed **W7-77 DONE** advances to **PLAN-07** inventory (**W7-78 OPEN**).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-77 (#552)** — Seed next product tranche after PLAN-06 Incident Desktop operator-surface.
+**§3.C NEXT = W7-78 (#554)** — PLAN-07 Inventory next product Living Spec tranche after PLAN-06.
