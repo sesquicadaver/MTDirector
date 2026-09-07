@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-SNAPSHOT-01 Desktop Snapshot panel (W7-85)
+
+Issue [#568](https://github.com/sesquicadaver/MTDirector/issues/568) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Wire + Desktop Snapshot client | `ISnapshotViewerClient`, `GrpcSnapshotViewerClient` | `DesktopSnapshotLivingSpecTests.Ac1WireAndDesktopClientExposeCaptureListSectionAndCompareRpcs` |
+| Reload/Capture/Copy + Diff Compare | `SnapshotViewerViewModel`, `SnapshotDiffViewModel` | `Ac2ViewModelExposesReloadCaptureCopyAndDiffCompareCommands` |
+| Reload loads captures when Device selected | `SnapshotViewerViewModel` | `Ac3ReloadLoadsCapturesWhenDeviceSelected` |
+| Capture/Reload require Device + Connected | `SnapshotViewerViewModel` | `Ac4CaptureRequiresDeviceSelectionAndConnectedController` |
+| MainWindow Snapshot + Diff bindings | `MainWindow.axaml` | `Ac5MainWindowBindsSnapshotCaptureAndDiffCompare` |
+| Host SnapshotGrpcHost remains present | `SnapshotGrpcHostTests` | `Ac6HostContractLivingSpecRemainsPresent` |
+| Docs / PLAN-07 matrix lock | `plan-07-core-mvp-desktop-operator-surface.md`, `testing.md` | `CtDeskSnapshot01DesktopSnapshotLivingSpecTests.Ac1DesktopSnapshotLivingSpecAndPlan07MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopSnapshotLivingSpecTests|CtDeskSnapshot01"`.
+
 ## Living Specification — Product tranche seed after DESK-ONBOARD-01 (W7-84)
 
 Issue [#566](https://github.com/sesquicadaver/MTDirector/issues/566) AC → module → tests:
