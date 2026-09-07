@@ -49,6 +49,8 @@ public sealed class App : Application, IAsyncDisposable
         RoutingAssuranceViewModel routingAssuranceVm = new(routingAssuranceClient, connection, inventoryVm);
         GrpcAuditServiceClient auditClient = new(connection, options);
         AuditViewModel auditVm = new(auditClient, connection);
+        GrpcIncidentServiceClient incidentClient = new(connection, options);
+        IncidentViewModel incidentVm = new(incidentClient, connection);
         _shell = new ShellViewModel(
             connection,
             options,
@@ -63,7 +65,8 @@ public sealed class App : Application, IAsyncDisposable
             deploymentVm,
             driftVm,
             auditVm,
-            routingAssuranceVm);
+            routingAssuranceVm,
+            incidentVm);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

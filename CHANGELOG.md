@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-73** ([#544](https://github.com/sesquicadaver/MTDirector/issues/544)): DESK-INCIDENT-01 Desktop Incident ViewModel + client Living Spec vs IncidentGrpcHost (`IncidentViewModel`, `IIncidentServiceClient` / `GrpcIncidentServiceClient`, `DesktopIncidentLivingSpecTests`). No 8th nav module; MainWindow panel deferred to DESK-INCIDENT-02. Seeded W7-74 (#546) / W7-75 (#548). **§3.C NEXT = W7-74 (#546)**.
 - **W7-72** ([#542](https://github.com/sesquicadaver/MTDirector/issues/542)): PLAN-06 Incident Desktop operator-surface inventory (`plan-06-incident-desktop-operator-surface.md`); seeds DESK-INCIDENT-01 as W7-73 (#544) / W7-74 (#546). **§3.C NEXT = W7-73 (#544)**.
 - **W7-71** ([#540](https://github.com/sesquicadaver/MTDirector/issues/540)): Seed next product tranche after PLAN-05 → **PLAN-06** Incident Desktop operator-surface inventory (W7-72). Seeded W7-72 (#542) / W7-73 (#544). **§3.C NEXT = W7-72 (#542)**.
 - **W7-70** ([#538](https://github.com/sesquicadaver/MTDirector/issues/538)): DESK-ROUTING-01 Desktop Routing assurance Living Spec deepened vs RoutingAssuranceGrpcHost (`DesktopRoutingAssuranceLivingSpecTests` Ac10–13). PLAN-05 **COMPLETE**. Seeded W7-71 (#540) / W7-72 (#542). **§3.C NEXT = W7-71 (#540)**.

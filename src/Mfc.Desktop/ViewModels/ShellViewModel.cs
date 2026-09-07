@@ -26,7 +26,8 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
         DeploymentViewModel deployment,
         DriftViewModel drift,
         AuditViewModel audit,
-        RoutingAssuranceViewModel routingAssurance)
+        RoutingAssuranceViewModel routingAssurance,
+        IncidentViewModel incident)
     {
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _options = options ?? throw new ArgumentNullException(nameof(options));
@@ -42,6 +43,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
         Drift = drift ?? throw new ArgumentNullException(nameof(drift));
         Audit = audit ?? throw new ArgumentNullException(nameof(audit));
         RoutingAssurance = routingAssurance ?? throw new ArgumentNullException(nameof(routingAssurance));
+        Incident = incident ?? throw new ArgumentNullException(nameof(incident));
         Modules =
         [
             ShellNavigationModule.Inventory,
@@ -88,6 +90,8 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
     public AuditViewModel Audit { get; }
 
     public RoutingAssuranceViewModel RoutingAssurance { get; }
+
+    public IncidentViewModel Incident { get; }
 
     public string ControllerEndpoint => _options.ControllerEndpoint;
 
@@ -204,6 +208,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         _connection.StateChanged -= OnConnectionStateChanged;
+        Incident.Dispose();
         Audit.Dispose();
         RoutingAssurance.Dispose();
         Drift.Dispose();
