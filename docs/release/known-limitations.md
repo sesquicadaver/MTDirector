@@ -15,6 +15,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-52 Living Spec lock): **QG-IMPORT-01** — production `Mfc.*` assembly import graph is a DAG (`ProductionImportGraph` + `QgImport01ImportGraphCycleLivingSpecTests`); complements NetArch pairwise boundaries.
 - Intentional residual (W7-53 Living Spec lock): **QG-DOCS-01** — weekly docs smoke (`docs-smoke.md` + `QgDocs01WeeklyDocsSmokeLivingSpecTests`) keeps README / docs index aligned with ROADMAP §3.C NEXT.
 - Intentional residual (W7-54 Living Spec lock): **QG-ANTISTUB-01** — `AntiStubScanner` + `QgAntistub01AntiStubLivingSpecTests` fail closed on `NotImplementedException`, stub TODOs, and xUnit `Skip` in repo sources.
+- Intentional residual (W7-55 Living Spec lock): **QG-LIVESPEC-MATRIX-01** — DONE PLAN-03 `QG-*` rows require matching `## Living Specification — QG-…` sections in `testing.md` (`QgLivespecMatrix01LivingSpecTests`).
 
 ## Production wiring (P2 pilot)
 
