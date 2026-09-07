@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-79** ([#556](https://github.com/sesquicadaver/MTDirector/issues/556)): DESK-POLICY-01 Desktop Policies panel Living Spec (`DesktopPoliciesLivingSpecTests`) vs PolicyGrpcHost. Seeded W7-80 (#558) / W7-81 (#560). **§3.C NEXT = W7-80 (#558)**.
 - **W7-78** ([#554](https://github.com/sesquicadaver/MTDirector/issues/554)): PLAN-07 Core MVP Desktop operator-surface inventory (`plan-07-core-mvp-desktop-operator-surface.md`); seeds DESK-POLICY-01 as W7-79 (#556) / W7-80 (#558). **§3.C NEXT = W7-79 (#556)**.
 - **W7-77** ([#552](https://github.com/sesquicadaver/MTDirector/issues/552)): Seed next product tranche after PLAN-06 → **PLAN-07** inventory (W7-78). Seeded W7-78 (#554) / W7-79 (#556). **§3.C NEXT = W7-78 (#554)**.
 - **W7-76** ([#550](https://github.com/sesquicadaver/MTDirector/issues/550)): DESK-INCIDENT-04 Desktop Incident fail-closed Living Spec (`DesktopIncidentFailClosedLivingSpecTests`); **PLAN-06 COMPLETE**. Seeded W7-77 (#552) / W7-78 (#554). **§3.C NEXT = W7-77 (#552)**.
