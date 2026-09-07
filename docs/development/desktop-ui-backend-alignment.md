@@ -363,4 +363,4 @@ residual: CRS / physical lab runner (ops, not §3)
 - **Перевірка:** `Ac5iPoliciesReorderMovesSelectedRuleWithoutUuidPaste`; `MoveRuleDownBuildsStageOrderWithoutUuidPaste`; `MoveRuleUpAtFirstReportsBoundaryWithoutRpc`
 - **Файли:** `PoliciesViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **§3.C NEXT = W7-50 (#498)**. W7-49 residual corpus COMPLETE Living Spec **DONE**. Physical CRS runner stays ops.
+**NEXT (alignment / §3):** **§3.C NEXT = W7-51 (#500)**. W7-50 product tranche seed Living Spec **DONE**. Physical CRS runner stays ops.

@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-50** ([#498](https://github.com/sesquicadaver/MTDirector/issues/498)): Living Spec locks product tranche seed after residual corpus → W7-51 PLAN-03 quality gates. Seeded W7-51 (#500) / W7-52 (#502). **§3.C NEXT = W7-51 (#500)**.
 - **W7-49** ([#496](https://github.com/sesquicadaver/MTDirector/issues/496)): Living Spec locks intentional known-limitations residual Living Spec corpus COMPLETE. Seeded W7-50 (#498) / W7-51 (#500). **§3.C NEXT = W7-50 (#498)**.
 - **W7-48** ([#494](https://github.com/sesquicadaver/MTDirector/issues/494)): Living Spec locks continuous residual tranche seed after SEC-07…15 → W7-49 residual corpus COMPLETE. Seeded W7-49 (#496) / W7-50 (#498). **§3.C NEXT = W7-49 (#496)**.
 - **W7-47** ([#492](https://github.com/sesquicadaver/MTDirector/issues/492)): Living Spec locks intentional SEC-07…SEC-15 DONE residual in known-limitations. Seeded W7-48 (#494) / W7-49 (#496). **§3.C NEXT = W7-48 (#494)**.

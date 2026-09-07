@@ -702,6 +702,16 @@ Issue [#496](https://github.com/sesquicadaver/MTDirector/issues/496) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ResidualCorpusCompleteW749"`.
 
+## Living Specification — Product tranche seed after residual corpus (W7-50)
+
+Issue [#498](https://github.com/sesquicadaver/MTDirector/issues/498) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed PLAN-03 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md` | `ProductTrancheSeedW750LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan03AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW750"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
