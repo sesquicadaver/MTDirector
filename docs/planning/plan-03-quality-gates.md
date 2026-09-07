@@ -29,4 +29,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-72 (#542)** — PLAN-06 Inventory next Incident Desktop operator-surface Living Spec product tranche.
+**§3.C NEXT = W7-73 (#544)** — DESK-INCIDENT-01 Desktop Incident ViewModel + client Living Spec vs IncidentGrpcHost.
