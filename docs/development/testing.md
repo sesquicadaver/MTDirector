@@ -712,6 +712,16 @@ Issue [#498](https://github.com/sesquicadaver/MTDirector/issues/498) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW750"`.
 
+## Living Specification — PLAN-03 quality-gate inventory (W7-51)
+
+Issue [#500](https://github.com/sesquicadaver/MTDirector/issues/500) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-03 inventory + known-limitations lock + QG-IMPORT-01 seed | `docs/planning/plan-03-quality-gates.md`, `docs/release/known-limitations.md` | `Plan03QualityGatesW751LivingSpecTests.Ac1Plan03InventoryDocumentsRankedQualityGatesAndSeedsImportGraph` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan03QualityGatesW751"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
