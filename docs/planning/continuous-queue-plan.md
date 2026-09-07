@@ -138,7 +138,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | DESK-AUDIT-01 — Desktop Audit panel Living Spec vs AuditGrpcHost | Docs / Desktop Living Spec | **W7-67 DONE** |
 | DESK-DRIFT-01 — Desktop Drift panel Living Spec vs DriftGrpcHost | Docs / Desktop Living Spec | **W7-68 DONE** |
 | DESK-ZONE-01 — Desktop Zones panel Living Spec vs ZoneGrpcHost | Docs / Desktop Living Spec | **W7-69 DONE** |
-| DESK-ROUTING-01 — Desktop Routing assurance Living Spec vs RoutingAssuranceGrpcHost | Docs / Desktop Living Spec | **W7-70 OPEN** |
+| DESK-ROUTING-01 — Desktop Routing assurance Living Spec vs RoutingAssuranceGrpcHost | Docs / Desktop Living Spec | **W7-70 DONE** |
+| Seed next product tranche after PLAN-05 Desktop operator-surface | Docs / product seed | **W7-71 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -261,7 +262,8 @@ W7-66 PLAN-05 — Inventory next Desktop operator-surface Living Spec product tr
 W7-67 DESK-AUDIT-01 — Desktop Audit panel Living Spec vs AuditGrpcHost **DONE**
 W7-68 DESK-DRIFT-01 — Desktop Drift panel Living Spec vs DriftGrpcHost **DONE**
 W7-69 DESK-ZONE-01 — Desktop Zones panel Living Spec vs ZoneGrpcHost **DONE**
-W7-70 DESK-ROUTING-01 — Desktop Routing assurance Living Spec vs RoutingAssuranceGrpcHost **OPEN**
+W7-70 DESK-ROUTING-01 — Desktop Routing assurance Living Spec vs RoutingAssuranceGrpcHost **DONE**
+W7-71 Seed next product tranche after PLAN-05 Desktop operator-surface **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -370,10 +372,11 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 97 | W7-67 | [#532](https://github.com/sesquicadaver/MTDirector/issues/532) | DESK-AUDIT-01 — Desktop Audit panel Living Spec vs AuditGrpcHost | **DONE** |
 | 98 | W7-68 | [#534](https://github.com/sesquicadaver/MTDirector/issues/534) | DESK-DRIFT-01 — Desktop Drift panel Living Spec vs DriftGrpcHost | **DONE** |
 | 99 | W7-69 | [#536](https://github.com/sesquicadaver/MTDirector/issues/536) | DESK-ZONE-01 — Desktop Zones panel Living Spec vs ZoneGrpcHost | **DONE** |
-| 100 | W7-70 | [#538](https://github.com/sesquicadaver/MTDirector/issues/538) | DESK-ROUTING-01 — Desktop Routing assurance Living Spec vs RoutingAssuranceGrpcHost | **OPEN** |
-| 101 | W7-71 | [#540](https://github.com/sesquicadaver/MTDirector/issues/540) | Seed next PLAN-05 row after DESK-ROUTING-01 | **OPEN** |
+| 100 | W7-70 | [#538](https://github.com/sesquicadaver/MTDirector/issues/538) | DESK-ROUTING-01 — Desktop Routing assurance Living Spec vs RoutingAssuranceGrpcHost | **DONE** |
+| 101 | W7-71 | [#540](https://github.com/sesquicadaver/MTDirector/issues/540) | Seed next product tranche after PLAN-05 Desktop operator-surface | **OPEN** |
+| 102 | W7-72 | [#542](https://github.com/sesquicadaver/MTDirector/issues/542) | PLAN-06 — Inventory next product Living Spec tranche after PLAN-05 | **OPEN** |
 
-**§3.C NEXT = W7-70 (#538)**. W7-69 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-71 (#540)**. W7-70 **DONE**; PLAN-05 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

@@ -29,4 +29,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-70 (#538)** — DESK-ROUTING-01 Desktop Routing assurance Living Spec vs RoutingAssuranceGrpcHost.
+**§3.C NEXT = W7-71 (#540)** — Seed next product tranche after PLAN-05 Desktop operator-surface (PLAN-06).

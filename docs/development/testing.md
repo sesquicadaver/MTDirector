@@ -790,6 +790,20 @@ Issue [#536](https://github.com/sesquicadaver/MTDirector/issues/536) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopZonesLivingSpecTests|CtDeskZone01"`.
 
+## Living Specification — DESK-ROUTING-01 Desktop Routing assurance host alignment (W7-70)
+
+Issue [#538](https://github.com/sesquicadaver/MTDirector/issues/538) AC → module → tests (deepens M7.1-10 `DesktopRoutingAssuranceLivingSpecTests`):
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Get-only wire + Desktop client | `GrpcRoutingAssuranceServiceClient`, `RoutingAssuranceService` | `DesktopRoutingAssuranceLivingSpecTests.Ac10DesktopClientIsGetOnlyAlignedWithWire` |
+| Refresh loads Get payload for Device | `RoutingAssuranceViewModel` | `Ac11RefreshLoadsGetPayloadForSelectedDevice` |
+| Refresh requires Connected + Device | `RoutingAssuranceViewModel` | `Ac12RefreshRequiresConnectedControllerAndSelectedDevice` |
+| Host CT-ROUTING-01 remains present | `RoutingAssuranceGrpcHostTests` | `Ac13HostContractLivingSpecRemainsPresent` |
+| Docs / PLAN-05 COMPLETE matrix lock | `plan-05-desktop-operator-surface.md`, `testing.md` | `CtDeskRouting01DesktopRoutingLivingSpecTests.Ac1DesktopRoutingHostAlignmentAndPlan05MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopRoutingAssuranceLivingSpecTests|CtDeskRouting01"`.
+
 ## Living Specification — PLAN-04 contract-test inventory (W7-58)
 
 Issue [#514](https://github.com/sesquicadaver/MTDirector/issues/514) AC → module → tests:
