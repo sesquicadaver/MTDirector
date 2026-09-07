@@ -142,7 +142,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | DESK-ROUTING-01 — Desktop Routing assurance Living Spec vs RoutingAssuranceGrpcHost | Docs / Desktop Living Spec | **W7-70 DONE** |
 | Seed next product tranche after PLAN-05 Desktop operator-surface | Docs / product seed | **W7-71 DONE** |
 | PLAN-06 — Inventory next Incident Desktop operator-surface Living Spec product tranche | Docs / PLAN-06 | **W7-72 DONE** |
-| DESK-INCIDENT-01 — Desktop Incident ViewModel + client Living Spec vs IncidentGrpcHost | Docs / Desktop Living Spec | **W7-73 OPEN** |
+| DESK-INCIDENT-01 — Desktop Incident ViewModel + client Living Spec vs IncidentGrpcHost | Docs / Desktop Living Spec | **W7-73 DONE** |
+| DESK-INCIDENT-02 — Desktop Incident MainWindow panel Living Spec | Docs / Desktop Living Spec | **W7-74 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -268,7 +269,8 @@ W7-69 DESK-ZONE-01 — Desktop Zones panel Living Spec vs ZoneGrpcHost **DONE**
 W7-70 DESK-ROUTING-01 — Desktop Routing assurance Living Spec vs RoutingAssuranceGrpcHost **DONE**
 W7-71 Seed next product tranche after PLAN-05 Desktop operator-surface **DONE**
 W7-72 PLAN-06 — Inventory next Incident Desktop operator-surface Living Spec product tranche **DONE**
-W7-73 DESK-INCIDENT-01 — Desktop Incident ViewModel + client Living Spec vs IncidentGrpcHost **OPEN**
+W7-73 DESK-INCIDENT-01 — Desktop Incident ViewModel + client Living Spec vs IncidentGrpcHost **DONE**
+W7-74 DESK-INCIDENT-02 — Desktop Incident MainWindow panel Living Spec **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -380,10 +382,11 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 100 | W7-70 | [#538](https://github.com/sesquicadaver/MTDirector/issues/538) | DESK-ROUTING-01 — Desktop Routing assurance Living Spec vs RoutingAssuranceGrpcHost | **DONE** |
 | 101 | W7-71 | [#540](https://github.com/sesquicadaver/MTDirector/issues/540) | Seed next product tranche after PLAN-05 Desktop operator-surface | **DONE** |
 | 102 | W7-72 | [#542](https://github.com/sesquicadaver/MTDirector/issues/542) | PLAN-06 — Inventory next Incident Desktop operator-surface Living Spec product tranche | **DONE** |
-| 103 | W7-73 | [#544](https://github.com/sesquicadaver/MTDirector/issues/544) | DESK-INCIDENT-01 — Desktop Incident ViewModel + client Living Spec vs IncidentGrpcHost | **OPEN** |
-| 104 | W7-74 | [#546](https://github.com/sesquicadaver/MTDirector/issues/546) | Seed next PLAN-06 row after DESK-INCIDENT-01 | **OPEN** |
+| 103 | W7-73 | [#544](https://github.com/sesquicadaver/MTDirector/issues/544) | DESK-INCIDENT-01 — Desktop Incident ViewModel + client Living Spec vs IncidentGrpcHost | **DONE** |
+| 104 | W7-74 | [#546](https://github.com/sesquicadaver/MTDirector/issues/546) | DESK-INCIDENT-02 — Desktop Incident MainWindow panel Living Spec | **OPEN** |
+| 105 | W7-75 | [#548](https://github.com/sesquicadaver/MTDirector/issues/548) | Seed next PLAN-06 row after DESK-INCIDENT-02 | **OPEN** |
 
-**§3.C NEXT = W7-73 (#544)**. W7-72 **DONE**; PLAN-05 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-74 (#546)**. W7-73 **DONE**; PLAN-05 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

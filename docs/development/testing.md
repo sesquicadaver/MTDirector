@@ -762,6 +762,22 @@ Issue [#542](https://github.com/sesquicadaver/MTDirector/issues/542) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan06IncidentDesktopOperatorSurfaceW772"`.
 
+## Living Specification — DESK-INCIDENT-01 Desktop Incident ViewModel + client (W7-73)
+
+Issue [#544](https://github.com/sesquicadaver/MTDirector/issues/544) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ingest+Bind wire + Desktop client (no deploy/overlay) | `GrpcIncidentServiceClient`, `IncidentService` proto | `DesktopIncidentLivingSpecTests.Ac1WireAndDesktopClientExposeIngestAndBindOnly` |
+| Ingest surface; no Deploy/Overlay commands | `IncidentViewModel` | `Ac2ViewModelExposesIngestSurfaceWithoutDeployOverlayCommands` |
+| Ingest requires Connected | `IncidentViewModel` | `Ac3IngestRequiresConnectedController` |
+| Ingest maps `LastSignal` from client | `IncidentViewModel` | `Ac4IngestMapsLastSignalFromClientPayload` |
+| Shell wires Incident; no 8th nav module; no MainWindow yet | `ShellViewModel`, `App.axaml.cs`, `MainWindow.axaml` | `Ac5ShellWiresIncidentWithoutEighthNavigationModule` |
+| Host CT-INCIDENT-01 remains present | `IncidentGrpcHostTests` | `Ac6HostContractLivingSpecRemainsPresent` |
+| Docs / PLAN-06 matrix lock | `plan-06-incident-desktop-operator-surface.md`, `testing.md` | `CtDeskIncident01DesktopIncidentLivingSpecTests.Ac1DesktopIncidentLivingSpecAndPlan06MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentLivingSpecTests|CtDeskIncident01"`.
+
 ## Living Specification — DESK-AUDIT-01 Desktop Audit panel (W7-67)
 
 Issue [#532](https://github.com/sesquicadaver/MTDirector/issues/532) AC → module → tests:

@@ -45,4 +45,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-73 (#544)** — DESK-INCIDENT-01 Desktop Incident ViewModel + client Living Spec vs IncidentGrpcHost (PLAN-06).
+**§3.C NEXT = W7-74 (#546)** — DESK-INCIDENT-02 Desktop Incident MainWindow panel Living Spec (PLAN-06).
