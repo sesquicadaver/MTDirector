@@ -11,6 +11,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-48 Living Spec lock): §3.C continuous residual tranche after SEC-07…15 is seeded as **W7-49** — known-limitations intentional residual bullets are **fully Living-Spec locked** (corpus COMPLETE); next product work seeds via PLAN tranche, not idle.
 - Intentional residual (W7-49 Living Spec lock): known-limitations intentional residual bullets are **fully Living-Spec locked** (corpus COMPLETE); CRS/physical lab runner remains **ops-parallel**, not a §3 stop-gate.
 - Intentional residual (W7-50 Living Spec lock): §3.C product tranche after residual corpus is seeded as **W7-51** — **PLAN-03** quality-gate inventory (import-graph / docs smoke / anti-stub); not idle; not a lab stop-gate.
+- Intentional residual (W7-51 Living Spec lock): **PLAN-03** quality-gate inventory is documented in [`plan-03-quality-gates.md`](../planning/plan-03-quality-gates.md); first atomic row **QG-IMPORT-01** (W7-52).
 
 ## Production wiring (P2 pilot)
 
