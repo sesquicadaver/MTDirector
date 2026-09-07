@@ -2,7 +2,7 @@
 
 **Release:** `v0.2.0` (2026-08-24) — MVP + Post-MVP M7 CLOSED.  
 **Pilot:** P2 read + write path CLOSED — [`operations/pilot-runbook.md`](operations/pilot-runbook.md).  
-**Next delivery (§3):** **§3.C NEXT = W7-71 (#540)** — W7-70 ([#538](https://github.com/sesquicadaver/MTDirector/issues/538)) **DONE**; PLAN-05 **COMPLETE**. CRS/physical lab runner stays ops.  
+**Next delivery (§3):** **§3.C NEXT = W7-72 (#542)** — W7-71 ([#540](https://github.com/sesquicadaver/MTDirector/issues/540)) **DONE**; PLAN-05 **COMPLETE**. CRS/physical lab runner stays ops.  
 **Alignment P0–P2:** W1–W4 / W2.1–W2.2 **DONE** (`877a529`).
 
 ## Planning and tracking
@@ -10,10 +10,10 @@
 | Document | Purpose |
 |----------|---------|
 | [`ROADMAP.md`](../ROADMAP.md) | Linear atomic task queue (normative execution order) |
-| [`planning/continuous-queue-plan.md`](planning/continuous-queue-plan.md) | PLAN-02 continuous §3.C + PLAN-03…PLAN-05 |
+| [`planning/continuous-queue-plan.md`](planning/continuous-queue-plan.md) | PLAN-02 continuous §3.C + PLAN-03…PLAN-06 |
 | [`planning/plan-03-quality-gates.md`](planning/plan-03-quality-gates.md) | PLAN-03: quality-gate tranche (import-graph / docs smoke / anti-stub) |
 | [`planning/plan-04-contract-tests.md`](planning/plan-04-contract-tests.md) | PLAN-04: contract-test / GrpcHost Living Spec tranche |
-| [`planning/plan-05-desktop-operator-surface.md`](planning/plan-05-desktop-operator-surface.md) | PLAN-05: Desktop operator-surface Living Spec tranche |
+| [`planning/plan-05-desktop-operator-surface.md`](planning/plan-05-desktop-operator-surface.md) | PLAN-05: Desktop operator-surface Living Spec tranche (**COMPLETE**) |
 | [`ISSUES.md`](../ISSUES.md) | Logical ID → GitHub issue mapping |
 | [`CHANGELOG.md`](../CHANGELOG.md) | Release history |
 

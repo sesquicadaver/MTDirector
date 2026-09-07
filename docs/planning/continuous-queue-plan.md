@@ -6,7 +6,8 @@
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 **PLAN-03 (quality gates):** [`plan-03-quality-gates.md`](plan-03-quality-gates.md)  
 **PLAN-04 (contract tests):** [`plan-04-contract-tests.md`](plan-04-contract-tests.md)  
-**PLAN-05 (Desktop operator-surface):** [`plan-05-desktop-operator-surface.md`](plan-05-desktop-operator-surface.md)
+**PLAN-05 (Desktop operator-surface):** [`plan-05-desktop-operator-surface.md`](plan-05-desktop-operator-surface.md) **COMPLETE**  
+**PLAN-06 (Incident Desktop operator-surface):** inventory W7-72 — document lands with W7-72
 
 This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle state **NEXT = none**.
 
@@ -139,7 +140,9 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | DESK-DRIFT-01 — Desktop Drift panel Living Spec vs DriftGrpcHost | Docs / Desktop Living Spec | **W7-68 DONE** |
 | DESK-ZONE-01 — Desktop Zones panel Living Spec vs ZoneGrpcHost | Docs / Desktop Living Spec | **W7-69 DONE** |
 | DESK-ROUTING-01 — Desktop Routing assurance Living Spec vs RoutingAssuranceGrpcHost | Docs / Desktop Living Spec | **W7-70 DONE** |
-| Seed next product tranche after PLAN-05 Desktop operator-surface | Docs / product seed | **W7-71 OPEN** |
+| Seed next product tranche after PLAN-05 Desktop operator-surface | Docs / product seed | **W7-71 DONE** |
+| PLAN-06 — Inventory next Incident Desktop operator-surface Living Spec product tranche | Docs / PLAN-06 | **W7-72 OPEN** |
+| DESK-INCIDENT-01 — Desktop Incident panel Living Spec vs IncidentGrpcHost | Docs / Desktop Living Spec | **W7-73 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -263,7 +266,9 @@ W7-67 DESK-AUDIT-01 — Desktop Audit panel Living Spec vs AuditGrpcHost **DONE*
 W7-68 DESK-DRIFT-01 — Desktop Drift panel Living Spec vs DriftGrpcHost **DONE**
 W7-69 DESK-ZONE-01 — Desktop Zones panel Living Spec vs ZoneGrpcHost **DONE**
 W7-70 DESK-ROUTING-01 — Desktop Routing assurance Living Spec vs RoutingAssuranceGrpcHost **DONE**
-W7-71 Seed next product tranche after PLAN-05 Desktop operator-surface **OPEN**
+W7-71 Seed next product tranche after PLAN-05 Desktop operator-surface **DONE**
+W7-72 PLAN-06 — Inventory next Incident Desktop operator-surface Living Spec product tranche **OPEN**
+W7-73 DESK-INCIDENT-01 — Desktop Incident panel Living Spec vs IncidentGrpcHost **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -373,10 +378,11 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 98 | W7-68 | [#534](https://github.com/sesquicadaver/MTDirector/issues/534) | DESK-DRIFT-01 — Desktop Drift panel Living Spec vs DriftGrpcHost | **DONE** |
 | 99 | W7-69 | [#536](https://github.com/sesquicadaver/MTDirector/issues/536) | DESK-ZONE-01 — Desktop Zones panel Living Spec vs ZoneGrpcHost | **DONE** |
 | 100 | W7-70 | [#538](https://github.com/sesquicadaver/MTDirector/issues/538) | DESK-ROUTING-01 — Desktop Routing assurance Living Spec vs RoutingAssuranceGrpcHost | **DONE** |
-| 101 | W7-71 | [#540](https://github.com/sesquicadaver/MTDirector/issues/540) | Seed next product tranche after PLAN-05 Desktop operator-surface | **OPEN** |
-| 102 | W7-72 | [#542](https://github.com/sesquicadaver/MTDirector/issues/542) | PLAN-06 — Inventory next product Living Spec tranche after PLAN-05 | **OPEN** |
+| 101 | W7-71 | [#540](https://github.com/sesquicadaver/MTDirector/issues/540) | Seed next product tranche after PLAN-05 Desktop operator-surface | **DONE** |
+| 102 | W7-72 | [#542](https://github.com/sesquicadaver/MTDirector/issues/542) | PLAN-06 — Inventory next Incident Desktop operator-surface Living Spec product tranche | **OPEN** |
+| 103 | W7-73 | [#544](https://github.com/sesquicadaver/MTDirector/issues/544) | DESK-INCIDENT-01 — Desktop Incident panel Living Spec vs IncidentGrpcHost | **OPEN** |
 
-**§3.C NEXT = W7-71 (#540)**. W7-70 **DONE**; PLAN-05 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-72 (#542)**. W7-71 **DONE**; PLAN-05 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
