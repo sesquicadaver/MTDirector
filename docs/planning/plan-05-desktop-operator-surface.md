@@ -22,7 +22,7 @@ PLAN-04 closed Controller **GrpcHost** gaps for Deployment → Incident. PLAN-05
 | Routing assurance | `RoutingAssuranceViewModel` | `RoutingAssuranceGrpcHostTests` | `DesktopRoutingAssuranceLivingSpecTests` (partial) |
 | Audit | `AuditViewModel` / `GrpcAuditServiceClient` | `AuditGrpcHostTests` | `DesktopAuditLivingSpecTests` (W7-67) |
 | Drift | `DriftViewModel` / `GrpcDriftServiceClient` | `DriftGrpcHostTests` | `DesktopDriftLivingSpecTests` (W7-68) |
-| Zones | `ZonesViewModel` / `GrpcZoneServiceClient` | `ZoneGrpcHostTests` | **missing Desktop Living Spec** |
+| Zones | `ZonesViewModel` / `GrpcZoneServiceClient` | `ZoneGrpcHostTests` | `DesktopZonesLivingSpecTests` (W7-69) |
 | Policies / Onboarding / Deploy / Snapshot | existing VMs | PLAN-04 / earlier host tests | Desktop MVP workflows + panel Living Specs (baseline) |
 
 ## Ranked Desktop operator-surface tranche
@@ -31,8 +31,8 @@ PLAN-04 closed Controller **GrpcHost** gaps for Deployment → Incident. PLAN-05
 |------|----|-----|----------|-------|
 | 1 | **DESK-AUDIT-01** | Audit panel lacks Desktop Living Spec against host ListAuditEvents contract | `AuditViewModel`, `GrpcAuditServiceClient`; host: `AuditGrpcHostTests` | **W7-67 DONE** (#532) |
 | 2 | **DESK-DRIFT-01** | Drift panel lacks Desktop Living Spec against List/Get DriftEvents | `DriftViewModel`, `GrpcDriftServiceClient`; host: `DriftGrpcHostTests` | **W7-68 DONE** (#534) |
-| 3 | **DESK-ZONE-01** | Zones panel lacks Desktop Living Spec against Zone CRUD/resolve host contract | `ZonesViewModel`, `GrpcZoneServiceClient`; host: `ZoneGrpcHostTests` | **W7-69 OPEN** (#536) |
-| 4 | **DESK-ROUTING-01** | Routing assurance Desktop Living Spec is partial vs CT-ROUTING-01 host detail | `DesktopRoutingAssuranceLivingSpecTests` + `RoutingAssuranceViewModel` | seed after DESK-ZONE-01 |
+| 3 | **DESK-ZONE-01** | Zones panel lacks Desktop Living Spec against Zone CRUD/resolve host contract | `ZonesViewModel`, `GrpcZoneServiceClient`; host: `ZoneGrpcHostTests` | **W7-69 DONE** (#536) |
+| 4 | **DESK-ROUTING-01** | Routing assurance Desktop Living Spec is partial vs CT-ROUTING-01 host detail | `DesktopRoutingAssuranceLivingSpecTests` + `RoutingAssuranceViewModel` | **W7-70 OPEN** (#538) |
 
 ## Dual track (unchanged)
 
@@ -40,4 +40,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-69 (#536)** — DESK-ZONE-01 Desktop Zones panel Living Spec vs ZoneGrpcHost.
+**§3.C NEXT = W7-70 (#538)** — DESK-ROUTING-01 Desktop Routing assurance Living Spec vs RoutingAssuranceGrpcHost.
