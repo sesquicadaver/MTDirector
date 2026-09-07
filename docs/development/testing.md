@@ -749,6 +749,20 @@ Issue [#504](https://github.com/sesquicadaver/MTDirector/issues/504) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~QgDocs01WeeklyDocsSmoke"`.
 
+## Living Specification — QG-ANTISTUB-01 anti-stub CI gate (W7-54)
+
+Issue [#506](https://github.com/sesquicadaver/MTDirector/issues/506) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Repository has no anti-stub findings | `AntiStubScanner` | `QgAntistub01AntiStubLivingSpecTests.Ac1RepositoryHasNoAntiStubFindings` |
+| Scanner detects NotImplementedException | `AntiStubScanner` | `QgAntistub01AntiStubLivingSpecTests.Ac2ScannerDetectsNotImplementedException` |
+| Scanner detects xUnit Skip | `AntiStubScanner` | `QgAntistub01AntiStubLivingSpecTests.Ac3ScannerDetectsSkippedXunitTests` |
+| Scanner detects stub TODO comments | `AntiStubScanner` | `QgAntistub01AntiStubLivingSpecTests.Ac4ScannerDetectsStubTodoComments` |
+| Docs matrix documents QG-ANTISTUB-01 | `testing.md`, `plan-03-quality-gates.md` | `QgAntistub01AntiStubLivingSpecTests.Ac5DocsMatrixDocumentsQgAntistub01LivingSpec` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~QgAntistub01AntiStub"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:
