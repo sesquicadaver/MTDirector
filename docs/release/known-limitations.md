@@ -30,6 +30,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-67 Living Spec lock): **DESK-AUDIT-01** — Desktop Audit panel Living Spec vs AuditGrpcHost (`DesktopAuditLivingSpecTests`).
 - Intentional residual (W7-68 Living Spec lock): **DESK-DRIFT-01** — Desktop Drift panel Living Spec vs DriftGrpcHost (`DesktopDriftLivingSpecTests`).
 - Intentional residual (W7-69 Living Spec lock): **DESK-ZONE-01** — Desktop Zones panel Living Spec vs ZoneGrpcHost (`DesktopZonesLivingSpecTests`).
+- Intentional residual (W7-70 Living Spec lock): **DESK-ROUTING-01** — Desktop Routing assurance Living Spec deepened vs RoutingAssuranceGrpcHost (`DesktopRoutingAssuranceLivingSpecTests` Ac10–13); PLAN-05 **COMPLETE**.
 
 ## Production wiring (P2 pilot)
 

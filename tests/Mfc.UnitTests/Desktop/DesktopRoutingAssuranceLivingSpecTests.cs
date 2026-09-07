@@ -1,4 +1,6 @@
 using System.Reflection;
+using Google.Protobuf;
+using Grpc.Net.Client;
 using Mfc.Application.Common;
 using Mfc.Application.Models;
 using Mfc.Application.Routing;
@@ -14,10 +16,16 @@ using Mfc.UnitTests.Application.Fakes;
 using Xunit;
 using DomainDevice = Mfc.Domain.Inventory.Device;
 using DomainDeviceRole = Mfc.Domain.Inventory.DeviceRole;
+using ProtoRouteExpectation = Mfc.Contracts.Mfc.V1.RouteExpectation;
+using ProtoRouteFinding = Mfc.Contracts.Mfc.V1.RouteFinding;
+using ProtoRouteResolutionTraceSummary = Mfc.Contracts.Mfc.V1.RouteResolutionTraceSummary;
 
 namespace Mfc.UnitTests.Desktop;
 
-/// <summary>Living Spec — Desktop routing assurance viewers (M7.1-10) AC 1–8.</summary>
+/// <summary>
+/// Living Spec — Desktop routing assurance viewers (M7.1-10) AC 1–9
+/// plus DESK-ROUTING-01 / W7-70 host alignment AC 10–13.
+/// </summary>
 public sealed class DesktopRoutingAssuranceLivingSpecTests
 {
     [Fact]
@@ -231,11 +239,148 @@ public sealed class DesktopRoutingAssuranceLivingSpecTests
         Assert.Equal(7, expected.Length);
     }
 
+    [Fact]
+    public void Ac10DesktopClientIsGetOnlyAlignedWithWire()
+    {
+        string[] methods = RoutingAssuranceService.Descriptor.Methods.Select(static m => m.Name).OrderBy(n => n).ToArray();
+        Assert.Equal(["GetDeviceRoutingAssuranceState"], methods);
+
+        Assert.NotNull(typeof(IRoutingAssuranceServiceClient).GetMethod(
+            nameof(IRoutingAssuranceServiceClient.GetDeviceRoutingAssuranceStateAsync)));
+        Assert.Null(typeof(IRoutingAssuranceServiceClient).GetMethod("UpsertRoutingAssuranceStateAsync"));
+        Assert.Null(typeof(IRoutingAssuranceServiceClient).GetMethod("WriteRouteAsync"));
+
+        string client = ReadSource("src/Mfc.Desktop/Services/GrpcRoutingAssuranceServiceClient.cs");
+        Assert.Contains("GetDeviceRoutingAssuranceStateAsync", client, StringComparison.Ordinal);
+        Assert.DoesNotContain("Upsert", client, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("WriteRoute", client, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Ac11RefreshLoadsGetPayloadForSelectedDevice()
+    {
+        Guid deviceId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        FakeRoutingClient client = new()
+        {
+            Detail = new RoutingAssuranceStateDetail
+            {
+                ConfigurationHash = HashFill(0xab),
+                OperationalHash = HashFill(0xcd),
+                RouteExpectationCount = 1,
+                RouteFindingCount = 1,
+                ResolutionTraceCount = 1,
+                Expectations =
+                {
+                    new ProtoRouteExpectation
+                    {
+                        Family = "ipv4",
+                        DestinationPrefix = "203.0.113.0/24",
+                        ExpectedTable = "main",
+                        AllowedNextHops = { "192.0.2.1" },
+                    },
+                },
+                Findings =
+                {
+                    new ProtoRouteFinding
+                    {
+                        Code = "EXPECTED_TABLE_MISMATCH",
+                        Message = "table mismatch",
+                        Subject = "203.0.113.10",
+                    },
+                },
+                TraceSummaries =
+                {
+                    new ProtoRouteResolutionTraceSummary
+                    {
+                        Family = "ipv4",
+                        DestinationAddress = "203.0.113.10",
+                        NextHopGateways = { "192.0.2.1" },
+                        EgressInterfaces = { "ether1" },
+                    },
+                },
+            },
+        };
+
+        using RoutingAssuranceViewModel vm = CreateVm(client, ControllerConnectionState.Connected, deviceId);
+        await vm.RefreshCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Equal(1, client.CallCount);
+        Assert.Equal(deviceId, client.LastDeviceId);
+        Assert.Equal("192.0.2.1", Assert.Single(vm.ExpectationLines).AllowedNextHopsText);
+        Assert.Equal("203.0.113.10", Assert.Single(vm.FindingLines).SubjectText);
+        Assert.Equal("192.0.2.1", Assert.Single(vm.TraceSummaryLines).NextHopGatewaysText);
+        Assert.Contains("ab", vm.ConfigurationHashText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("cd", vm.OperationalHashText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(deviceId.ToString("D"), vm.StatusText, StringComparison.Ordinal);
+        Assert.False(vm.HasRoutingWriteControls);
+    }
+
+    [Fact]
+    public async Task Ac12RefreshRequiresConnectedControllerAndSelectedDevice()
+    {
+        Guid deviceId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        FakeRoutingClient disconnectedClient = new();
+        using RoutingAssuranceViewModel disconnected = CreateVm(
+            disconnectedClient,
+            ControllerConnectionState.Disconnected,
+            deviceId);
+
+        await disconnected.RefreshCommand.ExecuteAsync(null);
+
+        Assert.Equal(0, disconnectedClient.CallCount);
+        Assert.Contains("Connect to Controller", disconnected.ErrorText, StringComparison.Ordinal);
+
+        FakeRoutingClient noDeviceClient = new();
+        using RoutingAssuranceViewModel noDevice = CreateVm(
+            noDeviceClient,
+            ControllerConnectionState.Connected,
+            deviceId: null);
+
+        await noDevice.RefreshCommand.ExecuteAsync(null);
+
+        Assert.Equal(0, noDeviceClient.CallCount);
+        Assert.Contains("Select a Device", noDevice.ErrorText, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Ac13HostContractLivingSpecRemainsPresent()
+    {
+        string root = FindRepoRoot();
+        Assert.True(File.Exists(Path.Combine(root, "tests/Mfc.IntegrationTests/Controller/RoutingAssuranceGrpcHostTests.cs")));
+        string host = File.ReadAllText(Path.Combine(root, "tests/Mfc.IntegrationTests/Controller/RoutingAssuranceGrpcHostTests.cs"));
+        Assert.Contains("GetDeviceRoutingAssuranceStateAfterUpsert", host, StringComparison.Ordinal);
+        Assert.Contains("RoutingAssuranceServiceHasNoMutationRpcsOnWire", host, StringComparison.Ordinal);
+    }
+
     private static RoutingAssuranceViewModel CreateVmForFlags()
         => new(
             new NullRoutingAssuranceClient(),
             new NullConnection(),
             new InventoryTreeViewModel(new NullInventoryTree(), new NullConnection()));
+
+    private static RoutingAssuranceViewModel CreateVm(
+        IRoutingAssuranceServiceClient client,
+        ControllerConnectionState state,
+        Guid? deviceId)
+    {
+        FakeConnection connection = new(state);
+        InventoryTreeViewModel inventory = new(new NullInventoryTree(), connection);
+        if (deviceId is Guid id)
+        {
+            inventory.SelectedNode = new InventoryNodeViewModel(new InventoryTreeItem
+            {
+                Kind = InventoryTreeKind.Device,
+                Id = id,
+                DisplayName = "r1",
+            });
+        }
+
+        return new RoutingAssuranceViewModel(client, connection, inventory);
+    }
+
+    private static Sha256 HashFill(byte fill)
+        => new() { Value = ByteString.CopyFrom(Enumerable.Repeat(fill, 32).ToArray()) };
 
     private static DomainDevice CreateDevice()
         => DomainDevice.Reconstitute(
@@ -383,5 +528,44 @@ public sealed class DesktopRoutingAssuranceLivingSpecTests
 
         public Task<InventoryTreeLoadResult> RefreshAsync(CancellationToken cancellationToken = default)
             => Task.FromResult(Current);
+    }
+
+    private sealed class FakeRoutingClient : IRoutingAssuranceServiceClient
+    {
+        public RoutingAssuranceStateDetail Detail { get; init; } = new();
+
+        public int CallCount { get; private set; }
+
+        public Guid? LastDeviceId { get; private set; }
+
+        public Task<RoutingAssuranceStateDetail> GetDeviceRoutingAssuranceStateAsync(
+            Guid deviceId,
+            CancellationToken cancellationToken = default)
+        {
+            CallCount++;
+            LastDeviceId = deviceId;
+            return Task.FromResult(Detail);
+        }
+    }
+
+    private sealed class FakeConnection(ControllerConnectionState state) : IControllerConnectionService
+    {
+        public GrpcChannel? Channel => null;
+
+        public ControllerConnectionState State { get; } = state;
+
+        public string? LastError => null;
+
+        public event EventHandler? StateChanged
+        {
+            add { }
+            remove { }
+        }
+
+        public Task ConnectAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+        public Task DisconnectAsync() => Task.CompletedTask;
+
+        public ValueTask DisposeAsync() => ValueTask.CompletedTask;
     }
 }
