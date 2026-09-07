@@ -763,6 +763,21 @@ Issue [#506](https://github.com/sesquicadaver/MTDirector/issues/506) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~QgAntistub01AntiStub"`.
 
+## Living Specification — QG-LIVESPEC-MATRIX-01 matrix PR gate (W7-55)
+
+Issue [#508](https://github.com/sesquicadaver/MTDirector/issues/508) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| ROADMAP §5 Living Spec matrix exists | `ROADMAP.md` §5 | `QgLivespecMatrix01LivingSpecTests.Ac1RoadmapSection5LivingSpecMatrixExists` |
+| DONE PLAN-03 QG rows have testing.md sections | `plan-03-quality-gates.md`, `testing.md` | `QgLivespecMatrix01LivingSpecTests.Ac2DonePlan03QualityGatesHaveTestingMdSections` |
+| ROADMAP DONE QG status rows covered in testing.md | `ROADMAP.md` §5, `testing.md` | `QgLivespecMatrix01LivingSpecTests.Ac3RoadmapDoneQgRowsHaveTestingMdCoverage` |
+| Recent QG Living Spec headings cite W7 IDs | `testing.md` | `QgLivespecMatrix01LivingSpecTests.Ac4RecentQgLivingSpecHeadingsReferenceQueueIds` |
+| Docs matrix documents QG-LIVESPEC-MATRIX-01 | `testing.md`, `livespec-matrix-gate.md`, `plan-03` | `QgLivespecMatrix01LivingSpecTests.Ac5DocsMatrixDocumentsQgLivespecMatrix01` |
+
+Checklist: [`livespec-matrix-gate.md`](livespec-matrix-gate.md).  
+Filter: `dotnet test --filter "FullyQualifiedName~QgLivespecMatrix01"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:

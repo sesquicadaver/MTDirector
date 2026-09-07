@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-55** ([#508](https://github.com/sesquicadaver/MTDirector/issues/508)): QG-LIVESPEC-MATRIX-01 Living Spec matrix PR gate (`QgLivespecMatrix01LivingSpecTests`). Seeded W7-56 (#510) / W7-57 (#512). **§3.C NEXT = W7-56 (#510)**.
 - **W7-54** ([#506](https://github.com/sesquicadaver/MTDirector/issues/506)): QG-ANTISTUB-01 anti-stub Living Spec gate (`AntiStubScanner`). Seeded W7-55 (#508) / W7-56 (#510). **§3.C NEXT = W7-55 (#508)**.
 - **W7-53** ([#504](https://github.com/sesquicadaver/MTDirector/issues/504)): QG-DOCS-01 weekly docs smoke Living Spec (`QgDocs01WeeklyDocsSmokeLivingSpecTests`); fixed root README NEXT drift. Seeded W7-54 (#506) / W7-55 (#508). **§3.C NEXT = W7-54 (#506)**.
 - **W7-52** ([#502](https://github.com/sesquicadaver/MTDirector/issues/502)): QG-IMPORT-01 production Mfc.* import-graph cycle Living Spec gate (`ProductionImportGraph`). Seeded W7-53 (#504) / W7-54 (#506). **§3.C NEXT = W7-53 (#504)**.
