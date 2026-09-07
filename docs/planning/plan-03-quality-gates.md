@@ -29,4 +29,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-57 (#512)** — Seed next product tranche after PLAN-03 quality gates.
+**§3.C NEXT = W7-58 (#514)** — PLAN-04 inventory next contract-test / API Living Spec product tranche.
