@@ -19,6 +19,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-56 Living Spec lock): **QG-SIGN-01** — MVP signing remains cleartext `SHA256SUMS` + documented attestation; crypto GPG/Sigstore stays a future CI gate (`QgSign01ReleaseSigningLivingSpecTests`).
 - Intentional residual (W7-57 Living Spec lock): §3.C product tranche after PLAN-03 quality gates is seeded as **W7-58** — **PLAN-04** contract-test / API Living Spec inventory; not idle; not a lab stop-gate.
 - Intentional residual (W7-58 Living Spec lock): **PLAN-04** contract-test inventory is documented in [`plan-04-contract-tests.md`](../planning/plan-04-contract-tests.md); first atomic row **CT-DEPLOY-01** (W7-59).
+- Intentional residual (W7-59 Living Spec lock): **CT-DEPLOY-01** — `DeploymentService` has Controller GrpcHost contract coverage (`DeploymentGrpcHostTests` + `ScriptedDeploymentRuntime`).
 
 ## Production wiring (P2 pilot)
 

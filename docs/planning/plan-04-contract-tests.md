@@ -21,7 +21,7 @@ PLAN-03 exhausted operator/docs quality gates. PLAN-04 keeps `/autopilot` from i
 | PolicyService | `PolicyProtoContractTests` | `PolicyGrpcHostTests` |
 | OnboardingService | `OnboardingProtoContractTests` | `OnboardingGrpcHostTests` |
 | SnapshotService | `SnapshotProtoContractTests` | `SnapshotGrpcHostTests` |
-| DeploymentService | `DeploymentProtoContractTests` | **missing GrpcHost** |
+| DeploymentService | `DeploymentProtoContractTests` | `DeploymentGrpcHostTests` (W7-59) |
 | ZoneService | `ZoneProtoContractTests` | **missing GrpcHost** |
 | DriftService | `DriftProtoContractTests` | **missing GrpcHost** |
 | AuditService | `AuditProtoContractTests` | **missing GrpcHost** |
@@ -32,8 +32,8 @@ PLAN-03 exhausted operator/docs quality gates. PLAN-04 keeps `/autopilot` from i
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CT-DEPLOY-01** | DeploymentService has proto tests + unit Living Specs but no Controller GrpcHost contract | Critical write path RPCs; pattern: `OnboardingGrpcHostTests` | **W7-59 OPEN** (#516) |
-| 2 | **CT-ZONE-01** | ZoneService mutations lack GrpcHost contract | `ZoneProtoContractTests` only | seed after CT-DEPLOY-01 |
+| 1 | **CT-DEPLOY-01** | DeploymentService has proto tests + unit Living Specs but no Controller GrpcHost contract | Critical write path RPCs; pattern: `OnboardingGrpcHostTests` | **W7-59 DONE** (#516) |
+| 2 | **CT-ZONE-01** | ZoneService mutations lack GrpcHost contract | `ZoneProtoContractTests` only | **W7-60 OPEN** (#518) |
 | 3 | **CT-DRIFT-01** | DriftService read path lacks GrpcHost contract | `DriftProtoContractTests` only | seed after CT-ZONE-01 |
 | 4 | **CT-AUDIT-01** | AuditService list path lacks GrpcHost contract | `AuditProtoContractTests` only | seed after CT-DRIFT-01 |
 | 5 | **CT-ROUTING-01** | RoutingAssuranceService lacks ProtoContract + GrpcHost | Desktop Living Spec only | seed after CT-AUDIT-01 |
@@ -45,4 +45,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-59 (#516)** — CT-DEPLOY-01 DeploymentService GrpcHost contract Living Spec.
+**§3.C NEXT = W7-60 (#518)** — CT-ZONE-01 ZoneService GrpcHost contract Living Spec.

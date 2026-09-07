@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-59** ([#516](https://github.com/sesquicadaver/MTDirector/issues/516)): CT-DEPLOY-01 DeploymentService GrpcHost contract (`DeploymentGrpcHostTests`); map `DEPLOYMENT_*` errors to FailedPrecondition. Seeded W7-60 (#518) / W7-61 (#520). **§3.C NEXT = W7-60 (#518)**.
 - **W7-58** ([#514](https://github.com/sesquicadaver/MTDirector/issues/514)): PLAN-04 contract-test inventory (`plan-04-contract-tests.md`); seeds CT-DEPLOY-01 as W7-59 (#516) / W7-60 (#518). **§3.C NEXT = W7-59 (#516)**.
 - **W7-57** ([#512](https://github.com/sesquicadaver/MTDirector/issues/512)): Seed next product tranche after PLAN-03 → W7-58 PLAN-04 contract-test inventory. Seeded W7-58 (#514) / W7-59 (#516). **§3.C NEXT = W7-58 (#514)**.
 - **W7-56** ([#510](https://github.com/sesquicadaver/MTDirector/issues/510)): QG-SIGN-01 release signing residual Living Spec (`QgSign01ReleaseSigningLivingSpecTests`). Seeded W7-57 (#512) / W7-58 (#514). **§3.C NEXT = W7-57 (#512)**.
