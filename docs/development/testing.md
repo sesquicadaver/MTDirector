@@ -792,6 +792,21 @@ Issue [#546](https://github.com/sesquicadaver/MTDirector/issues/546) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentPanelLivingSpecTests|CtDeskIncident02"`.
 
+## Living Specification — DESK-INCIDENT-03 Desktop Incident Bind assessment (W7-75)
+
+Issue [#548](https://github.com/sesquicadaver/MTDirector/issues/548) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| BindAssessment command + UUID/flow fields | `IncidentViewModel` | `DesktopIncidentBindLivingSpecTests.Ac1ViewModelExposesBindAssessmentCommandAndBindingFields` |
+| Bind requires Connected + ingested signal | `IncidentViewModel` | `Ac2BindRequiresConnectedControllerAndIngestedSignal` |
+| Bind maps assessment binding payload | `IncidentViewModel` | `Ac3BindMapsAssessmentBindingFromClientPayload` |
+| MainWindow binds Bind form + result | `MainWindow.axaml` | `Ac4MainWindowBindsBindAssessmentFormAndResult` |
+| Host CT-INCIDENT-01 remains present | `IncidentGrpcHostTests` | `Ac5HostContractLivingSpecRemainsPresent` |
+| Docs / PLAN-06 matrix lock | `plan-06-incident-desktop-operator-surface.md`, `testing.md` | `CtDeskIncident03DesktopIncidentBindLivingSpecTests.Ac1DesktopIncidentBindLivingSpecAndPlan06MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentBindLivingSpecTests|CtDeskIncident03"`.
+
 ## Living Specification — DESK-AUDIT-01 Desktop Audit panel (W7-67)
 
 Issue [#532](https://github.com/sesquicadaver/MTDirector/issues/532) AC → module → tests:

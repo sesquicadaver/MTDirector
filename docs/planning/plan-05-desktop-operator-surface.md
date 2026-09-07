@@ -45,4 +45,4 @@ PLAN-06 Incident Desktop operator-surface inventory: [`plan-06-incident-desktop-
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-75 (#548)** — DESK-INCIDENT-03 Desktop Incident Bind assessment Living Spec (PLAN-06).
+**§3.C NEXT = W7-76 (#550)** — DESK-INCIDENT-04 Desktop Incident fail-closed no deploy/overlay Living Spec (PLAN-06).
