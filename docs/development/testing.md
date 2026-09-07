@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-ONBOARD-01 Desktop Onboarding panel (W7-83)
+
+Issue [#564](https://github.com/sesquicadaver/MTDirector/issues/564) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Wire + Desktop Onboarding client | `IOnboardingServiceClient`, `GrpcOnboardingServiceClient` | `DesktopOnboardingLivingSpecTests.Ac1WireAndDesktopClientExposeValidatePlanStartWatchRollbackAndRecovery` |
+| Validate/Plan/Start/Rollback/Recovery; no script/arbitrary write | `OnboardingViewModel` | `Ac2ViewModelExposesValidatePlanStartRollbackRecoveryWithoutScriptOrArbitraryWrite` |
+| Validate loads findings when Node selected | `OnboardingViewModel` | `Ac3ValidateLoadsFindingsWhenNodeSelected` |
+| Validate requires Node selection | `OnboardingViewModel` | `Ac4ValidateRequiresInventoryNodeSelection` |
+| MainWindow Onboarding bindings | `MainWindow.axaml` | `Ac5MainWindowBindsOnboardingValidatePlanStartWatchRollbackAndRecovery` |
+| Host OnboardingGrpcHost remains present | `OnboardingGrpcHostTests` | `Ac6HostContractLivingSpecRemainsPresent` |
+| Docs / PLAN-07 matrix lock | `plan-07-core-mvp-desktop-operator-surface.md`, `testing.md` | `CtDeskOnboard01DesktopOnboardingLivingSpecTests.Ac1DesktopOnboardingLivingSpecAndPlan07MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopOnboardingLivingSpecTests|CtDeskOnboard01"`.
+
 ## Living Specification — Product tranche seed after DESK-DEPLOY-01 (W7-82)
 
 Issue [#562](https://github.com/sesquicadaver/MTDirector/issues/562) AC → module → tests:
