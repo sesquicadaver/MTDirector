@@ -115,7 +115,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Lock SEC-07…SEC-15 DONE residual Living Spec | Docs / SEC residual | **W7-47 DONE** |
 | Seed next continuous residual after SEC-07…15 Living Spec | Docs / queue seed | **W7-48 DONE** |
 | Lock known-limitations residual Living Spec corpus COMPLETE | Docs / residual corpus | **W7-49 DONE** |
-| Seed next product tranche after residual corpus Living Spec | Docs / product seed | **W7-50 OPEN** |
+| Seed next product tranche after residual corpus Living Spec | Docs / product seed | **W7-50 DONE** |
+| PLAN-03 — Inventory next quality-gate product tranche | Docs / PLAN-03 | **W7-51 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -218,7 +219,8 @@ W7-46 Seed next continuous residual after M7 CLOSED Living Spec **DONE**
 W7-47 Lock SEC-07…SEC-15 DONE residual Living Spec **DONE**
 W7-48 Seed next continuous residual after SEC-07…15 Living Spec **DONE**
 W7-49 Lock known-limitations residual Living Spec corpus COMPLETE **DONE**
-W7-50 Seed next product tranche after residual corpus Living Spec **OPEN**
+W7-50 Seed next product tranche after residual corpus Living Spec **DONE**
+W7-51 PLAN-03 — Inventory next quality-gate product tranche **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -307,9 +309,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 77 | W7-47 | [#492](https://github.com/sesquicadaver/MTDirector/issues/492) | Lock SEC-07…SEC-15 DONE residual Living Spec | **DONE** |
 | 78 | W7-48 | [#494](https://github.com/sesquicadaver/MTDirector/issues/494) | Seed next continuous residual after SEC-07…15 Living Spec | **DONE** |
 | 79 | W7-49 | [#496](https://github.com/sesquicadaver/MTDirector/issues/496) | Lock known-limitations residual Living Spec corpus COMPLETE | **DONE** |
-| 80 | W7-50 | [#498](https://github.com/sesquicadaver/MTDirector/issues/498) | Seed next product tranche after residual corpus Living Spec | **OPEN** |
+| 80 | W7-50 | [#498](https://github.com/sesquicadaver/MTDirector/issues/498) | Seed next product tranche after residual corpus Living Spec | **DONE** |
+| 81 | W7-51 | [#500](https://github.com/sesquicadaver/MTDirector/issues/500) | PLAN-03 — Inventory next quality-gate product tranche | **OPEN** |
 
-**§3.C NEXT = W7-50 (#498)**. W7-49 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-51 (#500)**. W7-50 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
