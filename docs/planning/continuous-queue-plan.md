@@ -150,7 +150,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Seed next product tranche after PLAN-06 Incident Desktop operator-surface | Docs / product seed | **W7-77 DONE** |
 | PLAN-07 — Inventory next Core MVP Desktop operator-surface Living Spec product tranche | Docs / PLAN-07 | **W7-78 DONE** |
 | DESK-POLICY-01 — Desktop Policies panel Living Spec vs PolicyGrpcHost | Docs / Desktop Living Spec | **W7-79 DONE** |
-| Seed next PLAN-07 row after DESK-POLICY-01 → DESK-DEPLOY-01 | Docs / PLAN-07 | **W7-80 OPEN** |
+| Seed next PLAN-07 row after DESK-POLICY-01 → DESK-DEPLOY-01 | Docs / PLAN-07 | **W7-80 DONE** |
+| DESK-DEPLOY-01 — Desktop Deployment Living Spec vs DeploymentGrpcHost | Docs / Desktop Living Spec | **W7-81 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -283,8 +284,9 @@ W7-76 DESK-INCIDENT-04 — Desktop Incident fail-closed no deploy/overlay Living
 W7-77 Seed next product tranche after PLAN-06 Incident Desktop operator-surface **DONE**
 W7-78 PLAN-07 — Inventory next Core MVP Desktop operator-surface Living Spec product tranche **DONE**
 W7-79 DESK-POLICY-01 — Desktop Policies panel Living Spec vs PolicyGrpcHost **DONE**
-W7-80 Seed next PLAN-07 row after DESK-POLICY-01 → DESK-DEPLOY-01 **OPEN**
+W7-80 Seed next PLAN-07 row after DESK-POLICY-01 → DESK-DEPLOY-01 **DONE**
 W7-81 DESK-DEPLOY-01 — Desktop Deployment Living Spec vs DeploymentGrpcHost **OPEN**
+W7-82 Seed next PLAN-07 row after DESK-DEPLOY-01 **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -403,10 +405,11 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 107 | W7-77 | [#552](https://github.com/sesquicadaver/MTDirector/issues/552) | Seed next product tranche after PLAN-06 Incident Desktop operator-surface | **DONE** |
 | 108 | W7-78 | [#554](https://github.com/sesquicadaver/MTDirector/issues/554) | PLAN-07 — Inventory next Core MVP Desktop operator-surface Living Spec product tranche | **DONE** |
 | 109 | W7-79 | [#556](https://github.com/sesquicadaver/MTDirector/issues/556) | DESK-POLICY-01 — Desktop Policies panel Living Spec vs PolicyGrpcHost | **DONE** |
-| 110 | W7-80 | [#558](https://github.com/sesquicadaver/MTDirector/issues/558) | Seed next PLAN-07 row after DESK-POLICY-01 → DESK-DEPLOY-01 | **OPEN** |
+| 110 | W7-80 | [#558](https://github.com/sesquicadaver/MTDirector/issues/558) | Seed next PLAN-07 row after DESK-POLICY-01 → DESK-DEPLOY-01 | **DONE** |
 | 111 | W7-81 | [#560](https://github.com/sesquicadaver/MTDirector/issues/560) | DESK-DEPLOY-01 — Desktop Deployment Living Spec vs DeploymentGrpcHost | **OPEN** |
+| 112 | W7-82 | [#562](https://github.com/sesquicadaver/MTDirector/issues/562) | Seed next PLAN-07 row after DESK-DEPLOY-01 | **OPEN** |
 
-**§3.C NEXT = W7-80 (#558)**. W7-79 **DONE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-81 (#560)**. W7-80 **DONE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
