@@ -33,7 +33,7 @@ PLAN-05 closed dedicated Desktop Living Specs for Audit → Routing and deferred
 | 1 | **DESK-POLICY-01** | Policies panel lacks host-aligned Desktop Living Spec vs PolicyGrpcHost | `PoliciesViewModel`, `IPolicyServiceClient` / `GrpcPolicyServiceClient`; host: `PolicyGrpcHostTests` | **W7-79 DONE** (#556) |
 | 2 | **DESK-DEPLOY-01** | Deployment operator path lacks dedicated Desktop Living Spec vs DeploymentGrpcHost | `DeploymentViewModel`, `GrpcDeploymentServiceClient`; host: `DeploymentGrpcHostTests` | **W7-81 DONE** (#560) |
 | 3 | **DESK-ONBOARD-01** | Onboarding Start/Watch/Rollback lacks dedicated Desktop Living Spec vs OnboardingGrpcHost | `OnboardingViewModel`, `GrpcOnboardingServiceClient`; host: `OnboardingGrpcHostTests` | **W7-83 DONE** (#564) |
-| 4 | **DESK-SNAPSHOT-01** | Snapshot capture/compare lacks dedicated Desktop Living Spec vs SnapshotGrpcHost | `SnapshotViewerViewModel` / `SnapshotDiffViewModel`; host: `SnapshotGrpcHostTests` | **W7-85 OPEN** (#568); seed via W7-84 |
+| 4 | **DESK-SNAPSHOT-01** | Snapshot capture/compare lacks dedicated Desktop Living Spec vs SnapshotGrpcHost | `SnapshotViewerViewModel` / `SnapshotDiffViewModel`; host: `SnapshotGrpcHostTests` | **W7-85 OPEN** (#568) |
 | 5 | **DESK-INVENTORY-01** | Inventory tree / Add router / Node lacks dedicated Desktop Living Spec vs InventoryGrpcHost | `InventoryTreeViewModel`, `AddRouterWizardViewModel`, `NodeDetailViewModel`; host: `InventoryGrpcHostTests` | seed after DESK-SNAPSHOT-01 |
 
 ## Dual track (unchanged)
@@ -42,4 +42,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-84 (#566)** — Seed next PLAN-07 row after DESK-ONBOARD-01 → DESK-SNAPSHOT-01.
+**§3.C NEXT = W7-85 (#568)** — DESK-SNAPSHOT-01 Desktop Snapshot Living Spec vs SnapshotGrpcHost.
