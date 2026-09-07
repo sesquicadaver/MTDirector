@@ -118,7 +118,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Lock known-limitations residual Living Spec corpus COMPLETE | Docs / residual corpus | **W7-49 DONE** |
 | Seed next product tranche after residual corpus Living Spec | Docs / product seed | **W7-50 DONE** |
 | PLAN-03 — Inventory next quality-gate product tranche | Docs / PLAN-03 | **W7-51 DONE** |
-| QG-IMPORT-01 — Import graph + cycle anomaly Living Spec gate | Docs / quality gate | **W7-52 OPEN** |
+| QG-IMPORT-01 — Import graph + cycle anomaly Living Spec gate | Docs / quality gate | **W7-52 DONE** |
+| QG-DOCS-01 — Weekly docs smoke Living Spec gate | Docs / quality gate | **W7-53 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -223,7 +224,8 @@ W7-48 Seed next continuous residual after SEC-07…15 Living Spec **DONE**
 W7-49 Lock known-limitations residual Living Spec corpus COMPLETE **DONE**
 W7-50 Seed next product tranche after residual corpus Living Spec **DONE**
 W7-51 PLAN-03 — Inventory next quality-gate product tranche **DONE**
-W7-52 QG-IMPORT-01 — Import graph + cycle anomaly Living Spec gate **OPEN**
+W7-52 QG-IMPORT-01 — Import graph + cycle anomaly Living Spec gate **DONE**
+W7-53 QG-DOCS-01 — Weekly docs smoke Living Spec gate **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -314,9 +316,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 79 | W7-49 | [#496](https://github.com/sesquicadaver/MTDirector/issues/496) | Lock known-limitations residual Living Spec corpus COMPLETE | **DONE** |
 | 80 | W7-50 | [#498](https://github.com/sesquicadaver/MTDirector/issues/498) | Seed next product tranche after residual corpus Living Spec | **DONE** |
 | 81 | W7-51 | [#500](https://github.com/sesquicadaver/MTDirector/issues/500) | PLAN-03 — Inventory next quality-gate product tranche | **DONE** |
-| 82 | W7-52 | [#502](https://github.com/sesquicadaver/MTDirector/issues/502) | QG-IMPORT-01 — Import graph + cycle anomaly Living Spec gate | **OPEN** |
+| 82 | W7-52 | [#502](https://github.com/sesquicadaver/MTDirector/issues/502) | QG-IMPORT-01 — Import graph + cycle anomaly Living Spec gate | **DONE** |
+| 83 | W7-53 | [#504](https://github.com/sesquicadaver/MTDirector/issues/504) | QG-DOCS-01 — Weekly docs smoke Living Spec gate | **OPEN** |
 
-**§3.C NEXT = W7-52 (#502)**. W7-51 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-53 (#504)**. W7-52 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

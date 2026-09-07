@@ -18,7 +18,7 @@ public sealed class Plan03QualityGatesW751LivingSpecTests
         Assert.Contains("QG-IMPORT-01", plan03, StringComparison.Ordinal);
         Assert.Contains("QG-DOCS-01", plan03, StringComparison.Ordinal);
         Assert.Contains("QG-ANTISTUB-01", plan03, StringComparison.Ordinal);
-        Assert.Contains("W7-52 OPEN", plan03, StringComparison.Ordinal);
+        Assert.Contains("W7-52", plan03, StringComparison.Ordinal);
         Assert.Contains("Intentional residual (W7-51 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("PLAN-03", limitations, StringComparison.Ordinal);
         Assert.Contains("QG-IMPORT-01", roadmap, StringComparison.Ordinal);

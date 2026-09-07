@@ -722,6 +722,19 @@ Issue [#500](https://github.com/sesquicadaver/MTDirector/issues/500) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan03QualityGatesW751"`.
 
+## Living Specification — QG-IMPORT-01 import graph cycle gate (W7-52)
+
+Issue [#502](https://github.com/sesquicadaver/MTDirector/issues/502) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Production Mfc.* import graph has no cycles | `ProductionImportGraph` | `QgImport01ImportGraphCycleLivingSpecTests.Ac1ProductionMfcImportGraphHasNoCycles` |
+| Expected layer edges present / forbidden absent | `ProductionImportGraph` | `QgImport01ImportGraphCycleLivingSpecTests.Ac2ImportGraphIncludesExpectedLayerEdges` |
+| Docs matrix documents QG-IMPORT-01 | `docs/development/testing.md`, `plan-03-quality-gates.md` | `QgImport01ImportGraphCycleLivingSpecTests.Ac3DocsMatrixDocumentsQgImport01LivingSpec` |
+| Cycle detector reports synthetic cycle | `ProductionImportGraph.FindCycles` | `QgImport01ImportGraphCycleLivingSpecTests.Ac4CycleDetectorReportsSyntheticCycle` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~QgImport01ImportGraphCycle"`.
+
 ## Living Specification — Deploy artifact materializer + observed hash (SEC-02)
 
 Issue [#372](https://github.com/sesquicadaver/MTDirector/issues/372) AC → module → tests:

@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-52** ([#502](https://github.com/sesquicadaver/MTDirector/issues/502)): QG-IMPORT-01 production Mfc.* import-graph cycle Living Spec gate (`ProductionImportGraph`). Seeded W7-53 (#504) / W7-54 (#506). **§3.C NEXT = W7-53 (#504)**.
 - **W7-51** ([#500](https://github.com/sesquicadaver/MTDirector/issues/500)): PLAN-03 quality-gate inventory (`plan-03-quality-gates.md`); seeds QG-IMPORT-01 as W7-52 (#502) / W7-53 (#504). **§3.C NEXT = W7-52 (#502)**.
 - **W7-50** ([#498](https://github.com/sesquicadaver/MTDirector/issues/498)): Living Spec locks product tranche seed after residual corpus → W7-51 PLAN-03 quality gates. Seeded W7-51 (#500) / W7-52 (#502). **§3.C NEXT = W7-51 (#500)**.
 - **W7-49** ([#496](https://github.com/sesquicadaver/MTDirector/issues/496)): Living Spec locks intentional known-limitations residual Living Spec corpus COMPLETE. Seeded W7-50 (#498) / W7-51 (#500). **§3.C NEXT = W7-50 (#498)**.
