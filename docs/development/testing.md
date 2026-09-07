@@ -762,6 +762,16 @@ Issue [#530](https://github.com/sesquicadaver/MTDirector/issues/530) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan05DesktopOperatorSurfaceW766"`.
 
+## Living Specification — PLAN-07 Core MVP Desktop operator-surface inventory (W7-78)
+
+Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-07 inventory + DESK-POLICY-01 seed | `docs/planning/plan-07-core-mvp-desktop-operator-surface.md`, `known-limitations.md`, ROADMAP, continuous plan, docs index | `Plan07CoreMvpDesktopOperatorSurfaceW778LivingSpecTests.Ac1Plan07InventoryDocumentsRankedCoreMvpRowsAndSeedsDeskPolicy01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
+
 ## Living Specification — PLAN-06 Incident Desktop operator-surface inventory (W7-72)
 
 Issue [#542](https://github.com/sesquicadaver/MTDirector/issues/542) AC → module → tests:
