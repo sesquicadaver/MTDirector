@@ -120,7 +120,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | PLAN-03 — Inventory next quality-gate product tranche | Docs / PLAN-03 | **W7-51 DONE** |
 | QG-IMPORT-01 — Import graph + cycle anomaly Living Spec gate | Docs / quality gate | **W7-52 DONE** |
 | QG-DOCS-01 — Weekly docs smoke Living Spec gate | Docs / quality gate | **W7-53 DONE** |
-| QG-ANTISTUB-01 — Anti-stub CI Living Spec gate | Docs / quality gate | **W7-54 OPEN** |
+| QG-ANTISTUB-01 — Anti-stub CI Living Spec gate | Docs / quality gate | **W7-54 DONE** |
+| QG-LIVESPEC-MATRIX-01 — Living Spec matrix PR gate | Docs / quality gate | **W7-55 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -227,7 +228,8 @@ W7-50 Seed next product tranche after residual corpus Living Spec **DONE**
 W7-51 PLAN-03 — Inventory next quality-gate product tranche **DONE**
 W7-52 QG-IMPORT-01 — Import graph + cycle anomaly Living Spec gate **DONE**
 W7-53 QG-DOCS-01 — Weekly docs smoke Living Spec gate **DONE**
-W7-54 QG-ANTISTUB-01 — Anti-stub CI Living Spec gate **OPEN**
+W7-54 QG-ANTISTUB-01 — Anti-stub CI Living Spec gate **DONE**
+W7-55 QG-LIVESPEC-MATRIX-01 — Living Spec matrix PR gate **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -320,9 +322,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 81 | W7-51 | [#500](https://github.com/sesquicadaver/MTDirector/issues/500) | PLAN-03 — Inventory next quality-gate product tranche | **DONE** |
 | 82 | W7-52 | [#502](https://github.com/sesquicadaver/MTDirector/issues/502) | QG-IMPORT-01 — Import graph + cycle anomaly Living Spec gate | **DONE** |
 | 83 | W7-53 | [#504](https://github.com/sesquicadaver/MTDirector/issues/504) | QG-DOCS-01 — Weekly docs smoke Living Spec gate | **DONE** |
-| 84 | W7-54 | [#506](https://github.com/sesquicadaver/MTDirector/issues/506) | QG-ANTISTUB-01 — Anti-stub CI Living Spec gate | **OPEN** |
+| 84 | W7-54 | [#506](https://github.com/sesquicadaver/MTDirector/issues/506) | QG-ANTISTUB-01 — Anti-stub CI Living Spec gate | **DONE** |
+| 85 | W7-55 | [#508](https://github.com/sesquicadaver/MTDirector/issues/508) | QG-LIVESPEC-MATRIX-01 — Living Spec matrix PR gate | **OPEN** |
 
-**§3.C NEXT = W7-54 (#506)**. W7-53 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-55 (#508)**. W7-54 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
