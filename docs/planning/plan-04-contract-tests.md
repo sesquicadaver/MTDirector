@@ -25,7 +25,7 @@ PLAN-03 exhausted operator/docs quality gates. PLAN-04 keeps `/autopilot` from i
 | ZoneService | `ZoneProtoContractTests` | `ZoneGrpcHostTests` (W7-60) |
 | DriftService | `DriftProtoContractTests` | `DriftGrpcHostTests` (W7-61) |
 | AuditService | `AuditProtoContractTests` | `AuditGrpcHostTests` (W7-62) |
-| RoutingAssuranceService | **no ProtoContractTests** | **missing GrpcHost** (Desktop Living Spec only) |
+| RoutingAssuranceService | `RoutingAssuranceProtoContractTests` | `RoutingAssuranceGrpcHostTests` (W7-63) |
 | IncidentService | **no ProtoContractTests** | SEC-06 unit Living Spec only — **missing GrpcHost** |
 
 ## Ranked contract-test tranche
@@ -36,8 +36,8 @@ PLAN-03 exhausted operator/docs quality gates. PLAN-04 keeps `/autopilot` from i
 | 2 | **CT-ZONE-01** | ZoneService mutations lack GrpcHost contract | `ZoneProtoContractTests` only | **W7-60 DONE** (#518) |
 | 3 | **CT-DRIFT-01** | DriftService read path lacks GrpcHost contract | `DriftProtoContractTests` only | **W7-61 DONE** (#520) |
 | 4 | **CT-AUDIT-01** | AuditService list path lacks GrpcHost contract | `AuditProtoContractTests` only | **W7-62 DONE** (#522) |
-| 5 | **CT-ROUTING-01** | RoutingAssuranceService lacks ProtoContract + GrpcHost | Desktop Living Spec only | **W7-63 OPEN** (#524) |
-| 6 | **CT-INCIDENT-01** | IncidentService lacks ProtoContract + GrpcHost | `IncidentGrpcSec06LivingSpecTests` unit only | seed after CT-ROUTING-01 |
+| 5 | **CT-ROUTING-01** | RoutingAssuranceService lacks ProtoContract + GrpcHost | Desktop Living Spec only | **W7-63 DONE** (#524) |
+| 6 | **CT-INCIDENT-01** | IncidentService lacks ProtoContract + GrpcHost | `IncidentGrpcSec06LivingSpecTests` unit only | **W7-64 OPEN** (#526) |
 
 ## Dual track (unchanged)
 
@@ -45,4 +45,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-63 (#524)** — CT-ROUTING-01 RoutingAssuranceService ProtoContract + GrpcHost Living Spec.
+**§3.C NEXT = W7-64 (#526)** — CT-INCIDENT-01 IncidentService ProtoContract + GrpcHost Living Spec.

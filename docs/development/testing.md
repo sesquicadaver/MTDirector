@@ -785,6 +785,20 @@ Issue [#522](https://github.com/sesquicadaver/MTDirector/issues/522) AC → modu
 Filter (integration): `dotnet test tests/Mfc.IntegrationTests --filter "FullyQualifiedName~AuditGrpcHostTests"`.
 Filter (unit Living Spec): `dotnet test --filter "FullyQualifiedName~CtAudit01AuditGrpcHost"`.
 
+## Living Specification — CT-ROUTING-01 RoutingAssurance ProtoContract + GrpcHost (W7-63)
+
+Issue [#524](https://github.com/sesquicadaver/MTDirector/issues/524) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Proto surface is Get-only + hashes/bounded rows | `RoutingAssuranceProtoContractTests` | `RoutingAssuranceServiceExposesOnlyGetRpc` / `RoutingAssuranceContractHasNoWriteSurface` / `RoutingAssuranceStateDetailCarriesHashesAndBoundedRows` |
+| Get not-found + Get after upsert | `RoutingAssuranceGrpcHostTests` | `GetDeviceRoutingAssuranceStateAfterUpsert` |
+| Wire surface is read-only (Get only) | same | `RoutingAssuranceServiceHasNoMutationRpcsOnWire` |
+| Docs / PLAN-04 matrix lock | `plan-04-contract-tests.md`, `testing.md` | `CtRouting01RoutingAssuranceGrpcHostLivingSpecTests.Ac1RoutingAssuranceProtoAndGrpcHostTestsAndPlan04MatrixExist` |
+
+Filter (integration): `dotnet test tests/Mfc.IntegrationTests --filter "FullyQualifiedName~RoutingAssuranceGrpcHostTests"`.
+Filter (unit Living Spec): `dotnet test --filter "FullyQualifiedName~CtRouting01RoutingAssurance"`.
+
 ## Living Specification — PLAN-03 quality-gate inventory (W7-51)
 
 Issue [#500](https://github.com/sesquicadaver/MTDirector/issues/500) AC → module → tests:

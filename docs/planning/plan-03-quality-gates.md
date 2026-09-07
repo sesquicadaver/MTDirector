@@ -29,4 +29,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-63 (#524)** — CT-ROUTING-01 RoutingAssuranceService ProtoContract + GrpcHost Living Spec.
+**§3.C NEXT = W7-64 (#526)** — CT-INCIDENT-01 IncidentService ProtoContract + GrpcHost Living Spec.

@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-63** ([#524](https://github.com/sesquicadaver/MTDirector/issues/524)): CT-ROUTING-01 RoutingAssurance ProtoContract + GrpcHost (`RoutingAssuranceProtoContractTests`, `RoutingAssuranceGrpcHostTests`); fix EF routing-assurance JSON null round-trip. Seeded W7-64 (#526) / W7-65 (#528). **§3.C NEXT = W7-64 (#526)**.
 - **W7-62** ([#522](https://github.com/sesquicadaver/MTDirector/issues/522)): CT-AUDIT-01 AuditService GrpcHost contract (`AuditGrpcHostTests`). Seeded W7-63 (#524) / W7-64 (#526). **§3.C NEXT = W7-63 (#524)**.
 - **W7-61** ([#520](https://github.com/sesquicadaver/MTDirector/issues/520)): CT-DRIFT-01 DriftService GrpcHost contract (`DriftGrpcHostTests`). Seeded W7-62 (#522) / W7-63 (#524). **§3.C NEXT = W7-62 (#522)**.
 - **W7-60** ([#518](https://github.com/sesquicadaver/MTDirector/issues/518)): CT-ZONE-01 ZoneService GrpcHost contract (`ZoneGrpcHostTests`). Seeded W7-61 (#520) / W7-62 (#522). **§3.C NEXT = W7-61 (#520)**.
