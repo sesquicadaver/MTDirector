@@ -769,8 +769,21 @@ Issue [#520](https://github.com/sesquicadaver/MTDirector/issues/520) AC → modu
 | Wire surface is read-only (List + Get only) | same | `DriftServiceHasNoMutationRpcsOnWire` |
 | Docs / PLAN-04 matrix lock | `plan-04-contract-tests.md`, `testing.md` | `CtDrift01DriftGrpcHostLivingSpecTests.Ac1DriftGrpcHostTestsAndPlan04MatrixExist` |
 
-Filter (integration): `dotnet test tests/Mfc.IntegrationTests --filter "FullyQualifiedName~DriftGrpcHostTests"`.  
+Filter (integration): `dotnet test tests/Mfc.IntegrationTests --filter "FullyQualifiedName~DriftGrpcHostTests"`.
 Filter (unit Living Spec): `dotnet test --filter "FullyQualifiedName~CtDrift01DriftGrpcHost"`.
+
+## Living Specification — CT-AUDIT-01 AuditService GrpcHost (W7-62)
+
+Issue [#522](https://github.com/sesquicadaver/MTDirector/issues/522) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Empty list + newest-first list + page_size clamp after append | `AuditGrpcHostTests` | `ListAuditEventsAfterAppendIsNewestFirstAndPaged` |
+| Wire surface is read-only (List only) | same | `AuditServiceHasNoMutationRpcsOnWire` |
+| Docs / PLAN-04 matrix lock | `plan-04-contract-tests.md`, `testing.md` | `CtAudit01AuditGrpcHostLivingSpecTests.Ac1AuditGrpcHostTestsAndPlan04MatrixExist` |
+
+Filter (integration): `dotnet test tests/Mfc.IntegrationTests --filter "FullyQualifiedName~AuditGrpcHostTests"`.
+Filter (unit Living Spec): `dotnet test --filter "FullyQualifiedName~CtAudit01AuditGrpcHost"`.
 
 ## Living Specification — PLAN-03 quality-gate inventory (W7-51)
 

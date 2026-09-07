@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-62** ([#522](https://github.com/sesquicadaver/MTDirector/issues/522)): CT-AUDIT-01 AuditService GrpcHost contract (`AuditGrpcHostTests`). Seeded W7-63 (#524) / W7-64 (#526). **§3.C NEXT = W7-63 (#524)**.
 - **W7-61** ([#520](https://github.com/sesquicadaver/MTDirector/issues/520)): CT-DRIFT-01 DriftService GrpcHost contract (`DriftGrpcHostTests`). Seeded W7-62 (#522) / W7-63 (#524). **§3.C NEXT = W7-62 (#522)**.
 - **W7-60** ([#518](https://github.com/sesquicadaver/MTDirector/issues/518)): CT-ZONE-01 ZoneService GrpcHost contract (`ZoneGrpcHostTests`). Seeded W7-61 (#520) / W7-62 (#522). **§3.C NEXT = W7-61 (#520)**.
 - **W7-59** ([#516](https://github.com/sesquicadaver/MTDirector/issues/516)): CT-DEPLOY-01 DeploymentService GrpcHost contract (`DeploymentGrpcHostTests`); map `DEPLOYMENT_*` errors to FailedPrecondition. Seeded W7-60 (#518) / W7-61 (#520). **§3.C NEXT = W7-60 (#518)**.
