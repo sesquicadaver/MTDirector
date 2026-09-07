@@ -17,6 +17,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-54 Living Spec lock): **QG-ANTISTUB-01** — `AntiStubScanner` + `QgAntistub01AntiStubLivingSpecTests` fail closed on `NotImplementedException`, stub TODOs, and xUnit `Skip` in repo sources.
 - Intentional residual (W7-55 Living Spec lock): **QG-LIVESPEC-MATRIX-01** — DONE PLAN-03 `QG-*` rows require matching `## Living Specification — QG-…` sections in `testing.md` (`QgLivespecMatrix01LivingSpecTests`).
 - Intentional residual (W7-56 Living Spec lock): **QG-SIGN-01** — MVP signing remains cleartext `SHA256SUMS` + documented attestation; crypto GPG/Sigstore stays a future CI gate (`QgSign01ReleaseSigningLivingSpecTests`).
+- Intentional residual (W7-57 Living Spec lock): §3.C product tranche after PLAN-03 quality gates is seeded as **W7-58** — **PLAN-04** contract-test / API Living Spec inventory; not idle; not a lab stop-gate.
 
 ## Production wiring (P2 pilot)
 

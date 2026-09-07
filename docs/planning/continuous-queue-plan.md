@@ -4,7 +4,8 @@
 **Baseline:** `main` @ `877a529` (W2.2 Routing assurance next-hop/subject fields, [#338](https://github.com/sesquicadaver/MTDirector/pull/338))  
 **PLAN issue:** [PLAN-02 #339](https://github.com/sesquicadaver/MTDirector/issues/339)  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
-**PLAN-03 (quality gates):** [`plan-03-quality-gates.md`](plan-03-quality-gates.md)
+**PLAN-03 (quality gates):** [`plan-03-quality-gates.md`](plan-03-quality-gates.md)  
+**PLAN-04 (contract tests):** inventory via W7-58 ([#514](https://github.com/sesquicadaver/MTDirector/issues/514))
 
 This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle state **NEXT = none**.
 
@@ -123,7 +124,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | QG-ANTISTUB-01 — Anti-stub CI Living Spec gate | Docs / quality gate | **W7-54 DONE** |
 | QG-LIVESPEC-MATRIX-01 — Living Spec matrix PR gate | Docs / quality gate | **W7-55 DONE** |
 | QG-SIGN-01 — Release signing checklist Living Spec gate | Docs / quality gate | **W7-56 DONE** |
-| Seed next product tranche after PLAN-03 quality gates | Docs / product seed | **W7-57 OPEN** |
+| Seed next product tranche after PLAN-03 quality gates | Docs / product seed | **W7-57 DONE** |
+| PLAN-04 — Inventory next contract-test / API Living Spec product tranche | Docs / PLAN-04 | **W7-58 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -233,7 +235,8 @@ W7-53 QG-DOCS-01 — Weekly docs smoke Living Spec gate **DONE**
 W7-54 QG-ANTISTUB-01 — Anti-stub CI Living Spec gate **DONE**
 W7-55 QG-LIVESPEC-MATRIX-01 — Living Spec matrix PR gate **DONE**
 W7-56 QG-SIGN-01 — Release signing checklist Living Spec gate **DONE**
-W7-57 Seed next product tranche after PLAN-03 quality gates **OPEN**
+W7-57 Seed next product tranche after PLAN-03 quality gates **DONE**
+W7-58 PLAN-04 — Inventory next contract-test / API Living Spec product tranche **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -329,9 +332,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 84 | W7-54 | [#506](https://github.com/sesquicadaver/MTDirector/issues/506) | QG-ANTISTUB-01 — Anti-stub CI Living Spec gate | **DONE** |
 | 85 | W7-55 | [#508](https://github.com/sesquicadaver/MTDirector/issues/508) | QG-LIVESPEC-MATRIX-01 — Living Spec matrix PR gate | **DONE** |
 | 86 | W7-56 | [#510](https://github.com/sesquicadaver/MTDirector/issues/510) | QG-SIGN-01 — Release signing checklist Living Spec gate | **DONE** |
-| 87 | W7-57 | [#512](https://github.com/sesquicadaver/MTDirector/issues/512) | Seed next product tranche after PLAN-03 quality gates | **OPEN** |
+| 87 | W7-57 | [#512](https://github.com/sesquicadaver/MTDirector/issues/512) | Seed next product tranche after PLAN-03 quality gates | **DONE** |
+| 88 | W7-58 | [#514](https://github.com/sesquicadaver/MTDirector/issues/514) | PLAN-04 — Inventory next contract-test / API Living Spec product tranche | **OPEN** |
 
-**§3.C NEXT = W7-57 (#512)**. W7-56 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-58 (#514)**. W7-57 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
