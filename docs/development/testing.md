@@ -732,6 +732,16 @@ Issue [#528](https://github.com/sesquicadaver/MTDirector/issues/528) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW765"`.
 
+## Living Specification — PLAN-05 Desktop operator-surface inventory (W7-66)
+
+Issue [#530](https://github.com/sesquicadaver/MTDirector/issues/530) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-05 inventory + DESK-AUDIT-01 seed | `docs/planning/plan-05-desktop-operator-surface.md`, `known-limitations.md`, ROADMAP, continuous plan, docs index | `Plan05DesktopOperatorSurfaceW766LivingSpecTests.Ac1Plan05InventoryDocumentsRankedDeskRowsAndSeedsAuditDesktop` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan05DesktopOperatorSurfaceW766"`.
+
 ## Living Specification — PLAN-04 contract-test inventory (W7-58)
 
 Issue [#514](https://github.com/sesquicadaver/MTDirector/issues/514) AC → module → tests:

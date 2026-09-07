@@ -45,4 +45,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-66 (#530)** — PLAN-05 inventory: Desktop operator-surface Living Spec product tranche.
+**§3.C NEXT = W7-67 (#532)** — DESK-AUDIT-01 Desktop Audit panel Living Spec vs AuditGrpcHost (PLAN-05).
