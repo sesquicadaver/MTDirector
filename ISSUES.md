@@ -240,14 +240,15 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 | `W7-57` | #512 | https://github.com/sesquicadaver/MTDirector/issues/512 |
 | `W7-58` | #514 | https://github.com/sesquicadaver/MTDirector/issues/514 |
 | `W7-59` | #516 | https://github.com/sesquicadaver/MTDirector/issues/516 |
+| `W7-60` | #518 | https://github.com/sesquicadaver/MTDirector/issues/518 |
 | `PLAN-03` | #500 | https://github.com/sesquicadaver/MTDirector/issues/500 |
 | `PLAN-04` | #514 | https://github.com/sesquicadaver/MTDirector/issues/514 |
 
-**Product issues (code):** 148 DONE (§2.2) + Desktop alignment P0–P2 DONE; SEC-01…15 + W7-01…57 DONE.  
-**Linear queue (§3.C):** **OPEN** — **§3.C NEXT = W7-58 (#514)**. W7-57 (#512) **DONE**.  
+**Product issues (code):** 148 DONE (§2.2) + Desktop alignment P0–P2 DONE; SEC-01…15 + W7-01…58 DONE.  
+**Linear queue (§3.C):** **OPEN** — **§3.C NEXT = W7-59 (#516)**. W7-58 (#514) **DONE**.  
 **TRACKER-01** (#289): **DONE**. **PLAN-01** (#290): **DONE**. **P2-07…P2-11**: **DONE**. **PLAN-NBR-01** (#314): **DONE**.  
 Lab/CHR/`WriteEnabled` — parallel ops, not §3 predecessors. Plan: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 
-Start here: [`ROADMAP.md`](ROADMAP.md) §3.C — **§3.C NEXT = W7-58 (#514)**; W7-57 (#512) **DONE**; pilot [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md); Desktop inventory [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
+Start here: [`ROADMAP.md`](ROADMAP.md) §3.C — **§3.C NEXT = W7-59 (#516)**; W7-58 (#514) **DONE**; pilot [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md); Desktop inventory [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).

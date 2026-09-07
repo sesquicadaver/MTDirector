@@ -722,6 +722,16 @@ Issue [#512](https://github.com/sesquicadaver/MTDirector/issues/512) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW757"`.
 
+## Living Specification — PLAN-04 contract-test inventory (W7-58)
+
+Issue [#514](https://github.com/sesquicadaver/MTDirector/issues/514) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-04 inventory + CT-DEPLOY-01 seed | `docs/planning/plan-04-contract-tests.md`, `known-limitations.md`, ROADMAP, continuous plan | `Plan04ContractTestsW758LivingSpecTests.Ac1Plan04InventoryDocumentsRankedContractTestsAndSeedsDeployGrpcHost` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan04ContractTestsW758"`.
+
 ## Living Specification — PLAN-03 quality-gate inventory (W7-51)
 
 Issue [#500](https://github.com/sesquicadaver/MTDirector/issues/500) AC → module → tests:
