@@ -43,4 +43,4 @@ After PLAN-06 **COMPLETE**, §3.C product seed **W7-77 DONE** advanced to **PLAN
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-80 (#558)** — Seed next PLAN-07 row after DESK-POLICY-01 → DESK-DEPLOY-01.
+**§3.C NEXT = W7-81 (#560)** — Seed next PLAN-07 row after DESK-POLICY-01 → DESK-DEPLOY-01.
