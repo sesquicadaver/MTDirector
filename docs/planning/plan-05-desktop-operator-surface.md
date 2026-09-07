@@ -39,6 +39,10 @@ PLAN-04 closed Controller **GrpcHost** gaps for Deployment → Incident. PLAN-05
 
 Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay ops-parallel ([`known-limitations.md`](../release/known-limitations.md)).
 
+## Successor
+
+PLAN-06 Incident Desktop operator-surface inventory: [`plan-06-incident-desktop-operator-surface.md`](plan-06-incident-desktop-operator-surface.md).
+
 ## §3.C NEXT
 
-**§3.C NEXT = W7-72 (#542)** — PLAN-06 Inventory next Incident Desktop operator-surface Living Spec product tranche.
+**§3.C NEXT = W7-73 (#544)** — DESK-INCIDENT-01 Desktop Incident ViewModel + client Living Spec vs IncidentGrpcHost (PLAN-06).
