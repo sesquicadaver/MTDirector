@@ -722,6 +722,16 @@ Issue [#512](https://github.com/sesquicadaver/MTDirector/issues/512) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW757"`.
 
+## Living Specification — Product tranche seed after PLAN-04 (W7-65)
+
+Issue [#528](https://github.com/sesquicadaver/MTDirector/issues/528) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed PLAN-05 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md`, `plan-04-contract-tests.md` | `ProductTrancheSeedW765LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan05AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW765"`.
+
 ## Living Specification — PLAN-04 contract-test inventory (W7-58)
 
 Issue [#514](https://github.com/sesquicadaver/MTDirector/issues/514) AC → module → tests:
