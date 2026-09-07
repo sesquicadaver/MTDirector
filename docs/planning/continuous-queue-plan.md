@@ -135,7 +135,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | CT-INCIDENT-01 — IncidentService ProtoContract + GrpcHost Living Spec | Docs / contract test | **W7-64 DONE** |
 | Seed next product tranche after PLAN-04 → PLAN-05 Desktop operator-surface | Docs / product seed | **W7-65 DONE** |
 | PLAN-05 — Inventory next Desktop operator-surface Living Spec product tranche | Docs / PLAN-05 | **W7-66 DONE** |
-| DESK-AUDIT-01 — Desktop Audit panel Living Spec vs AuditGrpcHost | Docs / Desktop Living Spec | **W7-67 OPEN** |
+| DESK-AUDIT-01 — Desktop Audit panel Living Spec vs AuditGrpcHost | Docs / Desktop Living Spec | **W7-67 DONE** |
+| DESK-DRIFT-01 — Desktop Drift panel Living Spec vs DriftGrpcHost | Docs / Desktop Living Spec | **W7-68 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -255,7 +256,8 @@ W7-63 CT-ROUTING-01 — RoutingAssuranceService ProtoContract + GrpcHost Living 
 W7-64 CT-INCIDENT-01 — IncidentService ProtoContract + GrpcHost Living Spec **DONE**
 W7-65 Seed next product tranche after PLAN-04 → PLAN-05 Desktop operator-surface **DONE**
 W7-66 PLAN-05 — Inventory next Desktop operator-surface Living Spec product tranche **DONE**
-W7-67 DESK-AUDIT-01 — Desktop Audit panel Living Spec vs AuditGrpcHost **OPEN**
+W7-67 DESK-AUDIT-01 — Desktop Audit panel Living Spec vs AuditGrpcHost **DONE**
+W7-68 DESK-DRIFT-01 — Desktop Drift panel Living Spec vs DriftGrpcHost **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -361,9 +363,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 94 | W7-64 | [#526](https://github.com/sesquicadaver/MTDirector/issues/526) | CT-INCIDENT-01 — IncidentService ProtoContract + GrpcHost Living Spec | **DONE** |
 | 95 | W7-65 | [#528](https://github.com/sesquicadaver/MTDirector/issues/528) | Seed next product tranche after PLAN-04 → PLAN-05 Desktop operator-surface | **DONE** |
 | 96 | W7-66 | [#530](https://github.com/sesquicadaver/MTDirector/issues/530) | PLAN-05 — Inventory next Desktop operator-surface Living Spec product tranche | **DONE** |
-| 97 | W7-67 | [#532](https://github.com/sesquicadaver/MTDirector/issues/532) | DESK-AUDIT-01 — Desktop Audit panel Living Spec vs AuditGrpcHost | **OPEN** |
+| 97 | W7-67 | [#532](https://github.com/sesquicadaver/MTDirector/issues/532) | DESK-AUDIT-01 — Desktop Audit panel Living Spec vs AuditGrpcHost | **DONE** |
+| 98 | W7-68 | [#534](https://github.com/sesquicadaver/MTDirector/issues/534) | DESK-DRIFT-01 — Desktop Drift panel Living Spec vs DriftGrpcHost | **OPEN** |
 
-**§3.C NEXT = W7-67 (#532)**. W7-66 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-68 (#534)**. W7-67 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
