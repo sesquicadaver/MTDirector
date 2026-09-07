@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-65** ([#528](https://github.com/sesquicadaver/MTDirector/issues/528)): Seed next product tranche after PLAN-04 → **PLAN-05** Desktop operator-surface inventory (W7-66). Seeded W7-66 (#530) / W7-67 (#532). **§3.C NEXT = W7-66 (#530)**.
 - **W7-64** ([#526](https://github.com/sesquicadaver/MTDirector/issues/526)): CT-INCIDENT-01 Incident ProtoContract + GrpcHost (`IncidentProtoContractTests`, `IncidentGrpcHostTests`). Seeded W7-65 (#528) / W7-66 (#530). **§3.C NEXT = W7-65 (#528)**.
 - **W7-63** ([#524](https://github.com/sesquicadaver/MTDirector/issues/524)): CT-ROUTING-01 RoutingAssurance ProtoContract + GrpcHost (`RoutingAssuranceProtoContractTests`, `RoutingAssuranceGrpcHostTests`); fix EF routing-assurance JSON null round-trip. Seeded W7-64 (#526) / W7-65 (#528). **§3.C NEXT = W7-64 (#526)**.
 - **W7-62** ([#522](https://github.com/sesquicadaver/MTDirector/issues/522)): CT-AUDIT-01 AuditService GrpcHost contract (`AuditGrpcHostTests`). Seeded W7-63 (#524) / W7-64 (#526). **§3.C NEXT = W7-63 (#524)**.
