@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-83** ([#564](https://github.com/sesquicadaver/MTDirector/issues/564)): DESK-ONBOARD-01 Desktop Onboarding Living Spec (`DesktopOnboardingLivingSpecTests`) vs OnboardingGrpcHost. Seeded W7-84 (#566) / W7-85 (#568). **§3.C NEXT = W7-84 (#566)**.
 - **W7-82** ([#562](https://github.com/sesquicadaver/MTDirector/issues/562)): Seed next PLAN-07 row after DESK-DEPLOY-01 → **DESK-ONBOARD-01** (W7-83). Seeded W7-83 (#564) / W7-84 (#566). **§3.C NEXT = W7-83 (#564)**.
 - **W7-81** ([#560](https://github.com/sesquicadaver/MTDirector/issues/560)): DESK-DEPLOY-01 Desktop Deployment Living Spec (`DesktopDeploymentLivingSpecTests`) vs DeploymentGrpcHost. Seeded W7-82 (#562) / W7-83 (#564). **§3.C NEXT = W7-82 (#562)**.
 - **W7-80** ([#558](https://github.com/sesquicadaver/MTDirector/issues/558)): Seed next PLAN-07 row after DESK-POLICY-01 → **DESK-DEPLOY-01** (W7-81). Seeded W7-81 (#560) / W7-82 (#562). **§3.C NEXT = W7-81 (#560)**.
