@@ -742,6 +742,22 @@ Issue [#530](https://github.com/sesquicadaver/MTDirector/issues/530) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan05DesktopOperatorSurfaceW766"`.
 
+## Living Specification — DESK-AUDIT-01 Desktop Audit panel (W7-67)
+
+Issue [#532](https://github.com/sesquicadaver/MTDirector/issues/532) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| List-only wire + Desktop client | `GrpcAuditServiceClient`, `AuditService` proto | `DesktopAuditLivingSpecTests.Ac1WireAndDesktopClientAreListOnly` |
+| Read-only ViewModel (no write commands) | `AuditViewModel` | `Ac2ViewModelIsReadOnlyWithNoWriteCommands` |
+| Refresh loads newest-first via client | `AuditViewModel` | `Ac3RefreshLoadsNewestFirstEventsFromClient` |
+| Refresh requires Connected | `AuditViewModel` | `Ac4RefreshRequiresConnectedController` |
+| MainWindow binds Audit list/payload/refresh | `MainWindow.axaml` | `Ac5MainWindowBindsAuditListPayloadAndRefresh` |
+| Host CT-AUDIT-01 remains present | `AuditGrpcHostTests` | `Ac6HostContractLivingSpecRemainsPresent` |
+| Docs / PLAN-05 matrix lock | `plan-05-desktop-operator-surface.md`, `testing.md` | `CtDeskAudit01DesktopAuditLivingSpecTests.Ac1DesktopAuditLivingSpecAndPlan05MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopAuditLivingSpecTests|CtDeskAudit01"`.
+
 ## Living Specification — PLAN-04 contract-test inventory (W7-58)
 
 Issue [#514](https://github.com/sesquicadaver/MTDirector/issues/514) AC → module → tests:
