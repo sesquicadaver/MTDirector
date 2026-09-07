@@ -126,7 +126,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | QG-SIGN-01 — Release signing checklist Living Spec gate | Docs / quality gate | **W7-56 DONE** |
 | Seed next product tranche after PLAN-03 quality gates | Docs / product seed | **W7-57 DONE** |
 | PLAN-04 — Inventory next contract-test / API Living Spec product tranche | Docs / PLAN-04 | **W7-58 DONE** |
-| CT-DEPLOY-01 — DeploymentService GrpcHost contract Living Spec | Docs / contract test | **W7-59 OPEN** |
+| CT-DEPLOY-01 — DeploymentService GrpcHost contract Living Spec | Docs / contract test | **W7-59 DONE** |
+| CT-ZONE-01 — ZoneService GrpcHost contract Living Spec | Docs / contract test | **W7-60 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -238,7 +239,8 @@ W7-55 QG-LIVESPEC-MATRIX-01 — Living Spec matrix PR gate **DONE**
 W7-56 QG-SIGN-01 — Release signing checklist Living Spec gate **DONE**
 W7-57 Seed next product tranche after PLAN-03 quality gates **DONE**
 W7-58 PLAN-04 — Inventory next contract-test / API Living Spec product tranche **DONE**
-W7-59 CT-DEPLOY-01 — DeploymentService GrpcHost contract Living Spec **OPEN**
+W7-59 CT-DEPLOY-01 — DeploymentService GrpcHost contract Living Spec **DONE**
+W7-60 CT-ZONE-01 — ZoneService GrpcHost contract Living Spec **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -336,9 +338,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 86 | W7-56 | [#510](https://github.com/sesquicadaver/MTDirector/issues/510) | QG-SIGN-01 — Release signing checklist Living Spec gate | **DONE** |
 | 87 | W7-57 | [#512](https://github.com/sesquicadaver/MTDirector/issues/512) | Seed next product tranche after PLAN-03 quality gates | **DONE** |
 | 88 | W7-58 | [#514](https://github.com/sesquicadaver/MTDirector/issues/514) | PLAN-04 — Inventory next contract-test / API Living Spec product tranche | **DONE** |
-| 89 | W7-59 | [#516](https://github.com/sesquicadaver/MTDirector/issues/516) | CT-DEPLOY-01 — DeploymentService GrpcHost contract Living Spec | **OPEN** |
+| 89 | W7-59 | [#516](https://github.com/sesquicadaver/MTDirector/issues/516) | CT-DEPLOY-01 — DeploymentService GrpcHost contract Living Spec | **DONE** |
+| 90 | W7-60 | [#518](https://github.com/sesquicadaver/MTDirector/issues/518) | CT-ZONE-01 — ZoneService GrpcHost contract Living Spec | **OPEN** |
 
-**§3.C NEXT = W7-59 (#516)**. W7-58 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-60 (#518)**. W7-59 **DONE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

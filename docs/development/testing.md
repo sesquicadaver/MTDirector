@@ -732,6 +732,20 @@ Issue [#514](https://github.com/sesquicadaver/MTDirector/issues/514) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan04ContractTestsW758"`.
 
+## Living Specification — CT-DEPLOY-01 DeploymentService GrpcHost (W7-59)
+
+Issue [#516](https://github.com/sesquicadaver/MTDirector/issues/516) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| CreatePlan → Start → Watch → GetRecoveryStatus host path | `DeploymentGrpcHostTests`, `ScriptedDeploymentRuntime` | `CreatePlanStartWatchAndRecoveryStatus` |
+| CreatePlan + Rollback idempotent | same | `CreatePlanAndRollbackAreIdempotent` |
+| Docs / PLAN-04 matrix lock | `plan-04-contract-tests.md`, `testing.md` | `CtDeploy01DeploymentGrpcHostLivingSpecTests.Ac1DeploymentGrpcHostTestsAndPlan04MatrixExist` |
+| `DEPLOYMENT_*` gRPC errors map to FailedPrecondition | `GrpcApplicationErrorMapper` | covered by plan-hash mismatch in host test |
+
+Filter (integration): `dotnet test tests/Mfc.IntegrationTests --filter "FullyQualifiedName~DeploymentGrpcHostTests"`.  
+Filter (unit Living Spec): `dotnet test --filter "FullyQualifiedName~CtDeploy01DeploymentGrpcHost"`.
+
 ## Living Specification — PLAN-03 quality-gate inventory (W7-51)
 
 Issue [#500](https://github.com/sesquicadaver/MTDirector/issues/500) AC → module → tests:
