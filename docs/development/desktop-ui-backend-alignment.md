@@ -363,4 +363,4 @@ residual: CRS / physical lab runner (ops, not §3)
 - **Перевірка:** `Ac5iPoliciesReorderMovesSelectedRuleWithoutUuidPaste`; `MoveRuleDownBuildsStageOrderWithoutUuidPaste`; `MoveRuleUpAtFirstReportsBoundaryWithoutRpc`
 - **Файли:** `PoliciesViewModel`, `MainWindow.axaml`
 
-**NEXT (alignment / §3):** **§3.C NEXT = W7-77 (#552)**. W7-76 DESK-INCIDENT-04 fail-closed **DONE**; PLAN-06 **COMPLETE**; PLAN-05 **COMPLETE**. Physical CRS runner stays ops.
+**NEXT (alignment / §3):** **§3.C NEXT = W7-78 (#554)**. W7-77 product seed after PLAN-06 **DONE**; PLAN-06 **COMPLETE**; NEXT PLAN-07; PLAN-05 **COMPLETE**. Physical CRS runner stays ops.

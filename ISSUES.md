@@ -259,16 +259,17 @@ Generated from ROADMAP atomic tasks. Logical ID → GitHub issue number.
 | `W7-76` | #550 | https://github.com/sesquicadaver/MTDirector/issues/550 |
 | `W7-77` | #552 | https://github.com/sesquicadaver/MTDirector/issues/552 |
 | `W7-78` | #554 | https://github.com/sesquicadaver/MTDirector/issues/554 |
+| `W7-79` | #556 | https://github.com/sesquicadaver/MTDirector/issues/556 |
 | `PLAN-06` | #542 | https://github.com/sesquicadaver/MTDirector/issues/542 |
 | `PLAN-03` | #500 | https://github.com/sesquicadaver/MTDirector/issues/500 |
 | `PLAN-04` | #514 | https://github.com/sesquicadaver/MTDirector/issues/514 |
 | `PLAN-05` | #530 | https://github.com/sesquicadaver/MTDirector/issues/530 |
 
-**Product issues (code):** 148 DONE (§2.2) + Desktop alignment P0–P2 DONE; SEC-01…15 + W7-01…76 DONE; PLAN-06 COMPLETE; PLAN-05 COMPLETE.  
-**Linear queue (§3.C):** **OPEN** — **§3.C NEXT = W7-77 (#552)**. W7-76 (#550) **DONE**; PLAN-06 **COMPLETE**.  
+**Product issues (code):** 148 DONE (§2.2) + Desktop alignment P0–P2 DONE; SEC-01…15 + W7-01…77 DONE; PLAN-06 COMPLETE; PLAN-05 COMPLETE.  
+**Linear queue (§3.C):** **OPEN** — **§3.C NEXT = W7-78 (#554)**. W7-77 (#552) **DONE**; PLAN-06 **COMPLETE**.  
 **TRACKER-01** (#289): **DONE**. **PLAN-01** (#290): **DONE**. **P2-07…P2-11**: **DONE**. **PLAN-NBR-01** (#314): **DONE**.  
 Lab/CHR/`WriteEnabled` — parallel ops, not §3 predecessors. Plan: [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md).
 
 Milestones: https://github.com/sesquicadaver/MTDirector/milestones
 
-Start here: [`ROADMAP.md`](ROADMAP.md) §3.C — **§3.C NEXT = W7-77 (#552)**; W7-74 (#546) **DONE**; PLAN-05 **COMPLETE**; pilot [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md); Desktop inventory [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
+Start here: [`ROADMAP.md`](ROADMAP.md) §3.C — **§3.C NEXT = W7-78 (#554)**; W7-74 (#546) **DONE**; PLAN-05 **COMPLETE**; pilot [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md); Desktop inventory [`docs/development/connection-profiles.md`](docs/development/connection-profiles.md).
