@@ -807,6 +807,21 @@ Issue [#548](https://github.com/sesquicadaver/MTDirector/issues/548) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentBindLivingSpecTests|CtDeskIncident03"`.
 
+## Living Specification — DESK-INCIDENT-04 Desktop Incident fail-closed (W7-76)
+
+Issue [#550](https://github.com/sesquicadaver/MTDirector/issues/550) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Proto/wire Ingest+Bind only | `incident.proto`, `IncidentService` | `DesktopIncidentFailClosedLivingSpecTests.Ac1WireAndProtoStayIngestAndBindOnly` |
+| Desktop client/gRPC no deploy/overlay/feedback | `IIncidentServiceClient`, `GrpcIncidentServiceClient` | `Ac2DesktopClientAndGrpcSourceExposeNoDeployOverlayFeedback` |
+| ViewModel fail-closed flags/commands | `IncidentViewModel` | `Ac3ViewModelFailClosedFlagsAndCommands` |
+| MainWindow Incident has no deploy/overlay actions | `MainWindow.axaml` | `Ac4MainWindowIncidentSurfaceHasNoDeployOverlayActions` |
+| Host wire lock + Desktop ↛ Application | `IncidentGrpcHostTests`, `Mfc.Desktop.csproj` | `Ac5HostWireLockAndApplicationOnlySurfacesRemainDocumented` |
+| Docs / PLAN-06 COMPLETE matrix lock | `plan-06-incident-desktop-operator-surface.md`, `testing.md` | `CtDeskIncident04DesktopIncidentFailClosedLivingSpecTests.Ac1DesktopIncidentFailClosedLivingSpecAndPlan06CompleteMatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentFailClosedLivingSpecTests|CtDeskIncident04"`.
+
 ## Living Specification — DESK-AUDIT-01 Desktop Audit panel (W7-67)
 
 Issue [#532](https://github.com/sesquicadaver/MTDirector/issues/532) AC → module → tests:
