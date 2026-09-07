@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-POLICY-01 Desktop Policies panel (W7-79)
+
+Issue [#556](https://github.com/sesquicadaver/MTDirector/issues/556) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Wire + Desktop Policy client authoring/review/safety | `IPolicyServiceClient`, `GrpcPolicyServiceClient`, `PolicyService` proto | `DesktopPoliciesLivingSpecTests.Ac1WireAndDesktopClientExposeAuthoringReviewAndSafetyRpcs` |
+| Catalog/authoring/review/bind + fail-closed Deploy | `PoliciesViewModel` | `Ac2ViewModelExposesCatalogAuthoringReviewBindAndFailClosedDeploy` |
+| RefreshCatalog loads when Connected | `PoliciesViewModel` | `Ac3RefreshCatalogLoadsPoliciesWhenConnected` |
+| Catalog requires Connected; Deploy never enabled | `PoliciesViewModel` | `Ac4CatalogRequiresConnectedControllerAndDeployStaysFailClosed` |
+| MainWindow Policies bindings | `MainWindow.axaml` | `Ac5MainWindowBindsPoliciesCatalogAuthoringReviewAndSafety` |
+| Host PolicyGrpcHost remains present | `PolicyGrpcHostTests` | `Ac6HostContractLivingSpecRemainsPresent` |
+| Docs / PLAN-07 matrix lock | `plan-07-core-mvp-desktop-operator-surface.md`, `testing.md` | `CtDeskPolicy01DesktopPoliciesLivingSpecTests.Ac1DesktopPoliciesLivingSpecAndPlan07MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesLivingSpecTests|CtDeskPolicy01"`.
+
 ## Living Specification — PLAN-06 Incident Desktop operator-surface inventory (W7-72)
 
 Issue [#542](https://github.com/sesquicadaver/MTDirector/issues/542) AC → module → tests:

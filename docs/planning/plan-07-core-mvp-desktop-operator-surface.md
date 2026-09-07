@@ -20,7 +20,7 @@ PLAN-05 closed dedicated Desktop Living Specs for Audit → Routing and deferred
 |---------|--------------------|---------------|-----|
 | Audit / Drift / Zones / Routing | GrpcHost + `Desktop*LivingSpecTests` | PLAN-05 **DONE** | baseline |
 | Incident Ingest/Bind | GrpcHost + Desktop Living Specs | PLAN-06 **DONE** | baseline |
-| PolicyService | `PolicyGrpcHostTests` | MVP Ac5* only; **no** `DesktopPoliciesLivingSpecTests` | PLAN-07 |
+| PolicyService | `PolicyGrpcHostTests` | `DesktopPoliciesLivingSpecTests` (DESK-POLICY-01) | PLAN-07 **DONE** row |
 | DeploymentService | `DeploymentGrpcHostTests` / CT-DEPLOY-01 | MVP Ac6*; **no** `DesktopDeploymentLivingSpecTests` | PLAN-07 |
 | OnboardingService | `OnboardingGrpcHostTests` | MVP Ac6*; **no** `DesktopOnboardingLivingSpecTests` | PLAN-07 |
 | SnapshotService | `SnapshotGrpcHostTests` | MVP Ac4*; **no** `DesktopSnapshotLivingSpecTests` | PLAN-07 |
@@ -30,8 +30,8 @@ PLAN-05 closed dedicated Desktop Living Specs for Audit → Routing and deferred
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-POLICY-01** | Policies panel lacks host-aligned Desktop Living Spec vs PolicyGrpcHost | `PoliciesViewModel`, `IPolicyServiceClient` / `GrpcPolicyServiceClient`; host: `PolicyGrpcHostTests` | **W7-79 OPEN** (#556) |
-| 2 | **DESK-DEPLOY-01** | Deployment operator path lacks dedicated Desktop Living Spec vs DeploymentGrpcHost | `DeploymentViewModel`, `GrpcDeploymentServiceClient`; host: `DeploymentGrpcHostTests` | seed after DESK-POLICY-01 |
+| 1 | **DESK-POLICY-01** | Policies panel lacks host-aligned Desktop Living Spec vs PolicyGrpcHost | `PoliciesViewModel`, `IPolicyServiceClient` / `GrpcPolicyServiceClient`; host: `PolicyGrpcHostTests` | **W7-79 DONE** (#556) |
+| 2 | **DESK-DEPLOY-01** | Deployment operator path lacks dedicated Desktop Living Spec vs DeploymentGrpcHost | `DeploymentViewModel`, `GrpcDeploymentServiceClient`; host: `DeploymentGrpcHostTests` | **W7-81 OPEN** (#560); seed via W7-80 |
 | 3 | **DESK-ONBOARD-01** | Onboarding Start/Watch/Rollback lacks dedicated Desktop Living Spec vs OnboardingGrpcHost | `OnboardingViewModel`, `GrpcOnboardingServiceClient`; host: `OnboardingGrpcHostTests` | seed after DESK-DEPLOY-01 |
 | 4 | **DESK-SNAPSHOT-01** | Snapshot capture/compare lacks dedicated Desktop Living Spec vs SnapshotGrpcHost | `SnapshotViewerViewModel` / `SnapshotDiffViewModel`; host: `SnapshotGrpcHostTests` | seed after DESK-ONBOARD-01 |
 | 5 | **DESK-INVENTORY-01** | Inventory tree / Add router / Node lacks dedicated Desktop Living Spec vs InventoryGrpcHost | `InventoryTreeViewModel`, `AddRouterWizardViewModel`, `NodeDetailViewModel`; host: `InventoryGrpcHostTests` | seed after DESK-SNAPSHOT-01 |
@@ -42,4 +42,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-79 (#556)** — DESK-POLICY-01 Desktop Policies panel Living Spec vs PolicyGrpcHost.
+**§3.C NEXT = W7-80 (#558)** — Seed next PLAN-07 row after DESK-POLICY-01 → DESK-DEPLOY-01.

@@ -39,8 +39,8 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## Successor
 
-After PLAN-06 **COMPLETE**, §3.C product seed **W7-77 DONE** advanced to **PLAN-07** inventory (**W7-78 DONE**); first atomic row **DESK-POLICY-01** (**W7-79 OPEN**).
+After PLAN-06 **COMPLETE**, §3.C product seed **W7-77 DONE** advanced to **PLAN-07** inventory (**W7-78 DONE**); first atomic row **DESK-POLICY-01** (**W7-79 DONE**); NEXT seed W7-80.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-79 (#556)** — DESK-POLICY-01 Desktop Policies panel Living Spec vs PolicyGrpcHost.
+**§3.C NEXT = W7-80 (#558)** — Seed next PLAN-07 row after DESK-POLICY-01 → DESK-DEPLOY-01.
