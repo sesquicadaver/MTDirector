@@ -130,8 +130,7 @@ public sealed class DesktopIncidentLivingSpecTests
         Assert.Contains("IncidentViewModel", app, StringComparison.Ordinal);
         Assert.Contains("incidentVm", app, StringComparison.Ordinal);
 
-        string axaml = ReadSource("src/Mfc.Desktop/MainWindow.axaml");
-        Assert.DoesNotContain("Incident.IngestCommand", axaml, StringComparison.Ordinal);
+        // MainWindow panel bindings land in DESK-INCIDENT-02 (DesktopIncidentPanelLivingSpecTests).
     }
 
     [Fact]

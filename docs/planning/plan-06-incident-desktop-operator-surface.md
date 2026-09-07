@@ -19,7 +19,7 @@ PLAN-05 closed Desktop Living Specs for Audit → Routing against host-covered s
 
 | Surface | Host / Application | Desktop today | Gap |
 |---------|--------------------|---------------|-----|
-| `IncidentService` Ingest + BindAssessment | `IncidentGrpcHostTests`, `IncidentProtoContractTests` | `IncidentViewModel` + `IIncidentServiceClient` / `GrpcIncidentServiceClient` (W7-73) | MainWindow panel = DESK-INCIDENT-02 |
+| `IncidentService` Ingest + BindAssessment | `IncidentGrpcHostTests`, `IncidentProtoContractTests` | ViewModel+client (W7-73) + Operations → Incident panel (W7-74) | Bind UX = DESK-INCIDENT-03 |
 | Deny overlay deploy / expire / feedback | Application use cases (SEC-10…) | not on Desktop wire | out of scope here |
 | Audit / Drift / Zones / Routing panels | GrpcHost + Desktop Living Specs | PLAN-05 **DONE** | baseline |
 
@@ -28,8 +28,8 @@ PLAN-05 closed Desktop Living Specs for Audit → Routing against host-covered s
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **DESK-INCIDENT-01** | No Desktop Incident ViewModel / Contracts client Living Spec vs host Ingest+Bind | `IncidentViewModel` + `IIncidentServiceClient` / `GrpcIncidentServiceClient`; host: `IncidentGrpcHostTests` | **W7-73 DONE** (#544) |
-| 2 | **DESK-INCIDENT-02** | MainWindow lacks Incident operator panel bindings / empty-state Living Spec | `MainWindow.axaml` + ViewModel status/error surface | **W7-74 OPEN** (#546) |
-| 3 | **DESK-INCIDENT-03** | Bind assessment operator path lacks Desktop Living Spec (selection → Bind RPC) | `BindIncidentResponseAssessment` client + ViewModel command | seed after DESK-INCIDENT-02 |
+| 2 | **DESK-INCIDENT-02** | MainWindow lacks Incident operator panel bindings / empty-state Living Spec | `MainWindow.axaml` Operations → Incident tab + status/error/empty-state | **W7-74 DONE** (#546) |
+| 3 | **DESK-INCIDENT-03** | Bind assessment operator path lacks Desktop Living Spec (selection → Bind RPC) | `BindIncidentResponseAssessment` client + ViewModel command | **W7-75 OPEN** (#548) |
 | 4 | **DESK-INCIDENT-04** | Desktop must stay fail-closed: no deploy/overlay/write RPCs beyond SEC-06 wire | Living Spec lock vs `incident.proto` / host mutation surface | seed after DESK-INCIDENT-03 |
 
 ## Dual track (unchanged)
@@ -38,4 +38,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-74 (#546)** — DESK-INCIDENT-02 Desktop Incident MainWindow panel Living Spec.
+**§3.C NEXT = W7-75 (#548)** — DESK-INCIDENT-03 Desktop Incident Bind assessment Living Spec.
