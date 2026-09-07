@@ -746,6 +746,19 @@ Issue [#516](https://github.com/sesquicadaver/MTDirector/issues/516) AC → modu
 Filter (integration): `dotnet test tests/Mfc.IntegrationTests --filter "FullyQualifiedName~DeploymentGrpcHostTests"`.  
 Filter (unit Living Spec): `dotnet test --filter "FullyQualifiedName~CtDeploy01DeploymentGrpcHost"`.
 
+## Living Specification — CT-ZONE-01 ZoneService GrpcHost (W7-60)
+
+Issue [#518](https://github.com/sesquicadaver/MTDirector/issues/518) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Zone CRUD + binding + resolve + row-version CAS | `ZoneGrpcHostTests` | `ZoneDefinitionBindingResolveAndRowVersionCas` |
+| Create zone + upsert binding idempotent | same | `CreateZoneAndUpsertAreIdempotent` |
+| Docs / PLAN-04 matrix lock | `plan-04-contract-tests.md`, `testing.md` | `CtZone01ZoneGrpcHostLivingSpecTests.Ac1ZoneGrpcHostTestsAndPlan04MatrixExist` |
+
+Filter (integration): `dotnet test tests/Mfc.IntegrationTests --filter "FullyQualifiedName~ZoneGrpcHostTests"`.  
+Filter (unit Living Spec): `dotnet test --filter "FullyQualifiedName~CtZone01ZoneGrpcHost"`.
+
 ## Living Specification — PLAN-03 quality-gate inventory (W7-51)
 
 Issue [#500](https://github.com/sesquicadaver/MTDirector/issues/500) AC → module → tests:

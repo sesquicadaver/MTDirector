@@ -22,7 +22,7 @@ PLAN-03 exhausted operator/docs quality gates. PLAN-04 keeps `/autopilot` from i
 | OnboardingService | `OnboardingProtoContractTests` | `OnboardingGrpcHostTests` |
 | SnapshotService | `SnapshotProtoContractTests` | `SnapshotGrpcHostTests` |
 | DeploymentService | `DeploymentProtoContractTests` | `DeploymentGrpcHostTests` (W7-59) |
-| ZoneService | `ZoneProtoContractTests` | **missing GrpcHost** |
+| ZoneService | `ZoneProtoContractTests` | `ZoneGrpcHostTests` (W7-60) |
 | DriftService | `DriftProtoContractTests` | **missing GrpcHost** |
 | AuditService | `AuditProtoContractTests` | **missing GrpcHost** |
 | RoutingAssuranceService | **no ProtoContractTests** | **missing GrpcHost** (Desktop Living Spec only) |
@@ -33,8 +33,8 @@ PLAN-03 exhausted operator/docs quality gates. PLAN-04 keeps `/autopilot` from i
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **CT-DEPLOY-01** | DeploymentService has proto tests + unit Living Specs but no Controller GrpcHost contract | Critical write path RPCs; pattern: `OnboardingGrpcHostTests` | **W7-59 DONE** (#516) |
-| 2 | **CT-ZONE-01** | ZoneService mutations lack GrpcHost contract | `ZoneProtoContractTests` only | **W7-60 OPEN** (#518) |
-| 3 | **CT-DRIFT-01** | DriftService read path lacks GrpcHost contract | `DriftProtoContractTests` only | seed after CT-ZONE-01 |
+| 2 | **CT-ZONE-01** | ZoneService mutations lack GrpcHost contract | `ZoneProtoContractTests` only | **W7-60 DONE** (#518) |
+| 3 | **CT-DRIFT-01** | DriftService read path lacks GrpcHost contract | `DriftProtoContractTests` only | **W7-61 OPEN** (#520) |
 | 4 | **CT-AUDIT-01** | AuditService list path lacks GrpcHost contract | `AuditProtoContractTests` only | seed after CT-DRIFT-01 |
 | 5 | **CT-ROUTING-01** | RoutingAssuranceService lacks ProtoContract + GrpcHost | Desktop Living Spec only | seed after CT-AUDIT-01 |
 | 6 | **CT-INCIDENT-01** | IncidentService lacks ProtoContract + GrpcHost | `IncidentGrpcSec06LivingSpecTests` unit only | seed after CT-ROUTING-01 |
@@ -45,4 +45,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-60 (#518)** — CT-ZONE-01 ZoneService GrpcHost contract Living Spec.
+**§3.C NEXT = W7-61 (#520)** — CT-DRIFT-01 DriftService GrpcHost contract Living Spec.
