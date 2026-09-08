@@ -181,7 +181,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | PLAN-10 — Inventory next Desktop shell chrome & Policies authoring depth Living Spec product tranche | Docs / PLAN-10 | **W7-105 DONE** |
 | DESK-SHELL-01 — Desktop Shell navigation/hotkeys Living Spec depth | Docs / Desktop Living Spec | **W7-106 DONE** |
 | Seed next PLAN-10 row after DESK-SHELL-01 → DESK-DIFF-01 | Docs / PLAN-10 | **W7-107 DONE** |
-| DESK-DIFF-01 — Desktop Policies Diff Living Spec depth | Docs / Desktop Living Spec | **W7-108 OPEN** |
+| DESK-DIFF-01 — Desktop Policies Diff Living Spec depth | Docs / Desktop Living Spec | **W7-108 DONE** |
 | Seed next PLAN-10 row after DESK-DIFF-01 → DESK-REORDER-01 | Docs / PLAN-10 | **W7-109 OPEN** |
 
 ### P3 / new Contracts (evidence)
@@ -343,7 +343,7 @@ W7-104 Seed next product tranche after PLAN-09 → PLAN-10 **DONE**
 W7-105 PLAN-10 — Inventory next Desktop shell chrome & Policies authoring depth Living Spec product tranche **DONE**
 W7-106 DESK-SHELL-01 — Desktop Shell navigation/hotkeys Living Spec depth **DONE**
 W7-107 Seed next PLAN-10 row after DESK-SHELL-01 → DESK-DIFF-01 **DONE**
-W7-108 DESK-DIFF-01 — Desktop Policies Diff Living Spec depth **OPEN**
+W7-108 DESK-DIFF-01 — Desktop Policies Diff Living Spec depth **DONE**
 W7-109 Seed next PLAN-10 row after DESK-DIFF-01 → DESK-REORDER-01 **OPEN**
 W7-110 DESK-REORDER-01 — Desktop Policies Move up/down Living Spec depth **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
@@ -492,11 +492,11 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 135 | W7-105 | [#608](https://github.com/sesquicadaver/MTDirector/issues/608) | PLAN-10 — Inventory next Desktop shell chrome & Policies authoring depth Living Spec product tranche | **DONE** |
 | 136 | W7-106 | [#611](https://github.com/sesquicadaver/MTDirector/issues/611) | DESK-SHELL-01 — Desktop Shell navigation/hotkeys Living Spec depth | **DONE** |
 | 137 | W7-107 | [#612](https://github.com/sesquicadaver/MTDirector/issues/612) | Seed next PLAN-10 row after DESK-SHELL-01 → DESK-DIFF-01 | **DONE** |
-| 138 | W7-108 | [#614](https://github.com/sesquicadaver/MTDirector/issues/614) | DESK-DIFF-01 — Desktop Policies Diff Living Spec depth | **OPEN** |
+| 138 | W7-108 | [#614](https://github.com/sesquicadaver/MTDirector/issues/614) | DESK-DIFF-01 — Desktop Policies Diff Living Spec depth | **DONE** |
 | 139 | W7-109 | [#616](https://github.com/sesquicadaver/MTDirector/issues/616) | Seed next PLAN-10 row after DESK-DIFF-01 → DESK-REORDER-01 | **OPEN** |
 | 140 | W7-110 | [#617](https://github.com/sesquicadaver/MTDirector/issues/617) | DESK-REORDER-01 — Desktop Policies Move up/down Living Spec depth | **OPEN** |
 
-**§3.C NEXT = W7-108 (#614)**. W7-107 **DONE**; W7-106 **DONE**; W7-105 **DONE**; PLAN-09 **COMPLETE**; PLAN-10 inventory **DONE**; PLAN-08 **COMPLETE**; PLAN-09 inventory **DONE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-109 (#616)**. W7-108 **DONE**; W7-107 **DONE**; W7-106 **DONE**; W7-105 **DONE**; PLAN-09 **COMPLETE**; PLAN-10 inventory **DONE**; PLAN-08 **COMPLETE**; PLAN-09 inventory **DONE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
