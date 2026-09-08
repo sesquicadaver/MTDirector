@@ -2,7 +2,7 @@
 
 **Release:** `v0.2.0` (2026-08-24) — MVP + Post-MVP M7 CLOSED.  
 **Pilot:** P2 read + write path CLOSED — [`operations/pilot-runbook.md`](operations/pilot-runbook.md).  
-**Next delivery (§3):** **§3.C NEXT = W7-104 (#607)** — W7-103 ([#604](https://github.com/sesquicadaver/MTDirector/issues/604)) **DONE**; PLAN-09 **COMPLETE** ([`plan-09-desktop-connection-status-operator-surface.md`](planning/plan-09-desktop-connection-status-operator-surface.md)); PLAN-08 **COMPLETE** ([`plan-08-desktop-secondary-operator-surface.md`](planning/plan-08-desktop-secondary-operator-surface.md)); PLAN-07 **COMPLETE**; PLAN-06 **COMPLETE**; PLAN-05 **COMPLETE**. CRS/physical lab runner stays ops.  
+**Next delivery (§3):** **§3.C NEXT = W7-105 (#608)** — W7-104 ([#607](https://github.com/sesquicadaver/MTDirector/issues/607)) **DONE**; PLAN-09 **COMPLETE**; PLAN-10 seeded ([`plan-09-desktop-connection-status-operator-surface.md`](planning/plan-09-desktop-connection-status-operator-surface.md)); PLAN-08 **COMPLETE** ([`plan-08-desktop-secondary-operator-surface.md`](planning/plan-08-desktop-secondary-operator-surface.md)); PLAN-07 **COMPLETE**; PLAN-06 **COMPLETE**; PLAN-05 **COMPLETE**. CRS/physical lab runner stays ops.  
 **Alignment P0–P2:** W1–W4 / W2.1–W2.2 **DONE** (`877a529`).
 
 ## Planning and tracking

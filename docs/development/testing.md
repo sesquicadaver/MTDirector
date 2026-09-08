@@ -772,6 +772,16 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — Product tranche seed after PLAN-09 (W7-104)
+
+Issue [#607](https://github.com/sesquicadaver/MTDirector/issues/607) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed PLAN-10 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md`, `plan-09-desktop-connection-status-operator-surface.md` | `ProductTrancheSeedW7104LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan10AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7104"`.
+
 ## Living Specification — DESK-AUTH-01 Desktop AuthenticationFailed/TlsError (W7-103)
 
 Issue [#604](https://github.com/sesquicadaver/MTDirector/issues/604) AC → module → tests:
