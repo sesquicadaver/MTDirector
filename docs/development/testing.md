@@ -772,6 +772,16 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — PLAN-12 Desktop Policies residual lifecycle (W7-119)
+
+Issue [#638](https://github.com/sesquicadaver/MTDirector/issues/638) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-12 inventory + DESK-ACK-01 seed | `docs/planning/plan-12-desktop-policies-residual-lifecycle.md`, `known-limitations.md`, ROADMAP, continuous plan, docs index | `Plan12DesktopPoliciesResidualLifecycleW7119LivingSpecTests.Ac1Plan12InventoryDocumentsRankedRowsAndSeedsDeskAck01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan12DesktopPoliciesResidualLifecycleW7119"`.
+
 ## Living Specification — Product tranche seed after PLAN-11 (W7-118)
 
 Issue [#637](https://github.com/sesquicadaver/MTDirector/issues/637) AC → module → tests:

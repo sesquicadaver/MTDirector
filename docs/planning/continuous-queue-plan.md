@@ -12,7 +12,8 @@
 **PLAN-08 (Desktop secondary operator-surface):** [`plan-08-desktop-secondary-operator-surface.md`](plan-08-desktop-secondary-operator-surface.md) **COMPLETE**  
 **PLAN-09 (Desktop connection-status operator-surface):** [`plan-09-desktop-connection-status-operator-surface.md`](plan-09-desktop-connection-status-operator-surface.md) **COMPLETE**  
 **PLAN-10 (Desktop shell chrome & Policies authoring depth) COMPLETE:** [`plan-10-desktop-shell-policies-authoring-depth.md`](plan-10-desktop-shell-policies-authoring-depth.md)  
-**PLAN-11 (Desktop Policies review-compose lifecycle) COMPLETE:** [`plan-11-desktop-policies-review-compose-lifecycle.md`](plan-11-desktop-policies-review-compose-lifecycle.md)
+**PLAN-11 (Desktop Policies review-compose lifecycle) COMPLETE:** [`plan-11-desktop-policies-review-compose-lifecycle.md`](plan-11-desktop-policies-review-compose-lifecycle.md)  
+**PLAN-12 (Desktop Policies residual lifecycle):** [`plan-12-desktop-policies-residual-lifecycle.md`](plan-12-desktop-policies-residual-lifecycle.md) inventory **DONE** (W7-119)
 
 This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle state **NEXT = none**.
 
@@ -193,7 +194,12 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Seed next PLAN-11 row after DESK-COMPOSE-01 → DESK-GATE-01 | Docs / PLAN-11 | **W7-117 DONE** |
 | DESK-GATE-01 — Desktop Policies Approve/Bind/Compile Living Spec depth | Docs / Desktop Living Spec | **W7-116 DONE** |
 | Seed next product tranche after PLAN-11 → PLAN-12 | Docs / product seed | **W7-118 DONE** |
-| PLAN-12 — Inventory next Desktop Policies residual lifecycle Living Spec product tranche | Docs / PLAN-12 | **W7-119 OPEN** |
+| PLAN-12 — Inventory next Desktop Policies residual lifecycle Living Spec product tranche | Docs / PLAN-12 | **W7-119 DONE** |
+| DESK-ACK-01 — Desktop Policies AcknowledgeWarning Living Spec depth | Docs / Desktop Living Spec | **W7-120 OPEN** |
+| Seed next PLAN-12 row after DESK-ACK-01 → DESK-DRAFT-01 | Docs / PLAN-12 | **W7-121 OPEN** |
+| DESK-DRAFT-01 — Desktop Policies Create/Load draft Living Spec depth | Docs / Desktop Living Spec | **W7-122 OPEN** |
+| Seed next PLAN-12 row after DESK-DRAFT-01 → DESK-CATALOG-01 | Docs / PLAN-12 | **W7-123 OPEN** |
+| DESK-CATALOG-01 — Desktop Policies Catalog refresh Living Spec depth | Docs / Desktop Living Spec | **W7-124 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -365,7 +371,12 @@ W7-114 DESK-SUBMIT-01 — Desktop Policies SubmitForReview Living Spec depth **D
 W7-115 DESK-COMPOSE-01 — Desktop Policies Compose+RecordAnalysis Living Spec depth **DONE**
 W7-116 DESK-GATE-01 — Desktop Policies Approve/Bind/Compile Living Spec depth **DONE**
 W7-118 Seed next product tranche after PLAN-11 → PLAN-12 **DONE**
-W7-119 PLAN-12 — Inventory next Desktop Policies residual lifecycle Living Spec product tranche **OPEN**
+W7-119 PLAN-12 — Inventory next Desktop Policies residual lifecycle Living Spec product tranche **DONE**
+W7-120 DESK-ACK-01 — Desktop Policies AcknowledgeWarning Living Spec depth **OPEN**
+W7-121 Seed next PLAN-12 row after DESK-ACK-01 → DESK-DRAFT-01 **OPEN**
+W7-122 DESK-DRAFT-01 — Desktop Policies Create/Load draft Living Spec depth **OPEN**
+W7-123 Seed next PLAN-12 row after DESK-DRAFT-01 → DESK-CATALOG-01 **OPEN**
+W7-124 DESK-CATALOG-01 — Desktop Policies Catalog refresh Living Spec depth **OPEN**
 W7-117 Seed next PLAN-11 row after DESK-COMPOSE-01 → DESK-GATE-01 **DONE**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
@@ -523,10 +534,15 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 145 | W7-115 | [#629](https://github.com/sesquicadaver/MTDirector/issues/629) | DESK-COMPOSE-01 — Desktop Policies Compose+RecordAnalysis Living Spec depth | **DONE** |
 | 146 | W7-116 | [#630](https://github.com/sesquicadaver/MTDirector/issues/630) | DESK-GATE-01 — Desktop Policies Approve/Bind/Compile Living Spec depth | **DONE** |
 | 148 | W7-118 | [#637](https://github.com/sesquicadaver/MTDirector/issues/637) | Seed next product tranche after PLAN-11 → PLAN-12 | **DONE** |
-| 149 | W7-119 | [#638](https://github.com/sesquicadaver/MTDirector/issues/638) | PLAN-12 — Inventory next Desktop Policies residual lifecycle Living Spec product tranche | **OPEN** |
+| 149 | W7-119 | [#638](https://github.com/sesquicadaver/MTDirector/issues/638) | PLAN-12 — Inventory next Desktop Policies residual lifecycle Living Spec product tranche | **DONE** |
+| 150 | W7-120 | [#641](https://github.com/sesquicadaver/MTDirector/issues/641) | DESK-ACK-01 — Desktop Policies AcknowledgeWarning Living Spec depth | **OPEN** |
+| 151 | W7-121 | [#642](https://github.com/sesquicadaver/MTDirector/issues/642) | Seed next PLAN-12 row after DESK-ACK-01 → DESK-DRAFT-01 | **OPEN** |
+| 152 | W7-122 | [#643](https://github.com/sesquicadaver/MTDirector/issues/643) | DESK-DRAFT-01 — Desktop Policies Create/Load draft Living Spec depth | **OPEN** |
+| 153 | W7-123 | [#644](https://github.com/sesquicadaver/MTDirector/issues/644) | Seed next PLAN-12 row after DESK-DRAFT-01 → DESK-CATALOG-01 | **OPEN** |
+| 154 | W7-124 | [#645](https://github.com/sesquicadaver/MTDirector/issues/645) | DESK-CATALOG-01 — Desktop Policies Catalog refresh Living Spec depth | **OPEN** |
 | 147 | W7-117 | [#632](https://github.com/sesquicadaver/MTDirector/issues/632) | Seed next PLAN-11 row after DESK-COMPOSE-01 → DESK-GATE-01 | **DONE** |
 
-**§3.C NEXT = W7-119 (#638)**. W7-118 **DONE**; W7-116 **DONE**; PLAN-11 **COMPLETE**; W7-117 **DONE**; W7-115 **DONE**; W7-113 **DONE**; W7-114 **DONE**; W7-112 **DONE**; W7-111 **DONE**; W7-110 **DONE**; PLAN-10 **COMPLETE**; W7-109 **DONE**; W7-108 **DONE**; W7-107 **DONE**; W7-106 **DONE**; W7-105 **DONE**; PLAN-09 **COMPLETE**; PLAN-10 inventory **DONE**; PLAN-08 **COMPLETE**; PLAN-09 inventory **DONE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-120 (#641)**. W7-119 **DONE**; PLAN-12 inventory **DONE**; W7-118 **DONE**; W7-116 **DONE**; PLAN-11 **COMPLETE**; W7-117 **DONE**; W7-115 **DONE**; W7-113 **DONE**; W7-114 **DONE**; W7-112 **DONE**; W7-111 **DONE**; W7-110 **DONE**; PLAN-10 **COMPLETE**; W7-109 **DONE**; W7-108 **DONE**; W7-107 **DONE**; W7-106 **DONE**; W7-105 **DONE**; PLAN-09 **COMPLETE**; PLAN-10 inventory **DONE**; PLAN-08 **COMPLETE**; PLAN-09 inventory **DONE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
