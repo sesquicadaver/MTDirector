@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-COMPOSE-01 Desktop Policies Compose+RecordAnalysis (W7-115)
+
+Issue [#629](https://github.com/sesquicadaver/MTDirector/issues/629) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Client + panel Compose/RecordAnalysis | `IPolicyServiceClient`, `IPolicyPanelService` | `DesktopPoliciesComposeLivingSpecTests.Ac1WireAndPanelExposeComposeAndRecordAnalysisApis` |
+| Compose/RecordAnalysis commands + surface | `PoliciesViewModel` | `Ac2ViewModelExposesComposeAndRecordAnalysisCommandsAndSurface` |
+| Compose node UUID + panel call | `ComposeAsync` source | `Ac3ComposeCommandParsesNodeIdAndCallsPanelInSource` |
+| RecordAnalysis logical hash path | `RecordAnalysisAsync` source | `Ac4RecordAnalysisUsesLogicalHashAndPanelRecordAnalysisRunInSource` |
+| Panel delegates without local engine | `PolicyPanelService` | `Ac5PanelComposeAndRecordAnalysisDelegateWithoutLocalSemanticEngine` |
+| MainWindow + PLAN-11 + MVP presence | `MainWindow.axaml`, plan-11, MVP | `Ac6MainWindowBindsComposeAndRecordAnalysisAndPlan11MatrixRemainPresent` |
+| Docs / PLAN-11 lock | `plan-11-…`, `testing.md`, known-limitations | `CtDeskCompose01DesktopPoliciesComposeLivingSpecTests.Ac1DesktopPoliciesComposeLivingSpecAndPlan11MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesComposeLivingSpecTests|CtDeskCompose01"`.
+
 ## Living Specification — Product tranche seed after DESK-SUBMIT-01 (W7-113)
 
 Issue [#626](https://github.com/sesquicadaver/MTDirector/issues/626) AC → module → tests:
