@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-MTLS-01 Desktop mTLS actor status (W7-101)
+
+Issue [#600](https://github.com/sesquicadaver/MTDirector/issues/600) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Resolver API + cert CN derivation | `DesktopGrpcActorResolver` | `DesktopMtlsActorLivingSpecTests.Ac1ResolverExposesResolveHeadersMetadataKeyAndDefaultActor` |
+| Config Actor when no client cert | `DesktopGrpcActorResolver` | `Ac2ConfiguredActorIsUsedWhenClientCertificateAbsent` |
+| Cert CN preferred over Actor | `DesktopGrpcActorResolver`, `DesktopConnectionStatusText` | `Ac3ClientCertificateCnPreferredOverConfiguredActor` |
+| Connected shows actor; other states omit | `DesktopConnectionStatusText` | `Ac4ConnectedStatusIncludesActorNonConnectedOmitsActor` |
+| Shell/MainWindow StatusText wiring | `ShellViewModel`, `MainWindow.axaml` | `Ac5ShellAndMainWindowWireStatusTextThroughFormatter` |
+| Prior W7-05/W7-08 Living Specs remain | W7-05/W7-08 tests, plan-09 | `Ac6PriorW705AndW708LivingSpecsRemainPresent` |
+| Docs / PLAN-09 matrix lock | `plan-09-…`, `testing.md` | `CtDeskMtls01DesktopMtlsActorLivingSpecTests.Ac1DesktopMtlsActorLivingSpecAndPlan09MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopMtlsActorLivingSpecTests|CtDeskMtls01"`.
+
 ## Living Specification — Product tranche seed after DESK-CONN-01 (W7-100)
 
 Issue [#598](https://github.com/sesquicadaver/MTDirector/issues/598) AC → module → tests:

@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-101** ([#600](https://github.com/sesquicadaver/MTDirector/issues/600)): DESK-MTLS-01 Desktop mTLS actor status Living Spec (`DesktopMtlsActorLivingSpecTests`). Seeded W7-102 (#603) / W7-103 (#604). **§3.C NEXT = W7-102 (#603)**.
 - **W7-100** ([#598](https://github.com/sesquicadaver/MTDirector/issues/598)): Seed next PLAN-09 row after DESK-CONN-01 → **DESK-MTLS-01** (W7-101). **§3.C NEXT = W7-101 (#600)**.
 - **W7-99** ([#597](https://github.com/sesquicadaver/MTDirector/issues/597)): DESK-CONN-01 Desktop Connect/Disconnect Living Spec (`DesktopConnectionLivingSpecTests`). Seeded W7-100 (#598) / W7-101 (#600). **§3.C NEXT = W7-100 (#598)**.
 - **W7-98** ([#594](https://github.com/sesquicadaver/MTDirector/issues/594)): PLAN-09 Desktop connection-status operator-surface inventory (`plan-09-desktop-connection-status-operator-surface.md`); seeds DESK-CONN-01 as W7-99 (#597) / W7-100 (#598). **§3.C NEXT = W7-99 (#597)**.
@@ -201,6 +202,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-101** ([#600](https://github.com/sesquicadaver/MTDirector/issues/600)): DESK-MTLS-01 Desktop mTLS actor status Living Spec (`DesktopMtlsActorLivingSpecTests`). Seeded W7-102 (#603) / W7-103 (#604). **§3.C NEXT = W7-102 (#603)**.
 - **W7-100** ([#598](https://github.com/sesquicadaver/MTDirector/issues/598)): Seed next PLAN-09 row after DESK-CONN-01 → **DESK-MTLS-01** (W7-101). **§3.C NEXT = W7-101 (#600)**.
 - **W7-99** ([#597](https://github.com/sesquicadaver/MTDirector/issues/597)): DESK-CONN-01 Desktop Connect/Disconnect Living Spec (`DesktopConnectionLivingSpecTests`). Seeded W7-100 (#598) / W7-101 (#600). **§3.C NEXT = W7-100 (#598)**.
 - **W7-98** ([#594](https://github.com/sesquicadaver/MTDirector/issues/594)): PLAN-09 Desktop connection-status operator-surface inventory (`plan-09-desktop-connection-status-operator-surface.md`); seeds DESK-CONN-01 as W7-99 (#597) / W7-100 (#598). **§3.C NEXT = W7-99 (#597)**.
@@ -390,6 +392,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-101** ([#600](https://github.com/sesquicadaver/MTDirector/issues/600)): DESK-MTLS-01 Desktop mTLS actor status Living Spec (`DesktopMtlsActorLivingSpecTests`). Seeded W7-102 (#603) / W7-103 (#604). **§3.C NEXT = W7-102 (#603)**.
 - **W7-100** ([#598](https://github.com/sesquicadaver/MTDirector/issues/598)): Seed next PLAN-09 row after DESK-CONN-01 → **DESK-MTLS-01** (W7-101). **§3.C NEXT = W7-101 (#600)**.
 - **W7-99** ([#597](https://github.com/sesquicadaver/MTDirector/issues/597)): DESK-CONN-01 Desktop Connect/Disconnect Living Spec (`DesktopConnectionLivingSpecTests`). Seeded W7-100 (#598) / W7-101 (#600). **§3.C NEXT = W7-100 (#598)**.
 - **W7-98** ([#594](https://github.com/sesquicadaver/MTDirector/issues/594)): PLAN-09 Desktop connection-status operator-surface inventory (`plan-09-desktop-connection-status-operator-surface.md`); seeds DESK-CONN-01 as W7-99 (#597) / W7-100 (#598). **§3.C NEXT = W7-99 (#597)**.
