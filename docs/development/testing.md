@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-ACK-01 Desktop Policies AcknowledgeWarning (W7-120)
+
+Issue [#641](https://github.com/sesquicadaver/MTDirector/issues/641) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Client + panel AcknowledgeWarning | `IPolicyServiceClient`, `IPolicyPanelService` | `DesktopPoliciesAcknowledgeLivingSpecTests.Ac1WireAndPanelExposeAcknowledgeWarningApis` |
+| AcknowledgeWarning command + surface | `PoliciesViewModel` | `Ac2ViewModelExposesAcknowledgeWarningCommandAndSurface` |
+| Run + finding guards + panel call | `AcknowledgeWarningAsync` source | `Ac3AcknowledgeWarningGuardsOnRunAndFindingAndCallsPanelInSource` |
+| Panel delegates without local engine | `PolicyPanelService` | `Ac4PanelAcknowledgeWarningDelegatesToClientWithoutLocalSemanticEngine` |
+| MainWindow Acknowledge binding | `MainWindow.axaml` | `Ac5MainWindowBindsAcknowledgeWarningCommand` |
+| PLAN-12 + prior presence | plan-12, DESK-POLICY-01, MVP | `Ac6Plan12MatrixAndPriorDeskPolicy01AckPresenceRemainPresent` |
+| Docs / PLAN-12 lock | `plan-12-…`, `testing.md`, known-limitations | `CtDeskAck01DesktopPoliciesAcknowledgeLivingSpecTests.Ac1DesktopPoliciesAcknowledgeLivingSpecAndPlan12MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesAcknowledgeLivingSpecTests|CtDeskAck01"`.
+
 ## Living Specification — PLAN-12 Desktop Policies residual lifecycle (W7-119)
 
 Issue [#638](https://github.com/sesquicadaver/MTDirector/issues/638) AC → module → tests:
