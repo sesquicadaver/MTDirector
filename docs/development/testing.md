@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-DRAFT-01 Desktop Policies Create/Load draft (W7-122)
+
+Issue [#643](https://github.com/sesquicadaver/MTDirector/issues/643) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Client + panel Create/Load | `IPolicyServiceClient`, `IPolicyPanelService` | `DesktopPoliciesDraftLivingSpecTests.Ac1WireAndPanelExposeCreateDraftAndLoadApis` |
+| CreateDraft/Load commands + surface | `PoliciesViewModel` | `Ac2ViewModelExposesCreateDraftLoadCommandsAndSurface` |
+| CreateDraft name guard | `CreateDraftAsync` source | `Ac3CreateDraftRequiresNameAndCallsPanelInSource` |
+| Load revision parse path | `LoadAsync` source | `Ac4LoadParsesRevisionIdAndCallsPanelInSource` |
+| Panel delegates without local engine | `PolicyPanelService` | `Ac5PanelCreateDraftAndLoadDelegateWithoutLocalSemanticEngine` |
+| MainWindow + PLAN-12 + prior presence | `MainWindow.axaml`, plan-12, DESK-POLICY-01, MVP | `Ac6MainWindowBindsCreateDraftLoadAndPlan12MatrixRemainPresent` |
+| Docs / PLAN-12 lock | `plan-12-…`, `testing.md`, known-limitations | `CtDeskDraft01DesktopPoliciesDraftLivingSpecTests.Ac1DesktopPoliciesDraftLivingSpecAndPlan12MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesDraftLivingSpecTests|CtDeskDraft01"`.
+
 ## Living Specification — Product tranche seed after DESK-ACK-01 (W7-121)
 
 Issue [#642](https://github.com/sesquicadaver/MTDirector/issues/642) AC → module → tests:
