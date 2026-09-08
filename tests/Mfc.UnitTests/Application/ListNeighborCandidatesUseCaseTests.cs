@@ -53,6 +53,56 @@ public sealed class ListNeighborCandidatesUseCaseTests
     }
 
     [Fact]
+    public void FilterCollapsesSameIdentityAcrossAddressesPreferringSeedSlash24()
+    {
+        // Lab-shaped MNDP: one CHR advertised on mgmt, LAN, and VRRP VIP.
+        RouterOsNeighborRow[] rows =
+        [
+            new() { Address = "10.255.11.11", Platform = "MikroTik", Identity = "vrrp-a" },
+            new() { Address = "10.255.11.20", Platform = "MikroTik", Identity = "vrrp-a" },
+            new() { Address = "10.255.10.11", Platform = "MikroTik", Identity = "vrrp-a" },
+            new() { Address = "10.255.11.12", Platform = "MikroTik", Identity = "vrrp-b" },
+            new() { Address = "10.255.10.12", Platform = "MikroTik", Identity = "vrrp-b" },
+            new() { Address = "10.255.11.13", Platform = "MikroTik", Identity = "peer" },
+            new() { Address = "10.255.10.13", Platform = "MikroTik", Identity = "peer" },
+        ];
+
+        IReadOnlyList<NeighborCandidateView> selected = NeighborCandidateFilter.SelectMikroTikCandidates(
+            rows,
+            seedIdentity: "seed",
+            knownManagementHosts: new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "10.255.10.10" },
+            seedManagementHost: "10.255.10.10");
+
+        Assert.Equal(3, selected.Count);
+        Assert.Equal("vrrp-a", selected[0].Identity);
+        Assert.Equal("vrrp-b", selected[1].Identity);
+        Assert.Equal("peer", selected[2].Identity);
+        Assert.Equal("10.255.10.11", selected[0].Address);
+        Assert.Equal("10.255.10.12", selected[1].Address);
+        Assert.Equal("10.255.10.13", selected[2].Address);
+    }
+
+    [Fact]
+    public void FilterDedupsAnonymousRowsByAddressOnly()
+    {
+        RouterOsNeighborRow[] rows =
+        [
+            new() { Address = "198.51.100.1", Platform = "MikroTik", Identity = null },
+            new() { Address = "198.51.100.1", Platform = "MikroTik", Identity = " " },
+            new() { Address = "198.51.100.2", Platform = "MikroTik", Identity = null },
+        ];
+
+        IReadOnlyList<NeighborCandidateView> selected = NeighborCandidateFilter.SelectMikroTikCandidates(
+            rows,
+            seedIdentity: "seed",
+            knownManagementHosts: new HashSet<string>(StringComparer.OrdinalIgnoreCase));
+
+        Assert.Equal(2, selected.Count);
+        Assert.Equal("198.51.100.1", selected[0].Address);
+        Assert.Equal("198.51.100.2", selected[1].Address);
+    }
+
+    [Fact]
     public async Task ExecuteReturnsFilteredCandidatesWithoutMutatingRouterOs()
     {
         FakeAuthorizationBoundary auth = new();

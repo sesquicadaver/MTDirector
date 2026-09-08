@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Sockets;
 using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
@@ -118,7 +120,8 @@ public sealed class ListNeighborCandidatesUseCase
             discovery.Rows,
             discovery.SeedIdentity,
             knownHosts,
-            SuggestedManagementPort);
+            SuggestedManagementPort,
+            seed.ManagementEndpoint.Host.Value);
 
         return ApplicationResults.Ok(new NeighborCandidatesView
         {
@@ -130,24 +133,34 @@ public sealed class ListNeighborCandidatesUseCase
     }
 }
 
-/// <summary>Pure MikroTik filter + dedup for seed neighbor suggestions (#314).</summary>
+/// <summary>Pure MikroTik filter + address/identity dedup for seed neighbor suggestions (#314).</summary>
 public static class NeighborCandidateFilter
 {
     public static bool IsMikroTikPlatform(string? platform)
         => !string.IsNullOrWhiteSpace(platform)
            && platform.Contains("MikroTik", StringComparison.OrdinalIgnoreCase);
 
+    /// <summary>
+    /// Filters MikroTik MNDP rows into one suggestion per identity (or per address when identity is empty).
+    /// Multi-homed neighbors (mgmt + LAN + VRRP VIP) collapse to a single row; prefers the address in the
+    /// same IPv4 /24 as <paramref name="seedManagementHost"/> when available.
+    /// </summary>
     public static IReadOnlyList<NeighborCandidateView> SelectMikroTikCandidates(
         IReadOnlyList<RouterOsNeighborRow> rows,
         string? seedIdentity,
         IReadOnlySet<string> knownManagementHosts,
-        ushort suggestedPort = ListNeighborCandidatesUseCase.SuggestedManagementPort)
+        ushort suggestedPort = ListNeighborCandidatesUseCase.SuggestedManagementPort,
+        string? seedManagementHost = null)
     {
         ArgumentNullException.ThrowIfNull(rows);
         ArgumentNullException.ThrowIfNull(knownManagementHosts);
 
-        List<NeighborCandidateView> selected = [];
-        HashSet<string> seenAddresses = new(StringComparer.OrdinalIgnoreCase);
+        // Preserve first-seen order while collapsing duplicates by identity (or address).
+        // Also enforce one suggestion per management address (CIDR-normalized).
+        List<string> orderKeys = [];
+        Dictionary<string, ScoredCandidate> byKey = new(StringComparer.OrdinalIgnoreCase);
+        Dictionary<string, string> addressOwnerKey = new(StringComparer.OrdinalIgnoreCase);
+        int sequence = 0;
 
         foreach (RouterOsNeighborRow row in rows)
         {
@@ -174,12 +187,9 @@ public static class NeighborCandidateFilter
                 continue;
             }
 
-            if (!seenAddresses.Add(address))
-            {
-                continue;
-            }
-
-            selected.Add(new NeighborCandidateView
+            string key = DedupKey(row.Identity, address);
+            int score = PreferenceScore(address, seedManagementHost);
+            NeighborCandidateView view = new()
             {
                 Address = address,
                 SuggestedPort = suggestedPort,
@@ -190,10 +200,103 @@ public static class NeighborCandidateFilter
                 Board = row.Board,
                 Interface = row.Interface,
                 Age = row.Age,
-            });
+            };
+
+            if (!byKey.TryGetValue(key, out ScoredCandidate? existing))
+            {
+                if (addressOwnerKey.ContainsKey(address))
+                {
+                    // Another identity already claimed this host — skip duplicate address row.
+                    continue;
+                }
+
+                orderKeys.Add(key);
+                byKey[key] = new ScoredCandidate(view, score, sequence++);
+                addressOwnerKey[address] = key;
+                continue;
+            }
+
+            // Higher score wins; on ties keep the earlier MNDP row (stable).
+            if (score <= existing.Score)
+            {
+                continue;
+            }
+
+            if (!string.Equals(address, existing.View.Address, StringComparison.OrdinalIgnoreCase)
+                && addressOwnerKey.ContainsKey(address))
+            {
+                // Preferred address already used by a different candidate — keep current.
+                continue;
+            }
+
+            addressOwnerKey.Remove(existing.View.Address);
+            addressOwnerKey[address] = key;
+            byKey[key] = new ScoredCandidate(view, score, existing.Sequence);
+        }
+
+        List<NeighborCandidateView> selected = new(orderKeys.Count);
+        foreach (string key in orderKeys)
+        {
+            selected.Add(byKey[key].View);
         }
 
         return selected;
+    }
+
+    /// <summary>Identity when present; otherwise address (anonymous MNDP rows).</summary>
+    internal static string DedupKey(string? identity, string address)
+    {
+        if (!string.IsNullOrWhiteSpace(identity))
+        {
+            return "id:" + identity.Trim();
+        }
+
+        return "addr:" + address;
+    }
+
+    /// <summary>
+    /// Prefer management-plane addresses that share the seed device's IPv4 /24 (lab/prod multi-homed CHR).
+    /// </summary>
+    internal static int PreferenceScore(string address, string? seedManagementHost)
+    {
+        if (string.IsNullOrWhiteSpace(seedManagementHost))
+        {
+            return 0;
+        }
+
+        if (!TryParseIpv4(address, out byte[] candidateOctets)
+            || !TryParseIpv4(seedManagementHost.Trim(), out byte[] seedOctets))
+        {
+            return 0;
+        }
+
+        if (candidateOctets[0] == seedOctets[0]
+            && candidateOctets[1] == seedOctets[1]
+            && candidateOctets[2] == seedOctets[2])
+        {
+            return 100;
+        }
+
+        if (candidateOctets[0] == seedOctets[0]
+            && candidateOctets[1] == seedOctets[1])
+        {
+            return 10;
+        }
+
+        return 0;
+    }
+
+    private static bool TryParseIpv4(string host, out byte[] octets)
+    {
+        octets = [];
+        if (!IPAddress.TryParse(host, out IPAddress? parsed)
+            || parsed.AddressFamily != AddressFamily.InterNetwork)
+        {
+            return false;
+        }
+
+        octets = parsed.GetAddressBytes();
+        return octets.Length == 4;
     }
 
     private static string? NormalizeAddress(string? address)
@@ -213,4 +316,6 @@ public static class NeighborCandidateFilter
 
         return string.IsNullOrWhiteSpace(trimmed) ? null : trimmed;
     }
+
+    private sealed record ScoredCandidate(NeighborCandidateView View, int Score, int Sequence);
 }

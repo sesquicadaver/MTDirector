@@ -3530,7 +3530,7 @@ Issue Set M6-04 + E2E Workflow Spec §37–§43 → seven unified Desktop module
 | W4.3 VRRP create Node + two devices | Add router `CreateAsVrrpPair` → `NodeKind.Vrrp` + 2× RegisterDevice | `Ac2eAddRouterWizardCreatesVrrpNodeAndRegistersTwoDevices` + `AddRouterWizardViewModelTests` |
 | CONT-02 Neighbor apply VRRP member b | Apply neighbor → `PairMemberB*` when pair mode | `Ac2fAddRouterNeighborApplyFillsVrrpMemberB` + `AddRouterWizardViewModelTests` |
 | W3.5 Zones Update + Resolve device | `UpdateZoneCommand` / `ResolveDeviceCommand` | `Ac2dZonesEditDefinitionAndResolveDevice` + `ZonesViewModelTests` + `ZonesDesktopServiceTests` |
-| Seed MikroTik neighbors (#314) | `ListNeighborCandidatesUseCase` + `/ip/neighbor` allowlist + Desktop Load/Apply | `NeighborCandidatesLivingSpecTests` + `ListNeighborCandidatesUseCaseTests` + `NeighborDiscoveryAllowlistTests` |
+| Seed MikroTik neighbors (#314) | `ListNeighborCandidatesUseCase` + `/ip/neighbor` allowlist + Desktop Load/Apply; identity dedup prefers seed `/24` | `NeighborCandidatesLivingSpecTests` (+ `Ac2b`) + `ListNeighborCandidatesUseCaseTests` + `NeighborDiscoveryAllowlistTests` |
 | AC#3 Node topology/zones/onboarding/readiness | `NodeDetailViewModel` | `Ac3NodeViewContainsTopologyZonesOnboardingAndReadiness` |
 | W1.6 Inventory/Node device fields | reachability/model/ROS/VRRP(when present)/last snapshot | `Ac3bInventoryAndNodeShowExplicitDeviceFields` + `InventoryNodeViewModelTests` + `NodeDetailViewModelTests` |
 | W6-05 GetNode Reachability from probe | LastSupportState → Reachable; Unreachable observation; Probe refresh | `DeviceReachabilityProjectorTests` + `Ac2eInventoryProbeRefreshesTreeAfterValidateDeviceConnection` |
