@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-SHELL-01 Desktop Shell navigation/hotkeys (W7-106)
+
+Issue [#611](https://github.com/sesquicadaver/MTDirector/issues/611) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Seven modules stable order | `ShellNavigationModule`, `ShellViewModel.Modules` | `DesktopShellLivingSpecTests.Ac1ShellExposesSevenModulesInStableOrder` |
+| HotKeysText Ctrl+1…7 + F5 | `ShellViewModel.HotKeysText` | `Ac2ShellExposesHotKeysTextDocumentingCtrl1Through7AndF5` |
+| Per-module flags + status chrome | `Is*Selected`, `StatusText`, `ErrorText`, `HasError`, `ControllerEndpoint` | `Ac3ShellExposesPerModuleSelectionFlagsAndStatusChrome` |
+| SelectModule sets SelectedModule | `SelectModuleCommand` source | `Ac4SelectModuleCommandSetsSelectedModuleInSource` |
+| MainWindow key bindings + list | `MainWindow.axaml` | `Ac5MainWindowBindsModuleListHotKeysAndCtrlKeyBindings` |
+| PLAN-10 matrix + MVP Ac12 | plan-10, `DesktopMvpWorkflowsLivingSpecTests` | `Ac6Plan10MatrixAndPriorMvpWorkflowShellCoverageRemainPresent` |
+| Docs / PLAN-10 lock | `plan-10-…`, `testing.md`, known-limitations | `CtDeskShell01DesktopShellLivingSpecTests.Ac1DesktopShellLivingSpecAndPlan10MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopShellLivingSpecTests|CtDeskShell01"`.
+
 ## Living Specification — PLAN-10 Desktop shell chrome & Policies authoring depth (W7-105)
 
 Issue [#608](https://github.com/sesquicadaver/MTDirector/issues/608) AC → module → tests:

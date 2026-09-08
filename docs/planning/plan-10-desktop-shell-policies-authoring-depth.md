@@ -18,7 +18,7 @@ PLAN-05…09 closed host-aligned panels, secondary operator surfaces, and connec
 
 | Surface | Desktop today | Gap |
 |---------|---------------|-----|
-| Shell modules / hotkeys / status | `DesktopMvpWorkflowsLivingSpecTests` Ac12 + DESK-CONN status | PLAN-10 |
+| Shell modules / hotkeys / status | `DesktopShellLivingSpecTests` + `DesktopMvpWorkflowsLivingSpecTests` Ac12 + DESK-CONN status | **DESK-SHELL-01 DONE** |
 | Policies Diff | presence in DESK-POLICY-01 Ac2/Ac5; `PoliciesViewModelTests` | PLAN-10 |
 | Policies Move up/down reorder | W6-09 product; unit tests | PLAN-10 |
 
@@ -26,8 +26,8 @@ PLAN-05…09 closed host-aligned panels, secondary operator surfaces, and connec
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-SHELL-01** | Shell SelectModule / HotKeys / chrome lacks dedicated Desktop Living Spec depth | `ShellViewModel` (`SelectModuleCommand`, `HotKeysText`, `Modules`, `StatusText`); `MainWindow.axaml` key bindings | **W7-106 OPEN** (#611) |
-| 2 | **DESK-DIFF-01** | Policies Diff execute path lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.DiffCommand`; `IPolicyPanelService.DiffAsync` | seeded after DESK-SHELL-01 (W7-107) |
+| 1 | **DESK-SHELL-01** | Shell SelectModule / HotKeys / chrome lacks dedicated Desktop Living Spec depth | `ShellViewModel` (`SelectModuleCommand`, `HotKeysText`, `Modules`, `StatusText`); `MainWindow.axaml` key bindings; `DesktopShellLivingSpecTests` | **W7-106 DONE** (#611) |
+| 2 | **DESK-DIFF-01** | Policies Diff execute path lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.DiffCommand`; `IPolicyPanelService.DiffAsync` | seeded after DESK-SHELL-01 (**W7-107 OPEN** #612 → implement **W7-108** #614) |
 | 3 | **DESK-REORDER-01** | Policies Move up/down reorder lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.MoveRuleUpCommand` / `MoveRuleDownCommand`; `ReorderRulesInStageAsync` | after DESK-DIFF-01 |
 
 ## Dual track (unchanged)
@@ -36,4 +36,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-106 (#611)** — DESK-SHELL-01 Desktop Shell navigation/hotkeys Living Spec depth.
+**§3.C NEXT = W7-107 (#612)** — Seed next PLAN-10 row after DESK-SHELL-01 → DESK-DIFF-01.
