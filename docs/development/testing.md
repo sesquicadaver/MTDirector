@@ -772,6 +772,16 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — PLAN-08 Desktop secondary operator-surface inventory (W7-89)
+
+Issue [#577](https://github.com/sesquicadaver/MTDirector/issues/577) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-08 inventory + DESK-NODE-01 seed | `docs/planning/plan-08-desktop-secondary-operator-surface.md`, `known-limitations.md`, ROADMAP, continuous plan, docs index | `Plan08DesktopSecondaryOperatorSurfaceW789LivingSpecTests.Ac1Plan08InventoryDocumentsRankedSecondaryRowsAndSeedsDeskNode01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan08DesktopSecondaryOperatorSurfaceW789"`.
+
 ## Living Specification — Product tranche seed after PLAN-07 (W7-88)
 
 Issue [#574](https://github.com/sesquicadaver/MTDirector/issues/574) AC → module → tests:
