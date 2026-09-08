@@ -38,6 +38,6 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 **Status:** PLAN-09 **COMPLETE** (DESK-CONN…DESK-AUTH).
 
-**§3.C NEXT = W7-109 (#616)** — Seed next PLAN-10 row after DESK-DIFF-01 → DESK-REORDER-01.
+**§3.C NEXT = W7-110 (#617)** — DESK-REORDER-01 Desktop Policies Move up/down Living Spec depth (PLAN-10).
 
-**Successor:** PLAN-10 inventory **DONE** (W7-105); **DESK-SHELL-01 DONE** (W7-106); **DESK-DIFF-01 DONE** (W7-108); next seed **W7-109** → DESK-REORDER-01.
+**Successor:** PLAN-10 inventory **DONE** (W7-105); **DESK-SHELL-01 DONE** (W7-106); **DESK-DIFF-01 DONE** (W7-108); seed W7-109 **DONE**; **DESK-REORDER-01** (W7-110) next.

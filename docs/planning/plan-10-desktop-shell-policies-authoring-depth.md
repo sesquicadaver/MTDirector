@@ -20,7 +20,7 @@ PLAN-05…09 closed host-aligned panels, secondary operator surfaces, and connec
 |---------|---------------|-----|
 | Shell modules / hotkeys / status | `DesktopShellLivingSpecTests` + `DesktopMvpWorkflowsLivingSpecTests` Ac12 + DESK-CONN status | **DESK-SHELL-01 DONE** |
 | Policies Diff | `DesktopPoliciesDiffLivingSpecTests` + DESK-POLICY-01 presence + `PolicyDesktopServiceTests` | **DESK-DIFF-01 DONE** |
-| Policies Move up/down reorder | W6-09 product; unit tests | PLAN-10 |
+| Policies Move up/down reorder | W6-09 product; unit tests | PLAN-10 (**DESK-REORDER-01** next) |
 
 ## Ranked Desktop shell chrome & Policies authoring depth tranche
 
@@ -28,7 +28,7 @@ PLAN-05…09 closed host-aligned panels, secondary operator surfaces, and connec
 |------|----|-----|----------|-------|
 | 1 | **DESK-SHELL-01** | Shell SelectModule / HotKeys / chrome lacks dedicated Desktop Living Spec depth | `ShellViewModel` (`SelectModuleCommand`, `HotKeysText`, `Modules`, `StatusText`); `MainWindow.axaml` key bindings; `DesktopShellLivingSpecTests` | **W7-106 DONE** (#611) |
 | 2 | **DESK-DIFF-01** | Policies Diff execute path lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.DiffCommand`; `IPolicyPanelService.DiffAsync`; `DesktopPoliciesDiffLivingSpecTests` | **W7-108 DONE** (#614); seeded by **W7-107 DONE** (#612) |
-| 3 | **DESK-REORDER-01** | Policies Move up/down reorder lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.MoveRuleUpCommand` / `MoveRuleDownCommand`; `ReorderRulesInStageAsync` | seeded after DESK-DIFF-01 (**W7-109 OPEN** #616 → implement **W7-110** #617) |
+| 3 | **DESK-REORDER-01** | Policies Move up/down reorder lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.MoveRuleUpCommand` / `MoveRuleDownCommand`; `ReorderRulesInStageAsync` | **W7-110 OPEN** (#617); seeded by **W7-109 DONE** (#616) |
 
 ## Dual track (unchanged)
 
@@ -36,4 +36,6 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-109 (#616)** — Seed next PLAN-10 row after DESK-DIFF-01 → DESK-REORDER-01.
+**§3.C NEXT = W7-110 (#617)** — DESK-REORDER-01 Desktop Policies Move up/down Living Spec depth.
+
+**Successor seed after DESK-REORDER-01:** W7-111 (#620) — Seed next product tranche after PLAN-10 → PLAN-11.

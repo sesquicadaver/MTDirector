@@ -69,6 +69,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-106 Living Spec lock): **DESK-SHELL-01** — Desktop Shell navigation/hotkeys Living Spec (`DesktopShellLivingSpecTests`); next PLAN-10 seed W7-107 → DESK-DIFF-01.
 - Intentional residual (W7-107 Living Spec lock): §3.C product row after DESK-SHELL-01 is seeded as **W7-108** — **DESK-DIFF-01** Desktop Policies Diff Living Spec depth; not idle; not a lab stop-gate.
 - Intentional residual (W7-108 Living Spec lock): **DESK-DIFF-01** — Desktop Policies Diff Living Spec (`DesktopPoliciesDiffLivingSpecTests`); next PLAN-10 seed W7-109 → DESK-REORDER-01.
+- Intentional residual (W7-109 Living Spec lock): §3.C product row after DESK-DIFF-01 is seeded as **W7-110** — **DESK-REORDER-01** Desktop Policies Move up/down Living Spec depth; not idle; not a lab stop-gate.
 
 ## Production wiring (P2 pilot)
 
