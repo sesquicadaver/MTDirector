@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-112** ([#625](https://github.com/sesquicadaver/MTDirector/issues/625)): PLAN-11 Desktop Policies review-compose lifecycle inventory (`plan-11-desktop-policies-review-compose-lifecycle.md`); seeds DESK-SUBMIT-01 as W7-114 (#628) / W7-113 (#626). **§3.C NEXT = W7-114 (#628)**.
 - **W7-111** ([#620](https://github.com/sesquicadaver/MTDirector/issues/620)): Seed next product tranche after PLAN-10 → **PLAN-11** (W7-112). Seeded W7-113 (#626). **§3.C NEXT = W7-112 (#625)**.
 - **W7-110** ([#617](https://github.com/sesquicadaver/MTDirector/issues/617)): DESK-REORDER-01 Desktop Policies Move up/down Living Spec (`DesktopPoliciesReorderLivingSpecTests`); **PLAN-10 COMPLETE**. Seeded W7-111 (#620). **§3.C NEXT = W7-111 (#620)**.
 - **W7-109** ([#616](https://github.com/sesquicadaver/MTDirector/issues/616)): Seed next PLAN-10 row after DESK-DIFF-01 → **DESK-REORDER-01** (W7-110). Seeded W7-111 (#620). **§3.C NEXT = W7-110 (#617)**.
