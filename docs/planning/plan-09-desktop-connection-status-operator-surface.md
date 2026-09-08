@@ -19,7 +19,7 @@ PLAN-05…08 closed host-aligned and secondary Desktop Living Specs for operator
 | Surface | Desktop today | Gap |
 |---------|---------------|-----|
 | Connect / Disconnect / state machine | `DesktopConnectionLivingSpecTests` (DESK-CONN-01) | PLAN-09 **DONE** row |
-| mTLS actor on Connected status | `DesktopConnectionStatusActorW708LivingSpecTests` residual | PLAN-09 |
+| mTLS actor on Connected status | `DesktopMtlsActorLivingSpecTests` (DESK-MTLS-01) | PLAN-09 **DONE** row |
 | AuthenticationFailed status | `DesktopConnectionStatusAuthFailedW712LivingSpecTests` residual | PLAN-09 |
 | TlsError status | enum + format path; no dedicated DESK-* Living Spec | PLAN-09 |
 
@@ -28,8 +28,8 @@ PLAN-05…08 closed host-aligned and secondary Desktop Living Specs for operator
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **DESK-CONN-01** | Connect/Disconnect + status shell lacks dedicated Desktop Living Spec depth vs `IControllerConnectionService` | `ShellViewModel` Connect/Disconnect; `DesktopConnectionStatusText`; `IControllerConnectionService` | **W7-99 DONE** (#597) |
-| 2 | **DESK-MTLS-01** | Connected status mTLS actor presentation lacks dedicated DESK-* Living Spec beyond W7-08 residual | `DesktopGrpcActorResolver`; `DesktopConnectionStatusText.Format` actor suffix | **W7-101 OPEN** (#600) |
-| 3 | **DESK-AUTH-01** | AuthenticationFailed / TlsError fail-closed status lacks dedicated DESK-* Living Spec beyond W7-12 residual | `ControllerConnectionState.AuthenticationFailed` / `TlsError`; status bindings | after DESK-MTLS-01 |
+| 2 | **DESK-MTLS-01** | Connected status mTLS actor presentation lacks dedicated DESK-* Living Spec beyond W7-08 residual | `DesktopGrpcActorResolver`; `DesktopConnectionStatusText.Format` actor suffix | **W7-101 DONE** (#600) |
+| 3 | **DESK-AUTH-01** | AuthenticationFailed / TlsError fail-closed status lacks dedicated DESK-* Living Spec beyond W7-12 residual | `ControllerConnectionState.AuthenticationFailed` / `TlsError`; status bindings | **W7-103 OPEN** (#604) |
 
 ## Dual track (unchanged)
 
@@ -37,4 +37,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-101 (#600)** — DESK-MTLS-01 Desktop mTLS actor status Living Spec depth.
+**§3.C NEXT = W7-102 (#603)** — Seed next PLAN-09 row after DESK-MTLS-01 → DESK-AUTH-01.
