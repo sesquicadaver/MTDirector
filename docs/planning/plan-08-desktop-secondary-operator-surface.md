@@ -39,4 +39,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-91 (#580)** — Seed next PLAN-08 row after DESK-NODE-01 → DESK-NBR-01.
+**§3.C NEXT = W7-92 (#582)** — DESK-NBR-01 Desktop Neighbor candidates Living Spec depth.

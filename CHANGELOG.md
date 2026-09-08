@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-91** ([#580](https://github.com/sesquicadaver/MTDirector/issues/580)): Seed next PLAN-08 row after DESK-NODE-01 → **DESK-NBR-01** (W7-92). Seeded W7-92 (#582). **§3.C NEXT = W7-92 (#582)**.
 - **W7-90** ([#578](https://github.com/sesquicadaver/MTDirector/issues/578)): DESK-NODE-01 Desktop Node VRRP pair Living Spec (`DesktopNodeLivingSpecTests`) vs InventoryGrpcHost. Seeded W7-91 (#580). **§3.C NEXT = W7-91 (#580)**.
 - **W7-89** ([#577](https://github.com/sesquicadaver/MTDirector/issues/577)): PLAN-08 Desktop secondary operator-surface inventory (`plan-08-desktop-secondary-operator-surface.md`); seeds DESK-NODE-01 as W7-90 (#578) / W7-91 (#580). **§3.C NEXT = W7-90 (#578)**.
 - **W7-88** ([#574](https://github.com/sesquicadaver/MTDirector/issues/574)): Seed next product tranche after PLAN-07 → **PLAN-08** inventory (W7-89). PLAN-07 **COMPLETE**. Seeded W7-89 (#577) / W7-90 (#578). **§3.C NEXT = W7-89 (#577)**.

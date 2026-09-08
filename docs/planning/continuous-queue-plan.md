@@ -162,7 +162,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Seed next product tranche after PLAN-07 Core MVP Desktop | Docs / product seed | **W7-88 DONE** |
 | PLAN-08 — Inventory next Desktop secondary operator-surface Living Spec product tranche | Docs / PLAN-08 | **W7-89 DONE** |
 | DESK-NODE-01 — Desktop Node VRRP pair Living Spec vs InventoryGrpcHost | Docs / Desktop Living Spec | **W7-90 DONE** |
-| Seed next PLAN-08 row after DESK-NODE-01 → DESK-NBR-01 | Docs / PLAN-08 | **W7-91 OPEN** |
+| Seed next PLAN-08 row after DESK-NODE-01 → DESK-NBR-01 | Docs / PLAN-08 | **W7-91 DONE** |
+| DESK-NBR-01 — Desktop Neighbor candidates Living Spec depth | Docs / Desktop Living Spec | **W7-92 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -306,7 +307,7 @@ W7-87 DESK-INVENTORY-01 — Desktop Inventory Living Spec vs InventoryGrpcHost *
 W7-88 Seed next product tranche after PLAN-07 Core MVP Desktop **DONE**
 W7-89 PLAN-08 — Inventory next Desktop secondary operator-surface Living Spec product tranche **DONE**
 W7-90 DESK-NODE-01 — Desktop Node VRRP pair Living Spec vs InventoryGrpcHost **DONE**
-W7-91 Seed next PLAN-08 row after DESK-NODE-01 → DESK-NBR-01 **OPEN**
+W7-91 Seed next PLAN-08 row after DESK-NODE-01 → DESK-NBR-01 **DONE**
 W7-92 DESK-NBR-01 — Desktop Neighbor candidates Living Spec depth **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
@@ -437,10 +438,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 118 | W7-88 | [#574](https://github.com/sesquicadaver/MTDirector/issues/574) | Seed next product tranche after PLAN-07 Core MVP Desktop | **DONE** |
 | 119 | W7-89 | [#577](https://github.com/sesquicadaver/MTDirector/issues/577) | PLAN-08 — Inventory next Desktop secondary operator-surface Living Spec product tranche | **DONE** |
 | 120 | W7-90 | [#578](https://github.com/sesquicadaver/MTDirector/issues/578) | DESK-NODE-01 — Desktop Node VRRP pair Living Spec vs InventoryGrpcHost | **DONE** |
-| 121 | W7-91 | [#580](https://github.com/sesquicadaver/MTDirector/issues/580) | Seed next PLAN-08 row after DESK-NODE-01 → DESK-NBR-01 | **OPEN** |
+| 121 | W7-91 | [#580](https://github.com/sesquicadaver/MTDirector/issues/580) | Seed next PLAN-08 row after DESK-NODE-01 → DESK-NBR-01 | **DONE** |
 | 122 | W7-92 | [#582](https://github.com/sesquicadaver/MTDirector/issues/582) | DESK-NBR-01 — Desktop Neighbor candidates Living Spec depth | **OPEN** |
 
-**§3.C NEXT = W7-91 (#580)**. W7-90 **DONE**; PLAN-07 **COMPLETE**; PLAN-08 inventory **DONE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-92 (#582)**. W7-91 **DONE**; PLAN-07 **COMPLETE**; PLAN-08 inventory **DONE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
