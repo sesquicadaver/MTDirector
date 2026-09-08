@@ -9,7 +9,8 @@
 **PLAN-05 (Desktop operator-surface):** [`plan-05-desktop-operator-surface.md`](plan-05-desktop-operator-surface.md) **COMPLETE**  
 **PLAN-06 (Incident Desktop operator-surface):** [`plan-06-incident-desktop-operator-surface.md`](plan-06-incident-desktop-operator-surface.md) **COMPLETE**  
 **PLAN-07 (Core MVP Desktop operator-surface):** [`plan-07-core-mvp-desktop-operator-surface.md`](plan-07-core-mvp-desktop-operator-surface.md) **COMPLETE**
-**PLAN-08 (Desktop secondary operator-surface):** [`plan-08-desktop-secondary-operator-surface.md`](plan-08-desktop-secondary-operator-surface.md) **COMPLETE**
+**PLAN-08 (Desktop secondary operator-surface):** [`plan-08-desktop-secondary-operator-surface.md`](plan-08-desktop-secondary-operator-surface.md) **COMPLETE**  
+**PLAN-09 (Desktop connection-status operator-surface):** [`plan-09-desktop-connection-status-operator-surface.md`](plan-09-desktop-connection-status-operator-surface.md)
 
 This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle state **NEXT = none**.
 
@@ -169,7 +170,9 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Seed next PLAN-08 row after DESK-PROBE-01 → DESK-POLICY-02 | Docs / PLAN-08 | **W7-95 DONE** |
 | DESK-POLICY-02 — Desktop Policy safety analysis Living Spec depth | Docs / Desktop Living Spec | **W7-96 DONE** |
 | Seed next product tranche after PLAN-08 → PLAN-09 | Docs / product seed | **W7-97 DONE** |
-| PLAN-09 — Inventory next Desktop connection-status operator-surface Living Spec product tranche | Docs / PLAN-09 | **W7-98 OPEN** |
+| PLAN-09 — Inventory next Desktop connection-status operator-surface Living Spec product tranche | Docs / PLAN-09 | **W7-98 DONE** |
+| DESK-CONN-01 — Desktop Connect/Disconnect Living Spec depth | Docs / Desktop Living Spec | **W7-99 OPEN** |
+| Seed next PLAN-09 row after DESK-CONN-01 → DESK-MTLS-01 | Docs / PLAN-09 | **W7-100 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -320,7 +323,9 @@ W7-94 DESK-PROBE-01 — Desktop ValidateDeviceConnection probe Living Spec depth
 W7-95 Seed next PLAN-08 row after DESK-PROBE-01 → DESK-POLICY-02 **DONE**
 W7-96 DESK-POLICY-02 — Desktop Policy safety analysis Living Spec depth **DONE**
 W7-97 Seed next product tranche after PLAN-08 → PLAN-09 **DONE**
-W7-98 PLAN-09 — Inventory next Desktop connection-status operator-surface Living Spec product tranche **OPEN**
+W7-98 PLAN-09 — Inventory next Desktop connection-status operator-surface Living Spec product tranche **DONE**
+W7-99 DESK-CONN-01 — Desktop Connect/Disconnect Living Spec depth **OPEN**
+W7-100 Seed next PLAN-09 row after DESK-CONN-01 → DESK-MTLS-01 **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -457,9 +462,11 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 125 | W7-95 | [#589](https://github.com/sesquicadaver/MTDirector/issues/589) | Seed next PLAN-08 row after DESK-PROBE-01 → DESK-POLICY-02 | **DONE** |
 | 126 | W7-96 | [#590](https://github.com/sesquicadaver/MTDirector/issues/590) | DESK-POLICY-02 — Desktop Policy safety analysis Living Spec depth | **DONE** |
 | 127 | W7-97 | [#593](https://github.com/sesquicadaver/MTDirector/issues/593) | Seed next product tranche after PLAN-08 → PLAN-09 | **DONE** |
-| 128 | W7-98 | [#594](https://github.com/sesquicadaver/MTDirector/issues/594) | PLAN-09 — Inventory next Desktop connection-status operator-surface Living Spec product tranche | **OPEN** |
+| 128 | W7-98 | [#594](https://github.com/sesquicadaver/MTDirector/issues/594) | PLAN-09 — Inventory next Desktop connection-status operator-surface Living Spec product tranche | **DONE** |
+| 129 | W7-99 | [#597](https://github.com/sesquicadaver/MTDirector/issues/597) | DESK-CONN-01 — Desktop Connect/Disconnect Living Spec depth | **OPEN** |
+| 130 | W7-100 | [#598](https://github.com/sesquicadaver/MTDirector/issues/598) | Seed next PLAN-09 row after DESK-CONN-01 → DESK-MTLS-01 | **OPEN** |
 
-**§3.C NEXT = W7-98 (#594)**. W7-97 **DONE**; PLAN-08 **COMPLETE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-99 (#597)**. W7-98 **DONE**; PLAN-08 **COMPLETE**; PLAN-09 inventory **DONE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

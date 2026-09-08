@@ -772,6 +772,16 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — PLAN-09 Desktop connection-status operator-surface (W7-98)
+
+Issue [#594](https://github.com/sesquicadaver/MTDirector/issues/594) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-09 inventory + DESK-CONN-01 seed | `docs/planning/plan-09-desktop-connection-status-operator-surface.md`, `known-limitations.md`, ROADMAP, continuous plan, docs index | `Plan09DesktopConnectionStatusOperatorSurfaceW798LivingSpecTests.Ac1Plan09InventoryDocumentsRankedConnectionRowsAndSeedsDeskConn01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan09DesktopConnectionStatusOperatorSurfaceW798"`.
+
 ## Living Specification — Product tranche seed after PLAN-08 (W7-97)
 
 Issue [#593](https://github.com/sesquicadaver/MTDirector/issues/593) AC → module → tests:
