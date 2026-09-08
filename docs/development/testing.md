@@ -772,6 +772,16 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — Product tranche seed after PLAN-10 (W7-111)
+
+Issue [#620](https://github.com/sesquicadaver/MTDirector/issues/620) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed PLAN-11 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md`, `plan-10-desktop-shell-policies-authoring-depth.md` | `ProductTrancheSeedW7111LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan11AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7111"`.
+
 ## Living Specification — DESK-REORDER-01 Desktop Policies Move up/down (W7-110)
 
 Issue [#617](https://github.com/sesquicadaver/MTDirector/issues/617) AC → module → tests:
