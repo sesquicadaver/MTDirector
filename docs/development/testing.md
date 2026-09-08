@@ -772,6 +772,16 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — Product tranche seed after DESK-NBR-01 (W7-93)
+
+Issue [#585](https://github.com/sesquicadaver/MTDirector/issues/585) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-PROBE-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md`, `plan-08-desktop-secondary-operator-surface.md` | `ProductTrancheSeedW793LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskProbe01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW793"`.
+
 ## Living Specification — DESK-NBR-01 Desktop Neighbor candidates (W7-92)
 
 Issue [#582](https://github.com/sesquicadaver/MTDirector/issues/582) AC → module → tests:
