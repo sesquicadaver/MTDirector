@@ -772,6 +772,16 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — Product tranche seed after DESK-SHELL-01 (W7-107)
+
+Issue [#612](https://github.com/sesquicadaver/MTDirector/issues/612) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-DIFF-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md`, `plan-10-desktop-shell-policies-authoring-depth.md` | `ProductTrancheSeedW7107LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskDiff01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7107"`.
+
 ## Living Specification — DESK-SHELL-01 Desktop Shell navigation/hotkeys (W7-106)
 
 Issue [#611](https://github.com/sesquicadaver/MTDirector/issues/611) AC → module → tests:
