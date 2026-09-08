@@ -43,6 +43,29 @@ public sealed class NeighborCandidatesLivingSpecTests
     }
 
     [Fact]
+    public void Ac2bFilterCollapsesMultiHomedIdentityPreferringSeedManagementSubnet()
+    {
+        // GNS3 minilab shape: same identity on mgmt + LAN + VIP must not duplicate ComboBox rows.
+        IReadOnlyList<NeighborCandidateView> selected = NeighborCandidateFilter.SelectMikroTikCandidates(
+            [
+                new RouterOsNeighborRow { Address = "10.255.11.11", Platform = "MikroTik", Identity = "vrrp-a" },
+                new RouterOsNeighborRow { Address = "10.255.11.20", Platform = "MikroTik", Identity = "vrrp-a" },
+                new RouterOsNeighborRow { Address = "10.255.10.11", Platform = "MikroTik", Identity = "vrrp-a" },
+                new RouterOsNeighborRow { Address = "10.255.10.12", Platform = "MikroTik", Identity = "vrrp-b" },
+                new RouterOsNeighborRow { Address = "10.255.11.12", Platform = "MikroTik", Identity = "vrrp-b" },
+            ],
+            seedIdentity: "seed",
+            knownManagementHosts: new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "10.255.10.10" },
+            seedManagementHost: "10.255.10.10");
+
+        Assert.Equal(2, selected.Count);
+        Assert.Equal("vrrp-a", selected[0].Identity);
+        Assert.Equal("10.255.10.11", selected[0].Address);
+        Assert.Equal("vrrp-b", selected[1].Identity);
+        Assert.Equal("10.255.10.12", selected[1].Address);
+    }
+
+    [Fact]
     public void Ac3InventoryRpcExposesListNeighborCandidatesWithoutAutoRegisterSemantics()
     {
         ServiceDescriptor descriptor = InventoryService.Descriptor;

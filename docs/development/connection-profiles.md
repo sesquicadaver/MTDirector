@@ -15,7 +15,7 @@ See ADR [`0002-routeros-api-ssl.md`](../architecture/adr/0002-routeros-api-ssl.m
 
 Preferred Desktop path: Inventory **Add router** wizard → CreateSite (optional) → CreateNode (optional) → `RegisterDevice` → `UpdateDeviceConnection`.
 
-Optional seed suggest (#314): select a registered **Device** in the tree → **Load MikroTik neighbors** (`ListNeighborCandidates`) → **Apply selected neighbor** to pre-fill host/port/display name → enter credentials → Submit as usual. Never auto-registers; Controller reads allowlisted `/ip/neighbor` on the seed only (not Desktop MNDP / LAN scan).
+Optional seed suggest (#314): select a registered **Device** in the tree → **Load MikroTik neighbors** (`ListNeighborCandidates`) → **Apply selected neighbor** to pre-fill host/port/display name → enter credentials → Submit as usual. Never auto-registers; Controller reads allowlisted `/ip/neighbor` on the seed only (not Desktop MNDP / LAN scan). Multi-homed MNDP rows for the same `identity` (mgmt + LAN + VRRP VIP) collapse to **one** candidate; the filter prefers an address in the seed device’s IPv4 `/24` when present.
 
 Equivalent gRPC:
 

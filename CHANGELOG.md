@@ -7,6 +7,10 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Neighbor candidates duplicates:** `NeighborCandidateFilter` collapses multi-homed MNDP rows with the same `identity` (mgmt/LAN/VIP) into one ComboBox suggestion and prefers the address in the seed device’s IPv4 `/24` (GNS3 lab: one row per peer instead of 2–3). Living Spec `Ac2b` + unit coverage.
+
 ### Added
 
 - **W7-122** ([#643](https://github.com/sesquicadaver/MTDirector/issues/643)): DESK-DRAFT-01 Desktop Policies Create/Load draft Living Spec (`DesktopPoliciesDraftLivingSpecTests`). Seeded W7-123 (#644) / W7-124 (#645). **§3.C NEXT = W7-123 (#644)**.
