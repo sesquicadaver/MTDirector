@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-NBR-01 Desktop Neighbor candidates (W7-92)
+
+Issue [#582](https://github.com/sesquicadaver/MTDirector/issues/582) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Wire + Desktop ListNeighborCandidates | `IInventoryTreeClient`, `GrpcInventoryTreeClient` | `DesktopNeighborLivingSpecTests.Ac1WireAndDesktopClientExposeListNeighborCandidates` |
+| Load/Apply neighbor commands | `AddRouterWizardViewModel` | `Ac2WizardExposesLoadApplyNeighborCommandsAndCandidates` |
+| Load fills candidates from seed Device without register | `AddRouterWizardViewModel` | `Ac3LoadNeighborsFillsCandidatesFromSeedDeviceWithoutRegister` |
+| Load requires seed Device + Connected | `AddRouterWizardViewModel` | `Ac4LoadNeighborsRequiresSeedDeviceAndConnectedController` |
+| Apply prefills host; MainWindow bindings | `AddRouterWizardViewModel`, `MainWindow.axaml` | `Ac5ApplyNeighborPrefillsHostWithoutRegisterAndMainWindowBinds` |
+| Host/proto/Application neighbor Living Spec remain | `inventory.proto`, `NeighborCandidatesLivingSpecTests` | `Ac6HostAndProtoContractRemainPresentForNeighborCandidates` |
+| Docs / PLAN-08 matrix lock | `plan-08-desktop-secondary-operator-surface.md`, `testing.md` | `CtDeskNbr01DesktopNeighborLivingSpecTests.Ac1DesktopNeighborLivingSpecAndPlan08MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopNeighborLivingSpecTests|CtDeskNbr01"`.
+
 ## Living Specification — Product tranche seed after DESK-NODE-01 (W7-91)
 
 Issue [#580](https://github.com/sesquicadaver/MTDirector/issues/580) AC → module → tests:
