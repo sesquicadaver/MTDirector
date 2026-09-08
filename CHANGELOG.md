@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-95** ([#589](https://github.com/sesquicadaver/MTDirector/issues/589)): Seed next PLAN-08 row after DESK-PROBE-01 → **DESK-POLICY-02** (W7-96). **§3.C NEXT = W7-96 (#590)**.
 - **W7-94** ([#586](https://github.com/sesquicadaver/MTDirector/issues/586)): DESK-PROBE-01 Desktop ValidateDeviceConnection probe Living Spec (`DesktopProbeLivingSpecTests`). Seeded W7-95 (#589) / W7-96 (#590). **§3.C NEXT = W7-95 (#589)**.
 - **W7-93** ([#585](https://github.com/sesquicadaver/MTDirector/issues/585)): Seed next PLAN-08 row after DESK-NBR-01 → **DESK-PROBE-01** (W7-94). Seeded W7-94 (#586). **§3.C NEXT = W7-94 (#586)**.
 - **W7-92** ([#582](https://github.com/sesquicadaver/MTDirector/issues/582)): DESK-NBR-01 Desktop Neighbor candidates Living Spec (`DesktopNeighborLivingSpecTests`) vs ListNeighborCandidates. Seeded W7-93 (#585) / W7-94 (#586). **§3.C NEXT = W7-93 (#585)**.
@@ -195,6 +196,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-95** ([#589](https://github.com/sesquicadaver/MTDirector/issues/589)): Seed next PLAN-08 row after DESK-PROBE-01 → **DESK-POLICY-02** (W7-96). **§3.C NEXT = W7-96 (#590)**.
 - Incident response E2E scripted living spec (M7.4-06 / next-2): `ReportIncidentDeploymentOutcomeUseCase` maps committed/rollback/recovery deployment outcomes to RESPONSE_APPLIED/VERIFIED/ROLLED_BACK/RECOVERY_REQUIRED; partial feasibility emits PLANNED with residual_risk. Living Spec `IncidentResponseE2ELivingSpecTests` AC 1–10 covers enforceable, not-enforceable, rollback, residual risk, TTL removal, and full lifecycle query. ROADMAP marks M7.4-06 DONE and **M7.4 CLOSED**; Post-MVP M7 = 0 open.
 
 - RESPONSE_* feedback events to external analytics complex (M7.4-05 / next-2): Domain `ResponseFeedbackEvent` + eight stable event codes; append-only `IResponseFeedbackEventStore` + EF migration; `EmitResponseFeedbackUseCase` / `ListResponseFeedbackEventsUseCase` + `IResponseFeedbackDeliveryPort` (default not-configured); wired emission from assess/deploy/plan-removal/expire paths. Permissions `incident.feedback.emit` / `incident.feedback.read`. Living Spec `ResponseFeedbackLivingSpecTests` AC 1–10 + coverage. ROADMAP marks M7.4-05 DONE; NEXT = M7.4-06 (#136); Post-MVP M7 = 1 open.
@@ -378,6 +380,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-95** ([#589](https://github.com/sesquicadaver/MTDirector/issues/589)): Seed next PLAN-08 row after DESK-PROBE-01 → **DESK-POLICY-02** (W7-96). **§3.C NEXT = W7-96 (#590)**.
 - Restricted onboarding bootstrap writer (M5-05): Domain `OnboardingBootstrapWrite` / `OnboardingBootstrapWritePlanner`; Application `IOnboardingBootstrapWritePort`; RouterOS `OnboardingBootstrapWriter` with compile-time `OnboardingWritePath` (add/set/remove only, no `/move`, no generic `Write` namespace). Disabled anchors, Spec §23 artifact ID, place-before or append, per-write read-back, exact-resource remove, namespace collision fail-closed. Living Spec AC 1–12 in `OnboardingBootstrapWriterLivingSpecTests`. Scheduler/watchdog is M5-06.
 - Scheduler proof and onboarding rollback watchdog (M5-06): Domain `OnboardingWatchdogPlanner` / fixed no-op proof + watchdog template; Application `IOnboardingWatchdogPort`; RouterOS `OnboardingWatchdogWriter` on Spec §27.2 script/scheduler paths (no `/move`, no `Mfc.RouterOs.Write`). `run-count==1`, source-hash read-back, deadline+startup arm, TTL 60–600s / 30s commit margin, collision fail-closed. Living Spec AC 1–12 in `OnboardingWatchdogLivingSpecTests`. Execution/enable is M5-07.
 - Onboarding API and Desktop workflow (M5-09): Contracts `OnboardingService` with separate Validate/CreatePlan/Start/Watch/Rollback/GetRecoveryStatus RPCs; `plan_hash` required at start; server-streaming progress; mutation idempotency + audit; Desktop checklist, placement, recovery facts; no script source and no arbitrary write controls. Living Spec AC 1–10 in `OnboardingWorkflowLivingSpecTests` + `OnboardingGrpcHostTests`. Integration acceptance is M5-10.
