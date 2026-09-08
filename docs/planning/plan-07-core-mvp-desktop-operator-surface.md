@@ -3,6 +3,7 @@
 **Date:** 2026-09-07  
 **PLAN issue / queue:** [W7-78 / PLAN-07 #554](https://github.com/sesquicadaver/MTDirector/issues/554)  
 **Predecessor:** PLAN-06 Incident Desktop COMPLETE (W7-73…W7-76); product seed W7-77  
+**Status:** **COMPLETE** (DESK-POLICY…DESK-INVENTORY DONE)
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C
 
 PLAN-05 closed dedicated Desktop Living Specs for Audit → Routing and deferred **Incident** to PLAN-06 (now **COMPLETE**). PLAN-05 also named Policies / Onboarding / Deploy / Snapshot as **MVP baseline** covered only by `DesktopMvpWorkflowsLivingSpecTests`, not host-aligned `Desktop*LivingSpecTests`. PLAN-07 keeps `/autopilot` from idling by inventoring **Core MVP Desktop operator-surface** rows: Policies → Deploy → Onboarding → Snapshot → Inventory against existing GrpcHost contracts (CT / Policy / Deployment / Onboarding / Snapshot / Inventory hosts).
@@ -40,6 +41,10 @@ PLAN-05 closed dedicated Desktop Living Specs for Audit → Routing and deferred
 
 Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay ops-parallel ([`known-limitations.md`](../release/known-limitations.md)).
 
+## Successor
+
+After PLAN-07 **COMPLETE**, §3.C product seed **W7-88 DONE** advances to **PLAN-08** inventory (**W7-89 OPEN**); first atomic row placeholder **W7-90**.
+
 ## §3.C NEXT
 
-**§3.C NEXT = W7-88 (#574)** — Seed next product tranche after PLAN-07 Core MVP Desktop (all DESK-* rows DONE).
+**§3.C NEXT = W7-89 (#577)** — PLAN-08 inventory next Desktop secondary operator-surface Living Spec product tranche.
