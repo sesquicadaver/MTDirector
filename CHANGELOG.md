@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-119** ([#638](https://github.com/sesquicadaver/MTDirector/issues/638)): PLAN-12 Desktop Policies residual lifecycle inventory (`plan-12-desktop-policies-residual-lifecycle.md`); seeds DESK-ACK-01 as W7-120 (#641) / W7-121 (#642). **§3.C NEXT = W7-120 (#641)**.
 - **W7-118** ([#637](https://github.com/sesquicadaver/MTDirector/issues/637)): Seed next product tranche after PLAN-11 → **PLAN-12** (W7-119). **§3.C NEXT = W7-119 (#638)**.
 - **W7-116** ([#630](https://github.com/sesquicadaver/MTDirector/issues/630)): DESK-GATE-01 Desktop Policies Approve/Bind/Compile Living Spec (`DesktopPoliciesGateLivingSpecTests`); **PLAN-11 COMPLETE**. Seeded W7-118 (#637) / W7-119 (#638). **§3.C NEXT = W7-118 (#637)**.
 - **W7-117** ([#632](https://github.com/sesquicadaver/MTDirector/issues/632)): Seed next PLAN-11 row after DESK-COMPOSE-01 → **DESK-GATE-01** (W7-116). **§3.C NEXT = W7-116 (#630)**.
