@@ -2,10 +2,11 @@
 
 **Date:** 2026-09-08  
 **PLAN issue / queue:** [W7-105 / PLAN-10 #608](https://github.com/sesquicadaver/MTDirector/issues/608)  
+**Status:** **COMPLETE** (DESK-SHELL-01…DESK-REORDER-01)  
 **Predecessor:** PLAN-09 Desktop connection-status COMPLETE (DESK-CONN…DESK-AUTH); product seed W7-104  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C
 
-PLAN-05…09 closed host-aligned panels, secondary operator surfaces, and connection-status Living Specs. PLAN-10 keeps `/autopilot` from idling by inventoring **Desktop shell chrome and Policies authoring depth** rows: Shell module navigation / hotkeys / status chrome, Policies Diff execute path, and Policies Move up/down reorder that today exist in UI (and partial unit coverage) but lack dedicated `Desktop*LivingSpecTests` beyond MVP workflow / DESK-POLICY-01 presence checks.
+PLAN-05…09 closed host-aligned panels, secondary operator surfaces, and connection-status Living Specs. PLAN-10 inventoried **Desktop shell chrome and Policies authoring depth** rows and delivered dedicated `Desktop*LivingSpecTests` for Shell navigation/hotkeys, Policies Diff, and Policies Move up/down reorder.
 
 ## Out of scope (do not seed)
 
@@ -20,7 +21,7 @@ PLAN-05…09 closed host-aligned panels, secondary operator surfaces, and connec
 |---------|---------------|-----|
 | Shell modules / hotkeys / status | `DesktopShellLivingSpecTests` + `DesktopMvpWorkflowsLivingSpecTests` Ac12 + DESK-CONN status | **DESK-SHELL-01 DONE** |
 | Policies Diff | `DesktopPoliciesDiffLivingSpecTests` + DESK-POLICY-01 presence + `PolicyDesktopServiceTests` | **DESK-DIFF-01 DONE** |
-| Policies Move up/down reorder | W6-09 product; unit tests | PLAN-10 (**DESK-REORDER-01** next) |
+| Policies Move up/down reorder | `DesktopPoliciesReorderLivingSpecTests` + W6-09 / `PoliciesViewModelTests` | **DESK-REORDER-01 DONE** |
 
 ## Ranked Desktop shell chrome & Policies authoring depth tranche
 
@@ -28,7 +29,7 @@ PLAN-05…09 closed host-aligned panels, secondary operator surfaces, and connec
 |------|----|-----|----------|-------|
 | 1 | **DESK-SHELL-01** | Shell SelectModule / HotKeys / chrome lacks dedicated Desktop Living Spec depth | `ShellViewModel` (`SelectModuleCommand`, `HotKeysText`, `Modules`, `StatusText`); `MainWindow.axaml` key bindings; `DesktopShellLivingSpecTests` | **W7-106 DONE** (#611) |
 | 2 | **DESK-DIFF-01** | Policies Diff execute path lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.DiffCommand`; `IPolicyPanelService.DiffAsync`; `DesktopPoliciesDiffLivingSpecTests` | **W7-108 DONE** (#614); seeded by **W7-107 DONE** (#612) |
-| 3 | **DESK-REORDER-01** | Policies Move up/down reorder lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.MoveRuleUpCommand` / `MoveRuleDownCommand`; `ReorderRulesInStageAsync` | **W7-110 OPEN** (#617); seeded by **W7-109 DONE** (#616) |
+| 3 | **DESK-REORDER-01** | Policies Move up/down reorder lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.MoveRuleUpCommand` / `MoveRuleDownCommand`; `ReorderRulesInStageAsync`; `DesktopPoliciesReorderLivingSpecTests` | **W7-110 DONE** (#617); seeded by **W7-109 DONE** (#616) |
 
 ## Dual track (unchanged)
 
@@ -36,6 +37,6 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-110 (#617)** — DESK-REORDER-01 Desktop Policies Move up/down Living Spec depth.
+**PLAN-10 COMPLETE.**
 
-**Successor seed after DESK-REORDER-01:** W7-111 (#620) — Seed next product tranche after PLAN-10 → PLAN-11.
+**§3.C NEXT = W7-111 (#620)** — Seed next product tranche after PLAN-10 → PLAN-11.
