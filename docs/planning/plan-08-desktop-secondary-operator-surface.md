@@ -19,9 +19,9 @@ PLAN-05…07 closed host-aligned Desktop Living Specs for Audit → Routing, Inc
 | Surface | Desktop today | Gap |
 |---------|---------------|-----|
 | Inventory tree / Add router submit | `DesktopInventoryLivingSpecTests` | Core MVP **DONE** |
-| Node VRRP validate / capture-all | command presence only in DESK-INVENTORY-01 Ac2/Ac5 | PLAN-08 |
+| Node VRRP validate / capture-all | `DesktopNodeLivingSpecTests` (DESK-NODE-01) | PLAN-08 **DONE** row |
 | Neighbor load / apply candidate | `DesktopNeighborLivingSpecTests` (DESK-NBR-01) | PLAN-08 **DONE** row |
-| Device connection probe | presence in DESK-INVENTORY-01 | PLAN-08 |
+| Device connection probe | `DesktopProbeLivingSpecTests` (DESK-PROBE-01) | PLAN-08 **DONE** row |
 | Policy safety analysis refresh | presence in DESK-POLICY-01 Ac2/Ac5 | PLAN-08 |
 
 ## Ranked Desktop secondary operator-surface tranche
@@ -30,8 +30,8 @@ PLAN-05…07 closed host-aligned Desktop Living Specs for Audit → Routing, Inc
 |------|----|-----|----------|-------|
 | 1 | **DESK-NODE-01** | Node VRRP pair validate/capture lacks dedicated Desktop Living Spec depth vs InventoryGrpcHost | `NodeDetailViewModel` (`ValidateVrrpPairCommand`, `CaptureAllMembersAndValidateCommand`); host: `InventoryGrpcHostTests` / `ValidateVrrpPairConsistency` | **W7-90 DONE** (#578) |
 | 2 | **DESK-NBR-01** | Neighbor candidate load/apply lacks dedicated Desktop Living Spec depth | `AddRouterWizardViewModel` (`LoadNeighborsCommand`, `ApplyNeighborCandidateCommand`); `ListNeighborCandidates` | **W7-92 DONE** (#582) |
-| 3 | **DESK-PROBE-01** | ValidateDeviceConnection probe path lacks dedicated Desktop Living Spec depth | `AddRouterWizardViewModel.ProbeCommand`; `ValidateDeviceConnection` | **W7-94 OPEN** (#586) |
-| 4 | **DESK-POLICY-02** | Policy safety analysis execute path lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.RefreshSafetyAnalysisCommand`; `GetDevicePolicySafetyAnalysis` | seed after DESK-PROBE-01 |
+| 3 | **DESK-PROBE-01** | ValidateDeviceConnection probe path lacks dedicated Desktop Living Spec depth | `AddRouterWizardViewModel.ProbeCommand`; `ValidateDeviceConnection` | **W7-94 DONE** (#586) |
+| 4 | **DESK-POLICY-02** | Policy safety analysis execute path lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.RefreshSafetyAnalysisCommand`; `GetDevicePolicySafetyAnalysis` | **W7-96 OPEN** (#590) |
 
 ## Dual track (unchanged)
 
@@ -39,4 +39,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-94 (#586)** — DESK-PROBE-01 Desktop ValidateDeviceConnection probe Living Spec depth.
+**§3.C NEXT = W7-95 (#589)** — Seed next PLAN-08 row after DESK-PROBE-01 → DESK-POLICY-02.
