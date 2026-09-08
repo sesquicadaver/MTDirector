@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-SUBMIT-01 Desktop Policies SubmitForReview (W7-114)
+
+Issue [#628](https://github.com/sesquicadaver/MTDirector/issues/628) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Client + panel SubmitForReview | `IPolicyServiceClient`, `IPolicyPanelService` | `DesktopPoliciesSubmitLivingSpecTests.Ac1WireAndPanelExposeSubmitForReviewAsync` |
+| SubmitCommand + revision surface | `PoliciesViewModel` | `Ac2ViewModelExposesSubmitCommandAndLoadedRevisionSurface` |
+| CanOperate + loaded revision | `SubmitAsync` source | `Ac3SubmitCommandGuardsOnCanOperateAndRequiresLoadedRevisionInSource` |
+| Panel delegates to client | `PolicyPanelService.SubmitForReviewAsync` | `Ac4PanelSubmitForReviewDelegatesToClientAndReturnsPanelState` |
+| MainWindow Submit binding | `MainWindow.axaml` | `Ac5MainWindowBindsPoliciesSubmitForReviewCommand` |
+| PLAN-11 + DESK-POLICY-01 presence | plan-11, DESK-POLICY-01 | `Ac6Plan11MatrixAndPriorDeskPolicy01SubmitPresenceRemainPresent` |
+| Docs / PLAN-11 lock | `plan-11-…`, `testing.md`, known-limitations | `CtDeskSubmit01DesktopPoliciesSubmitLivingSpecTests.Ac1DesktopPoliciesSubmitLivingSpecAndPlan11MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesSubmitLivingSpecTests|CtDeskSubmit01"`.
+
 ## Living Specification — PLAN-11 Desktop Policies review-compose lifecycle (W7-112)
 
 Issue [#625](https://github.com/sesquicadaver/MTDirector/issues/625) AC → module → tests:
