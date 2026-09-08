@@ -66,6 +66,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-103 Living Spec lock): **DESK-AUTH-01** — Desktop AuthenticationFailed/TlsError Living Spec (`DesktopAuthLivingSpecTests`); **PLAN-09 COMPLETE**; next product seed W7-104 → PLAN-10.
 - Intentional residual (W7-104 Living Spec lock): §3.C product tranche after PLAN-09 Desktop connection-status is seeded as **W7-105** — **PLAN-10** inventory next product Living Spec tranche after PLAN-09; not idle; not a lab stop-gate.
 - Intentional residual (W7-105 Living Spec lock): **PLAN-10** Desktop shell chrome & Policies authoring depth inventory is documented in [`plan-10-desktop-shell-policies-authoring-depth.md`](../planning/plan-10-desktop-shell-policies-authoring-depth.md); first atomic row **DESK-SHELL-01** (W7-106).
+- Intentional residual (W7-106 Living Spec lock): **DESK-SHELL-01** — Desktop Shell navigation/hotkeys Living Spec (`DesktopShellLivingSpecTests`); next PLAN-10 seed W7-107 → DESK-DIFF-01.
 
 ## Production wiring (P2 pilot)
 

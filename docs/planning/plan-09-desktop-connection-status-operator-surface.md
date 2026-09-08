@@ -38,6 +38,6 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 **Status:** PLAN-09 **COMPLETE** (DESK-CONN…DESK-AUTH).
 
-**§3.C NEXT = W7-106 (#611)** — DESK-SHELL-01 Desktop Shell navigation/hotkeys Living Spec depth (PLAN-10).
+**§3.C NEXT = W7-107 (#612)** — Seed next PLAN-10 row after DESK-SHELL-01 → DESK-DIFF-01.
 
-**Successor:** PLAN-10 inventory **DONE** (W7-105); first atomic row **DESK-SHELL-01** (W7-106).
+**Successor:** PLAN-10 inventory **DONE** (W7-105); **DESK-SHELL-01 DONE** (W7-106); next seed **W7-107** → DESK-DIFF-01.
