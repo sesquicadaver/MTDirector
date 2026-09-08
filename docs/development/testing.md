@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-AUTH-01 Desktop AuthenticationFailed/TlsError (W7-103)
+
+Issue [#604](https://github.com/sesquicadaver/MTDirector/issues/604) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Enum AuthenticationFailed / TlsError | `ControllerConnectionState` | `DesktopAuthLivingSpecTests.Ac1ConnectionStateExposesAuthenticationFailedAndTlsError` |
+| Formatter locks labels without actor | `DesktopConnectionStatusText` | `Ac2FormatterLocksAuthenticationFailedAndTlsErrorLabelsWithoutActor` |
+| Service maps Unauthenticated / TLS failures | `ControllerConnectionService` | `Ac3ControllerConnectionServiceMapsUnauthenticatedAndTlsFailures` |
+| Shell reconnect + LastError surface | `ShellViewModel` | `Ac4ShellCanReconnectFromAuthFailedOrTlsErrorAndSurfacesLastError` |
+| MainWindow status/error bindings | `MainWindow.axaml` | `Ac5MainWindowBindsStatusAndErrorForFailClosedAuthPath` |
+| Prior W7-12 + PLAN-09 matrix | W7-12 tests, plan-09 | `Ac6PriorW712LivingSpecAndPlan09MatrixRemainPresent` |
+| Docs / PLAN-09 COMPLETE lock | `plan-09-…`, `testing.md` | `CtDeskAuth01DesktopAuthLivingSpecTests.Ac1DesktopAuthLivingSpecAndPlan09MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopAuthLivingSpecTests|CtDeskAuth01"`.
+
 ## Living Specification — Product tranche seed after DESK-MTLS-01 (W7-102)
 
 Issue [#603](https://github.com/sesquicadaver/MTDirector/issues/603) AC → module → tests:
