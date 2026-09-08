@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-NODE-01 Desktop Node VRRP pair (W7-90)
+
+Issue [#578](https://github.com/sesquicadaver/MTDirector/issues/578) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Wire + Desktop Inventory VRRP RPC | `IInventoryTreeClient`, `GrpcInventoryTreeClient` | `DesktopNodeLivingSpecTests.Ac1WireAndDesktopClientExposeValidateVrrpPairConsistency` |
+| VRRP Validate/Capture commands + findings | `NodeDetailViewModel` | `Ac2NodeViewModelExposesVrrpValidateCaptureAndFindings` |
+| Validate loads findings when VRRP Node Connected | `NodeDetailViewModel` | `Ac3ValidateVrrpPairLoadsFindingsWhenVrrpNodeConnected` |
+| Validate requires VRRP Node + Connected | `NodeDetailViewModel` | `Ac4ValidateVrrpRequiresVrrpNodeAndConnectedController` |
+| MainWindow Node VRRP bindings | `MainWindow.axaml` | `Ac5MainWindowBindsNodeVrrpValidateCaptureAndFindings` |
+| Host + proto Inventory VRRP remain present | `InventoryGrpcHostTests`, `inventory.proto` | `Ac6HostAndProtoContractRemainPresentForInventoryVrrp` |
+| Docs / PLAN-08 matrix lock | `plan-08-desktop-secondary-operator-surface.md`, `testing.md` | `CtDeskNode01DesktopNodeLivingSpecTests.Ac1DesktopNodeLivingSpecAndPlan08MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopNodeLivingSpecTests|CtDeskNode01"`.
+
 ## Living Specification — PLAN-08 Desktop secondary operator-surface inventory (W7-89)
 
 Issue [#577](https://github.com/sesquicadaver/MTDirector/issues/577) AC → module → tests:
