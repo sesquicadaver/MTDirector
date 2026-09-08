@@ -11,7 +11,7 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 | P2 Pilot (RouterOS wiring) | read path **CLOSED** (P2-04…P2-06); write path **CLOSED** (P2-07…P2-11) |
 | Release | [`v0.2.0`](https://github.com/sesquicadaver/MTDirector/releases/tag/v0.2.0) (2026-08-24) |
 
-**Queue (§3.C):** **§3.C NEXT = W7-115 (#629)** — W7-113 ([#626](https://github.com/sesquicadaver/MTDirector/issues/626)) **DONE**; W7-114 ([#628](https://github.com/sesquicadaver/MTDirector/issues/628)) **DONE**; W7-112 ([#625](https://github.com/sesquicadaver/MTDirector/issues/625)) **DONE**; W7-111 ([#620](https://github.com/sesquicadaver/MTDirector/issues/620)) **DONE**; W7-110 ([#617](https://github.com/sesquicadaver/MTDirector/issues/617)) **DONE**; PLAN-10 **COMPLETE**; W7-109 ([#616](https://github.com/sesquicadaver/MTDirector/issues/616)) **DONE**; W7-108 ([#614](https://github.com/sesquicadaver/MTDirector/issues/614)) **DONE**; W7-107 ([#612](https://github.com/sesquicadaver/MTDirector/issues/612)) **DONE**; W7-106 ([#611](https://github.com/sesquicadaver/MTDirector/issues/611)) **DONE**; W7-105 ([#608](https://github.com/sesquicadaver/MTDirector/issues/608)) **DONE**; PLAN-10 inventory; PLAN-09 **COMPLETE**; PLAN-08 **COMPLETE**; PLAN-07 **COMPLETE**; PLAN-06 **COMPLETE**; PLAN-05 **COMPLETE**. [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md). Pilot (parallel): [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) (`Enabled` / `WriteEnabled`).  
+**Queue (§3.C):** **§3.C NEXT = W7-117 (#632)** — W7-113 ([#626](https://github.com/sesquicadaver/MTDirector/issues/626)) **DONE**; W7-114 ([#628](https://github.com/sesquicadaver/MTDirector/issues/628)) **DONE**; W7-112 ([#625](https://github.com/sesquicadaver/MTDirector/issues/625)) **DONE**; W7-111 ([#620](https://github.com/sesquicadaver/MTDirector/issues/620)) **DONE**; W7-110 ([#617](https://github.com/sesquicadaver/MTDirector/issues/617)) **DONE**; PLAN-10 **COMPLETE**; W7-109 ([#616](https://github.com/sesquicadaver/MTDirector/issues/616)) **DONE**; W7-108 ([#614](https://github.com/sesquicadaver/MTDirector/issues/614)) **DONE**; W7-107 ([#612](https://github.com/sesquicadaver/MTDirector/issues/612)) **DONE**; W7-106 ([#611](https://github.com/sesquicadaver/MTDirector/issues/611)) **DONE**; W7-105 ([#608](https://github.com/sesquicadaver/MTDirector/issues/608)) **DONE**; PLAN-10 inventory; PLAN-09 **COMPLETE**; PLAN-08 **COMPLETE**; PLAN-07 **COMPLETE**; PLAN-06 **COMPLETE**; PLAN-05 **COMPLETE**. [`docs/planning/continuous-queue-plan.md`](docs/planning/continuous-queue-plan.md). Pilot (parallel): [`docs/operations/pilot-runbook.md`](docs/operations/pilot-runbook.md) (`Enabled` / `WriteEnabled`).  
 **Alignment P0–P2 (2026-08-30…31):** Desktop W1–W4 / W2.1–W2.2 **DONE**. Add router ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)) remains the inventory registration path.
 
 Лінійна черга: [`ROADMAP.md`](ROADMAP.md) §3.C. Мапінг issues: [`ISSUES.md`](ISSUES.md).
@@ -61,7 +61,7 @@ M0 → M1 → M2 → M3 → M5 → M4 → M6 → MVP CLOSED
 → W5-01 (#342) → **DONE**
 → W5-02 (#343) → **DONE**
 → W5-03 (#344) → **DONE**
-→ **§3.C NEXT = W7-115 (#629)**
+→ **§3.C NEXT = W7-117 (#632)**
 ```
 
 ## Стек

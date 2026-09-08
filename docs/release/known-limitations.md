@@ -75,6 +75,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-112 Living Spec lock): **PLAN-11** Desktop Policies review-compose lifecycle inventory is documented in [`plan-11-desktop-policies-review-compose-lifecycle.md`](../planning/plan-11-desktop-policies-review-compose-lifecycle.md); first atomic row **DESK-SUBMIT-01** (W7-114).
 - Intentional residual (W7-114 Living Spec lock): **DESK-SUBMIT-01** — Desktop Policies SubmitForReview Living Spec (`DesktopPoliciesSubmitLivingSpecTests`); next PLAN-11 seed W7-113 → DESK-COMPOSE-01.
 - Intentional residual (W7-113 Living Spec lock): §3.C product row after DESK-SUBMIT-01 is seeded as **W7-115** — **DESK-COMPOSE-01** Desktop Policies Compose+RecordAnalysis Living Spec depth; not idle; not a lab stop-gate.
+- Intentional residual (W7-115 Living Spec lock): **DESK-COMPOSE-01** — Desktop Policies Compose+RecordAnalysis Living Spec (`DesktopPoliciesComposeLivingSpecTests`); next PLAN-11 seed W7-117 → DESK-GATE-01.
 
 ## Production wiring (P2 pilot)
 
