@@ -29,4 +29,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-122 (#643)** — PLAN-07 Inventory next product Living Spec tranche after PLAN-06.
+**§3.C NEXT = W7-123 (#644)** — PLAN-07 Inventory next product Living Spec tranche after PLAN-06.
