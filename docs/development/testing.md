@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-CONN-01 Desktop Connect/Disconnect (W7-99)
+
+Issue [#597](https://github.com/sesquicadaver/MTDirector/issues/597) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| IControllerConnectionService Connect/Disconnect/State | `IControllerConnectionService`, `ControllerConnectionService` | `DesktopConnectionLivingSpecTests.Ac1ControllerConnectionServiceContractExposesConnectDisconnectAndState` |
+| Shell Connect/Disconnect + status surface | `ShellViewModel` | `Ac2ShellExposesConnectDisconnectCommandsAndStatusSurface` |
+| StatusText formats all states + shell sync | `DesktopConnectionStatusText`, `ShellViewModel` | `Ac3StatusTextFormatsAllConnectionStatesAndShellSyncsFromService` |
+| CanConnect/CanDisconnect fail-closed | `ShellViewModel` | `Ac4ConnectDisconnectCanExecuteRulesAreFailClosed` |
+| MainWindow Connect/Disconnect/Status bindings | `MainWindow.axaml` | `Ac5MainWindowBindsConnectDisconnectAndStatus` |
+| Enum + prior status Living Specs + PLAN-09 | `ControllerConnectionState`, W7-08/W7-12, plan-09 | `Ac6ConnectionStateEnumAndPriorStatusLivingSpecsRemainPresent` |
+| Docs / PLAN-09 matrix lock | `plan-09-…`, `testing.md` | `CtDeskConn01DesktopConnectionLivingSpecTests.Ac1DesktopConnectionLivingSpecAndPlan09MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopConnectionLivingSpecTests|CtDeskConn01"`.
+
 ## Living Specification — PLAN-09 Desktop connection-status operator-surface (W7-98)
 
 Issue [#594](https://github.com/sesquicadaver/MTDirector/issues/594) AC → module → tests:
