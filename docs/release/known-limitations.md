@@ -52,6 +52,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-89 Living Spec lock): **PLAN-08** Desktop secondary operator-surface inventory is documented in [`plan-08-desktop-secondary-operator-surface.md`](../planning/plan-08-desktop-secondary-operator-surface.md); first atomic row **DESK-NODE-01** (W7-90).
 - Intentional residual (W7-90 Living Spec lock): **DESK-NODE-01** — Desktop Node VRRP pair Living Spec (`DesktopNodeLivingSpecTests`) vs InventoryGrpcHost ValidateVrrpPairConsistency; next PLAN-08 seed W7-91 → DESK-NBR-01.
 - Intentional residual (W7-91 Living Spec lock): §3.C product tranche after DESK-NODE-01 is seeded as **W7-92** — **DESK-NBR-01** Desktop Neighbor candidates Living Spec depth; not idle; not a lab stop-gate.
+- Intentional residual (W7-92 Living Spec lock): **DESK-NBR-01** — Desktop Neighbor candidates Living Spec (`DesktopNeighborLivingSpecTests`) vs ListNeighborCandidates; next PLAN-08 seed W7-93 → DESK-PROBE-01.
 
 ## Production wiring (P2 pilot)
 
