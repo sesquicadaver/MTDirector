@@ -47,4 +47,4 @@ After PLAN-07 **COMPLETE**, §3.C product seed **W7-88 DONE** advanced to **PLAN
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-91 (#580)** — DESK-NODE-01 Desktop Node VRRP pair Living Spec vs InventoryGrpcHost.
+**§3.C NEXT = W7-92 (#582)** — DESK-NODE-01 Desktop Node VRRP pair Living Spec vs InventoryGrpcHost.
