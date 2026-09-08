@@ -19,7 +19,7 @@ PLAN-05…10 closed host-aligned panels, secondary surfaces, connection-status, 
 | Surface | Desktop today | Gap |
 |---------|---------------|-----|
 | SubmitForReview | `DesktopPoliciesSubmitLivingSpecTests` + DESK-POLICY-01 presence | **DESK-SUBMIT-01 DONE** |
-| ComposeEffective + RecordAnalysisRun | presence / MVP Ac5; `ComposeCommand` / `RecordAnalysisCommand` | PLAN-11 |
+| ComposeEffective + RecordAnalysisRun | presence / MVP Ac5; `ComposeCommand` / `RecordAnalysisCommand` | PLAN-11 (**DESK-COMPOSE-01** next) |
 | Approve + Bind + CompileNodeFilterArtifacts | presence / MVP Ac5; `ApproveCommand` / `BindCommand` / `CompileCommand` | PLAN-11 |
 
 ## Ranked Desktop Policies review-compose lifecycle tranche
@@ -27,7 +27,7 @@ PLAN-05…10 closed host-aligned panels, secondary surfaces, connection-status, 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **DESK-SUBMIT-01** | SubmitForReview execute path lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.SubmitCommand`; `IPolicyPanelService.SubmitForReviewAsync`; `DesktopPoliciesSubmitLivingSpecTests` | **W7-114 DONE** (#628) |
-| 2 | **DESK-COMPOSE-01** | ComposeEffective + RecordAnalysisRun lacks dedicated Desktop Living Spec depth | `ComposeCommand` / `RecordAnalysisCommand`; `ComposeAsync` / `RecordAnalysisRunAsync` | seeded after DESK-SUBMIT-01 (**W7-113 OPEN** #626 → implement **W7-115** #629) |
+| 2 | **DESK-COMPOSE-01** | ComposeEffective + RecordAnalysisRun lacks dedicated Desktop Living Spec depth | `ComposeCommand` / `RecordAnalysisCommand`; `ComposeAsync` / `RecordAnalysisRunAsync` | **W7-115 OPEN** (#629); seeded by **W7-113 DONE** (#626) |
 | 3 | **DESK-GATE-01** | Approve / Bind / Compile gate path lacks dedicated Desktop Living Spec depth | `ApproveCommand` / `BindCommand` / `CompileCommand`; `ApproveAsync` / `BindAsync` / `CompileNodeFilterArtifactsAsync` | after DESK-COMPOSE-01 (**W7-117 OPEN** #632 → implement **W7-116** #630) |
 
 ## Dual track (unchanged)
@@ -36,4 +36,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-113 (#626)** — Seed next PLAN-11 row after DESK-SUBMIT-01 → DESK-COMPOSE-01.
+**§3.C NEXT = W7-115 (#629)** — DESK-COMPOSE-01 Desktop Policies Compose+RecordAnalysis Living Spec depth.
