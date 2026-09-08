@@ -9,6 +9,7 @@
 **PLAN-05 (Desktop operator-surface):** [`plan-05-desktop-operator-surface.md`](plan-05-desktop-operator-surface.md) **COMPLETE**  
 **PLAN-06 (Incident Desktop operator-surface):** [`plan-06-incident-desktop-operator-surface.md`](plan-06-incident-desktop-operator-surface.md) **COMPLETE**  
 **PLAN-07 (Core MVP Desktop operator-surface):** [`plan-07-core-mvp-desktop-operator-surface.md`](plan-07-core-mvp-desktop-operator-surface.md) **COMPLETE**
+**PLAN-08 (Desktop secondary operator-surface):** [`plan-08-desktop-secondary-operator-surface.md`](plan-08-desktop-secondary-operator-surface.md)
 
 This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle state **NEXT = none**.
 
@@ -159,7 +160,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Seed next PLAN-07 row after DESK-SNAPSHOT-01 → DESK-INVENTORY-01 | Docs / PLAN-07 | **W7-86 DONE** |
 | DESK-INVENTORY-01 — Desktop Inventory Living Spec vs InventoryGrpcHost | Docs / Desktop Living Spec | **W7-87 DONE** |
 | Seed next product tranche after PLAN-07 Core MVP Desktop | Docs / product seed | **W7-88 DONE** |
-| PLAN-08 — Inventory next Desktop secondary operator-surface Living Spec product tranche | Docs / PLAN-08 | **W7-89 OPEN** |
+| PLAN-08 — Inventory next Desktop secondary operator-surface Living Spec product tranche | Docs / PLAN-08 | **W7-89 DONE** |
+| DESK-NODE-01 — Desktop Node VRRP pair Living Spec vs InventoryGrpcHost | Docs / Desktop Living Spec | **W7-90 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -301,8 +303,9 @@ W7-85 DESK-SNAPSHOT-01 — Desktop Snapshot Living Spec vs SnapshotGrpcHost **DO
 W7-86 Seed next PLAN-07 row after DESK-SNAPSHOT-01 → DESK-INVENTORY-01 **DONE**
 W7-87 DESK-INVENTORY-01 — Desktop Inventory Living Spec vs InventoryGrpcHost **DONE**
 W7-88 Seed next product tranche after PLAN-07 Core MVP Desktop **DONE**
-W7-89 PLAN-08 — Inventory next Desktop secondary operator-surface Living Spec product tranche **OPEN**
-W7-90 Seed first PLAN-08 atomic row after PLAN-08 inventory **OPEN**
+W7-89 PLAN-08 — Inventory next Desktop secondary operator-surface Living Spec product tranche **DONE**
+W7-90 DESK-NODE-01 — Desktop Node VRRP pair Living Spec vs InventoryGrpcHost **OPEN**
+W7-91 Seed next PLAN-08 row after DESK-NODE-01 **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -430,10 +433,11 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 116 | W7-86 | [#570](https://github.com/sesquicadaver/MTDirector/issues/570) | Seed next PLAN-07 row after DESK-SNAPSHOT-01 → DESK-INVENTORY-01 | **DONE** |
 | 117 | W7-87 | [#572](https://github.com/sesquicadaver/MTDirector/issues/572) | DESK-INVENTORY-01 — Desktop Inventory Living Spec vs InventoryGrpcHost | **DONE** |
 | 118 | W7-88 | [#574](https://github.com/sesquicadaver/MTDirector/issues/574) | Seed next product tranche after PLAN-07 Core MVP Desktop | **DONE** |
-| 119 | W7-89 | [#577](https://github.com/sesquicadaver/MTDirector/issues/577) | PLAN-08 — Inventory next Desktop secondary operator-surface Living Spec product tranche | **OPEN** |
-| 120 | W7-90 | [#578](https://github.com/sesquicadaver/MTDirector/issues/578) | Seed first PLAN-08 atomic row after PLAN-08 inventory | **OPEN** |
+| 119 | W7-89 | [#577](https://github.com/sesquicadaver/MTDirector/issues/577) | PLAN-08 — Inventory next Desktop secondary operator-surface Living Spec product tranche | **DONE** |
+| 120 | W7-90 | [#578](https://github.com/sesquicadaver/MTDirector/issues/578) | DESK-NODE-01 — Desktop Node VRRP pair Living Spec vs InventoryGrpcHost | **OPEN** |
+| 121 | W7-91 | [#580](https://github.com/sesquicadaver/MTDirector/issues/580) | Seed next PLAN-08 row after DESK-NODE-01 | **OPEN** |
 
-**§3.C NEXT = W7-89 (#577)**. W7-88 **DONE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-90 (#578)**. W7-89 **DONE**; PLAN-07 **COMPLETE**; PLAN-08 inventory **DONE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

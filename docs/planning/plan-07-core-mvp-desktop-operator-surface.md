@@ -43,8 +43,8 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## Successor
 
-After PLAN-07 **COMPLETE**, §3.C product seed **W7-88 DONE** advances to **PLAN-08** inventory (**W7-89 OPEN**); first atomic row placeholder **W7-90**.
+After PLAN-07 **COMPLETE**, §3.C product seed **W7-88 DONE** advanced to **PLAN-08** inventory (**W7-89 DONE**); first atomic row **DESK-NODE-01** (**W7-90 OPEN**).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-89 (#577)** — PLAN-08 inventory next Desktop secondary operator-surface Living Spec product tranche.
+**§3.C NEXT = W7-90 (#578)** — DESK-NODE-01 Desktop Node VRRP pair Living Spec vs InventoryGrpcHost.
