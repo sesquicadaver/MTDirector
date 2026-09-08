@@ -18,7 +18,8 @@ public sealed class ProductTrancheSeedW7104LivingSpecTests
         Assert.Contains("PLAN-10", limitations, StringComparison.Ordinal);
         Assert.Contains("after PLAN-09", limitations, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("W7-105", roadmap, StringComparison.Ordinal);
-        Assert.Contains("PLAN-10 — Inventory next product Living Spec tranche after PLAN-09", roadmap, StringComparison.Ordinal);
+        Assert.Contains("PLAN-10", roadmap, StringComparison.Ordinal);
+        Assert.Contains("Desktop shell chrome", roadmap, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("W7-105", plan, StringComparison.Ordinal);
         Assert.Contains("PLAN-10", plan, StringComparison.Ordinal);
         Assert.Contains("COMPLETE", plan09, StringComparison.Ordinal);

@@ -772,6 +772,16 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — PLAN-10 Desktop shell chrome & Policies authoring depth (W7-105)
+
+Issue [#608](https://github.com/sesquicadaver/MTDirector/issues/608) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-10 inventory + DESK-SHELL-01 seed | `docs/planning/plan-10-desktop-shell-policies-authoring-depth.md`, `known-limitations.md`, ROADMAP, continuous plan, docs index | `Plan10DesktopShellPoliciesAuthoringDepthW7105LivingSpecTests.Ac1Plan10InventoryDocumentsRankedRowsAndSeedsDeskShell01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan10DesktopShellPoliciesAuthoringDepthW7105"`.
+
 ## Living Specification — Product tranche seed after PLAN-09 (W7-104)
 
 Issue [#607](https://github.com/sesquicadaver/MTDirector/issues/607) AC → module → tests:
