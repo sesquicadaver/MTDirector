@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-PROBE-01 Desktop ValidateDeviceConnection probe (W7-94)
+
+Issue [#586](https://github.com/sesquicadaver/MTDirector/issues/586) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Wire + Desktop ValidateDeviceConnection | `IInventoryTreeClient`, `GrpcInventoryTreeClient` | `DesktopProbeLivingSpecTests.Ac1WireAndDesktopClientExposeValidateDeviceConnection` |
+| Probe command + result surface | `AddRouterWizardViewModel` | `Ac2WizardExposesProbeCommandAndResultSurface` |
+| Probe shows identity/support/mutated without register | `AddRouterWizardViewModel` | `Ac3ProbeShowsIdentitySupportAndMutatedWithoutRegister` |
+| Probe requires Device + Connected | `AddRouterWizardViewModel` | `Ac4ProbeRequiresDeviceAndConnectedController` |
+| MainWindow Probe bindings | `MainWindow.axaml` | `Ac5MainWindowBindsProbeCommandAndResult` |
+| Host/proto ValidateDeviceConnection remain | `InventoryGrpcHostTests`, `inventory.proto` | `Ac6HostAndProtoContractRemainPresentForValidateDeviceConnection` |
+| Docs / PLAN-08 matrix lock | `plan-08-desktop-secondary-operator-surface.md`, `testing.md` | `CtDeskProbe01DesktopProbeLivingSpecTests.Ac1DesktopProbeLivingSpecAndPlan08MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopProbeLivingSpecTests|CtDeskProbe01"`.
+
 ## Living Specification — Product tranche seed after DESK-NBR-01 (W7-93)
 
 Issue [#585](https://github.com/sesquicadaver/MTDirector/issues/585) AC → module → tests:
