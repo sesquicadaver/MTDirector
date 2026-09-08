@@ -10,7 +10,7 @@
 **PLAN-06 (Incident Desktop operator-surface):** [`plan-06-incident-desktop-operator-surface.md`](plan-06-incident-desktop-operator-surface.md) **COMPLETE**  
 **PLAN-07 (Core MVP Desktop operator-surface):** [`plan-07-core-mvp-desktop-operator-surface.md`](plan-07-core-mvp-desktop-operator-surface.md) **COMPLETE**
 **PLAN-08 (Desktop secondary operator-surface):** [`plan-08-desktop-secondary-operator-surface.md`](plan-08-desktop-secondary-operator-surface.md) **COMPLETE**  
-**PLAN-09 (Desktop connection-status operator-surface):** [`plan-09-desktop-connection-status-operator-surface.md`](plan-09-desktop-connection-status-operator-surface.md)
+**PLAN-09 (Desktop connection-status operator-surface):** [`plan-09-desktop-connection-status-operator-surface.md`](plan-09-desktop-connection-status-operator-surface.md) **COMPLETE**
 
 This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle state **NEXT = none**.
 
@@ -175,7 +175,9 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Seed next PLAN-09 row after DESK-CONN-01 → DESK-MTLS-01 | Docs / PLAN-09 | **W7-100 DONE** |
 | DESK-MTLS-01 — Desktop mTLS actor status Living Spec depth | Docs / Desktop Living Spec | **W7-101 DONE** |
 | Seed next PLAN-09 row after DESK-MTLS-01 → DESK-AUTH-01 | Docs / PLAN-09 | **W7-102 DONE** |
-| DESK-AUTH-01 — Desktop AuthenticationFailed/TlsError Living Spec depth | Docs / Desktop Living Spec | **W7-103 OPEN** |
+| DESK-AUTH-01 — Desktop AuthenticationFailed/TlsError Living Spec depth | Docs / Desktop Living Spec | **W7-103 DONE** |
+| Seed next product tranche after PLAN-09 → PLAN-10 | Docs / product seed | **W7-104 OPEN** |
+| PLAN-10 — Inventory next product Living Spec tranche after PLAN-09 | Docs / PLAN-10 | **W7-105 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -331,7 +333,9 @@ W7-99 DESK-CONN-01 — Desktop Connect/Disconnect Living Spec depth **DONE**
 W7-100 Seed next PLAN-09 row after DESK-CONN-01 → DESK-MTLS-01 **DONE**
 W7-101 DESK-MTLS-01 — Desktop mTLS actor status Living Spec depth **DONE**
 W7-102 Seed next PLAN-09 row after DESK-MTLS-01 → DESK-AUTH-01 **DONE**
-W7-103 DESK-AUTH-01 — Desktop AuthenticationFailed/TlsError Living Spec depth **OPEN**
+W7-103 DESK-AUTH-01 — Desktop AuthenticationFailed/TlsError Living Spec depth **DONE**
+W7-104 Seed next product tranche after PLAN-09 → PLAN-10 **OPEN**
+W7-105 PLAN-10 — Inventory next product Living Spec tranche after PLAN-09 **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
 
@@ -473,9 +477,11 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 130 | W7-100 | [#598](https://github.com/sesquicadaver/MTDirector/issues/598) | Seed next PLAN-09 row after DESK-CONN-01 → DESK-MTLS-01 | **DONE** |
 | 131 | W7-101 | [#600](https://github.com/sesquicadaver/MTDirector/issues/600) | DESK-MTLS-01 — Desktop mTLS actor status Living Spec depth | **DONE** |
 | 132 | W7-102 | [#603](https://github.com/sesquicadaver/MTDirector/issues/603) | Seed next PLAN-09 row after DESK-MTLS-01 → DESK-AUTH-01 | **DONE** |
-| 133 | W7-103 | [#604](https://github.com/sesquicadaver/MTDirector/issues/604) | DESK-AUTH-01 — Desktop AuthenticationFailed/TlsError Living Spec depth | **OPEN** |
+| 133 | W7-103 | [#604](https://github.com/sesquicadaver/MTDirector/issues/604) | DESK-AUTH-01 — Desktop AuthenticationFailed/TlsError Living Spec depth | **DONE** |
+| 134 | W7-104 | [#607](https://github.com/sesquicadaver/MTDirector/issues/607) | Seed next product tranche after PLAN-09 → PLAN-10 | **OPEN** |
+| 135 | W7-105 | [#608](https://github.com/sesquicadaver/MTDirector/issues/608) | PLAN-10 — Inventory next product Living Spec tranche after PLAN-09 | **OPEN** |
 
-**§3.C NEXT = W7-103 (#604)**. W7-102 **DONE**; PLAN-08 **COMPLETE**; PLAN-09 inventory **DONE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-104 (#607)**. W7-103 **DONE**; PLAN-09 **COMPLETE**; PLAN-08 **COMPLETE**; PLAN-09 inventory **DONE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

@@ -20,8 +20,7 @@ PLAN-05…08 closed host-aligned and secondary Desktop Living Specs for operator
 |---------|---------------|-----|
 | Connect / Disconnect / state machine | `DesktopConnectionLivingSpecTests` (DESK-CONN-01) | PLAN-09 **DONE** row |
 | mTLS actor on Connected status | `DesktopMtlsActorLivingSpecTests` (DESK-MTLS-01) | PLAN-09 **DONE** row |
-| AuthenticationFailed status | `DesktopConnectionStatusAuthFailedW712LivingSpecTests` residual | PLAN-09 |
-| TlsError status | enum + format path; no dedicated DESK-* Living Spec | PLAN-09 |
+| AuthenticationFailed / TlsError status | `DesktopAuthLivingSpecTests` (DESK-AUTH-01) | PLAN-09 **DONE** row |
 
 ## Ranked Desktop connection-status operator-surface tranche
 
@@ -29,7 +28,7 @@ PLAN-05…08 closed host-aligned and secondary Desktop Living Specs for operator
 |------|----|-----|----------|-------|
 | 1 | **DESK-CONN-01** | Connect/Disconnect + status shell lacks dedicated Desktop Living Spec depth vs `IControllerConnectionService` | `ShellViewModel` Connect/Disconnect; `DesktopConnectionStatusText`; `IControllerConnectionService` | **W7-99 DONE** (#597) |
 | 2 | **DESK-MTLS-01** | Connected status mTLS actor presentation lacks dedicated DESK-* Living Spec beyond W7-08 residual | `DesktopGrpcActorResolver`; `DesktopConnectionStatusText.Format` actor suffix | **W7-101 DONE** (#600) |
-| 3 | **DESK-AUTH-01** | AuthenticationFailed / TlsError fail-closed status lacks dedicated DESK-* Living Spec beyond W7-12 residual | `ControllerConnectionState.AuthenticationFailed` / `TlsError`; status bindings | **W7-103 OPEN** (#604) |
+| 3 | **DESK-AUTH-01** | AuthenticationFailed / TlsError fail-closed status lacks dedicated DESK-* Living Spec beyond W7-12 residual | `ControllerConnectionState.AuthenticationFailed` / `TlsError`; status bindings | **W7-103 DONE** (#604) |
 
 ## Dual track (unchanged)
 
@@ -37,4 +36,8 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-103 (#604)** — DESK-AUTH-01 Desktop AuthenticationFailed/TlsError Living Spec depth.
+**Status:** PLAN-09 **COMPLETE** (DESK-CONN…DESK-AUTH).
+
+**§3.C NEXT = W7-104 (#607)** — Seed next product tranche after PLAN-09 → PLAN-10.
+
+**Successor:** W7-104 / W7-105 PLAN-10 inventory.

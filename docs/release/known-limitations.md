@@ -63,6 +63,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-100 Living Spec lock): §3.C product tranche after DESK-CONN-01 is seeded as **W7-101** — **DESK-MTLS-01** Desktop mTLS actor status Living Spec depth; not idle; not a lab stop-gate.
 - Intentional residual (W7-101 Living Spec lock): **DESK-MTLS-01** — Desktop mTLS actor status Living Spec (`DesktopMtlsActorLivingSpecTests`) vs DesktopGrpcActorResolver / Connected status; next PLAN-09 seed W7-102 → DESK-AUTH-01.
 - Intentional residual (W7-102 Living Spec lock): §3.C product tranche after DESK-MTLS-01 is seeded as **W7-103** — **DESK-AUTH-01** Desktop AuthenticationFailed/TlsError Living Spec depth; not idle; not a lab stop-gate.
+- Intentional residual (W7-103 Living Spec lock): **DESK-AUTH-01** — Desktop AuthenticationFailed/TlsError Living Spec (`DesktopAuthLivingSpecTests`); **PLAN-09 COMPLETE**; next product seed W7-104 → PLAN-10.
 
 ## Production wiring (P2 pilot)
 
