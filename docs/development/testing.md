@@ -772,6 +772,16 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — Product tranche seed after DESK-SNAPSHOT-01 (W7-86)
+
+Issue [#570](https://github.com/sesquicadaver/MTDirector/issues/570) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-INVENTORY-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md`, `plan-07-core-mvp-desktop-operator-surface.md` | `ProductTrancheSeedW786LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskInventory01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW786"`.
+
 ## Living Specification — DESK-SNAPSHOT-01 Desktop Snapshot panel (W7-85)
 
 Issue [#568](https://github.com/sesquicadaver/MTDirector/issues/568) AC → module → tests:
