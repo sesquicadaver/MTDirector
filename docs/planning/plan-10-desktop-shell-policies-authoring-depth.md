@@ -39,6 +39,8 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 **PLAN-10 COMPLETE.**
 
-**§3.C NEXT = W7-112 (#625)** — PLAN-11 Inventory next Desktop Policies review-compose lifecycle Living Spec product tranche.
+See PLAN-11: [`plan-11-desktop-policies-review-compose-lifecycle.md`](plan-11-desktop-policies-review-compose-lifecycle.md).
 
-**Successor:** PLAN-11 inventory **OPEN** (W7-112); product seed W7-111 **DONE**.
+**§3.C NEXT = W7-114 (#628)** — DESK-SUBMIT-01 Desktop Policies SubmitForReview Living Spec depth (PLAN-11).
+
+**Successor:** PLAN-11 inventory **DONE** (W7-112); first atomic row **DESK-SUBMIT-01** (W7-114).

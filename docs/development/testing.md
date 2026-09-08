@@ -772,6 +772,16 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — PLAN-11 Desktop Policies review-compose lifecycle (W7-112)
+
+Issue [#625](https://github.com/sesquicadaver/MTDirector/issues/625) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-11 inventory + DESK-SUBMIT-01 seed | `docs/planning/plan-11-desktop-policies-review-compose-lifecycle.md`, `known-limitations.md`, ROADMAP, continuous plan, docs index | `Plan11DesktopPoliciesReviewComposeLifecycleW7112LivingSpecTests.Ac1Plan11InventoryDocumentsRankedRowsAndSeedsDeskSubmit01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan11DesktopPoliciesReviewComposeLifecycleW7112"`.
+
 ## Living Specification — Product tranche seed after PLAN-10 (W7-111)
 
 Issue [#620](https://github.com/sesquicadaver/MTDirector/issues/620) AC → module → tests:
