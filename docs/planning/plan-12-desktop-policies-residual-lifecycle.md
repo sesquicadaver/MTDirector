@@ -19,7 +19,7 @@ PLAN-05…11 closed host-aligned panels through review-compose gates. PLAN-12 in
 | Surface | Desktop today | Gap |
 |---------|---------------|-----|
 | AcknowledgeWarning | `DesktopPoliciesAcknowledgeLivingSpecTests` + MVP / DESK-POLICY-01 presence | **DESK-ACK-01 DONE** |
-| Create draft / Load revision | `CreateDraftCommand` / `LoadCommand`; panel Create/Load | PLAN-12 |
+| Create draft / Load revision | `CreateDraftCommand` / `LoadCommand`; panel Create/Load | **DESK-DRAFT-01** (seeded; implement W7-122) |
 | Catalog refresh | `RefreshCatalogCommand` / `ListPolicies` catalog surface | PLAN-12 |
 
 ## Ranked Desktop Policies residual lifecycle tranche
@@ -27,7 +27,7 @@ PLAN-05…11 closed host-aligned panels through review-compose gates. PLAN-12 in
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **DESK-ACK-01** | AcknowledgeWarning execute path lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.AcknowledgeWarningCommand`; `IPolicyPanelService.AcknowledgeWarningAsync`; `IPolicyServiceClient.AcknowledgeWarningAsync`; `DesktopPoliciesAcknowledgeLivingSpecTests` | **W7-120 DONE** (#641); seeded by inventory |
-| 2 | **DESK-DRAFT-01** | Create draft / Load revision lacks dedicated Desktop Living Spec depth | `CreateDraftCommand` / `LoadCommand`; `CreateDraftAsync` / `LoadRevisionAsync` | seeded after DESK-ACK-01 (**W7-121 OPEN** #642 → implement **W7-122** #643) |
+| 2 | **DESK-DRAFT-01** | Create draft / Load revision lacks dedicated Desktop Living Spec depth | `CreateDraftCommand` / `LoadCommand`; `CreateDraftAsync` / `LoadRevisionAsync` | seeded by **W7-121 DONE** (#642) → implement **W7-122 OPEN** (#643) |
 | 3 | **DESK-CATALOG-01** | Catalog refresh / list path lacks dedicated Desktop Living Spec depth | `RefreshCatalogCommand`; `ListPolicies` / catalog reload surface | seeded after DESK-DRAFT-01 (**W7-123 OPEN** #644 → implement **W7-124** #645) |
 
 ## Dual track (unchanged)
@@ -36,4 +36,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-121 (#642)** — Seed next PLAN-12 row after DESK-ACK-01 → DESK-DRAFT-01.
+**§3.C NEXT = W7-122 (#643)** — DESK-DRAFT-01 Desktop Policies Create/Load draft Living Spec depth.
