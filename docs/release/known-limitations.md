@@ -60,6 +60,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-97 Living Spec lock): §3.C product tranche after PLAN-08 Desktop secondary operator-surface is seeded as **W7-98** — **PLAN-09** inventory next Desktop connection-status operator-surface Living Spec product tranche after PLAN-08; not idle; not a lab stop-gate.
 - Intentional residual (W7-98 Living Spec lock): **PLAN-09** Desktop connection-status operator-surface inventory is documented in [`plan-09-desktop-connection-status-operator-surface.md`](../planning/plan-09-desktop-connection-status-operator-surface.md); first atomic row **DESK-CONN-01** (W7-99).
 - Intentional residual (W7-99 Living Spec lock): **DESK-CONN-01** — Desktop Connect/Disconnect Living Spec (`DesktopConnectionLivingSpecTests`) vs IControllerConnectionService / shell status; next PLAN-09 seed W7-100 → DESK-MTLS-01.
+- Intentional residual (W7-100 Living Spec lock): §3.C product tranche after DESK-CONN-01 is seeded as **W7-101** — **DESK-MTLS-01** Desktop mTLS actor status Living Spec depth; not idle; not a lab stop-gate.
 
 ## Production wiring (P2 pilot)
 
