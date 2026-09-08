@@ -37,4 +37,8 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**PLAN-11 COMPLETE.** **§3.C NEXT = W7-118 (#637)** — Seed next product tranche after PLAN-11 → PLAN-12.
+**PLAN-11 COMPLETE.**
+
+**§3.C NEXT = W7-119 (#638)** — PLAN-12 Inventory next Desktop Policies residual lifecycle Living Spec product tranche.
+
+**Successor:** PLAN-12 inventory **OPEN** (W7-119); product seed **W7-118 DONE**.
