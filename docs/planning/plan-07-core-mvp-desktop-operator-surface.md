@@ -24,7 +24,7 @@ PLAN-05 closed dedicated Desktop Living Specs for Audit → Routing and deferred
 | DeploymentService | `DeploymentGrpcHostTests` / CT-DEPLOY-01 | `DesktopDeploymentLivingSpecTests` (DESK-DEPLOY-01) | PLAN-07 **DONE** row |
 | OnboardingService | `OnboardingGrpcHostTests` | `DesktopOnboardingLivingSpecTests` (DESK-ONBOARD-01) | PLAN-07 **DONE** row |
 | SnapshotService | `SnapshotGrpcHostTests` | `DesktopSnapshotLivingSpecTests` (DESK-SNAPSHOT-01) | PLAN-07 **DONE** row |
-| InventoryService | `InventoryGrpcHostTests` | MVP Ac2/Ac3; **no** `DesktopInventoryLivingSpecTests` | PLAN-07 |
+| InventoryService | `InventoryGrpcHostTests` | `DesktopInventoryLivingSpecTests` (DESK-INVENTORY-01) | PLAN-07 **DONE** row |
 
 ## Ranked Core MVP Desktop operator-surface tranche
 
@@ -34,7 +34,7 @@ PLAN-05 closed dedicated Desktop Living Specs for Audit → Routing and deferred
 | 2 | **DESK-DEPLOY-01** | Deployment operator path lacks dedicated Desktop Living Spec vs DeploymentGrpcHost | `DeploymentViewModel`, `GrpcDeploymentServiceClient`; host: `DeploymentGrpcHostTests` | **W7-81 DONE** (#560) |
 | 3 | **DESK-ONBOARD-01** | Onboarding Start/Watch/Rollback lacks dedicated Desktop Living Spec vs OnboardingGrpcHost | `OnboardingViewModel`, `GrpcOnboardingServiceClient`; host: `OnboardingGrpcHostTests` | **W7-83 DONE** (#564) |
 | 4 | **DESK-SNAPSHOT-01** | Snapshot capture/compare lacks dedicated Desktop Living Spec vs SnapshotGrpcHost | `SnapshotViewerViewModel` / `SnapshotDiffViewModel`; host: `SnapshotGrpcHostTests` | **W7-85 DONE** (#568) |
-| 5 | **DESK-INVENTORY-01** | Inventory tree / Add router / Node lacks dedicated Desktop Living Spec vs InventoryGrpcHost | `InventoryTreeViewModel`, `AddRouterWizardViewModel`, `NodeDetailViewModel`; host: `InventoryGrpcHostTests` | **W7-87 OPEN** (#572) |
+| 5 | **DESK-INVENTORY-01** | Inventory tree / Add router / Node lacks dedicated Desktop Living Spec vs InventoryGrpcHost | `InventoryTreeViewModel`, `AddRouterWizardViewModel`, `NodeDetailViewModel`; host: `InventoryGrpcHostTests` | **W7-87 DONE** (#572) |
 
 ## Dual track (unchanged)
 
@@ -42,4 +42,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-87 (#572)** — DESK-INVENTORY-01 Desktop Inventory Living Spec vs InventoryGrpcHost.
+**§3.C NEXT = W7-88 (#574)** — Seed next product tranche after PLAN-07 Core MVP Desktop (all DESK-* rows DONE).

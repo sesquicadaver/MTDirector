@@ -157,7 +157,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Seed next PLAN-07 row after DESK-ONBOARD-01 → DESK-SNAPSHOT-01 | Docs / PLAN-07 | **W7-84 DONE** |
 | DESK-SNAPSHOT-01 — Desktop Snapshot Living Spec vs SnapshotGrpcHost | Docs / Desktop Living Spec | **W7-85 DONE** |
 | Seed next PLAN-07 row after DESK-SNAPSHOT-01 → DESK-INVENTORY-01 | Docs / PLAN-07 | **W7-86 DONE** |
-| DESK-INVENTORY-01 — Desktop Inventory Living Spec vs InventoryGrpcHost | Docs / Desktop Living Spec | **W7-87 OPEN** |
+| DESK-INVENTORY-01 — Desktop Inventory Living Spec vs InventoryGrpcHost | Docs / Desktop Living Spec | **W7-87 DONE** |
 
 ### P3 / new Contracts (evidence)
 
@@ -297,7 +297,7 @@ W7-83 DESK-ONBOARD-01 — Desktop Onboarding Living Spec vs OnboardingGrpcHost *
 W7-84 Seed next PLAN-07 row after DESK-ONBOARD-01 → DESK-SNAPSHOT-01 **DONE**
 W7-85 DESK-SNAPSHOT-01 — Desktop Snapshot Living Spec vs SnapshotGrpcHost **DONE**
 W7-86 Seed next PLAN-07 row after DESK-SNAPSHOT-01 → DESK-INVENTORY-01 **DONE**
-W7-87 DESK-INVENTORY-01 — Desktop Inventory Living Spec vs InventoryGrpcHost **OPEN**
+W7-87 DESK-INVENTORY-01 — Desktop Inventory Living Spec vs InventoryGrpcHost **DONE**
 W7-88 Seed next product tranche after PLAN-07 Core MVP Desktop **OPEN**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
@@ -424,10 +424,10 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 114 | W7-84 | [#566](https://github.com/sesquicadaver/MTDirector/issues/566) | Seed next PLAN-07 row after DESK-ONBOARD-01 → DESK-SNAPSHOT-01 | **DONE** |
 | 115 | W7-85 | [#568](https://github.com/sesquicadaver/MTDirector/issues/568) | DESK-SNAPSHOT-01 — Desktop Snapshot Living Spec vs SnapshotGrpcHost | **DONE** |
 | 116 | W7-86 | [#570](https://github.com/sesquicadaver/MTDirector/issues/570) | Seed next PLAN-07 row after DESK-SNAPSHOT-01 → DESK-INVENTORY-01 | **DONE** |
-| 117 | W7-87 | [#572](https://github.com/sesquicadaver/MTDirector/issues/572) | DESK-INVENTORY-01 — Desktop Inventory Living Spec vs InventoryGrpcHost | **OPEN** |
+| 117 | W7-87 | [#572](https://github.com/sesquicadaver/MTDirector/issues/572) | DESK-INVENTORY-01 — Desktop Inventory Living Spec vs InventoryGrpcHost | **DONE** |
 | 118 | W7-88 | [#574](https://github.com/sesquicadaver/MTDirector/issues/574) | Seed next product tranche after PLAN-07 Core MVP Desktop | **OPEN** |
 
-**§3.C NEXT = W7-87 (#572)**. W7-86 **DONE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-88 (#574)**. W7-87 **DONE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 

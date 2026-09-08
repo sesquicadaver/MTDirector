@@ -47,6 +47,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-84 Living Spec lock): §3.C product tranche after DESK-ONBOARD-01 is seeded as **W7-85** — **DESK-SNAPSHOT-01** Desktop Snapshot Living Spec vs SnapshotGrpcHost; not idle; not a lab stop-gate.
 - Intentional residual (W7-85 Living Spec lock): **DESK-SNAPSHOT-01** — Desktop Snapshot Living Spec (`DesktopSnapshotLivingSpecTests`) vs SnapshotGrpcHost; next PLAN-07 seed W7-86 → DESK-INVENTORY-01.
 - Intentional residual (W7-86 Living Spec lock): §3.C product tranche after DESK-SNAPSHOT-01 is seeded as **W7-87** — **DESK-INVENTORY-01** Desktop Inventory Living Spec vs InventoryGrpcHost; not idle; not a lab stop-gate.
+- Intentional residual (W7-87 Living Spec lock): **DESK-INVENTORY-01** — Desktop Inventory Living Spec (`DesktopInventoryLivingSpecTests`) vs InventoryGrpcHost; next product seed W7-88 after PLAN-07 Core MVP Desktop.
 
 ## Production wiring (P2 pilot)
 

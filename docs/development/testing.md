@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-INVENTORY-01 Desktop Inventory surface (W7-87)
+
+Issue [#572](https://github.com/sesquicadaver/MTDirector/issues/572) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Wire + Desktop Inventory client | `IInventoryTreeClient`, `GrpcInventoryTreeClient` | `DesktopInventoryLivingSpecTests.Ac1WireAndDesktopClientExposeTreeWizardAndNodeWorkflowRpcs` |
+| Refresh / Submit / Probe / Neighbors / Node Refresh | `InventoryTreeViewModel`, `AddRouterWizardViewModel`, `NodeDetailViewModel` | `Ac2ViewModelsExposeRefreshSubmitProbeNeighborsAndNodeRefresh` |
+| Refresh loads Site→Node→Device when Connected | `InventoryTreeViewModel` | `Ac3RefreshLoadsSiteNodeDeviceTreeWhenConnected` |
+| Refresh/Submit require Connected | `InventoryTreeViewModel`, `AddRouterWizardViewModel` | `Ac4RefreshAndSubmitRequireConnectedController` |
+| MainWindow Inventory + AddRouter + Node bindings | `MainWindow.axaml` | `Ac5MainWindowBindsInventoryTreeAddRouterAndNodeRefresh` |
+| Host InventoryGrpcHost remains present | `InventoryGrpcHostTests` | `Ac6HostContractLivingSpecRemainsPresent` |
+| Docs / PLAN-07 matrix lock | `plan-07-core-mvp-desktop-operator-surface.md`, `testing.md` | `CtDeskInventory01DesktopInventoryLivingSpecTests.Ac1DesktopInventoryLivingSpecAndPlan07MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryLivingSpecTests|CtDeskInventory01"`.
+
 ## Living Specification — Product tranche seed after DESK-SNAPSHOT-01 (W7-86)
 
 Issue [#570](https://github.com/sesquicadaver/MTDirector/issues/570) AC → module → tests:

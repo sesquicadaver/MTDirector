@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-87** ([#572](https://github.com/sesquicadaver/MTDirector/issues/572)): DESK-INVENTORY-01 Desktop Inventory Living Spec (`DesktopInventoryLivingSpecTests`) vs InventoryGrpcHost. **§3.C NEXT = W7-88 (#574)**.
 - **W7-86** ([#570](https://github.com/sesquicadaver/MTDirector/issues/570)): Seed next PLAN-07 row after DESK-SNAPSHOT-01 → **DESK-INVENTORY-01** (W7-87). Seeded W7-87 (#572) / W7-88 (#574). **§3.C NEXT = W7-87 (#572)**.
 - **W7-85** ([#568](https://github.com/sesquicadaver/MTDirector/issues/568)): DESK-SNAPSHOT-01 Desktop Snapshot Living Spec (`DesktopSnapshotLivingSpecTests`) vs SnapshotGrpcHost. Seeded W7-86 (#570) / W7-87 (#572). **§3.C NEXT = W7-86 (#570)**.
 - **W7-84** ([#566](https://github.com/sesquicadaver/MTDirector/issues/566)): Seed next PLAN-07 row after DESK-ONBOARD-01 → **DESK-SNAPSHOT-01** (W7-85). Seeded W7-85 (#568) / W7-86 (#570). **§3.C NEXT = W7-85 (#568)**.
