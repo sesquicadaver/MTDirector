@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-GATE-01 Desktop Policies Approve/Bind/Compile (W7-116)
+
+Issue [#630](https://github.com/sesquicadaver/MTDirector/issues/630) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Client + panel Approve/Bind/Compile | `IPolicyServiceClient`, `IPolicyPanelService` | `DesktopPoliciesGateLivingSpecTests.Ac1WireAndPanelExposeApproveBindAndCompileApis` |
+| Gate commands + surface | `PoliciesViewModel` | `Ac2ViewModelExposesApproveBindCompileCommandsAndSurface` |
+| Approve analysis-run guards | `ApproveAsync` source | `Ac3ApproveCommandRequiresAnalysisRunAndCallsPanelInSource` |
+| Bind + Compile guards | `BindAsync` / `CompileAsync` source | `Ac4BindAndCompileCommandsGuardAndCallPanelInSource` |
+| Panel delegates without local engine | `PolicyPanelService` | `Ac5PanelApproveBindCompileDelegateToClientWithoutLocalSemanticEngine` |
+| MainWindow + PLAN-11 + prior presence | `MainWindow.axaml`, plan-11, DESK-POLICY-01, MVP | `Ac6MainWindowBindsGateCommandsAndPlan11MatrixRemainPresent` |
+| Docs / PLAN-11 COMPLETE lock | `plan-11-…`, `testing.md`, known-limitations | `CtDeskGate01DesktopPoliciesGateLivingSpecTests.Ac1DesktopPoliciesGateLivingSpecAndPlan11MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesGateLivingSpecTests|CtDeskGate01"`.
+
 ## Living Specification — Product tranche seed after DESK-COMPOSE-01 (W7-117)
 
 Issue [#632](https://github.com/sesquicadaver/MTDirector/issues/632) AC → module → tests:

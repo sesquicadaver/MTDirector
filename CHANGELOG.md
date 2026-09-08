@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-116** ([#630](https://github.com/sesquicadaver/MTDirector/issues/630)): DESK-GATE-01 Desktop Policies Approve/Bind/Compile Living Spec (`DesktopPoliciesGateLivingSpecTests`); **PLAN-11 COMPLETE**. Seeded W7-118 (#637) / W7-119 (#638). **§3.C NEXT = W7-118 (#637)**.
 - **W7-117** ([#632](https://github.com/sesquicadaver/MTDirector/issues/632)): Seed next PLAN-11 row after DESK-COMPOSE-01 → **DESK-GATE-01** (W7-116). **§3.C NEXT = W7-116 (#630)**.
 - **W7-115** ([#629](https://github.com/sesquicadaver/MTDirector/issues/629)): DESK-COMPOSE-01 Desktop Policies Compose+RecordAnalysis Living Spec (`DesktopPoliciesComposeLivingSpecTests`). Seeded W7-117 (#632) / W7-116 (#630). **§3.C NEXT = W7-117 (#632)**.
 - **W7-113** ([#626](https://github.com/sesquicadaver/MTDirector/issues/626)): Seed next PLAN-11 row after DESK-SUBMIT-01 → **DESK-COMPOSE-01** (W7-115). **§3.C NEXT = W7-115 (#629)**.
