@@ -11,7 +11,7 @@ PLAN-05…10 closed host-aligned panels, secondary surfaces, connection-status, 
 
 - Lab / CHR / physical CRS / `WriteEnabled` flip — ops-parallel, not §3 stop-gates  
 - Anti-goals: local Desktop `SemanticDiffEngine`, auto-fix drift, fake VRRP roles, Policies “Save and Deploy” outside MVP scope lock  
-- Replacing DESK-POLICY-01 / DESK-POLICY-02 / DESK-DIFF-01 / DESK-REORDER-01 completed Living Specs  
+- Replacing DESK-POLICY-01 / DESK-POLICY-02 / DESK-DIFF-01 / DESK-REORDER-01 / DESK-SUBMIT-01 / DESK-COMPOSE-01 completed Living Specs  
 - Controller-only policy proto contract rows (already PLAN-04 / CT-*)
 
 ## Evidence baseline (review-compose lifecycle)
@@ -20,7 +20,7 @@ PLAN-05…10 closed host-aligned panels, secondary surfaces, connection-status, 
 |---------|---------------|-----|
 | SubmitForReview | `DesktopPoliciesSubmitLivingSpecTests` + DESK-POLICY-01 presence | **DESK-SUBMIT-01 DONE** |
 | ComposeEffective + RecordAnalysisRun | `DesktopPoliciesComposeLivingSpecTests` + MVP Ac5 | **DESK-COMPOSE-01 DONE** |
-| Approve + Bind + CompileNodeFilterArtifacts | presence / MVP Ac5; `ApproveCommand` / `BindCommand` / `CompileCommand` | PLAN-11 |
+| Approve + Bind + CompileNodeFilterArtifacts | presence / MVP Ac5; `ApproveCommand` / `BindCommand` / `CompileCommand` | **DESK-GATE-01** (seeded; implement W7-116) |
 
 ## Ranked Desktop Policies review-compose lifecycle tranche
 
@@ -28,7 +28,7 @@ PLAN-05…10 closed host-aligned panels, secondary surfaces, connection-status, 
 |------|----|-----|----------|-------|
 | 1 | **DESK-SUBMIT-01** | SubmitForReview execute path lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.SubmitCommand`; `IPolicyPanelService.SubmitForReviewAsync`; `DesktopPoliciesSubmitLivingSpecTests` | **W7-114 DONE** (#628) |
 | 2 | **DESK-COMPOSE-01** | ComposeEffective + RecordAnalysisRun lacks dedicated Desktop Living Spec depth | `ComposeCommand` / `RecordAnalysisCommand`; `ComposeAsync` / `RecordAnalysisRunAsync`; `DesktopPoliciesComposeLivingSpecTests` | **W7-115 DONE** (#629); seeded by **W7-113 DONE** (#626) |
-| 3 | **DESK-GATE-01** | Approve / Bind / Compile gate path lacks dedicated Desktop Living Spec depth | `ApproveCommand` / `BindCommand` / `CompileCommand`; `ApproveAsync` / `BindAsync` / `CompileNodeFilterArtifactsAsync` | seeded after DESK-COMPOSE-01 (**W7-117 OPEN** #632 → implement **W7-116** #630) |
+| 3 | **DESK-GATE-01** | Approve / Bind / Compile gate path lacks dedicated Desktop Living Spec depth | `ApproveCommand` / `BindCommand` / `CompileCommand`; `ApproveAsync` / `BindAsync` / `CompileNodeFilterArtifactsAsync` | seeded by **W7-117 DONE** (#632) → implement **W7-116 OPEN** (#630) |
 
 ## Dual track (unchanged)
 
@@ -36,4 +36,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-117 (#632)** — Seed next PLAN-11 row after DESK-COMPOSE-01 → DESK-GATE-01.
+**§3.C NEXT = W7-116 (#630)** — DESK-GATE-01 Desktop Policies Approve/Bind/Compile Living Spec depth.
