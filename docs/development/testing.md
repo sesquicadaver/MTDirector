@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-POLICY-02 Desktop Policy safety analysis (W7-96)
+
+Issue [#590](https://github.com/sesquicadaver/MTDirector/issues/590) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Wire + Desktop GetDevicePolicySafetyAnalysis | `IPolicyServiceClient`, `IPolicyPanelService`, `GrpcPolicyServiceClient` | `DesktopPolicySafetyLivingSpecTests.Ac1WireAndDesktopClientExposeGetDevicePolicySafetyAnalysis` |
+| RefreshSafetyAnalysis + result surface | `PoliciesViewModel` | `Ac2ViewModelExposesRefreshSafetyAnalysisCommandAndResultSurface` |
+| Refresh binds hashes/flags/findings/witnesses | `PoliciesViewModel` | `Ac3RefreshSafetyAnalysisBindsHashesFlagsFindingsAndWitnesses` |
+| Requires device UUID + CIDR prefixes + Connected | `PoliciesViewModel` | `Ac4SafetyAnalysisRequiresDevicePrefixesAndConnectedController` |
+| MainWindow safety bindings | `MainWindow.axaml` | `Ac5MainWindowBindsSafetyAnalysisInputsAndResults` |
+| Host/proto GetDevicePolicySafetyAnalysis remain | `PolicyGrpcHostTests`, `policy.proto` | `Ac6HostAndProtoContractRemainPresentForGetDevicePolicySafetyAnalysis` |
+| Docs / PLAN-08 matrix lock | `plan-08-desktop-secondary-operator-surface.md`, `testing.md` | `CtDeskPolicy02DesktopPolicySafetyLivingSpecTests.Ac1DesktopPolicySafetyLivingSpecAndPlan08MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPolicySafetyLivingSpecTests|CtDeskPolicy02"`.
+
 ## Living Specification — Product tranche seed after DESK-PROBE-01 (W7-95)
 
 Issue [#589](https://github.com/sesquicadaver/MTDirector/issues/589) AC → module → tests:
