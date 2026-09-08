@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-98** ([#594](https://github.com/sesquicadaver/MTDirector/issues/594)): PLAN-09 Desktop connection-status operator-surface inventory (`plan-09-desktop-connection-status-operator-surface.md`); seeds DESK-CONN-01 as W7-99 (#597) / W7-100 (#598). **§3.C NEXT = W7-99 (#597)**.
 - **W7-97** ([#593](https://github.com/sesquicadaver/MTDirector/issues/593)): Seed next product tranche after PLAN-08 → **PLAN-09** (W7-98). **§3.C NEXT = W7-98 (#594)**.
 - **W7-96** ([#590](https://github.com/sesquicadaver/MTDirector/issues/590)): DESK-POLICY-02 Desktop Policy safety analysis Living Spec (`DesktopPolicySafetyLivingSpecTests`); **PLAN-08 COMPLETE**. Seeded W7-97 (#593) / W7-98 (#594). **§3.C NEXT = W7-97 (#593)**.
 - **W7-95** ([#589](https://github.com/sesquicadaver/MTDirector/issues/589)): Seed next PLAN-08 row after DESK-PROBE-01 → **DESK-POLICY-02** (W7-96). **§3.C NEXT = W7-96 (#590)**.
@@ -198,6 +199,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-98** ([#594](https://github.com/sesquicadaver/MTDirector/issues/594)): PLAN-09 Desktop connection-status operator-surface inventory (`plan-09-desktop-connection-status-operator-surface.md`); seeds DESK-CONN-01 as W7-99 (#597) / W7-100 (#598). **§3.C NEXT = W7-99 (#597)**.
 - **W7-97** ([#593](https://github.com/sesquicadaver/MTDirector/issues/593)): Seed next product tranche after PLAN-08 → **PLAN-09** (W7-98). **§3.C NEXT = W7-98 (#594)**.
 - **W7-96** ([#590](https://github.com/sesquicadaver/MTDirector/issues/590)): DESK-POLICY-02 Desktop Policy safety analysis Living Spec (`DesktopPolicySafetyLivingSpecTests`); **PLAN-08 COMPLETE**. Seeded W7-97 (#593) / W7-98 (#594). **§3.C NEXT = W7-97 (#593)**.
 - **W7-95** ([#589](https://github.com/sesquicadaver/MTDirector/issues/589)): Seed next PLAN-08 row after DESK-PROBE-01 → **DESK-POLICY-02** (W7-96). **§3.C NEXT = W7-96 (#590)**.
@@ -384,6 +386,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-98** ([#594](https://github.com/sesquicadaver/MTDirector/issues/594)): PLAN-09 Desktop connection-status operator-surface inventory (`plan-09-desktop-connection-status-operator-surface.md`); seeds DESK-CONN-01 as W7-99 (#597) / W7-100 (#598). **§3.C NEXT = W7-99 (#597)**.
 - **W7-97** ([#593](https://github.com/sesquicadaver/MTDirector/issues/593)): Seed next product tranche after PLAN-08 → **PLAN-09** (W7-98). **§3.C NEXT = W7-98 (#594)**.
 - **W7-96** ([#590](https://github.com/sesquicadaver/MTDirector/issues/590)): DESK-POLICY-02 Desktop Policy safety analysis Living Spec (`DesktopPolicySafetyLivingSpecTests`); **PLAN-08 COMPLETE**. Seeded W7-97 (#593) / W7-98 (#594). **§3.C NEXT = W7-97 (#593)**.
 - **W7-95** ([#589](https://github.com/sesquicadaver/MTDirector/issues/589)): Seed next PLAN-08 row after DESK-PROBE-01 → **DESK-POLICY-02** (W7-96). **§3.C NEXT = W7-96 (#590)**.
