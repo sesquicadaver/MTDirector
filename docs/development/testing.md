@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-REORDER-01 Desktop Policies Move up/down (W7-110)
+
+Issue [#617](https://github.com/sesquicadaver/MTDirector/issues/617) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Panel ReorderRulesInStageAsync | `IPolicyPanelService` | `DesktopPoliciesReorderLivingSpecTests.Ac1PanelExposesReorderRulesInStageAsync` |
+| Move up/down + Reorder commands | `PoliciesViewModel` | `Ac2ViewModelExposesMoveUpDownAndReorderCommands` |
+| CanMoveSelectedRule + stage swap | `MoveRuleUp/Down` source | `Ac3MoveCommandsGuardOnCanMoveSelectedRuleAndCallPanelReorderInSource` |
+| ReorderRules UUID list path | `ReorderRulesAsync` source | `Ac4ReorderRulesCommandParsesUuidListAndCallsPanelInSource` |
+| MainWindow Move up/down bindings | `MainWindow.axaml` | `Ac5MainWindowBindsMoveUpDownAndSelectedRule` |
+| PLAN-10 COMPLETE + prior W6-09 | plan-10, MVP / PoliciesViewModelTests | `Ac6Plan10MatrixAndPriorDeskPolicy01ReorderPresenceRemainPresent` |
+| Docs / PLAN-10 COMPLETE lock | `plan-10-…`, `testing.md`, known-limitations | `CtDeskReorder01DesktopPoliciesReorderLivingSpecTests.Ac1DesktopPoliciesReorderLivingSpecAndPlan10CompleteExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesReorderLivingSpecTests|CtDeskReorder01"`.
+
 ## Living Specification — Product tranche seed after DESK-DIFF-01 (W7-109)
 
 Issue [#616](https://github.com/sesquicadaver/MTDirector/issues/616) AC → module → tests:

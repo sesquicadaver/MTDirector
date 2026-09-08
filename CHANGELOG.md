@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-110** ([#617](https://github.com/sesquicadaver/MTDirector/issues/617)): DESK-REORDER-01 Desktop Policies Move up/down Living Spec (`DesktopPoliciesReorderLivingSpecTests`); **PLAN-10 COMPLETE**. Seeded W7-111 (#620). **§3.C NEXT = W7-111 (#620)**.
 - **W7-109** ([#616](https://github.com/sesquicadaver/MTDirector/issues/616)): Seed next PLAN-10 row after DESK-DIFF-01 → **DESK-REORDER-01** (W7-110). Seeded W7-111 (#620). **§3.C NEXT = W7-110 (#617)**.
 - **W7-108** ([#614](https://github.com/sesquicadaver/MTDirector/issues/614)): DESK-DIFF-01 Desktop Policies Diff Living Spec (`DesktopPoliciesDiffLivingSpecTests`). Seeded W7-109 (#616) / W7-110 (#617). **§3.C NEXT = W7-109 (#616)**.
 - **W7-107** ([#612](https://github.com/sesquicadaver/MTDirector/issues/612)): Seed next PLAN-10 row after DESK-SHELL-01 → **DESK-DIFF-01** (W7-108). Seeded W7-109 (#616) / W7-110 (#617). **§3.C NEXT = W7-108 (#614)**.
