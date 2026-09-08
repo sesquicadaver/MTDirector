@@ -28,8 +28,8 @@ PLAN-05…07 closed host-aligned Desktop Living Specs for Audit → Routing, Inc
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-NODE-01** | Node VRRP pair validate/capture lacks dedicated Desktop Living Spec depth vs InventoryGrpcHost | `NodeDetailViewModel` (`ValidateVrrpPairCommand`, `CaptureAllMembersAndValidateCommand`); host: `InventoryGrpcHostTests` / `ValidateVrrpPairConsistency` | **W7-90 OPEN** (#578) |
-| 2 | **DESK-NBR-01** | Neighbor candidate load/apply lacks dedicated Desktop Living Spec depth | `AddRouterWizardViewModel` (`LoadNeighborsCommand`, `ApplyNeighborCandidateCommand`); `ListNeighborCandidates` | seed after DESK-NODE-01 |
+| 1 | **DESK-NODE-01** | Node VRRP pair validate/capture lacks dedicated Desktop Living Spec depth vs InventoryGrpcHost | `NodeDetailViewModel` (`ValidateVrrpPairCommand`, `CaptureAllMembersAndValidateCommand`); host: `InventoryGrpcHostTests` / `ValidateVrrpPairConsistency` | **W7-90 DONE** (#578) |
+| 2 | **DESK-NBR-01** | Neighbor candidate load/apply lacks dedicated Desktop Living Spec depth | `AddRouterWizardViewModel` (`LoadNeighborsCommand`, `ApplyNeighborCandidateCommand`); `ListNeighborCandidates` | **W7-92 OPEN** (#582) |
 | 3 | **DESK-PROBE-01** | ValidateDeviceConnection probe path lacks dedicated Desktop Living Spec depth | `AddRouterWizardViewModel.ProbeCommand`; `ValidateDeviceConnection` | seed after DESK-NBR-01 |
 | 4 | **DESK-POLICY-02** | Policy safety analysis execute path lacks dedicated Desktop Living Spec depth | `PoliciesViewModel.RefreshSafetyAnalysisCommand`; `GetDevicePolicySafetyAnalysis` | seed after DESK-PROBE-01 |
 
@@ -39,4 +39,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-90 (#578)** — DESK-NODE-01 Desktop Node VRRP pair Living Spec vs InventoryGrpcHost.
+**§3.C NEXT = W7-91 (#580)** — Seed next PLAN-08 row after DESK-NODE-01 → DESK-NBR-01.
