@@ -772,6 +772,16 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — Product tranche seed after DESK-SUBMIT-01 (W7-113)
+
+Issue [#626](https://github.com/sesquicadaver/MTDirector/issues/626) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-COMPOSE-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md`, `plan-11-desktop-policies-review-compose-lifecycle.md` | `ProductTrancheSeedW7113LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskCompose01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7113"`.
+
 ## Living Specification — DESK-SUBMIT-01 Desktop Policies SubmitForReview (W7-114)
 
 Issue [#628](https://github.com/sesquicadaver/MTDirector/issues/628) AC → module → tests:
