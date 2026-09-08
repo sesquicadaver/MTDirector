@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-104** ([#607](https://github.com/sesquicadaver/MTDirector/issues/607)): Seed next product tranche after PLAN-09 → **PLAN-10** (W7-105). **§3.C NEXT = W7-105 (#608)**.
 - **W7-103** ([#604](https://github.com/sesquicadaver/MTDirector/issues/604)): DESK-AUTH-01 Desktop AuthenticationFailed/TlsError Living Spec (`DesktopAuthLivingSpecTests`); **PLAN-09 COMPLETE**. Seeded W7-104 (#607) / W7-105 (#608). **§3.C NEXT = W7-104 (#607)**.
 - **W7-102** ([#603](https://github.com/sesquicadaver/MTDirector/issues/603)): Seed next PLAN-09 row after DESK-MTLS-01 → **DESK-AUTH-01** (W7-103). **§3.C NEXT = W7-103 (#604)**.
 - **W7-101** ([#600](https://github.com/sesquicadaver/MTDirector/issues/600)): DESK-MTLS-01 Desktop mTLS actor status Living Spec (`DesktopMtlsActorLivingSpecTests`). Seeded W7-102 (#603) / W7-103 (#604). **§3.C NEXT = W7-102 (#603)**.
@@ -204,6 +205,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-104** ([#607](https://github.com/sesquicadaver/MTDirector/issues/607)): Seed next product tranche after PLAN-09 → **PLAN-10** (W7-105). **§3.C NEXT = W7-105 (#608)**.
 - **W7-103** ([#604](https://github.com/sesquicadaver/MTDirector/issues/604)): DESK-AUTH-01 Desktop AuthenticationFailed/TlsError Living Spec (`DesktopAuthLivingSpecTests`); **PLAN-09 COMPLETE**. Seeded W7-104 (#607) / W7-105 (#608). **§3.C NEXT = W7-104 (#607)**.
 - **W7-102** ([#603](https://github.com/sesquicadaver/MTDirector/issues/603)): Seed next PLAN-09 row after DESK-MTLS-01 → **DESK-AUTH-01** (W7-103). **§3.C NEXT = W7-103 (#604)**.
 - **W7-101** ([#600](https://github.com/sesquicadaver/MTDirector/issues/600)): DESK-MTLS-01 Desktop mTLS actor status Living Spec (`DesktopMtlsActorLivingSpecTests`). Seeded W7-102 (#603) / W7-103 (#604). **§3.C NEXT = W7-102 (#603)**.
@@ -396,6 +398,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-104** ([#607](https://github.com/sesquicadaver/MTDirector/issues/607)): Seed next product tranche after PLAN-09 → **PLAN-10** (W7-105). **§3.C NEXT = W7-105 (#608)**.
 - **W7-103** ([#604](https://github.com/sesquicadaver/MTDirector/issues/604)): DESK-AUTH-01 Desktop AuthenticationFailed/TlsError Living Spec (`DesktopAuthLivingSpecTests`); **PLAN-09 COMPLETE**. Seeded W7-104 (#607) / W7-105 (#608). **§3.C NEXT = W7-104 (#607)**.
 - **W7-102** ([#603](https://github.com/sesquicadaver/MTDirector/issues/603)): Seed next PLAN-09 row after DESK-MTLS-01 → **DESK-AUTH-01** (W7-103). **§3.C NEXT = W7-103 (#604)**.
 - **W7-101** ([#600](https://github.com/sesquicadaver/MTDirector/issues/600)): DESK-MTLS-01 Desktop mTLS actor status Living Spec (`DesktopMtlsActorLivingSpecTests`). Seeded W7-102 (#603) / W7-103 (#604). **§3.C NEXT = W7-102 (#603)**.
