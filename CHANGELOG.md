@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-108** ([#614](https://github.com/sesquicadaver/MTDirector/issues/614)): DESK-DIFF-01 Desktop Policies Diff Living Spec (`DesktopPoliciesDiffLivingSpecTests`). Seeded W7-109 (#616) / W7-110 (#617). **§3.C NEXT = W7-109 (#616)**.
 - **W7-107** ([#612](https://github.com/sesquicadaver/MTDirector/issues/612)): Seed next PLAN-10 row after DESK-SHELL-01 → **DESK-DIFF-01** (W7-108). Seeded W7-109 (#616) / W7-110 (#617). **§3.C NEXT = W7-108 (#614)**.
 - **W7-106** ([#611](https://github.com/sesquicadaver/MTDirector/issues/611)): DESK-SHELL-01 Desktop Shell navigation/hotkeys Living Spec (`DesktopShellLivingSpecTests`). Seeded W7-107 (#612) / W7-108 (#614). **§3.C NEXT = W7-107 (#612)**.
 - **W7-105** ([#608](https://github.com/sesquicadaver/MTDirector/issues/608)): PLAN-10 Desktop shell chrome & Policies authoring depth inventory (`plan-10-desktop-shell-policies-authoring-depth.md`); seeds DESK-SHELL-01 as W7-106 (#611) / W7-107 (#612). **§3.C NEXT = W7-106 (#611)**.

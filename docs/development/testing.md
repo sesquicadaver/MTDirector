@@ -772,6 +772,22 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — DESK-DIFF-01 Desktop Policies Diff (W7-108)
+
+Issue [#614](https://github.com/sesquicadaver/MTDirector/issues/614) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Client + panel Diff API | `IPolicyServiceClient`, `IPolicyPanelService`, `PolicyDiffPanelResult` | `DesktopPoliciesDiffLivingSpecTests.Ac1WireAndPanelExposeDiffPolicyRevisionsAndDiffAsync` |
+| DiffCommand + baseline + typed rows | `PoliciesViewModel` | `Ac2ViewModelExposesDiffCommandBaselineAndTypedDiffSurface` |
+| CanOperate + UUID parse + panel call | `DiffAsync` source | `Ac3DiffCommandGuardsOnCanOperateAndParsesBaselineAfterRevisionIdsInSource` |
+| Kind mapping without local engine | `PolicyPanelService.DiffAsync` | `Ac4PanelDiffAsyncMapsSemanticPacketRiskRuleFindingKindsWithoutLocalEngine` |
+| MainWindow Policies Diff bindings | `MainWindow.axaml` | `Ac5MainWindowBindsPoliciesDiffBaselineCommandRowsAndLines` |
+| PLAN-10 + DESK-POLICY-01 presence | plan-10, DESK-POLICY-01, PolicyDesktopServiceTests | `Ac6Plan10MatrixAndPriorDeskPolicy01DiffPresenceRemainPresent` |
+| Docs / PLAN-10 lock | `plan-10-…`, `testing.md`, known-limitations | `CtDeskDiff01DesktopPoliciesDiffLivingSpecTests.Ac1DesktopPoliciesDiffLivingSpecAndPlan10MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesDiffLivingSpecTests|CtDeskDiff01"`.
+
 ## Living Specification — Product tranche seed after DESK-SHELL-01 (W7-107)
 
 Issue [#612](https://github.com/sesquicadaver/MTDirector/issues/612) AC → module → tests:
