@@ -73,6 +73,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-110 Living Spec lock): **DESK-REORDER-01** — Desktop Policies Move up/down Living Spec (`DesktopPoliciesReorderLivingSpecTests`); **PLAN-10 COMPLETE**; next product seed W7-111 → PLAN-11.
 - Intentional residual (W7-111 Living Spec lock): §3.C product tranche after PLAN-10 Desktop shell chrome & Policies authoring depth is seeded as **W7-112** — **PLAN-11** inventory next product Living Spec tranche after PLAN-10; not idle; not a lab stop-gate.
 - Intentional residual (W7-112 Living Spec lock): **PLAN-11** Desktop Policies review-compose lifecycle inventory is documented in [`plan-11-desktop-policies-review-compose-lifecycle.md`](../planning/plan-11-desktop-policies-review-compose-lifecycle.md); first atomic row **DESK-SUBMIT-01** (W7-114).
+- Intentional residual (W7-114 Living Spec lock): **DESK-SUBMIT-01** — Desktop Policies SubmitForReview Living Spec (`DesktopPoliciesSubmitLivingSpecTests`); next PLAN-11 seed W7-113 → DESK-COMPOSE-01.
 
 ## Production wiring (P2 pilot)
 
