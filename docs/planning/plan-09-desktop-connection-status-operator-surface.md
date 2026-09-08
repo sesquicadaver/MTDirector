@@ -37,4 +37,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-102 (#603)** — Seed next PLAN-09 row after DESK-MTLS-01 → DESK-AUTH-01.
+**§3.C NEXT = W7-103 (#604)** — DESK-AUTH-01 Desktop AuthenticationFailed/TlsError Living Spec depth.

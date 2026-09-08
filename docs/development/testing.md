@@ -772,6 +772,16 @@ Issue [#554](https://github.com/sesquicadaver/MTDirector/issues/554) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan07CoreMvpDesktopOperatorSurfaceW778"`.
 
+## Living Specification — Product tranche seed after DESK-MTLS-01 (W7-102)
+
+Issue [#603](https://github.com/sesquicadaver/MTDirector/issues/603) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-AUTH-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md`, `plan-09-desktop-connection-status-operator-surface.md` | `ProductTrancheSeedW7102LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskAuth01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7102"`.
+
 ## Living Specification — DESK-MTLS-01 Desktop mTLS actor status (W7-101)
 
 Issue [#600](https://github.com/sesquicadaver/MTDirector/issues/600) AC → module → tests:
