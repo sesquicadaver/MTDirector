@@ -1,7 +1,7 @@
 # PLAN-14 — Desktop Avalonia PlaceholderText / Incident surface Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **DONE** (W7-149); **DESK-PLACEHOLDER-01 DONE** (W7-150); seeded by **W7-148 DONE**; next seed **W7-151 OPEN** → DESK-PLACEHOLDER-02  
+**Status:** Inventory **DONE** (W7-149); **DESK-PLACEHOLDER-01 DONE** (W7-150); seed **W7-151 DONE**; implement **DESK-PLACEHOLDER-02 OPEN** (W7-152)  
 **PLAN issue / queue:** [W7-149 / PLAN-14 #700](https://github.com/sesquicadaver/MTDirector/issues/700)  
 **Predecessor:** PLAN-13 Desktop layout density **COMPLETE** (DESK-LAYOUT-00…10); product seed **W7-148 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -41,7 +41,7 @@ Avalonia build warns `AVLN5001`: `TextBox.Watermark` is obsolete — use `Placeh
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **DESK-PLACEHOLDER-01** | Obsolete `Watermark=` on Incident TextBoxes | `MainWindow.axaml` Operations → Incident | **W7-150 DONE** (#703); seeded by inventory **W7-149 DONE** (#700) |
-| 2 | **DESK-PLACEHOLDER-02** | Repo-wide Desktop XAML Watermark residue scan Living Spec | all `src/Mfc.Desktop/**/*.axaml` | seeded by **W7-151 OPEN** (#704) after DESK-PLACEHOLDER-01 |
+| 2 | **DESK-PLACEHOLDER-02** | Repo-wide Desktop XAML Watermark residue scan Living Spec | all `src/Mfc.Desktop/**/*.axaml` | **W7-152 OPEN** (#707); seeded by **W7-151 DONE** (#704) |
 
 ## Dual track
 
@@ -49,4 +49,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-151 (#704)** — Seed next PLAN-14 row after DESK-PLACEHOLDER-01 → DESK-PLACEHOLDER-02.
+**§3.C NEXT = W7-152 (#707)** — DESK-PLACEHOLDER-02 Repo-wide Desktop XAML Watermark residue Living Spec.
