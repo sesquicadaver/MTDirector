@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-159** ([#720](https://github.com/sesquicadaver/MTDirector/issues/720)): PLAN-16 inventory Desktop Incident AutomationProperties accessible-name (`Plan16DesktopIncidentAutomationW7159LivingSpecTests`). Seeded W7-160 (#723) / W7-161 (#724). **§3.C NEXT = W7-160 (#723)**.
 - **W7-158** ([#719](https://github.com/sesquicadaver/MTDirector/issues/719)): Seed next product tranche after PLAN-15 → PLAN-16 (`ProductTrancheSeedW7158LivingSpecTests`). **§3.C NEXT = W7-159 (#720)**.
 - **W7-157** ([#717](https://github.com/sesquicadaver/MTDirector/issues/717)): DESK-FIELD-02 Incident PlaceholderText + mfc-field regression; **PLAN-15 COMPLETE**. Seeded W7-158 (#719) / W7-159 (#720) PLAN-16. **§3.C NEXT = W7-158 (#719)**.
 - **W7-156** ([#714](https://github.com/sesquicadaver/MTDirector/issues/714)): Seed next PLAN-15 row after DESK-FIELD-01 → DESK-FIELD-02 (`ProductTrancheSeedW7156LivingSpecTests`). **§3.C NEXT = W7-157 (#717)**.

@@ -1090,6 +1090,17 @@ Issue [#719](https://github.com/sesquicadaver/MTDirector/issues/719) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7158"`.
 
+## Living Specification — PLAN-16 Desktop Incident AutomationProperties inventory (W7-159)
+
+Issue [#720](https://github.com/sesquicadaver/MTDirector/issues/720) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-16 inventory + DESK-A11Y-01 seed | `docs/planning/plan-16-desktop-incident-automation-properties.md`, known-limitations, ROADMAP, continuous plan, docs index | `Plan16DesktopIncidentAutomationW7159LivingSpecTests.Ac1Plan16InventoryDocumentsRankedRowsAndSeedsDeskA11y01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan16DesktopIncidentAutomationW7159"`.
+
+
 
 
 
