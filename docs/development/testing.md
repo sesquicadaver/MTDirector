@@ -788,6 +788,19 @@ Issue [#643](https://github.com/sesquicadaver/MTDirector/issues/643) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesDraftLivingSpecTests|CtDeskDraft01"`.
 
+## Living Specification — DESK-LAYOUT-03 Drift events/findings/detail splitter (W7-133)
+
+Issue [#668](https://github.com/sesquicadaver/MTDirector/issues/668) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Drift `Auto,*,Auto,*,Auto,*` + dual GridSplitter + tokens | `MainWindow.axaml` Drift module | `DesktopLayoutDriftLivingSpecTests.Ac1DriftUsesThreeStarPanesWithTwoRowSplitters` |
+| Findings without MaxHeight=200 | `MainWindow.axaml` | `DesktopLayoutDriftLivingSpecTests.Ac2DriftFindingsHaveNoMaxHeightCap` |
+| PLAN-13 + desktop-layout.md | docs | `DesktopLayoutDriftLivingSpecTests.Ac3Plan13AndDesktopLayoutDocLockLayout03` |
+| CT wrapper | release Living Spec | `CtDeskLayout03DesktopLayoutDriftLivingSpecTests.Ac1DesktopLayoutDriftLivingSpecAndPlan13MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopLayoutDriftLivingSpecTests|CtDeskLayout03"`.
+
 ## Living Specification — Product tranche seed after DESK-LAYOUT-02 (W7-132)
 
 Issue [#667](https://github.com/sesquicadaver/MTDirector/issues/667) AC → module → tests:

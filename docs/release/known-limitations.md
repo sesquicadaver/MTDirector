@@ -135,3 +135,4 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-130 Living Spec lock): §3.C product row after DESK-LAYOUT-01 is seeded as **W7-131** — **DESK-LAYOUT-02** Semantic Diff entry list + splitter Living Spec depth; not idle; not a lab stop-gate.
 - Intentional residual (W7-131 Living Spec lock): **DESK-LAYOUT-02** — Semantic Diff entry list + `GridSplitter` + uncapped before/after (`DesktopLayoutSemanticDiffLivingSpecTests`); next PLAN-13 seed W7-132 → DESK-LAYOUT-03.
 - Intentional residual (W7-132 Living Spec lock): §3.C product row after DESK-LAYOUT-02 is seeded as **W7-133** — **DESK-LAYOUT-03** Drift events/findings/detail splitter Living Spec depth; not idle; not a lab stop-gate.
+- Intentional residual (W7-133 Living Spec lock): **DESK-LAYOUT-03** — Drift events/findings/detail dual `GridSplitter` (`DesktopLayoutDriftLivingSpecTests`); next PLAN-13 seed W7-134 → DESK-LAYOUT-04.

@@ -1749,7 +1749,10 @@
         </TabControl>
 
         <!-- Drift (no automatic fix) -->
-        <Grid IsVisible="{Binding IsDriftSelected}" RowDefinitions="Auto,*,Auto,*" ClipToBounds="True">
+        <!-- DESK-LAYOUT-03: events * + splitter + findings * + splitter + detail * (no findings MaxHeight) -->
+        <Grid IsVisible="{Binding IsDriftSelected}"
+              RowDefinitions="Auto,*,Auto,*,Auto,*"
+              ClipToBounds="True">
           <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
             <WrapPanel DockPanel.Dock="Right" Classes="mfc-toolbar" ItemSpacing="8" Margin="8,0,0,0">
               <Button Classes="mfc-action" Content="Refresh" Command="{Binding Drift.RefreshCommand}" />
@@ -1764,10 +1767,15 @@
                          IsVisible="{Binding Drift.HasError}" />
             </StackPanel>
           </DockPanel>
-          <Border Grid.Row="1" Classes="mfc-list-frame" Margin="0,0,0,8" ClipToBounds="True">
+          <Border Grid.Row="1"
+                  Classes="mfc-list-frame"
+                  Margin="0,0,0,0"
+                  ClipToBounds="True"
+                  MinHeight="{StaticResource Mfc.ListMinHeight}">
             <ListBox ItemsSource="{Binding Drift.Events}"
                      SelectedItem="{Binding Drift.SelectedEvent, Mode=TwoWay}"
-                     Name="DriftEventsList">
+                     Name="DriftEventsList"
+                     MinHeight="{StaticResource Mfc.ListMinHeight}">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                   <VirtualizingStackPanel />
@@ -1790,7 +1798,15 @@
               </ListBox.ItemTemplate>
             </ListBox>
           </Border>
-          <Border Grid.Row="2" Classes="mfc-list-frame" Margin="0,0,0,8" ClipToBounds="True" MinHeight="96" MaxHeight="200">
+          <GridSplitter Grid.Row="2"
+                        Height="6"
+                        HorizontalAlignment="Stretch"
+                        ResizeDirection="Rows"
+                        Background="{StaticResource Mfc.BorderBrush}" />
+          <Border Grid.Row="3"
+                  Classes="mfc-list-frame"
+                  ClipToBounds="True"
+                  MinHeight="{StaticResource Mfc.ListMinHeight}">
             <DockPanel LastChildFill="True">
               <StackPanel DockPanel.Dock="Top" Spacing="2" Margin="0,0,0,6">
                 <TextBlock Classes="mfc-label" Text="Drift findings" />
@@ -1799,7 +1815,8 @@
                            IsVisible="{Binding Drift.HasNoSelectedEventFindings}" />
               </StackPanel>
               <ListBox ItemsSource="{Binding Drift.SelectedEventFindings}"
-                       IsVisible="{Binding Drift.HasSelectedEventFindings}">
+                       IsVisible="{Binding Drift.HasSelectedEventFindings}"
+                       MinHeight="{StaticResource Mfc.ListMinHeight}">
                 <ListBox.ItemsPanel>
                   <ItemsPanelTemplate>
                     <VirtualizingStackPanel />
@@ -1820,7 +1837,15 @@
               </ListBox>
             </DockPanel>
           </Border>
-          <Border Grid.Row="3" Classes="mfc-panel" ClipToBounds="True">
+          <GridSplitter Grid.Row="4"
+                        Height="6"
+                        HorizontalAlignment="Stretch"
+                        ResizeDirection="Rows"
+                        Background="{StaticResource Mfc.BorderBrush}" />
+          <Border Grid.Row="5"
+                  Classes="mfc-panel"
+                  ClipToBounds="True"
+                  MinHeight="{StaticResource Mfc.DetailMinHeight}">
             <DockPanel LastChildFill="True">
               <StackPanel DockPanel.Dock="Top" Spacing="2" Margin="0,0,0,6">
                 <TextBlock Classes="mfc-label" Text="Event detail (GetDriftEvent)" />
