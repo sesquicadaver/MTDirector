@@ -1262,6 +1262,19 @@ Issue [#750](https://github.com/sesquicadaver/MTDirector/issues/750) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan19DesktopShellConnectDisconnectW7174"`.
 
+## Living Specification — DESK-A11Y-CONN-01 Connect/Disconnect AutomationProperties.Name (W7-175)
+
+Issue [#753](https://github.com/sesquicadaver/MTDirector/issues/753) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Connect/Disconnect expose AutomationProperties.Name | `MainWindow.axaml` | `DesktopShellConnectDisconnectAutomationLivingSpecTests.Ac1ConnectAndDisconnectButtonsExposeAutomationPropertiesName` |
+| PLAN-19 + docs lock | plan-19 + testing + known-limitations | `DesktopShellConnectDisconnectAutomationLivingSpecTests.Ac2Plan19AndTestingDocLockA11yConn01` |
+| CT wrapper | release Living Spec | `CtDeskA11yConn01DesktopShellConnectDisconnectAutomationLivingSpecTests.Ac1DesktopShellConnectDisconnectAutomationLivingSpecAndPlan19MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopShellConnectDisconnectAutomationLivingSpecTests|CtDeskA11yConn01"`.
+
+
 
 
 
