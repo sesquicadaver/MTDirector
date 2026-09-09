@@ -1,7 +1,7 @@
 # PLAN-13 — Desktop layout density & readable data panes
 
 **Date:** 2026-09-09  
-**Status:** Inventory (ready to seed after PLAN-12 closes)  
+**Status:** Inventory **OPEN** (seeded by **W7-125 DONE** #653 → implement inventory **W7-126 OPEN** #654)  
 **Predecessor:** GUI density analysis (lab session 2026-09-09); PLAN-12 Policies residual lifecycle  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml), [`App.axaml`](../../src/Mfc.Desktop/App.axaml)  
 **Normative execution order (when seeded):** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
@@ -91,3 +91,7 @@ Do **not** change **§3.C NEXT** until PLAN-12 (DESK-CATALOG-01) is COMPLETE, un
 - Analysis chat 2026-09-09 (GUI density)  
 - [`desktop-ui-backend-alignment.md`](../development/desktop-ui-backend-alignment.md)  
 - [`plan-10-desktop-shell-policies-authoring-depth.md`](plan-10-desktop-shell-policies-authoring-depth.md) (shell chrome precedent)
+
+## §3.C NEXT
+
+**§3.C NEXT = W7-126 (#654)** — PLAN-13 Inventory Desktop layout density Living Spec product tranche (seeded by **W7-125 DONE**).
