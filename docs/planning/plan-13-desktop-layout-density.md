@@ -1,7 +1,7 @@
 # PLAN-13 — Desktop layout density Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **DONE** (W7-126); **DESK-LAYOUT-00 DONE** (W7-127); **DESK-LAYOUT-01 DONE** (W7-129); **DESK-LAYOUT-02 DONE** (W7-131); **DESK-LAYOUT-03 DONE** (W7-133); **DESK-LAYOUT-04 DONE** (W7-135); **DESK-LAYOUT-05 DONE** (W7-137); **DESK-LAYOUT-06 DONE** (W7-139); **DESK-LAYOUT-07 DONE** (W7-141); **DESK-LAYOUT-08 DONE** (W7-143); next seed **W7-144 OPEN**  
+**Status:** Inventory **DONE** (W7-126); **DESK-LAYOUT-00 DONE** (W7-127); **DESK-LAYOUT-01 DONE** (W7-129); **DESK-LAYOUT-02 DONE** (W7-131); **DESK-LAYOUT-03 DONE** (W7-133); **DESK-LAYOUT-04 DONE** (W7-135); **DESK-LAYOUT-05 DONE** (W7-137); **DESK-LAYOUT-06 DONE** (W7-139); **DESK-LAYOUT-07 DONE** (W7-141); **DESK-LAYOUT-08 DONE** (W7-143); seed **W7-144 DONE** → implement **DESK-LAYOUT-09 OPEN** (W7-145)  
 **PLAN issue / queue:** [W7-126 / PLAN-13 #654](https://github.com/sesquicadaver/MTDirector/issues/654)  
 **Predecessor:** GUI density analysis (lab session 2026-09-09); PLAN-12 Policies residual lifecycle **COMPLETE**; product seed **W7-125 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml), [`App.axaml`](../../src/Mfc.Desktop/App.axaml)  
@@ -62,7 +62,7 @@ Operator report: data panes often so small that content is unreadable. Analysis 
 | 7 | **DESK-LAYOUT-06** | Node + RoutingAssurance MaxHeight cascade | Node panel | **W7-139 DONE** (#680); seeded by **W7-138 DONE** (#679) |
 | 8 | **DESK-LAYOUT-07** | Operations (Onboarding/Deploy) MaxHeight lists | Operations tabs | **W7-141 DONE** (#684); seeded by **W7-140 DONE** (#683) |
 | 9 | **DESK-LAYOUT-08** | Shell chrome: fixed columns; no column splitter | Shell grid | **W7-143 DONE** (#688); seeded by **W7-142 DONE** (#687) |
-| 10 | **DESK-LAYOUT-09** | Inventory / Zones nested MaxHeight frames | ~341–426 | seeded after DESK-LAYOUT-08 (**W7-144 OPEN** #691 → implement **W7-145 OPEN** #692) |
+| 10 | **DESK-LAYOUT-09** | Inventory / Zones nested MaxHeight frames | ~341–426 | seeded by **W7-144 DONE** (#691) → implement **W7-145 OPEN** (#692) |
 | 11 | **DESK-LAYOUT-10** | Regression lock + docs sync | Living Specs + alignment / testing docs | seed after DESK-LAYOUT-09; closes PLAN-13 |
 
 ## Suggested PR slicing (still linear for `/autopilot`)
@@ -90,4 +90,4 @@ Product §3 never waits on GNS3. Validate layout on Desktop against lab captures
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-144 (#691)** — Seed next PLAN-13 row after DESK-LAYOUT-08 → DESK-LAYOUT-09.
+**§3.C NEXT = W7-145 (#692)** — DESK-LAYOUT-09 Inventory/Zones MaxHeight frames Living Spec depth.
