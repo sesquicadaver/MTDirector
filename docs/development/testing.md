@@ -972,6 +972,17 @@ Issue [#696](https://github.com/sesquicadaver/MTDirector/issues/696) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopLayoutRegressionLockLivingSpecTests|CtDeskLayout10"`.
 
+## Living Specification — Product tranche seed after PLAN-13 (W7-148)
+
+Issue [#699](https://github.com/sesquicadaver/MTDirector/issues/699) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed PLAN-14 inventory as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md`, `plan-14-…` | `ProductTrancheSeedW7148LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan14InventoryAsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7148"`.
+
+
 
 
 

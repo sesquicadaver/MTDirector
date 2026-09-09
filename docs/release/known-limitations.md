@@ -150,3 +150,4 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-145 Living Spec lock): **DESK-LAYOUT-09** — Zones lists/resolve use `Mfc.ListMinHeight` (no MaxHeight 220/240) (`DesktopLayoutZonesLivingSpecTests`); next PLAN-13 seed W7-146 → DESK-LAYOUT-10.
 - Intentional residual (W7-146 Living Spec lock): §3.C product row after DESK-LAYOUT-09 is seeded as **W7-147** — **DESK-LAYOUT-10** PLAN-13 regression lock + docs sync Living Spec depth; not idle; not a lab stop-gate.
 - Intentional residual (W7-147 Living Spec lock): **DESK-LAYOUT-10** — PLAN-13 COMPLETE regression lock (`DesktopLayoutRegressionLockLivingSpecTests`); next product seed W7-148 → PLAN-14.
+- Intentional residual (W7-148 Living Spec lock): §3.C product row after PLAN-13 COMPLETE is seeded as **W7-149** — **PLAN-14** Inventory Desktop Avalonia PlaceholderText / Incident surface Living Spec product tranche; not idle; not a lab stop-gate.
