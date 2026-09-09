@@ -1,7 +1,7 @@
 # PLAN-16 — Desktop Incident AutomationProperties accessible-name Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **OPEN** (W7-159); seeded by **W7-158 OPEN** after **PLAN-15 COMPLETE**  
+**Status:** Inventory **OPEN** (W7-159); seeded by **W7-158 DONE** after **PLAN-15 COMPLETE**  
 **PLAN issue / queue:** [W7-159 / PLAN-16 #720](https://github.com/sesquicadaver/MTDirector/issues/720)  
 **Predecessor:** PLAN-15 Incident mfc-field style hygiene **COMPLETE**; product seed **W7-158**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -34,4 +34,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-158 (#719)** — Seed next product tranche after PLAN-15 → PLAN-16 (this inventory is W7-159 OPEN).
+**§3.C NEXT = W7-159 (#720)** — PLAN-16 Inventory Desktop Incident AutomationProperties accessible-name Living Spec product tranche.
