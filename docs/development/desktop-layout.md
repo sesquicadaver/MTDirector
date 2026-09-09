@@ -1,6 +1,6 @@
 # Desktop layout density tokens
 
-**PLAN-13 / DESK-LAYOUT-00…08.** Shared Avalonia resources and Snapshot / Semantic Diff / Drift density contracts for operator-readable data panes.
+**PLAN-13 / DESK-LAYOUT-00…09.** Shared Avalonia resources and Snapshot / Semantic Diff / Drift density contracts for operator-readable data panes.
 
 ## Normative tokens (`App.axaml`)
 
@@ -16,7 +16,7 @@ Use `{StaticResource Mfc.ListMinHeight}` (and siblings) instead of magic `MinHei
 
 1. One primary data pane per view grows with `*` (or fills a ScrollViewer).  
 2. No hard `MaxHeight` on primary lists unless paired with a splitter or an explicit compact mode.  
-3. Later DESK-LAYOUT-09…10 rows migrate remaining magic heights to these tokens and add `GridSplitter` where needed.
+3. Later DESK-LAYOUT-10 row migrate remaining magic heights to these tokens and add `GridSplitter` where needed.
 
 ## Snapshot (DESK-LAYOUT-01)
 
@@ -94,6 +94,15 @@ Main shell grid (`MainWindow.axaml`):
 - Replaces fixed spacer columns `12` so the operator can reclaim horizontal space.  
 - Pane floors: Inventory `MinWidth=160`, Modules `MinWidth=100`, content `MinWidth=240`.
 
+
+
+## Inventory / Zones (DESK-LAYOUT-09)
+
+In Inventory detail Zones panel:
+
+- Company zones / Node bindings lists and Resolve results frame bind `MinHeight="{StaticResource Mfc.ListMinHeight}"`.  
+- Removed nested `MaxHeight` caps (`220` / `240`) that starved zone lists inside the Inventory scroll page.
+
 ## Living Spec
 
 - `DesktopLayoutTokensLivingSpecTests` (+ `CtDeskLayout00…`) — token presence.  
@@ -104,4 +113,5 @@ Main shell grid (`MainWindow.axaml`):
 - `DesktopLayoutPoliciesLivingSpecTests` (+ `CtDeskLayout05…`) — Policies MaxHeight→token floors contract.  
 - `DesktopLayoutNodeRoutingLivingSpecTests` (+ `CtDeskLayout06…`) — Node + RoutingAssurance token floors contract.  
 - `DesktopLayoutOperationsLivingSpecTests` (+ `CtDeskLayout07…`) — Operations Onboarding/Deploy token floors contract.  
-- `DesktopLayoutShellChromeLivingSpecTests` (+ `CtDeskLayout08…`) — Shell chrome column splitter contract.
+- `DesktopLayoutShellChromeLivingSpecTests` (+ `CtDeskLayout08…`) — Shell chrome column splitter contract.  
+- `DesktopLayoutZonesLivingSpecTests` (+ `CtDeskLayout09…`) — Inventory/Zones MaxHeight→token floors contract.

@@ -936,6 +936,20 @@ Issue [#691](https://github.com/sesquicadaver/MTDirector/issues/691) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7144"`.
 
+## Living Specification — DESK-LAYOUT-09 Inventory/Zones MaxHeight frames (W7-145)
+
+Issue [#692](https://github.com/sesquicadaver/MTDirector/issues/692) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Zones lists/resolve: no MaxHeight 220/240; ListMinHeight | `MainWindow.axaml` Zones panel | `DesktopLayoutZonesLivingSpecTests.Ac1ZonesListsUseListMinHeightAndNoMaxHeightCaps` |
+| Zones/Bindings/Resolve bind ListMinHeight | `MainWindow.axaml` | `DesktopLayoutZonesLivingSpecTests.Ac2ZonesPrimaryListsAndResolveFrameBindListMinHeight` |
+| PLAN-13 + desktop-layout.md | docs | `DesktopLayoutZonesLivingSpecTests.Ac3Plan13AndDesktopLayoutDocLockLayout09` |
+| CT wrapper | release Living Spec | `CtDeskLayout09DesktopLayoutZonesLivingSpecTests.Ac1DesktopLayoutZonesLivingSpecAndPlan13MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopLayoutZonesLivingSpecTests|CtDeskLayout09"`.
+
+
 
 
 
