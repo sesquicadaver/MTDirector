@@ -90,4 +90,4 @@ Product §3 never waits on GNS3. Validate layout on Desktop against lab captures
 
 ## §3.C NEXT
 
-**PLAN-13 COMPLETE.** **§3.C NEXT = W7-148 (#699)** — Seed next product tranche after PLAN-13 → PLAN-14.
+**PLAN-13 COMPLETE.** Seed **W7-148 DONE** → **§3.C NEXT = W7-149 (#700)** — PLAN-14 inventory.

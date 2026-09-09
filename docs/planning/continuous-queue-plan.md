@@ -225,7 +225,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | DESK-LAYOUT-09 — Inventory/Zones MaxHeight frames Living Spec | Docs / Desktop Living Spec | **W7-145 DONE** |
 | Seed next PLAN-13 row after DESK-LAYOUT-09 → DESK-LAYOUT-10 | Docs / PLAN-13 | **W7-146 DONE** |
 | DESK-LAYOUT-10 — PLAN-13 regression lock + docs sync Living Spec | Docs / Desktop Living Spec | **W7-147 DONE** |
-| Seed next product tranche after PLAN-13 → PLAN-14 | Docs / product seed | **W7-148 OPEN** |
+| Seed next product tranche after PLAN-13 → PLAN-14 | Docs / product seed | **W7-148 DONE** |
 | PLAN-14 — Inventory Desktop Avalonia PlaceholderText / Incident surface Living Spec product tranche | Docs / PLAN-14 | **W7-149 OPEN** |
 
 ### P3 / new Contracts (evidence)
@@ -427,7 +427,7 @@ W7-144 Seed next PLAN-13 row after DESK-LAYOUT-08 → DESK-LAYOUT-09 **DONE**
 W7-145 DESK-LAYOUT-09 — Inventory/Zones MaxHeight frames Living Spec **DONE**
 W7-146 Seed next PLAN-13 row after DESK-LAYOUT-09 → DESK-LAYOUT-10 **DONE**
 W7-147 DESK-LAYOUT-10 — PLAN-13 regression lock + docs sync Living Spec **DONE**
-W7-148 Seed next product tranche after PLAN-13 → PLAN-14 **OPEN**
+W7-148 Seed next product tranche after PLAN-13 → PLAN-14 **DONE**
 W7-149 PLAN-14 — Inventory Desktop Avalonia PlaceholderText / Incident surface Living Spec product tranche **OPEN**
 W7-117 Seed next PLAN-11 row after DESK-COMPOSE-01 → DESK-GATE-01 **DONE**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
@@ -615,11 +615,11 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 175 | W7-145 | [#692](https://github.com/sesquicadaver/MTDirector/issues/692) | DESK-LAYOUT-09 — Inventory/Zones MaxHeight frames Living Spec | **DONE** |
 | 176 | W7-146 | [#695](https://github.com/sesquicadaver/MTDirector/issues/695) | Seed next PLAN-13 row after DESK-LAYOUT-09 → DESK-LAYOUT-10 | **DONE** |
 | 177 | W7-147 | [#696](https://github.com/sesquicadaver/MTDirector/issues/696) | DESK-LAYOUT-10 — PLAN-13 regression lock + docs sync Living Spec | **DONE** |
-| 178 | W7-148 | [#699](https://github.com/sesquicadaver/MTDirector/issues/699) | Seed next product tranche after PLAN-13 → PLAN-14 | **OPEN** |
+| 178 | W7-148 | [#699](https://github.com/sesquicadaver/MTDirector/issues/699) | Seed next product tranche after PLAN-13 → PLAN-14 | **DONE** |
 | 179 | W7-149 | [#700](https://github.com/sesquicadaver/MTDirector/issues/700) | PLAN-14 — Inventory Desktop Avalonia PlaceholderText / Incident surface Living Spec product tranche | **OPEN** |
 | 147 | W7-117 | [#632](https://github.com/sesquicadaver/MTDirector/issues/632) | Seed next PLAN-11 row after DESK-COMPOSE-01 → DESK-GATE-01 | **DONE** |
 
-**§3.C NEXT = W7-148 (#699)**. W7-147 **DONE**; DESK-LAYOUT-10 **DONE**; PLAN-13 **COMPLETE**; W7-146 **DONE**; W7-145 **DONE**; DESK-LAYOUT-09 **DONE**; W7-144 **DONE**; W7-143 **DONE**; DESK-LAYOUT-08 **DONE**; W7-142 **DONE**; W7-141 **DONE**; DESK-LAYOUT-07 **DONE**; W7-140 **DONE**; W7-139 **DONE**; DESK-LAYOUT-06 **DONE**; W7-138 **DONE**; W7-137 **DONE**; DESK-LAYOUT-05 **DONE**; W7-136 **DONE**; W7-135 **DONE**; DESK-LAYOUT-04 **DONE**; W7-134 **DONE**; W7-133 **DONE**; DESK-LAYOUT-03 **DONE**; W7-132 **DONE**; W7-131 **DONE**; DESK-LAYOUT-02 **DONE**; W7-130 **DONE**; W7-129 **DONE**; DESK-LAYOUT-01 **DONE**; W7-128 **DONE**; W7-127 **DONE**; DESK-LAYOUT-00 **DONE**; W7-126 **DONE**; PLAN-13 inventory **DONE**; W7-125 **DONE**; W7-124 **DONE**; PLAN-12 **COMPLETE**; W7-123 **DONE**; W7-122 **DONE**; W7-121 **DONE**; W7-120 **DONE**; W7-119 **DONE**; PLAN-12 inventory **DONE**; W7-118 **DONE**; W7-116 **DONE**; PLAN-11 **COMPLETE**; W7-117 **DONE**; W7-115 **DONE**; W7-113 **DONE**; W7-114 **DONE**; W7-112 **DONE**; W7-111 **DONE**; W7-110 **DONE**; PLAN-10 **COMPLETE**; W7-109 **DONE**; W7-108 **DONE**; W7-107 **DONE**; W7-106 **DONE**; W7-105 **DONE**; PLAN-09 **COMPLETE**; PLAN-10 inventory **DONE**; PLAN-08 **COMPLETE**; PLAN-09 inventory **DONE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-149 (#700)**. W7-148 **DONE**; W7-147 **DONE**; DESK-LAYOUT-10 **DONE**; PLAN-13 **COMPLETE**; W7-146 **DONE**; W7-145 **DONE**; DESK-LAYOUT-09 **DONE**; W7-144 **DONE**; W7-143 **DONE**; DESK-LAYOUT-08 **DONE**; W7-142 **DONE**; W7-141 **DONE**; DESK-LAYOUT-07 **DONE**; W7-140 **DONE**; W7-139 **DONE**; DESK-LAYOUT-06 **DONE**; W7-138 **DONE**; W7-137 **DONE**; DESK-LAYOUT-05 **DONE**; W7-136 **DONE**; W7-135 **DONE**; DESK-LAYOUT-04 **DONE**; W7-134 **DONE**; W7-133 **DONE**; DESK-LAYOUT-03 **DONE**; W7-132 **DONE**; W7-131 **DONE**; DESK-LAYOUT-02 **DONE**; W7-130 **DONE**; W7-129 **DONE**; DESK-LAYOUT-01 **DONE**; W7-128 **DONE**; W7-127 **DONE**; DESK-LAYOUT-00 **DONE**; W7-126 **DONE**; PLAN-13 inventory **DONE**; W7-125 **DONE**; W7-124 **DONE**; PLAN-12 **COMPLETE**; W7-123 **DONE**; W7-122 **DONE**; W7-121 **DONE**; W7-120 **DONE**; W7-119 **DONE**; PLAN-12 inventory **DONE**; W7-118 **DONE**; W7-116 **DONE**; PLAN-11 **COMPLETE**; W7-117 **DONE**; W7-115 **DONE**; W7-113 **DONE**; W7-114 **DONE**; W7-112 **DONE**; W7-111 **DONE**; W7-110 **DONE**; PLAN-10 **COMPLETE**; W7-109 **DONE**; W7-108 **DONE**; W7-107 **DONE**; W7-106 **DONE**; W7-105 **DONE**; PLAN-09 **COMPLETE**; PLAN-10 inventory **DONE**; PLAN-08 **COMPLETE**; PLAN-09 inventory **DONE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
