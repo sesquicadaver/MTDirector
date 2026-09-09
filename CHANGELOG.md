@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-165** ([#733](https://github.com/sesquicadaver/MTDirector/issues/733)): DESK-A11Y-ACTION-01 Bind assessment AutomationProperties.Name (`DesktopIncidentBindActionAutomationLivingSpecTests`). **§3.C NEXT = W7-166 (#734)**.
 - **W7-164** ([#730](https://github.com/sesquicadaver/MTDirector/issues/730)): PLAN-17 inventory Desktop Incident bind-action AutomationProperties (`Plan17DesktopIncidentBindActionW7164LivingSpecTests`). Seeded W7-165 (#733) / W7-166 (#734). **§3.C NEXT = W7-165 (#733)**.
 - **W7-163** ([#729](https://github.com/sesquicadaver/MTDirector/issues/729)): Seed next product tranche after PLAN-16 → PLAN-17 (`ProductTrancheSeedW7163LivingSpecTests`). **§3.C NEXT = W7-164 (#730)**.
 - **W7-162** ([#727](https://github.com/sesquicadaver/MTDirector/issues/727)): DESK-A11Y-02 Incident Names + PlaceholderText + mfc-field regression; **PLAN-16 COMPLETE**. Seeded W7-163 (#729) / W7-164 (#730) PLAN-17. **§3.C NEXT = W7-163 (#729)**.

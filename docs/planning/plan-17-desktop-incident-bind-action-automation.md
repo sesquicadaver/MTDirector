@@ -1,13 +1,13 @@
 # PLAN-17 — Desktop Incident bind-action AutomationProperties Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **DONE** (W7-164); seeded by **W7-163 DONE**; first implement **DESK-A11Y-ACTION-01 OPEN** (W7-165)  
+**Status:** Inventory **DONE** (W7-164); **DESK-A11Y-ACTION-01 DONE** (W7-165); seeded by **W7-163 DONE**; next seed **W7-166 OPEN** → DESK-A11Y-ACTION-02  
 **PLAN issue / queue:** [W7-164 / PLAN-17 #730](https://github.com/sesquicadaver/MTDirector/issues/730)  
 **Predecessor:** PLAN-16 Incident AutomationProperties accessible-name **COMPLETE**; product seed **W7-163 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
-Incident Operations "Bind assessment" button has Content text but no `AutomationProperties.Name` (fields already locked in PLAN-16).
+Incident Operations "Bind assessment" button exposes `AutomationProperties.Name` matching Content (DESK-A11Y-ACTION-01). Field Names remain locked by PLAN-16.
 
 ## Principles
 
@@ -33,14 +33,14 @@ Incident Operations "Bind assessment" button has Content text but no `Automation
 
 | Surface | Desktop today | Gap |
 |---------|---------------|-----|
-| Bind assessment button | Content="Bind assessment"; no AutomationProperties.Name | DESK-A11Y-ACTION-01 |
+| Bind assessment button | Content + AutomationProperties.Name="Bind assessment" | **DESK-A11Y-ACTION-01 DONE** |
 | Regression lock | Bind Name + Incident field Names matrix | DESK-A11Y-ACTION-02 |
 
 ## Ranked Desktop Incident bind-action a11y tranche
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-A11Y-ACTION-01** | Bind assessment button lacks AutomationProperties.Name | `MainWindow.axaml` Operations → Incident | **W7-165 OPEN** (#733); seeded by inventory **W7-164 DONE** (#730) |
+| 1 | **DESK-A11Y-ACTION-01** | Bind assessment button lacks AutomationProperties.Name | `MainWindow.axaml` Operations → Incident | **W7-165 DONE** (#733); seeded by inventory **W7-164 DONE** (#730) |
 | 2 | **DESK-A11Y-ACTION-02** | Regression lock: Bind Name + Incident field Names matrix | Living Spec matrix | seeded by **W7-166 OPEN** (#734) after DESK-A11Y-ACTION-01 |
 
 ## Dual track
@@ -49,4 +49,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-165 (#733)** — DESK-A11Y-ACTION-01 Bind assessment AutomationProperties.Name Living Spec.
+**§3.C NEXT = W7-166 (#734)** — Seed next PLAN-17 row after DESK-A11Y-ACTION-01 → DESK-A11Y-ACTION-02.

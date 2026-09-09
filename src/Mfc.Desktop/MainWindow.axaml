@@ -1725,6 +1725,7 @@
                       <DockPanel LastChildFill="True">
                         <Button Classes="mfc-action"
                                 Content="Bind assessment"
+                                AutomationProperties.Name="Bind assessment"
                                 Command="{Binding Incident.BindAssessmentCommand}"
                                 DockPanel.Dock="Right"
                                 Margin="8,0,0,0"
