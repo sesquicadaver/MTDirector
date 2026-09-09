@@ -782,7 +782,7 @@
                            ItemsSource="{Binding Snapshot.ConfigurationRecords}"
                            SelectedItem="{Binding Snapshot.SelectedConfigurationRecord, Mode=TwoWay}"
                            Margin="0,0,0,8"
-                           MinHeight="100">
+                           MinHeight="{StaticResource Mfc.ListMinHeight}">
                     <ListBox.ItemsPanel>
                       <ItemsPanelTemplate>
                         <VirtualizingStackPanel />
@@ -812,7 +812,7 @@
                     </ListBox.ItemTemplate>
                   </ListBox>
 
-                  <Grid Grid.Row="5" Margin="0,8,0,0" MinHeight="96">
+                  <Grid Grid.Row="5" Margin="0,8,0,0" MinHeight="{StaticResource Mfc.DetailMinHeight}">
                     <TextBlock Classes="mfc-muted"
                                VerticalAlignment="Top"
                                Text="Select a record to see all fields."

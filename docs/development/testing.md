@@ -788,6 +788,19 @@ Issue [#643](https://github.com/sesquicadaver/MTDirector/issues/643) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesDraftLivingSpecTests|CtDeskDraft01"`.
 
+## Living Specification — DESK-LAYOUT-00 Shared layout tokens (W7-127)
+
+Issue [#657](https://github.com/sesquicadaver/MTDirector/issues/657) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| App.axaml defines Mfc.ListMinHeight / DetailMinHeight / SectionSpacing | `src/Mfc.Desktop/App.axaml` | `DesktopLayoutTokensLivingSpecTests.Ac1AppAxamlDefinesSharedLayoutHeightTokens` |
+| MainWindow binds tokens on Snapshot primary list + detail | `src/Mfc.Desktop/MainWindow.axaml` | `DesktopLayoutTokensLivingSpecTests.Ac2MainWindowBindsTokensOnPrimarySnapshotListAndDetail` |
+| desktop-layout.md + PLAN-13 matrix | `docs/development/desktop-layout.md`, plan-13 | `DesktopLayoutTokensLivingSpecTests.Ac3DesktopLayoutDocAndPlan13MatrixRemainPresent` |
+| CT wrapper | release Living Spec | `CtDeskLayout00DesktopLayoutTokensLivingSpecTests.Ac1DesktopLayoutTokensLivingSpecAndPlan13MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopLayoutTokensLivingSpecTests|CtDeskLayout00"`.
+
 ## Living Specification — PLAN-13 Desktop layout density inventory (W7-126)
 
 Issue [#654](https://github.com/sesquicadaver/MTDirector/issues/654) AC → module → tests:
