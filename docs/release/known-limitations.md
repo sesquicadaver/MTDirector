@@ -166,3 +166,4 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-161 Living Spec lock): §3.C product row after DESK-A11Y-01 is seeded as **W7-162** — **DESK-A11Y-02** Incident Names + PlaceholderText + mfc-field regression Living Spec; not idle; not a lab stop-gate.
 - Intentional residual (W7-162 Living Spec lock): **DESK-A11Y-02 DONE** / **PLAN-16 COMPLETE** (`DesktopIncidentA11yRegressionLivingSpecTests`); next product seed W7-163 → PLAN-17.
 - Intentional residual (W7-163 Living Spec lock): §3.C product row after PLAN-16 COMPLETE is seeded as **W7-164** — **PLAN-17** Inventory Desktop Incident bind-action AutomationProperties Living Spec product tranche; not idle; not a lab stop-gate.
+- Intentional residual (W7-164 Living Spec lock): **PLAN-17** inventory DONE; next product row **W7-165** — **DESK-A11Y-ACTION-01** Bind assessment AutomationProperties.Name Living Spec; not idle; not a lab stop-gate.
