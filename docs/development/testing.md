@@ -1122,6 +1122,19 @@ Issue [#724](https://github.com/sesquicadaver/MTDirector/issues/724) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7161"`.
 
+## Living Specification — DESK-A11Y-02 a11y regression / PLAN-16 COMPLETE (W7-162)
+
+Issue [#727](https://github.com/sesquicadaver/MTDirector/issues/727) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Incident TextBoxes retain Name + PlaceholderText + mfc-field | `MainWindow.axaml` | `DesktopIncidentA11yRegressionLivingSpecTests.Ac1IncidentTextBoxesRetainNamePlaceholderAndMfcField` |
+| PLAN-16 COMPLETE + docs | plan-16 + testing + known-limitations | `DesktopIncidentA11yRegressionLivingSpecTests.Ac2Plan16CompleteAndDocsLockA11y02` |
+| CT wrapper | release Living Spec | `CtDeskA11y02DesktopIncidentA11yRegressionLivingSpecTests.Ac1DesktopIncidentA11yRegressionLivingSpecAndPlan16CompleteExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentA11yRegressionLivingSpecTests|CtDeskA11y02"`.
+
+
 
 
 
