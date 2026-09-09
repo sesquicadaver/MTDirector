@@ -1208,6 +1208,19 @@ Issue [#740](https://github.com/sesquicadaver/MTDirector/issues/740) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan18DesktopIncidentIngestActionW7169"`.
 
+## Living Specification — DESK-A11Y-INGEST-01 Ingest signal AutomationProperties.Name (W7-170)
+
+Issue [#743](https://github.com/sesquicadaver/MTDirector/issues/743) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ingest signal exposes AutomationProperties.Name | `MainWindow.axaml` | `DesktopIncidentIngestActionAutomationLivingSpecTests.Ac1IngestSignalButtonExposesAutomationPropertiesName` |
+| PLAN-18 + docs lock | plan-18 + testing + known-limitations | `DesktopIncidentIngestActionAutomationLivingSpecTests.Ac2Plan18AndTestingDocLockA11yIngest01` |
+| CT wrapper | release Living Spec | `CtDeskA11yIngest01DesktopIncidentIngestActionAutomationLivingSpecTests.Ac1DesktopIncidentIngestActionAutomationLivingSpecAndPlan18MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentIngestActionAutomationLivingSpecTests|CtDeskA11yIngest01"`.
+
+
 
 
 
