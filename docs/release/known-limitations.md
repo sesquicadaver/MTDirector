@@ -151,3 +151,4 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-146 Living Spec lock): §3.C product row after DESK-LAYOUT-09 is seeded as **W7-147** — **DESK-LAYOUT-10** PLAN-13 regression lock + docs sync Living Spec depth; not idle; not a lab stop-gate.
 - Intentional residual (W7-147 Living Spec lock): **DESK-LAYOUT-10** — PLAN-13 COMPLETE regression lock (`DesktopLayoutRegressionLockLivingSpecTests`); next product seed W7-148 → PLAN-14.
 - Intentional residual (W7-148 Living Spec lock): §3.C product row after PLAN-13 COMPLETE is seeded as **W7-149** — **PLAN-14** Inventory Desktop Avalonia PlaceholderText / Incident surface Living Spec product tranche; not idle; not a lab stop-gate.
+- Intentional residual (W7-149 Living Spec lock): **PLAN-14** inventory DONE; next product row **W7-150** — **DESK-PLACEHOLDER-01** Incident Watermark→PlaceholderText Living Spec; not idle; not a lab stop-gate.

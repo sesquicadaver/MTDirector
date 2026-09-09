@@ -982,6 +982,17 @@ Issue [#699](https://github.com/sesquicadaver/MTDirector/issues/699) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7148"`.
 
+## Living Specification — PLAN-14 Desktop Avalonia PlaceholderText inventory (W7-149)
+
+Issue [#700](https://github.com/sesquicadaver/MTDirector/issues/700) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-14 inventory + DESK-PLACEHOLDER-01 seed | `docs/planning/plan-14-desktop-avalonia-placeholder-incident-surface.md`, `known-limitations.md`, ROADMAP, continuous plan, docs index | `Plan14DesktopAvaloniaPlaceholderW7149LivingSpecTests.Ac1Plan14InventoryDocumentsRankedRowsAndSeedsDeskPlaceholder01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan14DesktopAvaloniaPlaceholderW7149"`.
+
+
 
 
 
