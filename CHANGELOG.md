@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-138** ([#679](https://github.com/sesquicadaver/MTDirector/issues/679)): Seed next PLAN-13 row after DESK-LAYOUT-05 → **DESK-LAYOUT-06** (W7-139). **§3.C NEXT = W7-139 (#680)**.
 - **W7-137** ([#676](https://github.com/sesquicadaver/MTDirector/issues/676)): DESK-LAYOUT-05 Policies MaxHeight cascade → `Mfc.ListMinHeight` floors (`DesktopLayoutPoliciesLivingSpecTests`). Seeded W7-138 (#679) / W7-139 (#680). **§3.C NEXT = W7-138 (#679)**.
 - **W7-136** ([#675](https://github.com/sesquicadaver/MTDirector/issues/675)): Seed next PLAN-13 row after DESK-LAYOUT-04 → **DESK-LAYOUT-05** (W7-137). **§3.C NEXT = W7-137 (#676)**.
 - **W7-135** ([#672](https://github.com/sesquicadaver/MTDirector/issues/672)): DESK-LAYOUT-04 Audit list + payload `GridSplitter` + layout tokens (`DesktopLayoutAuditLivingSpecTests`). Seeded W7-136 (#675) / W7-137 (#676). **§3.C NEXT = W7-136 (#675)**.

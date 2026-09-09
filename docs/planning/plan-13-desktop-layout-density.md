@@ -1,7 +1,7 @@
 # PLAN-13 — Desktop layout density Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **DONE** (W7-126); **DESK-LAYOUT-00 DONE** (W7-127); **DESK-LAYOUT-01 DONE** (W7-129); **DESK-LAYOUT-02 DONE** (W7-131); **DESK-LAYOUT-03 DONE** (W7-133); **DESK-LAYOUT-04 DONE** (W7-135); **DESK-LAYOUT-05 DONE** (W7-137); next seed **W7-138 OPEN**  
+**Status:** Inventory **DONE** (W7-126); **DESK-LAYOUT-00 DONE** (W7-127); **DESK-LAYOUT-01 DONE** (W7-129); **DESK-LAYOUT-02 DONE** (W7-131); **DESK-LAYOUT-03 DONE** (W7-133); **DESK-LAYOUT-04 DONE** (W7-135); **DESK-LAYOUT-05 DONE** (W7-137); seed **W7-138 DONE** → implement **DESK-LAYOUT-06 OPEN** (W7-139)  
 **PLAN issue / queue:** [W7-126 / PLAN-13 #654](https://github.com/sesquicadaver/MTDirector/issues/654)  
 **Predecessor:** GUI density analysis (lab session 2026-09-09); PLAN-12 Policies residual lifecycle **COMPLETE**; product seed **W7-125 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml), [`App.axaml`](../../src/Mfc.Desktop/App.axaml)  
@@ -59,7 +59,7 @@ Operator report: data panes often so small that content is unreadable. Analysis 
 | 4 | **DESK-LAYOUT-03** | Drift: competing stars + findings `MaxHeight="200"` | Drift `Auto,*,Auto,*,Auto,*` + dual GridSplitter; no findings MaxHeight | **W7-133 DONE** (#668); seeded by **W7-132 DONE** (#667) |
 | 5 | **DESK-LAYOUT-04** | Audit: `Auto,*,*` without splitter | Audit panel | **W7-135 DONE** (#672); seeded by **W7-134 DONE** (#671) |
 | 6 | **DESK-LAYOUT-05** | Policies: scroll page of tiny MaxHeight lists (80–160) | Policies panel | **W7-137 DONE** (#676); seeded by **W7-136 DONE** (#675) |
-| 7 | **DESK-LAYOUT-06** | Node + RoutingAssurance MaxHeight cascade | ~429–680 | seeded after DESK-LAYOUT-05 (**W7-138 OPEN** #679 → implement **W7-139 OPEN** #680) |
+| 7 | **DESK-LAYOUT-06** | Node + RoutingAssurance MaxHeight cascade | ~429–680 | seeded by **W7-138 DONE** (#679) → implement **W7-139 OPEN** (#680) |
 | 8 | **DESK-LAYOUT-07** | Operations (Onboarding/Deploy) MaxHeight lists | ~1471–1626 | seed after DESK-LAYOUT-06 |
 | 9 | **DESK-LAYOUT-08** | Shell chrome: fixed columns; no column splitter | ~65–150 | seed after DESK-LAYOUT-07 |
 | 10 | **DESK-LAYOUT-09** | Inventory / Zones nested MaxHeight frames | ~341–426 | seed after DESK-LAYOUT-08 |
@@ -90,4 +90,4 @@ Product §3 never waits on GNS3. Validate layout on Desktop against lab captures
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-138 (#679)** — Seed next PLAN-13 row after DESK-LAYOUT-05 → DESK-LAYOUT-06.
+**§3.C NEXT = W7-139 (#680)** — DESK-LAYOUT-06 Node + RoutingAssurance MaxHeight Living Spec depth.
