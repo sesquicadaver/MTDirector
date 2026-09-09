@@ -1176,6 +1176,19 @@ Issue [#734](https://github.com/sesquicadaver/MTDirector/issues/734) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7166"`.
 
+## Living Specification — DESK-A11Y-ACTION-02 bind-action a11y regression / PLAN-17 COMPLETE (W7-167)
+
+Issue [#737](https://github.com/sesquicadaver/MTDirector/issues/737) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Bind Name + Incident field Names matrix | `MainWindow.axaml` | `DesktopIncidentBindActionA11yRegressionLivingSpecTests.Ac1BindNameAndIncidentFieldNamesMatrixLocked` |
+| PLAN-17 COMPLETE + docs lock | plan-17 + testing + known-limitations | `DesktopIncidentBindActionA11yRegressionLivingSpecTests.Ac2Plan17CompleteAndDocsLockA11yAction02` |
+| CT wrapper | release Living Spec | `CtDeskA11yAction02DesktopIncidentBindActionA11yRegressionLivingSpecTests.Ac1DesktopIncidentBindActionA11yRegressionLivingSpecAndPlan17CompleteExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentBindActionA11yRegressionLivingSpecTests|CtDeskA11yAction02"`.
+
+
 
 
 
