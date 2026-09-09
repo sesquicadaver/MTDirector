@@ -811,6 +811,16 @@ Issue [#667](https://github.com/sesquicadaver/MTDirector/issues/667) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7132"`.
 
+## Living Specification — Product tranche seed after DESK-LAYOUT-03 (W7-134)
+
+Issue [#671](https://github.com/sesquicadaver/MTDirector/issues/671) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-LAYOUT-04 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md`, `plan-13-desktop-layout-density.md` | `ProductTrancheSeedW7134LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskLayout04AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7134"`.
+
 ## Living Specification — DESK-LAYOUT-02 Semantic Diff entry list + splitter (W7-131)
 
 Issue [#664](https://github.com/sesquicadaver/MTDirector/issues/664) AC → module → tests:
