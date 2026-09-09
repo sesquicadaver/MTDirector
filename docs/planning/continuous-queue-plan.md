@@ -206,7 +206,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | DESK-LAYOUT-00 — Shared layout tokens + desktop-layout.md Living Spec | Docs / Desktop Living Spec | **W7-127 DONE** |
 | Seed next PLAN-13 row after DESK-LAYOUT-00 → DESK-LAYOUT-01 | Docs / PLAN-13 | **W7-128 DONE** |
 | DESK-LAYOUT-01 — Snapshot tab primary pane + splitter Living Spec | Docs / Desktop Living Spec | **W7-129 DONE** |
-| Seed next PLAN-13 row after DESK-LAYOUT-01 → DESK-LAYOUT-02 | Docs / PLAN-13 | **W7-130 OPEN** |
+| Seed next PLAN-13 row after DESK-LAYOUT-01 → DESK-LAYOUT-02 | Docs / PLAN-13 | **W7-130 DONE** |
 | DESK-LAYOUT-02 — Semantic Diff entry list + splitter Living Spec | Docs / Desktop Living Spec | **W7-131 OPEN** |
 
 ### P3 / new Contracts (evidence)
@@ -390,7 +390,7 @@ W7-126 PLAN-13 — Inventory Desktop layout density Living Spec product tranche 
 W7-127 DESK-LAYOUT-00 — Shared layout tokens + desktop-layout.md Living Spec **DONE**
 W7-128 Seed next PLAN-13 row after DESK-LAYOUT-00 → DESK-LAYOUT-01 **DONE**
 W7-129 DESK-LAYOUT-01 — Snapshot tab primary pane + splitter Living Spec **DONE**
-W7-130 Seed next PLAN-13 row after DESK-LAYOUT-01 → DESK-LAYOUT-02 **OPEN**
+W7-130 Seed next PLAN-13 row after DESK-LAYOUT-01 → DESK-LAYOUT-02 **DONE**
 W7-131 DESK-LAYOUT-02 — Semantic Diff entry list + splitter Living Spec **OPEN**
 W7-117 Seed next PLAN-11 row after DESK-COMPOSE-01 → DESK-GATE-01 **DONE**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
@@ -560,11 +560,11 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 157 | W7-127 | [#657](https://github.com/sesquicadaver/MTDirector/issues/657) | DESK-LAYOUT-00 — Shared layout tokens + desktop-layout.md Living Spec | **DONE** |
 | 158 | W7-128 | [#658](https://github.com/sesquicadaver/MTDirector/issues/658) | Seed next PLAN-13 row after DESK-LAYOUT-00 → DESK-LAYOUT-01 | **DONE** |
 | 159 | W7-129 | [#659](https://github.com/sesquicadaver/MTDirector/issues/659) | DESK-LAYOUT-01 — Snapshot tab primary pane + splitter Living Spec | **DONE** |
-| 160 | W7-130 | [#663](https://github.com/sesquicadaver/MTDirector/issues/663) | Seed next PLAN-13 row after DESK-LAYOUT-01 → DESK-LAYOUT-02 | **OPEN** |
+| 160 | W7-130 | [#663](https://github.com/sesquicadaver/MTDirector/issues/663) | Seed next PLAN-13 row after DESK-LAYOUT-01 → DESK-LAYOUT-02 | **DONE** |
 | 161 | W7-131 | [#664](https://github.com/sesquicadaver/MTDirector/issues/664) | DESK-LAYOUT-02 — Semantic Diff entry list + splitter Living Spec | **OPEN** |
 | 147 | W7-117 | [#632](https://github.com/sesquicadaver/MTDirector/issues/632) | Seed next PLAN-11 row after DESK-COMPOSE-01 → DESK-GATE-01 | **DONE** |
 
-**§3.C NEXT = W7-130 (#663)**. W7-129 **DONE**; DESK-LAYOUT-01 **DONE**; W7-128 **DONE**; W7-127 **DONE**; DESK-LAYOUT-00 **DONE**; W7-126 **DONE**; PLAN-13 inventory **DONE**; W7-125 **DONE**; W7-124 **DONE**; PLAN-12 **COMPLETE**; W7-123 **DONE**; W7-122 **DONE**; W7-121 **DONE**; W7-120 **DONE**; W7-119 **DONE**; PLAN-12 inventory **DONE**; W7-118 **DONE**; W7-116 **DONE**; PLAN-11 **COMPLETE**; W7-117 **DONE**; W7-115 **DONE**; W7-113 **DONE**; W7-114 **DONE**; W7-112 **DONE**; W7-111 **DONE**; W7-110 **DONE**; PLAN-10 **COMPLETE**; W7-109 **DONE**; W7-108 **DONE**; W7-107 **DONE**; W7-106 **DONE**; W7-105 **DONE**; PLAN-09 **COMPLETE**; PLAN-10 inventory **DONE**; PLAN-08 **COMPLETE**; PLAN-09 inventory **DONE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-131 (#664)**. W7-130 **DONE**; W7-129 **DONE**; DESK-LAYOUT-01 **DONE**; W7-128 **DONE**; W7-127 **DONE**; DESK-LAYOUT-00 **DONE**; W7-126 **DONE**; PLAN-13 inventory **DONE**; W7-125 **DONE**; W7-124 **DONE**; PLAN-12 **COMPLETE**; W7-123 **DONE**; W7-122 **DONE**; W7-121 **DONE**; W7-120 **DONE**; W7-119 **DONE**; PLAN-12 inventory **DONE**; W7-118 **DONE**; W7-116 **DONE**; PLAN-11 **COMPLETE**; W7-117 **DONE**; W7-115 **DONE**; W7-113 **DONE**; W7-114 **DONE**; W7-112 **DONE**; W7-111 **DONE**; W7-110 **DONE**; PLAN-10 **COMPLETE**; W7-109 **DONE**; W7-108 **DONE**; W7-107 **DONE**; W7-106 **DONE**; W7-105 **DONE**; PLAN-09 **COMPLETE**; PLAN-10 inventory **DONE**; PLAN-08 **COMPLETE**; PLAN-09 inventory **DONE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
