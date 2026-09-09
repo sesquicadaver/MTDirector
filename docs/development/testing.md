@@ -913,6 +913,20 @@ Issue [#687](https://github.com/sesquicadaver/MTDirector/issues/687) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7142"`.
 
+## Living Specification — DESK-LAYOUT-08 Shell chrome column splitter (W7-143)
+
+Issue [#688](https://github.com/sesquicadaver/MTDirector/issues/688) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Shell `260,Auto,150,Auto,*` + dual column GridSplitter | `MainWindow.axaml` shell grid | `DesktopLayoutShellChromeLivingSpecTests.Ac1ShellChromeUsesAutoSplitterColumnsBetweenPanes` |
+| Pane MinWidth floors | `MainWindow.axaml` | `DesktopLayoutShellChromeLivingSpecTests.Ac2ShellChromePanesHaveMinWidthFloors` |
+| PLAN-13 + desktop-layout.md | docs | `DesktopLayoutShellChromeLivingSpecTests.Ac3Plan13AndDesktopLayoutDocLockLayout08` |
+| CT wrapper | release Living Spec | `CtDeskLayout08DesktopLayoutShellChromeLivingSpecTests.Ac1DesktopLayoutShellChromeLivingSpecAndPlan13MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopLayoutShellChromeLivingSpecTests|CtDeskLayout08"`.
+
+
 
 
 

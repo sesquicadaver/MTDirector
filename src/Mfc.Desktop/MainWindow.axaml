@@ -62,7 +62,8 @@
       </StackPanel>
     </Border>
 
-    <Grid ColumnDefinitions="260,12,150,12,*" RowDefinitions="Auto,*,Auto">
+    <!-- DESK-LAYOUT-08: Inventory | column splitter | Modules | column splitter | content * -->
+    <Grid ColumnDefinitions="260,Auto,150,Auto,*" RowDefinitions="Auto,*,Auto">
       <!-- Inventory tree (always visible) -->
       <StackPanel Grid.Column="0" Grid.Row="0" Spacing="6" Margin="0,0,0,8">
         <TextBlock Classes="mfc-section-title" Text="Inventory" />
@@ -79,7 +80,8 @@
       <Border Grid.Column="0"
               Grid.Row="1"
               Classes="mfc-list-frame"
-              ClipToBounds="True">
+              ClipToBounds="True"
+              MinWidth="160">
         <TreeView ItemsSource="{Binding Inventory.Roots}"
                   SelectedItem="{Binding Inventory.SelectedNode, Mode=TwoWay}">
           <TreeView.ItemTemplate>
@@ -119,6 +121,14 @@
                  Text="{Binding Inventory.ErrorText}"
                  IsVisible="{Binding Inventory.HasError}" />
 
+      <GridSplitter Grid.Column="1"
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Width="6"
+                    VerticalAlignment="Stretch"
+                    ResizeDirection="Columns"
+                    Background="{StaticResource Mfc.BorderBrush}" />
+
       <!-- Module navigation -->
       <TextBlock Grid.Column="2" Grid.Row="0"
                  Classes="mfc-section-title"
@@ -129,7 +139,8 @@
               Grid.Row="1"
               Grid.RowSpan="2"
               Classes="mfc-list-frame"
-              ClipToBounds="True">
+              ClipToBounds="True"
+              MinWidth="100">
         <ListBox ItemsSource="{Binding Modules}"
                  SelectedItem="{Binding SelectedModule, Mode=TwoWay}"
                  Name="ModuleNavList">
@@ -141,13 +152,22 @@
         </ListBox>
       </Border>
 
+      <GridSplitter Grid.Column="3"
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Width="6"
+                    VerticalAlignment="Stretch"
+                    ResizeDirection="Columns"
+                    Background="{StaticResource Mfc.BorderBrush}" />
+
       <!-- Module content: single cell, ClipToBounds; only one IsVisible at a time -->
       <Border Grid.Column="4"
               Grid.Row="0"
               Grid.RowSpan="3"
               Classes="mfc-panel"
               Padding="10"
-              ClipToBounds="True">
+              ClipToBounds="True"
+              MinWidth="240">
         <Grid>
         <!-- Inventory detail + Zones -->
         <ScrollViewer IsVisible="{Binding IsInventorySelected}"

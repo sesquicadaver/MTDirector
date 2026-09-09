@@ -145,3 +145,4 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-140 Living Spec lock): §3.C product row after DESK-LAYOUT-06 is seeded as **W7-141** — **DESK-LAYOUT-07** Operations Onboarding/Deploy MaxHeight Living Spec depth; not idle; not a lab stop-gate.
 - Intentional residual (W7-141 Living Spec lock): **DESK-LAYOUT-07** — Onboarding/Deploy lists use `Mfc.ListMinHeight` (no MaxHeight 100/120/140) (`DesktopLayoutOperationsLivingSpecTests`); next PLAN-13 seed W7-142 → DESK-LAYOUT-08.
 - Intentional residual (W7-142 Living Spec lock): §3.C product row after DESK-LAYOUT-07 is seeded as **W7-143** — **DESK-LAYOUT-08** Shell chrome column splitter Living Spec depth; not idle; not a lab stop-gate.
+- Intentional residual (W7-143 Living Spec lock): **DESK-LAYOUT-08** — Shell chrome dual column `GridSplitter` (`DesktopLayoutShellChromeLivingSpecTests`); next PLAN-13 seed W7-144 → DESK-LAYOUT-09.
