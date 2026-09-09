@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-141** ([#684](https://github.com/sesquicadaver/MTDirector/issues/684)): DESK-LAYOUT-07 Operations Onboarding/Deploy MaxHeight → `Mfc.ListMinHeight` (`DesktopLayoutOperationsLivingSpecTests`). Seeded W7-142 (#687) / W7-143 (#688). **§3.C NEXT = W7-142 (#687)**.
 - **W7-140** ([#683](https://github.com/sesquicadaver/MTDirector/issues/683)): Seed next PLAN-13 row after DESK-LAYOUT-06 → **DESK-LAYOUT-07** (W7-141). **§3.C NEXT = W7-141 (#684)**.
 - **W7-139** ([#680](https://github.com/sesquicadaver/MTDirector/issues/680)): DESK-LAYOUT-06 Node + RoutingAssurance MaxHeight → `Mfc.ListMinHeight` (`DesktopLayoutNodeRoutingLivingSpecTests`). Seeded W7-140 (#683) / W7-141 (#684). **§3.C NEXT = W7-140 (#683)**.
 - **W7-138** ([#679](https://github.com/sesquicadaver/MTDirector/issues/679)): Seed next PLAN-13 row after DESK-LAYOUT-05 → **DESK-LAYOUT-06** (W7-139). **§3.C NEXT = W7-139 (#680)**.
