@@ -1872,7 +1872,10 @@
         </Grid>
 
         <!-- Audit (read-only) -->
-        <Grid IsVisible="{Binding IsAuditSelected}" RowDefinitions="Auto,*,*" ClipToBounds="True">
+        <!-- DESK-LAYOUT-04: events * + GridSplitter + payload * (token MinHeights) -->
+        <Grid IsVisible="{Binding IsAuditSelected}"
+              RowDefinitions="Auto,*,Auto,*"
+              ClipToBounds="True">
           <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
             <WrapPanel DockPanel.Dock="Right" Classes="mfc-toolbar" ItemSpacing="8" Margin="8,0,0,0">
               <Button Classes="mfc-action" Content="Refresh" Command="{Binding Audit.RefreshCommand}" />
@@ -1887,10 +1890,14 @@
                          IsVisible="{Binding Audit.HasError}" />
             </StackPanel>
           </DockPanel>
-          <Border Grid.Row="1" Classes="mfc-list-frame" Margin="0,0,0,8" ClipToBounds="True">
+          <Border Grid.Row="1"
+                  Classes="mfc-list-frame"
+                  ClipToBounds="True"
+                  MinHeight="{StaticResource Mfc.ListMinHeight}">
             <ListBox ItemsSource="{Binding Audit.Events}"
                      SelectedItem="{Binding Audit.SelectedEvent, Mode=TwoWay}"
-                     Name="AuditEventsList">
+                     Name="AuditEventsList"
+                     MinHeight="{StaticResource Mfc.ListMinHeight}">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                   <VirtualizingStackPanel />
@@ -1903,7 +1910,15 @@
               </ListBox.ItemTemplate>
             </ListBox>
           </Border>
-          <Border Grid.Row="2" Classes="mfc-panel" ClipToBounds="True">
+          <GridSplitter Grid.Row="2"
+                        Height="6"
+                        HorizontalAlignment="Stretch"
+                        ResizeDirection="Rows"
+                        Background="{StaticResource Mfc.BorderBrush}" />
+          <Border Grid.Row="3"
+                  Classes="mfc-panel"
+                  ClipToBounds="True"
+                  MinHeight="{StaticResource Mfc.DetailMinHeight}">
             <DockPanel LastChildFill="True">
               <TextBlock DockPanel.Dock="Top" Classes="mfc-label" Text="Payload (JSON)" Margin="0,0,0,6" />
               <TextBox Text="{Binding Audit.SelectedEvent.PayloadJson}"
