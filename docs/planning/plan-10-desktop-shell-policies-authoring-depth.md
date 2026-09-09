@@ -41,6 +41,6 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 See PLAN-11: [`plan-11-desktop-policies-review-compose-lifecycle.md`](plan-11-desktop-policies-review-compose-lifecycle.md).
 
-**§3.C NEXT = W7-137 (#676)** — DESK-COMPOSE-01 Desktop Policies Compose+RecordAnalysis Living Spec depth (PLAN-11).
+**§3.C NEXT = W7-138 (#679)** — DESK-COMPOSE-01 Desktop Policies Compose+RecordAnalysis Living Spec depth (PLAN-11).
 
 **Successor:** PLAN-11 inventory **DONE** (W7-112); first atomic row **DESK-SUBMIT-01** (W7-114).

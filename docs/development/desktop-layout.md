@@ -1,6 +1,6 @@
 # Desktop layout density tokens
 
-**PLAN-13 / DESK-LAYOUT-00…04.** Shared Avalonia resources and Snapshot / Semantic Diff / Drift density contracts for operator-readable data panes.
+**PLAN-13 / DESK-LAYOUT-00…05.** Shared Avalonia resources and Snapshot / Semantic Diff / Drift density contracts for operator-readable data panes.
 
 ## Normative tokens (`App.axaml`)
 
@@ -16,7 +16,7 @@ Use `{StaticResource Mfc.ListMinHeight}` (and siblings) instead of magic `MinHei
 
 1. One primary data pane per view grows with `*` (or fills a ScrollViewer).  
 2. No hard `MaxHeight` on primary lists unless paired with a splitter or an explicit compact mode.  
-3. Later DESK-LAYOUT-05…09 rows migrate remaining magic heights to these tokens and add `GridSplitter` where needed.
+3. Later DESK-LAYOUT-06…09 rows migrate remaining magic heights to these tokens and add `GridSplitter` where needed.
 
 ## Snapshot (DESK-LAYOUT-01)
 
@@ -54,10 +54,21 @@ In the Audit module:
 - Event list binds `Mfc.ListMinHeight`; payload binds `Mfc.DetailMinHeight`.  
 - Operator can reclaim space between list and JSON payload (no starved competing `*` without splitter).
 
+
+
+## Policies (DESK-LAYOUT-05)
+
+In the Policies scroll page (`IsPoliciesSelected`):
+
+- Catalog, rules, objects, safety findings, diff/compose/compile lists bind `MinHeight="{StaticResource Mfc.ListMinHeight}"`.  
+- Removed the tiny `MaxHeight` cascade (`80`–`180`) that starved list content inside the vertical `ScrollViewer`.  
+- Lists grow with content; the page scrolls as a whole (readable operator density).
+
 ## Living Spec
 
 - `DesktopLayoutTokensLivingSpecTests` (+ `CtDeskLayout00…`) — token presence.  
 - `DesktopLayoutSnapshotLivingSpecTests` (+ `CtDeskLayout01…`) — Snapshot single-primary + splitter contract.  
 - `DesktopLayoutSemanticDiffLivingSpecTests` (+ `CtDeskLayout02…`) — Semantic Diff entry/detail splitter contract.  
 - `DesktopLayoutDriftLivingSpecTests` (+ `CtDeskLayout03…`) — Drift three-pane splitter contract.  
-- `DesktopLayoutAuditLivingSpecTests` (+ `CtDeskLayout04…`) — Audit list/payload splitter contract.
+- `DesktopLayoutAuditLivingSpecTests` (+ `CtDeskLayout04…`) — Audit list/payload splitter contract.  
+- `DesktopLayoutPoliciesLivingSpecTests` (+ `CtDeskLayout05…`) — Policies MaxHeight→token floors contract.

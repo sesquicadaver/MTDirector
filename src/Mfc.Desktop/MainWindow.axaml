@@ -1068,6 +1068,7 @@
         </TabControl>
 
         <!-- Policies -->
+        <!-- DESK-LAYOUT-05: Policies lists use Mfc.ListMinHeight floors (no tiny MaxHeight 80–180) -->
         <ScrollViewer IsVisible="{Binding IsPoliciesSelected}"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
@@ -1093,7 +1094,7 @@
                 </WrapPanel>
                 <ListBox ItemsSource="{Binding Policies.Catalog}"
                          SelectedItem="{Binding Policies.SelectedCatalogItem, Mode=TwoWay}"
-                         MaxHeight="160">
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1173,7 +1174,7 @@
                            TextWrapping="Wrap" />
                 <TextBlock Text="{Binding Policies.SafetyFlagsText}" TextWrapping="Wrap" />
                 <TextBlock Classes="mfc-label" Text="ManagementPath findings" />
-                <ListBox ItemsSource="{Binding Policies.ManagementPathFindingLines}" MaxHeight="120">
+                <ListBox ItemsSource="{Binding Policies.ManagementPathFindingLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemTemplate>
                     <DataTemplate>
                       <TextBlock Text="{Binding}" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace" />
@@ -1181,7 +1182,7 @@
                   </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="FastTrack findings" />
-                <ListBox ItemsSource="{Binding Policies.FastTrackFindingLines}" MaxHeight="120">
+                <ListBox ItemsSource="{Binding Policies.FastTrackFindingLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemTemplate>
                     <DataTemplate>
                       <TextBlock Text="{Binding}" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace" />
@@ -1189,14 +1190,14 @@
                   </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Witnesses / SYSTEM tests" />
-                <ListBox ItemsSource="{Binding Policies.SafetyWitnessLines}" MaxHeight="100">
+                <ListBox ItemsSource="{Binding Policies.SafetyWitnessLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemTemplate>
                     <DataTemplate>
                       <TextBlock Text="{Binding}" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace" />
                     </DataTemplate>
                   </ListBox.ItemTemplate>
                 </ListBox>
-                <ListBox ItemsSource="{Binding Policies.SafetySystemTestLines}" MaxHeight="80">
+                <ListBox ItemsSource="{Binding Policies.SafetySystemTestLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemTemplate>
                     <DataTemplate>
                       <TextBlock Text="{Binding}" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace" />
@@ -1241,7 +1242,7 @@
                 </WrapPanel>
                 <ListBox ItemsSource="{Binding Policies.Rules}"
                          SelectedItem="{Binding Policies.SelectedRule, Mode=TwoWay}"
-                         MaxHeight="180">
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1282,7 +1283,7 @@
                          AcceptsReturn="True"
                          MinHeight="56"
                          TextWrapping="Wrap" />
-                <ListBox ItemsSource="{Binding Policies.AddressObjects}" MaxHeight="120">
+                <ListBox ItemsSource="{Binding Policies.AddressObjects}" MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1317,7 +1318,7 @@
                           Command="{Binding Policies.UpsertServiceCommand}"
                           MinWidth="120" />
                 </WrapPanel>
-                <ListBox ItemsSource="{Binding Policies.ServiceObjects}" MaxHeight="120">
+                <ListBox ItemsSource="{Binding Policies.ServiceObjects}" MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1362,7 +1363,7 @@
                           Command="{Binding Policies.ReplaceContractsCommand}"
                           MinWidth="140" />
                 </WrapPanel>
-                <ListBox ItemsSource="{Binding Policies.ChainContracts}" MaxHeight="120">
+                <ListBox ItemsSource="{Binding Policies.ChainContracts}" MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1421,7 +1422,7 @@
                   <Button Classes="mfc-action" Content="Compile artifacts" Command="{Binding Policies.CompileCommand}" MinWidth="140" />
                 </WrapPanel>
                 <TextBlock Classes="mfc-label" Text="Revision diff" />
-                <ListBox ItemsSource="{Binding Policies.DiffRows}" MaxHeight="140">
+                <ListBox ItemsSource="{Binding Policies.DiffRows}" MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1438,7 +1439,7 @@
                   </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Revision diff (summary lines)" />
-                <ListBox ItemsSource="{Binding Policies.DiffLines}" MaxHeight="80">
+                <ListBox ItemsSource="{Binding Policies.DiffLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1454,7 +1455,7 @@
                 <TextBlock Classes="mfc-label" Text="Compose findings" />
                 <ListBox ItemsSource="{Binding Policies.Findings}"
                          SelectedItem="{Binding Policies.SelectedFinding, Mode=TwoWay}"
-                         MaxHeight="120">
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1468,7 +1469,7 @@
                   </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Compile artifacts" />
-                <ListBox ItemsSource="{Binding Policies.CompileArtifactLines}" MaxHeight="120">
+                <ListBox ItemsSource="{Binding Policies.CompileArtifactLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
