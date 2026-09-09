@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-123** ([#644](https://github.com/sesquicadaver/MTDirector/issues/644)): Seed next PLAN-12 row after DESK-DRAFT-01 → **DESK-CATALOG-01** (W7-124). **§3.C NEXT = W7-124 (#645)**.
 - **W7-122** ([#643](https://github.com/sesquicadaver/MTDirector/issues/643)): DESK-DRAFT-01 Desktop Policies Create/Load draft Living Spec (`DesktopPoliciesDraftLivingSpecTests`). Seeded W7-123 (#644) / W7-124 (#645). **§3.C NEXT = W7-123 (#644)**.
 - **W7-121** ([#642](https://github.com/sesquicadaver/MTDirector/issues/642)): Seed next PLAN-12 row after DESK-ACK-01 → **DESK-DRAFT-01** (W7-122). **§3.C NEXT = W7-122 (#643)**.
 - **W7-120** ([#641](https://github.com/sesquicadaver/MTDirector/issues/641)): DESK-ACK-01 Desktop Policies AcknowledgeWarning Living Spec (`DesktopPoliciesAcknowledgeLivingSpecTests`). Seeded W7-121 (#642) / W7-122 (#643). **§3.C NEXT = W7-121 (#642)**.

@@ -83,6 +83,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-120 Living Spec lock): **DESK-ACK-01** — Desktop Policies AcknowledgeWarning Living Spec (`DesktopPoliciesAcknowledgeLivingSpecTests`); next PLAN-12 seed W7-121 → DESK-DRAFT-01.
 - Intentional residual (W7-121 Living Spec lock): §3.C product row after DESK-ACK-01 is seeded as **W7-122** — **DESK-DRAFT-01** Desktop Policies Create/Load draft Living Spec depth; not idle; not a lab stop-gate.
 - Intentional residual (W7-122 Living Spec lock): **DESK-DRAFT-01** — Desktop Policies Create/Load draft Living Spec (`DesktopPoliciesDraftLivingSpecTests`); next PLAN-12 seed W7-123 → DESK-CATALOG-01.
+- Intentional residual (W7-123 Living Spec lock): §3.C product row after DESK-DRAFT-01 is seeded as **W7-124** — **DESK-CATALOG-01** Desktop Policies Catalog refresh Living Spec depth; not idle; not a lab stop-gate.
 
 ## Production wiring (P2 pilot)
 
