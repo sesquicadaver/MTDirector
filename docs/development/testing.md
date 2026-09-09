@@ -1100,6 +1100,19 @@ Issue [#720](https://github.com/sesquicadaver/MTDirector/issues/720) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan16DesktopIncidentAutomationW7159"`.
 
+## Living Specification — DESK-A11Y-01 Incident AutomationProperties.Name (W7-160)
+
+Issue [#723](https://github.com/sesquicadaver/MTDirector/issues/723) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Incident TextBoxes expose AutomationProperties.Name | `MainWindow.axaml` | `DesktopIncidentAutomationNameLivingSpecTests.Ac1IncidentTextBoxesExposeAutomationPropertiesName` |
+| PLAN-16 + docs lock | plan-16 + testing + known-limitations | `DesktopIncidentAutomationNameLivingSpecTests.Ac2Plan16AndTestingDocLockA11y01` |
+| CT wrapper | release Living Spec | `CtDeskA11y01DesktopIncidentAutomationNameLivingSpecTests.Ac1DesktopIncidentAutomationNameLivingSpecAndPlan16MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentAutomationNameLivingSpecTests|CtDeskA11y01"`.
+
+
 
 
 
