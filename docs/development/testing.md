@@ -959,6 +959,20 @@ Issue [#695](https://github.com/sesquicadaver/MTDirector/issues/695) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7146"`.
 
+## Living Specification — DESK-LAYOUT-10 PLAN-13 regression lock (W7-147)
+
+Issue [#696](https://github.com/sesquicadaver/MTDirector/issues/696) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| DESK-LAYOUT-00…09 Living Specs present with primary AC | `tests/Mfc.UnitTests/Desktop/DesktopLayout*LivingSpecTests.cs` | `DesktopLayoutRegressionLockLivingSpecTests.Ac1AllDeskLayout00Through09LivingSpecsExistWithPrimaryAc` |
+| No primary-list MaxHeight 80…280 residue | `MainWindow.axaml` | `DesktopLayoutRegressionLockLivingSpecTests.Ac2MainWindowHasNoPrimaryListMaxHeightCascadeResidue` |
+| PLAN-13 COMPLETE + docs | plan-13 + desktop-layout.md | `DesktopLayoutRegressionLockLivingSpecTests.Ac3Plan13CompleteAndDesktopLayoutDocLockLayout10` |
+| CT wrapper | release Living Spec | `CtDeskLayout10DesktopLayoutRegressionLockLivingSpecTests.Ac1DesktopLayoutRegressionLockLivingSpecAndPlan13CompleteExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopLayoutRegressionLockLivingSpecTests|CtDeskLayout10"`.
+
+
 
 
 

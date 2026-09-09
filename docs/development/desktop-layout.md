@@ -1,6 +1,6 @@
 # Desktop layout density tokens
 
-**PLAN-13 / DESK-LAYOUT-00…09.** Shared Avalonia resources and Snapshot / Semantic Diff / Drift density contracts for operator-readable data panes.
+**PLAN-13 COMPLETE / DESK-LAYOUT-00…10.** Shared Avalonia resources and Snapshot / Semantic Diff / Drift density contracts for operator-readable data panes.
 
 ## Normative tokens (`App.axaml`)
 
@@ -16,7 +16,7 @@ Use `{StaticResource Mfc.ListMinHeight}` (and siblings) instead of magic `MinHei
 
 1. One primary data pane per view grows with `*` (or fills a ScrollViewer).  
 2. No hard `MaxHeight` on primary lists unless paired with a splitter or an explicit compact mode.  
-3. Later DESK-LAYOUT-10 row migrate remaining magic heights to these tokens and add `GridSplitter` where needed.
+3. DESK-LAYOUT-10 regression lock asserts DESK-LAYOUT-00…09 Living Specs and absence of primary-list MaxHeight cascade.
 
 ## Snapshot (DESK-LAYOUT-01)
 
@@ -103,6 +103,16 @@ In Inventory detail Zones panel:
 - Company zones / Node bindings lists and Resolve results frame bind `MinHeight="{StaticResource Mfc.ListMinHeight}"`.  
 - Removed nested `MaxHeight` caps (`220` / `240`) that starved zone lists inside the Inventory scroll page.
 
+
+
+## Regression lock (DESK-LAYOUT-10)
+
+**PLAN-13 COMPLETE.**
+
+- All DESK-LAYOUT-00…09 Desktop Living Specs remain present with their primary AC methods.  
+- `MainWindow.axaml` has no primary-list `MaxHeight` cascade residue (`80`…`280` values used historically).  
+- Matrix: `DesktopLayoutRegressionLockLivingSpecTests` (+ `CtDeskLayout10…`).
+
 ## Living Spec
 
 - `DesktopLayoutTokensLivingSpecTests` (+ `CtDeskLayout00…`) — token presence.  
@@ -114,4 +124,5 @@ In Inventory detail Zones panel:
 - `DesktopLayoutNodeRoutingLivingSpecTests` (+ `CtDeskLayout06…`) — Node + RoutingAssurance token floors contract.  
 - `DesktopLayoutOperationsLivingSpecTests` (+ `CtDeskLayout07…`) — Operations Onboarding/Deploy token floors contract.  
 - `DesktopLayoutShellChromeLivingSpecTests` (+ `CtDeskLayout08…`) — Shell chrome column splitter contract.  
-- `DesktopLayoutZonesLivingSpecTests` (+ `CtDeskLayout09…`) — Inventory/Zones MaxHeight→token floors contract.
+- `DesktopLayoutZonesLivingSpecTests` (+ `CtDeskLayout09…`) — Inventory/Zones MaxHeight→token floors contract.  
+- `DesktopLayoutRegressionLockLivingSpecTests` (+ `CtDeskLayout10…`) — PLAN-13 COMPLETE regression lock.
