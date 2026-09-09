@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-131** ([#664](https://github.com/sesquicadaver/MTDirector/issues/664)): DESK-LAYOUT-02 Semantic Diff entry list + vertical `GridSplitter` + uncapped before/after (`DesktopLayoutSemanticDiffLivingSpecTests`). Seeded W7-132 (#667) / W7-133 (#668). **§3.C NEXT = W7-132 (#667)**.
 - **W7-130** ([#663](https://github.com/sesquicadaver/MTDirector/issues/663)): Seed next PLAN-13 row after DESK-LAYOUT-01 → **DESK-LAYOUT-02** (W7-131). **§3.C NEXT = W7-131 (#664)**.
 - **W7-129** ([#659](https://github.com/sesquicadaver/MTDirector/issues/659)): DESK-LAYOUT-01 Snapshot tab single primary pane (Configuration|Observations tabs) + vertical `GridSplitter` (`DesktopLayoutSnapshotLivingSpecTests`). Seeded W7-130 (#663) / W7-131 (#664). **§3.C NEXT = W7-130 (#663)**.
 - **W7-128** ([#658](https://github.com/sesquicadaver/MTDirector/issues/658)): Seed next PLAN-13 row after DESK-LAYOUT-00 → **DESK-LAYOUT-01** (W7-129). **§3.C NEXT = W7-129 (#659)**.

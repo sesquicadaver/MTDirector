@@ -1,7 +1,7 @@
 # PLAN-13 — Desktop layout density Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **DONE** (W7-126); **DESK-LAYOUT-00 DONE** (W7-127); **DESK-LAYOUT-01 DONE** (W7-129); seed **W7-130 DONE** → implement **DESK-LAYOUT-02 OPEN** (W7-131)  
+**Status:** Inventory **DONE** (W7-126); **DESK-LAYOUT-00 DONE** (W7-127); **DESK-LAYOUT-01 DONE** (W7-129); **DESK-LAYOUT-02 DONE** (W7-131); next seed **W7-132 OPEN**  
 **PLAN issue / queue:** [W7-126 / PLAN-13 #654](https://github.com/sesquicadaver/MTDirector/issues/654)  
 **Predecessor:** GUI density analysis (lab session 2026-09-09); PLAN-12 Policies residual lifecycle **COMPLETE**; product seed **W7-125 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml), [`App.axaml`](../../src/Mfc.Desktop/App.axaml)  
@@ -55,8 +55,8 @@ Operator report: data panes often so small that content is unreadable. Analysis 
 |------|----|-----|----------|-------|
 | 1 | **DESK-LAYOUT-00** | No shared layout tokens / density contract doc | `App.axaml` + `docs/development/desktop-layout.md`; Snapshot primary list binds tokens | **W7-127 DONE** (#657) |
 | 2 | **DESK-LAYOUT-01** | Snapshot tab: competing `*` + clipped detail | `MainWindow.axaml` Snapshot panel `Auto,*,Auto,*` + TabControl + GridSplitter | **W7-129 DONE** (#659); seeded by **W7-128 DONE** (#658) |
-| 3 | **DESK-LAYOUT-02** | Semantic Diff: entry list vs before/after starved | ~857–1051 + before/after `MaxHeight="220"` | seeded by **W7-130 DONE** (#663) → implement **W7-131 OPEN** (#664) |
-| 4 | **DESK-LAYOUT-03** | Drift: competing stars + findings `MaxHeight="200"` | ~1737–1831 | seed after DESK-LAYOUT-02 |
+| 3 | **DESK-LAYOUT-02** | Semantic Diff: entry list vs before/after starved | Semantic Diff panel `*,Auto,*` + GridSplitter; no before/after MaxHeight | **W7-131 DONE** (#664); seeded by **W7-130 DONE** (#663) |
+| 4 | **DESK-LAYOUT-03** | Drift: competing stars + findings `MaxHeight="200"` | ~1737–1831 | seeded after DESK-LAYOUT-02 (**W7-132 OPEN** #667 → implement **W7-133 OPEN** #668) |
 | 5 | **DESK-LAYOUT-04** | Audit: `Auto,*,*` without splitter | ~1835–1875 | seed after DESK-LAYOUT-03 |
 | 6 | **DESK-LAYOUT-05** | Policies: scroll page of tiny MaxHeight lists (80–160) | ~1056–1466 | seed after DESK-LAYOUT-04 |
 | 7 | **DESK-LAYOUT-06** | Node + RoutingAssurance MaxHeight cascade | ~429–680 | seed after DESK-LAYOUT-05 |
@@ -90,4 +90,4 @@ Product §3 never waits on GNS3. Validate layout on Desktop against lab captures
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-131 (#664)** — DESK-LAYOUT-02 Semantic Diff entry list + splitter Living Spec depth.
+**§3.C NEXT = W7-132 (#667)** — Seed next PLAN-13 row after DESK-LAYOUT-02 → DESK-LAYOUT-03.

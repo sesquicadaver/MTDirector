@@ -788,6 +788,19 @@ Issue [#643](https://github.com/sesquicadaver/MTDirector/issues/643) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesDraftLivingSpecTests|CtDeskDraft01"`.
 
+## Living Specification — DESK-LAYOUT-02 Semantic Diff entry list + splitter (W7-131)
+
+Issue [#664](https://github.com/sesquicadaver/MTDirector/issues/664) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Semantic Diff `*,Auto,*` + GridSplitter + tokens | `MainWindow.axaml` Semantic Diff tab | `DesktopLayoutSemanticDiffLivingSpecTests.Ac1SemanticDiffUsesEntryStarSplitterAndDetailStar` |
+| Before/after detail without MaxHeight=220 | `MainWindow.axaml` | `DesktopLayoutSemanticDiffLivingSpecTests.Ac2SemanticDiffBeforeAfterDetailHasNoMaxHeightCap` |
+| PLAN-13 + desktop-layout.md | docs | `DesktopLayoutSemanticDiffLivingSpecTests.Ac3Plan13AndDesktopLayoutDocLockLayout02` |
+| CT wrapper | release Living Spec | `CtDeskLayout02DesktopLayoutSemanticDiffLivingSpecTests.Ac1DesktopLayoutSemanticDiffLivingSpecAndPlan13MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopLayoutSemanticDiffLivingSpecTests|CtDeskLayout02"`.
+
 ## Living Specification — Product tranche seed after DESK-LAYOUT-01 (W7-130)
 
 Issue [#663](https://github.com/sesquicadaver/MTDirector/issues/663) AC → module → tests:
