@@ -1,7 +1,7 @@
 # PLAN-19 — Desktop shell Connect/Disconnect AutomationProperties Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **DONE** (W7-174); **DESK-A11Y-CONN-01 DONE** (W7-175); seeded by **W7-173 DONE**; next seed **W7-176 OPEN** → DESK-A11Y-CONN-02  
+**Status:** Inventory **DONE** (W7-174); **DESK-A11Y-CONN-01 DONE** (W7-175); seed **W7-176 DONE**; implement **DESK-A11Y-CONN-02 OPEN** (W7-177)  
 **PLAN issue / queue:** [W7-174 / PLAN-19 #750](https://github.com/sesquicadaver/MTDirector/issues/750)  
 **Predecessor:** PLAN-18 Incident ingest-action AutomationProperties **COMPLETE**; product seed **W7-173 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -42,7 +42,7 @@ Shell chrome Connect/Disconnect buttons expose `AutomationProperties.Name` match
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **DESK-A11Y-CONN-01** | Connect/Disconnect buttons lack AutomationProperties.Name | `MainWindow.axaml` shell chrome | **W7-175 DONE** (#753); seeded by inventory **W7-174 DONE** (#750) |
-| 2 | **DESK-A11Y-CONN-02** | Regression lock: Connect/Disconnect Names + Incident action Names matrix | Living Spec matrix | seeded by **W7-176 OPEN** (#754) after DESK-A11Y-CONN-01 |
+| 2 | **DESK-A11Y-CONN-02** | Regression lock: Connect/Disconnect Names + Incident action Names matrix | Living Spec matrix | **W7-177 OPEN** (#757); seeded by **W7-176 DONE** (#754) |
 
 ## Dual track
 
@@ -50,4 +50,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-176 (#754)** — Seed next PLAN-19 row after DESK-A11Y-CONN-01 → DESK-A11Y-CONN-02.
+**§3.C NEXT = W7-177 (#757)** — DESK-A11Y-CONN-02 Connect/Disconnect Names + Incident action Names regression Living Spec.
