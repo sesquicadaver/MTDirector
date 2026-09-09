@@ -1252,6 +1252,17 @@ Issue [#749](https://github.com/sesquicadaver/MTDirector/issues/749) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7173"`.
 
+## Living Specification — PLAN-19 Desktop shell Connect/Disconnect AutomationProperties inventory (W7-174)
+
+Issue [#750](https://github.com/sesquicadaver/MTDirector/issues/750) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-19 inventory + DESK-A11Y-CONN-01 seed | `docs/planning/plan-19-desktop-shell-connect-disconnect-automation.md`, known-limitations, ROADMAP, continuous plan, docs index | `Plan19DesktopShellConnectDisconnectW7174LivingSpecTests.Ac1Plan19InventoryDocumentsRankedRowsAndSeedsDeskA11yConn01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan19DesktopShellConnectDisconnectW7174"`.
+
+
 
 
 
