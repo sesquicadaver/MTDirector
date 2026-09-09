@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-136** ([#675](https://github.com/sesquicadaver/MTDirector/issues/675)): Seed next PLAN-13 row after DESK-LAYOUT-04 → **DESK-LAYOUT-05** (W7-137). **§3.C NEXT = W7-137 (#676)**.
 - **W7-135** ([#672](https://github.com/sesquicadaver/MTDirector/issues/672)): DESK-LAYOUT-04 Audit list + payload `GridSplitter` + layout tokens (`DesktopLayoutAuditLivingSpecTests`). Seeded W7-136 (#675) / W7-137 (#676). **§3.C NEXT = W7-136 (#675)**.
 - **W7-134** ([#671](https://github.com/sesquicadaver/MTDirector/issues/671)): Seed next PLAN-13 row after DESK-LAYOUT-03 → **DESK-LAYOUT-04** (W7-135). **§3.C NEXT = W7-135 (#672)**.
 - **W7-133** ([#668](https://github.com/sesquicadaver/MTDirector/issues/668)): DESK-LAYOUT-03 Drift three-pane `GridSplitter` layout; remove findings `MaxHeight` (`DesktopLayoutDriftLivingSpecTests`). Seeded W7-134 (#671) / W7-135 (#672). **§3.C NEXT = W7-134 (#671)**.
