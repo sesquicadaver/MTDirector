@@ -867,6 +867,20 @@ Issue [#679](https://github.com/sesquicadaver/MTDirector/issues/679) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7138"`.
 
+## Living Specification — DESK-LAYOUT-06 Node + RoutingAssurance MaxHeight (W7-139)
+
+Issue [#680](https://github.com/sesquicadaver/MTDirector/issues/680) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Node/Routing lists: no MaxHeight 160/200/280; ListMinHeight floors | `MainWindow.axaml` Node panel | `DesktopLayoutNodeRoutingLivingSpecTests.Ac1NodeAndRoutingListsUseListMinHeightAndNoMaxHeightCaps` |
+| Each Node/Routing ListBox open tag binds ListMinHeight | `MainWindow.axaml` | `DesktopLayoutNodeRoutingLivingSpecTests.Ac2NodeAndRoutingPrimaryListsAllBindListMinHeight` |
+| PLAN-13 + desktop-layout.md | docs | `DesktopLayoutNodeRoutingLivingSpecTests.Ac3Plan13AndDesktopLayoutDocLockLayout06` |
+| CT wrapper | release Living Spec | `CtDeskLayout06DesktopLayoutNodeRoutingLivingSpecTests.Ac1DesktopLayoutNodeRoutingLivingSpecAndPlan13MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopLayoutNodeRoutingLivingSpecTests|CtDeskLayout06"`.
+
+
 
 
 
