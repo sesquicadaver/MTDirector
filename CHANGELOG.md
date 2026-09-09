@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-144** ([#691](https://github.com/sesquicadaver/MTDirector/issues/691)): Seed next PLAN-13 row after DESK-LAYOUT-08 → **DESK-LAYOUT-09** (W7-145). **§3.C NEXT = W7-145 (#692)**.
 - **W7-143** ([#688](https://github.com/sesquicadaver/MTDirector/issues/688)): DESK-LAYOUT-08 Shell chrome dual column `GridSplitter` (`DesktopLayoutShellChromeLivingSpecTests`). Seeded W7-144 (#691) / W7-145 (#692). **§3.C NEXT = W7-144 (#691)**.
 - **W7-142** ([#687](https://github.com/sesquicadaver/MTDirector/issues/687)): Seed next PLAN-13 row after DESK-LAYOUT-07 → **DESK-LAYOUT-08** (W7-143). **§3.C NEXT = W7-143 (#688)**.
 - **W7-141** ([#684](https://github.com/sesquicadaver/MTDirector/issues/684)): DESK-LAYOUT-07 Operations Onboarding/Deploy MaxHeight → `Mfc.ListMinHeight` (`DesktopLayoutOperationsLivingSpecTests`). Seeded W7-142 (#687) / W7-143 (#688). **§3.C NEXT = W7-142 (#687)**.
