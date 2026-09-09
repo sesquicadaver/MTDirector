@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-166** ([#734](https://github.com/sesquicadaver/MTDirector/issues/734)): Seed next PLAN-17 row after DESK-A11Y-ACTION-01 → DESK-A11Y-ACTION-02 (`ProductTrancheSeedW7166LivingSpecTests`). **§3.C NEXT = W7-167 (#737)**.
 - **W7-165** ([#733](https://github.com/sesquicadaver/MTDirector/issues/733)): DESK-A11Y-ACTION-01 Bind assessment AutomationProperties.Name (`DesktopIncidentBindActionAutomationLivingSpecTests`). **§3.C NEXT = W7-166 (#734)**.
 - **W7-164** ([#730](https://github.com/sesquicadaver/MTDirector/issues/730)): PLAN-17 inventory Desktop Incident bind-action AutomationProperties (`Plan17DesktopIncidentBindActionW7164LivingSpecTests`). Seeded W7-165 (#733) / W7-166 (#734). **§3.C NEXT = W7-165 (#733)**.
 - **W7-163** ([#729](https://github.com/sesquicadaver/MTDirector/issues/729)): Seed next product tranche after PLAN-16 → PLAN-17 (`ProductTrancheSeedW7163LivingSpecTests`). **§3.C NEXT = W7-164 (#730)**.
@@ -270,6 +271,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-166** ([#734](https://github.com/sesquicadaver/MTDirector/issues/734)): Seed next PLAN-17 row after DESK-A11Y-ACTION-01 → DESK-A11Y-ACTION-02 (`ProductTrancheSeedW7166LivingSpecTests`). **§3.C NEXT = W7-167 (#737)**.
 - **W7-105** ([#608](https://github.com/sesquicadaver/MTDirector/issues/608)): PLAN-10 Desktop shell chrome & Policies authoring depth inventory (`plan-10-desktop-shell-policies-authoring-depth.md`); seeds DESK-SHELL-01 as W7-106 (#611) / W7-107 (#612). **§3.C NEXT = W7-106 (#611)**.
 - **W7-104** ([#607](https://github.com/sesquicadaver/MTDirector/issues/607)): Seed next product tranche after PLAN-09 → **PLAN-10** (W7-105). **§3.C NEXT = W7-105 (#608)**.
 - **W7-103** ([#604](https://github.com/sesquicadaver/MTDirector/issues/604)): DESK-AUTH-01 Desktop AuthenticationFailed/TlsError Living Spec (`DesktopAuthLivingSpecTests`); **PLAN-09 COMPLETE**. Seeded W7-104 (#607) / W7-105 (#608). **§3.C NEXT = W7-104 (#607)**.
@@ -464,6 +466,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-166** ([#734](https://github.com/sesquicadaver/MTDirector/issues/734)): Seed next PLAN-17 row after DESK-A11Y-ACTION-01 → DESK-A11Y-ACTION-02 (`ProductTrancheSeedW7166LivingSpecTests`). **§3.C NEXT = W7-167 (#737)**.
 - **W7-105** ([#608](https://github.com/sesquicadaver/MTDirector/issues/608)): PLAN-10 Desktop shell chrome & Policies authoring depth inventory (`plan-10-desktop-shell-policies-authoring-depth.md`); seeds DESK-SHELL-01 as W7-106 (#611) / W7-107 (#612). **§3.C NEXT = W7-106 (#611)**.
 - **W7-104** ([#607](https://github.com/sesquicadaver/MTDirector/issues/607)): Seed next product tranche after PLAN-09 → **PLAN-10** (W7-105). **§3.C NEXT = W7-105 (#608)**.
 - **W7-103** ([#604](https://github.com/sesquicadaver/MTDirector/issues/604)): DESK-AUTH-01 Desktop AuthenticationFailed/TlsError Living Spec (`DesktopAuthLivingSpecTests`); **PLAN-09 COMPLETE**. Seeded W7-104 (#607) / W7-105 (#608). **§3.C NEXT = W7-104 (#607)**.
