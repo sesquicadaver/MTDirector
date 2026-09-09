@@ -1068,6 +1068,19 @@ Issue [#714](https://github.com/sesquicadaver/MTDirector/issues/714) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7156"`.
 
+## Living Specification — DESK-FIELD-02 field regression / PLAN-15 COMPLETE (W7-157)
+
+Issue [#717](https://github.com/sesquicadaver/MTDirector/issues/717) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Incident TextBoxes retain PlaceholderText + mfc-field; no Watermark | `MainWindow.axaml` | `DesktopIncidentFieldRegressionLivingSpecTests.Ac1IncidentTextBoxesRetainPlaceholderTextAndMfcField` |
+| PLAN-15 COMPLETE + docs | plan-15 + testing + known-limitations | `DesktopIncidentFieldRegressionLivingSpecTests.Ac2Plan15CompleteAndDocsLockField02` |
+| CT wrapper | release Living Spec | `CtDeskField02DesktopIncidentFieldRegressionLivingSpecTests.Ac1DesktopIncidentFieldRegressionLivingSpecAndPlan15CompleteExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentFieldRegressionLivingSpecTests|CtDeskField02"`.
+
+
 
 
 
