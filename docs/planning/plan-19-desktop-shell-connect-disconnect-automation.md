@@ -1,9 +1,9 @@
 # PLAN-19 — Desktop shell Connect/Disconnect AutomationProperties Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **OPEN** (W7-174); seeded by **W7-173 OPEN** after **PLAN-18 COMPLETE**  
+**Status:** Inventory **OPEN** (W7-174); seeded by **W7-173 DONE** after **PLAN-18 COMPLETE**  
 **PLAN issue / queue:** [W7-174 / PLAN-19 #750](https://github.com/sesquicadaver/MTDirector/issues/750)  
-**Predecessor:** PLAN-18 Incident ingest-action AutomationProperties **COMPLETE**; product seed **W7-173**  
+**Predecessor:** PLAN-18 Incident ingest-action AutomationProperties **COMPLETE**; product seed **W7-173 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
@@ -34,4 +34,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-173 (#749)** — Seed next product tranche after PLAN-18 → PLAN-19 (this inventory is W7-174 OPEN).
+**§3.C NEXT = W7-174 (#750)** — PLAN-19 Inventory Desktop shell Connect/Disconnect AutomationProperties Living Spec product tranche.
