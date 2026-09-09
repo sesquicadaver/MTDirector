@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-156** ([#714](https://github.com/sesquicadaver/MTDirector/issues/714)): Seed next PLAN-15 row after DESK-FIELD-01 → DESK-FIELD-02 (`ProductTrancheSeedW7156LivingSpecTests`). **§3.C NEXT = W7-157 (#717)**.
 - **W7-155** ([#713](https://github.com/sesquicadaver/MTDirector/issues/713)): DESK-FIELD-01 Incident TextBox mfc-field Classes (`DesktopIncidentMfcFieldLivingSpecTests`). **§3.C NEXT = W7-156 (#714)**.
 - **W7-154** ([#710](https://github.com/sesquicadaver/MTDirector/issues/710)): PLAN-15 inventory Desktop Incident mfc-field style hygiene (`Plan15DesktopIncidentMfcFieldW7154LivingSpecTests`). Seeded W7-155 (#713) / W7-156 (#714). **§3.C NEXT = W7-155 (#713)**.
 - **W7-153** ([#709](https://github.com/sesquicadaver/MTDirector/issues/709)): Seed next product tranche after PLAN-14 → PLAN-15 (`ProductTrancheSeedW7153LivingSpecTests`). **§3.C NEXT = W7-154 (#710)**.
