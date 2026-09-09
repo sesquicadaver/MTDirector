@@ -1274,6 +1274,17 @@ Issue [#753](https://github.com/sesquicadaver/MTDirector/issues/753) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopShellConnectDisconnectAutomationLivingSpecTests|CtDeskA11yConn01"`.
 
+## Living Specification — Product tranche seed after DESK-A11Y-CONN-01 (W7-176)
+
+Issue [#754](https://github.com/sesquicadaver/MTDirector/issues/754) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-A11Y-CONN-02 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-19 | `ProductTrancheSeedW7176LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskA11yConn02AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7176"`.
+
+
 
 
 
