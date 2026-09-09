@@ -36,4 +36,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**PLAN-12 COMPLETE.** **W7-125 DONE** (#653). PLAN-13 inventory **DONE** (W7-126). **W7-127 DONE** (DESK-LAYOUT-00). **W7-128 DONE**. **W7-129 DONE** (DESK-LAYOUT-01). **W7-130 DONE**. **W7-131 DONE** (DESK-LAYOUT-02). **W7-132 DONE**. **W7-133 DONE** (DESK-LAYOUT-03). **§3.C NEXT = W7-145 (#692)** — Seed next PLAN-13 row after DESK-LAYOUT-03 → DESK-LAYOUT-04.
+**PLAN-12 COMPLETE.** **W7-125 DONE** (#653). PLAN-13 inventory **DONE** (W7-126). **W7-127 DONE** (DESK-LAYOUT-00). **W7-128 DONE**. **W7-129 DONE** (DESK-LAYOUT-01). **W7-130 DONE**. **W7-131 DONE** (DESK-LAYOUT-02). **W7-132 DONE**. **W7-133 DONE** (DESK-LAYOUT-03). **§3.C NEXT = W7-146 (#695)** — Seed next PLAN-13 row after DESK-LAYOUT-03 → DESK-LAYOUT-04.

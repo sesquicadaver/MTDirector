@@ -170,6 +170,7 @@
               MinWidth="240">
         <Grid>
         <!-- Inventory detail + Zones -->
+        <!-- DESK-LAYOUT-09: Zones lists/resolve use Mfc.ListMinHeight (no MaxHeight 220/240) -->
         <ScrollViewer IsVisible="{Binding IsInventorySelected}"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
@@ -379,7 +380,7 @@
                               HorizontalAlignment="Left" />
                       <ListBox ItemsSource="{Binding Zones.Zones}"
                                SelectedItem="{Binding Zones.SelectedZone, Mode=TwoWay}"
-                               MaxHeight="220">
+                               MinHeight="{StaticResource Mfc.ListMinHeight}">
                         <ListBox.ItemsPanel>
                           <ItemsPanelTemplate>
                             <VirtualizingStackPanel />
@@ -407,7 +408,7 @@
                       </WrapPanel>
                       <ListBox ItemsSource="{Binding Zones.Bindings}"
                                SelectedItem="{Binding Zones.SelectedBinding, Mode=TwoWay}"
-                               MaxHeight="220">
+                               MinHeight="{StaticResource Mfc.ListMinHeight}">
                         <ListBox.ItemsPanel>
                           <ItemsPanelTemplate>
                             <VirtualizingStackPanel />
@@ -425,7 +426,7 @@
                   <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
                              Margin="0,12,0,4" Classes="mfc-label" Text="Resolve results / blockers" />
                 </Grid>
-                <Border Classes="mfc-list-frame" MinHeight="120" MaxHeight="240">
+                <Border Classes="mfc-list-frame" MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox ItemsSource="{Binding Zones.ResolveResults}">
                     <ListBox.ItemsPanel>
                       <ItemsPanelTemplate>
