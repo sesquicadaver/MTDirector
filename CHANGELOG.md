@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-172** ([#747](https://github.com/sesquicadaver/MTDirector/issues/747)): DESK-A11Y-INGEST-02 Ingest Name + Bind Name + Incident field Names regression; **PLAN-18 COMPLETE**. Seeded W7-173 (#749) / W7-174 (#750) PLAN-19. **§3.C NEXT = W7-173 (#749)**.
 - **W7-171** ([#744](https://github.com/sesquicadaver/MTDirector/issues/744)): Seed next PLAN-18 row after DESK-A11Y-INGEST-01 → DESK-A11Y-INGEST-02 (`ProductTrancheSeedW7171LivingSpecTests`). **§3.C NEXT = W7-172 (#747)**.
 - **W7-170** ([#743](https://github.com/sesquicadaver/MTDirector/issues/743)): DESK-A11Y-INGEST-01 Ingest signal AutomationProperties.Name (`DesktopIncidentIngestActionAutomationLivingSpecTests`). **§3.C NEXT = W7-171 (#744)**.
 - **W7-169** ([#740](https://github.com/sesquicadaver/MTDirector/issues/740)): PLAN-18 inventory Desktop Incident ingest-action AutomationProperties (`Plan18DesktopIncidentIngestActionW7169LivingSpecTests`). Seeded W7-170 (#743) / W7-171 (#744). **§3.C NEXT = W7-170 (#743)**.
@@ -276,6 +277,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-172** ([#747](https://github.com/sesquicadaver/MTDirector/issues/747)): DESK-A11Y-INGEST-02 Ingest Name + Bind Name + Incident field Names regression; **PLAN-18 COMPLETE**. Seeded W7-173 (#749) / W7-174 (#750) PLAN-19. **§3.C NEXT = W7-173 (#749)**.
 - **W7-171** ([#744](https://github.com/sesquicadaver/MTDirector/issues/744)): Seed next PLAN-18 row after DESK-A11Y-INGEST-01 → DESK-A11Y-INGEST-02 (`ProductTrancheSeedW7171LivingSpecTests`). **§3.C NEXT = W7-172 (#747)**.
 - **W7-170** ([#743](https://github.com/sesquicadaver/MTDirector/issues/743)): DESK-A11Y-INGEST-01 Ingest signal AutomationProperties.Name (`DesktopIncidentIngestActionAutomationLivingSpecTests`). **§3.C NEXT = W7-171 (#744)**.
 - **W7-169** ([#740](https://github.com/sesquicadaver/MTDirector/issues/740)): PLAN-18 inventory Desktop Incident ingest-action AutomationProperties (`Plan18DesktopIncidentIngestActionW7169LivingSpecTests`). Seeded W7-170 (#743) / W7-171 (#744). **§3.C NEXT = W7-170 (#743)**.
@@ -476,6 +478,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-172** ([#747](https://github.com/sesquicadaver/MTDirector/issues/747)): DESK-A11Y-INGEST-02 Ingest Name + Bind Name + Incident field Names regression; **PLAN-18 COMPLETE**. Seeded W7-173 (#749) / W7-174 (#750) PLAN-19. **§3.C NEXT = W7-173 (#749)**.
 - **W7-171** ([#744](https://github.com/sesquicadaver/MTDirector/issues/744)): Seed next PLAN-18 row after DESK-A11Y-INGEST-01 → DESK-A11Y-INGEST-02 (`ProductTrancheSeedW7171LivingSpecTests`). **§3.C NEXT = W7-172 (#747)**.
 - **W7-170** ([#743](https://github.com/sesquicadaver/MTDirector/issues/743)): DESK-A11Y-INGEST-01 Ingest signal AutomationProperties.Name (`DesktopIncidentIngestActionAutomationLivingSpecTests`). **§3.C NEXT = W7-171 (#744)**.
 - **W7-169** ([#740](https://github.com/sesquicadaver/MTDirector/issues/740)): PLAN-18 inventory Desktop Incident ingest-action AutomationProperties (`Plan18DesktopIncidentIngestActionW7169LivingSpecTests`). Seeded W7-170 (#743) / W7-171 (#744). **§3.C NEXT = W7-170 (#743)**.
