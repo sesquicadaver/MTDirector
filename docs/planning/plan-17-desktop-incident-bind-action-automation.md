@@ -49,4 +49,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**PLAN-17 COMPLETE.** PLAN-18 inventory **OPEN** (W7-169). Seed **W7-168 DONE**. **§3.C NEXT = W7-169 (#740)** — PLAN-18 inventory.
+**PLAN-17 COMPLETE.** PLAN-18 inventory **DONE** (W7-169). **§3.C NEXT = W7-170 (#743)** — DESK-A11Y-INGEST-01.
