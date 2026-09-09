@@ -1,6 +1,6 @@
 # Desktop layout density tokens
 
-**PLAN-13 / DESK-LAYOUT-00…07.** Shared Avalonia resources and Snapshot / Semantic Diff / Drift density contracts for operator-readable data panes.
+**PLAN-13 / DESK-LAYOUT-00…08.** Shared Avalonia resources and Snapshot / Semantic Diff / Drift density contracts for operator-readable data panes.
 
 ## Normative tokens (`App.axaml`)
 
@@ -16,7 +16,7 @@ Use `{StaticResource Mfc.ListMinHeight}` (and siblings) instead of magic `MinHei
 
 1. One primary data pane per view grows with `*` (or fills a ScrollViewer).  
 2. No hard `MaxHeight` on primary lists unless paired with a splitter or an explicit compact mode.  
-3. Later DESK-LAYOUT-08…09 rows migrate remaining magic heights to these tokens and add `GridSplitter` where needed.
+3. Later DESK-LAYOUT-09…10 rows migrate remaining magic heights to these tokens and add `GridSplitter` where needed.
 
 ## Snapshot (DESK-LAYOUT-01)
 
@@ -84,6 +84,16 @@ In Operations tabs Onboarding and Deploy (`IsOperationsSelected`):
 - Removed `MaxHeight` cascade (`100` / `120` / `140`) that starved list content inside the vertical `ScrollViewer`.  
 - Incident tab is out of scope for this row (no MaxHeight list cascade there).
 
+
+
+## Shell chrome (DESK-LAYOUT-08)
+
+Main shell grid (`MainWindow.axaml`):
+
+- `ColumnDefinitions="260,Auto,150,Auto,*"` — Inventory, column `GridSplitter`, Modules, column `GridSplitter`, content `*`.  
+- Replaces fixed spacer columns `12` so the operator can reclaim horizontal space.  
+- Pane floors: Inventory `MinWidth=160`, Modules `MinWidth=100`, content `MinWidth=240`.
+
 ## Living Spec
 
 - `DesktopLayoutTokensLivingSpecTests` (+ `CtDeskLayout00…`) — token presence.  
@@ -93,4 +103,5 @@ In Operations tabs Onboarding and Deploy (`IsOperationsSelected`):
 - `DesktopLayoutAuditLivingSpecTests` (+ `CtDeskLayout04…`) — Audit list/payload splitter contract.  
 - `DesktopLayoutPoliciesLivingSpecTests` (+ `CtDeskLayout05…`) — Policies MaxHeight→token floors contract.  
 - `DesktopLayoutNodeRoutingLivingSpecTests` (+ `CtDeskLayout06…`) — Node + RoutingAssurance token floors contract.  
-- `DesktopLayoutOperationsLivingSpecTests` (+ `CtDeskLayout07…`) — Operations Onboarding/Deploy token floors contract.
+- `DesktopLayoutOperationsLivingSpecTests` (+ `CtDeskLayout07…`) — Operations Onboarding/Deploy token floors contract.  
+- `DesktopLayoutShellChromeLivingSpecTests` (+ `CtDeskLayout08…`) — Shell chrome column splitter contract.
