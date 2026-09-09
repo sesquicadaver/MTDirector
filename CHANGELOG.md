@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-128** ([#658](https://github.com/sesquicadaver/MTDirector/issues/658)): Seed next PLAN-13 row after DESK-LAYOUT-00 → **DESK-LAYOUT-01** (W7-129). **§3.C NEXT = W7-129 (#659)**.
 - **W7-127** ([#657](https://github.com/sesquicadaver/MTDirector/issues/657)): DESK-LAYOUT-00 shared layout tokens (`Mfc.ListMinHeight` / `Mfc.DetailMinHeight`) + `docs/development/desktop-layout.md` (`DesktopLayoutTokensLivingSpecTests`). **§3.C NEXT = W7-128 (#658)**.
 - **W7-126** ([#654](https://github.com/sesquicadaver/MTDirector/issues/654)): PLAN-13 Desktop layout density inventory (`plan-13-desktop-layout-density.md`); seeds DESK-LAYOUT-00 as W7-127 (#657) / W7-128 (#658) / W7-129 (#659). **§3.C NEXT = W7-127 (#657)**.
 - **W7-125** ([#653](https://github.com/sesquicadaver/MTDirector/issues/653)): Seed next product tranche after PLAN-12 → PLAN-13 inventory (**W7-126**). **§3.C NEXT = W7-126 (#654)**.
