@@ -20,7 +20,7 @@ PLAN-05…11 closed host-aligned panels through review-compose gates. PLAN-12 in
 |---------|---------------|-----|
 | AcknowledgeWarning | `DesktopPoliciesAcknowledgeLivingSpecTests` + MVP / DESK-POLICY-01 presence | **DESK-ACK-01 DONE** |
 | Create draft / Load revision | `DesktopPoliciesDraftLivingSpecTests` + presence / MVP | **DESK-DRAFT-01 DONE** |
-| Catalog refresh | `RefreshCatalogCommand` / `ListPolicies` catalog surface | PLAN-12 |
+| Catalog refresh | `DesktopPoliciesCatalogLivingSpecTests` + `RefreshCatalogCommand` / `ListPolicies` | **DESK-CATALOG-01 DONE**; **PLAN-12 COMPLETE** |
 
 ## Ranked Desktop Policies residual lifecycle tranche
 
@@ -28,7 +28,7 @@ PLAN-05…11 closed host-aligned panels through review-compose gates. PLAN-12 in
 |------|----|-----|----------|-------|
 | 1 | **DESK-ACK-01** | AcknowledgeWarning execute path lacks dedicated Desktop Living Spec depth | `AcknowledgeWarningCommand`; `AcknowledgeWarningAsync`; `DesktopPoliciesAcknowledgeLivingSpecTests` | **W7-120 DONE** (#641) |
 | 2 | **DESK-DRAFT-01** | Create draft / Load revision lacks dedicated Desktop Living Spec depth | `CreateDraftCommand` / `LoadCommand`; `CreateDraftAsync` / `LoadRevisionAsync`; `DesktopPoliciesDraftLivingSpecTests` | **W7-122 DONE** (#643); seeded by **W7-121 DONE** (#642) |
-| 3 | **DESK-CATALOG-01** | Catalog refresh / list path lacks dedicated Desktop Living Spec depth | `RefreshCatalogCommand`; `ListPolicies` / catalog reload surface | seeded by **W7-123 DONE** (#644) → implement **W7-124 OPEN** (#645) |
+| 3 | **DESK-CATALOG-01** | Catalog refresh / list path lacks dedicated Desktop Living Spec depth | `RefreshCatalogCommand`; `ListPolicies` / catalog reload surface | **W7-124 DONE** (#645); seeded by **W7-123 DONE** (#644); **PLAN-12 COMPLETE** |
 
 ## Dual track (unchanged)
 
@@ -36,4 +36,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-124 (#645)** — DESK-CATALOG-01 Desktop Policies Catalog refresh Living Spec depth.
+**PLAN-12 COMPLETE.** **§3.C NEXT = W7-125 (#653)** — Seed next product tranche after PLAN-12 → PLAN-13.

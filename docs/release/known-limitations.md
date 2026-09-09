@@ -125,3 +125,5 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-31 Living Spec lock): Development master-key provider is forbidden outside Development.
 - Intentional residual (W7-32 Living Spec lock): GitHub-hosted CI may be billing-limited; local gates in [`release-gates.md`](release-gates.md) remain authoritative for acceptance.
 - Intentional residual (W7-33 Living Spec lock): §3.C continuous residual tranche after CI billing is seeded as **W7-34** — Closing the Desktop window **does not** stop Controller (separate OS processes).
+
+- Intentional residual (W7-124 Living Spec lock): **DESK-CATALOG-01** — Desktop Policies Catalog refresh Living Spec (`DesktopPoliciesCatalogLivingSpecTests`); **PLAN-12 COMPLETE**; next product seed W7-125 → PLAN-13.

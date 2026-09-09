@@ -788,6 +788,22 @@ Issue [#643](https://github.com/sesquicadaver/MTDirector/issues/643) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesDraftLivingSpecTests|CtDeskDraft01"`.
 
+## Living Specification — DESK-CATALOG-01 Desktop Policies Catalog refresh (W7-124)
+
+Issue [#645](https://github.com/sesquicadaver/MTDirector/issues/645) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Wire + panel ListPolicies / ListCatalog | `IPolicyServiceClient`, `IPolicyPanelService` | `DesktopPoliciesCatalogLivingSpecTests.Ac1WireAndPanelExposeListPoliciesAndListCatalogApis` |
+| RefreshCatalog command + surface | `PoliciesViewModel` | `Ac2ViewModelExposesRefreshCatalogCommandAndSurface` |
+| Refresh calls ListCatalog + ApplyCatalog | `RefreshCatalogAsync` source | `Ac3RefreshCatalogCallsListCatalogAndApplyCatalogInSource` |
+| Select catalog loads latest revision | `SelectCatalogItemAsync` source | `Ac4SelectCatalogItemLoadsLatestRevisionInSource` |
+| Panel delegates without local engine | `PolicyPanelService` | `Ac5PanelListCatalogDelegatesToListPoliciesWithoutLocalSemanticEngine` |
+| MainWindow bindings + PLAN-12 matrix | `MainWindow.axaml`, `plan-12-…` | `Ac6MainWindowBindsRefreshCatalogAndPlan12MatrixRemainPresent` |
+| Docs / PLAN-12 matrix lock | `plan-12-…`, `testing.md` | `CtDeskCatalog01DesktopPoliciesCatalogLivingSpecTests.Ac1DesktopPoliciesCatalogLivingSpecAndPlan12MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesCatalogLivingSpecTests|CtDeskCatalog01"`.
+
 ## Living Specification — Product tranche seed after DESK-DRAFT-01 (W7-123)
 
 Issue [#644](https://github.com/sesquicadaver/MTDirector/issues/644) AC → module → tests:

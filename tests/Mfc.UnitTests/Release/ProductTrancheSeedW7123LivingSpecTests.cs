@@ -17,7 +17,7 @@ public sealed class ProductTrancheSeedW7123LivingSpecTests
         Assert.Contains("Intentional residual (W7-123 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-CATALOG-01", limitations, StringComparison.Ordinal);
         Assert.Contains("W7-124", limitations, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-124 (#645)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("W7-124", roadmap, StringComparison.Ordinal);
         Assert.Contains("DESK-CATALOG-01 — Desktop Policies Catalog refresh Living Spec depth", roadmap, StringComparison.Ordinal);
         Assert.Contains("W7-124", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-CATALOG-01", plan, StringComparison.Ordinal);
