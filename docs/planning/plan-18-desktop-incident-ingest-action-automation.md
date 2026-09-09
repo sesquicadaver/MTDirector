@@ -1,9 +1,9 @@
 # PLAN-18 — Desktop Incident ingest-action AutomationProperties Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **OPEN** (W7-169); seeded by **W7-168 OPEN** after **PLAN-17 COMPLETE**  
+**Status:** Inventory **OPEN** (W7-169); seeded by **W7-168 DONE** after **PLAN-17 COMPLETE**  
 **PLAN issue / queue:** [W7-169 / PLAN-18 #740](https://github.com/sesquicadaver/MTDirector/issues/740)  
-**Predecessor:** PLAN-17 Incident bind-action AutomationProperties **COMPLETE**; product seed **W7-168**  
+**Predecessor:** PLAN-17 Incident bind-action AutomationProperties **COMPLETE**; product seed **W7-168 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
@@ -34,4 +34,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-168 (#739)** — Seed next product tranche after PLAN-17 → PLAN-18 (this inventory is W7-169 OPEN).
+**§3.C NEXT = W7-169 (#740)** — PLAN-18 Inventory Desktop Incident ingest-action AutomationProperties Living Spec product tranche.
