@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-147** ([#696](https://github.com/sesquicadaver/MTDirector/issues/696)): DESK-LAYOUT-10 PLAN-13 regression lock; **PLAN-13 COMPLETE** (`DesktopLayoutRegressionLockLivingSpecTests`). Seeded W7-148 (#699) / W7-149 (#700) PLAN-14. **§3.C NEXT = W7-148 (#699)**.
 - **W7-146** ([#695](https://github.com/sesquicadaver/MTDirector/issues/695)): Seed next PLAN-13 row after DESK-LAYOUT-09 → **DESK-LAYOUT-10** (W7-147). **§3.C NEXT = W7-147 (#696)**.
 - **W7-145** ([#692](https://github.com/sesquicadaver/MTDirector/issues/692)): DESK-LAYOUT-09 Inventory/Zones MaxHeight → `Mfc.ListMinHeight` (`DesktopLayoutZonesLivingSpecTests`). Seeded W7-146 (#695) / W7-147 (#696). **§3.C NEXT = W7-146 (#695)**.
 - **W7-144** ([#691](https://github.com/sesquicadaver/MTDirector/issues/691)): Seed next PLAN-13 row after DESK-LAYOUT-08 → **DESK-LAYOUT-09** (W7-145). **§3.C NEXT = W7-145 (#692)**.

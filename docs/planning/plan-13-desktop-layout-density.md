@@ -1,7 +1,7 @@
 # PLAN-13 — Desktop layout density Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **DONE** (W7-126); **DESK-LAYOUT-00 DONE** (W7-127); **DESK-LAYOUT-01 DONE** (W7-129); **DESK-LAYOUT-02 DONE** (W7-131); **DESK-LAYOUT-03 DONE** (W7-133); **DESK-LAYOUT-04 DONE** (W7-135); **DESK-LAYOUT-05 DONE** (W7-137); **DESK-LAYOUT-06 DONE** (W7-139); **DESK-LAYOUT-07 DONE** (W7-141); **DESK-LAYOUT-08 DONE** (W7-143); **DESK-LAYOUT-09 DONE** (W7-145); seed **W7-146 DONE** → implement **DESK-LAYOUT-10 OPEN** (W7-147)  
+**Status:** Inventory **DONE** (W7-126); **DESK-LAYOUT-00 DONE** (W7-127); **DESK-LAYOUT-01 DONE** (W7-129); **DESK-LAYOUT-02 DONE** (W7-131); **DESK-LAYOUT-03 DONE** (W7-133); **DESK-LAYOUT-04 DONE** (W7-135); **DESK-LAYOUT-05 DONE** (W7-137); **DESK-LAYOUT-06 DONE** (W7-139); **DESK-LAYOUT-07 DONE** (W7-141); **DESK-LAYOUT-08 DONE** (W7-143); **DESK-LAYOUT-09 DONE** (W7-145); **DESK-LAYOUT-10 DONE** (W7-147); **PLAN-13 COMPLETE**  
 **PLAN issue / queue:** [W7-126 / PLAN-13 #654](https://github.com/sesquicadaver/MTDirector/issues/654)  
 **Predecessor:** GUI density analysis (lab session 2026-09-09); PLAN-12 Policies residual lifecycle **COMPLETE**; product seed **W7-125 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml), [`App.axaml`](../../src/Mfc.Desktop/App.axaml)  
@@ -47,7 +47,7 @@ Operator report: data panes often so small that content is unreadable. Analysis 
 | Shared tokens / density doc | `App.axaml` styles; magic MaxHeight in MainWindow | PLAN-13 LAYOUT-00 |
 | Snapshots | Competing `*` rows + ClipToBounds | PLAN-13 LAYOUT-01 |
 | Semantic Diff / Drift / Audit / Policies / Node / Ops / Shell / Zones | MaxHeight cascade / missing splitters | LAYOUT-02…09 |
-| Regression lock | No density Living Spec matrix | LAYOUT-10 |
+| Regression lock | Density Living Spec matrix locked | **LAYOUT-10 DONE** |
 
 ## Ranked Desktop layout density tranche
 
@@ -63,7 +63,7 @@ Operator report: data panes often so small that content is unreadable. Analysis 
 | 8 | **DESK-LAYOUT-07** | Operations (Onboarding/Deploy) MaxHeight lists | Operations tabs | **W7-141 DONE** (#684); seeded by **W7-140 DONE** (#683) |
 | 9 | **DESK-LAYOUT-08** | Shell chrome: fixed columns; no column splitter | Shell grid | **W7-143 DONE** (#688); seeded by **W7-142 DONE** (#687) |
 | 10 | **DESK-LAYOUT-09** | Inventory / Zones nested MaxHeight frames | Zones panel | **W7-145 DONE** (#692); seeded by **W7-144 DONE** (#691) |
-| 11 | **DESK-LAYOUT-10** | Regression lock + docs sync | Living Specs + alignment / testing docs | seeded by **W7-146 DONE** (#695) → implement **W7-147 OPEN** (#696); closes PLAN-13 |
+| 11 | **DESK-LAYOUT-10** | Regression lock + docs sync | Living Specs + docs | **W7-147 DONE** (#696); seeded by **W7-146 DONE** (#695); **PLAN-13 COMPLETE** |
 
 ## Suggested PR slicing (still linear for `/autopilot`)
 
@@ -90,4 +90,4 @@ Product §3 never waits on GNS3. Validate layout on Desktop against lab captures
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-147 (#696)** — DESK-LAYOUT-10 PLAN-13 regression lock + docs sync Living Spec depth.
+**PLAN-13 COMPLETE.** **§3.C NEXT = W7-148 (#699)** — Seed next product tranche after PLAN-13 → PLAN-14.
