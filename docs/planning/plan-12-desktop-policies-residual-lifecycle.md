@@ -36,4 +36,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**PLAN-12 COMPLETE.** **W7-125 DONE** (#653). **§3.C NEXT = W7-126 (#654)** — PLAN-13 Inventory Desktop layout density Living Spec product tranche.
+**PLAN-12 COMPLETE.** **W7-125 DONE** (#653). PLAN-13 inventory **DONE** (W7-126). **§3.C NEXT = W7-127 (#657)** — DESK-LAYOUT-00 Shared layout tokens + desktop-layout.md Living Spec depth.
