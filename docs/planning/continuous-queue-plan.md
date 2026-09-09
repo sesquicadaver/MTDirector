@@ -13,7 +13,8 @@
 **PLAN-09 (Desktop connection-status operator-surface):** [`plan-09-desktop-connection-status-operator-surface.md`](plan-09-desktop-connection-status-operator-surface.md) **COMPLETE**  
 **PLAN-10 (Desktop shell chrome & Policies authoring depth) COMPLETE:** [`plan-10-desktop-shell-policies-authoring-depth.md`](plan-10-desktop-shell-policies-authoring-depth.md)  
 **PLAN-11 (Desktop Policies review-compose lifecycle) COMPLETE:** [`plan-11-desktop-policies-review-compose-lifecycle.md`](plan-11-desktop-policies-review-compose-lifecycle.md)  
-**PLAN-12 (Desktop Policies residual lifecycle):** [`plan-12-desktop-policies-residual-lifecycle.md`](plan-12-desktop-policies-residual-lifecycle.md) inventory **DONE** (W7-119)
+**PLAN-12 (Desktop Policies residual lifecycle):** [`plan-12-desktop-policies-residual-lifecycle.md`](plan-12-desktop-policies-residual-lifecycle.md) inventory **DONE** (W7-119)  
+**PLAN-13 (Desktop layout density — ready to seed after PLAN-12):** [`plan-13-desktop-layout-density.md`](plan-13-desktop-layout-density.md)
 
 This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle state **NEXT = none**.
 
