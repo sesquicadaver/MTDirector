@@ -1,13 +1,13 @@
 # PLAN-16 — Desktop Incident AutomationProperties accessible-name Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **DONE** (W7-159); seeded by **W7-158 DONE**; first implement **DESK-A11Y-01 OPEN** (W7-160)  
+**Status:** Inventory **DONE** (W7-159); **DESK-A11Y-01 DONE** (W7-160); seeded by **W7-158 DONE**; next seed **W7-161 OPEN** → DESK-A11Y-02  
 **PLAN issue / queue:** [W7-159 / PLAN-16 #720](https://github.com/sesquicadaver/MTDirector/issues/720)  
 **Predecessor:** PLAN-15 Incident mfc-field style hygiene **COMPLETE**; product seed **W7-158 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
-Desktop XAML currently has no `AutomationProperties.Name` usages. Incident Operations TextBoxes rely on adjacent `TextBlock` labels only — screen-reader / automation clients do not get an accessible name on the inputs.
+Incident Operations TextBoxes expose `AutomationProperties.Name` matching adjacent operator labels (DESK-A11Y-01). Broader Desktop a11y remains out of scope until later rows.
 
 ## Principles
 
@@ -33,14 +33,14 @@ Desktop XAML currently has no `AutomationProperties.Name` usages. Incident Opera
 
 | Surface | Desktop today | Gap |
 |---------|---------------|-----|
-| Incident ingest/bind TextBoxes | Labels via adjacent TextBlock only; no AutomationProperties.Name | DESK-A11Y-01 |
+| Incident ingest/bind TextBoxes | AutomationProperties.Name matching operator labels | **DESK-A11Y-01 DONE** |
 | Regression lock | Names + PlaceholderText + mfc-field matrix | DESK-A11Y-02 |
 
 ## Ranked Desktop Incident a11y tranche
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-A11Y-01** | Incident TextBoxes lack AutomationProperties.Name | `MainWindow.axaml` Operations → Incident | **W7-160 OPEN** (#723); seeded by inventory **W7-159 DONE** (#720) |
+| 1 | **DESK-A11Y-01** | Incident TextBoxes lack AutomationProperties.Name | `MainWindow.axaml` Operations → Incident | **W7-160 DONE** (#723); seeded by inventory **W7-159 DONE** (#720) |
 | 2 | **DESK-A11Y-02** | Regression lock: Incident Names + PlaceholderText + mfc-field | Living Spec matrix | seeded by **W7-161 OPEN** (#724) after DESK-A11Y-01 |
 
 ## Dual track
@@ -49,4 +49,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-160 (#723)** — DESK-A11Y-01 Incident TextBox AutomationProperties.Name Living Spec.
+**§3.C NEXT = W7-161 (#724)** — Seed next PLAN-16 row after DESK-A11Y-01 → DESK-A11Y-02.
