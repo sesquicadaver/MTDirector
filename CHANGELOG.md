@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-169** ([#740](https://github.com/sesquicadaver/MTDirector/issues/740)): PLAN-18 inventory Desktop Incident ingest-action AutomationProperties (`Plan18DesktopIncidentIngestActionW7169LivingSpecTests`). Seeded W7-170 (#743) / W7-171 (#744). **§3.C NEXT = W7-170 (#743)**.
 - **W7-168** ([#739](https://github.com/sesquicadaver/MTDirector/issues/739)): Seed next product tranche after PLAN-17 → PLAN-18 (`ProductTrancheSeedW7168LivingSpecTests`). **§3.C NEXT = W7-169 (#740)**.
 - **W7-167** ([#737](https://github.com/sesquicadaver/MTDirector/issues/737)): DESK-A11Y-ACTION-02 Bind Name + Incident field Names regression; **PLAN-17 COMPLETE**. Seeded W7-168 (#739) / W7-169 (#740) PLAN-18. **§3.C NEXT = W7-168 (#739)**.
 - **W7-166** ([#734](https://github.com/sesquicadaver/MTDirector/issues/734)): Seed next PLAN-17 row after DESK-A11Y-ACTION-01 → DESK-A11Y-ACTION-02 (`ProductTrancheSeedW7166LivingSpecTests`). **§3.C NEXT = W7-167 (#737)**.
@@ -273,6 +274,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-169** ([#740](https://github.com/sesquicadaver/MTDirector/issues/740)): PLAN-18 inventory Desktop Incident ingest-action AutomationProperties (`Plan18DesktopIncidentIngestActionW7169LivingSpecTests`). Seeded W7-170 (#743) / W7-171 (#744). **§3.C NEXT = W7-170 (#743)**.
 - **W7-168** ([#739](https://github.com/sesquicadaver/MTDirector/issues/739)): Seed next product tranche after PLAN-17 → PLAN-18 (`ProductTrancheSeedW7168LivingSpecTests`). **§3.C NEXT = W7-169 (#740)**.
 - **W7-167** ([#737](https://github.com/sesquicadaver/MTDirector/issues/737)): DESK-A11Y-ACTION-02 Bind Name + Incident field Names regression; **PLAN-17 COMPLETE**. Seeded W7-168 (#739) / W7-169 (#740) PLAN-18. **§3.C NEXT = W7-168 (#739)**.
 - **W7-166** ([#734](https://github.com/sesquicadaver/MTDirector/issues/734)): Seed next PLAN-17 row after DESK-A11Y-ACTION-01 → DESK-A11Y-ACTION-02 (`ProductTrancheSeedW7166LivingSpecTests`). **§3.C NEXT = W7-167 (#737)**.
@@ -470,6 +472,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-169** ([#740](https://github.com/sesquicadaver/MTDirector/issues/740)): PLAN-18 inventory Desktop Incident ingest-action AutomationProperties (`Plan18DesktopIncidentIngestActionW7169LivingSpecTests`). Seeded W7-170 (#743) / W7-171 (#744). **§3.C NEXT = W7-170 (#743)**.
 - **W7-168** ([#739](https://github.com/sesquicadaver/MTDirector/issues/739)): Seed next product tranche after PLAN-17 → PLAN-18 (`ProductTrancheSeedW7168LivingSpecTests`). **§3.C NEXT = W7-169 (#740)**.
 - **W7-167** ([#737](https://github.com/sesquicadaver/MTDirector/issues/737)): DESK-A11Y-ACTION-02 Bind Name + Incident field Names regression; **PLAN-17 COMPLETE**. Seeded W7-168 (#739) / W7-169 (#740) PLAN-18. **§3.C NEXT = W7-168 (#739)**.
 - **W7-166** ([#734](https://github.com/sesquicadaver/MTDirector/issues/734)): Seed next PLAN-17 row after DESK-A11Y-ACTION-01 → DESK-A11Y-ACTION-02 (`ProductTrancheSeedW7166LivingSpecTests`). **§3.C NEXT = W7-167 (#737)**.

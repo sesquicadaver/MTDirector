@@ -1,7 +1,7 @@
 # PLAN-18 — Desktop Incident ingest-action AutomationProperties Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **OPEN** (W7-169); seeded by **W7-168 DONE** after **PLAN-17 COMPLETE**  
+**Status:** Inventory **DONE** (W7-169); seeded by **W7-168 DONE**; first implement **DESK-A11Y-INGEST-01 OPEN** (W7-170)  
 **PLAN issue / queue:** [W7-169 / PLAN-18 #740](https://github.com/sesquicadaver/MTDirector/issues/740)  
 **Predecessor:** PLAN-17 Incident bind-action AutomationProperties **COMPLETE**; product seed **W7-168 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -21,12 +21,27 @@ Incident Operations "Ingest signal" button has Content text but no `AutomationPr
 - New Incident RPCs  
 - Replacing PLAN-16/17 field / Bind Name locks  
 
+## Decision drivers
+
+| Driver | Choice |
+|--------|--------|
+| Worst pain first | Ingest signal lacks accessible name before regression matrix |
+| Risk | XAML AutomationProperties only; keep Command binding; Desktop build + Living Spec |
+| Queue fit | Seed **after** PLAN-17 COMPLETE; inventory locks **DESK-A11Y-INGEST-01** as first implement |
+
+## Evidence baseline
+
+| Surface | Desktop today | Gap |
+|---------|---------------|-----|
+| Ingest signal button | Content="Ingest signal"; no AutomationProperties.Name | DESK-A11Y-INGEST-01 |
+| Regression lock | Ingest Name + Bind Name + Incident field Names matrix | DESK-A11Y-INGEST-02 |
+
 ## Ranked Desktop Incident ingest-action a11y tranche
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-A11Y-INGEST-01** | Ingest signal button lacks AutomationProperties.Name | `MainWindow.axaml` Operations → Incident | seed after PLAN-18 inventory |
-| 2 | **DESK-A11Y-INGEST-02** | Regression lock: Ingest Name + Bind Name + Incident field Names matrix | Living Spec matrix | seed after DESK-A11Y-INGEST-01 |
+| 1 | **DESK-A11Y-INGEST-01** | Ingest signal button lacks AutomationProperties.Name | `MainWindow.axaml` Operations → Incident | **W7-170 OPEN** (#743); seeded by inventory **W7-169 DONE** (#740) |
+| 2 | **DESK-A11Y-INGEST-02** | Regression lock: Ingest Name + Bind Name + Incident field Names matrix | Living Spec matrix | seeded by **W7-171 OPEN** (#744) after DESK-A11Y-INGEST-01 |
 
 ## Dual track
 
@@ -34,4 +49,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-169 (#740)** — PLAN-18 Inventory Desktop Incident ingest-action AutomationProperties Living Spec product tranche.
+**§3.C NEXT = W7-170 (#743)** — DESK-A11Y-INGEST-01 Ingest signal AutomationProperties.Name Living Spec.

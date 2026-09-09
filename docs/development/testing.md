@@ -1198,6 +1198,17 @@ Issue [#739](https://github.com/sesquicadaver/MTDirector/issues/739) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7168"`.
 
+## Living Specification — PLAN-18 Desktop Incident ingest-action AutomationProperties inventory (W7-169)
+
+Issue [#740](https://github.com/sesquicadaver/MTDirector/issues/740) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-18 inventory + DESK-A11Y-INGEST-01 seed | `docs/planning/plan-18-desktop-incident-ingest-action-automation.md`, known-limitations, ROADMAP, continuous plan, docs index | `Plan18DesktopIncidentIngestActionW7169LivingSpecTests.Ac1Plan18InventoryDocumentsRankedRowsAndSeedsDeskA11yIngest01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan18DesktopIncidentIngestActionW7169"`.
+
+
 
 
 
