@@ -752,7 +752,8 @@
                       Grid.RowSpan="2"
                       Classes="mfc-panel"
                       ClipToBounds="True">
-                <Grid RowDefinitions="Auto,Auto,*,Auto,*,Auto">
+                <!-- DESK-LAYOUT-01: one primary * list (config|obs tabs) + splitter + detail * -->
+                <Grid RowDefinitions="Auto,*,Auto,*">
                   <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,8">
                     <TextBlock Text="{Binding Snapshot.HintText}" Classes="mfc-muted" TextWrapping="Wrap" />
                     <TextBlock Text="{Binding Snapshot.StatusText, StringFormat=Capture status: {0}}" TextWrapping="Wrap" />
@@ -777,51 +778,58 @@
                     </ComboBox>
                   </StackPanel>
 
-                  <TextBlock Grid.Row="1" Margin="0,4,0,4" Classes="mfc-label" Text="Configuration records" />
-                  <ListBox Grid.Row="2"
-                           ItemsSource="{Binding Snapshot.ConfigurationRecords}"
-                           SelectedItem="{Binding Snapshot.SelectedConfigurationRecord, Mode=TwoWay}"
-                           Margin="0,0,0,8"
-                           MinHeight="{StaticResource Mfc.ListMinHeight}">
-                    <ListBox.ItemsPanel>
-                      <ItemsPanelTemplate>
-                        <VirtualizingStackPanel />
-                      </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                      <DataTemplate DataType="svc:SnapshotRecordListItem">
-                        <TextBlock Text="{Binding OperatorSummaryLine}" TextWrapping="Wrap" Margin="2" />
-                      </DataTemplate>
-                    </ListBox.ItemTemplate>
-                  </ListBox>
+                  <TabControl Grid.Row="1" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                    <TabItem Header="Configuration">
+                      <ListBox ItemsSource="{Binding Snapshot.ConfigurationRecords}"
+                               SelectedItem="{Binding Snapshot.SelectedConfigurationRecord, Mode=TwoWay}"
+                               MinHeight="{StaticResource Mfc.ListMinHeight}">
+                        <ListBox.ItemsPanel>
+                          <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                          </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                          <DataTemplate DataType="svc:SnapshotRecordListItem">
+                            <TextBlock Text="{Binding OperatorSummaryLine}" TextWrapping="Wrap" Margin="2" />
+                          </DataTemplate>
+                        </ListBox.ItemTemplate>
+                      </ListBox>
+                    </TabItem>
+                    <TabItem Header="Observations">
+                      <ListBox ItemsSource="{Binding Snapshot.ObservationRecords}"
+                               SelectedItem="{Binding Snapshot.SelectedObservationRecord, Mode=TwoWay}"
+                               MinHeight="{StaticResource Mfc.ListMinHeight}">
+                        <ListBox.ItemsPanel>
+                          <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                          </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                          <DataTemplate DataType="svc:SnapshotRecordListItem">
+                            <TextBlock Text="{Binding OperatorSummaryLine}" TextWrapping="Wrap" Margin="2" />
+                          </DataTemplate>
+                        </ListBox.ItemTemplate>
+                      </ListBox>
+                    </TabItem>
+                  </TabControl>
 
-                  <TextBlock Grid.Row="3" Margin="0,0,0,4" Classes="mfc-label" Text="Observation records" />
-                  <ListBox Grid.Row="4"
-                           ItemsSource="{Binding Snapshot.ObservationRecords}"
-                           SelectedItem="{Binding Snapshot.SelectedObservationRecord, Mode=TwoWay}"
-                           MinHeight="80">
-                    <ListBox.ItemsPanel>
-                      <ItemsPanelTemplate>
-                        <VirtualizingStackPanel />
-                      </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                      <DataTemplate DataType="svc:SnapshotRecordListItem">
-                        <TextBlock Text="{Binding OperatorSummaryLine}" TextWrapping="Wrap" Margin="2" />
-                      </DataTemplate>
-                    </ListBox.ItemTemplate>
-                  </ListBox>
+                  <GridSplitter Grid.Row="2"
+                                Height="6"
+                                HorizontalAlignment="Stretch"
+                                ResizeDirection="Rows"
+                                Background="{StaticResource Mfc.BorderBrush}" />
 
-                  <Grid Grid.Row="5" Margin="0,8,0,0" MinHeight="{StaticResource Mfc.DetailMinHeight}">
-                    <TextBlock Classes="mfc-muted"
-                               VerticalAlignment="Top"
-                               Text="Select a record to see all fields."
-                               IsVisible="{Binding Snapshot.HasNoSelectedRecord}" />
-                    <Border Classes="mfc-list-frame"
-                            ClipToBounds="True"
-                            MaxHeight="220"
-                            IsVisible="{Binding Snapshot.HasSelectedRecord}">
-                      <DockPanel>
+                  <Border Grid.Row="3"
+                          Classes="mfc-list-frame"
+                          ClipToBounds="True"
+                          MinHeight="{StaticResource Mfc.DetailMinHeight}">
+                    <Grid>
+                      <TextBlock Classes="mfc-muted"
+                                 VerticalAlignment="Top"
+                                 Margin="4,2"
+                                 Text="Select a record to see all fields."
+                                 IsVisible="{Binding Snapshot.HasNoSelectedRecord}" />
+                      <DockPanel IsVisible="{Binding Snapshot.HasSelectedRecord}">
                         <StackPanel DockPanel.Dock="Top" Spacing="2" Margin="4,2,4,6">
                           <TextBlock Classes="mfc-label" Text="Selected record fields" />
                           <TextBlock Text="{Binding Snapshot.SelectedRecordDetail.StableKey}"
@@ -846,8 +854,8 @@
                           </ItemsControl>
                         </ScrollViewer>
                       </DockPanel>
-                    </Border>
-                  </Grid>
+                    </Grid>
+                  </Border>
                 </Grid>
               </Border>
             </Grid>

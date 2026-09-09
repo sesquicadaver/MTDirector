@@ -788,6 +788,19 @@ Issue [#643](https://github.com/sesquicadaver/MTDirector/issues/643) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesDraftLivingSpecTests|CtDeskDraft01"`.
 
+## Living Specification — DESK-LAYOUT-01 Snapshot primary pane + splitter (W7-129)
+
+Issue [#659](https://github.com/sesquicadaver/MTDirector/issues/659) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Snapshot panel Auto,*,Auto,* + GridSplitter | `MainWindow.axaml` Snapshot tab | `DesktopLayoutSnapshotLivingSpecTests.Ac1SnapshotPanelUsesSinglePrimaryStarAndDetailStarRows` |
+| Config\|Obs tabs; token MinHeight; no MaxHeight=220 | `MainWindow.axaml` | `DesktopLayoutSnapshotLivingSpecTests.Ac2SnapshotUsesConfigOrObservationTabsWithoutPrimaryMaxHeight` |
+| PLAN-13 + desktop-layout.md | docs | `DesktopLayoutSnapshotLivingSpecTests.Ac3Plan13AndDesktopLayoutDocLockLayout01` |
+| CT wrapper | release Living Spec | `CtDeskLayout01DesktopLayoutSnapshotLivingSpecTests.Ac1DesktopLayoutSnapshotLivingSpecAndPlan13MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopLayoutSnapshotLivingSpecTests|CtDeskLayout01"`.
+
 ## Living Specification — Product tranche seed after DESK-LAYOUT-00 (W7-128)
 
 Issue [#658](https://github.com/sesquicadaver/MTDirector/issues/658) AC → module → tests:
