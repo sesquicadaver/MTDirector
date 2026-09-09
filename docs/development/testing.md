@@ -844,6 +844,20 @@ Issue [#675](https://github.com/sesquicadaver/MTDirector/issues/675) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7136"`.
 
+## Living Specification — DESK-LAYOUT-05 Policies MaxHeight cascade (W7-137)
+
+Issue [#676](https://github.com/sesquicadaver/MTDirector/issues/676) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Policies lists: no MaxHeight 80–180; ListMinHeight floors | `MainWindow.axaml` Policies panel | `DesktopLayoutPoliciesLivingSpecTests.Ac1PoliciesListsUseListMinHeightAndNoTinyMaxHeightCaps` |
+| Each Policies ListBox open tag binds ListMinHeight | `MainWindow.axaml` | `DesktopLayoutPoliciesLivingSpecTests.Ac2PoliciesPrimaryListsAllBindListMinHeight` |
+| PLAN-13 + desktop-layout.md | docs | `DesktopLayoutPoliciesLivingSpecTests.Ac3Plan13AndDesktopLayoutDocLockLayout05` |
+| CT wrapper | release Living Spec | `CtDeskLayout05DesktopLayoutPoliciesLivingSpecTests.Ac1DesktopLayoutPoliciesLivingSpecAndPlan13MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopLayoutPoliciesLivingSpecTests|CtDeskLayout05"`.
+
+
 
 
 ## Living Specification — DESK-LAYOUT-02 Semantic Diff entry list + splitter (W7-131)
