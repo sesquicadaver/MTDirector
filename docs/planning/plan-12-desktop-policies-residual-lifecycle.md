@@ -36,4 +36,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**PLAN-12 COMPLETE.** **§3.C NEXT = W7-125 (#653)** — Seed next product tranche after PLAN-12 → PLAN-13.
+**PLAN-12 COMPLETE.** **W7-125 DONE** (#653). **§3.C NEXT = W7-126 (#654)** — PLAN-13 Inventory Desktop layout density Living Spec product tranche.

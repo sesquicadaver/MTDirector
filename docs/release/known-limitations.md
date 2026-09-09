@@ -127,3 +127,4 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-33 Living Spec lock): §3.C continuous residual tranche after CI billing is seeded as **W7-34** — Closing the Desktop window **does not** stop Controller (separate OS processes).
 
 - Intentional residual (W7-124 Living Spec lock): **DESK-CATALOG-01** — Desktop Policies Catalog refresh Living Spec (`DesktopPoliciesCatalogLivingSpecTests`); **PLAN-12 COMPLETE**; next product seed W7-125 → PLAN-13.
+- Intentional residual (W7-125 Living Spec lock): §3.C product row after PLAN-12 COMPLETE is seeded as **W7-126** — PLAN-13 Inventory Desktop layout density Living Spec product tranche; not idle; not a lab stop-gate.

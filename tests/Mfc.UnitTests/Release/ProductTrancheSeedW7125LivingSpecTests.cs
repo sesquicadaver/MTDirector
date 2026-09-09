@@ -1,0 +1,47 @@
+using Xunit;
+
+namespace Mfc.UnitTests.Release;
+
+/// <summary>W7-125: known-limitations / queue seed locks next PLAN-13 row (W7-126 inventory).</summary>
+public sealed class ProductTrancheSeedW7125LivingSpecTests
+{
+    [Fact]
+    public void Ac1KnownLimitationsAndQueueSeedPlan13InventoryAsNext()
+    {
+        string root = RepoRoot();
+        string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
+        string roadmap = File.ReadAllText(Path.Combine(root, "ROADMAP.md"));
+        string plan = File.ReadAllText(Path.Combine(root, "docs/planning/continuous-queue-plan.md"));
+        string plan12 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-12-desktop-policies-residual-lifecycle.md"));
+        string plan13 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-13-desktop-layout-density.md"));
+
+        Assert.Contains("Intentional residual (W7-125 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-126", limitations, StringComparison.Ordinal);
+        Assert.Contains("PLAN-13", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-126", roadmap, StringComparison.Ordinal);
+        Assert.Contains("PLAN-13 — Inventory Desktop layout density Living Spec product tranche", roadmap, StringComparison.Ordinal);
+        Assert.Contains("W7-126", plan, StringComparison.Ordinal);
+        Assert.Contains("PLAN-13", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-125 DONE", plan12, StringComparison.Ordinal);
+        Assert.Contains("W7-126", plan12, StringComparison.Ordinal);
+        Assert.Contains("W7-125 DONE", plan13, StringComparison.Ordinal);
+        Assert.Contains("W7-126", plan13, StringComparison.Ordinal);
+        Assert.Contains("W7-125", roadmap, StringComparison.Ordinal);
+    }
+
+    private static string RepoRoot()
+    {
+        DirectoryInfo? dir = new(AppContext.BaseDirectory);
+        while (dir is not null)
+        {
+            if (File.Exists(Path.Combine(dir.FullName, "ROADMAP.md")))
+            {
+                return dir.FullName;
+            }
+
+            dir = dir.Parent;
+        }
+
+        throw new InvalidOperationException("Repository root not found.");
+    }
+}
