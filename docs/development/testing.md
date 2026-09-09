@@ -992,6 +992,19 @@ Issue [#700](https://github.com/sesquicadaver/MTDirector/issues/700) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan14DesktopAvaloniaPlaceholderW7149"`.
 
+## Living Specification — DESK-PLACEHOLDER-01 Incident PlaceholderText (W7-150)
+
+Issue [#703](https://github.com/sesquicadaver/MTDirector/issues/703) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Incident TextBoxes use PlaceholderText; no Watermark= | `MainWindow.axaml` | `DesktopIncidentPlaceholderLivingSpecTests.Ac1IncidentTextBoxesUsePlaceholderTextNotWatermark` |
+| PLAN-14 + docs lock | plan-14 + testing + known-limitations | `DesktopIncidentPlaceholderLivingSpecTests.Ac2Plan14AndTestingDocLockPlaceholder01` |
+| CT wrapper | release Living Spec | `CtDeskPlaceholder01DesktopIncidentPlaceholderLivingSpecTests.Ac1DesktopIncidentPlaceholderLivingSpecAndPlan14MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentPlaceholderLivingSpecTests|CtDeskPlaceholder01"`.
+
+
 
 
 

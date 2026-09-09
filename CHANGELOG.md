@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-150** ([#703](https://github.com/sesquicadaver/MTDirector/issues/703)): DESK-PLACEHOLDER-01 Incident TextBox Watermark→PlaceholderText (`DesktopIncidentPlaceholderLivingSpecTests`). **§3.C NEXT = W7-151 (#704)**.
 - **W7-149** ([#700](https://github.com/sesquicadaver/MTDirector/issues/700)): PLAN-14 inventory Desktop Avalonia PlaceholderText / Incident surface (`Plan14DesktopAvaloniaPlaceholderW7149LivingSpecTests`). Seeded W7-150 (#703) / W7-151 (#704). **§3.C NEXT = W7-150 (#703)**.
 - **W7-148** ([#699](https://github.com/sesquicadaver/MTDirector/issues/699)): Seed next product tranche after PLAN-13 → PLAN-14 (`ProductTrancheSeedW7148LivingSpecTests`). **§3.C NEXT = W7-149 (#700)**.
 - **W7-147** ([#696](https://github.com/sesquicadaver/MTDirector/issues/696)): DESK-LAYOUT-10 PLAN-13 regression lock; **PLAN-13 COMPLETE** (`DesktopLayoutRegressionLockLivingSpecTests`). Seeded W7-148 (#699) / W7-149 (#700) PLAN-14. **§3.C NEXT = W7-148 (#699)**.
