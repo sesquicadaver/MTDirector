@@ -1,6 +1,6 @@
 # Desktop layout density tokens
 
-**PLAN-13 / DESK-LAYOUT-00…03.** Shared Avalonia resources and Snapshot / Semantic Diff / Drift density contracts for operator-readable data panes.
+**PLAN-13 / DESK-LAYOUT-00…04.** Shared Avalonia resources and Snapshot / Semantic Diff / Drift density contracts for operator-readable data panes.
 
 ## Normative tokens (`App.axaml`)
 
@@ -16,7 +16,7 @@ Use `{StaticResource Mfc.ListMinHeight}` (and siblings) instead of magic `MinHei
 
 1. One primary data pane per view grows with `*` (or fills a ScrollViewer).  
 2. No hard `MaxHeight` on primary lists unless paired with a splitter or an explicit compact mode.  
-3. Later DESK-LAYOUT-04…09 rows migrate remaining magic heights to these tokens and add `GridSplitter` where needed.
+3. Later DESK-LAYOUT-05…09 rows migrate remaining magic heights to these tokens and add `GridSplitter` where needed.
 
 ## Snapshot (DESK-LAYOUT-01)
 
@@ -44,9 +44,20 @@ In the Drift module:
 - Findings pane has **no** `MaxHeight` (removed the old `MaxHeight="200"` trap).  
 - `ClipToBounds` remains; pane floors keep content readable at shell `MinHeight=680`.
 
+
+
+## Audit (DESK-LAYOUT-04)
+
+In the Audit module:
+
+- `RowDefinitions="Auto,*,Auto,*"` — header, events `*`, vertical `GridSplitter`, payload `*`.  
+- Event list binds `Mfc.ListMinHeight`; payload binds `Mfc.DetailMinHeight`.  
+- Operator can reclaim space between list and JSON payload (no starved competing `*` without splitter).
+
 ## Living Spec
 
 - `DesktopLayoutTokensLivingSpecTests` (+ `CtDeskLayout00…`) — token presence.  
 - `DesktopLayoutSnapshotLivingSpecTests` (+ `CtDeskLayout01…`) — Snapshot single-primary + splitter contract.  
 - `DesktopLayoutSemanticDiffLivingSpecTests` (+ `CtDeskLayout02…`) — Semantic Diff entry/detail splitter contract.  
-- `DesktopLayoutDriftLivingSpecTests` (+ `CtDeskLayout03…`) — Drift three-pane splitter contract.
+- `DesktopLayoutDriftLivingSpecTests` (+ `CtDeskLayout03…`) — Drift three-pane splitter contract.  
+- `DesktopLayoutAuditLivingSpecTests` (+ `CtDeskLayout04…`) — Audit list/payload splitter contract.

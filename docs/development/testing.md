@@ -821,6 +821,20 @@ Issue [#671](https://github.com/sesquicadaver/MTDirector/issues/671) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7134"`.
 
+## Living Specification — DESK-LAYOUT-04 Audit event list + payload splitter (W7-135)
+
+Issue [#672](https://github.com/sesquicadaver/MTDirector/issues/672) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Audit `Auto,*,Auto,*` + GridSplitter + tokens | `MainWindow.axaml` Audit panel | `DesktopLayoutAuditLivingSpecTests.Ac1AuditUsesListStarSplitterAndPayloadStar` |
+| No legacy `Auto,*,*` without splitter | `MainWindow.axaml` | `DesktopLayoutAuditLivingSpecTests.Ac2AuditPayloadLabelAndNoLegacyStarStarOnlyRows` |
+| PLAN-13 + desktop-layout.md | docs | `DesktopLayoutAuditLivingSpecTests.Ac3Plan13AndDesktopLayoutDocLockLayout04` |
+| CT wrapper | release Living Spec | `CtDeskLayout04DesktopLayoutAuditLivingSpecTests.Ac1DesktopLayoutAuditLivingSpecAndPlan13MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopLayoutAuditLivingSpecTests|CtDeskLayout04"`.
+
+
 ## Living Specification — DESK-LAYOUT-02 Semantic Diff entry list + splitter (W7-131)
 
 Issue [#664](https://github.com/sesquicadaver/MTDirector/issues/664) AC → module → tests:
