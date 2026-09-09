@@ -36,4 +36,4 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 ## §3.C NEXT
 
-**PLAN-12 COMPLETE.** **W7-125 DONE** (#653). PLAN-13 inventory **DONE** (W7-126). **§3.C NEXT = W7-127 (#657)** — DESK-LAYOUT-00 Shared layout tokens + desktop-layout.md Living Spec depth.
+**PLAN-12 COMPLETE.** **W7-125 DONE** (#653). PLAN-13 inventory **DONE** (W7-126). **W7-127 DONE** (DESK-LAYOUT-00). **§3.C NEXT = W7-128 (#658)** — Seed next PLAN-13 row after DESK-LAYOUT-00 → DESK-LAYOUT-01.

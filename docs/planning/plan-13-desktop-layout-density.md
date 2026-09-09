@@ -1,7 +1,7 @@
 # PLAN-13 — Desktop layout density Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **DONE** (W7-126 #654); first implement **DESK-LAYOUT-00** **OPEN**  
+**Status:** Inventory **DONE** (W7-126); **DESK-LAYOUT-00 DONE** (W7-127); next seed **W7-128 OPEN**  
 **PLAN issue / queue:** [W7-126 / PLAN-13 #654](https://github.com/sesquicadaver/MTDirector/issues/654)  
 **Predecessor:** GUI density analysis (lab session 2026-09-09); PLAN-12 Policies residual lifecycle **COMPLETE**; product seed **W7-125 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml), [`App.axaml`](../../src/Mfc.Desktop/App.axaml)  
@@ -53,7 +53,7 @@ Operator report: data panes often so small that content is unreadable. Analysis 
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-LAYOUT-00** | No shared layout tokens / density contract doc | `App.axaml` styles; no `Mfc.*Height` resources for lists; need `docs/development/desktop-layout.md` | **W7-127 OPEN** (#657); seeded by inventory |
+| 1 | **DESK-LAYOUT-00** | No shared layout tokens / density contract doc | `App.axaml` + `docs/development/desktop-layout.md`; Snapshot primary list binds tokens | **W7-127 DONE** (#657) |
 | 2 | **DESK-LAYOUT-01** | Snapshot tab: competing `*` + clipped detail | `MainWindow.axaml` ~685–853 `RowDefinitions="Auto,Auto,*,Auto,*,Auto"` | seeded after DESK-LAYOUT-00 (**W7-128 OPEN** #658 → implement **W7-129 OPEN** #659) |
 | 3 | **DESK-LAYOUT-02** | Semantic Diff: entry list vs before/after starved | ~857–1051 + before/after `MaxHeight="220"` | seed after DESK-LAYOUT-01 |
 | 4 | **DESK-LAYOUT-03** | Drift: competing stars + findings `MaxHeight="200"` | ~1737–1831 | seed after DESK-LAYOUT-02 |
@@ -90,4 +90,4 @@ Product §3 never waits on GNS3. Validate layout on Desktop against lab captures
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-127 (#657)** — DESK-LAYOUT-00 Shared layout tokens + `desktop-layout.md` Living Spec depth.
+**§3.C NEXT = W7-128 (#658)** — Seed next PLAN-13 row after DESK-LAYOUT-00 → DESK-LAYOUT-01.
