@@ -1154,6 +1154,19 @@ Issue [#730](https://github.com/sesquicadaver/MTDirector/issues/730) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan17DesktopIncidentBindActionW7164"`.
 
+## Living Specification — DESK-A11Y-ACTION-01 Bind assessment AutomationProperties.Name (W7-165)
+
+Issue [#733](https://github.com/sesquicadaver/MTDirector/issues/733) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Bind assessment exposes AutomationProperties.Name | `MainWindow.axaml` | `DesktopIncidentBindActionAutomationLivingSpecTests.Ac1BindAssessmentButtonExposesAutomationPropertiesName` |
+| PLAN-17 + docs lock | plan-17 + testing + known-limitations | `DesktopIncidentBindActionAutomationLivingSpecTests.Ac2Plan17AndTestingDocLockA11yAction01` |
+| CT wrapper | release Living Spec | `CtDeskA11yAction01DesktopIncidentBindActionAutomationLivingSpecTests.Ac1DesktopIncidentBindActionAutomationLivingSpecAndPlan17MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentBindActionAutomationLivingSpecTests|CtDeskA11yAction01"`.
+
+
 
 
 
