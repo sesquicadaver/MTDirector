@@ -966,9 +966,12 @@
                       Grid.Row="1"
                       Classes="mfc-list-frame"
                       ClipToBounds="True">
-                <Grid RowDefinitions="*,8,Auto">
-                  <ListBox ItemsSource="{Binding Diff.VisibleEntries}"
-                           SelectedItem="{Binding Diff.SelectedEntry, Mode=TwoWay}">
+                <!-- DESK-LAYOUT-02: entry list * + GridSplitter + before/after detail * (no MaxHeight) -->
+                <Grid RowDefinitions="*,Auto,*">
+                  <ListBox Grid.Row="0"
+                           ItemsSource="{Binding Diff.VisibleEntries}"
+                           SelectedItem="{Binding Diff.SelectedEntry, Mode=TwoWay}"
+                           MinHeight="{StaticResource Mfc.ListMinHeight}">
                     <ListBox.ItemsPanel>
                       <ItemsPanelTemplate>
                         <VirtualizingStackPanel />
@@ -994,65 +997,69 @@
                     </ListBox.ItemTemplate>
                   </ListBox>
 
-                  <TextBlock Grid.Row="2"
-                             Classes="mfc-muted"
-                             Margin="4,0,4,4"
-                             TextWrapping="Wrap"
-                             Text="Select an entry to see before/after record fields."
-                             IsVisible="{Binding Diff.HasNoSelectedEntry}" />
-                  <TextBlock Grid.Row="2"
-                             Classes="mfc-muted"
-                             Margin="4,0,4,4"
-                             TextWrapping="Wrap"
-                             Text="This entry has no before/after SnapshotRecord (field diffs only)."
-                             IsVisible="{Binding Diff.HasSelectedEntryWithoutRecords}" />
-                  <Grid Grid.Row="2"
-                        ColumnDefinitions="*,8,*"
-                        Margin="4,0,4,4"
-                        MaxHeight="220"
-                        IsVisible="{Binding Diff.HasSelectedEntryRecord}">
-                    <DockPanel>
-                      <StackPanel DockPanel.Dock="Top" Spacing="2" Margin="0,0,0,4">
-                        <TextBlock Classes="mfc-label" Text="Before record" />
-                        <TextBlock Classes="mfc-muted"
-                                   TextWrapping="Wrap"
-                                   Text="{Binding Diff.SelectedEntry.BeforeStableKey}" />
-                      </StackPanel>
-                      <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                    HorizontalScrollBarVisibility="Disabled">
-                        <ItemsControl ItemsSource="{Binding Diff.SelectedEntry.BeforeRecordFields}">
-                          <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="svc:SnapshotDiffFieldLine">
-                              <TextBlock Text="{Binding FriendlySummary}"
-                                         Classes="mfc-mono"
-                                         TextWrapping="Wrap"
-                                         Margin="0,0,0,2" />
-                            </DataTemplate>
-                          </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                      </ScrollViewer>
-                    </DockPanel>
-                    <DockPanel Grid.Column="2">
-                      <StackPanel DockPanel.Dock="Top" Spacing="2" Margin="0,0,0,4">
-                        <TextBlock Classes="mfc-label" Text="After record" />
-                        <TextBlock Classes="mfc-muted"
-                                   TextWrapping="Wrap"
-                                   Text="{Binding Diff.SelectedEntry.AfterStableKey}" />
-                      </StackPanel>
-                      <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                    HorizontalScrollBarVisibility="Disabled">
-                        <ItemsControl ItemsSource="{Binding Diff.SelectedEntry.AfterRecordFields}">
-                          <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="svc:SnapshotDiffFieldLine">
-                              <TextBlock Text="{Binding FriendlySummary}"
-                                         Classes="mfc-mono"
-                                         TextWrapping="Wrap"
-                                         Margin="0,0,0,2" />
-                            </DataTemplate>
-                          </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                      </ScrollViewer>
-                    </DockPanel>
+                  <GridSplitter Grid.Row="1"
+                                Height="6"
+                                HorizontalAlignment="Stretch"
+                                ResizeDirection="Rows"
+                                Background="{StaticResource Mfc.BorderBrush}" />
+
+                  <Grid Grid.Row="2" MinHeight="{StaticResource Mfc.DetailMinHeight}">
+                    <TextBlock Classes="mfc-muted"
+                               Margin="4,0,4,4"
+                               TextWrapping="Wrap"
+                               Text="Select an entry to see before/after record fields."
+                               IsVisible="{Binding Diff.HasNoSelectedEntry}" />
+                    <TextBlock Classes="mfc-muted"
+                               Margin="4,0,4,4"
+                               TextWrapping="Wrap"
+                               Text="This entry has no before/after SnapshotRecord (field diffs only)."
+                               IsVisible="{Binding Diff.HasSelectedEntryWithoutRecords}" />
+                    <Grid ColumnDefinitions="*,8,*"
+                          Margin="4,0,4,4"
+                          IsVisible="{Binding Diff.HasSelectedEntryRecord}">
+                      <DockPanel>
+                        <StackPanel DockPanel.Dock="Top" Spacing="2" Margin="0,0,0,4">
+                          <TextBlock Classes="mfc-label" Text="Before record" />
+                          <TextBlock Classes="mfc-muted"
+                                     TextWrapping="Wrap"
+                                     Text="{Binding Diff.SelectedEntry.BeforeStableKey}" />
+                        </StackPanel>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                          <ItemsControl ItemsSource="{Binding Diff.SelectedEntry.BeforeRecordFields}">
+                            <ItemsControl.ItemTemplate>
+                              <DataTemplate DataType="svc:SnapshotDiffFieldLine">
+                                <TextBlock Text="{Binding FriendlySummary}"
+                                           Classes="mfc-mono"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,0,2" />
+                              </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                          </ItemsControl>
+                        </ScrollViewer>
+                      </DockPanel>
+                      <DockPanel Grid.Column="2">
+                        <StackPanel DockPanel.Dock="Top" Spacing="2" Margin="0,0,0,4">
+                          <TextBlock Classes="mfc-label" Text="After record" />
+                          <TextBlock Classes="mfc-muted"
+                                     TextWrapping="Wrap"
+                                     Text="{Binding Diff.SelectedEntry.AfterStableKey}" />
+                        </StackPanel>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                          <ItemsControl ItemsSource="{Binding Diff.SelectedEntry.AfterRecordFields}">
+                            <ItemsControl.ItemTemplate>
+                              <DataTemplate DataType="svc:SnapshotDiffFieldLine">
+                                <TextBlock Text="{Binding FriendlySummary}"
+                                           Classes="mfc-mono"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,0,2" />
+                              </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                          </ItemsControl>
+                        </ScrollViewer>
+                      </DockPanel>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Border>
