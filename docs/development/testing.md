@@ -788,6 +788,16 @@ Issue [#643](https://github.com/sesquicadaver/MTDirector/issues/643) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesDraftLivingSpecTests|CtDeskDraft01"`.
 
+## Living Specification — Product tranche seed after DESK-LAYOUT-00 (W7-128)
+
+Issue [#658](https://github.com/sesquicadaver/MTDirector/issues/658) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-LAYOUT-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, `docs/planning/continuous-queue-plan.md`, `plan-13-desktop-layout-density.md` | `ProductTrancheSeedW7128LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskLayout01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7128"`.
+
 ## Living Specification — DESK-LAYOUT-00 Shared layout tokens (W7-127)
 
 Issue [#657](https://github.com/sesquicadaver/MTDirector/issues/657) AC → module → tests:
