@@ -1697,13 +1697,13 @@
                              IsVisible="{Binding !Incident.HasLastSignal}"
                              TextWrapping="Wrap" />
                   <TextBlock Classes="mfc-label" Text="Source event id" />
-                  <TextBox Text="{Binding Incident.SourceEventId}" PlaceholderText="siem-evt-…" />
+                  <TextBox Text="{Binding Incident.SourceEventId}" Classes="mfc-field" PlaceholderText="siem-evt-…" />
                   <TextBlock Classes="mfc-label" Text="Category" />
-                  <TextBox Text="{Binding Incident.Category}" PlaceholderText="brute_force_login" />
+                  <TextBox Text="{Binding Incident.Category}" Classes="mfc-field" PlaceholderText="brute_force_login" />
                   <TextBlock Classes="mfc-label" Text="Deduplication key" />
-                  <TextBox Text="{Binding Incident.DeduplicationKey}" PlaceholderText="dedup:…" />
+                  <TextBox Text="{Binding Incident.DeduplicationKey}" Classes="mfc-field" PlaceholderText="dedup:…" />
                   <TextBlock Classes="mfc-label" Text="Confidence (0–100)" />
-                  <TextBox Text="{Binding Incident.Confidence}" PlaceholderText="50" />
+                  <TextBox Text="{Binding Incident.Confidence}" Classes="mfc-field" PlaceholderText="50" />
                   <StackPanel Spacing="4" IsVisible="{Binding Incident.HasLastSignal}">
                     <TextBlock Classes="mfc-label" Text="Last ingested signal" />
                     <TextBlock Text="{Binding Incident.LastSignal.SummaryLine}"
@@ -1738,17 +1738,17 @@
                                  Text="SEC-06 BindIncidentResponseAssessment after ingest. Session=Full, path=CpuFirewall. No deploy/overlay."
                                  TextWrapping="Wrap" />
                       <TextBlock Classes="mfc-label" Text="Endpoint id" />
-                      <TextBox Text="{Binding Incident.EndpointIdText}" PlaceholderText="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+                      <TextBox Text="{Binding Incident.EndpointIdText}" Classes="mfc-field" PlaceholderText="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
                       <TextBlock Classes="mfc-label" Text="Presence id" />
-                      <TextBox Text="{Binding Incident.PresenceIdText}" PlaceholderText="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+                      <TextBox Text="{Binding Incident.PresenceIdText}" Classes="mfc-field" PlaceholderText="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
                       <TextBlock Classes="mfc-label" Text="Enforcement node id" />
-                      <TextBox Text="{Binding Incident.EnforcementNodeIdText}" PlaceholderText="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+                      <TextBox Text="{Binding Incident.EnforcementNodeIdText}" Classes="mfc-field" PlaceholderText="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
                       <TextBlock Classes="mfc-label" Text="Flow source (optional, for correlation)" />
-                      <TextBox Text="{Binding Incident.FlowSourceAddress}" PlaceholderText="10.0.0.8" />
+                      <TextBox Text="{Binding Incident.FlowSourceAddress}" Classes="mfc-field" PlaceholderText="10.0.0.8" />
                       <TextBlock Classes="mfc-label" Text="Flow destination" />
-                      <TextBox Text="{Binding Incident.FlowDestinationAddress}" PlaceholderText="198.51.100.10" />
+                      <TextBox Text="{Binding Incident.FlowDestinationAddress}" Classes="mfc-field" PlaceholderText="198.51.100.10" />
                       <TextBlock Classes="mfc-label" Text="Flow protocol" />
-                      <TextBox Text="{Binding Incident.FlowProtocol}" PlaceholderText="tcp" />
+                      <TextBox Text="{Binding Incident.FlowProtocol}" Classes="mfc-field" PlaceholderText="tcp" />
                       <StackPanel Spacing="4" IsVisible="{Binding Incident.HasLastBinding}">
                         <TextBlock Classes="mfc-label" Text="Last assessment binding" />
                         <TextBlock Text="{Binding Incident.LastBinding.SummaryLine}"
