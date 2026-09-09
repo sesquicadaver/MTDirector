@@ -890,6 +890,20 @@ Issue [#683](https://github.com/sesquicadaver/MTDirector/issues/683) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7140"`.
 
+## Living Specification — DESK-LAYOUT-07 Operations Onboarding/Deploy MaxHeight (W7-141)
+
+Issue [#684](https://github.com/sesquicadaver/MTDirector/issues/684) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Onboarding/Deploy lists: no MaxHeight 100/120/140; ListMinHeight | `MainWindow.axaml` Operations tabs | `DesktopLayoutOperationsLivingSpecTests.Ac1OnboardingAndDeployListsUseListMinHeightAndNoMaxHeightCaps` |
+| Each Onboarding/Deploy ListBox binds ListMinHeight | `MainWindow.axaml` | `DesktopLayoutOperationsLivingSpecTests.Ac2OnboardingAndDeployPrimaryListsAllBindListMinHeight` |
+| PLAN-13 + desktop-layout.md | docs | `DesktopLayoutOperationsLivingSpecTests.Ac3Plan13AndDesktopLayoutDocLockLayout07` |
+| CT wrapper | release Living Spec | `CtDeskLayout07DesktopLayoutOperationsLivingSpecTests.Ac1DesktopLayoutOperationsLivingSpecAndPlan13MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopLayoutOperationsLivingSpecTests|CtDeskLayout07"`.
+
+
 
 
 
