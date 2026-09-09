@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-152** ([#707](https://github.com/sesquicadaver/MTDirector/issues/707)): DESK-PLACEHOLDER-02 repo-wide Watermark residue Living Spec; **PLAN-14 COMPLETE**. Seeded W7-153 (#709) / W7-154 (#710) PLAN-15. **§3.C NEXT = W7-153 (#709)**.
 - **W7-151** ([#704](https://github.com/sesquicadaver/MTDirector/issues/704)): Seed next PLAN-14 row after DESK-PLACEHOLDER-01 → DESK-PLACEHOLDER-02 (`ProductTrancheSeedW7151LivingSpecTests`). **§3.C NEXT = W7-152 (#707)**.
 - **W7-150** ([#703](https://github.com/sesquicadaver/MTDirector/issues/703)): DESK-PLACEHOLDER-01 Incident TextBox Watermark→PlaceholderText (`DesktopIncidentPlaceholderLivingSpecTests`). **§3.C NEXT = W7-151 (#704)**.
 - **W7-149** ([#700](https://github.com/sesquicadaver/MTDirector/issues/700)): PLAN-14 inventory Desktop Avalonia PlaceholderText / Incident surface (`Plan14DesktopAvaloniaPlaceholderW7149LivingSpecTests`). Seeded W7-150 (#703) / W7-151 (#704). **§3.C NEXT = W7-150 (#703)**.

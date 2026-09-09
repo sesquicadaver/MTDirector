@@ -1014,6 +1014,19 @@ Issue [#704](https://github.com/sesquicadaver/MTDirector/issues/704) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7151"`.
 
+## Living Specification — DESK-PLACEHOLDER-02 Watermark residue / PLAN-14 COMPLETE (W7-152)
+
+Issue [#707](https://github.com/sesquicadaver/MTDirector/issues/707) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| No Watermark= in Desktop *.axaml | `src/Mfc.Desktop/**/*.axaml` | `DesktopWatermarkResidueLivingSpecTests.Ac1NoWatermarkAttributeInDesktopAxamlFiles` |
+| PLAN-14 COMPLETE + docs | plan-14 + testing + known-limitations | `DesktopWatermarkResidueLivingSpecTests.Ac2Plan14CompleteAndDocsLockPlaceholder02` |
+| CT wrapper | release Living Spec | `CtDeskPlaceholder02DesktopWatermarkResidueLivingSpecTests.Ac1DesktopWatermarkResidueLivingSpecAndPlan14CompleteExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopWatermarkResidueLivingSpecTests|CtDeskPlaceholder02"`.
+
+
 
 
 
