@@ -156,3 +156,4 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-151 Living Spec lock): §3.C product row after DESK-PLACEHOLDER-01 is seeded as **W7-152** — **DESK-PLACEHOLDER-02** Repo-wide Desktop XAML Watermark residue Living Spec; not idle; not a lab stop-gate.
 - Intentional residual (W7-152 Living Spec lock): **DESK-PLACEHOLDER-02 DONE** / **PLAN-14 COMPLETE** (`DesktopWatermarkResidueLivingSpecTests`); next product seed W7-153 → PLAN-15.
 - Intentional residual (W7-153 Living Spec lock): §3.C product row after PLAN-14 COMPLETE is seeded as **W7-154** — **PLAN-15** Inventory Desktop Incident mfc-field style hygiene Living Spec product tranche; not idle; not a lab stop-gate.
+- Intentional residual (W7-154 Living Spec lock): **PLAN-15** inventory DONE; next product row **W7-155** — **DESK-FIELD-01** Incident TextBox mfc-field Classes Living Spec; not idle; not a lab stop-gate.

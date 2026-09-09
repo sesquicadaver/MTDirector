@@ -1,9 +1,9 @@
 # PLAN-15 — Desktop Incident mfc-field style hygiene Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **OPEN** (W7-154); seeded by **W7-153 DONE** after **PLAN-14 COMPLETE**  
+**Status:** Inventory **DONE** (W7-154); seeded by **W7-153 DONE**; first implement **DESK-FIELD-01 OPEN** (W7-155)  
 **PLAN issue / queue:** [W7-154 / PLAN-15 #710](https://github.com/sesquicadaver/MTDirector/issues/710)  
-**Predecessor:** PLAN-14 Avalonia PlaceholderText / Incident surface **COMPLETE**; product seed **W7-153**  
+**Predecessor:** PLAN-14 Avalonia PlaceholderText / Incident surface **COMPLETE**; product seed **W7-153 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
@@ -21,12 +21,27 @@ Incident Operations TextBoxes use `PlaceholderText` but lack `Classes="mfc-field
 - Global Fluent theme rewrite  
 - Replacing PLAN-14 PlaceholderText locks  
 
+## Decision drivers
+
+| Driver | Choice |
+|--------|--------|
+| Worst pain first | Incident Operations missing `mfc-field` before regression matrix |
+| Risk | XAML Classes only; keep bindings/PlaceholderText; Desktop build + Living Spec |
+| Queue fit | Seed **after** PLAN-14 COMPLETE; inventory locks **DESK-FIELD-01** as first implement |
+
+## Evidence baseline
+
+| Surface | Desktop today | Gap |
+|---------|---------------|-----|
+| Incident ingest/bind TextBoxes | `PlaceholderText=` without `Classes="mfc-field"` | DESK-FIELD-01 |
+| Regression lock | PlaceholderText + mfc-field matrix | DESK-FIELD-02 |
+
 ## Ranked Desktop Incident field-style tranche
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-FIELD-01** | Incident TextBoxes missing `Classes="mfc-field"` | `MainWindow.axaml` Operations → Incident | seed after PLAN-15 inventory |
-| 2 | **DESK-FIELD-02** | Regression lock: Incident fields retain PlaceholderText + mfc-field | Living Spec matrix | seed after DESK-FIELD-01 |
+| 1 | **DESK-FIELD-01** | Incident TextBoxes missing `Classes="mfc-field"` | `MainWindow.axaml` Operations → Incident | **W7-155 OPEN** (#713); seeded by inventory **W7-154 DONE** (#710) |
+| 2 | **DESK-FIELD-02** | Regression lock: Incident fields retain PlaceholderText + mfc-field | Living Spec matrix | seeded by **W7-156 OPEN** (#714) after DESK-FIELD-01 |
 
 ## Dual track
 
@@ -34,4 +49,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-154 (#710)** — PLAN-15 Inventory Desktop Incident mfc-field style hygiene Living Spec product tranche.
+**§3.C NEXT = W7-155 (#713)** — DESK-FIELD-01 Incident TextBox mfc-field Classes Living Spec.

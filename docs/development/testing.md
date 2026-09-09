@@ -1036,6 +1036,17 @@ Issue [#709](https://github.com/sesquicadaver/MTDirector/issues/709) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7153"`.
 
+## Living Specification — PLAN-15 Desktop Incident mfc-field inventory (W7-154)
+
+Issue [#710](https://github.com/sesquicadaver/MTDirector/issues/710) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-15 inventory + DESK-FIELD-01 seed | `docs/planning/plan-15-desktop-incident-mfc-field-style-hygiene.md`, known-limitations, ROADMAP, continuous plan, docs index | `Plan15DesktopIncidentMfcFieldW7154LivingSpecTests.Ac1Plan15InventoryDocumentsRankedRowsAndSeedsDeskField01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan15DesktopIncidentMfcFieldW7154"`.
+
+
 
 
 
