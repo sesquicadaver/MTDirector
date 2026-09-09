@@ -1,7 +1,7 @@
 # PLAN-19 — Desktop shell Connect/Disconnect AutomationProperties Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **OPEN** (W7-174); seeded by **W7-173 DONE** after **PLAN-18 COMPLETE**  
+**Status:** Inventory **DONE** (W7-174); seeded by **W7-173 DONE**; first implement **DESK-A11Y-CONN-01 OPEN** (W7-175)  
 **PLAN issue / queue:** [W7-174 / PLAN-19 #750](https://github.com/sesquicadaver/MTDirector/issues/750)  
 **Predecessor:** PLAN-18 Incident ingest-action AutomationProperties **COMPLETE**; product seed **W7-173 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -21,12 +21,28 @@ Shell chrome Connect/Disconnect buttons have Content text but no `AutomationProp
 - New connection RPCs  
 - Replacing PLAN-16…18 Incident locks  
 
+## Decision drivers
+
+| Driver | Choice |
+|--------|--------|
+| Worst pain first | Connect/Disconnect lack accessible names before regression matrix |
+| Risk | XAML AutomationProperties only; keep Command bindings; Desktop build + Living Spec |
+| Queue fit | Seed **after** PLAN-18 COMPLETE; inventory locks **DESK-A11Y-CONN-01** as first implement |
+
+## Evidence baseline
+
+| Surface | Desktop today | Gap |
+|---------|---------------|-----|
+| Connect button | Content="Connect"; no AutomationProperties.Name | DESK-A11Y-CONN-01 |
+| Disconnect button | Content="Disconnect"; no AutomationProperties.Name | DESK-A11Y-CONN-01 |
+| Regression lock | Connect/Disconnect Names + Incident action Names matrix | DESK-A11Y-CONN-02 |
+
 ## Ranked Desktop shell connection-action a11y tranche
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-A11Y-CONN-01** | Connect/Disconnect buttons lack AutomationProperties.Name | `MainWindow.axaml` shell chrome | seed after PLAN-19 inventory |
-| 2 | **DESK-A11Y-CONN-02** | Regression lock: Connect/Disconnect Names + Incident action Names matrix | Living Spec matrix | seed after DESK-A11Y-CONN-01 |
+| 1 | **DESK-A11Y-CONN-01** | Connect/Disconnect buttons lack AutomationProperties.Name | `MainWindow.axaml` shell chrome | **W7-175 OPEN** (#753); seeded by inventory **W7-174 DONE** (#750) |
+| 2 | **DESK-A11Y-CONN-02** | Regression lock: Connect/Disconnect Names + Incident action Names matrix | Living Spec matrix | seeded by **W7-176 OPEN** (#754) after DESK-A11Y-CONN-01 |
 
 ## Dual track
 
@@ -34,4 +50,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-174 (#750)** — PLAN-19 Inventory Desktop shell Connect/Disconnect AutomationProperties Living Spec product tranche.
+**§3.C NEXT = W7-175 (#753)** — DESK-A11Y-CONN-01 Connect/Disconnect AutomationProperties.Name Living Spec.
