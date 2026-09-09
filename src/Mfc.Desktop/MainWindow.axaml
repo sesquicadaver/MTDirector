@@ -1675,6 +1675,7 @@
                   <DockPanel LastChildFill="True">
                     <Button Classes="mfc-action"
                             Content="Ingest signal"
+                            AutomationProperties.Name="Ingest signal"
                             Command="{Binding Incident.IngestCommand}"
                             DockPanel.Dock="Right"
                             Margin="8,0,0,0"
