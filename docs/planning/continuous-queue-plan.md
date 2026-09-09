@@ -17,7 +17,8 @@
 **PLAN-13 (Desktop layout density) COMPLETE:** [`plan-13-desktop-layout-density.md`](plan-13-desktop-layout-density.md)
 **PLAN-14 (Desktop Avalonia PlaceholderText / Incident surface) COMPLETE:** [`plan-14-desktop-avalonia-placeholder-incident-surface.md`](plan-14-desktop-avalonia-placeholder-incident-surface.md)
 **PLAN-15 (Desktop Incident mfc-field style hygiene) COMPLETE:** [`plan-15-desktop-incident-mfc-field-style-hygiene.md`](plan-15-desktop-incident-mfc-field-style-hygiene.md)
-**PLAN-16 (Desktop Incident AutomationProperties accessible-name):** [`plan-16-desktop-incident-automation-properties.md`](plan-16-desktop-incident-automation-properties.md) inventory **DONE** (W7-159)
+**PLAN-16 (Desktop Incident AutomationProperties accessible-name) COMPLETE:** [`plan-16-desktop-incident-automation-properties.md`](plan-16-desktop-incident-automation-properties.md)
+**PLAN-17 (Desktop Incident bind-action AutomationProperties):** [`plan-17-desktop-incident-bind-action-automation.md`](plan-17-desktop-incident-bind-action-automation.md) inventory **OPEN** (W7-164)
 
 This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle state **NEXT = none**.
 
@@ -241,7 +242,9 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | PLAN-16 — Inventory Desktop Incident AutomationProperties accessible-name Living Spec product tranche | Docs / PLAN-16 | **W7-159 DONE** |
 | DESK-A11Y-01 — Incident TextBox AutomationProperties.Name Living Spec | Desktop / Avalonia | **W7-160 DONE** |
 | Seed next PLAN-16 row after DESK-A11Y-01 → DESK-A11Y-02 | Docs / product seed | **W7-161 DONE** |
-| DESK-A11Y-02 — Incident Names + PlaceholderText + mfc-field regression Living Spec | Desktop / Avalonia | **W7-162 OPEN** |
+| DESK-A11Y-02 — Incident Names + PlaceholderText + mfc-field regression Living Spec | Desktop / Avalonia | **W7-162 DONE** |
+| Seed next product tranche after PLAN-16 → PLAN-17 | Docs / product seed | **W7-163 OPEN** |
+| PLAN-17 — Inventory Desktop Incident bind-action AutomationProperties Living Spec product tranche | Docs / PLAN-17 | **W7-164 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -456,7 +459,9 @@ W7-158 Seed next product tranche after PLAN-15 → PLAN-16 **DONE**
 W7-159 PLAN-16 — Inventory Desktop Incident AutomationProperties accessible-name Living Spec product tranche **DONE**
 W7-160 DESK-A11Y-01 — Incident TextBox AutomationProperties.Name Living Spec **DONE**
 W7-161 Seed next PLAN-16 row after DESK-A11Y-01 → DESK-A11Y-02 **DONE**
-W7-162 DESK-A11Y-02 — Incident Names + PlaceholderText + mfc-field regression Living Spec **OPEN**
+W7-162 DESK-A11Y-02 — Incident Names + PlaceholderText + mfc-field regression Living Spec **DONE**
+W7-163 Seed next product tranche after PLAN-16 → PLAN-17 **OPEN**
+W7-164 PLAN-17 — Inventory Desktop Incident bind-action AutomationProperties Living Spec product tranche **OPEN**
 W7-117 Seed next PLAN-11 row after DESK-COMPOSE-01 → DESK-GATE-01 **DONE**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
@@ -657,10 +662,12 @@ residual ops: CRS / physical lab runner (not §3 stop-gate)
 | 189 | W7-159 | [#720](https://github.com/sesquicadaver/MTDirector/issues/720) | PLAN-16 — Inventory Desktop Incident AutomationProperties accessible-name Living Spec product tranche | **DONE** |
 | 190 | W7-160 | [#723](https://github.com/sesquicadaver/MTDirector/issues/723) | DESK-A11Y-01 — Incident TextBox AutomationProperties.Name Living Spec | **DONE** |
 | 191 | W7-161 | [#724](https://github.com/sesquicadaver/MTDirector/issues/724) | Seed next PLAN-16 row after DESK-A11Y-01 → DESK-A11Y-02 | **DONE** |
-| 192 | W7-162 | [#727](https://github.com/sesquicadaver/MTDirector/issues/727) | DESK-A11Y-02 — Incident Names + PlaceholderText + mfc-field regression Living Spec | **OPEN** |
+| 192 | W7-162 | [#727](https://github.com/sesquicadaver/MTDirector/issues/727) | DESK-A11Y-02 — Incident Names + PlaceholderText + mfc-field regression Living Spec | **DONE** |
+| 193 | W7-163 | [#729](https://github.com/sesquicadaver/MTDirector/issues/729) | Seed next product tranche after PLAN-16 → PLAN-17 | **OPEN** |
+| 194 | W7-164 | [#730](https://github.com/sesquicadaver/MTDirector/issues/730) | PLAN-17 — Inventory Desktop Incident bind-action AutomationProperties Living Spec product tranche | **OPEN** |
 | 147 | W7-117 | [#632](https://github.com/sesquicadaver/MTDirector/issues/632) | Seed next PLAN-11 row after DESK-COMPOSE-01 → DESK-GATE-01 | **DONE** |
 
-**§3.C NEXT = W7-162 (#727)**. W7-161 **DONE**; W7-160 **DONE**; DESK-A11Y-01 **DONE**; W7-159 **DONE**; PLAN-16 inventory **DONE**; W7-158 **DONE**; W7-157 **DONE**; DESK-FIELD-02 **DONE**; PLAN-15 **COMPLETE**; W7-156 **DONE**; W7-155 **DONE**; DESK-FIELD-01 **DONE**; W7-154 **DONE**; PLAN-15 inventory **DONE**; W7-153 **DONE**; W7-152 **DONE**; DESK-PLACEHOLDER-02 **DONE**; PLAN-14 **COMPLETE**; W7-151 **DONE**; W7-150 **DONE**; DESK-PLACEHOLDER-01 **DONE**; W7-149 **DONE**; PLAN-14 inventory **DONE**; W7-148 **DONE**; W7-147 **DONE**; DESK-LAYOUT-10 **DONE**; PLAN-13 **COMPLETE**; W7-146 **DONE**; W7-145 **DONE**; DESK-LAYOUT-09 **DONE**; W7-144 **DONE**; W7-143 **DONE**; DESK-LAYOUT-08 **DONE**; W7-142 **DONE**; W7-141 **DONE**; DESK-LAYOUT-07 **DONE**; W7-140 **DONE**; W7-139 **DONE**; DESK-LAYOUT-06 **DONE**; W7-138 **DONE**; W7-137 **DONE**; DESK-LAYOUT-05 **DONE**; W7-136 **DONE**; W7-135 **DONE**; DESK-LAYOUT-04 **DONE**; W7-134 **DONE**; W7-133 **DONE**; DESK-LAYOUT-03 **DONE**; W7-132 **DONE**; W7-131 **DONE**; DESK-LAYOUT-02 **DONE**; W7-130 **DONE**; W7-129 **DONE**; DESK-LAYOUT-01 **DONE**; W7-128 **DONE**; W7-127 **DONE**; DESK-LAYOUT-00 **DONE**; W7-126 **DONE**; PLAN-13 inventory **DONE**; W7-125 **DONE**; W7-124 **DONE**; PLAN-12 **COMPLETE**; W7-123 **DONE**; W7-122 **DONE**; W7-121 **DONE**; W7-120 **DONE**; W7-119 **DONE**; PLAN-12 inventory **DONE**; W7-118 **DONE**; W7-116 **DONE**; PLAN-11 **COMPLETE**; W7-117 **DONE**; W7-115 **DONE**; W7-113 **DONE**; W7-114 **DONE**; W7-112 **DONE**; W7-111 **DONE**; W7-110 **DONE**; PLAN-10 **COMPLETE**; W7-109 **DONE**; W7-108 **DONE**; W7-107 **DONE**; W7-106 **DONE**; W7-105 **DONE**; PLAN-09 **COMPLETE**; PLAN-10 inventory **DONE**; PLAN-08 **COMPLETE**; PLAN-09 inventory **DONE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
+**§3.C NEXT = W7-163 (#729)**. W7-162 **DONE**; DESK-A11Y-02 **DONE**; PLAN-16 **COMPLETE**; W7-161 **DONE**; W7-160 **DONE**; DESK-A11Y-01 **DONE**; W7-159 **DONE**; PLAN-16 inventory **DONE**; W7-158 **DONE**; W7-157 **DONE**; DESK-FIELD-02 **DONE**; PLAN-15 **COMPLETE**; W7-156 **DONE**; W7-155 **DONE**; DESK-FIELD-01 **DONE**; W7-154 **DONE**; PLAN-15 inventory **DONE**; W7-153 **DONE**; W7-152 **DONE**; DESK-PLACEHOLDER-02 **DONE**; PLAN-14 **COMPLETE**; W7-151 **DONE**; W7-150 **DONE**; DESK-PLACEHOLDER-01 **DONE**; W7-149 **DONE**; PLAN-14 inventory **DONE**; W7-148 **DONE**; W7-147 **DONE**; DESK-LAYOUT-10 **DONE**; PLAN-13 **COMPLETE**; W7-146 **DONE**; W7-145 **DONE**; DESK-LAYOUT-09 **DONE**; W7-144 **DONE**; W7-143 **DONE**; DESK-LAYOUT-08 **DONE**; W7-142 **DONE**; W7-141 **DONE**; DESK-LAYOUT-07 **DONE**; W7-140 **DONE**; W7-139 **DONE**; DESK-LAYOUT-06 **DONE**; W7-138 **DONE**; W7-137 **DONE**; DESK-LAYOUT-05 **DONE**; W7-136 **DONE**; W7-135 **DONE**; DESK-LAYOUT-04 **DONE**; W7-134 **DONE**; W7-133 **DONE**; DESK-LAYOUT-03 **DONE**; W7-132 **DONE**; W7-131 **DONE**; DESK-LAYOUT-02 **DONE**; W7-130 **DONE**; W7-129 **DONE**; DESK-LAYOUT-01 **DONE**; W7-128 **DONE**; W7-127 **DONE**; DESK-LAYOUT-00 **DONE**; W7-126 **DONE**; PLAN-13 inventory **DONE**; W7-125 **DONE**; W7-124 **DONE**; PLAN-12 **COMPLETE**; W7-123 **DONE**; W7-122 **DONE**; W7-121 **DONE**; W7-120 **DONE**; W7-119 **DONE**; PLAN-12 inventory **DONE**; W7-118 **DONE**; W7-116 **DONE**; PLAN-11 **COMPLETE**; W7-117 **DONE**; W7-115 **DONE**; W7-113 **DONE**; W7-114 **DONE**; W7-112 **DONE**; W7-111 **DONE**; W7-110 **DONE**; PLAN-10 **COMPLETE**; W7-109 **DONE**; W7-108 **DONE**; W7-107 **DONE**; W7-106 **DONE**; W7-105 **DONE**; PLAN-09 **COMPLETE**; PLAN-10 inventory **DONE**; PLAN-08 **COMPLETE**; PLAN-09 inventory **DONE**; PLAN-07 **COMPLETE**; PLAN-05 **COMPLETE**; PLAN-06 **COMPLETE**. CRS/physical lab runner remains ops-parallel ([`known-limitations.md`](../release/known-limitations.md)), not a product §3 stop-gate.
 
 ## Anti-goals (unchanged)
 
