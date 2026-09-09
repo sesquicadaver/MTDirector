@@ -788,6 +788,16 @@ Issue [#643](https://github.com/sesquicadaver/MTDirector/issues/643) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesDraftLivingSpecTests|CtDeskDraft01"`.
 
+## Living Specification — PLAN-13 Desktop layout density inventory (W7-126)
+
+Issue [#654](https://github.com/sesquicadaver/MTDirector/issues/654) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-13 inventory + DESK-LAYOUT-00 seed | `docs/planning/plan-13-desktop-layout-density.md`, `known-limitations.md`, ROADMAP, continuous plan, docs index | `Plan13DesktopLayoutDensityW7126LivingSpecTests.Ac1Plan13InventoryDocumentsRankedRowsAndSeedsDeskLayout00` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan13DesktopLayoutDensityW7126"`.
+
 ## Living Specification — Product tranche seed after PLAN-12 (W7-125)
 
 Issue [#653](https://github.com/sesquicadaver/MTDirector/issues/653) AC → module → tests:

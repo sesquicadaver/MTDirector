@@ -1,10 +1,11 @@
-# PLAN-13 — Desktop layout density & readable data panes
+# PLAN-13 — Desktop layout density Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **OPEN** (seeded by **W7-125 DONE** #653 → implement inventory **W7-126 OPEN** #654)  
-**Predecessor:** GUI density analysis (lab session 2026-09-09); PLAN-12 Policies residual lifecycle  
+**Status:** Inventory **DONE** (W7-126 #654); first implement **DESK-LAYOUT-00** **OPEN**  
+**PLAN issue / queue:** [W7-126 / PLAN-13 #654](https://github.com/sesquicadaver/MTDirector/issues/654)  
+**Predecessor:** GUI density analysis (lab session 2026-09-09); PLAN-12 Policies residual lifecycle **COMPLETE**; product seed **W7-125 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml), [`App.axaml`](../../src/Mfc.Desktop/App.axaml)  
-**Normative execution order (when seeded):** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
+**Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
 Operator report: data panes often so small that content is unreadable. Analysis root causes (evidence in XAML):
 
@@ -37,29 +38,38 @@ Operator report: data panes often so small that content is unreadable. Analysis 
 |--------|--------|
 | Worst pain first | Snapshots (star starvation) before Policies MaxHeight cascade |
 | Risk | Layout-only PRs; keep bindings/names; Desktop build + focused Living Spec |
-| Queue fit | Seed **after** PLAN-12 COMPLETE (do not preempt W7-123…W7-124) unless operator elevates |
+| Queue fit | Seed **after** PLAN-12 COMPLETE; inventory locks **DESK-LAYOUT-00** as first implement |
 
-## Ranked linear tranche
+## Evidence baseline (layout density)
 
-| Rank | ID | Gap | Evidence | Acceptance (testable) |
-|------|----|-----|----------|------------------------|
-| 1 | **DESK-LAYOUT-00** | No shared layout tokens / density contract doc | `App.axaml` styles; no `Mfc.*Height` resources for lists | Resources + short `docs/development/desktop-layout.md` + Living Spec that tokens exist and MainWindow references them for ≥1 primary list |
-| 2 | **DESK-LAYOUT-01** | Snapshot tab: competing `*` + clipped detail | `MainWindow.axaml` ~685–853 `RowDefinitions="Auto,Auto,*,Auto,*,Auto"` | Single primary `*` for records (config **or** observation via sub-tab/toggle); detail pane below with splitter **or** dedicated bottom `*` ≥ `Mfc.DetailMinHeight`; no `MaxHeight` on primary ListBox; Windows Desktop build green |
-| 3 | **DESK-LAYOUT-02** | Semantic Diff: entry list vs before/after starved | ~857–1051 `RowDefinitions="*,8,Auto"` + before/after `MaxHeight="220"` | Vertical `GridSplitter` between entries and detail; remove `MaxHeight` on before/after (scroll inside); entry list keeps `*` |
-| 4 | **DESK-LAYOUT-03** | Drift: `Auto,*,Auto,*` + findings `MaxHeight="200"` | ~1737–1831 | Vertical splitters (events ↔ findings ↔ detail) **or** events `*` + findings/detail in tab/splitter pair; remove findings `MaxHeight`; `ClipToBounds` does not zero a pane at `MinHeight=680` |
-| 5 | **DESK-LAYOUT-04** | Audit: `Auto,*,*` without splitter | ~1835–1875 | `GridSplitter` between event list and payload; both panes `MinHeight` from tokens |
-| 6 | **DESK-LAYOUT-05** | Policies: scroll page of tiny MaxHeight lists (80–160) | ~1056–1466 | Primary surfaces (rules / findings / catalog) use token `MinHeight` + grow inside section panels **or** inner TabControl (Catalog \| Author \| Safety \| Diff \| Compile); delete primary-list `MaxHeight≤120` |
-| 7 | **DESK-LAYOUT-06** | Node + RoutingAssurance MaxHeight cascade | ~429–680 | Same policy as LAYOUT-05 for VRRP findings / zone / hash / routing lists |
-| 8 | **DESK-LAYOUT-07** | Operations (Onboarding/Deploy) MaxHeight lists | ~1471–1626 | Same; progress/findings readable ≥ token floor |
-| 9 | **DESK-LAYOUT-08** | Shell chrome: fixed `260,12,150,12,*`; no column splitter | ~65–150 | Optional column `GridSplitter` after inventory; Modules column collapses to icons **or** width ≤120 when `Width<1280`; document behavior |
-| 10 | **DESK-LAYOUT-09** | Inventory / Zones nested MaxHeight frames | ~341–426 | Zones lists use tokens; no `MaxHeight="240"` trap on primary zone list |
-| 11 | **DESK-LAYOUT-10** | Regression lock + docs sync | Living Specs + `desktop-ui-backend-alignment.md` / `testing.md` | `DesktopLayoutDensityLivingSpecTests` Ac1–AcN; matrix row in `testing.md`; CHANGELOG; PLAN-13 COMPLETE |
+| Surface | Desktop today | Gap |
+|---------|---------------|-----|
+| Shared tokens / density doc | `App.axaml` styles; magic MaxHeight in MainWindow | PLAN-13 LAYOUT-00 |
+| Snapshots | Competing `*` rows + ClipToBounds | PLAN-13 LAYOUT-01 |
+| Semantic Diff / Drift / Audit / Policies / Node / Ops / Shell / Zones | MaxHeight cascade / missing splitters | LAYOUT-02…09 |
+| Regression lock | No density Living Spec matrix | LAYOUT-10 |
+
+## Ranked Desktop layout density tranche
+
+| Rank | ID | Gap | Evidence | Queue |
+|------|----|-----|----------|-------|
+| 1 | **DESK-LAYOUT-00** | No shared layout tokens / density contract doc | `App.axaml` styles; no `Mfc.*Height` resources for lists; need `docs/development/desktop-layout.md` | **W7-127 OPEN** (#657); seeded by inventory |
+| 2 | **DESK-LAYOUT-01** | Snapshot tab: competing `*` + clipped detail | `MainWindow.axaml` ~685–853 `RowDefinitions="Auto,Auto,*,Auto,*,Auto"` | seeded after DESK-LAYOUT-00 (**W7-128 OPEN** #658 → implement **W7-129 OPEN** #659) |
+| 3 | **DESK-LAYOUT-02** | Semantic Diff: entry list vs before/after starved | ~857–1051 + before/after `MaxHeight="220"` | seed after DESK-LAYOUT-01 |
+| 4 | **DESK-LAYOUT-03** | Drift: competing stars + findings `MaxHeight="200"` | ~1737–1831 | seed after DESK-LAYOUT-02 |
+| 5 | **DESK-LAYOUT-04** | Audit: `Auto,*,*` without splitter | ~1835–1875 | seed after DESK-LAYOUT-03 |
+| 6 | **DESK-LAYOUT-05** | Policies: scroll page of tiny MaxHeight lists (80–160) | ~1056–1466 | seed after DESK-LAYOUT-04 |
+| 7 | **DESK-LAYOUT-06** | Node + RoutingAssurance MaxHeight cascade | ~429–680 | seed after DESK-LAYOUT-05 |
+| 8 | **DESK-LAYOUT-07** | Operations (Onboarding/Deploy) MaxHeight lists | ~1471–1626 | seed after DESK-LAYOUT-06 |
+| 9 | **DESK-LAYOUT-08** | Shell chrome: fixed columns; no column splitter | ~65–150 | seed after DESK-LAYOUT-07 |
+| 10 | **DESK-LAYOUT-09** | Inventory / Zones nested MaxHeight frames | ~341–426 | seed after DESK-LAYOUT-08 |
+| 11 | **DESK-LAYOUT-10** | Regression lock + docs sync | Living Specs + alignment / testing docs | seed after DESK-LAYOUT-09; closes PLAN-13 |
 
 ## Suggested PR slicing (still linear for `/autopilot`)
 
 | Wave | Ships | Notes |
 |------|-------|-------|
-| A | LAYOUT-00 + LAYOUT-01 | Tokens + Snapshot (highest pain) |
+| A | LAYOUT-00 + LAYOUT-01 | Tokens + Snapshot (highest pain) — **seeded** |
 | B | LAYOUT-02 | Diff tab |
 | C | LAYOUT-03 + LAYOUT-04 | Drift + Audit |
 | D | LAYOUT-05 | Policies (largest XAML churn) |
@@ -72,20 +82,6 @@ Each wave = one §3 atomic ID (or seed+implement pair per project habit). Prefer
 
 Product §3 never waits on GNS3. Validate layout on Desktop against lab captures **ops-parallel** (`~/gns3-lab` day-2 filter density is a good manual probe, not a CI gate).
 
-## Seed rule
-
-Do **not** change **§3.C NEXT** until PLAN-12 (DESK-CATALOG-01) is COMPLETE, unless explicitly elevated. Then:
-
-1. Seed PLAN-13 inventory issue (PLAN-13)  
-2. Seed **DESK-LAYOUT-00** as NEXT  
-3. Continue rank 1→10 without skipping  
-
-## Immediate operator workaround (until seeded)
-
-- Maximize window above 900×680  
-- Snapshots: expect config/obs lists to stay short until LAYOUT-01  
-- Prefer Diff tab full-screen for before/after fields  
-
 ## References
 
 - Analysis chat 2026-09-09 (GUI density)  
@@ -94,4 +90,4 @@ Do **not** change **§3.C NEXT** until PLAN-12 (DESK-CATALOG-01) is COMPLETE, un
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-126 (#654)** — PLAN-13 Inventory Desktop layout density Living Spec product tranche (seeded by **W7-125 DONE**).
+**§3.C NEXT = W7-127 (#657)** — DESK-LAYOUT-00 Shared layout tokens + `desktop-layout.md` Living Spec depth.
