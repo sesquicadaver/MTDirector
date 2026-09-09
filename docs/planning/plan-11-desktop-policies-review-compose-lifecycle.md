@@ -39,6 +39,6 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 **PLAN-11 COMPLETE.**
 
-**§3.C NEXT = W7-159 (#720)** — DESK-ACK-01 (PLAN-12).
+**§3.C NEXT = W7-160 (#723)** — DESK-ACK-01 (PLAN-12).
 
 **Successor:** PLAN-12 inventory **DONE** (W7-119); first atomic row **DESK-ACK-01** (W7-120). See [`plan-12-desktop-policies-residual-lifecycle.md`](plan-12-desktop-policies-residual-lifecycle.md).
