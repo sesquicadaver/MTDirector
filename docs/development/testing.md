@@ -1230,6 +1230,19 @@ Issue [#744](https://github.com/sesquicadaver/MTDirector/issues/744) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7171"`.
 
+## Living Specification — DESK-A11Y-INGEST-02 ingest-action a11y regression / PLAN-18 COMPLETE (W7-172)
+
+Issue [#747](https://github.com/sesquicadaver/MTDirector/issues/747) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ingest + Bind + Incident field Names matrix | `MainWindow.axaml` | `DesktopIncidentIngestActionA11yRegressionLivingSpecTests.Ac1IngestBindAndIncidentFieldNamesMatrixLocked` |
+| PLAN-18 COMPLETE + docs lock | plan-18 + testing + known-limitations | `DesktopIncidentIngestActionA11yRegressionLivingSpecTests.Ac2Plan18CompleteAndDocsLockA11yIngest02` |
+| CT wrapper | release Living Spec | `CtDeskA11yIngest02DesktopIncidentIngestActionA11yRegressionLivingSpecTests.Ac1DesktopIncidentIngestActionA11yRegressionLivingSpecAndPlan18CompleteExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentIngestActionA11yRegressionLivingSpecTests|CtDeskA11yIngest02"`.
+
+
 
 
 

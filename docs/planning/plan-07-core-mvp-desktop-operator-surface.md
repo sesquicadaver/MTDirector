@@ -47,4 +47,4 @@ After PLAN-07 **COMPLETE**, §3.C product seed **W7-88 DONE** advanced to **PLAN
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-172 (#747)** — DESK-CONN-01 Desktop Connect/Disconnect Living Spec depth (PLAN-09).
+**§3.C NEXT = W7-173 (#749)** — DESK-CONN-01 Desktop Connect/Disconnect Living Spec depth (PLAN-09).
