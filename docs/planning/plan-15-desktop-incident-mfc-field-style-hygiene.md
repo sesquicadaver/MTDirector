@@ -49,4 +49,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**PLAN-15 COMPLETE.** **§3.C NEXT = W7-158 (#719)** — Seed next product tranche after PLAN-15 → PLAN-16.
+**PLAN-15 COMPLETE.** Seed **W7-158 DONE** → **§3.C NEXT = W7-159 (#720)** — PLAN-16 inventory.
