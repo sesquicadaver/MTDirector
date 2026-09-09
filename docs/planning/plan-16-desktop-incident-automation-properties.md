@@ -1,7 +1,7 @@
 # PLAN-16 — Desktop Incident AutomationProperties accessible-name Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **DONE** (W7-159); **DESK-A11Y-01 DONE** (W7-160); seeded by **W7-158 DONE**; next seed **W7-161 OPEN** → DESK-A11Y-02  
+**Status:** Inventory **DONE** (W7-159); **DESK-A11Y-01 DONE** (W7-160); seed **W7-161 DONE**; implement **DESK-A11Y-02 OPEN** (W7-162)  
 **PLAN issue / queue:** [W7-159 / PLAN-16 #720](https://github.com/sesquicadaver/MTDirector/issues/720)  
 **Predecessor:** PLAN-15 Incident mfc-field style hygiene **COMPLETE**; product seed **W7-158 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -41,7 +41,7 @@ Incident Operations TextBoxes expose `AutomationProperties.Name` matching adjace
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **DESK-A11Y-01** | Incident TextBoxes lack AutomationProperties.Name | `MainWindow.axaml` Operations → Incident | **W7-160 DONE** (#723); seeded by inventory **W7-159 DONE** (#720) |
-| 2 | **DESK-A11Y-02** | Regression lock: Incident Names + PlaceholderText + mfc-field | Living Spec matrix | seeded by **W7-161 OPEN** (#724) after DESK-A11Y-01 |
+| 2 | **DESK-A11Y-02** | Regression lock: Incident Names + PlaceholderText + mfc-field | Living Spec matrix | **W7-162 OPEN** (#727); seeded by **W7-161 DONE** (#724) |
 
 ## Dual track
 
@@ -49,4 +49,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-161 (#724)** — Seed next PLAN-16 row after DESK-A11Y-01 → DESK-A11Y-02.
+**§3.C NEXT = W7-162 (#727)** — DESK-A11Y-02 Incident Names + PlaceholderText + mfc-field regression Living Spec.
