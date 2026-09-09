@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-133** ([#668](https://github.com/sesquicadaver/MTDirector/issues/668)): DESK-LAYOUT-03 Drift three-pane `GridSplitter` layout; remove findings `MaxHeight` (`DesktopLayoutDriftLivingSpecTests`). Seeded W7-134 (#671) / W7-135 (#672). **§3.C NEXT = W7-134 (#671)**.
 - **W7-132** ([#667](https://github.com/sesquicadaver/MTDirector/issues/667)): Seed next PLAN-13 row after DESK-LAYOUT-02 → **DESK-LAYOUT-03** (W7-133). **§3.C NEXT = W7-133 (#668)**.
 - **W7-131** ([#664](https://github.com/sesquicadaver/MTDirector/issues/664)): DESK-LAYOUT-02 Semantic Diff entry list + vertical `GridSplitter` + uncapped before/after (`DesktopLayoutSemanticDiffLivingSpecTests`). Seeded W7-132 (#667) / W7-133 (#668). **§3.C NEXT = W7-132 (#667)**.
 - **W7-130** ([#663](https://github.com/sesquicadaver/MTDirector/issues/663)): Seed next PLAN-13 row after DESK-LAYOUT-01 → **DESK-LAYOUT-02** (W7-131). **§3.C NEXT = W7-131 (#664)**.
