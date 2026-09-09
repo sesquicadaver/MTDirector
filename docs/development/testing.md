@@ -1004,6 +1004,17 @@ Issue [#703](https://github.com/sesquicadaver/MTDirector/issues/703) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentPlaceholderLivingSpecTests|CtDeskPlaceholder01"`.
 
+## Living Specification — Product tranche seed after DESK-PLACEHOLDER-01 (W7-151)
+
+Issue [#704](https://github.com/sesquicadaver/MTDirector/issues/704) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-PLACEHOLDER-02 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-14 | `ProductTrancheSeedW7151LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskPlaceholder02AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7151"`.
+
+
 
 
 
