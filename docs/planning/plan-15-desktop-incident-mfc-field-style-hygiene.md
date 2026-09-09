@@ -1,7 +1,7 @@
 # PLAN-15 — Desktop Incident mfc-field style hygiene Living Spec product tranche
 
 **Date:** 2026-09-09  
-**Status:** Inventory **OPEN** (W7-154); seeded by **W7-153 OPEN** after **PLAN-14 COMPLETE**  
+**Status:** Inventory **OPEN** (W7-154); seeded by **W7-153 DONE** after **PLAN-14 COMPLETE**  
 **PLAN issue / queue:** [W7-154 / PLAN-15 #710](https://github.com/sesquicadaver/MTDirector/issues/710)  
 **Predecessor:** PLAN-14 Avalonia PlaceholderText / Incident surface **COMPLETE**; product seed **W7-153**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -34,4 +34,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-153 (#709)** — Seed next product tranche after PLAN-14 → PLAN-15 (this inventory is W7-154 OPEN).
+**§3.C NEXT = W7-154 (#710)** — PLAN-15 Inventory Desktop Incident mfc-field style hygiene Living Spec product tranche.

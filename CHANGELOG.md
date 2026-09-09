@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-153** ([#709](https://github.com/sesquicadaver/MTDirector/issues/709)): Seed next product tranche after PLAN-14 → PLAN-15 (`ProductTrancheSeedW7153LivingSpecTests`). **§3.C NEXT = W7-154 (#710)**.
 - **W7-152** ([#707](https://github.com/sesquicadaver/MTDirector/issues/707)): DESK-PLACEHOLDER-02 repo-wide Watermark residue Living Spec; **PLAN-14 COMPLETE**. Seeded W7-153 (#709) / W7-154 (#710) PLAN-15. **§3.C NEXT = W7-153 (#709)**.
 - **W7-151** ([#704](https://github.com/sesquicadaver/MTDirector/issues/704)): Seed next PLAN-14 row after DESK-PLACEHOLDER-01 → DESK-PLACEHOLDER-02 (`ProductTrancheSeedW7151LivingSpecTests`). **§3.C NEXT = W7-152 (#707)**.
 - **W7-150** ([#703](https://github.com/sesquicadaver/MTDirector/issues/703)): DESK-PLACEHOLDER-01 Incident TextBox Watermark→PlaceholderText (`DesktopIncidentPlaceholderLivingSpecTests`). **§3.C NEXT = W7-151 (#704)**.
