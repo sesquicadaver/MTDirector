@@ -1046,6 +1046,19 @@ Issue [#710](https://github.com/sesquicadaver/MTDirector/issues/710) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan15DesktopIncidentMfcFieldW7154"`.
 
+## Living Specification — DESK-FIELD-01 Incident mfc-field Classes (W7-155)
+
+Issue [#713](https://github.com/sesquicadaver/MTDirector/issues/713) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Incident TextBoxes use Classes=mfc-field | `MainWindow.axaml` | `DesktopIncidentMfcFieldLivingSpecTests.Ac1IncidentTextBoxesUseMfcFieldClass` |
+| PLAN-15 + docs lock | plan-15 + testing + known-limitations | `DesktopIncidentMfcFieldLivingSpecTests.Ac2Plan15AndTestingDocLockField01` |
+| CT wrapper | release Living Spec | `CtDeskField01DesktopIncidentMfcFieldLivingSpecTests.Ac1DesktopIncidentMfcFieldLivingSpecAndPlan15MatrixExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopIncidentMfcFieldLivingSpecTests|CtDeskField01"`.
+
+
 
 
 
