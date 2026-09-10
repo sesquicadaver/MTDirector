@@ -1154,12 +1154,13 @@
                 <TextBlock Text="{Binding Policies.ContentHashText, StringFormat=Content hash: {0}}"
                            Classes="mfc-mono" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
-                  <Button Classes="mfc-action" Content="Validate" Command="{Binding Policies.ValidateCommand}" MinWidth="90" />
-                  <Button Classes="mfc-action" Content="Submit for review" Command="{Binding Policies.SubmitCommand}" MinWidth="130" />
-                  <Button Classes="mfc-action" Content="Approve" Command="{Binding Policies.ApproveCommand}" MinWidth="90" />
-                  <Button Classes="mfc-action" Content="Bind" Command="{Binding Policies.BindCommand}" />
+                  <Button Classes="mfc-action" Content="Validate" AutomationProperties.Name="Validate" Command="{Binding Policies.ValidateCommand}" MinWidth="90" />
+                  <Button Classes="mfc-action" Content="Submit for review" AutomationProperties.Name="Submit for review" Command="{Binding Policies.SubmitCommand}" MinWidth="130" />
+                  <Button Classes="mfc-action" Content="Approve" AutomationProperties.Name="Approve" Command="{Binding Policies.ApproveCommand}" MinWidth="90" />
+                  <Button Classes="mfc-action" Content="Bind" AutomationProperties.Name="Bind" Command="{Binding Policies.BindCommand}" />
                   <Button Classes="mfc-action"
                           Content="Deploy"
+                          AutomationProperties.Name="Deploy"
                           Command="{Binding Policies.DeployCommand}"
                           MinWidth="90"
                           ToolTip.Tip="Deploy blocked from authoring (no Save and Deploy). Use Operations → Deploy." />
