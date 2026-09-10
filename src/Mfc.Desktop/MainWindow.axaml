@@ -1140,7 +1140,7 @@
                            Text="{Binding Policies.RevisionIdText}"
                            MinWidth="240"
                            Width="320" />
-                  <Button Classes="mfc-action" Content="Load" Command="{Binding Policies.LoadCommand}" />
+                  <Button Classes="mfc-action" Content="Load" AutomationProperties.Name="Load" Command="{Binding Policies.LoadCommand}" />
                 </WrapPanel>
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"
@@ -1148,7 +1148,7 @@
                            Text="{Binding Policies.DraftNameText}"
                            MinWidth="240"
                            Width="320" />
-                  <Button Classes="mfc-action" Content="Create draft" Command="{Binding Policies.CreateDraftCommand}" MinWidth="110" />
+                  <Button Classes="mfc-action" Content="Create draft" AutomationProperties.Name="Create draft" Command="{Binding Policies.CreateDraftCommand}" MinWidth="110" />
                 </WrapPanel>
                 <TextBlock Text="{Binding Policies.StateText, StringFormat=State: {0}}" TextWrapping="Wrap" />
                 <TextBlock Text="{Binding Policies.ContentHashText, StringFormat=Content hash: {0}}"
@@ -1186,6 +1186,7 @@
                            Width="280" />
                   <Button Classes="mfc-action"
                           Content="Analyze safety"
+                          AutomationProperties.Name="Analyze safety"
                           Command="{Binding Policies.RefreshSafetyAnalysisCommand}"
                           MinWidth="130" />
                 </WrapPanel>
@@ -1257,11 +1258,11 @@
                 </WrapPanel>
                 <TextBox Classes="mfc-field" PlaceholderText="description" Text="{Binding Policies.RuleDescriptionText}" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
-                  <Button Classes="mfc-action" Content="Add rule" Command="{Binding Policies.AddRuleCommand}" MinWidth="100" />
-                  <Button Classes="mfc-action" Content="Update rule" Command="{Binding Policies.UpdateRuleCommand}" MinWidth="110" />
-                  <Button Classes="mfc-action" Content="Delete rule" Command="{Binding Policies.DeleteRuleCommand}" MinWidth="110" />
-                  <Button Classes="mfc-action" Content="Move up" Command="{Binding Policies.MoveRuleUpCommand}" MinWidth="100" />
-                  <Button Classes="mfc-action" Content="Move down" Command="{Binding Policies.MoveRuleDownCommand}" MinWidth="110" />
+                  <Button Classes="mfc-action" Content="Add rule" AutomationProperties.Name="Add rule" Command="{Binding Policies.AddRuleCommand}" MinWidth="100" />
+                  <Button Classes="mfc-action" Content="Update rule" AutomationProperties.Name="Update rule" Command="{Binding Policies.UpdateRuleCommand}" MinWidth="110" />
+                  <Button Classes="mfc-action" Content="Delete rule" AutomationProperties.Name="Delete rule" Command="{Binding Policies.DeleteRuleCommand}" MinWidth="110" />
+                  <Button Classes="mfc-action" Content="Move up" AutomationProperties.Name="Move up" Command="{Binding Policies.MoveRuleUpCommand}" MinWidth="100" />
+                  <Button Classes="mfc-action" Content="Move down" AutomationProperties.Name="Move down" Command="{Binding Policies.MoveRuleDownCommand}" MinWidth="110" />
                 </WrapPanel>
                 <ListBox ItemsSource="{Binding Policies.Rules}"
                          SelectedItem="{Binding Policies.SelectedRule, Mode=TwoWay}"
@@ -1413,7 +1414,7 @@
                            Text="{Binding Policies.ComposeNodeIdText}"
                            MinWidth="240"
                            Width="320" />
-                  <Button Classes="mfc-action" Content="Compose findings" Command="{Binding Policies.ComposeCommand}" MinWidth="130" />
+                  <Button Classes="mfc-action" Content="Compose findings" AutomationProperties.Name="Compose findings" Command="{Binding Policies.ComposeCommand}" MinWidth="130" />
                 </WrapPanel>
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <ComboBox Classes="mfc-field"
@@ -1432,7 +1433,7 @@
                            Text="{Binding Policies.DiffBaselineRevisionIdText}"
                            MinWidth="240"
                            Width="320" />
-                  <Button Classes="mfc-action" Content="Semantic diff" Command="{Binding Policies.DiffCommand}" MinWidth="120" />
+                  <Button Classes="mfc-action" Content="Semantic diff" AutomationProperties.Name="Semantic diff" Command="{Binding Policies.DiffCommand}" MinWidth="120" />
                   <Button Classes="mfc-action" Content="Record analysis" Command="{Binding Policies.RecordAnalysisCommand}" MinWidth="130" />
                   <Button Classes="mfc-action" Content="Acknowledge warning" Command="{Binding Policies.AcknowledgeWarningCommand}" MinWidth="160" />
                 </WrapPanel>
@@ -1442,7 +1443,7 @@
                            Text="{Binding Policies.CompileCapabilityHashText}"
                            MinWidth="240"
                            Width="320" />
-                  <Button Classes="mfc-action" Content="Compile artifacts" Command="{Binding Policies.CompileCommand}" MinWidth="140" />
+                  <Button Classes="mfc-action" Content="Compile artifacts" AutomationProperties.Name="Compile artifacts" Command="{Binding Policies.CompileCommand}" MinWidth="140" />
                 </WrapPanel>
                 <TextBlock Classes="mfc-label" Text="Revision diff" />
                 <ListBox ItemsSource="{Binding Policies.DiffRows}" MinHeight="{StaticResource Mfc.ListMinHeight}">

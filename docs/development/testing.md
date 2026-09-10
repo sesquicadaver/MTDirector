@@ -1369,6 +1369,18 @@ Issue [#770](https://github.com/sesquicadaver/MTDirector/issues/770) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan21DesktopPoliciesAuthoringResidualW7184"`.
 
+## Living Specification — DESK-A11Y-POLICY-EDIT-01 Policies authoring residual AutomationProperties (W7-185)
+
+Issue [#773](https://github.com/sesquicadaver/MTDirector/issues/773) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Policies authoring residual Names | `MainWindow.axaml` | `DesktopPoliciesAuthoringResidualAutomationLivingSpecTests.Ac1PoliciesAuthoringResidualButtonsExposeAutomationPropertiesName` |
+| PLAN-21 + docs lock | plan-21 + testing + known-limitations | `DesktopPoliciesAuthoringResidualAutomationLivingSpecTests.Ac2Plan21AndTestingDocLockA11yPolicyEdit01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesAuthoringResidualAutomationLivingSpecTests"`.
+
+
 
 
 

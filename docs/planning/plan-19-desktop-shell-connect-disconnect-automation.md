@@ -50,4 +50,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**PLAN-19 COMPLETE.** Seeded PLAN-20 queue (W7-178/179). **W7-178 DONE.** **W7-179 DONE** (PLAN-20 inventory). **§3.C NEXT = W7-185 (#773)** — DESK-A11Y-POLICY-01 Policies lifecycle AutomationProperties.Name.
+**PLAN-19 COMPLETE.** Seeded PLAN-20 queue (W7-178/179). **W7-178 DONE.** **W7-179 DONE** (PLAN-20 inventory). **§3.C NEXT = W7-186 (#774)** — DESK-A11Y-POLICY-01 Policies lifecycle AutomationProperties.Name.
