@@ -1337,6 +1337,19 @@ Issue [#764](https://github.com/sesquicadaver/MTDirector/issues/764) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7181"`.
 
+## Living Specification — DESK-A11Y-POLICY-02 Policies lifecycle a11y regression / PLAN-20 COMPLETE (W7-182)
+
+Issue [#767](https://github.com/sesquicadaver/MTDirector/issues/767) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Policies lifecycle + Connect/Disconnect + Incident Names matrix | `MainWindow.axaml` | `DesktopPoliciesLifecycleActionA11yRegressionLivingSpecTests.Ac1PoliciesLifecycleAndShellIncidentActionNamesMatrixLocked` |
+| PLAN-20 COMPLETE + docs lock | plan-20 + testing + known-limitations | `DesktopPoliciesLifecycleActionA11yRegressionLivingSpecTests.Ac2Plan20CompleteAndDocsLockA11yPolicy02` |
+| CT wrapper | release Living Spec | `CtDeskA11yPolicy02DesktopPoliciesLifecycleActionA11yRegressionLivingSpecTests.Ac1DesktopPoliciesLifecycleActionA11yRegressionLivingSpecAndPlan20CompleteExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesLifecycleActionA11yRegressionLivingSpecTests|CtDeskA11yPolicy02"`.
+
+
 
 
 

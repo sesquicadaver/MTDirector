@@ -45,4 +45,4 @@ PLAN-06 Incident Desktop operator-surface inventory: [`plan-06-incident-desktop-
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-182 (#767)** — PLAN-07 Inventory next product Living Spec tranche after PLAN-06 (PLAN-06).
+**§3.C NEXT = W7-183 (#769)** — PLAN-07 Inventory next product Living Spec tranche after PLAN-06 (PLAN-06).

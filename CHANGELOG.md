@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-182** ([#767](https://github.com/sesquicadaver/MTDirector/issues/767)): DESK-A11Y-POLICY-02 Policies lifecycle Names + shell/Incident Names regression; **PLAN-20 COMPLETE**. Seeded W7-183 (#769) / W7-184 (#770) PLAN-21. **§3.C NEXT = W7-183 (#769)**.
 - **W7-181** ([#764](https://github.com/sesquicadaver/MTDirector/issues/764)): Seed next PLAN-20 row after DESK-A11Y-POLICY-01 → DESK-A11Y-POLICY-02 (`ProductTrancheSeedW7181LivingSpecTests`). **§3.C NEXT = W7-182 (#767)**.
 - **W7-180** ([#763](https://github.com/sesquicadaver/MTDirector/issues/763)): DESK-A11Y-POLICY-01 Policies lifecycle AutomationProperties.Name (`DesktopPoliciesLifecycleActionAutomationLivingSpecTests`). **§3.C NEXT = W7-181 (#764)**.
 - **W7-179** ([#760](https://github.com/sesquicadaver/MTDirector/issues/760)): PLAN-20 inventory Desktop Policies lifecycle-action AutomationProperties (`Plan20DesktopPoliciesLifecycleActionW7179LivingSpecTests`). Seeded W7-180 (#763) / W7-181 (#764). **§3.C NEXT = W7-180 (#763)**.
