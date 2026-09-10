@@ -1549,6 +1549,20 @@ Issue [#804](https://github.com/sesquicadaver/MTDirector/issues/804) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7201"`.
 
+## Living Specification — DESK-A11Y-OPS-02 ops a11y regression / PLAN-24 COMPLETE (W7-202)
+
+Issue [#807](https://github.com/sesquicadaver/MTDirector/issues/807) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| ops + Policies/shell/Incident Names matrix | `MainWindow.axaml` | `DesktopOnboardingDeploymentA11yRegressionLivingSpecTests.Ac1OpsPoliciesShellIncidentActionNamesMatrixLocked` |
+| PLAN-24 COMPLETE + docs lock | plan-24 + testing + known-limitations | `DesktopOnboardingDeploymentA11yRegressionLivingSpecTests.Ac2Plan24CompleteAndDocsLockA11yOps02` |
+| CT wrapper | release Living Spec | `CtDeskA11yOps02DesktopOnboardingDeploymentA11yRegressionLivingSpecTests.Ac1DesktopOnboardingDeploymentA11yRegressionLivingSpecAndPlan24CompleteExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopOnboardingDeploymentA11yRegressionLivingSpecTests|CtDeskA11yOps02"`.
+
+
+
 
 
 

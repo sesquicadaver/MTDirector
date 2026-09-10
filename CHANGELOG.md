@@ -13,6 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-202** ([#807](https://github.com/sesquicadaver/MTDirector/issues/807)): DESK-A11Y-OPS-02 Onboarding/Deployment Names + Policies/shell/Incident Names regression; **PLAN-24 COMPLETE**. Seeded W7-203 (#809) / W7-204 (#810) PLAN-25. **§3.C NEXT = W7-203 (#809)**.
+
 - **W7-201** ([#804](https://github.com/sesquicadaver/MTDirector/issues/804)): Seed next PLAN-24 row after DESK-A11Y-OPS-01 → DESK-A11Y-OPS-02 (`ProductTrancheSeedW7201LivingSpecTests`). **§3.C NEXT = W7-202 (#807)**.
 
 - **W7-200** ([#803](https://github.com/sesquicadaver/MTDirector/issues/803)): DESK-A11Y-OPS-01 Onboarding/Deployment primary actions AutomationProperties.Name (`DesktopOnboardingDeploymentAutomationLivingSpecTests`). **§3.C NEXT = W7-201 (#804)**.
