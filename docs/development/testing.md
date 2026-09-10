@@ -1359,6 +1359,17 @@ Issue [#769](https://github.com/sesquicadaver/MTDirector/issues/769) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7183"`.
 
+## Living Specification — PLAN-21 Policies authoring residual inventory (W7-184)
+
+Issue [#770](https://github.com/sesquicadaver/MTDirector/issues/770) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ranked DESK-A11Y-POLICY-EDIT-* + seed DESK-A11Y-POLICY-EDIT-01 | plan-21 + queue docs | `Plan21DesktopPoliciesAuthoringResidualW7184LivingSpecTests.Ac1Plan21InventoryDocumentsRankedRowsAndSeedsDeskA11yPolicyEdit01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan21DesktopPoliciesAuthoringResidualW7184"`.
+
+
 
 
 
