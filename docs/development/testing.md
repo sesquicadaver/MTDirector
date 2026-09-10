@@ -1284,6 +1284,19 @@ Issue [#754](https://github.com/sesquicadaver/MTDirector/issues/754) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7176"`.
 
+## Living Specification — DESK-A11Y-CONN-02 shell connection a11y regression / PLAN-19 COMPLETE (W7-177)
+
+Issue [#757](https://github.com/sesquicadaver/MTDirector/issues/757) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Connect/Disconnect + Incident action Names matrix | `MainWindow.axaml` | `DesktopShellConnectDisconnectA11yRegressionLivingSpecTests.Ac1ConnectDisconnectAndIncidentActionNamesMatrixLocked` |
+| PLAN-19 COMPLETE + docs lock | plan-19 + testing + known-limitations | `DesktopShellConnectDisconnectA11yRegressionLivingSpecTests.Ac2Plan19CompleteAndDocsLockA11yConn02` |
+| CT wrapper | release Living Spec | `CtDeskA11yConn02DesktopShellConnectDisconnectA11yRegressionLivingSpecTests.Ac1DesktopShellConnectDisconnectA11yRegressionLivingSpecAndPlan19CompleteExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopShellConnectDisconnectA11yRegressionLivingSpecTests|CtDeskA11yConn02"`.
+
+
 
 
 
