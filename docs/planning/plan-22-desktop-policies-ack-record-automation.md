@@ -1,7 +1,7 @@
 # PLAN-22 — Desktop Policies acknowledge/record-analysis AutomationProperties Living Spec product tranche
 
 **Date:** 2026-09-10  
-**Status:** Inventory **OPEN** (W7-189); seeded by **W7-188 OPEN** after **PLAN-21 COMPLETE**  
+**Status:** Inventory **OPEN** (W7-189); seeded by **W7-188 DONE** after **PLAN-21 COMPLETE**  
 **PLAN issue / queue:** [W7-189 / PLAN-22 #780](https://github.com/sesquicadaver/MTDirector/issues/780)  
 **Predecessor:** PLAN-21 Policies authoring residual AutomationProperties **COMPLETE**; product seed **W7-188**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -33,4 +33,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-188 (#779)** — Seed next product tranche after PLAN-21 → PLAN-22 (this inventory is W7-189 OPEN).
+**§3.C NEXT = W7-189 (#780)** — PLAN-22 Inventory next Desktop Living Spec product tranche after PLAN-21.
