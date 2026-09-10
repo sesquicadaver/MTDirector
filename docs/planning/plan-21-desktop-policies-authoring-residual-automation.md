@@ -1,7 +1,7 @@
 # PLAN-21 — Desktop Policies authoring residual AutomationProperties Living Spec product tranche
 
 **Date:** 2026-09-10  
-**Status:** Inventory **OPEN** (W7-184); seeded by **W7-183 DONE** after **PLAN-20 COMPLETE**  
+**Status:** Inventory **DONE** (W7-184); seeded by **W7-183 DONE**; first implement **DESK-A11Y-POLICY-EDIT-01 OPEN** (W7-185)  
 **PLAN issue / queue:** [W7-184 / PLAN-21 #770](https://github.com/sesquicadaver/MTDirector/issues/770)  
 **Predecessor:** PLAN-20 Policies lifecycle-action AutomationProperties **COMPLETE**; product seed **W7-183 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -20,12 +20,29 @@ Policies authoring residual buttons (Create draft / Load / rule CRUD-move / Comp
 - Replacing PLAN-16…20 lifecycle / shell / Incident locks  
 - New Policies RPCs  
 
+## Decision drivers
+
+| Driver | Choice |
+|--------|--------|
+| Worst pain first | Authoring residual actions lack accessible names after lifecycle row lock |
+| Risk | XAML AutomationProperties only; keep Command bindings; Desktop build + Living Spec |
+| Queue fit | Seed **after** PLAN-20 COMPLETE; inventory locks **DESK-A11Y-POLICY-EDIT-01** as first implement |
+
+## Evidence baseline
+
+| Surface | Desktop today | Gap |
+|---------|---------------|-----|
+| Create draft / Load | Content text; no AutomationProperties.Name | DESK-A11Y-POLICY-EDIT-01 |
+| Rule Add/Update/Delete/Move up/down | Content text; no AutomationProperties.Name | DESK-A11Y-POLICY-EDIT-01 |
+| Compose / Diff / Analyze safety / Compile | Content text; no AutomationProperties.Name | DESK-A11Y-POLICY-EDIT-01 |
+| Regression lock | authoring residual Names + lifecycle + shell/Incident Names matrix | DESK-A11Y-POLICY-EDIT-02 |
+
 ## Ranked Desktop Policies authoring residual a11y tranche
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-A11Y-POLICY-EDIT-01** | Policies Create draft / Load / rule CRUD-move / Diff / Compose lack AutomationProperties.Name | `MainWindow.axaml` Policies panel | seed after PLAN-21 inventory |
-| 2 | **DESK-A11Y-POLICY-EDIT-02** | Regression lock: authoring residual Names + lifecycle + shell/Incident Names matrix | Living Spec matrix | seed after DESK-A11Y-POLICY-EDIT-01 |
+| 1 | **DESK-A11Y-POLICY-EDIT-01** | Policies Create draft / Load / rule CRUD-move / Diff / Compose / Analyze safety / Compile lack AutomationProperties.Name | `MainWindow.axaml` Policies panel | **W7-185 OPEN** (#773); seeded by inventory **W7-184 DONE** (#770) |
+| 2 | **DESK-A11Y-POLICY-EDIT-02** | Regression lock: authoring residual Names + lifecycle + shell/Incident Names matrix | Living Spec matrix | seeded by **W7-186 OPEN** (#774) after DESK-A11Y-POLICY-EDIT-01 |
 
 ## Dual track
 
@@ -33,4 +50,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-184 (#770)** — PLAN-21 inventory Desktop Policies authoring residual AutomationProperties (this inventory).
+**§3.C NEXT = W7-185 (#773)** — DESK-A11Y-POLICY-EDIT-01 Policies authoring residual AutomationProperties.Name Living Spec.
