@@ -228,35 +228,50 @@
 
                 <TextBlock Classes="mfc-label" Text="1. Site" />
                 <CheckBox Content="Use existing Site"
+                          AutomationProperties.Name="Use existing Site"
                           IsChecked="{Binding AddRouter.UseExistingSite}" />
                 <ComboBox Classes="mfc-field"
+                          AutomationProperties.Name="Existing site"
                           ItemsSource="{Binding AddRouter.SiteChoices}"
                           SelectedItem="{Binding AddRouter.SelectedSite, Mode=TwoWay}"
                           IsVisible="{Binding AddRouter.ShowExistingSitePicker}"
                           MaxWidth="420"
                           HorizontalAlignment="Left" />
                 <StackPanel Spacing="6" IsVisible="{Binding AddRouter.ShowNewSiteFields}">
-                  <TextBox Classes="mfc-field" PlaceholderText="site code" Text="{Binding AddRouter.NewSiteCode}" />
-                  <TextBox Classes="mfc-field" PlaceholderText="site name" Text="{Binding AddRouter.NewSiteName}" />
+                  <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="Site code"
+                           PlaceholderText="site code"
+                           Text="{Binding AddRouter.NewSiteCode}" />
+                  <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="Site name"
+                           PlaceholderText="site name"
+                           Text="{Binding AddRouter.NewSiteName}" />
                 </StackPanel>
 
                 <TextBlock Classes="mfc-label" Text="2. Node" Margin="0,6,0,0" />
                 <CheckBox Content="Use existing Node"
+                          AutomationProperties.Name="Use existing Node"
                           IsChecked="{Binding AddRouter.UseExistingNode}" />
                 <ComboBox Classes="mfc-field"
+                          AutomationProperties.Name="Existing node"
                           ItemsSource="{Binding AddRouter.NodeChoices}"
                           SelectedItem="{Binding AddRouter.SelectedNode, Mode=TwoWay}"
                           IsVisible="{Binding AddRouter.ShowExistingNodePicker}"
                           MaxWidth="420"
                           HorizontalAlignment="Left" />
                 <StackPanel Spacing="6" IsVisible="{Binding AddRouter.ShowNewNodeFields}">
-                  <TextBox Classes="mfc-field" PlaceholderText="node name" Text="{Binding AddRouter.NewNodeName}" />
+                  <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="Node name"
+                           PlaceholderText="node name"
+                           Text="{Binding AddRouter.NewNodeName}" />
                   <ComboBox Classes="mfc-field"
+                            AutomationProperties.Name="Uplink mode"
                             ItemsSource="{Binding AddRouter.UplinkModes}"
                             SelectedItem="{Binding AddRouter.SelectedUplinkMode, Mode=TwoWay}"
                             MaxWidth="280"
                             HorizontalAlignment="Left" />
                   <CheckBox Content="Create as VRRP pair (two devices)"
+                            AutomationProperties.Name="Create as VRRP pair"
                             IsChecked="{Binding AddRouter.CreateAsVrrpPair}" />
                   <TextBlock Classes="mfc-muted"
                              Text="{Binding AddRouter.VrrpPairHint}"
@@ -271,16 +286,19 @@
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <Button Classes="mfc-action"
                           Content="Load MikroTik neighbors"
+                          AutomationProperties.Name="Load MikroTik neighbors"
                           Command="{Binding AddRouter.LoadNeighborsCommand}"
                           MinWidth="180"
                           IsVisible="{Binding AddRouter.CanLoadNeighborsVisible}" />
                   <Button Classes="mfc-action"
                           Content="Probe"
+                          AutomationProperties.Name="Add router Probe"
                           Command="{Binding AddRouter.ProbeCommand}"
                           MinWidth="120"
                           IsVisible="{Binding AddRouter.CanProbeVisible}" />
                 </WrapPanel>
                 <ComboBox Classes="mfc-field"
+                          AutomationProperties.Name="Neighbor candidates"
                           ItemsSource="{Binding AddRouter.NeighborCandidates}"
                           SelectedItem="{Binding AddRouter.SelectedNeighborCandidate, Mode=TwoWay}"
                           IsVisible="{Binding AddRouter.HasNeighborCandidates}"
@@ -294,37 +312,63 @@
                 </ComboBox>
                 <Button Classes="mfc-action"
                         Content="Apply selected neighbor"
+                        AutomationProperties.Name="Apply selected neighbor"
                         Command="{Binding AddRouter.ApplyNeighborCandidateCommand}"
                         MinWidth="180"
                         HorizontalAlignment="Left"
                         IsVisible="{Binding AddRouter.HasNeighborCandidates}" />
                 <TextBlock Classes="mfc-label" Text="Member a" IsVisible="{Binding AddRouter.ShowVrrpPairFields}" />
-                <TextBox Classes="mfc-field" PlaceholderText="display name" Text="{Binding AddRouter.DeviceDisplayName}" />
-                <TextBox Classes="mfc-field" PlaceholderText="management host (IP or DNS)" Text="{Binding AddRouter.ManagementHost}" />
-                <TextBox Classes="mfc-field" PlaceholderText="management port (8729)" Text="{Binding AddRouter.ManagementPortText}" />
+                <TextBox Classes="mfc-field"
+                         AutomationProperties.Name="Device display name"
+                         PlaceholderText="display name"
+                         Text="{Binding AddRouter.DeviceDisplayName}" />
+                <TextBox Classes="mfc-field"
+                         AutomationProperties.Name="Management host"
+                         PlaceholderText="management host (IP or DNS)"
+                         Text="{Binding AddRouter.ManagementHost}" />
+                <TextBox Classes="mfc-field"
+                         AutomationProperties.Name="Management port"
+                         PlaceholderText="management port (8729)"
+                         Text="{Binding AddRouter.ManagementPortText}" />
                 <StackPanel Spacing="6" IsVisible="{Binding AddRouter.ShowVrrpPairFields}">
                   <TextBlock Classes="mfc-label" Text="Member b" />
-                  <TextBox Classes="mfc-field" PlaceholderText="member b display name" Text="{Binding AddRouter.PairMemberBDisplayName}" />
-                  <TextBox Classes="mfc-field" PlaceholderText="member b management host (IP or DNS)" Text="{Binding AddRouter.PairMemberBManagementHost}" />
-                  <TextBox Classes="mfc-field" PlaceholderText="member b management port (8729)" Text="{Binding AddRouter.PairMemberBManagementPortText}" />
+                  <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="Member b display name"
+                           PlaceholderText="member b display name"
+                           Text="{Binding AddRouter.PairMemberBDisplayName}" />
+                  <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="Member b management host"
+                           PlaceholderText="member b management host (IP or DNS)"
+                           Text="{Binding AddRouter.PairMemberBManagementHost}" />
+                  <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="Member b management port"
+                           PlaceholderText="member b management port (8729)"
+                           Text="{Binding AddRouter.PairMemberBManagementPortText}" />
                 </StackPanel>
 
                 <TextBlock Classes="mfc-label" Text="4. Connection profile" Margin="0,6,0,0" />
-                <TextBox Classes="mfc-field" PlaceholderText="API username" Text="{Binding AddRouter.Username}" />
                 <TextBox Classes="mfc-field"
+                         AutomationProperties.Name="API username"
+                         PlaceholderText="API username"
+                         Text="{Binding AddRouter.Username}" />
+                <TextBox Classes="mfc-field"
+                         AutomationProperties.Name="API password"
                          PlaceholderText="API password"
                          Text="{Binding AddRouter.Password}"
                          PasswordChar="*" />
                 <ComboBox Classes="mfc-field"
+                          AutomationProperties.Name="Trust mode"
                           ItemsSource="{Binding AddRouter.TrustModes}"
                           SelectedItem="{Binding AddRouter.SelectedTrustMode, Mode=TwoWay}"
                           MaxWidth="280"
                           HorizontalAlignment="Left" />
                 <TextBox Classes="mfc-field"
+                         AutomationProperties.Name="CA profile ref"
                          PlaceholderText="CA profile ref"
                          Text="{Binding AddRouter.CaProfileRef}"
                          IsVisible="{Binding AddRouter.ShowCaProfile}" />
                 <TextBox Classes="mfc-field"
+                         AutomationProperties.Name="Pinned SPKI SHA-256"
                          PlaceholderText="pinned SPKI SHA-256 (64 hex)"
                          Text="{Binding AddRouter.PinnedSpkiSha256Hex}"
                          IsVisible="{Binding AddRouter.ShowSpkiPin}"
@@ -332,6 +376,7 @@
 
                 <Button Classes="mfc-action"
                         Content="Create / register"
+                        AutomationProperties.Name="Create / register"
                         Command="{Binding AddRouter.SubmitCommand}"
                         MinWidth="160"
                         HorizontalAlignment="Left"
