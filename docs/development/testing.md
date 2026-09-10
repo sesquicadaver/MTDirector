@@ -1528,6 +1528,18 @@ Issue [#800](https://github.com/sesquicadaver/MTDirector/issues/800) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan24DesktopOnboardingDeploymentW7199"`.
 
+## Living Specification — DESK-A11Y-OPS-01 Onboarding/Deployment AutomationProperties (W7-200)
+
+Issue [#803](https://github.com/sesquicadaver/MTDirector/issues/803) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Onboarding/Deployment primary action Names | `MainWindow.axaml` | `DesktopOnboardingDeploymentAutomationLivingSpecTests.Ac1OnboardingAndDeploymentButtonsExposeAutomationPropertiesName` |
+| PLAN-24 + docs lock | plan-24 + testing + known-limitations | `DesktopOnboardingDeploymentAutomationLivingSpecTests.Ac2Plan24AndTestingDocLockA11yOps01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopOnboardingDeploymentAutomationLivingSpecTests"`.
+
+
 
 
 
