@@ -7,7 +7,7 @@
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
-Policies lifecycle buttons (Validate / Submit for review / Approve / Bind / Deploy) have Content text but no `AutomationProperties.Name` (shell Connect/Disconnect + Incident actions already locked in PLAN-16…19).
+Policies lifecycle buttons (Validate / Submit for review / Approve / Bind / Deploy) expose `AutomationProperties.Name` matching Content (DESK-A11Y-POLICY-01). Shell Connect/Disconnect + Incident actions remain locked by PLAN-16…19.
 
 ## Principles
 
