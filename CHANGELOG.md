@@ -13,6 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-190** ([#783](https://github.com/sesquicadaver/MTDirector/issues/783)): DESK-A11Y-POLICY-ACK-01 Policies Record analysis / Acknowledge warning AutomationProperties.Name (`DesktopPoliciesAckRecordAutomationLivingSpecTests`). **§3.C NEXT = W7-191 (#784)**.
+
 - **W7-189** ([#780](https://github.com/sesquicadaver/MTDirector/issues/780)): PLAN-22 inventory Desktop Policies acknowledge/record-analysis AutomationProperties (`Plan22DesktopPoliciesAckRecordW7189LivingSpecTests`). Seeded W7-190 (#783) / W7-191 (#784). **§3.C NEXT = W7-190 (#783)**.
 
 - **W7-188** ([#779](https://github.com/sesquicadaver/MTDirector/issues/779)): Seed next product tranche after PLAN-21 → PLAN-22 (`ProductTrancheSeedW7188LivingSpecTests`). **§3.C NEXT = W7-189 (#780)**.

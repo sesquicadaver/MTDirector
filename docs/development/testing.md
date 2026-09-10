@@ -1422,6 +1422,18 @@ Issue [#780](https://github.com/sesquicadaver/MTDirector/issues/780) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan22DesktopPoliciesAckRecordW7189"`.
 
+## Living Specification — DESK-A11Y-POLICY-ACK-01 Policies ack/record AutomationProperties (W7-190)
+
+Issue [#783](https://github.com/sesquicadaver/MTDirector/issues/783) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Policies Record analysis / Acknowledge warning Names | `MainWindow.axaml` | `DesktopPoliciesAckRecordAutomationLivingSpecTests.Ac1PoliciesAckRecordButtonsExposeAutomationPropertiesName` |
+| PLAN-22 + docs lock | plan-22 + testing + known-limitations | `DesktopPoliciesAckRecordAutomationLivingSpecTests.Ac2Plan22AndTestingDocLockA11yPolicyAck01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesAckRecordAutomationLivingSpecTests"`.
+
+
 
 
 
