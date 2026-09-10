@@ -50,4 +50,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**PLAN-23 COMPLETE.** Seeded PLAN-24 queue (W7-198/199). **W7-198 DONE.** **§3.C NEXT = W7-199 (#800)** — PLAN-24 Inventory next Desktop Living Spec product tranche after PLAN-23.
+**PLAN-23 COMPLETE.** Seeded PLAN-24 queue (W7-198/199). **W7-198 DONE.** **W7-199 DONE** (PLAN-24 inventory). **§3.C NEXT = W7-200 (#803)** — DESK-A11Y-OPS-01.
