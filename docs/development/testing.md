@@ -1316,6 +1316,18 @@ Issue [#760](https://github.com/sesquicadaver/MTDirector/issues/760) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan20DesktopPoliciesLifecycleActionW7179"`.
 
+## Living Specification — DESK-A11Y-POLICY-01 Policies lifecycle AutomationProperties (W7-180)
+
+Issue [#763](https://github.com/sesquicadaver/MTDirector/issues/763) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Policies Validate/Submit/Approve/Bind/Deploy Names | `MainWindow.axaml` | `DesktopPoliciesLifecycleActionAutomationLivingSpecTests.Ac1PoliciesLifecycleButtonsExposeAutomationPropertiesName` |
+| PLAN-20 + docs lock | plan-20 + testing + known-limitations | `DesktopPoliciesLifecycleActionAutomationLivingSpecTests.Ac2Plan20AndTestingDocLockA11yPolicy01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesLifecycleActionAutomationLivingSpecTests"`.
+
+
 
 
 
