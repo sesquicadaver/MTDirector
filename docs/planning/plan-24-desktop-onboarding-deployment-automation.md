@@ -49,4 +49,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**PLAN-24 COMPLETE.** Seeded PLAN-25 queue (W7-203/204). **§3.C NEXT = W7-203 (#809)** — Seed next product tranche after PLAN-24 → PLAN-25.
+**PLAN-24 COMPLETE.** Seeded PLAN-25 queue (W7-203/204). **W7-203 DONE.** **§3.C NEXT = W7-204 (#810)** — PLAN-25 Inventory next Desktop Living Spec product tranche after PLAN-24.

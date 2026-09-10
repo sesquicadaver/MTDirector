@@ -1,9 +1,9 @@
 # PLAN-25 — Desktop Inventory / Zones / Add-router AutomationProperties Living Spec product tranche
 
 **Date:** 2026-09-10  
-**Status:** Inventory **OPEN** (W7-204); seeded by **W7-203 OPEN** after **PLAN-24 COMPLETE**  
+**Status:** Inventory **OPEN** (W7-204); seeded by **W7-203 DONE** after **PLAN-24 COMPLETE**  
 **PLAN issue / queue:** [W7-204 / PLAN-25 #810](https://github.com/sesquicadaver/MTDirector/issues/810)  
-**Predecessor:** PLAN-24 Onboarding/Deployment AutomationProperties **COMPLETE**; product seed **W7-203**  
+**Predecessor:** PLAN-24 Onboarding/Deployment AutomationProperties **COMPLETE**; product seed **W7-203 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
@@ -33,4 +33,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-203 (#809)** — Seed next product tranche after PLAN-24 → PLAN-25 (this inventory is W7-204 OPEN).
+**§3.C NEXT = W7-204 (#810)** — PLAN-25 Inventory next Desktop Living Spec product tranche after PLAN-24.
