@@ -1465,6 +1465,17 @@ Issue [#789](https://github.com/sesquicadaver/MTDirector/issues/789) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7193"`.
 
+## Living Specification — PLAN-23 Policies catalog/object inventory (W7-194)
+
+Issue [#790](https://github.com/sesquicadaver/MTDirector/issues/790) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ranked DESK-A11Y-POLICY-OBJ-* + seed DESK-A11Y-POLICY-OBJ-01 | plan-23 + queue docs | `Plan23DesktopPoliciesCatalogObjectW7194LivingSpecTests.Ac1Plan23InventoryDocumentsRankedRowsAndSeedsDeskA11yPolicyObj01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan23DesktopPoliciesCatalogObjectW7194"`.
+
+
 
 
 
