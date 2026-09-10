@@ -1,7 +1,7 @@
 # PLAN-20 — Desktop Policies lifecycle-action AutomationProperties Living Spec product tranche
 
 **Date:** 2026-09-10  
-**Status:** Inventory **DONE** (W7-179); seeded by **W7-178 DONE**; **DESK-A11Y-POLICY-01 DONE** (W7-180); next seed **W7-181 OPEN**  
+**Status:** Inventory **DONE** (W7-179); seeded by **W7-178 DONE**; **DESK-A11Y-POLICY-01 DONE** (W7-180); seed **W7-181 DONE**; **DESK-A11Y-POLICY-02 OPEN** (W7-182)  
 **PLAN issue / queue:** [W7-179 / PLAN-20 #760](https://github.com/sesquicadaver/MTDirector/issues/760)  
 **Predecessor:** PLAN-19 shell Connect/Disconnect AutomationProperties **COMPLETE**; product seed **W7-178 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -45,7 +45,7 @@ Policies lifecycle buttons (Validate / Submit for review / Approve / Bind / Depl
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **DESK-A11Y-POLICY-01** | Policies Validate/Submit/Approve/Bind/Deploy lack AutomationProperties.Name | `MainWindow.axaml` Policies panel | **W7-180 DONE** (#763); seeded by inventory **W7-179 DONE** (#760) |
-| 2 | **DESK-A11Y-POLICY-02** | Regression lock: Policies lifecycle Names + Connect/Disconnect + Incident action Names matrix | Living Spec matrix | seeded by **W7-181 OPEN** (#764) after DESK-A11Y-POLICY-01 |
+| 2 | **DESK-A11Y-POLICY-02** | Regression lock: Policies lifecycle Names + Connect/Disconnect + Incident action Names matrix | Living Spec matrix | **W7-182 OPEN** (#767); seeded by **W7-181 DONE** (#764) |
 
 ## Dual track
 
@@ -53,4 +53,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-181 (#764)** — Seed next PLAN-20 row after DESK-A11Y-POLICY-01 → DESK-A11Y-POLICY-02.
+**§3.C NEXT = W7-182 (#767)** — DESK-A11Y-POLICY-02 Policies lifecycle Names + shell/Incident Names regression Living Spec.
