@@ -13,6 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-197** ([#797](https://github.com/sesquicadaver/MTDirector/issues/797)): DESK-A11Y-POLICY-OBJ-02 Policies catalog/object Names + ack/record + authoring residual + lifecycle + shell/Incident Names regression; **PLAN-23 COMPLETE**. Seeded W7-198 (#799) / W7-199 (#800) PLAN-24. **§3.C NEXT = W7-198 (#799)**.
+
 - **W7-196** ([#794](https://github.com/sesquicadaver/MTDirector/issues/794)): Seed next PLAN-23 row after DESK-A11Y-POLICY-OBJ-01 → DESK-A11Y-POLICY-OBJ-02 (`ProductTrancheSeedW7196LivingSpecTests`). **§3.C NEXT = W7-197 (#797)**.
 
 - **W7-195** ([#793](https://github.com/sesquicadaver/MTDirector/issues/793)): DESK-A11Y-POLICY-OBJ-01 Policies catalog/object AutomationProperties.Name (`DesktopPoliciesCatalogObjectAutomationLivingSpecTests`). **§3.C NEXT = W7-196 (#794)**.
