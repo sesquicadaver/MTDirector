@@ -1455,6 +1455,17 @@ Issue [#787](https://github.com/sesquicadaver/MTDirector/issues/787) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesAckRecordA11yRegressionLivingSpecTests|CtDeskA11yPolicyAck02"`.
 
+## Living Specification — Product tranche seed after PLAN-22 (W7-193)
+
+Issue [#789](https://github.com/sesquicadaver/MTDirector/issues/789) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed PLAN-23 inventory as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-23 | `ProductTrancheSeedW7193LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan23InventoryAsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7193"`.
+
+
 
 
 
