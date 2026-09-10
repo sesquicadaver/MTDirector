@@ -1475,6 +1475,18 @@ Issue [#790](https://github.com/sesquicadaver/MTDirector/issues/790) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan23DesktopPoliciesCatalogObjectW7194"`.
 
+## Living Specification — DESK-A11Y-POLICY-OBJ-01 Policies catalog/object AutomationProperties (W7-195)
+
+Issue [#793](https://github.com/sesquicadaver/MTDirector/issues/793) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Policies catalog/object Names | `MainWindow.axaml` | `DesktopPoliciesCatalogObjectAutomationLivingSpecTests.Ac1PoliciesCatalogObjectButtonsExposeAutomationPropertiesName` |
+| PLAN-23 + docs lock | plan-23 + testing + known-limitations | `DesktopPoliciesCatalogObjectAutomationLivingSpecTests.Ac2Plan23AndTestingDocLockA11yPolicyObj01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesCatalogObjectAutomationLivingSpecTests"`.
+
+
 
 
 

@@ -13,6 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-195** ([#793](https://github.com/sesquicadaver/MTDirector/issues/793)): DESK-A11Y-POLICY-OBJ-01 Policies catalog/object AutomationProperties.Name (`DesktopPoliciesCatalogObjectAutomationLivingSpecTests`). **§3.C NEXT = W7-196 (#794)**.
+
 - **W7-194** ([#790](https://github.com/sesquicadaver/MTDirector/issues/790)): PLAN-23 inventory Desktop Policies catalog/object AutomationProperties (`Plan23DesktopPoliciesCatalogObjectW7194LivingSpecTests`). Seeded W7-195 (#793) / W7-196 (#794). **§3.C NEXT = W7-195 (#793)**.
 
 - **W7-193** ([#789](https://github.com/sesquicadaver/MTDirector/issues/789)): Seed next product tranche after PLAN-22 → PLAN-23 (`ProductTrancheSeedW7193LivingSpecTests`). **§3.C NEXT = W7-194 (#790)**.

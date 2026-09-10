@@ -1111,6 +1111,7 @@
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <Button Classes="mfc-action"
                           Content="Refresh catalog"
+                          AutomationProperties.Name="Refresh catalog"
                           Command="{Binding Policies.RefreshCatalogCommand}"
                           MinWidth="130" />
                 </WrapPanel>
@@ -1298,6 +1299,7 @@
                             Width="120" />
                   <Button Classes="mfc-action"
                           Content="Upsert address"
+                          AutomationProperties.Name="Upsert address"
                           Command="{Binding Policies.UpsertAddressCommand}"
                           MinWidth="120" />
                 </WrapPanel>
@@ -1339,6 +1341,7 @@
                            Width="100" />
                   <Button Classes="mfc-action"
                           Content="Upsert service"
+                          AutomationProperties.Name="Upsert service"
                           Command="{Binding Policies.UpsertServiceCommand}"
                           MinWidth="120" />
                 </WrapPanel>
@@ -1384,6 +1387,7 @@
                             Width="180" />
                   <Button Classes="mfc-action"
                           Content="Replace contracts"
+                          AutomationProperties.Name="Replace contracts"
                           Command="{Binding Policies.ReplaceContractsCommand}"
                           MinWidth="140" />
                 </WrapPanel>
