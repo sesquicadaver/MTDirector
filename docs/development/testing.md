@@ -1486,6 +1486,17 @@ Issue [#793](https://github.com/sesquicadaver/MTDirector/issues/793) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesCatalogObjectAutomationLivingSpecTests"`.
 
+## Living Specification — Product tranche seed after DESK-A11Y-POLICY-OBJ-01 (W7-196)
+
+Issue [#794](https://github.com/sesquicadaver/MTDirector/issues/794) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-A11Y-POLICY-OBJ-02 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-23 | `ProductTrancheSeedW7196LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskA11yPolicyObj02AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7196"`.
+
+
 
 
 
