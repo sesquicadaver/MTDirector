@@ -179,3 +179,4 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 - Intentional residual (W7-174 Living Spec lock): **PLAN-19** inventory DONE; next product row **W7-175** — **DESK-A11Y-CONN-01** Connect/Disconnect AutomationProperties.Name Living Spec; not idle; not a lab stop-gate.
 - Intentional residual (W7-175 Living Spec lock): **DESK-A11Y-CONN-01 DONE** — Connect/Disconnect expose `AutomationProperties.Name` (`DesktopShellConnectDisconnectAutomationLivingSpecTests`); next seed W7-176 → DESK-A11Y-CONN-02.
 - Intentional residual (W7-176 Living Spec lock): §3.C product row after DESK-A11Y-CONN-01 is seeded as **W7-177** — **DESK-A11Y-CONN-02** Connect/Disconnect Names + Incident action Names regression Living Spec; not idle; not a lab stop-gate.
+- Intentional residual (W7-177 Living Spec lock): **DESK-A11Y-CONN-02 DONE** / **PLAN-19 COMPLETE** (`DesktopShellConnectDisconnectA11yRegressionLivingSpecTests`); next product seed W7-178 → PLAN-20.
