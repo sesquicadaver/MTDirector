@@ -1443,6 +1443,19 @@ Issue [#784](https://github.com/sesquicadaver/MTDirector/issues/784) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7191"`.
 
+## Living Specification — DESK-A11Y-POLICY-ACK-02 ack/record a11y regression / PLAN-22 COMPLETE (W7-192)
+
+Issue [#787](https://github.com/sesquicadaver/MTDirector/issues/787) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| ack/record + authoring residual + lifecycle + Connect/Disconnect + Incident Names matrix | `MainWindow.axaml` | `DesktopPoliciesAckRecordA11yRegressionLivingSpecTests.Ac1AckRecordAuthoringResidualLifecycleAndShellIncidentActionNamesMatrixLocked` |
+| PLAN-22 COMPLETE + docs lock | plan-22 + testing + known-limitations | `DesktopPoliciesAckRecordA11yRegressionLivingSpecTests.Ac2Plan22CompleteAndDocsLockA11yPolicyAck02` |
+| CT wrapper | release Living Spec | `CtDeskA11yPolicyAck02DesktopPoliciesAckRecordA11yRegressionLivingSpecTests.Ac1DesktopPoliciesAckRecordA11yRegressionLivingSpecAndPlan22CompleteExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesAckRecordA11yRegressionLivingSpecTests|CtDeskA11yPolicyAck02"`.
+
+
 
 
 
