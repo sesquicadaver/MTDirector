@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-178** ([#759](https://github.com/sesquicadaver/MTDirector/issues/759)): Seed next product tranche after PLAN-19 → PLAN-20 (`ProductTrancheSeedW7178LivingSpecTests`). **§3.C NEXT = W7-179 (#760)**.
 - **W7-177** ([#757](https://github.com/sesquicadaver/MTDirector/issues/757)): DESK-A11Y-CONN-02 Connect/Disconnect Names + Incident action Names regression; **PLAN-19 COMPLETE**. Seeded W7-178 (#759) / W7-179 (#760) PLAN-20. **§3.C NEXT = W7-178 (#759)**.
 - **W7-176** ([#754](https://github.com/sesquicadaver/MTDirector/issues/754)): Seed next PLAN-19 row after DESK-A11Y-CONN-01 → DESK-A11Y-CONN-02 (`ProductTrancheSeedW7176LivingSpecTests`). **§3.C NEXT = W7-177 (#757)**.
 - **W7-175** ([#753](https://github.com/sesquicadaver/MTDirector/issues/753)): DESK-A11Y-CONN-01 Connect/Disconnect AutomationProperties.Name (`DesktopShellConnectDisconnectAutomationLivingSpecTests`). **§3.C NEXT = W7-176 (#754)**.
@@ -282,6 +283,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-178** ([#759](https://github.com/sesquicadaver/MTDirector/issues/759)): Seed next product tranche after PLAN-19 → PLAN-20 (`ProductTrancheSeedW7178LivingSpecTests`). **§3.C NEXT = W7-179 (#760)**.
 - **W7-177** ([#757](https://github.com/sesquicadaver/MTDirector/issues/757)): DESK-A11Y-CONN-02 Connect/Disconnect Names + Incident action Names regression; **PLAN-19 COMPLETE**. Seeded W7-178 (#759) / W7-179 (#760) PLAN-20. **§3.C NEXT = W7-178 (#759)**.
 - **W7-176** ([#754](https://github.com/sesquicadaver/MTDirector/issues/754)): Seed next PLAN-19 row after DESK-A11Y-CONN-01 → DESK-A11Y-CONN-02 (`ProductTrancheSeedW7176LivingSpecTests`). **§3.C NEXT = W7-177 (#757)**.
 - **W7-175** ([#753](https://github.com/sesquicadaver/MTDirector/issues/753)): DESK-A11Y-CONN-01 Connect/Disconnect AutomationProperties.Name (`DesktopShellConnectDisconnectAutomationLivingSpecTests`). **§3.C NEXT = W7-176 (#754)**.
@@ -488,6 +490,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-178** ([#759](https://github.com/sesquicadaver/MTDirector/issues/759)): Seed next product tranche after PLAN-19 → PLAN-20 (`ProductTrancheSeedW7178LivingSpecTests`). **§3.C NEXT = W7-179 (#760)**.
 - **W7-177** ([#757](https://github.com/sesquicadaver/MTDirector/issues/757)): DESK-A11Y-CONN-02 Connect/Disconnect Names + Incident action Names regression; **PLAN-19 COMPLETE**. Seeded W7-178 (#759) / W7-179 (#760) PLAN-20. **§3.C NEXT = W7-178 (#759)**.
 - **W7-176** ([#754](https://github.com/sesquicadaver/MTDirector/issues/754)): Seed next PLAN-19 row after DESK-A11Y-CONN-01 → DESK-A11Y-CONN-02 (`ProductTrancheSeedW7176LivingSpecTests`). **§3.C NEXT = W7-177 (#757)**.
 - **W7-175** ([#753](https://github.com/sesquicadaver/MTDirector/issues/753)): DESK-A11Y-CONN-01 Connect/Disconnect AutomationProperties.Name (`DesktopShellConnectDisconnectAutomationLivingSpecTests`). **§3.C NEXT = W7-176 (#754)**.
