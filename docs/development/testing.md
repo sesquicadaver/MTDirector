@@ -1518,6 +1518,17 @@ Issue [#799](https://github.com/sesquicadaver/MTDirector/issues/799) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7198"`.
 
+## Living Specification — PLAN-24 Onboarding/Deployment inventory (W7-199)
+
+Issue [#800](https://github.com/sesquicadaver/MTDirector/issues/800) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ranked DESK-A11Y-OPS-* + seed DESK-A11Y-OPS-01 | plan-24 + queue docs | `Plan24DesktopOnboardingDeploymentW7199LivingSpecTests.Ac1Plan24InventoryDocumentsRankedRowsAndSeedsDeskA11yOps01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan24DesktopOnboardingDeploymentW7199"`.
+
+
 
 
 

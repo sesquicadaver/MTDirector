@@ -1,9 +1,9 @@
 # PLAN-24 — Desktop Onboarding/Deployment AutomationProperties Living Spec product tranche
 
 **Date:** 2026-09-10  
-**Status:** Inventory **OPEN** (W7-199); seeded by **W7-198 DONE** after **PLAN-23 COMPLETE**  
+**Status:** Inventory **DONE** (W7-199); seeded by **W7-198 DONE**; first implement **DESK-A11Y-OPS-01 OPEN** (W7-200)  
 **PLAN issue / queue:** [W7-199 / PLAN-24 #800](https://github.com/sesquicadaver/MTDirector/issues/800)  
-**Predecessor:** PLAN-23 Policies catalog/object AutomationProperties **COMPLETE**; product seed **W7-198**  
+**Predecessor:** PLAN-23 Policies catalog/object AutomationProperties **COMPLETE**; product seed **W7-198 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
@@ -20,12 +20,28 @@ Onboarding/Deployment residual action buttons have Content text but no `Automati
 - Replacing PLAN-16…23 Policies / shell / Incident locks  
 - New Onboarding/Deployment RPCs  
 
+## Decision drivers
+
+| Driver | Choice |
+|--------|--------|
+| Worst pain first | Onboarding/Deployment primary actions lack accessible names after Policies catalog/object lock |
+| Risk | XAML AutomationProperties only; keep Command bindings; Desktop build + Living Spec |
+| Queue fit | Seed **after** PLAN-23 COMPLETE; inventory locks **DESK-A11Y-OPS-01** as first implement |
+
+## Evidence baseline
+
+| Surface | Desktop today | Gap |
+|---------|---------------|-----|
+| Onboarding Validate prerequisites / Create plan / Start / Rollback / Recovery status | Content text; no AutomationProperties.Name | DESK-A11Y-OPS-01 |
+| Deployment Create plan / Start / Rollback / Recovery status | Content text; no AutomationProperties.Name | DESK-A11Y-OPS-01 |
+| Regression lock | ops Names + Policies/shell/Incident Names matrix | DESK-A11Y-OPS-02 |
+
 ## Ranked Desktop Onboarding/Deployment a11y tranche
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-A11Y-OPS-01** | Onboarding/Deployment primary actions lack AutomationProperties.Name | `MainWindow.axaml` Operations panels | seed after PLAN-24 inventory |
-| 2 | **DESK-A11Y-OPS-02** | Regression lock: ops Names + Policies/shell/Incident Names matrix | Living Spec matrix | seed after DESK-A11Y-OPS-01 |
+| 1 | **DESK-A11Y-OPS-01** | Onboarding/Deployment primary actions lack AutomationProperties.Name | `MainWindow.axaml` Operations panels | **W7-200 OPEN** (#803); seeded by inventory **W7-199 DONE** (#800) |
+| 2 | **DESK-A11Y-OPS-02** | Regression lock: ops Names + Policies/shell/Incident Names matrix | Living Spec matrix | seeded by **W7-201 OPEN** (#804) after DESK-A11Y-OPS-01 |
 
 ## Dual track
 
@@ -33,4 +49,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-199 (#800)** — PLAN-24 Inventory next Desktop Living Spec product tranche after PLAN-23.
+**§3.C NEXT = W7-200 (#803)** — DESK-A11Y-OPS-01 Onboarding/Deployment primary actions AutomationProperties.Name Living Spec.
