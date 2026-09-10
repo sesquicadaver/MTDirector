@@ -1434,8 +1434,8 @@
                            MinWidth="240"
                            Width="320" />
                   <Button Classes="mfc-action" Content="Semantic diff" AutomationProperties.Name="Semantic diff" Command="{Binding Policies.DiffCommand}" MinWidth="120" />
-                  <Button Classes="mfc-action" Content="Record analysis" Command="{Binding Policies.RecordAnalysisCommand}" MinWidth="130" />
-                  <Button Classes="mfc-action" Content="Acknowledge warning" Command="{Binding Policies.AcknowledgeWarningCommand}" MinWidth="160" />
+                  <Button Classes="mfc-action" Content="Record analysis" AutomationProperties.Name="Record analysis" Command="{Binding Policies.RecordAnalysisCommand}" MinWidth="130" />
+                  <Button Classes="mfc-action" Content="Acknowledge warning" AutomationProperties.Name="Acknowledge warning" Command="{Binding Policies.AcknowledgeWarningCommand}" MinWidth="160" />
                 </WrapPanel>
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"
