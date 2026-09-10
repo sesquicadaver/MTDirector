@@ -1,7 +1,7 @@
 # PLAN-22 — Desktop Policies acknowledge/record-analysis AutomationProperties Living Spec product tranche
 
 **Date:** 2026-09-10  
-**Status:** Inventory **DONE** (W7-189); seeded by **W7-188 DONE**; **DESK-A11Y-POLICY-ACK-01 DONE** (W7-190); seed **W7-191 OPEN**  
+**Status:** Inventory **DONE** (W7-189); seeded by **W7-188 DONE**; **DESK-A11Y-POLICY-ACK-01 DONE** (W7-190); seed **W7-191 DONE**; **DESK-A11Y-POLICY-ACK-02 OPEN** (W7-192)  
 **PLAN issue / queue:** [W7-189 / PLAN-22 #780](https://github.com/sesquicadaver/MTDirector/issues/780)  
 **Predecessor:** PLAN-21 Policies authoring residual AutomationProperties **COMPLETE**; product seed **W7-188 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -41,7 +41,7 @@ Policies Record analysis / Acknowledge warning buttons expose `AutomationPropert
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **DESK-A11Y-POLICY-ACK-01** | Policies Record analysis / Acknowledge warning lack AutomationProperties.Name | `MainWindow.axaml` Policies panel | **W7-190 DONE** (#783); seeded by inventory **W7-189 DONE** (#780) |
-| 2 | **DESK-A11Y-POLICY-ACK-02** | Regression lock: ack/record Names + authoring residual + lifecycle + shell/Incident Names matrix | Living Spec matrix | seeded by **W7-191 OPEN** (#784) after DESK-A11Y-POLICY-ACK-01 |
+| 2 | **DESK-A11Y-POLICY-ACK-02** | Regression lock: ack/record Names + authoring residual + lifecycle + shell/Incident Names matrix | Living Spec matrix | **W7-192 OPEN** (#787); seeded by **W7-191 DONE** (#784) |
 
 ## Dual track
 
@@ -49,4 +49,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-191 (#784)** — Seed next PLAN-22 row after DESK-A11Y-POLICY-ACK-01 → DESK-A11Y-POLICY-ACK-02.
+**§3.C NEXT = W7-192 (#787)** — DESK-A11Y-POLICY-ACK-02 Policies ack/record Names + authoring residual + lifecycle + shell/Incident Names regression Living Spec.
