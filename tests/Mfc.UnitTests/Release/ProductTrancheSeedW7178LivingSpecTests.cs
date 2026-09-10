@@ -24,7 +24,6 @@ public sealed class ProductTrancheSeedW7178LivingSpecTests
         Assert.Contains("W7-178 DONE", plan20, StringComparison.Ordinal);
         Assert.Contains("W7-179", plan20, StringComparison.Ordinal);
         Assert.Contains("W7-178", roadmap, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-179 (#760)", roadmap, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

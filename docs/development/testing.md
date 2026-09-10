@@ -1306,6 +1306,17 @@ Issue [#759](https://github.com/sesquicadaver/MTDirector/issues/759) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7178"`.
 
+## Living Specification — PLAN-20 Policies lifecycle-action inventory (W7-179)
+
+Issue [#760](https://github.com/sesquicadaver/MTDirector/issues/760) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ranked DESK-A11Y-POLICY-* + seed DESK-A11Y-POLICY-01 | plan-20 + queue docs | `Plan20DesktopPoliciesLifecycleActionW7179LivingSpecTests.Ac1Plan20InventoryDocumentsRankedRowsAndSeedsDeskA11yPolicy01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan20DesktopPoliciesLifecycleActionW7179"`.
+
+
 
 
 
