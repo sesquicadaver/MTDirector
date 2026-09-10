@@ -1390,6 +1390,19 @@ Issue [#774](https://github.com/sesquicadaver/MTDirector/issues/774) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7186"`.
 
+## Living Specification — DESK-A11Y-POLICY-EDIT-02 authoring residual a11y regression / PLAN-21 COMPLETE (W7-187)
+
+Issue [#777](https://github.com/sesquicadaver/MTDirector/issues/777) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| authoring residual + lifecycle + Connect/Disconnect + Incident Names matrix | `MainWindow.axaml` | `DesktopPoliciesAuthoringResidualA11yRegressionLivingSpecTests.Ac1AuthoringResidualLifecycleAndShellIncidentActionNamesMatrixLocked` |
+| PLAN-21 COMPLETE + docs lock | plan-21 + testing + known-limitations | `DesktopPoliciesAuthoringResidualA11yRegressionLivingSpecTests.Ac2Plan21CompleteAndDocsLockA11yPolicyEdit02` |
+| CT wrapper | release Living Spec | `CtDeskA11yPolicyEdit02DesktopPoliciesAuthoringResidualA11yRegressionLivingSpecTests.Ac1DesktopPoliciesAuthoringResidualA11yRegressionLivingSpecAndPlan21CompleteExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPoliciesAuthoringResidualA11yRegressionLivingSpecTests|CtDeskA11yPolicyEdit02"`.
+
+
 
 
 
