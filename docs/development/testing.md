@@ -1412,6 +1412,17 @@ Issue [#779](https://github.com/sesquicadaver/MTDirector/issues/779) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7188"`.
 
+## Living Specification — PLAN-22 Policies acknowledge/record-analysis inventory (W7-189)
+
+Issue [#780](https://github.com/sesquicadaver/MTDirector/issues/780) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ranked DESK-A11Y-POLICY-ACK-* + seed DESK-A11Y-POLICY-ACK-01 | plan-22 + queue docs | `Plan22DesktopPoliciesAckRecordW7189LivingSpecTests.Ac1Plan22InventoryDocumentsRankedRowsAndSeedsDeskA11yPolicyAck01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan22DesktopPoliciesAckRecordW7189"`.
+
+
 
 
 
