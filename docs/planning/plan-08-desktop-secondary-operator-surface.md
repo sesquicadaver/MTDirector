@@ -41,6 +41,6 @@ Product §3.C never waits on lab. Physical CRS / live CHR / `WriteEnabled` stay 
 
 **Status:** PLAN-08 **COMPLETE** (DESK-NODE…DESK-POLICY-02).
 
-**§3.C NEXT = W7-200 (#803)** — DESK-CONN-01 Desktop Connect/Disconnect Living Spec depth (PLAN-09).
+**§3.C NEXT = W7-201 (#804)** — DESK-CONN-01 Desktop Connect/Disconnect Living Spec depth (PLAN-09).
 
 **Successor:** PLAN-09 inventory **DONE** (W7-98); first atomic row **DESK-CONN-01** (W7-99).

@@ -1529,11 +1529,11 @@
                              IsVisible="{Binding Onboarding.HasError}" />
                 </StackPanel>
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
-                  <Button Classes="mfc-action" Content="Validate prerequisites" Command="{Binding Onboarding.ValidateCommand}" MinWidth="160" />
-                  <Button Classes="mfc-action" Content="Create plan" Command="{Binding Onboarding.CreatePlanCommand}" MinWidth="110" />
-                  <Button Classes="mfc-action" Content="Start" Command="{Binding Onboarding.StartCommand}" />
-                  <Button Classes="mfc-action" Content="Rollback" Command="{Binding Onboarding.RollbackCommand}" MinWidth="90" />
-                  <Button Classes="mfc-action" Content="Recovery status" Command="{Binding Onboarding.RecoveryCommand}" MinWidth="130" />
+                  <Button Classes="mfc-action" Content="Validate prerequisites" AutomationProperties.Name="Validate prerequisites" Command="{Binding Onboarding.ValidateCommand}" MinWidth="160" />
+                  <Button Classes="mfc-action" Content="Create plan" AutomationProperties.Name="Create plan" Command="{Binding Onboarding.CreatePlanCommand}" MinWidth="110" />
+                  <Button Classes="mfc-action" Content="Start" AutomationProperties.Name="Start" Command="{Binding Onboarding.StartCommand}" />
+                  <Button Classes="mfc-action" Content="Rollback" AutomationProperties.Name="Rollback" Command="{Binding Onboarding.RollbackCommand}" MinWidth="90" />
+                  <Button Classes="mfc-action" Content="Recovery status" AutomationProperties.Name="Recovery status" Command="{Binding Onboarding.RecoveryCommand}" MinWidth="130" />
                 </WrapPanel>
                 <TextBlock Classes="mfc-label" Text="Prerequisite checklist" />
                 <ListBox ItemsSource="{Binding Onboarding.Findings}" MinHeight="{StaticResource Mfc.ListMinHeight}">
@@ -1595,10 +1595,10 @@
                              IsVisible="{Binding Deployment.HasError}" />
                 </StackPanel>
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
-                  <Button Classes="mfc-action" Content="Create plan" Command="{Binding Deployment.CreatePlanCommand}" MinWidth="110" />
-                  <Button Classes="mfc-action" Content="Start" Command="{Binding Deployment.StartCommand}" />
-                  <Button Classes="mfc-action" Content="Rollback" Command="{Binding Deployment.RollbackCommand}" MinWidth="90" />
-                  <Button Classes="mfc-action" Content="Recovery status" Command="{Binding Deployment.RecoveryCommand}" MinWidth="130" />
+                  <Button Classes="mfc-action" Content="Create plan" AutomationProperties.Name="Create plan" Command="{Binding Deployment.CreatePlanCommand}" MinWidth="110" />
+                  <Button Classes="mfc-action" Content="Start" AutomationProperties.Name="Start" Command="{Binding Deployment.StartCommand}" />
+                  <Button Classes="mfc-action" Content="Rollback" AutomationProperties.Name="Rollback" Command="{Binding Deployment.RollbackCommand}" MinWidth="90" />
+                  <Button Classes="mfc-action" Content="Recovery status" AutomationProperties.Name="Recovery status" Command="{Binding Deployment.RecoveryCommand}" MinWidth="130" />
                 </WrapPanel>
                 <TextBlock Classes="mfc-label" Text="Policy semantic diff" />
                 <ListBox ItemsSource="{Binding Deployment.SemanticDiffRows}" MinHeight="{StaticResource Mfc.ListMinHeight}">
