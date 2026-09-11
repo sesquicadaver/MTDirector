@@ -1538,6 +1538,19 @@ Issue [#810](https://github.com/sesquicadaver/MTDirector/issues/810) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan25DesktopInventoryZonesAddRouterW7204"`.
 
+## Living Specification — DESK-A11Y-INV-01 Inventory/Zones AutomationProperties (W7-207)
+
+Issue [#817](https://github.com/sesquicadaver/MTDirector/issues/817) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Inventory/Zones primary action Names | `MainWindow.axaml` | `DesktopInventoryZonesAutomationLivingSpecTests.Ac1InventoryAndZonesButtonsExposeAutomationPropertiesName` |
+| PLAN-25 + docs lock | plan-25 + testing + known-limitations | `DesktopInventoryZonesAutomationLivingSpecTests.Ac2Plan25AndTestingDocLockA11yInv01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryZonesAutomationLivingSpecTests"`.
+
+
+
 ## Living Specification — DESK-A11Y-OPS-01 Onboarding/Deployment AutomationProperties (W7-200)
 
 Issue [#803](https://github.com/sesquicadaver/MTDirector/issues/803) AC → module → tests:
