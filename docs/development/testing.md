@@ -1528,6 +1528,16 @@ Issue [#800](https://github.com/sesquicadaver/MTDirector/issues/800) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan24DesktopOnboardingDeploymentW7199"`.
 
+## Living Specification — PLAN-25 Inventory/Zones Add-router a11y inventory (W7-204)
+
+Issue [#810](https://github.com/sesquicadaver/MTDirector/issues/810) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ranked DESK-A11Y-INV-* + seed DESK-A11Y-INV-01 | plan-25 + queue docs | `Plan25DesktopInventoryZonesAddRouterW7204LivingSpecTests.Ac1Plan25InventoryDocumentsRankedRowsAndSeedsDeskA11yInv01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan25DesktopInventoryZonesAddRouterW7204"`.
+
 ## Living Specification — DESK-A11Y-OPS-01 Onboarding/Deployment AutomationProperties (W7-200)
 
 Issue [#803](https://github.com/sesquicadaver/MTDirector/issues/803) AC → module → tests:
