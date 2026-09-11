@@ -13,6 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-205** ([#814](https://github.com/sesquicadaver/MTDirector/issues/814)) / **W7-206** ([#815](https://github.com/sesquicadaver/MTDirector/issues/815)): Pre-seed PLAN-26 code-audit remediation tranche (`11cb746`) after PLAN-25 — plan `plan-26-code-audit-remediation-11cb746.md`, audit `docs/audits/MTDirector-audit-11cb746-20260911.md` (`ProductTrancheSeedW7205LivingSpecTests`). **§3.C NEXT remains W7-204 (#810)**.
+
 - **W7-203** ([#809](https://github.com/sesquicadaver/MTDirector/issues/809)): Seed next product tranche after PLAN-24 → PLAN-25 (`ProductTrancheSeedW7203LivingSpecTests`). **§3.C NEXT = W7-204 (#810)**.
 
 - **W7-202** ([#807](https://github.com/sesquicadaver/MTDirector/issues/807)): DESK-A11Y-OPS-02 Onboarding/Deployment Names + Policies/shell/Incident Names regression; **PLAN-24 COMPLETE**. Seeded W7-203 (#809) / W7-204 (#810) PLAN-25. **§3.C NEXT = W7-203 (#809)**.
