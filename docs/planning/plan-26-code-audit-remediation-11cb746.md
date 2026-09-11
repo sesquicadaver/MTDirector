@@ -1,13 +1,13 @@
 # PLAN-26 — Code-audit remediation tranche (`11cb746`)
 
-**Date:** 2026-09-11  
-**Status:** Seed **W7-205 DONE**; inventory **W7-206 (#815)** OPEN (**§3.C NEXT**); after **PLAN-25 COMPLETE**  
+**Date:** 2026-09-11 (inventory **DONE** 2026-09-11)  
+**Status:** Seed **W7-205 DONE**; Inventory **DONE** (W7-206); next **W7-210 (#825)** AUDIT-RULE-01; seed **W7-211 (#826)** → AUDIT-CTX-01  
 **Audit SHA:** `11cb746de60191e6eb83e52013f7f544306d5c9d`  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md)  
 **Predecessor:** PLAN-25 Desktop Inventory/Zones/Add-router AutomationProperties **COMPLETE**  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
-Static code audit (2026-09-11) found material P1 defects in capture projection, policy update/analysis, deployment recovery/watchdog, and GUI synthetic plans. Green CI does not prove GUI→Controller→CHR. This PLAN inventories remediation into atomic §3 rows; lab/CHR/`WriteEnabled` are **not** stop-gates.
+Static code audit (2026-09-11) found material P1 defects in capture projection, policy update/analysis, deployment recovery/watchdog, and GUI synthetic plans. Green CI does not prove GUI→Controller→CHR. Inventory of remediation into atomic §3 rows is **DONE**; lab/CHR/`WriteEnabled` are **not** stop-gates.
 
 ## Principles
 
@@ -16,18 +16,23 @@ Static code audit (2026-09-11) found material P1 defects in capture projection, 
 3. Do not delete unused algorithms solely because callers are missing — wire or gate them explicitly.  
 4. GUI E2E rates from a parallel lab run are **out of scope** as proof for these static findings (audit §«Що не оголошено»).
 
-## Out of scope (do not seed here)
+## Out of scope (do not seed in AUDIT-RULE-01)
 
-- PLAN-25 a11y Inventory/Zones Names (stays on W7-204…)  
+- PLAN-25 a11y Inventory/Zones Names (COMPLETE)  
 - Declaring zone-key whitespace a defect without normative ban  
 - Treating `NotConfigured*` fail-closed adapters as bugs  
+- Re-running GUI E2E as proof of these static findings  
+
+## Inventory evidence (2026-09-11)
+
+Normative audit §§01–19 mapped to ranked IDs below. First wave (issue body): rule predicate round-trip + GUI mutation owner context.
 
 ## Ranked remediation tranche (audit fix sequence)
 
 | Rank | ID | Gap (audit §) | Evidence (paths) | Queue |
 |------|----|---------------|------------------|-------|
-| 1 | **AUDIT-RULE-01** | Update rule drops predicate / hidden fields (§03) | `PoliciesViewModel`, `PolicyPanelService`, `PolicyRuleFactory` | seed after PLAN-26 inventory |
-| 2 | **AUDIT-CTX-01** | Node switch does not invalidate mutation context (§10) | `ZonesViewModel`, `OnboardingViewModel`, `DeploymentViewModel` | seed after AUDIT-RULE-01 |
+| 1 | **AUDIT-RULE-01** | Update rule drops predicate / hidden fields (§03) | `PoliciesViewModel`, `PolicyPanelService`, `PolicyRuleFactory` | **W7-210 (#825)** |
+| 2 | **AUDIT-CTX-01** | Node switch does not invalidate mutation context (§10) | `ZonesViewModel`, `OnboardingViewModel`, `DeploymentViewModel` | seed **W7-211 (#826)** after AUDIT-RULE-01 |
 | 3 | **AUDIT-CAP-01** | Canonical filter omits firewall match fields (§01) | `DiscoveryCanonicalProjector.ProjectOrderedFilter` | seed after AUDIT-CTX-01 |
 | 4 | **AUDIT-CAP-02** | Required-section read failure can complete snapshot (§02) | `RouterOsDiscoveryReader`, `SnapshotCaptureResultBuilder` | seed after AUDIT-CAP-01 |
 | 5 | **AUDIT-AN-01** | Validate/Record skip full analysis + mandatory tests (§04); Compose→Record INFO (§13) | `ValidateRevisionUseCase`, `PolicyPanelService`, `PolicyApprovalGate` | seed after AUDIT-CAP-02 |
@@ -51,9 +56,9 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/c
 
 1. **PLAN-25 COMPLETE** (W7-209).  
 2. **W7-205 DONE** — seed PLAN-26.  
-3. **W7-206 OPEN** — PLAN-26 inventory → open **AUDIT-RULE-01** + follow-up seeds.  
-4. Execute ranks 1…14 atomically.
+3. **W7-206 DONE** — PLAN-26 inventory; seeded **W7-210** / **W7-211**.  
+4. Execute ranks 1…14 atomically starting at **AUDIT-RULE-01**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-206 (#815)** — PLAN-26 Inventory code-audit remediation tranche (`11cb746`).
+**§3.C NEXT = W7-210 (#825)** — AUDIT-RULE-01 Update rule predicate / hidden fields round-trip.

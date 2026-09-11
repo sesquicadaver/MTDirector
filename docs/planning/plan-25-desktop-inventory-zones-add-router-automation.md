@@ -52,4 +52,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**PLAN-25 COMPLETE.** Seeded PLAN-26 (W7-205 **DONE**). **§3.C NEXT = W7-206 (#815)** — PLAN-26 inventory.
+**PLAN-25 COMPLETE.** Seeded PLAN-26 (W7-205 **DONE**; W7-206 inventory **DONE**). **§3.C NEXT = W7-210 (#825)** — AUDIT-RULE-01.

@@ -1571,6 +1571,17 @@ Issue [#821](https://github.com/sesquicadaver/MTDirector/issues/821) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryZonesA11yRegressionLivingSpecTests|CtDeskA11yInv02"`.
 
+
+## Living Specification — PLAN-26 code-audit remediation inventory (W7-206)
+
+Issue [#815](https://github.com/sesquicadaver/MTDirector/issues/815) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ranked AUDIT-* + seed AUDIT-RULE-01 | plan-26 + queue docs + audit | `Plan26CodeAuditRemediationW7206LivingSpecTests.Ac1Plan26InventoryDocumentsRankedRowsAndSeedsAuditRule01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan26CodeAuditRemediationW7206"`.
+
 ## Living Specification — Product tranche seed after PLAN-25 (W7-205)
 
 Issue [#814](https://github.com/sesquicadaver/MTDirector/issues/814) AC → module → tests:
