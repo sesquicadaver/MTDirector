@@ -49,6 +49,8 @@ public interface IPolicyServiceClient
         bool enabled,
         TrafficPredicate? predicate,
         RuleEffect effect,
+        LogSpecification logging,
+        bool exceptionEligible,
         string description,
         CancellationToken cancellationToken = default);
 

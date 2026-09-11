@@ -595,6 +595,8 @@ public sealed class PolicyDesktopServiceTests
             bool enabled,
             TrafficPredicate? predicate,
             RuleEffect effect,
+            LogSpecification logging,
+            bool exceptionEligible,
             string description,
             CancellationToken cancellationToken = default)
         {
@@ -608,10 +610,9 @@ public sealed class PolicyDesktopServiceTests
                 match.Enabled = enabled;
                 match.Effect = effect;
                 match.Description = description;
-                if (predicate is not null)
-                {
-                    match.Predicate = predicate;
-                }
+                match.Logging = logging.Clone();
+                match.ExceptionEligible = exceptionEligible;
+                match.Predicate = predicate;
             }
 
             BumpHash();

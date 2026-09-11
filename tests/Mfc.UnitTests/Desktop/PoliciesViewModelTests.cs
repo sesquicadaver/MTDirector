@@ -269,6 +269,73 @@ public sealed class PoliciesViewModelTests
     }
 
     [Fact]
+    public async Task UpdateRuleCommandPreservesPredicateLoggingAndExceptionEligibleRoundTrip()
+    {
+        Guid revisionId = Guid.Parse("99999999-aaaa-bbbb-cccc-dddddddddddd");
+        Guid ruleId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid sourceId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+        Guid zoneId = Guid.Parse("ffffffff-1111-2222-3333-444444444444");
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        RecordingPolicyPanel panel = new() { DraftState = EmptyDraft(revisionId) };
+        using PoliciesViewModel vm = new(panel, connection, inventory)
+        {
+            DraftNameText = "lab-baseline",
+        };
+        await vm.CreateDraftCommand.ExecuteAsync(null);
+
+        TrafficPredicate stored = new();
+        stored.SourceAddresses = new AddressSelector();
+        stored.SourceAddresses.Include.Add(DesktopProtoUuid.FromGuid(sourceId));
+        stored.IngressZones = new ZoneSelector();
+        stored.IngressZones.Include.Add(DesktopProtoUuid.FromGuid(zoneId));
+        stored.ConnectionStates.Add(ConnectionState.Established);
+
+        LogSpecification logging = new() { Enabled = true, Prefix = "mfc-rule" };
+        PolicyRuleListItem rule = new()
+        {
+            Id = ruleId,
+            Family = IpAddressFamily.Ipv4,
+            Chain = PolicyFilterChain.Forward,
+            Stage = PolicyPipelineStage.CompanyAllow,
+            FamilyText = "Ipv4",
+            ChainText = "Forward",
+            StageText = "CompanyAllow",
+            Ordinal = 2,
+            Enabled = true,
+            Effect = PolicyRuleEffect.Accept,
+            EffectText = "Accept",
+            Predicate = stored,
+            Logging = logging,
+            ExceptionEligible = true,
+            Description = "allow-lan",
+            WarningLines = [],
+        };
+        vm.Rules.Add(rule);
+        vm.SelectedRule = rule;
+        vm.RuleDescriptionText = "allow-lan-updated";
+
+        await vm.UpdateRuleCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Equal(1, panel.UpdateCalls);
+        Assert.Equal("allow-lan-updated", panel.LastUpdateDescription);
+        Assert.True(panel.LastUpdateExceptionEligible);
+        Assert.NotNull(panel.LastUpdateLogging);
+        Assert.True(panel.LastUpdateLogging.Enabled);
+        Assert.Equal("mfc-rule", panel.LastUpdateLogging.Prefix);
+        Assert.NotNull(panel.LastUpdatePredicate);
+        Assert.Equal(
+            sourceId,
+            DesktopProtoUuid.ToGuid(Assert.Single(panel.LastUpdatePredicate.SourceAddresses.Include)));
+        Assert.Equal(
+            zoneId,
+            DesktopProtoUuid.ToGuid(Assert.Single(panel.LastUpdatePredicate.IngressZones.Include)));
+        Assert.Equal(ConnectionState.Established, Assert.Single(panel.LastUpdatePredicate.ConnectionStates));
+        Assert.Equal(sourceId.ToString("D"), vm.PredicateSourceAddressIdsText);
+    }
+
+    [Fact]
     public async Task MoveRuleDownBuildsStageOrderWithoutUuidPaste()
     {
         Guid revisionId = Guid.Parse("99999999-aaaa-bbbb-cccc-dddddddddddd");
@@ -634,6 +701,9 @@ public sealed class PoliciesViewModelTests
             PolicyRuleEffect effectKind,
             string description,
             TrafficPredicate? predicate,
+            LogSpecification? logging = null,
+            bool exceptionEligible = false,
+            RejectMode rejectMode = RejectMode.Unspecified,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
@@ -781,6 +851,14 @@ public sealed class PoliciesViewModelTests
 
         public string? LastUpdateDescription { get; private set; }
 
+        public TrafficPredicate? LastUpdatePredicate { get; private set; }
+
+        public LogSpecification? LastUpdateLogging { get; private set; }
+
+        public bool LastUpdateExceptionEligible { get; private set; }
+
+        public RejectMode LastUpdateRejectMode { get; private set; }
+
         public Guid LastDeleteRuleId { get; private set; }
 
         public Guid LastRecordedRunId { get; private set; } = Guid.Parse("44444444-5555-6666-7777-888888888888");
@@ -860,6 +938,9 @@ public sealed class PoliciesViewModelTests
             PolicyRuleEffect effectKind,
             string description,
             TrafficPredicate? predicate,
+            LogSpecification? logging = null,
+            bool exceptionEligible = false,
+            RejectMode rejectMode = RejectMode.Unspecified,
             CancellationToken cancellationToken = default)
         {
             UpdateCalls++;
@@ -868,6 +949,10 @@ public sealed class PoliciesViewModelTests
             LastUpdateEnabled = enabled;
             LastUpdateEffect = effectKind;
             LastUpdateDescription = description;
+            LastUpdatePredicate = predicate?.Clone();
+            LastUpdateLogging = logging?.Clone();
+            LastUpdateExceptionEligible = exceptionEligible;
+            LastUpdateRejectMode = rejectMode;
             PolicyRevisionPanelState draft = DraftState ?? throw new InvalidOperationException("DraftState not set.");
             return Task.FromResult(CloneDraft(draft, [
                 new PolicyRuleListItem
@@ -883,6 +968,10 @@ public sealed class PoliciesViewModelTests
                     Enabled = enabled,
                     Effect = effectKind,
                     EffectText = effectKind.ToString(),
+                    RejectMode = rejectMode,
+                    Predicate = predicate?.Clone(),
+                    Logging = logging?.Clone(),
+                    ExceptionEligible = exceptionEligible,
                     Description = description,
                     WarningLines = [],
                 },

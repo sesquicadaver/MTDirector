@@ -1572,6 +1572,18 @@ Issue [#821](https://github.com/sesquicadaver/MTDirector/issues/821) AC → modu
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryZonesA11yRegressionLivingSpecTests|CtDeskA11yInv02"`.
 
 
+
+## Living Specification — AUDIT-RULE-01 predicate round-trip (W7-210)
+
+Issue [#825](https://github.com/sesquicadaver/MTDirector/issues/825) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Update preserves predicate / logging / ExceptionEligible | `PoliciesViewModel`, `PolicyPanelService`, `GrpcPolicyServiceClient` | `PoliciesViewModelTests.UpdateRuleCommandPreservesPredicateLoggingAndExceptionEligibleRoundTrip` |
+| PLAN-26 + docs lock | plan-26 + testing + known-limitations | `AuditRule01PredicateRoundTripW7210LivingSpecTests.Ac1Plan26AndTestingDocLockAuditRule01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditRule01PredicateRoundTripW7210|UpdateRuleCommandPreservesPredicate"`.
+
 ## Living Specification — PLAN-26 code-audit remediation inventory (W7-206)
 
 Issue [#815](https://github.com/sesquicadaver/MTDirector/issues/815) AC → module → tests:
