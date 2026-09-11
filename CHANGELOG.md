@@ -13,6 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-211** ([#826](https://github.com/sesquicadaver/MTDirector/issues/826)): Seed next PLAN-26 row after AUDIT-RULE-01 → AUDIT-CTX-01 (`ProductTrancheSeedW7211LivingSpecTests`). **§3.C NEXT = W7-212 (#829)**.
+
 - **W7-210** ([#825](https://github.com/sesquicadaver/MTDirector/issues/825)): AUDIT-RULE-01 Update rule predicate / logging / ExceptionEligible round-trip (`AuditRule01PredicateRoundTripW7210LivingSpecTests`). **§3.C NEXT = W7-211 (#826)**.
 
 - **W7-206** ([#815](https://github.com/sesquicadaver/MTDirector/issues/815)): PLAN-26 inventory ranks AUDIT-* rows; seeds W7-210 (#825) AUDIT-RULE-01 / W7-211 (#826) (`Plan26CodeAuditRemediationW7206LivingSpecTests`). **§3.C NEXT = W7-210 (#825)**.
