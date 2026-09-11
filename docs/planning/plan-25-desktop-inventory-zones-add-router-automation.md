@@ -31,6 +31,10 @@ Inventory / Add-router / Zones / Snapshot / Drift / Audit residual action button
 
 Product §3 never waits on GNS3.
 
+## Successor
+
+**PLAN-26** (code-audit remediation @ `11cb746`) is queued: seed **W7-205 (#814)**, inventory **W7-206 (#815)** — see [`plan-26-code-audit-remediation-11cb746.md`](plan-26-code-audit-remediation-11cb746.md).
+
 ## §3.C NEXT
 
 **§3.C NEXT = W7-204 (#810)** — PLAN-25 Inventory next Desktop Living Spec product tranche after PLAN-24.
