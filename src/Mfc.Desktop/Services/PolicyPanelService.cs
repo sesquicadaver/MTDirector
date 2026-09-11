@@ -31,6 +31,18 @@ public sealed class PolicyRuleListItem
 
     public required PolicyRuleEffect Effect { get; init; }
 
+    /// <summary>Reject mode preserved for Update round-trip when Effect is Reject.</summary>
+    public RejectMode RejectMode { get; init; }
+
+    /// <summary>Full traffic predicate from the revision (zones/states/etc. beyond UUID form fields).</summary>
+    public TrafficPredicate? Predicate { get; init; }
+
+    /// <summary>Logging specification preserved across Update when the form does not edit it.</summary>
+    public LogSpecification? Logging { get; init; }
+
+    /// <summary>Exception-eligible flag preserved across Update when the form does not edit it.</summary>
+    public bool ExceptionEligible { get; init; }
+
     public required string Description { get; init; }
 
     public required IReadOnlyList<string> WarningLines { get; init; }
@@ -301,6 +313,9 @@ public interface IPolicyPanelService
         PolicyRuleEffect effectKind,
         string description,
         TrafficPredicate? predicate,
+        LogSpecification? logging = null,
+        bool exceptionEligible = false,
+        RejectMode rejectMode = RejectMode.Unspecified,
         CancellationToken cancellationToken = default);
 
     Task<PolicyRevisionPanelState> DeleteRuleAsync(
@@ -507,8 +522,17 @@ public sealed class PolicyPanelService : IPolicyPanelService
         PolicyRuleEffect effectKind,
         string description,
         TrafficPredicate? predicate,
+        LogSpecification? logging = null,
+        bool exceptionEligible = false,
+        RejectMode rejectMode = RejectMode.Unspecified,
         CancellationToken cancellationToken = default)
     {
+        RuleEffect effect = new() { Kind = effectKind };
+        if (effectKind == PolicyRuleEffect.Reject && rejectMode != RejectMode.Unspecified)
+        {
+            effect.RejectMode = rejectMode;
+        }
+
         _ = await _client.UpdateRuleAsync(
                 revisionId,
                 ruleId,
@@ -519,7 +543,9 @@ public sealed class PolicyPanelService : IPolicyPanelService
                 ordinal,
                 enabled,
                 predicate,
-                new RuleEffect { Kind = effectKind },
+                effect,
+                logging ?? new LogSpecification { Enabled = false },
+                exceptionEligible,
                 description,
                 cancellationToken)
             .ConfigureAwait(false);
@@ -1164,6 +1190,10 @@ public sealed class PolicyPanelService : IPolicyPanelService
         Enabled = rule.Enabled,
         Effect = rule.Effect?.Kind ?? PolicyRuleEffect.Unspecified,
         EffectText = rule.Effect?.Kind.ToString() ?? "Unspecified",
+        RejectMode = rule.Effect?.RejectMode ?? RejectMode.Unspecified,
+        Predicate = rule.Predicate?.Clone(),
+        Logging = rule.Logging?.Clone(),
+        ExceptionEligible = rule.ExceptionEligible,
         Description = rule.Description,
         WarningLines = rule.Warnings
             .Select(w => string.IsNullOrWhiteSpace(w.Subject) ? $"{w.Code}: {w.Message}" : $"{w.Code}({w.Subject}): {w.Message}")

@@ -236,6 +236,9 @@ public sealed class DesktopPolicySafetyLivingSpecTests
             PolicyRuleEffect effectKind,
             string description,
             TrafficPredicate? predicate,
+            LogSpecification? logging = null,
+            bool exceptionEligible = false,
+            RejectMode rejectMode = RejectMode.Unspecified,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 

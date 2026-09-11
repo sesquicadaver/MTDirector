@@ -132,6 +132,8 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
         bool enabled,
         TrafficPredicate? predicate,
         RuleEffect effect,
+        LogSpecification logging,
+        bool exceptionEligible,
         string description,
         CancellationToken cancellationToken = default)
     {
@@ -148,8 +150,8 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
             Ordinal = ordinal,
             Enabled = enabled,
             Effect = effect,
-            Logging = new LogSpecification { Enabled = false },
-            ExceptionEligible = false,
+            Logging = logging.Clone(),
+            ExceptionEligible = exceptionEligible,
             Description = description,
         };
         if (predicate is not null)

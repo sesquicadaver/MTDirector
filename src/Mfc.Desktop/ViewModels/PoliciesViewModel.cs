@@ -370,7 +370,8 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         PolicyRuleListItem rule = SelectedRule;
         await RunBusyAsync(async ct =>
         {
-            TrafficPredicate? predicate = BuildPredicateFromProtoFields();
+            TrafficPredicate? predicate = ResolvePredicateForUpdate(rule);
+            LogSpecification logging = rule.Logging?.Clone() ?? new LogSpecification { Enabled = false };
             ApplyState(await Task.Run(
                     async () => await _policies.UpdateRuleAsync(
                             revisionId,
@@ -384,6 +385,9 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
                             SelectedEffect,
                             RuleDescriptionText.Trim(),
                             predicate,
+                            logging,
+                            rule.ExceptionEligible,
+                            rule.RejectMode,
                             ct)
                         .ConfigureAwait(false),
                     ct)
@@ -1002,10 +1006,44 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         }
 
         TrafficPredicate predicate = new();
+        ApplyEditableSelectors(predicate, sources, destinations, services);
+        return predicate;
+    }
+
+    /// <summary>
+    /// Update round-trip: keep non-editable predicate parts (zones/states/tcp/ipsec) from the
+    /// selected rule and sync only the UUID form selectors (source/dest/service).
+    /// </summary>
+    private TrafficPredicate? ResolvePredicateForUpdate(PolicyRuleListItem rule)
+    {
+        List<Uuid> sources = ParseUuidList(PredicateSourceAddressIdsText);
+        List<Uuid> destinations = ParseUuidList(PredicateDestinationAddressIdsText);
+        List<Uuid> services = ParseUuidList(PredicateServiceIdsText);
+        bool formEmpty = sources.Count == 0 && destinations.Count == 0 && services.Count == 0;
+        if (rule.Predicate is null)
+        {
+            return formEmpty ? null : BuildPredicateFromProtoFields();
+        }
+
+        TrafficPredicate merged = rule.Predicate.Clone();
+        ApplyEditableSelectors(merged, sources, destinations, services);
+        return merged;
+    }
+
+    private static void ApplyEditableSelectors(
+        TrafficPredicate predicate,
+        List<Uuid> sources,
+        List<Uuid> destinations,
+        List<Uuid> services)
+    {
         if (sources.Count > 0)
         {
             predicate.SourceAddresses = new AddressSelector();
             predicate.SourceAddresses.Include.AddRange(sources);
+        }
+        else
+        {
+            predicate.SourceAddresses = null;
         }
 
         if (destinations.Count > 0)
@@ -1013,14 +1051,32 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
             predicate.DestinationAddresses = new AddressSelector();
             predicate.DestinationAddresses.Include.AddRange(destinations);
         }
+        else
+        {
+            predicate.DestinationAddresses = null;
+        }
 
         if (services.Count > 0)
         {
             predicate.Services = new ServiceSelector();
             predicate.Services.Include.AddRange(services);
         }
+        else
+        {
+            predicate.Services = null;
+        }
+    }
 
-        return predicate;
+    private static string FormatUuidIncludeList(IEnumerable<Uuid>? ids)
+    {
+        if (ids is null)
+        {
+            return string.Empty;
+        }
+
+        return string.Join(
+            ", ",
+            ids.Select(id => DesktopProtoUuid.ToGuid(id).ToString("D")));
     }
 
     private static List<Uuid> ParseUuidList(string text)
@@ -1343,6 +1399,9 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
     {
         if (value is null)
         {
+            PredicateSourceAddressIdsText = string.Empty;
+            PredicateDestinationAddressIdsText = string.Empty;
+            PredicateServiceIdsText = string.Empty;
             MoveRuleUpCommand.NotifyCanExecuteChanged();
             MoveRuleDownCommand.NotifyCanExecuteChanged();
             return;
@@ -1353,6 +1412,9 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
         SelectedStage = value.Stage;
         SelectedEffect = value.Effect;
         RuleDescriptionText = value.Description;
+        PredicateSourceAddressIdsText = FormatUuidIncludeList(value.Predicate?.SourceAddresses?.Include);
+        PredicateDestinationAddressIdsText = FormatUuidIncludeList(value.Predicate?.DestinationAddresses?.Include);
+        PredicateServiceIdsText = FormatUuidIncludeList(value.Predicate?.Services?.Include);
         MoveRuleUpCommand.NotifyCanExecuteChanged();
         MoveRuleDownCommand.NotifyCanExecuteChanged();
     }
