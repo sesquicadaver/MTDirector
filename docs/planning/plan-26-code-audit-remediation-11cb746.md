@@ -1,7 +1,7 @@
 # PLAN-26 — Code-audit remediation tranche (`11cb746`)
 
 **Date:** 2026-09-11  
-**Status:** Queued after **PLAN-25** (inventory DONE; INV-01 **W7-207** OPEN); seed **W7-205 (#814)** OPEN; inventory **W7-206 (#815)** OPEN  
+**Status:** Queued after **PLAN-25 COMPLETE**; seed **W7-205 (#814)** OPEN (**§3.C NEXT**); inventory **W7-206 (#815)** OPEN  
 **Audit SHA:** `11cb746de60191e6eb83e52013f7f544306d5c9d`  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md)  
 **Predecessor:** PLAN-25 Desktop Inventory/Zones/Add-router AutomationProperties (in progress / OPEN)  

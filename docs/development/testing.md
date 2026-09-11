@@ -1559,6 +1559,20 @@ Issue [#818](https://github.com/sesquicadaver/MTDirector/issues/818) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7208"`.
 
+## Living Specification — DESK-A11Y-INV-02 inv/zones a11y regression / PLAN-25 COMPLETE (W7-209)
+
+Issue [#821](https://github.com/sesquicadaver/MTDirector/issues/821) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| inv/zones + ops + Policies/shell/Incident Names matrix | `MainWindow.axaml` | `DesktopInventoryZonesA11yRegressionLivingSpecTests.Ac1InventoryZonesOpsPoliciesShellIncidentActionNamesMatrixLocked` |
+| PLAN-25 COMPLETE + docs lock | plan-25 + testing + known-limitations | `DesktopInventoryZonesA11yRegressionLivingSpecTests.Ac2Plan25CompleteAndDocsLockA11yInv02` |
+| CT wrapper | release Living Spec | `CtDeskA11yInv02DesktopInventoryZonesA11yRegressionLivingSpecTests.Ac1DesktopInventoryZonesA11yRegressionLivingSpecAndPlan25CompleteExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryZonesA11yRegressionLivingSpecTests|CtDeskA11yInv02"`.
+
+
+
 
 
 
