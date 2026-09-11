@@ -1,7 +1,7 @@
 # PLAN-26 — Code-audit remediation tranche (`11cb746`)
 
 **Date:** 2026-09-11 (inventory **DONE** 2026-09-11)  
-**Status:** Seed **W7-205 DONE**; Inventory **DONE** (W7-206); **AUDIT-RULE-01 DONE** (W7-210); next **W7-211 (#826)** seed → AUDIT-CTX-01  
+**Status:** Seed **W7-205 DONE**; Inventory **DONE** (W7-206); **AUDIT-RULE-01 DONE** (W7-210); seed **W7-211 DONE**; next **W7-212 (#829)** AUDIT-CTX-01; seed **W7-213 (#830)** → AUDIT-CAP-01  
 **Audit SHA:** `11cb746de60191e6eb83e52013f7f544306d5c9d`  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md)  
 **Predecessor:** PLAN-25 Desktop Inventory/Zones/Add-router AutomationProperties **COMPLETE**  
@@ -32,7 +32,7 @@ Normative audit §§01–19 mapped to ranked IDs below. First wave (issue body):
 | Rank | ID | Gap (audit §) | Evidence (paths) | Queue |
 |------|----|---------------|------------------|-------|
 | 1 | **AUDIT-RULE-01** | Update rule drops predicate / hidden fields (§03) | `PoliciesViewModel`, `PolicyPanelService`, `PolicyRuleFactory` | **W7-210 (#825) DONE** |
-| 2 | **AUDIT-CTX-01** | Node switch does not invalidate mutation context (§10) | `ZonesViewModel`, `OnboardingViewModel`, `DeploymentViewModel` | seed **W7-211 (#826)** after AUDIT-RULE-01 |
+| 2 | **AUDIT-CTX-01** | Node switch does not invalidate mutation context (§10) | `ZonesViewModel`, `OnboardingViewModel`, `DeploymentViewModel` | **W7-212 (#829)**; seed **W7-213 (#830)** |
 | 3 | **AUDIT-CAP-01** | Canonical filter omits firewall match fields (§01) | `DiscoveryCanonicalProjector.ProjectOrderedFilter` | seed after AUDIT-CTX-01 |
 | 4 | **AUDIT-CAP-02** | Required-section read failure can complete snapshot (§02) | `RouterOsDiscoveryReader`, `SnapshotCaptureResultBuilder` | seed after AUDIT-CAP-01 |
 | 5 | **AUDIT-AN-01** | Validate/Record skip full analysis + mandatory tests (§04); Compose→Record INFO (§13) | `ValidateRevisionUseCase`, `PolicyPanelService`, `PolicyApprovalGate` | seed after AUDIT-CAP-02 |
@@ -58,8 +58,9 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/c
 2. **W7-205 DONE** — seed PLAN-26.  
 3. **W7-206 DONE** — PLAN-26 inventory; seeded **W7-210** / **W7-211**.  
 4. **W7-210 DONE** — AUDIT-RULE-01 predicate/logging/exceptionEligible round-trip.
-5. Execute ranks 2…14 atomically starting at seed **W7-211** → AUDIT-CTX-01.
+5. **W7-211 DONE** — seeded **W7-212** / **W7-213**.
+6. Execute ranks 2…14 atomically starting at **AUDIT-CTX-01**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-211 (#826)** — Seed next PLAN-26 row after AUDIT-RULE-01 → AUDIT-CTX-01.
+**§3.C NEXT = W7-212 (#829)** — AUDIT-CTX-01 Node switch must invalidate mutation context.

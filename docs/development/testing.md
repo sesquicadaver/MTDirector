@@ -1573,6 +1573,17 @@ Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryZonesA11yRegre
 
 
 
+
+## Living Specification — Product tranche seed after AUDIT-RULE-01 (W7-211)
+
+Issue [#826](https://github.com/sesquicadaver/MTDirector/issues/826) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed AUDIT-CTX-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-26 | `ProductTrancheSeedW7211LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditCtx01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7211"`.
+
 ## Living Specification — AUDIT-RULE-01 predicate round-trip (W7-210)
 
 Issue [#825](https://github.com/sesquicadaver/MTDirector/issues/825) AC → module → tests:
