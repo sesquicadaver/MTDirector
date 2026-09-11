@@ -26,7 +26,7 @@
 **PLAN-22 (Desktop Policies acknowledge/record-analysis AutomationProperties) COMPLETE:** [`plan-22-desktop-policies-ack-record-automation.md`](plan-22-desktop-policies-ack-record-automation.md)
 **PLAN-23 (Desktop Policies catalog/object AutomationProperties) COMPLETE:** [`plan-23-desktop-policies-catalog-object-automation.md`](plan-23-desktop-policies-catalog-object-automation.md)
 **PLAN-24 (Desktop Onboarding/Deployment AutomationProperties) COMPLETE:** [`plan-24-desktop-onboarding-deployment-automation.md`](plan-24-desktop-onboarding-deployment-automation.md)
-**PLAN-25 (Desktop Inventory / Zones / Add-router AutomationProperties):** [`plan-25-desktop-inventory-zones-add-router-automation.md`](plan-25-desktop-inventory-zones-add-router-automation.md) inventory **DONE** (W7-204); **NEXT = W7-208 (#818)** seed DESK-A11Y-INV-02  
+**PLAN-25 (Desktop Inventory / Zones / Add-router AutomationProperties):** [`plan-25-desktop-inventory-zones-add-router-automation.md`](plan-25-desktop-inventory-zones-add-router-automation.md) inventory **DONE** (W7-204); **NEXT = W7-209 (#821)** DESK-A11Y-INV-02  
 **PLAN-26 (Code-audit remediation `11cb746`):** [`plan-26-code-audit-remediation-11cb746.md`](plan-26-code-audit-remediation-11cb746.md) queued after PLAN-25 — seed **W7-205 (#814)** OPEN; inventory **W7-206 (#815)** OPEN; audit [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md)
 
 This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle state **NEXT = none**.
@@ -295,7 +295,8 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Seed next product tranche after PLAN-24 → PLAN-25 | Docs / product seed | **W7-203 DONE** |
 | PLAN-25 — Inventory next Desktop Living Spec product tranche after PLAN-24 | Docs / PLAN-25 | **W7-204 DONE** |
 | DESK-A11Y-INV-01 — Inventory/Zones primary actions AutomationProperties.Name | Desktop / Avalonia | **W7-207 DONE** |
-| Seed next PLAN-25 row after DESK-A11Y-INV-01 → DESK-A11Y-INV-02 | Docs / product seed | **W7-208 OPEN** |
+| Seed next PLAN-25 row after DESK-A11Y-INV-01 → DESK-A11Y-INV-02 | Docs / product seed | **W7-208 DONE** |
+| DESK-A11Y-INV-02 — Inventory/Zones Names + ops + Policies/shell/Incident Names regression Living Spec | Desktop / Avalonia | **W7-209 OPEN** |
 
 ### P3 / new Contracts (evidence)
 
@@ -554,7 +555,8 @@ W7-202 DESK-A11Y-OPS-02 — Onboarding/Deployment Names + Policies/shell/Inciden
 W7-203 Seed next product tranche after PLAN-24 → PLAN-25 **DONE**
 W7-204 PLAN-25 — Inventory next Desktop Living Spec product tranche after PLAN-24 **DONE**
 W7-207 DESK-A11Y-INV-01 — Inventory/Zones primary actions AutomationProperties.Name **DONE**
-W7-208 Seed next PLAN-25 row after DESK-A11Y-INV-01 → DESK-A11Y-INV-02 **OPEN**
+W7-208 Seed next PLAN-25 row after DESK-A11Y-INV-01 → DESK-A11Y-INV-02 **DONE**
+W7-209 DESK-A11Y-INV-02 — Inventory/Zones Names + ops + Policies/shell/Incident Names regression Living Spec **OPEN**
 W7-117 Seed next PLAN-11 row after DESK-COMPOSE-01 → DESK-GATE-01 **DONE**
 residual ops: CRS / physical lab runner (not §3 stop-gate)
 ```
