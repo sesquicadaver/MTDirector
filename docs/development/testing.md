@@ -1549,6 +1549,18 @@ Issue [#817](https://github.com/sesquicadaver/MTDirector/issues/817) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryZonesAutomationLivingSpecTests"`.
 
+## Living Specification — Product tranche seed after DESK-A11Y-INV-01 (W7-208)
+
+Issue [#818](https://github.com/sesquicadaver/MTDirector/issues/818) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-A11Y-INV-02 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-25 | `ProductTrancheSeedW7208LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskA11yInv02AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7208"`.
+
+
+
 
 
 ## Living Specification — DESK-A11Y-OPS-01 Onboarding/Deployment AutomationProperties (W7-200)

@@ -13,6 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-208** ([#818](https://github.com/sesquicadaver/MTDirector/issues/818)): Seed next PLAN-25 row after DESK-A11Y-INV-01 → DESK-A11Y-INV-02 (`ProductTrancheSeedW7208LivingSpecTests`). **§3.C NEXT = W7-209 (#821)**.
+
 - **W7-207** ([#817](https://github.com/sesquicadaver/MTDirector/issues/817)): DESK-A11Y-INV-01 Inventory/Zones primary actions AutomationProperties.Name (`DesktopInventoryZonesAutomationLivingSpecTests`). **§3.C NEXT = W7-208 (#818)**.
 
 - **W7-204** ([#810](https://github.com/sesquicadaver/MTDirector/issues/810)): PLAN-25 inventory Desktop Inventory/Zones AutomationProperties (`Plan25DesktopInventoryZonesAddRouterW7204LivingSpecTests`). Seeded W7-207 (#817) / W7-208 (#818). **§3.C NEXT = W7-207 (#817)**.
