@@ -1,13 +1,13 @@
 # PLAN-25 — Desktop Inventory / Zones / Add-router AutomationProperties Living Spec product tranche
 
 **Date:** 2026-09-10 (inventory **DONE** 2026-09-11)  
-**Status:** Inventory **DONE** (W7-204); next **W7-207 (#817)** DESK-A11Y-INV-01; seed **W7-208 (#818)** → DESK-A11Y-INV-02  
+**Status:** Inventory **DONE** (W7-204); **DESK-A11Y-INV-01 DONE** (W7-207); seed **W7-208 OPEN** → DESK-A11Y-INV-02  
 **PLAN issue / queue:** [W7-204 / PLAN-25 #810](https://github.com/sesquicadaver/MTDirector/issues/810) **DONE**  
 **Predecessor:** PLAN-24 Onboarding/Deployment AutomationProperties **COMPLETE**; product seed **W7-203 DONE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
-Inventory / Zones residual action buttons still lack `AutomationProperties.Name`. Add-router wizard primary controls were named in [#813](https://github.com/sesquicadaver/MTDirector/pull/813) (`Create / register`, Probe as `Add router Probe`, neighbor/site/node fields) — **do not regress**.
+Inventory / Zones primary action buttons expose `AutomationProperties.Name` matching Content / operator intent (DESK-A11Y-INV-01). Add-router wizard Names from [#813](https://github.com/sesquicadaver/MTDirector/pull/813) remain locked (`Create / register`, `Add router Probe`, neighbor/site/node fields) — **do not regress**.
 
 ## Principles
 
@@ -28,8 +28,8 @@ Inventory / Zones residual action buttons still lack `AutomationProperties.Name`
 | Shell Connect/Disconnect | yes | — |
 | Add-router wizard | yes (#813) | — |
 | Policies / Onboarding / Deployment / Incident | yes (PLAN-16…24) | — |
-| Inventory tree | partial | `Refresh`, `Probe` (tree Probe ≠ Add router Probe) |
-| Zones | no | `Resolve node`, `Resolve device`, `Create`, `Delete`, `Update zone`, `Upsert binding`, `Delete binding`, panel `Refresh` |
+| Inventory tree / detail | Content + AutomationProperties.Name (`Refresh`, `Inventory Probe`) | — |
+| Zones | Content + AutomationProperties.Name (`Resolve node`, `Resolve device`, `Create`, `Delete`, `Update zone`, `Upsert binding`, `Delete binding`, `Refresh`) | — |
 | Snapshots | no | `Reload`, `Capture`, `Copy sanitized`, `Compare`, `Reload captures`, `Refresh` |
 | Node / Drift / Audit | no | `Validate (last captures)`, `Capture all members + validate`, `Refresh` |
 
@@ -37,8 +37,8 @@ Inventory / Zones residual action buttons still lack `AutomationProperties.Name`
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-A11Y-INV-01** | Inventory + Zones primary actions lack AutomationProperties.Name | `MainWindow.axaml` Inventory/Zones | **W7-207 (#817)** |
-| 2 | **DESK-A11Y-INV-02** | Regression: inv/zones Names + ops + Policies/shell/Incident Names matrix | Living Spec matrix | seed **W7-208 (#818)** after INV-01 |
+| 1 | **DESK-A11Y-INV-01** | Inventory + Zones primary actions lack AutomationProperties.Name | `MainWindow.axaml` Inventory/Zones | **W7-207 DONE** (#817) |
+| 2 | **DESK-A11Y-INV-02** | Regression: inv/zones Names + ops + Policies/shell/Incident Names matrix | Living Spec matrix | seed **W7-208 OPEN** (#818) after INV-01 |
 | 3 | **DESK-A11Y-SNAP-01** | Snapshot Capture/Reload/Compare/Copy Names | Snapshots tabs | seed after INV-02 / PLAN-25 close |
 | 4 | **DESK-A11Y-PANEL-01** | Node VRRP validate + Drift/Audit Refresh Names | Node/Drift/Audit | seed after SNAP-01 |
 
@@ -52,4 +52,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-207 (#817)** — DESK-A11Y-INV-01 Inventory/Zones primary actions AutomationProperties.Name.
+**§3.C NEXT = W7-208 (#818)** — Seed next PLAN-25 row after DESK-A11Y-INV-01 → DESK-A11Y-INV-02.
