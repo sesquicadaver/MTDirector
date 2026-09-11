@@ -4,7 +4,7 @@
 **Status:** Queued after **PLAN-25 COMPLETE**; seed **W7-205 (#814)** OPEN (**§3.C NEXT**); inventory **W7-206 (#815)** OPEN  
 **Audit SHA:** `11cb746de60191e6eb83e52013f7f544306d5c9d`  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md)  
-**Predecessor:** PLAN-25 Desktop Inventory/Zones/Add-router AutomationProperties (in progress / OPEN)  
+**Predecessor:** PLAN-25 Desktop Inventory/Zones/Add-router AutomationProperties **COMPLETE**  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
 Static code audit (2026-09-11) found material P1 defects in capture projection, policy update/analysis, deployment recovery/watchdog, and GUI synthetic plans. Green CI does not prove GUI→Controller→CHR. This PLAN inventories remediation into atomic §3 rows; lab/CHR/`WriteEnabled` are **not** stop-gates.
