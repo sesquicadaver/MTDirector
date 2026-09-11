@@ -1,7 +1,7 @@
 # PLAN-26 — Code-audit remediation tranche (`11cb746`)
 
 **Date:** 2026-09-11  
-**Status:** Queued after **PLAN-25 COMPLETE**; seed **W7-205 (#814)** OPEN (**§3.C NEXT**); inventory **W7-206 (#815)** OPEN  
+**Status:** Seed **W7-205 DONE**; inventory **W7-206 (#815)** OPEN (**§3.C NEXT**); after **PLAN-25 COMPLETE**  
 **Audit SHA:** `11cb746de60191e6eb83e52013f7f544306d5c9d`  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md)  
 **Predecessor:** PLAN-25 Desktop Inventory/Zones/Add-router AutomationProperties **COMPLETE**  
@@ -49,7 +49,11 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/c
 
 ## §3.C ordering
 
-1. Finish **PLAN-25** (NEXT = W7-204).  
-2. **W7-205** — seed PLAN-26.  
-3. **W7-206** — PLAN-26 inventory → open **AUDIT-RULE-01** + follow-up seeds.  
+1. **PLAN-25 COMPLETE** (W7-209).  
+2. **W7-205 DONE** — seed PLAN-26.  
+3. **W7-206 OPEN** — PLAN-26 inventory → open **AUDIT-RULE-01** + follow-up seeds.  
 4. Execute ranks 1…14 atomically.
+
+## §3.C NEXT
+
+**§3.C NEXT = W7-206 (#815)** — PLAN-26 Inventory code-audit remediation tranche (`11cb746`).
