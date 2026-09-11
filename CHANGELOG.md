@@ -13,6 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-205** ([#814](https://github.com/sesquicadaver/MTDirector/issues/814)): Seed next product tranche after PLAN-25 → PLAN-26 (`ProductTrancheSeedW7205LivingSpecTests`). **§3.C NEXT = W7-206 (#815)**.
+
 - **W7-209** ([#821](https://github.com/sesquicadaver/MTDirector/issues/821)): DESK-A11Y-INV-02 Inventory/Zones Names + ops + Policies/shell/Incident Names regression; **PLAN-25 COMPLETE**. **§3.C NEXT = W7-205 (#814)**.
 
 - **W7-208** ([#818](https://github.com/sesquicadaver/MTDirector/issues/818)): Seed next PLAN-25 row after DESK-A11Y-INV-01 → DESK-A11Y-INV-02 (`ProductTrancheSeedW7208LivingSpecTests`). **§3.C NEXT = W7-209 (#821)**.

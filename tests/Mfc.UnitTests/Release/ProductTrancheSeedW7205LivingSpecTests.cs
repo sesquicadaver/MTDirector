@@ -23,6 +23,8 @@ public sealed class ProductTrancheSeedW7205LivingSpecTests
         Assert.Contains("PLAN-26 — Inventory code-audit remediation tranche (11cb746)", roadmap, StringComparison.Ordinal);
         Assert.Contains("W7-205", plan, StringComparison.Ordinal);
         Assert.Contains("PLAN-26", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-205 DONE", plan26, StringComparison.Ordinal);
+        Assert.Contains("W7-206", plan26, StringComparison.Ordinal);
         Assert.Contains("AUDIT-RULE-01", plan26, StringComparison.Ordinal);
         Assert.Contains("11cb746", plan26, StringComparison.Ordinal);
         Assert.Contains("11cb746de60191e6eb83e52013f7f544306d5c9d", audit, StringComparison.Ordinal);
