@@ -97,6 +97,26 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
     }
 
     [Fact]
+    public async Task ClientEchoOfRunFingerprintFailsWhenServerCurrentDiffers()
+    {
+        PassthroughPolicyDependencyFingerprintCalculator fingerprints = new()
+        {
+            OverrideCurrent = H("server-live-now"),
+        };
+        CompileFixture fx = await SeedApprovedCompanyWithNodeDeviceAsync(
+            withCapabilitySnapshot: true,
+            fingerprints: fingerprints);
+        ApplicationResult<CompileNodeFilterArtifactsView> result = await fx.UseCase.ExecuteAsync(Command(
+            nodeId: fx.NodeId,
+            analysisRunId: fx.RunId,
+            fingerprint: fx.Fingerprint,
+            capability: CapabilityHashBytes));
+        Assert.True(result.IsFailure);
+        Assert.Equal(PolicyCompilerCodes.CompilerAnalysisStale, result.Error!.Code);
+        Assert.Contains("CAS mismatch", result.Error.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task MissingCapabilityOnDeviceBlocksCompilation()
     {
         CompileFixture fx = await SeedApprovedCompanyWithNodeDeviceAsync(withCapabilitySnapshot: false);
@@ -457,7 +477,8 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
         bool addDevice = true,
         bool enableDevice = true,
         bool orphanCaptureId = false,
-        NodeKind nodeKind = NodeKind.Router)
+        NodeKind nodeKind = NodeKind.Router,
+        IPolicyDependencyFingerprintCalculator? fingerprints = null)
     {
         FakeAuthorizationBoundary auth = new();
         FakePolicyStore policies = new();
@@ -627,7 +648,8 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
         }
 
         CompileNodeFilterArtifactsUseCase useCase = new(
-            auth, nodes, devices, policies, approvals, zones, bindings, observations, snapshots, artifacts, clock);
+            auth, nodes, devices, policies, approvals, zones, bindings, observations, snapshots, artifacts, clock,
+            fingerprints);
 
         return new CompileFixture
         {

@@ -386,6 +386,7 @@ public sealed class DesktopPoliciesLivingSpecTests
             byte[] logicalEffectiveHash,
             string riskLevel,
             IReadOnlyList<PolicyFindingListItem>? composeFindings = null,
+            Guid? nodeId = null,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 

@@ -611,6 +611,58 @@ public sealed class PolicyApprovalUseCaseTests
                  && f.Severity == PolicyEvidenceAnalysisCodes.SeverityWarning);
     }
 
+    [Fact]
+    public async Task RecordAnalysisRunWithNodeIdStoresControllerFingerprint()
+    {
+        Fixture fx = await SeedInReviewAsync();
+        Hash256 live = H("controller-live-fp");
+        PassthroughPolicyDependencyFingerprintCalculator fingerprints = new() { OverrideCurrent = live };
+        RecordAnalysisRunUseCase record = new(
+            fx.Auth, fx.Policies, fx.Approvals, new FakeIdempotencyStore(), fx.Audit, new FakeUnitOfWork(), fingerprints);
+        RecordAnalysisRunCommand command = RecordCommand(fx);
+        command = new RecordAnalysisRunCommand
+        {
+            Actor = command.Actor,
+            IdempotencyKey = Guid.NewGuid(),
+            RevisionId = command.RevisionId,
+            ExpectedContentHash = command.ExpectedContentHash,
+            LogicalEffectiveHash = command.LogicalEffectiveHash,
+            AnalysisContextHash = command.AnalysisContextHash,
+            EvidenceContextHash = command.EvidenceContextHash,
+            TopologyProjectionHash = command.TopologyProjectionHash,
+            ImpactSetHash = command.ImpactSetHash,
+            PerDeviceAnalysisHashes = command.PerDeviceAnalysisHashes,
+            DependencyFingerprint = H("client-placeholder").Bytes.ToArray(),
+            RiskLevel = command.RiskLevel,
+            EvidenceSignalsPresent = command.EvidenceSignalsPresent,
+            AnalyzerVersion = command.AnalyzerVersion,
+            PolicySchemaVersion = command.PolicySchemaVersion,
+            PipelineVersion = command.PipelineVersion,
+            Findings = command.Findings,
+            TestResults = command.TestResults,
+            NodeId = Guid.NewGuid(),
+        };
+        ApplicationResult<PolicyAnalysisRunView> result = await record.ExecuteAsync(command);
+        Assert.True(result.IsSuccess, result.Error?.Message);
+        Assert.Equal(live.ToString(), result.Value!.DependencyFingerprintHex);
+    }
+
+    [Fact]
+    public async Task ApproveRejectsClientEchoWhenServerCurrentDiffers()
+    {
+        Fixture fx = await SeedInReviewAsync();
+        PassthroughPolicyDependencyFingerprintCalculator fingerprints = new()
+        {
+            OverrideCurrent = H("approve-live-now"),
+        };
+        ApproveRevisionUseCase approve = new(
+            fx.Auth, fx.Policies, fx.Approvals, new FakeIdempotencyStore(), fx.Audit, new FakeUnitOfWork(), fingerprints);
+        ApplicationResult<PolicyApprovalVoteView> vote = await approve.ExecuteAsync(ApproveCommand(fx, "reviewer"));
+        Assert.True(vote.IsFailure);
+        Assert.Equal(PolicyApprovalCodes.Stale, vote.Error!.Code);
+        Assert.Contains("CAS mismatch", vote.Error.Message, StringComparison.Ordinal);
+    }
+
     [Theory]
     [InlineData("analysis")]
     [InlineData("evidence")]

@@ -75,6 +75,9 @@ public sealed class RecordAnalysisRunCommand
     public required IReadOnlyList<PolicyApprovalFindingInput> Findings { get; init; }
 
     public required IReadOnlyList<PolicyApprovalTestInput> TestResults { get; init; }
+
+    /// <summary>Optional Node for live dependency fingerprint (AUDIT-AN-02).</summary>
+    public Guid? NodeId { get; init; }
 }
 
 /// <summary>Acknowledges one warning hash on an analysis run.</summary>
@@ -158,6 +161,7 @@ public sealed class RecordAnalysisRunUseCase
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IPolicyDependencyFingerprintCalculator _fingerprints;
 
     public RecordAnalysisRunUseCase(
         IAuthorizationBoundary auth,
@@ -165,7 +169,8 @@ public sealed class RecordAnalysisRunUseCase
         IPolicyApprovalStore approvals,
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IPolicyDependencyFingerprintCalculator? fingerprints = null)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
@@ -179,6 +184,7 @@ public sealed class RecordAnalysisRunUseCase
         _idempotency = idempotency;
         _audit = audit;
         _unitOfWork = unitOfWork;
+        _fingerprints = fingerprints ?? new PassthroughPolicyDependencyFingerprintCalculator();
     }
 
     public async Task<ApplicationResult<PolicyAnalysisRunView>> ExecuteAsync(
@@ -210,6 +216,7 @@ public sealed class RecordAnalysisRunUseCase
             impact = Convert.ToHexString(command.ImpactSetHash).ToLowerInvariant(),
             devices = command.PerDeviceAnalysisHashes.Select(static h => Convert.ToHexString(h).ToLowerInvariant()).ToArray(),
             fingerprint = Convert.ToHexString(command.DependencyFingerprint).ToLowerInvariant(),
+            node_id = command.NodeId,
             command.RiskLevel,
             command.EvidenceSignalsPresent,
             command.AnalyzerVersion,
@@ -272,6 +279,22 @@ public sealed class RecordAnalysisRunUseCase
             return ApplicationResults.Fail(hashes);
         }
 
+        Hash256 fingerprint = parsed.Fingerprint;
+        if (command.NodeId is Guid nodeGuid)
+        {
+            fingerprint = await _fingerprints.ComputeCurrentAsync(
+                    new DependencyFingerprintRequest
+                    {
+                        AnalyzerVersion = command.AnalyzerVersion,
+                        PolicySchemaVersion = command.PolicySchemaVersion,
+                        PipelineVersion = command.PipelineVersion,
+                        NodeId = new NodeId(nodeGuid),
+                        FrozenRunFingerprint = parsed.Fingerprint,
+                    },
+                    cancellationToken)
+                .ConfigureAwait(false);
+        }
+
         List<PolicyApprovalFinding> findings = [];
         foreach (PolicyApprovalFindingInput input in command.Findings)
         {
@@ -324,7 +347,7 @@ public sealed class RecordAnalysisRunUseCase
                 parsed.Topology,
                 parsed.Impact,
                 parsed.Devices,
-                parsed.Fingerprint,
+                fingerprint,
                 command.RiskLevel,
                 command.EvidenceSignalsPresent,
                 command.AnalyzerVersion,
@@ -747,6 +770,7 @@ public sealed class ApproveRevisionUseCase
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IPolicyDependencyFingerprintCalculator _fingerprints;
 
     public ApproveRevisionUseCase(
         IAuthorizationBoundary auth,
@@ -754,7 +778,8 @@ public sealed class ApproveRevisionUseCase
         IPolicyApprovalStore approvals,
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IPolicyDependencyFingerprintCalculator? fingerprints = null)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
@@ -768,6 +793,7 @@ public sealed class ApproveRevisionUseCase
         _idempotency = idempotency;
         _audit = audit;
         _unitOfWork = unitOfWork;
+        _fingerprints = fingerprints ?? new PassthroughPolicyDependencyFingerprintCalculator();
     }
 
     public async Task<ApplicationResult<PolicyApprovalVoteView>> ExecuteAsync(
@@ -852,11 +878,35 @@ public sealed class ApproveRevisionUseCase
         }
 
         ApplicationError? fpErr = PolicyRevisionSupport.TryHash(
-            command.CurrentDependencyFingerprint, "current_dependency_fingerprint", out Hash256? fingerprint);
+            command.CurrentDependencyFingerprint, "current_dependency_fingerprint", out Hash256? clientExpected);
         if (fpErr is not null)
         {
             return ApplicationResults.Fail(fpErr);
         }
+
+        Hash256 serverCurrent = await _fingerprints.ComputeCurrentAsync(
+                new DependencyFingerprintRequest
+                {
+                    AnalyzerVersion = run.AnalyzerVersion,
+                    PolicySchemaVersion = run.PolicySchemaVersion,
+                    PipelineVersion = run.PipelineVersion,
+                    NodeId = null,
+                    FrozenRunFingerprint = run.DependencyFingerprint,
+                },
+                cancellationToken)
+            .ConfigureAwait(false);
+        ApplicationError? fingerprintCas = PolicyDependencyFingerprintCas.Evaluate(
+            run.DependencyFingerprint,
+            clientExpected!,
+            serverCurrent,
+            PolicyApprovalCodes.Stale,
+            "current_dependency_fingerprint CAS mismatch with server-computed dependency fingerprint.");
+        if (fingerprintCas is not null)
+        {
+            return ApplicationResults.Fail(fingerprintCas);
+        }
+
+        Hash256 fingerprint = serverCurrent;
 
         IReadOnlyList<PolicyWarningAcknowledgment> acks = await _approvals
             .ListAcknowledgmentsAsync(run.Id, cancellationToken)

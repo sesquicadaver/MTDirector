@@ -452,6 +452,8 @@ message RecordAnalysisRunRequest {
   string pipeline_version = 15;
   repeated PolicyAnalysisFinding findings = 16;
   repeated PolicyAnalysisTestResult test_results = 17;
+  // Optional Node for controller-authoritative dependency fingerprint (AUDIT-AN-02).
+  Uuid node_id = 18;
 }
 
 message PolicyAnalysisRun {

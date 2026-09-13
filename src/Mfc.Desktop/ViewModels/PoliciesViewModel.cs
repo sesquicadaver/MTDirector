@@ -735,6 +735,7 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
 
         byte[] logical = _logicalEffectiveHash ?? hash;
         string risk = string.IsNullOrWhiteSpace(AnalysisRiskLevelText) ? "LOW" : AnalysisRiskLevelText.Trim();
+        Guid? nodeId = Guid.TryParse(ComposeNodeIdText.Trim(), out Guid parsedNode) ? parsedNode : null;
         await RunBusyAsync(async ct =>
         {
             PolicyAnalysisRunListItem run = await _policies.RecordAnalysisRunAsync(
@@ -743,6 +744,7 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
                     logical,
                     risk,
                     Findings.ToArray(),
+                    nodeId,
                     ct)
                 .ConfigureAwait(true);
             _analysisRunId = run.Id;

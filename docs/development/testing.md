@@ -1581,6 +1581,16 @@ Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryZonesA11yRegre
 
 
 
+## Living Specification — AUDIT-AN-02 fingerprint CAS (W7-220)
+
+Issue [#845](https://github.com/sesquicadaver/MTDirector/issues/845) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Controller fingerprint CAS; client expectation only | `PolicyDependencyFingerprintCas`, `LivePolicyDependencyFingerprintCalculator`, Compile/Approve/Bind/Record, Desktop Record `nodeId` | `AuditAn02FingerprintCasW7220LivingSpecTests`, `PolicyDependencyFingerprintCasTests`, `CompileNodeFilterArtifactsUseCaseTests.ClientEchoOfRunFingerprintFailsWhenServerCurrentDiffers` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditAn02FingerprintCasW7220"`.
+
 ## Living Specification — Product tranche seed after AUDIT-AN-01 (W7-219)
 
 Issue [#842](https://github.com/sesquicadaver/MTDirector/issues/842) AC → module → tests:

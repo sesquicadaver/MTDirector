@@ -356,6 +356,7 @@ public static class Program
         services.AddScoped<ReplaceChainContractsUseCase>();
         services.AddScoped<ReplacePolicyTestsUseCase>();
         services.AddScoped<DiffPolicyRevisionsUseCase>();
+        services.AddScoped<IPolicyDependencyFingerprintCalculator, LivePolicyDependencyFingerprintCalculator>();
         services.AddScoped<CompileNodeFilterArtifactsUseCase>();
         services.AddScoped<GetDevicePolicySafetyAnalysisUseCase>();
     }
