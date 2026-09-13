@@ -322,6 +322,151 @@ public sealed class DeploymentViewModelTests
         Assert.Equal([deviceA, deviceB], client.LastDeviceIds);
     }
 
+    [Fact]
+    public async Task SwitchingToDifferentNodeClearsPlanAndBlocksStaleStart()
+    {
+        Guid nodeA = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff");
+        Guid nodeB = Guid.Parse("cccccccc-dddd-eeee-ffff-000000000000");
+        Guid deviceA = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid deviceB = Guid.Parse("22222222-3333-4444-5555-666666666666");
+        Guid planId = Guid.Parse("dddddddd-eeee-ffff-aaaa-111111111111");
+        FakeConnection connection = new();
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        InventoryNodeViewModel site = new(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Site,
+            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            DisplayName = "LAB",
+            Children =
+            [
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeA,
+                    DisplayName = "node-a",
+                    Children =
+                    [
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceA,
+                            DisplayName = "r1",
+                        },
+                    ],
+                },
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeB,
+                    DisplayName = "node-b",
+                    Children =
+                    [
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceB,
+                            DisplayName = "r2",
+                        },
+                    ],
+                },
+            ],
+        });
+        inventory.Roots.Add(site);
+        inventory.SelectedNode = site.Children[0];
+        FakeDeploymentClient client = new()
+        {
+            CreatePlanOverride = new DeploymentPlanSummary
+            {
+                PlanId = DesktopProtoUuid.FromGuid(planId),
+                PlanHash = Hash("plan"),
+            },
+        };
+        using DeploymentViewModel vm = new(client, connection, inventory);
+        await vm.CreatePlanCommand.ExecuteAsync(null);
+        Assert.Equal(planId, vm.PlanId);
+
+        inventory.SelectedNode = site.Children[1];
+
+        Assert.Null(vm.PlanId);
+        Assert.Null(vm.PlanHash);
+        Assert.Null(vm.OperationId);
+        Assert.Empty(vm.SemanticDiffRows);
+        Assert.Empty(vm.ArtifactLines);
+
+        await vm.StartCommand.ExecuteAsync(null);
+
+        Assert.Equal(0, client.StartCalls);
+        Assert.Contains("Create a plan before start", vm.ErrorText, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task SwitchingNodeToItsDeviceKeepsPlanIds()
+    {
+        Guid nodeA = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff");
+        Guid nodeB = Guid.Parse("cccccccc-dddd-eeee-ffff-000000000000");
+        Guid deviceA = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid deviceB = Guid.Parse("22222222-3333-4444-5555-666666666666");
+        Guid planId = Guid.Parse("dddddddd-eeee-ffff-aaaa-111111111111");
+        FakeConnection connection = new();
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        InventoryNodeViewModel site = new(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Site,
+            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            DisplayName = "LAB",
+            Children =
+            [
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeA,
+                    DisplayName = "node-a",
+                    Children =
+                    [
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceA,
+                            DisplayName = "r1",
+                        },
+                    ],
+                },
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeB,
+                    DisplayName = "node-b",
+                    Children =
+                    [
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceB,
+                            DisplayName = "r2",
+                        },
+                    ],
+                },
+            ],
+        });
+        inventory.Roots.Add(site);
+        inventory.SelectedNode = site.Children[0];
+        FakeDeploymentClient client = new()
+        {
+            CreatePlanOverride = new DeploymentPlanSummary
+            {
+                PlanId = DesktopProtoUuid.FromGuid(planId),
+                PlanHash = Hash("plan"),
+            },
+        };
+        using DeploymentViewModel vm = new(client, connection, inventory);
+        await vm.CreatePlanCommand.ExecuteAsync(null);
+
+        inventory.SelectedNode = site.Children[0].Children[0];
+
+        Assert.Equal(planId, vm.PlanId);
+        Assert.NotNull(vm.PlanHash);
+    }
+
     private static Sha256 Hash(string seed)
         => new() { Value = ByteString.CopyFrom(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(seed))) };
 

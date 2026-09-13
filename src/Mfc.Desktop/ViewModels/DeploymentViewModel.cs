@@ -22,6 +22,9 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
     private readonly InventoryTreeViewModel _inventory;
     private bool _disposed;
 
+    /// <summary>Resolved owner NodeId for PlanId/OperationId; cleared on cross-node selection.</summary>
+    private Guid? _mutationOwnerNodeId;
+
     public DeploymentViewModel(
         IDeploymentServiceClient client,
         IControllerConnectionService connection,
@@ -115,6 +118,7 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
                 CancellationToken.None).ConfigureAwait(true);
             PlanId = DesktopProtoUuid.ToGuid(plan.PlanId);
             PlanHash = plan.PlanHash;
+            _mutationOwnerNodeId = nodeId;
             SemanticDiffRows.Clear();
             SemanticDiffLines.Clear();
             foreach (DeploymentSemanticDiffEntry entry in plan.SemanticDiff)
@@ -352,9 +356,55 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
     {
         if (e.PropertyName == nameof(InventoryTreeViewModel.SelectedNode))
         {
-            RefreshTargetHint();
-            Dispatcher.UIThread.Post(() => StatusText = "Node selection changed.");
+            SyncMutationOwnerFromSelection();
+            if (Dispatcher.UIThread.CheckAccess())
+            {
+                RefreshTargetHint();
+                StatusText = "Node selection changed.";
+            }
+            else
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    RefreshTargetHint();
+                    StatusText = "Node selection changed.";
+                });
+            }
         }
+    }
+
+    /// <summary>
+    /// AUDIT-CTX-01: when resolved owner NodeId changes, drop plan/operation mutation state.
+    /// Same-owner Node↔Device reselection keeps PlanId/OperationId. First owner assignment does not wipe.
+    /// </summary>
+    private void SyncMutationOwnerFromSelection()
+    {
+        Guid? nextOwner = InventoryOpsSelection.TryResolveNode(_inventory.SelectedNode, _inventory.Roots)?.Id;
+        if (nextOwner == _mutationOwnerNodeId)
+        {
+            return;
+        }
+
+        if (_mutationOwnerNodeId is not null)
+        {
+            InvalidateMutationContext();
+        }
+
+        _mutationOwnerNodeId = nextOwner;
+    }
+
+    private void InvalidateMutationContext()
+    {
+        PlanId = null;
+        PlanHash = null;
+        OperationId = null;
+        SemanticDiffRows.Clear();
+        SemanticDiffLines.Clear();
+        ArtifactLines.Clear();
+        OrderLines.Clear();
+        ProbeAndWatchdogLines.Clear();
+        ProgressLines.Clear();
+        RecoveryFactsText = string.Empty;
     }
 
     private void RefreshTargetHint()

@@ -1574,6 +1574,20 @@ Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryZonesA11yRegre
 
 
 
+
+## Living Specification — AUDIT-CTX-01 node-switch mutation invalidation (W7-212)
+
+Issue [#829](https://github.com/sesquicadaver/MTDirector/issues/829) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Zones clear Bindings on cross-node switch | `ZonesViewModel` | `ZonesViewModelTests.SwitchingToDifferentNodeClearsBindingsAndBlocksStaleDelete` |
+| Onboarding/Deployment clear PlanId on cross-node switch | `OnboardingViewModel`, `DeploymentViewModel` | `*.SwitchingToDifferentNodeClearsPlanAndBlocksStaleStart` |
+| Same-owner Node↔Device keeps context | three ViewModels | `*.SwitchingNodeToItsDeviceKeeps*` |
+| PLAN-26 + docs lock | plan-26 + testing + known-limitations | `AuditCtx01NodeSwitchInvalidateW7212LivingSpecTests.Ac1Plan26AndCodeLockAuditCtx01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditCtx01NodeSwitchInvalidateW7212|SwitchingToDifferentNode|SwitchingNodeToItsDevice"`.
+
 ## Living Specification — Product tranche seed after AUDIT-RULE-01 (W7-211)
 
 Issue [#826](https://github.com/sesquicadaver/MTDirector/issues/826) AC → module → tests:
