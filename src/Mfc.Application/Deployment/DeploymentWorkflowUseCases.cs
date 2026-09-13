@@ -644,7 +644,7 @@ public sealed class StartDeploymentUseCase
             finally
             {
                 // Crash mid-Execute leaves the lease live until TTL; a completed Start call expires it.
-                await ExpireOwnedLockAsync(node.Id, operation.Id, now, CancellationToken.None)
+                await ExpireOwnedLockAsync(node.Id, operation.Id, _clock.UtcNow, CancellationToken.None)
                     .ConfigureAwait(false);
             }
         }

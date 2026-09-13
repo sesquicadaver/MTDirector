@@ -173,6 +173,7 @@ public sealed class AuditDep01RecoveryLockTests
         DeploymentLock? after = await deployments.GetLockByNodeAsync(node.Id);
         Assert.NotNull(after);
         Assert.True(after!.IsExpired(T0));
+        Assert.True(after.ExpiresAtUtc >= after.AcquiredAtUtc);
     }
 
     private sealed class CountingDeploymentRuntime : IDeploymentRuntime

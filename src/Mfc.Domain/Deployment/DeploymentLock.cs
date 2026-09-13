@@ -109,6 +109,11 @@ public sealed class DeploymentLock
     public void Expire(DateTimeOffset nowUtc)
     {
         DateTimeOffset now = nowUtc.ToUniversalTime();
+        if (now < AcquiredAtUtc)
+        {
+            now = AcquiredAtUtc;
+        }
+
         HeartbeatAtUtc = now;
         ExpiresAtUtc = now;
     }
