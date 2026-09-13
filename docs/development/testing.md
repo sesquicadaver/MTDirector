@@ -1575,6 +1575,17 @@ Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryZonesA11yRegre
 
 
 
+
+## Living Specification — Product tranche seed after AUDIT-CTX-01 (W7-213)
+
+Issue [#830](https://github.com/sesquicadaver/MTDirector/issues/830) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed AUDIT-CAP-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-26 | `ProductTrancheSeedW7213LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditCap01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7213"`.
+
 ## Living Specification — AUDIT-CTX-01 node-switch mutation invalidation (W7-212)
 
 Issue [#829](https://github.com/sesquicadaver/MTDirector/issues/829) AC → module → tests:
