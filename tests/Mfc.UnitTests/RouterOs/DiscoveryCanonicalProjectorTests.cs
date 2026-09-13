@@ -1,5 +1,7 @@
+using Mfc.Application.Policies;
 using Mfc.Domain.Canonicalization;
 using Mfc.Domain.Inventory;
+using Mfc.Domain.Policy;
 using Mfc.RouterOs.Commands;
 using Mfc.RouterOs.Discovery;
 using Mfc.RouterOs.Session;
@@ -252,6 +254,131 @@ public sealed class DiscoveryCanonicalProjectorTests
     }
 
     [Fact]
+    public void FirewallMatchFieldsAreProjectedIntoConfiguration()
+    {
+        // AUDIT-CAP-01: ports, interfaces, lists, jump-target must enter canonical filter config.
+        CanonicalDeviceSnapshot snapshot = DiscoveryCanonicalProjector.Project(new DiscoveryCanonicalInput
+        {
+            Firewall = Firewall(ipv4Filter:
+            [
+                FilterRule(
+                    0,
+                    0,
+                    "input",
+                    "jump",
+                    known: new Dictionary<string, string>(StringComparer.Ordinal)
+                    {
+                        ["chain"] = "input",
+                        ["action"] = "jump",
+                        ["protocol"] = "tcp",
+                        ["src-port"] = "1024-65535",
+                        ["dst-port"] = "8729",
+                        ["in-interface"] = "ether1",
+                        ["in-interface-list"] = "WAN",
+                        ["src-address-list"] = "mgmt",
+                        ["dst-address-list"] = "api",
+                        ["jump-target"] = "mfc4.i.r.artifact",
+                        ["disabled"] = "false",
+                    },
+                    jumpTarget: "mfc4.i.r.artifact"),
+            ]),
+        });
+
+        CanonicalSection filter = Assert.Single(
+            snapshot.ConfigurationSections,
+            s => s.SectionId == CanonicalSectionIds.FirewallIpv4Filter);
+        IReadOnlyDictionary<string, string> props = filter.Records[0].Properties;
+        Assert.Equal("1024-65535", props["src-port"]);
+        Assert.Equal("8729", props["dst-port"]);
+        Assert.Equal("ether1", props["in-interface"]);
+        Assert.Equal("WAN", props["in-interface-list"]);
+        Assert.Equal("mgmt", props["src-address-list"]);
+        Assert.Equal("api", props["dst-address-list"]);
+        Assert.Equal("mfc4.i.r.artifact", props["jump-target"]);
+        Assert.False(props.ContainsKey("dynamic"));
+        Assert.False(props.ContainsKey("invalid"));
+        Assert.False(props.ContainsKey(".id"));
+    }
+
+    [Fact]
+    public void DstPortOnlyChangeChangesConfigurationHash()
+    {
+        CanonicalDeviceSnapshot before = DiscoveryCanonicalProjector.Project(new DiscoveryCanonicalInput
+        {
+            Firewall = Firewall(ipv4Filter:
+            [
+                FilterRule(
+                    0,
+                    0,
+                    "input",
+                    "accept",
+                    known: new Dictionary<string, string>(StringComparer.Ordinal)
+                    {
+                        ["chain"] = "input",
+                        ["action"] = "accept",
+                        ["protocol"] = "tcp",
+                        ["dst-port"] = "8729",
+                        ["disabled"] = "false",
+                    }),
+            ]),
+        });
+        CanonicalDeviceSnapshot after = DiscoveryCanonicalProjector.Project(new DiscoveryCanonicalInput
+        {
+            Firewall = Firewall(ipv4Filter:
+            [
+                FilterRule(
+                    0,
+                    0,
+                    "input",
+                    "accept",
+                    known: new Dictionary<string, string>(StringComparer.Ordinal)
+                    {
+                        ["chain"] = "input",
+                        ["action"] = "accept",
+                        ["protocol"] = "tcp",
+                        ["dst-port"] = "8730",
+                        ["disabled"] = "false",
+                    }),
+            ]),
+        });
+
+        Assert.NotEqual(before.ConfigurationHash.ToString(), after.ConfigurationHash.ToString());
+        Assert.Equal(before.ObservationHash.ToString(), after.ObservationHash.ToString());
+    }
+
+    [Fact]
+    public void ProjectedFilterRoundTripsDstPortIntoManagementPathMatchers()
+    {
+        CanonicalDeviceSnapshot snapshot = DiscoveryCanonicalProjector.Project(new DiscoveryCanonicalInput
+        {
+            Firewall = Firewall(ipv4Filter:
+            [
+                FilterRule(
+                    0,
+                    0,
+                    "input",
+                    "accept",
+                    known: new Dictionary<string, string>(StringComparer.Ordinal)
+                    {
+                        ["chain"] = "input",
+                        ["action"] = "accept",
+                        ["protocol"] = "tcp",
+                        ["dst-port"] = "8729",
+                        ["disabled"] = "false",
+                    }),
+            ]),
+        });
+
+        CanonicalSection filter = Assert.Single(
+            snapshot.ConfigurationSections,
+            s => s.SectionId == CanonicalSectionIds.FirewallIpv4Filter);
+        IReadOnlyList<ActualFilterRule> mapped = ActualFilterContextMapper.FromCanonicalFilter(
+            IpAddressFamily.IPv4,
+            filter.Records);
+        Assert.Equal("8729", Assert.Single(mapped).KnownMatchers["dst-port"]);
+    }
+
+    [Fact]
     public void RuntimeChangeChangesOnlyObservationHash()
     {
         CanonicalDeviceSnapshot a = DiscoveryCanonicalProjector.Project(new DiscoveryCanonicalInput
@@ -365,7 +492,9 @@ public sealed class DiscoveryCanonicalProjectorTests
         int staticOrdinal,
         string chain,
         string action,
-        IReadOnlyDictionary<string, string>? raw = null)
+        IReadOnlyDictionary<string, string>? raw = null,
+        Dictionary<string, string>? known = null,
+        string? jumpTarget = null)
         => new()
         {
             Family = IpAddressFamilyKind.Ipv4,
@@ -379,17 +508,17 @@ public sealed class DiscoveryCanonicalProjectorTests
             Comment = null,
             FwcOwnershipMarker = null,
             HasFwcOwnershipMarker = false,
-            Protocol = null,
+            Protocol = known is not null && known.TryGetValue("protocol", out string? protocol) ? protocol : null,
             SrcAddress = null,
             DstAddress = null,
             ConnectionState = null,
             HwOffload = null,
-            JumpTarget = null,
+            JumpTarget = jumpTarget,
             RejectWith = null,
             AddressList = null,
             AddressListTimeout = null,
             Invalid = null,
-            KnownProperties = EmptyBag(),
+            KnownProperties = known ?? EmptyBag(),
             RawProperties = raw ?? EmptyBag(),
         };
 

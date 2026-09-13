@@ -298,25 +298,72 @@ public static class DiscoveryCanonicalProjector
     {
         // Preserve RouterOS order by EffectiveOrdinal (AC#1). Dynamic rules stay in order too for observations
         // but configuration uses static rules only with static ordinal.
+        // AUDIT-CAP-01 / Canonical Snapshot §17.3–17.4: project the full supported matcher +
+        // action-specific set (ports, interfaces, lists, jump-target, …), not a truncated subset.
         List<CanonicalRecordInput> records = [];
         foreach (FirewallFilterRuleDiscovery rule in rules.Where(static r => !r.IsDynamic).OrderBy(static r => r.EffectiveOrdinal))
         {
-            records.Add(Record(Props(
-                ("ordinal", rule.StaticOrdinal?.ToString(CultureInfo.InvariantCulture)
-                             ?? rule.EffectiveOrdinal.ToString(CultureInfo.InvariantCulture)),
-                ("chain", rule.Chain),
-                ("action", rule.Action),
-                ("protocol", rule.Protocol),
-                ("src-address", rule.SrcAddress),
-                ("dst-address", rule.DstAddress),
-                ("connection-state", rule.ConnectionState),
-                ("disabled", rule.Disabled),
-                ("comment", rule.Comment))));
+            records.Add(Record(BuildFilterConfigurationProperties(rule)));
             CollectUnknown(unknown, sectionId, rule.RawProperties);
             // .id intentionally omitted — CanonicalPropertyRules also strips it.
         }
 
         return Section(sectionId, CanonicalDomain.Configuration, ordered: true, records);
+    }
+
+    /// <summary>
+    /// Builds configuration properties for one static filter rule: ordinal plus every
+    /// profile-known config field (matchers and action-specific), excluding observation-only
+    /// and excluded (.id / counters) keys.
+    /// </summary>
+    private static Dictionary<string, string> BuildFilterConfigurationProperties(FirewallFilterRuleDiscovery rule)
+    {
+        Dictionary<string, string> map = new(StringComparer.Ordinal)
+        {
+            ["ordinal"] = rule.StaticOrdinal?.ToString(CultureInfo.InvariantCulture)
+                          ?? rule.EffectiveOrdinal.ToString(CultureInfo.InvariantCulture),
+        };
+
+        foreach ((string key, string value) in rule.KnownProperties.OrderBy(static p => p.Key, StringComparer.Ordinal))
+        {
+            if (IsFilterObservationOnlyProperty(key)
+                || CanonicalPropertyRules.IsExcludedFromConfiguration(key))
+            {
+                continue;
+            }
+
+            map[key] = value;
+        }
+
+        // Typed extracts remain authoritative if KnownProperties was incomplete.
+        PutIfAbsent(map, "chain", rule.Chain);
+        PutIfAbsent(map, "action", rule.Action);
+        PutIfAbsent(map, "disabled", rule.Disabled);
+        PutIfAbsent(map, "comment", rule.Comment);
+        PutIfAbsent(map, "protocol", rule.Protocol);
+        PutIfAbsent(map, "src-address", rule.SrcAddress);
+        PutIfAbsent(map, "dst-address", rule.DstAddress);
+        PutIfAbsent(map, "connection-state", rule.ConnectionState);
+        PutIfAbsent(map, "hw-offload", rule.HwOffload);
+        PutIfAbsent(map, "jump-target", rule.JumpTarget);
+        PutIfAbsent(map, "reject-with", rule.RejectWith);
+        PutIfAbsent(map, "address-list", rule.AddressList);
+        PutIfAbsent(map, "address-list-timeout", rule.AddressListTimeout);
+        return map;
+    }
+
+    private static bool IsFilterObservationOnlyProperty(string key)
+        => string.Equals(key, "dynamic", StringComparison.Ordinal)
+           || string.Equals(key, "invalid", StringComparison.Ordinal);
+
+    private static void PutIfAbsent(Dictionary<string, string> map, string key, string? value)
+    {
+        if (value is null || map.ContainsKey(key))
+        {
+            return;
+        }
+
+        map[key] = value;
     }
 
     private static void ProjectRouting(

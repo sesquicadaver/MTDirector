@@ -169,6 +169,20 @@ public sealed class FirewallFilterDiscoveryResult
             Put(material, $"{prefix}.jump-target", rule.JumpTarget);
             Put(material, $"{prefix}.reject-with", rule.RejectWith);
             Put(material, $"{prefix}.address-list", rule.AddressList);
+            // AUDIT-CAP-01: include remaining profile-known matchers (ports, interfaces, lists, …).
+            foreach ((string key, string value) in rule.KnownProperties.OrderBy(static p => p.Key, StringComparer.Ordinal))
+            {
+                if (string.Equals(key, "dynamic", StringComparison.Ordinal)
+                    || string.Equals(key, "invalid", StringComparison.Ordinal)
+                    || string.Equals(key, ".id", StringComparison.Ordinal)
+                    || string.Equals(key, "bytes", StringComparison.Ordinal)
+                    || string.Equals(key, "packets", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                Put(material, $"{prefix}.{key}", value);
+            }
             // Never include RouterOsRowId or bytes/packets.
         }
     }
