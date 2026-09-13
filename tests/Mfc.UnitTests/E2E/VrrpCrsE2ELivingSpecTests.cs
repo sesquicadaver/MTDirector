@@ -571,7 +571,7 @@ public sealed class VrrpCrsE2ELivingSpecTests
             "input",
             ordinal,
             "accept",
-            comment: "fwc:guard:api-ssl",
+            comment: "mfc:guard:v1:0123456789abcdef:4:i:0",
             knownMatchers: new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 ["protocol"] = "tcp",
@@ -587,7 +587,7 @@ public sealed class VrrpCrsE2ELivingSpecTests
             "output",
             ordinal,
             "accept",
-            comment: "fwc:guard:api-ssl",
+            comment: "mfc:guard:v1:0123456789abcdef:4:o:0",
             knownMatchers: new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 ["protocol"] = "tcp",
