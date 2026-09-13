@@ -112,6 +112,33 @@ internal static class RouterOsCaptureIntegrationFixtures
         CapabilityEvaluationResult capabilities = CapabilityProfileEvaluator.Evaluate(system);
         DateTimeOffset now = new(2026, 8, 24, 0, 0, 0, TimeSpan.Zero);
 
+        Dictionary<RosReadCommandId, RosReadCommandResult> commands = new();
+        foreach (RosReadCommandId commandId in RouterOsDiscoveryCommandCatalog.All)
+        {
+            RosReadCommandDefinition definition = RosReadCommandRegistry.Get(commandId);
+            if (definition.Requirement == RosRequirement.Required)
+            {
+                commands[commandId] = Ok(commandId);
+            }
+        }
+
+        commands[RosReadCommandId.SystemIdentity] = Ok(
+            RosReadCommandId.SystemIdentity,
+            Row(("name", "chr-pilot")));
+        commands[RosReadCommandId.SystemResource] = Ok(
+            RosReadCommandId.SystemResource,
+            Row(
+                ("version", "7.16.2"),
+                ("architecture-name", "x86_64"),
+                ("board-name", "CHR"),
+                ("uptime", "1h")));
+        commands[RosReadCommandId.IpServices] = Ok(
+            RosReadCommandId.IpServices,
+            Row(("name", "api-ssl"), ("port", "8729"), ("disabled", "false")));
+        commands[RosReadCommandId.Interfaces] = Ok(
+            RosReadCommandId.Interfaces,
+            Row(("name", "ether1"), ("type", "ether")));
+
         return new RouterOsDiscoveryDataset
         {
             System = system,
@@ -122,12 +149,7 @@ internal static class RouterOsCaptureIntegrationFixtures
             BridgeSwitch = bridge,
             PacketPathTopology = null,
             Capabilities = capabilities,
-            CommandResults = new Dictionary<RosReadCommandId, RosReadCommandResult>
-            {
-                [RosReadCommandId.SystemIdentity] = Ok(
-                    RosReadCommandId.SystemIdentity,
-                    Row(("name", "chr-pilot"))),
-            },
+            CommandResults = commands,
             StartedAtUtc = now,
             CompletedAtUtc = now.AddSeconds(1),
         };
