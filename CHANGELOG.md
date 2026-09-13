@@ -13,6 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-212** ([#829](https://github.com/sesquicadaver/MTDirector/issues/829)): AUDIT-CTX-01 invalidate Zones/Onboarding/Deployment mutation context on node switch (`AuditCtx01NodeSwitchInvalidateW7212LivingSpecTests`). **§3.C NEXT = W7-213 (#830)**.
+
 - **W7-211** ([#826](https://github.com/sesquicadaver/MTDirector/issues/826)): Seed next PLAN-26 row after AUDIT-RULE-01 → AUDIT-CTX-01 (`ProductTrancheSeedW7211LivingSpecTests`). **§3.C NEXT = W7-212 (#829)**.
 
 - **W7-210** ([#825](https://github.com/sesquicadaver/MTDirector/issues/825)): AUDIT-RULE-01 Update rule predicate / logging / ExceptionEligible round-trip (`AuditRule01PredicateRoundTripW7210LivingSpecTests`). **§3.C NEXT = W7-211 (#826)**.

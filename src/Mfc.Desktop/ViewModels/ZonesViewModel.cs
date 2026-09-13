@@ -16,6 +16,9 @@ public sealed partial class ZonesViewModel : ObservableObject, IDisposable
     private readonly InventoryTreeViewModel _inventory;
     private bool _disposed;
 
+    /// <summary>Resolved owner NodeId for Bindings/SelectedBinding; cleared on cross-node selection.</summary>
+    private Guid? _mutationOwnerNodeId;
+
     public ZonesViewModel(
         IZonePanelService zones,
         IControllerConnectionService connection,
@@ -111,8 +114,10 @@ public sealed partial class ZonesViewModel : ObservableObject, IDisposable
             }
 
             Guid? nodeId = TryGetSelectedNodeId();
+            _mutationOwnerNodeId = nodeId;
             Bindings.Clear();
             ResolveResults.Clear();
+            SelectedBinding = null;
             if (nodeId is Guid id)
             {
                 IReadOnlyList<NodeZoneBindingListItem> bindings = await _zones.ListBindingsAsync(id, ct)
@@ -439,6 +444,8 @@ public sealed partial class ZonesViewModel : ObservableObject, IDisposable
     {
         if (e.PropertyName is nameof(InventoryTreeViewModel.SelectedNode))
         {
+            // Mutation invalidation must run synchronously (unit tests / non-UI threads).
+            SyncMutationOwnerFromSelection();
             if (Dispatcher.UIThread.CheckAccess())
             {
                 OnPropertyChanged(nameof(SelectedNodeHint));
@@ -453,6 +460,34 @@ public sealed partial class ZonesViewModel : ObservableObject, IDisposable
                 });
             }
         }
+    }
+
+    /// <summary>
+    /// AUDIT-CTX-01: when resolved owner NodeId changes, drop node-scoped binding mutation state.
+    /// Same-owner Node↔Device reselection keeps Bindings. First owner assignment does not wipe state.
+    /// </summary>
+    private void SyncMutationOwnerFromSelection()
+    {
+        Guid? nextOwner = TryGetSelectedNodeId();
+        if (nextOwner == _mutationOwnerNodeId)
+        {
+            return;
+        }
+
+        if (_mutationOwnerNodeId is not null)
+        {
+            InvalidateNodeScopedMutationContext();
+        }
+
+        _mutationOwnerNodeId = nextOwner;
+    }
+
+    private void InvalidateNodeScopedMutationContext()
+    {
+        Bindings.Clear();
+        SelectedBinding = null;
+        ResolveResults.Clear();
+        BindingValuesText = string.Empty;
     }
 
     public void Dispose()

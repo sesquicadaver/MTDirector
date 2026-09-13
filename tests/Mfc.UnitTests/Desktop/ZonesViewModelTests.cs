@@ -129,6 +129,121 @@ public sealed class ZonesViewModelTests
         Assert.Contains("Select a Device", vm.ErrorText, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public async Task SwitchingToDifferentNodeClearsBindingsAndBlocksStaleDelete()
+    {
+        Guid nodeA = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid nodeB = Guid.Parse("22222222-3333-4444-5555-666666666666");
+        RecordingZones panel = new();
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        InventoryNodeViewModel site = BuildTwoNodeSite(nodeA, nodeB);
+        inventory.Roots.Add(site);
+        using ZonesViewModel vm = new(panel, connection, inventory);
+        inventory.SelectedNode = site.Children[0];
+        ZoneDefinitionListItem zone = new()
+        {
+            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            Key = "lan",
+            Name = "LAN",
+            OwnerScopeText = "Company",
+            Description = null,
+            RowVersion = 1,
+        };
+        vm.Zones.Add(zone);
+        vm.SelectedZone = zone;
+        NodeZoneBindingListItem binding = new()
+        {
+            Id = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff"),
+            ZoneId = zone.Id,
+            KindText = "SingleInterface",
+            ValuesText = "ether1",
+            AnalysisStale = false,
+            RowVersion = 1,
+        };
+        vm.Bindings.Add(binding);
+        vm.SelectedBinding = binding;
+
+        inventory.SelectedNode = site.Children[1];
+
+        Assert.Empty(vm.Bindings);
+        Assert.Null(vm.SelectedBinding);
+        Assert.Equal(zone.Id, vm.SelectedZone?.Id);
+
+        await vm.DeleteBindingCommand.ExecuteAsync(null);
+
+        Assert.Equal(0, panel.DeleteBindingCalls);
+        Assert.Contains("Select a binding", vm.ErrorText, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void SwitchingNodeToItsDeviceKeepsBindings()
+    {
+        Guid nodeA = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid deviceA = Guid.Parse("99999999-8888-7777-6666-555555555555");
+        Guid nodeB = Guid.Parse("22222222-3333-4444-5555-666666666666");
+        RecordingZones panel = new();
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        InventoryNodeViewModel site = BuildTwoNodeSite(nodeA, nodeB, deviceA);
+        inventory.Roots.Add(site);
+        using ZonesViewModel vm = new(panel, connection, inventory);
+        inventory.SelectedNode = site.Children[0];
+        NodeZoneBindingListItem binding = new()
+        {
+            Id = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff"),
+            ZoneId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            KindText = "SingleInterface",
+            ValuesText = "ether1",
+            AnalysisStale = false,
+            RowVersion = 1,
+        };
+        vm.Bindings.Add(binding);
+        vm.SelectedBinding = binding;
+
+        inventory.SelectedNode = site.Children[0].Children[0];
+
+        Assert.Same(binding, Assert.Single(vm.Bindings));
+        Assert.Same(binding, vm.SelectedBinding);
+    }
+
+    private static InventoryNodeViewModel BuildTwoNodeSite(Guid nodeA, Guid nodeB, Guid? deviceUnderA = null)
+    {
+        List<InventoryTreeItem> nodeAChildren = [];
+        if (deviceUnderA is Guid deviceId)
+        {
+            nodeAChildren.Add(new InventoryTreeItem
+            {
+                Kind = InventoryTreeKind.Device,
+                Id = deviceId,
+                DisplayName = "chr-a",
+            });
+        }
+
+        return new InventoryNodeViewModel(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Site,
+            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            DisplayName = "LAB",
+            Children =
+            [
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeA,
+                    DisplayName = "node-a",
+                    Children = nodeAChildren,
+                },
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeB,
+                    DisplayName = "node-b",
+                },
+            ],
+        });
+    }
+
     private sealed class RecordingZones : IZonePanelService
     {
         public int UpdateCalls { get; private set; }
@@ -136,6 +251,8 @@ public sealed class ZonesViewModelTests
         public int ResolveDeviceCalls { get; private set; }
 
         public int ResolveNodeCalls { get; private set; }
+
+        public int DeleteBindingCalls { get; private set; }
 
         public Guid LastUpdateZoneId { get; private set; }
 
@@ -207,7 +324,10 @@ public sealed class ZonesViewModelTests
         public Task DeleteBindingAsync(
             NodeZoneBindingListItem binding,
             CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
+        {
+            DeleteBindingCalls++;
+            return Task.CompletedTask;
+        }
 
         public Task<IReadOnlyList<ZoneResolveResultListItem>> ResolveForNodeAsync(
             Guid nodeId,
