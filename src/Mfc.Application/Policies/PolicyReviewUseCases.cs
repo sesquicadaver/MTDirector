@@ -18,8 +18,8 @@ public sealed class DiffPolicyRevisionsQuery
 }
 
 /// <summary>
-/// Loads two revisions and returns UUID-keyed semantic diff + risk (M2-18).
-/// Uses <see cref="PolicyEvidenceSignals.None"/>; no RouterOS.
+/// Loads two revisions and returns UUID-keyed semantic diff + risk (M2-18 / AUDIT-DIFF-01).
+/// Sets <see cref="PolicyEvidenceSignals.DefaultDispositionChanged"/> from chain contracts; no RouterOS.
 /// </summary>
 public sealed class DiffPolicyRevisionsUseCase
 {
@@ -87,11 +87,16 @@ public sealed class DiffPolicyRevisionsUseCase
             beforeSvc,
             afterSvc,
             beforeZones,
-            afterZones);
+            afterZones,
+            before.Value.Document.ChainContracts,
+            after.Value.Document.ChainContracts);
+        bool dispositionChanged = diff.SemanticClasses.Contains(
+            PolicyEvidenceAnalysisCodes.ClassDefaultDisposition,
+            StringComparer.Ordinal);
         PolicyRiskResult risk = PolicyRiskClassifier.Classify(
             diff,
             [],
-            PolicyEvidenceSignals.None,
+            new PolicyEvidenceSignals { DefaultDispositionChanged = dispositionChanged },
             before.Value.Document.Rules,
             after.Value.Document.Rules);
 
