@@ -1591,6 +1591,16 @@ Issue [#849](https://github.com/sesquicadaver/MTDirector/issues/849) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~AuditDiff01SemanticReachabilityW7222"`.
 
+## Living Specification — Product tranche seed after AUDIT-DIFF-01 (W7-223)
+
+Issue [#850](https://github.com/sesquicadaver/MTDirector/issues/850) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed AUDIT-GUARD-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-26 | `ProductTrancheSeedW7223LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditGuard01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7223"`.
+
 ## Living Specification — Product tranche seed after AUDIT-AN-02 (W7-221)
 
 Issue [#846](https://github.com/sesquicadaver/MTDirector/issues/846) AC → module → tests:

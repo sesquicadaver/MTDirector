@@ -1,7 +1,7 @@
 # PLAN-26 — Code-audit remediation tranche (`11cb746`)
 
 **Date:** 2026-09-11 (inventory **DONE** 2026-09-11)  
-**Status:** Seed **W7-205 DONE**; Inventory **DONE** (W7-206); **AUDIT-RULE-01 DONE** (W7-210); seed **W7-211 DONE**; **AUDIT-CTX-01 DONE** (W7-212); seed **W7-213 DONE**; **AUDIT-CAP-01 DONE** (W7-214); seed **W7-215 DONE**; **AUDIT-CAP-02 DONE** (W7-216); seed **W7-217 DONE**; **AUDIT-AN-01 DONE** (W7-218); seed **W7-219 DONE**; **AUDIT-AN-02 DONE** (W7-220); seed **W7-221 DONE**; **AUDIT-DIFF-01 DONE** (W7-222); next **W7-223 (#850)** seed → AUDIT-GUARD-01  
+**Status:** Seed **W7-205 DONE**; Inventory **DONE** (W7-206); **AUDIT-RULE-01 DONE** (W7-210); seed **W7-211 DONE**; **AUDIT-CTX-01 DONE** (W7-212); seed **W7-213 DONE**; **AUDIT-CAP-01 DONE** (W7-214); seed **W7-215 DONE**; **AUDIT-CAP-02 DONE** (W7-216); seed **W7-217 DONE**; **AUDIT-AN-01 DONE** (W7-218); seed **W7-219 DONE**; **AUDIT-AN-02 DONE** (W7-220); seed **W7-221 DONE**; **AUDIT-DIFF-01 DONE** (W7-222); seed **W7-223 DONE**; next **W7-224 (#855)** AUDIT-GUARD-01  
 **Audit SHA:** `11cb746de60191e6eb83e52013f7f544306d5c9d`  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md)  
 **Predecessor:** PLAN-25 Desktop Inventory/Zones/Add-router AutomationProperties **COMPLETE**  
@@ -37,8 +37,8 @@ Normative audit §§01–19 mapped to ranked IDs below. First wave (issue body):
 | 4 | **AUDIT-CAP-02** | Required-section read failure can complete snapshot (§02) | `RouterOsDiscoveryReader`, `SnapshotCaptureResultBuilder`, `RequiredSectionCaptureGate` | **W7-216 (#837) DONE**; seed **W7-217 (#838) DONE** |
 | 5 | **AUDIT-AN-01** | Validate/Record skip full analysis + mandatory tests (§04); Compose→Record INFO (§13) | `ValidateRevisionUseCase`, `PolicyPanelService`, `PolicyApprovalGate` | **W7-218 DONE (#841)**; seed **W7-219 DONE (#842)** |
 | 6 | **AUDIT-AN-02** | Analysis fingerprint CAS uses client value (§05) | `PoliciesViewModel`, `CompileNodeFilterArtifactsUseCase` | **W7-220 (#845) DONE**; seed **W7-221 (#846) DONE** |
-| 7 | **AUDIT-DIFF-01** | Semantic policy diff can hide reachability change (§06) | `PolicyRevisionDiffer` | **W7-222 (#849) DONE**; seed **W7-223 (#850)** |
-| 8 | **AUDIT-GUARD-01** | ManagementPath incomplete guard contract (§14) | `ManagementPathAnalysis`, `ActualFilterMarker` | seed after AUDIT-DIFF-01 |
+| 7 | **AUDIT-DIFF-01** | Semantic policy diff can hide reachability change (§06) | `PolicyRevisionDiffer` | **W7-222 (#849) DONE**; seed **W7-223 (#850) DONE** |
+| 8 | **AUDIT-GUARD-01** | ManagementPath incomplete guard contract (§14) | `ManagementPathAnalysis`, `ActualFilterMarker` | **W7-224 (#855)**; seed **W7-225 (#856)** |
 | 9 | **AUDIT-DEP-01** | Background recovery vs active deployment (§07); missing durable lock/journal wiring | `RecoverNonterminalOperationsJobUseCase`, `DeploymentWorkflowUseCases` | seed after AUDIT-GUARD-01 |
 | 10 | **AUDIT-DEP-02** | Watchdog uses Controller clock + fixed TTL (§08); cleanup result ignored (§09) | `RouterOsDeploymentRuntime`, `RecoverDeploymentUseCase` | seed after AUDIT-DEP-01 |
 | 11 | **AUDIT-DEP-03** | Fake VRRP reachability/traffic facts (§15) | `RouterOsVrrpMemberDeploymentRuntime` | seed after AUDIT-DEP-02 |
@@ -70,8 +70,9 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/c
 14. **W7-220 DONE** — AUDIT-AN-02 controller fingerprint CAS.
 15. **W7-221 DONE** — seeded **W7-222** / **W7-223**.
 16. **W7-222 DONE** — AUDIT-DIFF-01 semantic reachability diff.
-17. Execute ranks 8…14 atomically starting at seed **W7-223** → **AUDIT-GUARD-01**.
+17. **W7-223 DONE** — seeded **W7-224** / **W7-225**.
+18. Execute ranks 8…14 atomically starting at **W7-224** → **AUDIT-GUARD-01**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-223 (#850)** — Seed next PLAN-26 row after AUDIT-DIFF-01 → AUDIT-GUARD-01.
+**§3.C NEXT = W7-224 (#855)** — AUDIT-GUARD-01 — ManagementPath must enforce complete guard contract.
