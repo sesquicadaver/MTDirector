@@ -24,7 +24,8 @@ public interface IDeploymentRollbackDeviceRuntime
 
     Task<RouterPingResult> ProbeAsync(DeploymentProbe probe, CancellationToken cancellationToken = default);
 
-    Task DisarmAndCleanupWatchdogAsync(CancellationToken cancellationToken = default);
+    Task<DeploymentWatchdogExecutionResult> DisarmAndCleanupWatchdogAsync(
+        CancellationToken cancellationToken = default);
 
     Task<(IReadOnlyList<string> SchedulerNames, IReadOnlyDictionary<string, bool> SchedulerDisabled)>
         ReadWatchdogSchedulerFactsAsync(CancellationToken cancellationToken = default);
@@ -213,7 +214,16 @@ public static class ExecuteDeploymentRollbackUseCase
                 // Keep fresh session scoped; I/O already completed via runtime probes.
                 _ = fresh;
 
-                await runtime.DisarmAndCleanupWatchdogAsync(cancellationToken).ConfigureAwait(false);
+                DeploymentWatchdogExecutionResult cleaned = await runtime
+                    .DisarmAndCleanupWatchdogAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                if (!cleaned.Succeeded)
+                {
+                    timeline.Add($"watchdog-cleanup-failed:{deviceId.Value:D}:{cleaned.Code}");
+                    MarkRecovery(operation, nowUtc);
+                    return Fail(operation.State, cleaned.Code, timeline, usedFresh);
+                }
+
                 timeline.Add($"watchdog-cleanup:{deviceId.Value:D}");
             }
 
@@ -363,7 +373,31 @@ public static class RecoverDeploymentUseCase
         {
             foreach (IDeploymentRollbackDeviceRuntime runtime in devices)
             {
-                await runtime.DisarmAndCleanupWatchdogAsync(cancellationToken).ConfigureAwait(false);
+                DeploymentWatchdogExecutionResult cleaned = await runtime
+                    .DisarmAndCleanupWatchdogAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                if (!cleaned.Succeeded)
+                {
+                    timeline.Add($"watchdog-cleanup-failed:{runtime.DeviceId.Value:D}:{cleaned.Code}");
+                    if (!operation.IsTerminal
+                        && DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.RecoveryRequired))
+                    {
+                        operation.EnsureTransition(
+                            DeploymentOperationState.RecoveryRequired,
+                            nowUtc,
+                            cleaned.Code);
+                    }
+
+                    return new DeploymentRecoveryResult
+                    {
+                        Succeeded = false,
+                        Action = DeploymentRecoveryAction.RecoveryRequired,
+                        State = operation.State,
+                        ErrorCode = cleaned.Code,
+                        Timeline = timeline,
+                    };
+                }
+
                 timeline.Add($"watchdog-cleanup:{runtime.DeviceId.Value:D}");
             }
 
@@ -391,7 +425,31 @@ public static class RecoverDeploymentUseCase
         {
             foreach (IDeploymentRollbackDeviceRuntime runtime in devices)
             {
-                await runtime.DisarmAndCleanupWatchdogAsync(cancellationToken).ConfigureAwait(false);
+                DeploymentWatchdogExecutionResult cleaned = await runtime
+                    .DisarmAndCleanupWatchdogAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                if (!cleaned.Succeeded)
+                {
+                    timeline.Add($"watchdog-cleanup-failed:{runtime.DeviceId.Value:D}:{cleaned.Code}");
+                    if (!operation.IsTerminal
+                        && DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.RecoveryRequired))
+                    {
+                        operation.EnsureTransition(
+                            DeploymentOperationState.RecoveryRequired,
+                            nowUtc,
+                            cleaned.Code);
+                    }
+
+                    return new DeploymentRecoveryResult
+                    {
+                        Succeeded = false,
+                        Action = DeploymentRecoveryAction.RecoveryRequired,
+                        State = operation.State,
+                        ErrorCode = cleaned.Code,
+                        Timeline = timeline,
+                    };
+                }
+
                 timeline.Add($"watchdog-cleanup:{runtime.DeviceId.Value:D}");
             }
 

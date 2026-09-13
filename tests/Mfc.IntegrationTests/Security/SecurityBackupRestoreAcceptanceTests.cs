@@ -466,8 +466,13 @@ public sealed class SecurityBackupRestoreAcceptanceTests
         public Task<RouterPingResult> ProbeAsync(DeploymentProbe probe, CancellationToken cancellationToken = default)
             => Task.FromResult(new RouterPingResult { Outcome = RouterPingOutcome.Pass, Sent = 3, Received = 3 });
 
-        public Task DisarmAndCleanupWatchdogAsync(CancellationToken cancellationToken = default)
-            => Task.CompletedTask;
+        public Task<DeploymentWatchdogExecutionResult> DisarmAndCleanupWatchdogAsync(CancellationToken cancellationToken = default)
+            => Task.FromResult(new DeploymentWatchdogExecutionResult
+        {
+            Succeeded = true,
+            Code = "OK",
+            Paths = [],
+        });
 
         public Task<(IReadOnlyList<string> SchedulerNames, IReadOnlyDictionary<string, bool> SchedulerDisabled)>
             ReadWatchdogSchedulerFactsAsync(CancellationToken cancellationToken = default)

@@ -234,6 +234,9 @@ internal sealed class FakeRuntime : IStandaloneDeploymentDeviceRuntime, IAsyncDi
             SchedulerNames = _channel.SchedulerNames().ToArray(),
         });
 
+    public Task<DateTimeOffset> ReadRouterClockAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(new DateTimeOffset(2026, 9, 13, 15, 0, 0, TimeSpan.Zero));
+
     public ValueTask DisposeAsync() => _session.DisposeAsync();
 }
 
@@ -472,8 +475,13 @@ internal sealed class ScriptedRollbackRuntime : IDeploymentRollbackDeviceRuntime
             Received = ProbeFails ? 0 : 3,
         });
 
-    public Task DisarmAndCleanupWatchdogAsync(CancellationToken cancellationToken = default)
-        => Task.CompletedTask;
+    public Task<DeploymentWatchdogExecutionResult> DisarmAndCleanupWatchdogAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(new DeploymentWatchdogExecutionResult
+        {
+            Succeeded = true,
+            Code = "OK",
+            Paths = [],
+        });
 
     public Task<(IReadOnlyList<string> SchedulerNames, IReadOnlyDictionary<string, bool> SchedulerDisabled)>
         ReadWatchdogSchedulerFactsAsync(CancellationToken cancellationToken = default)

@@ -299,6 +299,38 @@ public sealed class DeploymentRollbackRecoveryLivingSpecTests
     }
 
     [Fact]
+    public async Task RollbackFailsWhenWatchdogCleanupIncomplete()
+    {
+        (DeploymentPlan plan, DeploymentOperation operation, ScriptedRollbackRuntime runtime) = SeedActivatedNew();
+        runtime.CleanupFails = true;
+        DeploymentRollbackResult result = await ExecuteDeploymentRollbackUseCase.ExecuteAsync(
+            plan,
+            operation,
+            [runtime],
+            T0.AddMinutes(1));
+        Assert.False(result.Succeeded);
+        Assert.Equal(DeploymentCodes.WatchdogCleanupIncomplete, result.ErrorCode);
+        Assert.Equal(DeploymentOperationState.RecoveryRequired, result.State);
+    }
+
+    [Fact]
+    public async Task RecoverFailsWhenWatchdogCleanupIncomplete()
+    {
+        (DeploymentPlan plan, DeploymentOperation operation, ScriptedRollbackRuntime runtime) = SeedActivatedNew();
+        runtime.CleanupFails = true;
+        DeploymentRecoveryResult result = await RecoverDeploymentUseCase.ExecuteAsync(
+            plan,
+            operation,
+            [runtime],
+            activationStarted: true,
+            T0.AddMinutes(1));
+        Assert.False(result.Succeeded);
+        Assert.Equal(DeploymentRecoveryAction.ControllerRollback, result.Action);
+        Assert.Equal(DeploymentCodes.WatchdogCleanupIncomplete, result.ErrorCode);
+        Assert.Equal(DeploymentOperationState.RecoveryRequired, result.State);
+    }
+
+    [Fact]
     public async Task RollbackRejectsCommittedOperation()
     {
         Node node = DeploymentTestFactory.RouterWithDevice(out _);
@@ -449,6 +481,8 @@ public sealed class DeploymentRollbackRecoveryLivingSpecTests
 
         public bool ProbeFails { get; set; }
 
+        public bool CleanupFails { get; set; }
+
         public Task<IReadOnlyDictionary<string, string>> ReadAnchorJumpsAsync(
             CancellationToken cancellationToken = default)
             => Task.FromResult((IReadOnlyDictionary<string, string>)new Dictionary<string, string>(Jumps, StringComparer.Ordinal));
@@ -498,8 +532,15 @@ public sealed class DeploymentRollbackRecoveryLivingSpecTests
                 Received = ProbeFails ? 0 : 3,
             });
 
-        public Task DisarmAndCleanupWatchdogAsync(CancellationToken cancellationToken = default)
-            => Task.CompletedTask;
+        public Task<DeploymentWatchdogExecutionResult> DisarmAndCleanupWatchdogAsync(
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(new DeploymentWatchdogExecutionResult
+            {
+                Succeeded = !CleanupFails,
+                Code = CleanupFails ? DeploymentCodes.WatchdogCleanupIncomplete : "OK",
+                Paths = [],
+                Error = CleanupFails ? "scheduler remnant" : null,
+            });
 
         public Task<(IReadOnlyList<string> SchedulerNames, IReadOnlyDictionary<string, bool> SchedulerDisabled)>
             ReadWatchdogSchedulerFactsAsync(CancellationToken cancellationToken = default)

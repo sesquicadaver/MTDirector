@@ -140,6 +140,9 @@ public sealed class RouterOsDeploymentRuntimeLivingSpecTests
         public Task<DeploymentSystemNameFacts> ReadSystemNamesAsync(CancellationToken cancellationToken = default)
             => runtime.ReadSystemNamesAsync(cancellationToken);
 
+        public Task<DateTimeOffset> ReadRouterClockAsync(CancellationToken cancellationToken = default)
+            => Task.FromResult(new DateTimeOffset(2026, 9, 13, 15, 0, 0, TimeSpan.Zero));
+
         public Task<IReadOnlyDictionary<string, string>> ReadAnchorJumpsAsync(CancellationToken cancellationToken = default)
         {
             Dictionary<string, string> jumps = plan.OldAnchorTargets
@@ -172,8 +175,13 @@ public sealed class RouterOsDeploymentRuntimeLivingSpecTests
                 cancellationToken);
         }
 
-        public Task DisarmAndCleanupWatchdogAsync(CancellationToken cancellationToken = default)
-            => Task.CompletedTask;
+        public Task<DeploymentWatchdogExecutionResult> DisarmAndCleanupWatchdogAsync(CancellationToken cancellationToken = default)
+            => Task.FromResult(new DeploymentWatchdogExecutionResult
+            {
+                Succeeded = true,
+                Code = "OK",
+                Paths = [],
+            });
 
         public Task<(IReadOnlyList<string> SchedulerNames, IReadOnlyDictionary<string, bool> SchedulerDisabled)>
             ReadWatchdogSchedulerFactsAsync(CancellationToken cancellationToken = default)
