@@ -12,6 +12,7 @@ public static class SnapshotCaptureResultBuilder
     public static SnapshotCaptureResult Build(RouterOsDiscoveryDataset dataset)
     {
         ArgumentNullException.ThrowIfNull(dataset);
+        RequiredSectionCaptureGate.EnsureRequiredSucceeded(dataset.CommandResults);
 
         CanonicalDeviceSnapshot canonical = DiscoveryCanonicalProjector.Project(new DiscoveryCanonicalInput
         {

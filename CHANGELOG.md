@@ -13,6 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-216** ([#837](https://github.com/sesquicadaver/MTDirector/issues/837)): AUDIT-CAP-02 — required discovery section failures fail closed via `RequiredSectionCaptureGate` (`AuditCap02RequiredSectionFailClosedW7216LivingSpecTests`). **§3.C NEXT = W7-217 (#838)**.
+
 - **W7-215** ([#834](https://github.com/sesquicadaver/MTDirector/issues/834)): Seed next PLAN-26 row after AUDIT-CAP-01 → AUDIT-CAP-02 (`ProductTrancheSeedW7215LivingSpecTests`). **§3.C NEXT = W7-216 (#837)**.
 
 - **W7-214** ([#833](https://github.com/sesquicadaver/MTDirector/issues/833)): AUDIT-CAP-01 — `DiscoveryCanonicalProjector` projects firewall match fields into canonical filter (`AuditCap01CanonicalFilterMatchFieldsW7214LivingSpecTests`). **§3.C NEXT = W7-215 (#834)**.

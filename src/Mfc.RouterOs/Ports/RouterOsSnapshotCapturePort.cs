@@ -54,6 +54,10 @@ public sealed class RouterOsSnapshotCapturePort : ISnapshotCapturePort
         {
             return SnapshotCaptureResultBuilder.Build(stable.Dataset);
         }
+        catch (RequiredSectionCaptureException ex)
+        {
+            throw new InvalidOperationException(ex.Message, ex);
+        }
         catch (RawSnapshotTooLargeException ex)
         {
             throw new InvalidOperationException($"SNAPSHOT_TOO_LARGE: {ex.Message}", ex);

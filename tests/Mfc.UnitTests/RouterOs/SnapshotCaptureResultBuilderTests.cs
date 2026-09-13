@@ -36,6 +36,17 @@ public sealed class SnapshotCaptureResultBuilderTests
         SnapshotCaptureResult capture = SnapshotCaptureResultBuilder.Build(dataset);
         Assert.Equal(dataset.Capabilities.CapabilityHash, capture.CapabilityHash);
     }
+
+    [Fact]
+    public void BuildRejectsFailedRequiredFirewallFilter()
+    {
+        // AUDIT-CAP-02: required !trap must not become a completed empty filter snapshot.
+        RouterOsDiscoveryDataset dataset = RouterOsCaptureTestFixtures.WithFailedRequired(RosReadCommandId.Ipv4Filter);
+        RequiredSectionCaptureException ex = Assert.Throws<RequiredSectionCaptureException>(() =>
+            SnapshotCaptureResultBuilder.Build(dataset));
+        Assert.StartsWith(RequiredSectionCaptureGate.FailureCodePrefix, ex.Message, StringComparison.Ordinal);
+        Assert.Contains("Ipv4Filter", ex.Message, StringComparison.Ordinal);
+    }
 }
 
 internal static class RouterOsCaptureTestFixtures
@@ -80,25 +91,33 @@ internal static class RouterOsCaptureTestFixtures
         CapabilityEvaluationResult capabilities = CapabilityProfileEvaluator.Evaluate(system);
         DateTimeOffset now = new(2026, 8, 24, 0, 0, 0, TimeSpan.Zero);
 
-        Dictionary<RosReadCommandId, RosReadCommandResult> commands = new()
+        Dictionary<RosReadCommandId, RosReadCommandResult> commands = new();
+        foreach (RosReadCommandId commandId in RouterOsDiscoveryCommandCatalog.All)
         {
-            [RosReadCommandId.SystemIdentity] = Ok(
-                RosReadCommandId.SystemIdentity,
-                Row(("name", system.Identity.Name ?? "chr-pilot"))),
-            [RosReadCommandId.SystemResource] = Ok(
-                RosReadCommandId.SystemResource,
-                Row(
-                    ("version", system.Resource.Version ?? "7.16.2"),
-                    ("architecture-name", system.Resource.ArchitectureName ?? "x86_64"),
-                    ("board-name", system.Resource.BoardName ?? "CHR"),
-                    ("uptime", system.Resource.Uptime ?? "1h"))),
-            [RosReadCommandId.IpServices] = Ok(
-                RosReadCommandId.IpServices,
-                Row(("name", "api-ssl"), ("port", "8729"), ("disabled", "false"))),
-            [RosReadCommandId.Interfaces] = Ok(
-                RosReadCommandId.Interfaces,
-                Row(("name", "ether1"), ("type", "ether"), ("running", "true"))),
-        };
+            RosReadCommandDefinition definition = RosReadCommandRegistry.Get(commandId);
+            if (definition.Requirement == RosRequirement.Required)
+            {
+                commands[commandId] = Ok(commandId);
+            }
+        }
+
+        // Overlay typed fixture rows used by projection / capability evaluation.
+        commands[RosReadCommandId.SystemIdentity] = Ok(
+            RosReadCommandId.SystemIdentity,
+            Row(("name", system.Identity.Name ?? "chr-pilot")));
+        commands[RosReadCommandId.SystemResource] = Ok(
+            RosReadCommandId.SystemResource,
+            Row(
+                ("version", system.Resource.Version ?? "7.16.2"),
+                ("architecture-name", system.Resource.ArchitectureName ?? "x86_64"),
+                ("board-name", system.Resource.BoardName ?? "CHR"),
+                ("uptime", system.Resource.Uptime ?? "1h")));
+        commands[RosReadCommandId.IpServices] = Ok(
+            RosReadCommandId.IpServices,
+            Row(("name", "api-ssl"), ("port", "8729"), ("disabled", "false")));
+        commands[RosReadCommandId.Interfaces] = Ok(
+            RosReadCommandId.Interfaces,
+            Row(("name", "ether1"), ("type", "ether"), ("running", "true")));
 
         return new RouterOsDiscoveryDataset
         {
@@ -113,6 +132,28 @@ internal static class RouterOsCaptureTestFixtures
             CommandResults = commands,
             StartedAtUtc = now,
             CompletedAtUtc = now.AddSeconds(1),
+        };
+    }
+
+    /// <summary>Clones <see cref="MinimalChrDataset"/> with one required command marked failed.</summary>
+    public static RouterOsDiscoveryDataset WithFailedRequired(RosReadCommandId failedCommand)
+    {
+        RouterOsDiscoveryDataset baseline = MinimalChrDataset();
+        Dictionary<RosReadCommandId, RosReadCommandResult> commands = new(baseline.CommandResults);
+        commands[failedCommand] = Failed(failedCommand);
+        return new RouterOsDiscoveryDataset
+        {
+            System = baseline.System,
+            Interfaces = baseline.Interfaces,
+            Firewall = baseline.Firewall,
+            Routing = baseline.Routing,
+            Vrrp = baseline.Vrrp,
+            BridgeSwitch = baseline.BridgeSwitch,
+            PacketPathTopology = baseline.PacketPathTopology,
+            Capabilities = baseline.Capabilities,
+            CommandResults = commands,
+            StartedAtUtc = baseline.StartedAtUtc,
+            CompletedAtUtc = baseline.CompletedAtUtc,
         };
     }
 
@@ -190,6 +231,21 @@ internal static class RouterOsCaptureTestFixtures
             Records = rows,
             SessionInvalidated = false,
             Error = null,
+        };
+
+    private static RosReadCommandResult Failed(RosReadCommandId id)
+        => new()
+        {
+            CommandId = id,
+            Lifecycle = RosCommandLifecycle.Faulted,
+            Records = [],
+            SessionInvalidated = false,
+            Error = new RosReadCommandError
+            {
+                Code = "trap",
+                Message = "no such command or directory",
+                Traps = [],
+            },
         };
 
     private static RosReadRecord Row(params (string Name, string Value)[] properties)
