@@ -25,6 +25,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-229** ([#864](https://github.com/sesquicadaver/MTDirector/issues/864)): Seed next PLAN-26 row after AUDIT-DEP-02 → AUDIT-DEP-03 (`ProductTrancheSeedW7229LivingSpecTests`). **§3.C NEXT = W7-230 (#867)**.
+
 - **W7-227** ([#860](https://github.com/sesquicadaver/MTDirector/issues/860)): Seed next PLAN-26 row after AUDIT-DEP-01 → AUDIT-DEP-02 (`ProductTrancheSeedW7227LivingSpecTests`). **§3.C NEXT = W7-228 (#863)**.
 
 - **W7-225** ([#856](https://github.com/sesquicadaver/MTDirector/issues/856)): Seed next PLAN-26 row after AUDIT-GUARD-01 → AUDIT-DEP-01 (`ProductTrancheSeedW7225LivingSpecTests`). **§3.C NEXT = W7-226 (#859)**.
@@ -377,6 +379,8 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-229** ([#864](https://github.com/sesquicadaver/MTDirector/issues/864)): Seed next PLAN-26 row after AUDIT-DEP-02 → AUDIT-DEP-03 (`ProductTrancheSeedW7229LivingSpecTests`). **§3.C NEXT = W7-230 (#867)**.
+
 - **W7-178** ([#759](https://github.com/sesquicadaver/MTDirector/issues/759)): Seed next product tranche after PLAN-19 → PLAN-20 (`ProductTrancheSeedW7178LivingSpecTests`). **§3.C NEXT = W7-179 (#760)**.
 - **W7-177** ([#757](https://github.com/sesquicadaver/MTDirector/issues/757)): DESK-A11Y-CONN-02 Connect/Disconnect Names + Incident action Names regression; **PLAN-19 COMPLETE**. Seeded W7-178 (#759) / W7-179 (#760) PLAN-20. **§3.C NEXT = W7-178 (#759)**.
 - **W7-176** ([#754](https://github.com/sesquicadaver/MTDirector/issues/754)): Seed next PLAN-19 row after DESK-A11Y-CONN-01 → DESK-A11Y-CONN-02 (`ProductTrancheSeedW7176LivingSpecTests`). **§3.C NEXT = W7-177 (#757)**.
@@ -583,6 +587,8 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 - ROADMAP: M3-02 managed chain layout DONE; NEXT = M3-03 (#70); counters 69/109 MVP done (40 remaining).
 
 ### Added
+
+- **W7-229** ([#864](https://github.com/sesquicadaver/MTDirector/issues/864)): Seed next PLAN-26 row after AUDIT-DEP-02 → AUDIT-DEP-03 (`ProductTrancheSeedW7229LivingSpecTests`). **§3.C NEXT = W7-230 (#867)**.
 
 - **W7-178** ([#759](https://github.com/sesquicadaver/MTDirector/issues/759)): Seed next product tranche after PLAN-19 → PLAN-20 (`ProductTrancheSeedW7178LivingSpecTests`). **§3.C NEXT = W7-179 (#760)**.
 - **W7-177** ([#757](https://github.com/sesquicadaver/MTDirector/issues/757)): DESK-A11Y-CONN-02 Connect/Disconnect Names + Incident action Names regression; **PLAN-19 COMPLETE**. Seeded W7-178 (#759) / W7-179 (#760) PLAN-20. **§3.C NEXT = W7-178 (#759)**.
