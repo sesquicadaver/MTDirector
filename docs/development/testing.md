@@ -1581,6 +1581,16 @@ Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryZonesA11yRegre
 
 
 
+## Living Specification — Product tranche seed after AUDIT-AN-01 (W7-219)
+
+Issue [#842](https://github.com/sesquicadaver/MTDirector/issues/842) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed AUDIT-AN-02 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-26 | `ProductTrancheSeedW7219LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditAn02AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7219"`.
+
 ## Living Specification — AUDIT-AN-01 Validate/Record analysis (W7-218)
 
 | AC | Normative / code | Test |
