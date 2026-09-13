@@ -468,11 +468,11 @@ public sealed class SecurityBackupRestoreAcceptanceTests
 
         public Task<DeploymentWatchdogExecutionResult> DisarmAndCleanupWatchdogAsync(CancellationToken cancellationToken = default)
             => Task.FromResult(new DeploymentWatchdogExecutionResult
-        {
-            Succeeded = true,
-            Code = "OK",
-            Paths = [],
-        });
+            {
+                Succeeded = true,
+                Code = "OK",
+                Paths = [],
+            });
 
         public Task<(IReadOnlyList<string> SchedulerNames, IReadOnlyDictionary<string, bool> SchedulerDisabled)>
             ReadWatchdogSchedulerFactsAsync(CancellationToken cancellationToken = default)
