@@ -265,6 +265,118 @@ public sealed class PolicyEvidenceAnalysisTests
     }
 
     [Fact]
+    public void AuditDiff01SeparateCatalogsSurfaceObjectExpansion()
+    {
+        AddressObject before = Host("192.0.2.10");
+        AddressObject after = AddressObject.Reconstitute(
+            before.Id,
+            PolicyObjectOwnerScope.Company,
+            null,
+            null,
+            NonEmptyName.Create("expanded"),
+            IpAddressFamily.IPv4,
+            description: null,
+            [AddressInterval.FromPrefix(IpAddressFamily.IPv4, IPAddress.Parse("192.0.2.0"), 24)]);
+        PolicyRule rule = PolicyRule.Create(
+            IpAddressFamily.IPv4,
+            PolicyFilterChain.Forward,
+            PolicyPipelineStage.CompanyAllow,
+            0,
+            TrafficPredicate.Create(sourceAddresses: AddressSelector.Create([before.Id])),
+            RuleEffectSpec.Create(PolicyRuleEffect.Accept));
+        PolicyRevisionDiffResult diff = PolicyRevisionDiffer.Diff(
+            [rule],
+            [rule],
+            new Dictionary<AddressObjectId, AddressObject> { [before.Id] = before },
+            new Dictionary<AddressObjectId, AddressObject> { [after.Id] = after },
+            EmptyServices(),
+            EmptyServices(),
+            new HashSet<Guid>(),
+            new HashSet<Guid>());
+        Assert.Contains(PolicyEvidenceAnalysisCodes.PacketNewlyAccepted, diff.PacketSpaceClasses);
+        Assert.Contains(PolicyEvidenceAnalysisCodes.ClassPermissive, diff.SemanticClasses);
+        Assert.DoesNotContain(PolicyEvidenceAnalysisCodes.ClassNoEffectiveChange, diff.SemanticClasses);
+    }
+
+    [Fact]
+    public void AuditDiff01FirstMatchDenyShadowsLaterAccept()
+    {
+        PolicyRule deny = PolicyRule.Create(
+            IpAddressFamily.IPv4,
+            PolicyFilterChain.Forward,
+            PolicyPipelineStage.CompanyDeny,
+            0,
+            TrafficPredicate.Create(),
+            RuleEffectSpec.Create(PolicyRuleEffect.Drop));
+        PolicyRule allow = PolicyRule.Create(
+            IpAddressFamily.IPv4,
+            PolicyFilterChain.Forward,
+            PolicyPipelineStage.CompanyAllow,
+            0,
+            TrafficPredicate.Create(),
+            RuleEffectSpec.Create(PolicyRuleEffect.Accept));
+        // Union-of-ACCEPT would treat before as fully accepted; first-match keeps deny coverage.
+        PolicyRevisionDiffResult shadowed = PolicyRevisionDiffer.Diff(
+            [deny, allow],
+            [allow],
+            EmptyAddresses(),
+            EmptyAddresses(),
+            EmptyServices(),
+            EmptyServices(),
+            new HashSet<Guid>(),
+            new HashSet<Guid>());
+        Assert.Contains(PolicyEvidenceAnalysisCodes.PacketNewlyAccepted, shadowed.PacketSpaceClasses);
+        Assert.Contains(PolicyEvidenceAnalysisCodes.ClassPermissive, shadowed.SemanticClasses);
+        Assert.DoesNotContain(PolicyEvidenceAnalysisCodes.ClassNoEffectiveChange, shadowed.SemanticClasses);
+    }
+
+    [Fact]
+    public void AuditDiff01ChainContractDispositionIsCritical()
+    {
+        ChainContractSet drop = ChainContractSet.CreateForCompanyBaseline(
+            [
+                ChainContract.Create(
+                    IpAddressFamily.IPv4,
+                    PolicyFilterChain.Forward,
+                    ChainDefaultDisposition.Drop,
+                    rejectMode: null,
+                    PolicyRuntimeMode.ManagedOnly),
+            ],
+            PolicyRuntimeMode.ManagedOnly);
+        ChainContractSet unmanaged = ChainContractSet.CreateForCompanyBaseline(
+            [
+                ChainContract.Create(
+                    IpAddressFamily.IPv4,
+                    PolicyFilterChain.Forward,
+                    ChainDefaultDisposition.ReturnToUnmanaged,
+                    rejectMode: null,
+                    PolicyRuntimeMode.MigrationCoexistence),
+            ],
+            PolicyRuntimeMode.MigrationCoexistence);
+        PolicyRule allow = AllowRule();
+        PolicyRevisionDiffResult diff = PolicyRevisionDiffer.Diff(
+            [allow],
+            [allow],
+            EmptyAddresses(),
+            EmptyAddresses(),
+            EmptyServices(),
+            EmptyServices(),
+            new HashSet<Guid>(),
+            new HashSet<Guid>(),
+            drop,
+            unmanaged);
+        Assert.Contains(PolicyEvidenceAnalysisCodes.ClassDefaultDisposition, diff.SemanticClasses);
+        Assert.DoesNotContain(PolicyEvidenceAnalysisCodes.ClassNoEffectiveChange, diff.SemanticClasses);
+        PolicyRiskResult risk = PolicyRiskClassifier.Classify(
+            diff,
+            [],
+            new PolicyEvidenceSignals { DefaultDispositionChanged = true },
+            [allow],
+            [allow]);
+        Assert.Equal(PolicyEvidenceAnalysisCodes.RiskCritical, risk.Level);
+    }
+
+    [Fact]
     public void Ac9RiskUsesNormativeMapping()
     {
         PolicyRule allow = AllowRule();

@@ -129,6 +129,7 @@ public static class PolicyRiskClassifier
             PolicyEvidenceAnalysisCodes.ClassControlPlane => PolicyEvidenceAnalysisCodes.RiskCritical,
             PolicyEvidenceAnalysisCodes.ClassDefaultDisposition => PolicyEvidenceAnalysisCodes.RiskCritical,
             PolicyEvidenceAnalysisCodes.ClassZoneBinding => PolicyEvidenceAnalysisCodes.RiskCritical,
+            PolicyEvidenceAnalysisCodes.ProofIndeterminate => PolicyEvidenceAnalysisCodes.RiskHigh,
             _ => PolicyEvidenceAnalysisCodes.RiskCritical,
         };
 

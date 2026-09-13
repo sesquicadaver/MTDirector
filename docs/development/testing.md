@@ -1581,6 +1581,16 @@ Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryZonesA11yRegre
 
 
 
+## Living Specification — AUDIT-DIFF-01 semantic reachability (W7-222)
+
+Issue [#849](https://github.com/sesquicadaver/MTDirector/issues/849) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Separate catalogs + first-match + chain contracts | `PolicyRevisionDiffer`, `DiffPolicyRevisionsUseCase`, `PolicyRiskClassifier` | `AuditDiff01SemanticReachabilityW7222LivingSpecTests`, `PolicyEvidenceAnalysisTests.AuditDiff01*` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditDiff01SemanticReachabilityW7222"`.
+
 ## Living Specification — Product tranche seed after AUDIT-AN-02 (W7-221)
 
 Issue [#846](https://github.com/sesquicadaver/MTDirector/issues/846) AC → module → tests:

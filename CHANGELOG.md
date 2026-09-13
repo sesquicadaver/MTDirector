@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **W7-222** ([#849](https://github.com/sesquicadaver/MTDirector/issues/849)): AUDIT-DIFF-01 — semantic policy diff uses separate catalogs, first-match accept space, and chain-contract disposition (`AuditDiff01*` + `AuditDiff01SemanticReachabilityW7222LivingSpecTests`). **§3.C NEXT = W7-223 (#850)**.
+
 - **W7-220** ([#845](https://github.com/sesquicadaver/MTDirector/issues/845)): AUDIT-AN-02 — analysis fingerprint CAS uses controller-computed current (`PolicyDependencyFingerprintCas`, live calculator DI); optional Record `node_id`; Desktop passes Compose node (`AuditAn02FingerprintCasW7220LivingSpecTests`). **§3.C NEXT = W7-221 (#846)**.
 
 - **W7-218** ([#841](https://github.com/sesquicadaver/MTDirector/issues/841)): AUDIT-AN-01 — Validate runs structural analysis; Record rejects incomplete document-test coverage (`POLICY_APPROVAL_TESTS_INCOMPLETE`), merges structural findings, maps INFO→WARNING; Desktop Compose/Record uses WARNING (`AuditAn01ValidateRecordAnalysisW7218LivingSpecTests`). **§3.C NEXT = W7-219 (#842)**.
