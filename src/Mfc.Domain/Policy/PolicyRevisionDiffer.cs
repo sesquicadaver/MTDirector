@@ -1,3 +1,4 @@
+using Mfc.Domain.Inventory;
 using Mfc.Domain.Policy.Primitives;
 
 namespace Mfc.Domain.Policy;
@@ -15,7 +16,9 @@ public static class PolicyRevisionDiffer
         IReadOnlyDictionary<ServiceObjectId, ServiceObject> beforeServices,
         IReadOnlyDictionary<ServiceObjectId, ServiceObject> afterServices,
         IReadOnlySet<Guid> beforeZoneIds,
-        IReadOnlySet<Guid> afterZoneIds)
+        IReadOnlySet<Guid> afterZoneIds,
+        ChainContractSet? beforeChainContracts = null,
+        ChainContractSet? afterChainContracts = null)
     {
         ArgumentNullException.ThrowIfNull(before);
         ArgumentNullException.ThrowIfNull(after);
@@ -94,8 +97,21 @@ public static class PolicyRevisionDiffer
         (IReadOnlyList<string> packet, IReadOnlyList<string> semantic) = ClassifyPacketSpace(
             before,
             after,
+            beforeAddresses,
             afterAddresses,
+            beforeServices,
             afterServices);
+        List<string> packetClasses = packet.ToList();
+        List<string> semanticClasses = semantic.ToList();
+        if (ChainDefaultDispositionChanged(beforeChainContracts, afterChainContracts))
+        {
+            semanticClasses.RemoveAll(static s => s == PolicyEvidenceAnalysisCodes.ClassNoEffectiveChange);
+            if (!semanticClasses.Contains(PolicyEvidenceAnalysisCodes.ClassDefaultDisposition, StringComparer.Ordinal))
+            {
+                semanticClasses.Add(PolicyEvidenceAnalysisCodes.ClassDefaultDisposition);
+            }
+        }
+
         return new PolicyRevisionDiffResult
         {
             RuleChanges = ruleChanges
@@ -105,8 +121,14 @@ public static class PolicyRevisionDiffer
                 .OrderBy(static i => i.ObjectKind, StringComparer.Ordinal)
                 .ThenBy(static i => i.ObjectId)
                 .ToArray(),
-            PacketSpaceClasses = packet,
-            SemanticClasses = semantic,
+            PacketSpaceClasses = packetClasses
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(static s => s, StringComparer.Ordinal)
+                .ToArray(),
+            SemanticClasses = semanticClasses
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(static s => s, StringComparer.Ordinal)
+                .ToArray(),
         };
     }
 
@@ -280,15 +302,17 @@ public static class PolicyRevisionDiffer
     private static (IReadOnlyList<string> Packet, IReadOnlyList<string> Semantic) ClassifyPacketSpace(
         IReadOnlyList<PolicyRule> before,
         IReadOnlyList<PolicyRule> after,
-        IReadOnlyDictionary<AddressObjectId, AddressObject> addresses,
-        IReadOnlyDictionary<ServiceObjectId, ServiceObject> services)
+        IReadOnlyDictionary<AddressObjectId, AddressObject> beforeAddresses,
+        IReadOnlyDictionary<AddressObjectId, AddressObject> afterAddresses,
+        IReadOnlyDictionary<ServiceObjectId, ServiceObject> beforeServices,
+        IReadOnlyDictionary<ServiceObjectId, ServiceObject> afterServices)
     {
-        NormalizedPredicate? acceptBefore = UnionEffects(before, addresses, services, allow: true);
-        NormalizedPredicate? acceptAfter = UnionEffects(after, addresses, services, allow: true);
+        NormalizedPredicate? acceptBefore = FirstMatchAcceptedSpace(before, beforeAddresses, beforeServices);
+        NormalizedPredicate? acceptAfter = FirstMatchAcceptedSpace(after, afterAddresses, afterServices);
         if (acceptBefore is null || acceptAfter is null)
         {
-            return ([PolicyEvidenceAnalysisCodes.PacketNewlyAccepted, PolicyEvidenceAnalysisCodes.PacketNewlyDenied],
-                [PolicyEvidenceAnalysisCodes.ClassMixed]);
+            // Undetermined packet-space proof (audit §06 / AUDIT-DIFF-01).
+            return ([], [PolicyEvidenceAnalysisCodes.ProofIndeterminate]);
         }
 
         PredicateRelation relation = PredicateAlgebra.Relate(acceptBefore, acceptAfter);
@@ -329,25 +353,64 @@ public static class PolicyRevisionDiffer
             semantic.Distinct(StringComparer.Ordinal).OrderBy(static s => s, StringComparer.Ordinal).ToArray());
     }
 
-    private static NormalizedPredicate? UnionEffects(
+    /// <summary>
+    /// First-match accepted packet space per family/chain surface (AUDIT-DIFF-01).
+    /// Earlier terminal DROP/REJECT covers traffic so later ACCEPT cannot claim it.
+    /// </summary>
+    private static NormalizedPredicate? FirstMatchAcceptedSpace(
         IReadOnlyList<PolicyRule> rules,
         IReadOnlyDictionary<AddressObjectId, AddressObject> addresses,
-        IReadOnlyDictionary<ServiceObjectId, ServiceObject> services,
-        bool allow)
+        IReadOnlyDictionary<ServiceObjectId, ServiceObject> services)
     {
-        NormalizedPredicate acc = NormalizedPredicate.Empty;
-        foreach (PolicyRule rule in rules.Where(static r => r.Enabled))
+        NormalizedPredicate total = NormalizedPredicate.Empty;
+        foreach ((IpAddressFamily family, PolicyFilterChain chain) in rules
+                     .Select(static r => (r.Family, r.Chain))
+                     .Distinct()
+                     .OrderBy(static s => s.Family)
+                     .ThenBy(static s => s.Chain))
         {
-            bool isAllow = rule.Effect.Kind is PolicyRuleEffect.Accept or PolicyRuleEffect.FasttrackAccept;
-            if (isAllow != allow)
+            NormalizedPredicate? surface = FirstMatchAcceptedOnSurface(
+                rules.Where(r => r.Family == family && r.Chain == chain),
+                family,
+                chain,
+                addresses,
+                services);
+            if (surface is null)
             {
-                continue;
+                return null;
             }
 
+            PredicateAlgebraResult union = PredicateAlgebra.Union(total, surface);
+            if (union.IsFailure || union.Value is null)
+            {
+                return null;
+            }
+
+            total = union.Value;
+        }
+
+        return total;
+    }
+
+    private static NormalizedPredicate? FirstMatchAcceptedOnSurface(
+        IEnumerable<PolicyRule> rules,
+        IpAddressFamily family,
+        PolicyFilterChain chain,
+        IReadOnlyDictionary<AddressObjectId, AddressObject> addresses,
+        IReadOnlyDictionary<ServiceObjectId, ServiceObject> services)
+    {
+        NormalizedPredicate covered = NormalizedPredicate.Empty;
+        NormalizedPredicate accepted = NormalizedPredicate.Empty;
+        foreach (PolicyRule rule in rules
+                     .Where(static r => r.Enabled)
+                     .OrderBy(static r => PolicyPipelineV1.Ordinal(r.Stage))
+                     .ThenBy(static r => r.Ordinal)
+                     .ThenBy(static r => r.Id.Value))
+        {
             PredicateAlgebraResult normalized = PredicateNormalizer.Normalize(
                 rule.Predicate,
-                rule.Family,
-                rule.Chain,
+                family,
+                chain,
                 addresses,
                 services);
             if (normalized.IsFailure || normalized.Value is null)
@@ -355,16 +418,64 @@ public static class PolicyRevisionDiffer
                 return null;
             }
 
-            PredicateAlgebraResult union = PredicateAlgebra.Union(acc, normalized.Value);
-            if (union.IsFailure || union.Value is null)
+            PredicateAlgebraResult reaches = PredicateAlgebra.Subtract(normalized.Value, covered);
+            if (reaches.IsFailure || reaches.Value is null)
             {
                 return null;
             }
 
-            acc = union.Value;
+            bool isAllow = rule.Effect.Kind is PolicyRuleEffect.Accept or PolicyRuleEffect.FasttrackAccept;
+            if (isAllow)
+            {
+                PredicateAlgebraResult acceptUnion = PredicateAlgebra.Union(accepted, reaches.Value);
+                if (acceptUnion.IsFailure || acceptUnion.Value is null)
+                {
+                    return null;
+                }
+
+                accepted = acceptUnion.Value;
+            }
+
+            PredicateAlgebraResult coverUnion = PredicateAlgebra.Union(covered, reaches.Value);
+            if (coverUnion.IsFailure || coverUnion.Value is null)
+            {
+                return null;
+            }
+
+            covered = coverUnion.Value;
         }
 
-        return acc;
+        return accepted;
+    }
+
+    private static bool ChainDefaultDispositionChanged(ChainContractSet? before, ChainContractSet? after)
+    {
+        if (before is null || after is null)
+        {
+            return false;
+        }
+
+        Dictionary<(IpAddressFamily Family, PolicyFilterChain Chain), ChainContract> beforeMap =
+            before.Items.ToDictionary(static c => (c.Family, c.Chain));
+        Dictionary<(IpAddressFamily Family, PolicyFilterChain Chain), ChainContract> afterMap =
+            after.Items.ToDictionary(static c => (c.Family, c.Chain));
+        foreach ((IpAddressFamily Family, PolicyFilterChain Chain) key in beforeMap.Keys.Union(afterMap.Keys))
+        {
+            beforeMap.TryGetValue(key, out ChainContract? left);
+            afterMap.TryGetValue(key, out ChainContract? right);
+            if (left is null || right is null)
+            {
+                return true;
+            }
+
+            if (left.DefaultDisposition != right.DefaultDisposition
+                || left.RejectModeValue != right.RejectModeValue)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static string RejectSignature(IReadOnlyList<PolicyRule> rules)

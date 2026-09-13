@@ -58,7 +58,9 @@ public static class PolicyEvidenceAnalysis
             beforeSvc,
             afterServices,
             zonesBefore,
-            zonesAfter);
+            zonesAfter,
+            beforeChainContracts: null,
+            afterChainContracts: contracts);
         List<PolicyEvidenceFinding> findings = [];
         foreach (PolicyTestResult result in testResults)
         {
