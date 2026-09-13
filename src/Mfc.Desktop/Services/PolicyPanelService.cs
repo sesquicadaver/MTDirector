@@ -136,6 +136,9 @@ public sealed class PolicyFindingListItem
 
     public string? Message { get; init; }
 
+    /// <summary>BLOCKER or WARNING for RecordAnalysisRun (never INFO).</summary>
+    public string? Severity { get; init; }
+
     public byte[]? WarningHash { get; init; }
 
     public bool HasWarningHash => WarningHash is { Length: 32 };
@@ -818,9 +821,20 @@ public sealed class PolicyPanelService : IPolicyPanelService
             LogicalEffectiveHash = hash,
             LogicalEffectiveHashHex = FormatHash(hash),
             Findings = effective.Findings
-                .Select(f => new PolicyFindingListItem
+                .Select(f =>
                 {
-                    SummaryLine = FormatFinding(f.Code, severity: null, f.Message, f.Subject),
+                    const string severity = "WARNING";
+                    string code = f.Code;
+                    string? target = f.Subject;
+                    string message = f.Message;
+                    return new PolicyFindingListItem
+                    {
+                        Code = code,
+                        Target = target,
+                        Message = message,
+                        Severity = severity,
+                        SummaryLine = FormatFinding(code, severity, message, target),
+                    };
                 })
                 .ToArray(),
         };
@@ -847,20 +861,22 @@ public sealed class PolicyPanelService : IPolicyPanelService
                 string code = string.IsNullOrWhiteSpace(item.Code) ? "DESKTOP_COMPOSE_FINDING" : item.Code.Trim();
                 string target = string.IsNullOrWhiteSpace(item.Target) ? "compose" : item.Target.Trim();
                 string message = string.IsNullOrWhiteSpace(item.Message) ? item.SummaryLine : item.Message.Trim();
+                string severity = NormalizeRecordSeverity(item.Severity);
                 findings.Add(new PolicyAnalysisFinding
                 {
                     Code = code,
-                    Severity = "INFO",
+                    Severity = severity,
                     Message = message,
                     Target = target,
                 });
                 byte[] warningHash = HashWarning(code, target, message);
                 ackable.Add(new PolicyFindingListItem
                 {
-                    SummaryLine = FormatFinding(code, "INFO", message, target),
+                    SummaryLine = FormatFinding(code, severity, message, target),
                     Code = code,
                     Target = target,
                     Message = message,
+                    Severity = severity,
                     WarningHash = warningHash,
                 });
             }
@@ -1273,6 +1289,17 @@ public sealed class PolicyPanelService : IPolicyPanelService
     {
         string head = string.IsNullOrWhiteSpace(severity) ? code : $"{severity}/{code}";
         return string.IsNullOrWhiteSpace(subject) ? $"{head}: {message}" : $"{head}({subject}): {message}";
+    }
+
+    /// <summary>Domain PolicyAnalysisRun accepts only BLOCKER/WARNING (AUDIT-AN-01 §13).</summary>
+    private static string NormalizeRecordSeverity(string? severity)
+    {
+        if (string.Equals(severity, "BLOCKER", StringComparison.OrdinalIgnoreCase))
+        {
+            return "BLOCKER";
+        }
+
+        return "WARNING";
     }
 
     private static byte[] ToHashBytes(Sha256? hash)

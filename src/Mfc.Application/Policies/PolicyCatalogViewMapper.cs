@@ -178,6 +178,22 @@ internal static class PolicyCatalogViewMapper
         return ids;
     }
 
+    /// <summary>Extracts opaque document test UUIDs (<c>id</c>) for AUDIT-AN-01 coverage checks.</summary>
+    public static HashSet<Guid> ExtractTestIds(IReadOnlyList<JsonElement> tests)
+    {
+        ArgumentNullException.ThrowIfNull(tests);
+        HashSet<Guid> ids = [];
+        foreach (JsonElement element in tests)
+        {
+            if (TryReadId(element, out Guid id))
+            {
+                ids.Add(id);
+            }
+        }
+
+        return ids;
+    }
+
     private static void CollectZones(ZoneSelector? selector, HashSet<Guid> ids)
     {
         if (selector is null)

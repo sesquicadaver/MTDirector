@@ -245,6 +245,27 @@ public sealed class RecordAnalysisRunUseCase
             return ApplicationResults.Fail(cas);
         }
 
+        Policy? policy = await _policies.GetPolicyAsync(revision!.PolicyId, cancellationToken).ConfigureAwait(false);
+        if (policy is null)
+        {
+            return ApplicationResults.Fail(
+                ApplicationError.NotFound($"Policy '{revision.PolicyId}' was not found."));
+        }
+
+        ApplicationResult<PolicyDocument> document = PolicyRevisionSupport.ReadDocument(revision);
+        if (document.IsFailure)
+        {
+            return ApplicationResults.Fail(document.Error!);
+        }
+
+        ApplicationError? coverage = PolicyRevisionStructuralAnalysis.EnsureTestCoverage(
+            document.Value!,
+            command.TestResults);
+        if (coverage is not null)
+        {
+            return ApplicationResults.Fail(coverage);
+        }
+
         ApplicationError? hashes = ParseRunHashes(command, out PolicyAnalysisRunHashes parsed);
         if (hashes is not null)
         {
@@ -254,12 +275,13 @@ public sealed class RecordAnalysisRunUseCase
         List<PolicyApprovalFinding> findings = [];
         foreach (PolicyApprovalFindingInput input in command.Findings)
         {
+            string severity = NormalizeFindingSeverity(input.Severity);
             try
             {
                 findings.Add(new PolicyApprovalFinding
                 {
                     Code = input.Code,
-                    Severity = input.Severity,
+                    Severity = severity,
                     Message = input.Message,
                     Target = input.Target,
                     WarningHash = PolicyApprovalHasher.HashWarning(input.Code, input.Target, input.Message),
@@ -269,6 +291,17 @@ public sealed class RecordAnalysisRunUseCase
             {
                 return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
             }
+        }
+
+        foreach (PolicyApprovalFinding structural in PolicyRevisionStructuralAnalysis
+                     .CollectStructuralApprovalFindings(policy, revision, document.Value!))
+        {
+            if (findings.Any(f => f.WarningHash.Equals(structural.WarningHash)))
+            {
+                continue;
+            }
+
+            findings.Add(structural);
         }
 
         List<PolicyApprovalTestOutcome> tests = command.TestResults.Select(static t => new PolicyApprovalTestOutcome
@@ -356,6 +389,25 @@ public sealed class RecordAnalysisRunUseCase
             EffectiveRiskLevel = run.EffectiveRiskLevel(),
             EvidenceSignalsPresent = run.EvidenceSignalsPresent,
         };
+
+    /// <summary>
+    /// Compose soft findings historically arrived as INFO; domain allows only BLOCKER/WARNING (AUDIT-AN-01 §13).
+    /// </summary>
+    private static string NormalizeFindingSeverity(string severity)
+    {
+        if (string.IsNullOrWhiteSpace(severity))
+        {
+            return PolicyEvidenceAnalysisCodes.SeverityWarning;
+        }
+
+        string trimmed = severity.Trim();
+        if (string.Equals(trimmed, "INFO", StringComparison.OrdinalIgnoreCase))
+        {
+            return PolicyEvidenceAnalysisCodes.SeverityWarning;
+        }
+
+        return trimmed;
+    }
 
     private static ApplicationError? ParseRunHashes(RecordAnalysisRunCommand command, out PolicyAnalysisRunHashes parsed)
     {
@@ -833,6 +885,13 @@ public sealed class ApproveRevisionUseCase
                 cancellationToken).ConfigureAwait(false);
         }
 
+        ApplicationResult<PolicyDocument> approvalDocument = PolicyRevisionSupport.ReadDocument(revision);
+        if (approvalDocument.IsFailure)
+        {
+            return ApplicationResults.Fail(approvalDocument.Error!);
+        }
+
+        HashSet<Guid> requiredTestIds = PolicyCatalogViewMapper.ExtractTestIds(approvalDocument.Value!.Tests);
         PolicyApprovalEvaluation evaluation = PolicyApprovalGate.Evaluate(
             revision,
             policy,
@@ -842,7 +901,8 @@ public sealed class ApproveRevisionUseCase
             acks,
             votes,
             reviewer,
-            isSecurityOwner);
+            isSecurityOwner,
+            requiredTestIds);
         if (evaluation.Outcome == PolicyApprovalCodes.OutcomeReject)
         {
             return ApplicationResults.Fail(new ApplicationError(
@@ -926,6 +986,12 @@ public sealed class ApproveRevisionUseCase
         bool persistApproval = false;
         if (revision.State == PolicyRevisionState.InReview)
         {
+            ApplicationResult<PolicyDocument> approvalDocument = PolicyRevisionSupport.ReadDocument(revision);
+            if (approvalDocument.IsFailure)
+            {
+                return ApplicationResults.Fail(approvalDocument.Error!);
+            }
+
             PolicyApproval[] others = votes
                 .Where(v => v.ReviewerId != reviewer)
                 .ToArray();
@@ -938,7 +1004,8 @@ public sealed class ApproveRevisionUseCase
                 acks,
                 others,
                 reviewer,
-                isSecurityOwner);
+                isSecurityOwner,
+                PolicyCatalogViewMapper.ExtractTestIds(approvalDocument.Value!.Tests));
             if (evaluation.Outcome == PolicyApprovalCodes.OutcomeReject)
             {
                 return ApplicationResults.Fail(new ApplicationError(

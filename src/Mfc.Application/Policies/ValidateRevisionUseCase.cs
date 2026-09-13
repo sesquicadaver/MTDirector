@@ -22,7 +22,7 @@ public sealed class ValidateRevisionCommand
     public required byte[] ExpectedContentHash { get; init; }
 }
 
-/// <summary>DRAFT → VALIDATED with CAS, idempotency, and audit (M2-18).</summary>
+/// <summary>DRAFT → VALIDATED with CAS, structural analysis, idempotency, and audit (M2-18 / AUDIT-AN-01).</summary>
 public sealed class ValidateRevisionUseCase
 {
     public const string Operation = "policy.validate_revision";
@@ -102,9 +102,31 @@ public sealed class ValidateRevisionUseCase
             return ApplicationResults.Fail(cas);
         }
 
+        Policy? policy = await _policies.GetPolicyAsync(revision!.PolicyId, cancellationToken).ConfigureAwait(false);
+        if (policy is null)
+        {
+            return ApplicationResults.Fail(
+                ApplicationError.NotFound($"Policy '{revision.PolicyId}' was not found."));
+        }
+
+        ApplicationResult<PolicyDocument> document = PolicyRevisionSupport.ReadDocument(revision);
+        if (document.IsFailure)
+        {
+            return ApplicationResults.Fail(document.Error!);
+        }
+
+        ApplicationError? structural = PolicyRevisionStructuralAnalysis.EnsureStructuralAnalysisPasses(
+            policy,
+            revision,
+            document.Value!);
+        if (structural is not null)
+        {
+            return ApplicationResults.Fail(structural);
+        }
+
         try
         {
-            revision!.MarkValidated();
+            revision.MarkValidated();
         }
         catch (DomainInvariantException ex)
         {

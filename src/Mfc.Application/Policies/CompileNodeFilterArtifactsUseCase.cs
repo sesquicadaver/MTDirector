@@ -200,7 +200,11 @@ public sealed class CompileNodeFilterArtifactsUseCase
                 ApplicationError.NotFound($"Policy revision '{run.RevisionId}' was not found."));
         }
 
-        bool analysisPassed = run.IsPass();
+        ApplicationResult<PolicyDocument> runDocument = PolicyRevisionSupport.ReadDocument(revision);
+        HashSet<Guid>? requiredTestIds = runDocument.IsSuccess
+            ? PolicyCatalogViewMapper.ExtractTestIds(runDocument.Value!.Tests)
+            : null;
+        bool analysisPassed = run.IsPass(requiredTestIds);
         bool analysisCurrent = run.DependencyFingerprint.Equals(currentFingerprint);
         bool inputApproved = revision.State == PolicyRevisionState.Approved
             && revision.ApprovedAnalysisRunId == run.Id

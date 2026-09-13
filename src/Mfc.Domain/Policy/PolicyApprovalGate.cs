@@ -9,6 +9,9 @@ namespace Mfc.Domain.Policy;
 public static class PolicyApprovalGate
 {
     /// <summary>Evaluates whether a reviewer vote may be recorded and whether it completes APPROVED.</summary>
+    /// <param name="requiredTestIds">
+    /// Document test ids that must appear in <see cref="PolicyAnalysisRun.TestResults"/> (AUDIT-AN-01).
+    /// </param>
     public static PolicyApprovalEvaluation Evaluate(
         PolicyRevision revision,
         Policy policy,
@@ -18,7 +21,8 @@ public static class PolicyApprovalGate
         IReadOnlyList<PolicyWarningAcknowledgment> acknowledgments,
         IReadOnlyList<PolicyApproval> existingVotes,
         UserId reviewerId,
-        bool isSecurityOwner)
+        bool isSecurityOwner,
+        IReadOnlyCollection<Guid>? requiredTestIds = null)
     {
         ArgumentNullException.ThrowIfNull(revision);
         ArgumentNullException.ThrowIfNull(policy);
@@ -70,6 +74,20 @@ public static class PolicyApprovalGate
             return PolicyApprovalEvaluation.Reject(
                 PolicyApprovalCodes.Blocker,
                 $"Blocker {blocker.Code} forbids approval.");
+        }
+
+        if (requiredTestIds is { Count: > 0 })
+        {
+            HashSet<Guid> recorded = run.TestResults.Select(static t => t.TestId.Value).ToHashSet();
+            foreach (Guid testId in requiredTestIds)
+            {
+                if (!recorded.Contains(testId))
+                {
+                    return PolicyApprovalEvaluation.Reject(
+                        PolicyApprovalCodes.TestsIncomplete,
+                        $"Mandatory test {testId:D} is missing from the analysis run.");
+                }
+            }
         }
 
         foreach (PolicyApprovalTestOutcome test in run.TestResults)

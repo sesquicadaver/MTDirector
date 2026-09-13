@@ -29,6 +29,9 @@ public static class PolicyApprovalCodes
 
     public const string TestsFailed = "POLICY_APPROVAL_TESTS_FAILED";
 
+    /// <summary>Document tests missing from the recorded analysis run (AUDIT-AN-01 / Policy Model §63.8).</summary>
+    public const string TestsIncomplete = "POLICY_APPROVAL_TESTS_INCOMPLETE";
+
     public const string NotInReview = "POLICY_APPROVAL_NOT_IN_REVIEW";
 
     public const string MissingRun = "POLICY_APPROVAL_MISSING_RUN";
