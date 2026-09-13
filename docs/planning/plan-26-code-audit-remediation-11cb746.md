@@ -1,7 +1,7 @@
 # PLAN-26 — Code-audit remediation tranche (`11cb746`)
 
 **Date:** 2026-09-11 (inventory **DONE** 2026-09-11)  
-**Status:** Seed **W7-205 DONE**; Inventory **DONE** (W7-206); **AUDIT-RULE-01 DONE** (W7-210); seed **W7-211 DONE**; **AUDIT-CTX-01 DONE** (W7-212); seed **W7-213 DONE**; next **W7-214 (#833)** AUDIT-CAP-01; seed **W7-215 (#834)** → AUDIT-CAP-02  
+**Status:** Seed **W7-205 DONE**; Inventory **DONE** (W7-206); **AUDIT-RULE-01 DONE** (W7-210); seed **W7-211 DONE**; **AUDIT-CTX-01 DONE** (W7-212); seed **W7-213 DONE**; **AUDIT-CAP-01 DONE** (W7-214); next **W7-215 (#834)** seed → AUDIT-CAP-02  
 **Audit SHA:** `11cb746de60191e6eb83e52013f7f544306d5c9d`  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md)  
 **Predecessor:** PLAN-25 Desktop Inventory/Zones/Add-router AutomationProperties **COMPLETE**  
@@ -33,7 +33,7 @@ Normative audit §§01–19 mapped to ranked IDs below. First wave (issue body):
 |------|----|---------------|------------------|-------|
 | 1 | **AUDIT-RULE-01** | Update rule drops predicate / hidden fields (§03) | `PoliciesViewModel`, `PolicyPanelService`, `PolicyRuleFactory` | **W7-210 (#825) DONE** |
 | 2 | **AUDIT-CTX-01** | Node switch does not invalidate mutation context (§10) | `ZonesViewModel`, `OnboardingViewModel`, `DeploymentViewModel` | **W7-212 (#829) DONE**; seed **W7-213 (#830) DONE** |
-| 3 | **AUDIT-CAP-01** | Canonical filter omits firewall match fields (§01) | `DiscoveryCanonicalProjector.ProjectOrderedFilter` | **W7-214 (#833)**; seed **W7-215 (#834)** |
+| 3 | **AUDIT-CAP-01** | Canonical filter omits firewall match fields (§01) | `DiscoveryCanonicalProjector.ProjectOrderedFilter` | **W7-214 (#833) DONE**; seed **W7-215 (#834)** |
 | 4 | **AUDIT-CAP-02** | Required-section read failure can complete snapshot (§02) | `RouterOsDiscoveryReader`, `SnapshotCaptureResultBuilder` | seed after AUDIT-CAP-01 |
 | 5 | **AUDIT-AN-01** | Validate/Record skip full analysis + mandatory tests (§04); Compose→Record INFO (§13) | `ValidateRevisionUseCase`, `PolicyPanelService`, `PolicyApprovalGate` | seed after AUDIT-CAP-02 |
 | 6 | **AUDIT-AN-02** | Analysis fingerprint CAS uses client value (§05) | `PoliciesViewModel`, `CompileNodeFilterArtifactsUseCase` | seed after AUDIT-AN-01 |
@@ -61,8 +61,9 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/c
 5. **W7-211 DONE** — seeded **W7-212** / **W7-213**.
 6. **W7-212 DONE** — AUDIT-CTX-01 node-switch mutation invalidation.
 7. **W7-213 DONE** — seeded **W7-214** / **W7-215**.
-8. Execute ranks 3…14 atomically starting at **AUDIT-CAP-01**.
+8. **W7-214 DONE** — AUDIT-CAP-01 canonical match fields.
+9. Execute ranks 4…14 atomically starting at seed **W7-215** → AUDIT-CAP-02.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-214 (#833)** — AUDIT-CAP-01 Canonical filter must include firewall match fields.
+**§3.C NEXT = W7-215 (#834)** — Seed next PLAN-26 row after AUDIT-CAP-01 → AUDIT-CAP-02.

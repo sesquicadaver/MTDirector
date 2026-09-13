@@ -13,6 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-214** ([#833](https://github.com/sesquicadaver/MTDirector/issues/833)): AUDIT-CAP-01 — `DiscoveryCanonicalProjector` projects firewall match fields into canonical filter (`AuditCap01CanonicalFilterMatchFieldsW7214LivingSpecTests`). **§3.C NEXT = W7-215 (#834)**.
+
 - **W7-213** ([#830](https://github.com/sesquicadaver/MTDirector/issues/830)): Seed next PLAN-26 row after AUDIT-CTX-01 → AUDIT-CAP-01 (`ProductTrancheSeedW7213LivingSpecTests`). **§3.C NEXT = W7-214 (#833)**.
 
 - **W7-212** ([#829](https://github.com/sesquicadaver/MTDirector/issues/829)): AUDIT-CTX-01 invalidate Zones/Onboarding/Deployment mutation context on node switch (`AuditCtx01NodeSwitchInvalidateW7212LivingSpecTests`). **§3.C NEXT = W7-213 (#830)**.

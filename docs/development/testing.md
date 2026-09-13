@@ -1576,6 +1576,20 @@ Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryZonesA11yRegre
 
 
 
+
+## Living Specification — AUDIT-CAP-01 canonical filter match fields (W7-214)
+
+Issue [#833](https://github.com/sesquicadaver/MTDirector/issues/833) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Plan-26 / queue / known-limitations lock AUDIT-CAP-01 DONE | `docs/planning/plan-26-…`, ROADMAP, continuous | `AuditCap01CanonicalFilterMatchFieldsW7214LivingSpecTests.Ac1Plan26AndProjectorLockAuditCap01` |
+| Match fields (ports, interfaces, lists, jump-target) in config | `DiscoveryCanonicalProjector.BuildFilterConfigurationProperties` | `DiscoveryCanonicalProjectorTests.FirewallMatchFieldsAreProjectedIntoConfiguration` |
+| Port-only change alters configuration hash | same | `DiscoveryCanonicalProjectorTests.DstPortOnlyChangeChangesConfigurationHash` |
+| Projected dst-port round-trips to management-path matchers | `ActualFilterContextMapper` | `DiscoveryCanonicalProjectorTests.ProjectedFilterRoundTripsDstPortIntoManagementPathMatchers` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditCap01CanonicalFilterMatchFieldsW7214|FullyQualifiedName~DiscoveryCanonicalProjectorTests"`.
+
 ## Living Specification — Product tranche seed after AUDIT-CTX-01 (W7-213)
 
 Issue [#830](https://github.com/sesquicadaver/MTDirector/issues/830) AC → module → tests:
