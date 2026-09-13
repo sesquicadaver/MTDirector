@@ -56,6 +56,9 @@ public interface IStandaloneDeploymentDeviceRuntime
     IDeploymentFreshSessionFactory FreshSessions { get; }
 
     Task<DeploymentSystemNameFacts> ReadSystemNamesAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>RouterOS wall-clock used for watchdog deadline (AUDIT-DEP-02).</summary>
+    Task<DateTimeOffset> ReadRouterClockAsync(CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -254,11 +257,11 @@ public static class ExecuteStandaloneDeploymentUseCase
 
             Advance(operation, DeploymentOperationState.Activating, nowUtc);
             deviceState.EnsureTransition(DeviceDeploymentState.Activating, nowUtc);
-            TimeSpan margin = remainingWatchdogTtl ?? devicePlan.RollbackTtl;
+            WatchdogTimeBudget budget = new(remainingWatchdogTtl ?? devicePlan.RollbackTtl);
             AnchorActivationResult activated = await ActivateAnchorsUseCase.ExecuteAsync(
                 devicePlan,
                 runtime.Session,
-                () => margin,
+                () => budget.Remaining,
                 cancellationToken).ConfigureAwait(false);
             if (!activated.Succeeded)
             {
@@ -288,7 +291,7 @@ public static class ExecuteStandaloneDeploymentUseCase
                 runtime.FreshSessions,
                 observedResourceHashAfterStaging,
                 armed,
-                margin,
+                budget.Remaining,
                 observeFromArtifact,
                 cancellationToken).ConfigureAwait(false);
             if (!verified.Succeeded)
@@ -316,7 +319,7 @@ public static class ExecuteStandaloneDeploymentUseCase
             Advance(operation, DeploymentOperationState.DisarmingWatchdog, nowUtc);
             DeploymentWatchdogExecutionResult disarmed = await runtime.Watchdog.DisarmWatchdogAsync(
                 armed,
-                margin,
+                budget.Remaining,
                 cancellationToken).ConfigureAwait(false);
             if (!disarmed.Succeeded)
             {

@@ -84,6 +84,14 @@ public sealed class RouterOsDeploymentDeviceSession
         };
     }
 
+    public async Task<DateTimeOffset> ReadRouterClockAsync(CancellationToken cancellationToken = default)
+    {
+        SystemServiceDiscoveryResult discovery = await SystemServiceDiscovery
+            .DiscoverAsync(RosSession, cancellationToken)
+            .ConfigureAwait(false);
+        return RouterOsClockParser.Parse(discovery.Clock);
+    }
+
     public async Task<IReadOnlyDictionary<string, string>> ReadAnchorJumpsAsync(
         CancellationToken cancellationToken = default)
     {
@@ -198,10 +206,11 @@ public sealed class RouterOsDeploymentDeviceSession
             cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task DisarmAndCleanupWatchdogAsync(CancellationToken cancellationToken = default)
+    public async Task<DeploymentWatchdogExecutionResult> DisarmAndCleanupWatchdogAsync(
+        CancellationToken cancellationToken = default)
     {
         DeploymentWatchdogWriter writer = new(EnsureSession());
-        _ = await writer.CleanupWatchdogAsync(_operationId, DeviceId, cancellationToken).ConfigureAwait(false);
+        return await writer.CleanupWatchdogAsync(_operationId, DeviceId, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<(IReadOnlyList<string> SchedulerNames, IReadOnlyDictionary<string, bool> SchedulerDisabled)>

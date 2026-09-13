@@ -299,6 +299,94 @@ public sealed class DeploymentRollbackRecoveryLivingSpecTests
     }
 
     [Fact]
+    public async Task RollbackFailsWhenWatchdogCleanupIncomplete()
+    {
+        (DeploymentPlan plan, DeploymentOperation operation, ScriptedRollbackRuntime runtime) = SeedActivatedNew();
+        runtime.CleanupFails = true;
+        DeploymentRollbackResult result = await ExecuteDeploymentRollbackUseCase.ExecuteAsync(
+            plan,
+            operation,
+            [runtime],
+            T0.AddMinutes(1));
+        Assert.False(result.Succeeded);
+        Assert.Equal(DeploymentCodes.WatchdogCleanupIncomplete, result.ErrorCode);
+        Assert.Equal(DeploymentOperationState.RecoveryRequired, result.State);
+    }
+
+    [Fact]
+    public async Task RecoverFailsWhenWatchdogCleanupIncomplete()
+    {
+        (DeploymentPlan plan, DeploymentOperation operation, ScriptedRollbackRuntime runtime) = SeedActivatedNew();
+        runtime.CleanupFails = true;
+        DeploymentRecoveryResult result = await RecoverDeploymentUseCase.ExecuteAsync(
+            plan,
+            operation,
+            [runtime],
+            activationStarted: true,
+            T0.AddMinutes(1));
+        Assert.False(result.Succeeded);
+        Assert.Equal(DeploymentRecoveryAction.ControllerRollback, result.Action);
+        Assert.Equal(DeploymentCodes.WatchdogCleanupIncomplete, result.ErrorCode);
+        Assert.Equal(DeploymentOperationState.RecoveryRequired, result.State);
+    }
+
+    [Fact]
+    public async Task MarkFailedCleanupIncompleteRequiresRecovery()
+    {
+        Node node = DeploymentTestFactory.RouterWithDevice(out _);
+        DeploymentPlan plan = DeploymentTestFactory.PlanFor(node, T0);
+        DeploymentOperation operation = DeploymentOperation.Create(plan, node, UserId.New(), T0);
+        operation.EnsureTransition(DeploymentOperationState.Prechecking, T0.AddSeconds(1));
+        DeviceDeploymentPlan devicePlan = plan.DevicePlans[0];
+        Dictionary<string, string> jumps = devicePlan.OldAnchorTargets.ToDictionary(
+            static t => t.Key.Marker,
+            static t => t.JumpTarget,
+            StringComparer.Ordinal);
+        ScriptedRollbackRuntime runtime = new(devicePlan.DeviceId, jumps, devicePlan.OldArtifactHash)
+        {
+            CleanupFails = true,
+        };
+        DeploymentRecoveryResult result = await RecoverDeploymentUseCase.ExecuteAsync(
+            plan,
+            operation,
+            [runtime],
+            activationStarted: false,
+            T0.AddMinutes(1));
+        Assert.False(result.Succeeded);
+        Assert.Equal(DeploymentRecoveryAction.RecoveryRequired, result.Action);
+        Assert.Equal(DeploymentCodes.WatchdogCleanupIncomplete, result.ErrorCode);
+        Assert.Equal(DeploymentOperationState.RecoveryRequired, result.State);
+    }
+
+    [Fact]
+    public async Task RecognizeWatchdogRollbackCleanupIncompleteRequiresRecovery()
+    {
+        (DeploymentPlan plan, DeploymentOperation operation, ScriptedRollbackRuntime runtime) = SeedActivatedNew();
+        foreach (AnchorTarget old in plan.DevicePlans[0].OldAnchorTargets)
+        {
+            runtime.Jumps[old.Key.Marker] = old.JumpTarget;
+        }
+
+        runtime.SchedulerNames = ["mfc-rb-d-0123456789abcdef"];
+        runtime.SchedulerDisabled = new Dictionary<string, bool>(StringComparer.Ordinal)
+        {
+            ["mfc-rb-d-0123456789abcdef"] = true,
+        };
+        runtime.CleanupFails = true;
+
+        DeploymentRecoveryResult result = await RecoverDeploymentUseCase.ExecuteAsync(
+            plan,
+            operation,
+            [runtime],
+            activationStarted: true,
+            T0.AddMinutes(1));
+        Assert.False(result.Succeeded);
+        Assert.Equal(DeploymentRecoveryAction.RecoveryRequired, result.Action);
+        Assert.Equal(DeploymentCodes.WatchdogCleanupIncomplete, result.ErrorCode);
+        Assert.Equal(DeploymentOperationState.RecoveryRequired, result.State);
+    }
+
+    [Fact]
     public async Task RollbackRejectsCommittedOperation()
     {
         Node node = DeploymentTestFactory.RouterWithDevice(out _);
@@ -449,6 +537,8 @@ public sealed class DeploymentRollbackRecoveryLivingSpecTests
 
         public bool ProbeFails { get; set; }
 
+        public bool CleanupFails { get; set; }
+
         public Task<IReadOnlyDictionary<string, string>> ReadAnchorJumpsAsync(
             CancellationToken cancellationToken = default)
             => Task.FromResult((IReadOnlyDictionary<string, string>)new Dictionary<string, string>(Jumps, StringComparer.Ordinal));
@@ -498,8 +588,15 @@ public sealed class DeploymentRollbackRecoveryLivingSpecTests
                 Received = ProbeFails ? 0 : 3,
             });
 
-        public Task DisarmAndCleanupWatchdogAsync(CancellationToken cancellationToken = default)
-            => Task.CompletedTask;
+        public Task<DeploymentWatchdogExecutionResult> DisarmAndCleanupWatchdogAsync(
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(new DeploymentWatchdogExecutionResult
+            {
+                Succeeded = !CleanupFails,
+                Code = CleanupFails ? DeploymentCodes.WatchdogCleanupIncomplete : "OK",
+                Paths = [],
+                Error = CleanupFails ? "scheduler remnant" : null,
+            });
 
         public Task<(IReadOnlyList<string> SchedulerNames, IReadOnlyDictionary<string, bool> SchedulerDisabled)>
             ReadWatchdogSchedulerFactsAsync(CancellationToken cancellationToken = default)

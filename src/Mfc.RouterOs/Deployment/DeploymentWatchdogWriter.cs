@@ -289,10 +289,10 @@ public sealed class DeploymentWatchdogWriter : IDeploymentWatchdogPort
         => rows.FirstOrDefault(r => string.Equals(r.GetValueOrDefault("name"), name, StringComparison.Ordinal));
 
     private static string FormatStartDate(DateTimeOffset value)
-        => value.UtcDateTime.ToString("MMM/dd/yyyy", CultureInfo.InvariantCulture).ToUpperInvariant();
+        => value.ToString("MMM/dd/yyyy", CultureInfo.InvariantCulture).ToLowerInvariant();
 
     private static string FormatStartTime(DateTimeOffset value)
-        => value.UtcDateTime.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+        => value.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
 
     private static bool Yes(string? value)
         => string.Equals(value, "yes", StringComparison.OrdinalIgnoreCase)

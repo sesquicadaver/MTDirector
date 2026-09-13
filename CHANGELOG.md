@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **W7-228** ([#863](https://github.com/sesquicadaver/MTDirector/issues/863)): AUDIT-DEP-02 — watchdog deadline uses RouterOS clock (`ReadRouterClockAsync` / `RouterOsClockParser`), monotonic remaining TTL (`WatchdogTimeBudget`), router-local start-date/time; recovery/rollback fail closed on cleanup (`WATCHDOG_CLEANUP_INCOMPLETE`) (`AuditDep02WatchdogClockTtlW7228LivingSpecTests`). **§3.C NEXT = W7-229 (#864)**.
+
 - **W7-226** ([#859](https://github.com/sesquicadaver/MTDirector/issues/859)): AUDIT-DEP-01 — Start acquires durable Node lock and IntentRecorded journal before Execute; background recovery skips live leases (`DEPLOYMENT_LOCK_HELD`); lease expires when Start leaves Execute (`AuditDep01RecoveryLockW7226LivingSpecTests`). **§3.C NEXT = W7-227 (#860)**.
 
 - **W7-224** ([#855](https://github.com/sesquicadaver/MTDirector/issues/855)): AUDIT-GUARD-01 — ManagementPath strict `mfc:guard:v1` markers, full TCP state sets, `/0` ban, marker uniqueness, and pre-guard predicate intersection (`AuditGuard01*` + `AuditGuard01CompleteGuardContractW7224LivingSpecTests`). **§3.C NEXT = W7-225 (#856)**.

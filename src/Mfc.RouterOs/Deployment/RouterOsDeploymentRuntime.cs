@@ -58,7 +58,9 @@ public sealed class RouterOsDeploymentRuntime : IDeploymentRuntime
                 DeploymentStagingArtifacts material = await _artifacts
                     .LoadAsync(memberPlan, cancellationToken)
                     .ConfigureAwait(false);
-                members.Add(new RouterOsVrrpMemberDeploymentRuntime(session, memberPlan, material, nowUtc));
+                DateTimeOffset memberClock = await session.ReadRouterClockAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                members.Add(new RouterOsVrrpMemberDeploymentRuntime(session, memberPlan, material, memberClock));
             }
 
             VrrpDeploymentResult result = await ExecuteVrrpDeploymentUseCase.ExecuteAsync(
@@ -85,6 +87,7 @@ public sealed class RouterOsDeploymentRuntime : IDeploymentRuntime
         DeploymentStagingArtifacts staging = await _artifacts.LoadAsync(devicePlan, cancellationToken)
             .ConfigureAwait(false);
         DeviceDeployment deviceState = DeviceDeployment.Create(operation.Id, devicePlan.DeviceId, nowUtc);
+        DateTimeOffset routerClock = await device.ReadRouterClockAsync(cancellationToken).ConfigureAwait(false);
         StandaloneDeploymentResult standalone = await ExecuteStandaloneDeploymentUseCase.ExecuteAsync(
             node,
             plan,
@@ -97,7 +100,7 @@ public sealed class RouterOsDeploymentRuntime : IDeploymentRuntime
             staging.Chains,
             devicePlan.NewArtifactHash,
             nowUtc,
-            nowUtc,
+            routerClock,
             observeFromArtifact: staging.SealedArtifact,
             cancellationToken: cancellationToken).ConfigureAwait(false);
         return new DeploymentWorkflowExecutionResult

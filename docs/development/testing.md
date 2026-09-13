@@ -1623,6 +1623,17 @@ Issue [#860](https://github.com/sesquicadaver/MTDirector/issues/860) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7227"`.
 
+
+## Living Specification — AUDIT-DEP-02 watchdog clock/TTL + cleanup (W7-228)
+
+Issue [#863](https://github.com/sesquicadaver/MTDirector/issues/863) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| RouterOS clock for watchdog deadline; monotonic remaining TTL; cleanup fail-closed | `RouterOsClockParser`, `WatchdogTimeBudget`, `RouterOsDeploymentRuntime`, `RecoverDeploymentUseCase` | `AuditDep02WatchdogClockTtlW7228LivingSpecTests`, `RouterOsClockParserTests`, `WatchdogTimeBudgetTests`, `DeploymentRollbackRecoveryLivingSpecTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditDep02"`.
+
 ## Living Specification — AUDIT-GUARD-01 complete guard contract (W7-224)
 
 Issue [#855](https://github.com/sesquicadaver/MTDirector/issues/855) AC → module → tests:

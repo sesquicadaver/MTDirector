@@ -16,8 +16,9 @@ internal sealed class RouterOsVrrpMemberDeploymentRuntime : IVrrpMemberDeploymen
     private readonly RouterOsDeploymentDeviceSession _device;
     private readonly DeviceDeploymentPlan _devicePlan;
     private readonly DeploymentStagingArtifacts _artifacts;
-    private readonly DateTimeOffset _routerClock;
+    private DateTimeOffset _routerClock;
     private DeploymentWatchdogBundle? _armed;
+    private WatchdogTimeBudget? _budget;
 
     public RouterOsVrrpMemberDeploymentRuntime(
         RouterOsDeploymentDeviceSession device,
@@ -78,6 +79,7 @@ internal sealed class RouterOsVrrpMemberDeploymentRuntime : IVrrpMemberDeploymen
 
     public async Task ArmWatchdogAsync(CancellationToken cancellationToken = default)
     {
+        _routerClock = await _device.ReadRouterClockAsync(cancellationToken).ConfigureAwait(false);
         DeploymentSystemNameFacts names = await _device.ReadSystemNamesAsync(cancellationToken).ConfigureAwait(false);
         DeploymentWatchdogPlanResult planned = PlanDeploymentWatchdogUseCase.PlanWatchdog(
             _device.OperationId,
@@ -102,14 +104,16 @@ internal sealed class RouterOsVrrpMemberDeploymentRuntime : IVrrpMemberDeploymen
         }
 
         _armed = planned.Watchdog;
+        _budget = new WatchdogTimeBudget(_devicePlan.RollbackTtl);
     }
 
     public async Task ActivateAsync(CancellationToken cancellationToken = default)
     {
+        WatchdogTimeBudget budget = RequireBudget();
         AnchorActivationResult activated = await ActivateAnchorsUseCase.ExecuteAsync(
             _devicePlan,
             _device.Session,
-            () => _devicePlan.RollbackTtl,
+            () => budget.Remaining,
             cancellationToken).ConfigureAwait(false);
         if (!activated.Succeeded)
         {
@@ -124,13 +128,14 @@ internal sealed class RouterOsVrrpMemberDeploymentRuntime : IVrrpMemberDeploymen
             throw new DomainInvariantException(DeploymentCodes.WatchdogNotArmed);
         }
 
+        WatchdogTimeBudget budget = RequireBudget();
         DeploymentVerificationResult verified = await VerifyDeploymentActivationUseCase.ExecuteAsync(
             _devicePlan,
             priorSessionIdentity: _device.Session,
             _device.FreshSessions,
             _devicePlan.NewArtifactHash,
             _armed,
-            _devicePlan.RollbackTtl,
+            budget.Remaining,
             observeFromArtifact: _artifacts.SealedArtifact,
             cancellationToken: cancellationToken).ConfigureAwait(false);
         if (!verified.Succeeded)
@@ -146,9 +151,10 @@ internal sealed class RouterOsVrrpMemberDeploymentRuntime : IVrrpMemberDeploymen
             return;
         }
 
+        WatchdogTimeBudget budget = RequireBudget();
         DeploymentWatchdogExecutionResult disarmed = await _device.Watchdog.DisarmWatchdogAsync(
             _armed,
-            _devicePlan.RollbackTtl,
+            budget.Remaining,
             cancellationToken).ConfigureAwait(false);
         if (!disarmed.Succeeded)
         {
@@ -176,4 +182,7 @@ internal sealed class RouterOsVrrpMemberDeploymentRuntime : IVrrpMemberDeploymen
                 .ConfigureAwait(false);
         }
     }
+
+    private WatchdogTimeBudget RequireBudget()
+        => _budget ?? throw new DomainInvariantException(DeploymentCodes.WatchdogNotArmed);
 }

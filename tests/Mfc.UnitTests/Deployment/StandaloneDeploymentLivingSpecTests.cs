@@ -787,6 +787,9 @@ public sealed class StandaloneDeploymentLivingSpecTests
                 SchedulerNames = _channel.SchedulerNames().ToArray(),
             });
 
+        public Task<DateTimeOffset> ReadRouterClockAsync(CancellationToken cancellationToken = default)
+            => Task.FromResult(new DateTimeOffset(2026, 9, 13, 15, 0, 0, TimeSpan.Zero));
+
         public ValueTask DisposeAsync() => _session.DisposeAsync();
     }
 
