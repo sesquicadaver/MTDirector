@@ -316,6 +316,18 @@ internal sealed class FakeDeploymentStore : IDeploymentStore
         return Task.CompletedTask;
     }
 
+    public Task ReplaceExpiredLockAsync(DeploymentLock deploymentLock, CancellationToken cancellationToken = default)
+    {
+        if (_locks.TryGetValue(deploymentLock.NodeId.Value, out DeploymentLock? existing)
+            && existing.ExpiresAtUtc > deploymentLock.AcquiredAtUtc)
+        {
+            throw new InvalidOperationException(DeploymentCodes.LockHeld);
+        }
+
+        _locks[deploymentLock.NodeId.Value] = deploymentLock;
+        return Task.CompletedTask;
+    }
+
     public Task<DeploymentLock?> GetLockByNodeAsync(NodeId nodeId, CancellationToken cancellationToken = default)
         => Task.FromResult(_locks.TryGetValue(nodeId.Value, out DeploymentLock? value) ? value : null);
 

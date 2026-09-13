@@ -1,7 +1,7 @@
 # PLAN-26 — Code-audit remediation tranche (`11cb746`)
 
 **Date:** 2026-09-11 (inventory **DONE** 2026-09-11)  
-**Status:** Seed **W7-205 DONE**; Inventory **DONE** (W7-206); **AUDIT-RULE-01 DONE** (W7-210); seed **W7-211 DONE**; **AUDIT-CTX-01 DONE** (W7-212); seed **W7-213 DONE**; **AUDIT-CAP-01 DONE** (W7-214); seed **W7-215 DONE**; **AUDIT-CAP-02 DONE** (W7-216); seed **W7-217 DONE**; **AUDIT-AN-01 DONE** (W7-218); seed **W7-219 DONE**; **AUDIT-AN-02 DONE** (W7-220); seed **W7-221 DONE**; **AUDIT-DIFF-01 DONE** (W7-222); seed **W7-223 DONE**; **AUDIT-GUARD-01 DONE** (W7-224); seed **W7-225 DONE**; next **W7-226 (#859)** AUDIT-DEP-01  
+**Status:** Seed **W7-205 DONE**; Inventory **DONE** (W7-206); **AUDIT-RULE-01 DONE** (W7-210); seed **W7-211 DONE**; **AUDIT-CTX-01 DONE** (W7-212); seed **W7-213 DONE**; **AUDIT-CAP-01 DONE** (W7-214); seed **W7-215 DONE**; **AUDIT-CAP-02 DONE** (W7-216); seed **W7-217 DONE**; **AUDIT-AN-01 DONE** (W7-218); seed **W7-219 DONE**; **AUDIT-AN-02 DONE** (W7-220); seed **W7-221 DONE**; **AUDIT-DIFF-01 DONE** (W7-222); seed **W7-223 DONE**; **AUDIT-GUARD-01 DONE** (W7-224); seed **W7-225 DONE**; **AUDIT-DEP-01 DONE** (W7-226); next **W7-227 (#860)** seed AUDIT-DEP-02  
 **Audit SHA:** `11cb746de60191e6eb83e52013f7f544306d5c9d`  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md)  
 **Predecessor:** PLAN-25 Desktop Inventory/Zones/Add-router AutomationProperties **COMPLETE**  
@@ -39,7 +39,7 @@ Normative audit §§01–19 mapped to ranked IDs below. First wave (issue body):
 | 6 | **AUDIT-AN-02** | Analysis fingerprint CAS uses client value (§05) | `PoliciesViewModel`, `CompileNodeFilterArtifactsUseCase` | **W7-220 (#845) DONE**; seed **W7-221 (#846) DONE** |
 | 7 | **AUDIT-DIFF-01** | Semantic policy diff can hide reachability change (§06) | `PolicyRevisionDiffer` | **W7-222 (#849) DONE**; seed **W7-223 (#850) DONE** |
 | 8 | **AUDIT-GUARD-01** | ManagementPath incomplete guard contract (§14) | `ManagementPathAnalysis`, `ActualFilterMarker` | **W7-224 (#855) DONE**; seed **W7-225 (#856) DONE** |
-| 9 | **AUDIT-DEP-01** | Background recovery vs active deployment (§07); missing durable lock/journal wiring | `RecoverNonterminalOperationsJobUseCase`, `DeploymentWorkflowUseCases` | **W7-226 (#859)**; seed **W7-227 (#860)** |
+| 9 | **AUDIT-DEP-01** | Background recovery vs active deployment (§07); missing durable lock/journal wiring | `RecoverNonterminalOperationsJobUseCase`, `DeploymentWorkflowUseCases` | **W7-226 (#859) DONE**; seed **W7-227 (#860)** |
 | 10 | **AUDIT-DEP-02** | Watchdog uses Controller clock + fixed TTL (§08); cleanup result ignored (§09) | `RouterOsDeploymentRuntime`, `RecoverDeploymentUseCase` | seed after AUDIT-DEP-01 |
 | 11 | **AUDIT-DEP-03** | Fake VRRP reachability/traffic facts (§15) | `RouterOsVrrpMemberDeploymentRuntime` | seed after AUDIT-DEP-02 |
 | 12 | **AUDIT-GUI-01** | Onboarding/Deployment synthetic payloads; Deploy never enables (§11) | `OnboardingViewModel.DefaultFacts`, `DeploymentViewModel`, `PoliciesViewModel.CanNeverDeploy` | seed after AUDIT-DEP-03 |
@@ -73,8 +73,9 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/c
 17. **W7-223 DONE** — seeded **W7-224** / **W7-225**.
 18. **W7-224 DONE** — AUDIT-GUARD-01 complete guard contract.
 19. **W7-225 DONE** — seeded **W7-226** / **W7-227**.
-20. Execute ranks 9…14 atomically starting at **W7-226** → **AUDIT-DEP-01**.
+20. **W7-226 DONE** — AUDIT-DEP-01 recovery ownership gate.
+21. Execute ranks 10…14 atomically starting at **W7-227** → seed **AUDIT-DEP-02**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-226 (#859)** — AUDIT-DEP-01 — Background recovery must not race active deployment.
+**§3.C NEXT = W7-227 (#860)** — Seed next PLAN-26 row after AUDIT-DEP-01 → AUDIT-DEP-02.

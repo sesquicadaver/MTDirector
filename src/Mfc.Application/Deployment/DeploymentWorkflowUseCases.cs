@@ -387,6 +387,12 @@ public sealed class StartDeploymentCommand
     public required byte[] PlanHash { get; init; }
 
     public required IReadOnlyList<PacketPathPairFact> PacketPathPairs { get; init; }
+
+    /// <summary>
+    /// Controller instance that owns the durable Node lock during Execute (AUDIT-DEP-01).
+    /// Defaults to <see cref="DeploymentOwnership.DefaultOwnerInstanceId"/>.
+    /// </summary>
+    public string? OwnerInstanceId { get; init; }
 }
 
 public sealed class StartDeploymentUseCase
@@ -517,86 +523,138 @@ public sealed class StartDeploymentUseCase
                 plan, node, new UserId(ActorKey.FromActor(command.Actor)), now);
             await _deployments.AddOperationAsync(operation, cancellationToken).ConfigureAwait(false);
 
+            string ownerInstanceId = string.IsNullOrWhiteSpace(command.OwnerInstanceId)
+                ? DeploymentOwnership.DefaultOwnerInstanceId
+                : command.OwnerInstanceId.Trim();
+            DeploymentLock? existingLock = await _deployments
+                .GetLockByNodeAsync(node.Id, cancellationToken)
+                .ConfigureAwait(false);
+            DeploymentLock acquired = DeploymentOwnership.AcquireForStart(
+                node.Id, operation.Id, ownerInstanceId, now, existingLock);
+            if (existingLock is null)
+            {
+                await _deployments.AddLockAsync(acquired, cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                await _deployments.ReplaceExpiredLockAsync(acquired, cancellationToken).ConfigureAwait(false);
+            }
+
+            Dictionary<Guid, DeviceDeploymentPlan> devicePlansById = plan.DevicePlans
+                .ToDictionary(static d => d.DeviceId.Value);
+            int sequence = 1;
+            foreach (DeviceId deviceId in plan.ActivationOrder)
+            {
+                if (!devicePlansById.TryGetValue(deviceId.Value, out DeviceDeploymentPlan? devicePlan))
+                {
+                    throw new DomainInvariantException(
+                        $"{DeploymentCodes.DevicePlanCardinality}: activation order device lacks a device plan.");
+                }
+
+                DeploymentStep intent = DeploymentStep.Create(
+                    operation.Id,
+                    deviceId,
+                    sequence++,
+                    DeploymentStepKind.Precheck,
+                    devicePlan.OldArtifactHash,
+                    devicePlan.NewArtifactHash,
+                    now);
+                await _deployments.AddStepAsync(intent, cancellationToken).ConfigureAwait(false);
+            }
+
             DeploymentWorkflowExecutionResult executed;
             try
             {
-                executed = await _runtime.ExecuteAsync(
-                        node, plan, operation, command.PacketPathPairs, now, cancellationToken)
+                try
+                {
+                    executed = await _runtime.ExecuteAsync(
+                            node, plan, operation, command.PacketPathPairs, now, cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    // AC#8: cancel after activation becomes controller rollback.
+                    if (ActivationStarted(operation.State))
+                    {
+                        DeploymentWorkflowRollbackResult rolled = await _runtime
+                            .RollbackAsync(node, plan, operation, now, CancellationToken.None)
+                            .ConfigureAwait(false);
+                        await _unitOfWork.ExecuteAsync(
+                            async ct =>
+                            {
+                                await _deployments.SaveOperationAsync(operation, ct).ConfigureAwait(false);
+                                await _idempotency.SaveAsync(
+                                        command.Actor,
+                                        Operation,
+                                        command.IdempotencyKey,
+                                        requestHash,
+                                        operation.Id.Value,
+                                        ct).ConfigureAwait(false);
+                                await _audit.AppendAsync(
+                                        command.Actor,
+                                        Operation,
+                                        JsonSerializer.Serialize(new
+                                        {
+                                            operation_id = operation.Id.Value,
+                                            plan_id = plan.Id.Value,
+                                            state = operation.State.ToString(),
+                                            canceled_after_activation = true,
+                                        }),
+                                        ct).ConfigureAwait(false);
+                            },
+                            CancellationToken.None).ConfigureAwait(false);
+                        return ApplicationResults.Ok(ToOperationView(operation, rolled.Timeline));
+                    }
+
+                    throw;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    if (!DeploymentOperation.IsTerminalState(operation.State)
+                        && DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.RecoveryRequired))
+                    {
+                        operation.EnsureTransition(DeploymentOperationState.RecoveryRequired, now, "failed");
+                    }
+
+                    await _deployments.SaveOperationAsync(operation, cancellationToken).ConfigureAwait(false);
+                    return ApplicationResults.Fail(ApplicationError.Failed(ex.Message));
+                }
+
+                await _unitOfWork.ExecuteAsync(
+                    async ct =>
+                    {
+                        await _deployments.SaveOperationAsync(operation, ct).ConfigureAwait(false);
+                        await _idempotency.SaveAsync(
+                                command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, ct)
+                            .ConfigureAwait(false);
+                        await _audit.AppendAsync(
+                                command.Actor,
+                                Operation,
+                                JsonSerializer.Serialize(new
+                                {
+                                    operation_id = operation.Id.Value,
+                                    plan_id = plan.Id.Value,
+                                    state = operation.State.ToString(),
+                                }),
+                                ct).ConfigureAwait(false);
+                    },
+                    cancellationToken).ConfigureAwait(false);
+                return ApplicationResults.Ok(ToOperationView(operation, executed.Timeline));
+            }
+            finally
+            {
+                // Crash mid-Execute leaves the lease live until TTL; a completed Start call expires it.
+                await ExpireOwnedLockAsync(node.Id, operation.Id, _clock.UtcNow, CancellationToken.None)
                     .ConfigureAwait(false);
             }
-            catch (OperationCanceledException)
-            {
-                // AC#8: cancel after activation becomes controller rollback.
-                if (ActivationStarted(operation.State))
-                {
-                    DeploymentWorkflowRollbackResult rolled = await _runtime
-                        .RollbackAsync(node, plan, operation, now, CancellationToken.None)
-                        .ConfigureAwait(false);
-                    await _unitOfWork.ExecuteAsync(
-                        async ct =>
-                        {
-                            await _deployments.SaveOperationAsync(operation, ct).ConfigureAwait(false);
-                            await _idempotency.SaveAsync(
-                                    command.Actor,
-                                    Operation,
-                                    command.IdempotencyKey,
-                                    requestHash,
-                                    operation.Id.Value,
-                                    ct).ConfigureAwait(false);
-                            await _audit.AppendAsync(
-                                    command.Actor,
-                                    Operation,
-                                    JsonSerializer.Serialize(new
-                                    {
-                                        operation_id = operation.Id.Value,
-                                        plan_id = plan.Id.Value,
-                                        state = operation.State.ToString(),
-                                        canceled_after_activation = true,
-                                    }),
-                                    ct).ConfigureAwait(false);
-                        },
-                        CancellationToken.None).ConfigureAwait(false);
-                    return ApplicationResults.Ok(ToOperationView(operation, rolled.Timeline));
-                }
-
-                throw;
-            }
-            catch (InvalidOperationException ex)
-            {
-                if (!DeploymentOperation.IsTerminalState(operation.State)
-                    && DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.RecoveryRequired))
-                {
-                    operation.EnsureTransition(DeploymentOperationState.RecoveryRequired, now, "failed");
-                }
-
-                await _deployments.SaveOperationAsync(operation, cancellationToken).ConfigureAwait(false);
-                return ApplicationResults.Fail(ApplicationError.Failed(ex.Message));
-            }
-
-            await _unitOfWork.ExecuteAsync(
-                async ct =>
-                {
-                    await _deployments.SaveOperationAsync(operation, ct).ConfigureAwait(false);
-                    await _idempotency.SaveAsync(
-                            command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, ct)
-                        .ConfigureAwait(false);
-                    await _audit.AppendAsync(
-                            command.Actor,
-                            Operation,
-                            JsonSerializer.Serialize(new
-                            {
-                                operation_id = operation.Id.Value,
-                                plan_id = plan.Id.Value,
-                                state = operation.State.ToString(),
-                            }),
-                            ct).ConfigureAwait(false);
-                },
-                cancellationToken).ConfigureAwait(false);
-            return ApplicationResults.Ok(ToOperationView(operation, executed.Timeline));
         }
         catch (DomainInvariantException ex)
         {
             return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
+        }
+        catch (PersistenceConflictException ex)
+        {
+            return ApplicationResults.Fail(new ApplicationError(ex.Code, ex.Message));
         }
         catch (InvalidOperationException ex)
         {
@@ -606,6 +664,23 @@ public sealed class StartDeploymentUseCase
         {
             return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
         }
+    }
+
+    private async Task ExpireOwnedLockAsync(
+        NodeId nodeId,
+        DeploymentOperationId operationId,
+        DateTimeOffset nowUtc,
+        CancellationToken cancellationToken)
+    {
+        DeploymentLock? held = await _deployments.GetLockByNodeAsync(nodeId, cancellationToken)
+            .ConfigureAwait(false);
+        if (held is null || held.DeploymentId.Value != operationId.Value || held.IsExpired(nowUtc))
+        {
+            return;
+        }
+
+        held.Expire(nowUtc);
+        await _deployments.SaveLockAsync(held, cancellationToken).ConfigureAwait(false);
     }
 
     internal static bool ActivationStarted(DeploymentOperationState state)

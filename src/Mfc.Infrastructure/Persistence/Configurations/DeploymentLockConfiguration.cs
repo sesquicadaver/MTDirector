@@ -11,7 +11,7 @@ internal sealed class DeploymentLockConfiguration : IEntityTypeConfiguration<Dep
         builder.ToTable("deployment_locks", table =>
         {
             table.HasCheckConstraint("ck_deployment_locks_owner", "length(btrim(\"OwnerInstanceId\")) BETWEEN 1 AND 128");
-            table.HasCheckConstraint("ck_deployment_locks_expiry", "\"ExpiresAtUtc\" > \"AcquiredAtUtc\"");
+            table.HasCheckConstraint("ck_deployment_locks_expiry", "\"ExpiresAtUtc\" >= \"AcquiredAtUtc\"");
         });
         builder.HasKey(e => e.NodeId);
         builder.Property(e => e.NodeId).ValueGeneratedNever();

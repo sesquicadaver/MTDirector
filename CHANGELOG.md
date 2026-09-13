@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **W7-226** ([#859](https://github.com/sesquicadaver/MTDirector/issues/859)): AUDIT-DEP-01 — Start acquires durable Node lock and IntentRecorded journal before Execute; background recovery skips live leases (`DEPLOYMENT_LOCK_HELD`); lease expires when Start leaves Execute (`AuditDep01RecoveryLockW7226LivingSpecTests`). **§3.C NEXT = W7-227 (#860)**.
+
 - **W7-224** ([#855](https://github.com/sesquicadaver/MTDirector/issues/855)): AUDIT-GUARD-01 — ManagementPath strict `mfc:guard:v1` markers, full TCP state sets, `/0` ban, marker uniqueness, and pre-guard predicate intersection (`AuditGuard01*` + `AuditGuard01CompleteGuardContractW7224LivingSpecTests`). **§3.C NEXT = W7-225 (#856)**.
 
 - **W7-222** ([#849](https://github.com/sesquicadaver/MTDirector/issues/849)): AUDIT-DIFF-01 — semantic policy diff uses separate catalogs, first-match accept space, and chain-contract disposition (`AuditDiff01*` + `AuditDiff01SemanticReachabilityW7222LivingSpecTests`). **§3.C NEXT = W7-223 (#850)**.
