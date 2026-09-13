@@ -58,55 +58,40 @@ public static class GuardMarker
         family = default;
         chain = default;
         ordinal = 0;
-        if (string.IsNullOrWhiteSpace(comment)
-            || !comment.StartsWith(Prefix, StringComparison.Ordinal))
-        {
-            return false;
-        }
-
-        if (!ActualFilterMarker.TryReadMarker(comment, out string? marker)
-            || marker is null
-            || !comment.StartsWith(marker, StringComparison.Ordinal))
-        {
-            return false;
-        }
-
-        // mfc:guard:v1:<id>:<4|6>:<i|o>:<ordinal>
-        string[] parts = marker.Split(':');
-        if (parts.Length != 7
-            || !string.Equals(parts[0], "mfc", StringComparison.Ordinal)
-            || !string.Equals(parts[1], "guard", StringComparison.Ordinal)
-            || !string.Equals(parts[2], "v1", StringComparison.Ordinal))
+        if (!ActualFilterMarker.TryParseStrictGuardMarker(
+                comment,
+                out string profileIdHex,
+                out char familyCode,
+                out char directionCode,
+                out ordinal))
         {
             return false;
         }
 
         try
         {
-            profileId = GuardProfileId.Parse(parts[3]);
+            profileId = GuardProfileId.Parse(profileIdHex);
         }
         catch (DomainInvariantException)
         {
             return false;
         }
 
-        IpAddressFamily? parsedFamily = parts[4] switch
+        family = familyCode switch
         {
-            "4" => IpAddressFamily.IPv4,
-            "6" => IpAddressFamily.IPv6,
-            _ => null,
+            '4' => IpAddressFamily.IPv4,
+            '6' => IpAddressFamily.IPv6,
+            _ => default,
         };
-        if (parsedFamily is null)
+        if (family is not (IpAddressFamily.IPv4 or IpAddressFamily.IPv6))
         {
             return false;
         }
 
-        family = parsedFamily.Value;
-
-        FilterBuiltInContext? parsedChain = parts[5] switch
+        FilterBuiltInContext? parsedChain = directionCode switch
         {
-            "i" => FilterBuiltInContext.Input,
-            "o" => FilterBuiltInContext.Output,
+            'i' => FilterBuiltInContext.Input,
+            'o' => FilterBuiltInContext.Output,
             _ => null,
         };
         if (parsedChain is null)
@@ -115,9 +100,7 @@ public static class GuardMarker
         }
 
         chain = parsedChain.Value;
-
-        return int.TryParse(parts[6], NumberStyles.None, CultureInfo.InvariantCulture, out ordinal)
-               && ordinal >= 0;
+        return true;
     }
 
     /// <summary>True when the comment begins with a strict Spec §15 guard marker.</summary>

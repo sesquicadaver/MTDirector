@@ -70,7 +70,7 @@ public sealed class ManagementPathAnalysisTests
     }
 
     [Fact]
-    public void Ac4InvalidGuardMarkerIsIndeterminate()
+    public void Ac4InvalidGuardMarkerIsGuardInvalid()
     {
         ManagementPathAnalysisResult result = Analyze(
             EnabledService(),
@@ -78,7 +78,7 @@ public sealed class ManagementPathAnalysisTests
             OutputGuard(0),
             Anchor("input", 1),
             Anchor("output", 1));
-        Assert.Contains(result.Findings, f => f.Code == ManagementPathAnalysisCodes.PathIndeterminate);
+        Assert.Contains(result.Findings, f => f.Code == ManagementPathAnalysisCodes.GuardInvalid);
     }
 
     [Fact]
@@ -92,7 +92,9 @@ public sealed class ManagementPathAnalysisTests
             OutputGuard(0),
             Anchor("input", 1),
             Anchor("output", 1));
-        Assert.Contains(result.Findings, f => f.Code == ManagementPathAnalysisCodes.InputBlocked && f.Witness is not null);
+        Assert.Contains(result.Findings, f =>
+            f.Code == ManagementPathAnalysisCodes.InputBlocked || f.Code == ManagementPathAnalysisCodes.GuardTooBroad);
+        Assert.Contains(result.Findings, f => f.Witness is not null);
     }
 
     [Fact]
@@ -258,6 +260,96 @@ public sealed class ManagementPathAnalysisTests
         Assert.NotEqual(first.ManagementPathContextHash.ToString(), changed.ManagementPathContextHash.ToString());
     }
 
+
+    [Fact]
+    public void AuditGuard01InputMissingEstablishedIsTooBroad()
+    {
+        Dictionary<string, string> matchers = InputMatchers();
+        matchers["connection-state"] = "new";
+        ManagementPathAnalysisResult result = Analyze(
+            EnabledService(),
+            InputGuard(0, matchers: matchers),
+            OutputGuard(0),
+            Anchor("input", 1),
+            Anchor("output", 1));
+        Assert.Contains(result.Findings, f => f.Code == ManagementPathAnalysisCodes.GuardTooBroad && f.Chain == "input");
+    }
+
+    [Fact]
+    public void AuditGuard01OutputIncompleteNormativeSetIsTooBroad()
+    {
+        Dictionary<string, string> matchers = OutputMatchers();
+        matchers["connection-state"] = "established";
+        ManagementPathAnalysisResult result = Analyze(
+            EnabledService(),
+            InputGuard(0),
+            OutputGuard(0, matchers: matchers),
+            Anchor("input", 1),
+            Anchor("output", 1));
+        Assert.Contains(result.Findings, f => f.Code == ManagementPathAnalysisCodes.GuardTooBroad && f.Chain == "output");
+    }
+
+    [Fact]
+    public void AuditGuard01GuardDefaultRouteSlashZeroIsTooBroad()
+    {
+        Dictionary<string, string> matchers = InputMatchers();
+        matchers["src-address"] = "0.0.0.0/0";
+        ManagementPathAnalysisResult result = Analyze(
+            EnabledService(),
+            InputGuard(0, matchers: matchers),
+            OutputGuard(0),
+            Anchor("input", 1),
+            Anchor("output", 1));
+        Assert.Contains(result.Findings, f => f.Code == ManagementPathAnalysisCodes.GuardTooBroad);
+    }
+
+    [Fact]
+    public void AuditGuard01Udp53DropBeforeTcp8729GuardDoesNotBlock()
+    {
+        ManagementPathAnalysisResult result = Analyze(
+            EnabledService(),
+            Rule(
+                "input",
+                0,
+                "drop",
+                known: new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["protocol"] = "udp",
+                    ["dst-port"] = "53",
+                }),
+            InputGuard(1),
+            OutputGuard(0),
+            Anchor("input", 2),
+            Anchor("output", 1));
+        Assert.DoesNotContain(result.Findings, f => f.Code == ManagementPathAnalysisCodes.InputBlocked && f.Ordinal == 0);
+        Assert.False(result.BlocksManagementPath);
+    }
+
+    [Fact]
+    public void AuditGuard01ArbitraryMarkerSuffixIsGuardInvalid()
+    {
+        ManagementPathAnalysisResult result = Analyze(
+            EnabledService(),
+            InputGuard(0, comment: "mfc:guard:not-a-contract"),
+            OutputGuard(0),
+            Anchor("input", 1),
+            Anchor("output", 1));
+        Assert.Contains(result.Findings, f => f.Code == ManagementPathAnalysisCodes.GuardInvalid);
+    }
+
+    [Fact]
+    public void AuditGuard01DuplicateGuardMarkerIsInvalid()
+    {
+        ManagementPathAnalysisResult result = Analyze(
+            EnabledService(),
+            InputGuard(0),
+            InputGuard(1, comment: "mfc:guard:v1:0123456789abcdef:4:i:0"),
+            OutputGuard(0),
+            Anchor("input", 2),
+            Anchor("output", 1));
+        Assert.Contains(result.Findings, f => f.Code == ManagementPathAnalysisCodes.GuardInvalid);
+    }
+
     [Fact]
     public void ProfileAndCodeInvariantsHold()
     {
@@ -270,6 +362,7 @@ public sealed class ManagementPathAnalysisTests
         Assert.Throws<DomainInvariantException>(() =>
             ManagementAccessProfile.Create([AddressPrefix.Parse("192.0.2.0/24")], "192.0.2.10", 0));
         Assert.True(ActualFilterMarker.IsGuard("fwc:guard:api-ssl"));
+        Assert.False(ActualFilterMarker.IsValidGuardMarker("fwc:guard:api-ssl"));
         Assert.True(ActualFilterMarker.IsValidGuardMarker("mfc:guard:v1:0123456789abcdef:4:i:0"));
         Assert.False(ActualFilterMarker.IsValidGuardMarker("fwc:guard:"));
         Assert.False(ActualFilterMarker.IsGuard("fwc:anchor:ipv4:input"));
@@ -313,7 +406,7 @@ public sealed class ManagementPathAnalysisTests
 
     private static ActualFilterRule InputGuard(
         int ordinal,
-        string? comment = "fwc:guard:api-ssl",
+        string? comment = "mfc:guard:v1:0123456789abcdef:4:i:0",
         string dest = "192.0.2.10",
         IReadOnlyDictionary<string, string>? matchers = null,
         IReadOnlyDictionary<string, string>? unknown = null)
@@ -325,13 +418,17 @@ public sealed class ManagementPathAnalysisTests
             known: matchers ?? InputMatchers(dest),
             unknown: unknown);
 
-    private static ActualFilterRule OutputGuard(int ordinal, string source = "192.0.2.10")
+    private static ActualFilterRule OutputGuard(
+        int ordinal,
+        string source = "192.0.2.10",
+        string? comment = "mfc:guard:v1:0123456789abcdef:4:o:0",
+        IReadOnlyDictionary<string, string>? matchers = null)
         => Rule(
             "output",
             ordinal,
             "accept",
-            comment: "fwc:guard:api-ssl",
-            known: OutputMatchers(source));
+            comment: comment,
+            known: matchers ?? OutputMatchers(source));
 
     private static ActualFilterRule Anchor(string chain, int ordinal)
         => Rule(

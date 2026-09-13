@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace Mfc.Domain.Policy;
 
 /// <summary>
@@ -18,6 +20,9 @@ public static class ActualFilterMarker
 
     public const string MfcGuardPrefix = "mfc:guard:";
 
+    /// <summary>Strict Onboarding Spec §15 guard grammar prefix.</summary>
+    public const string MfcGuardV1Prefix = "mfc:guard:v1:";
+
     /// <summary>True when the comment contains a controller ownership or layout marker.</summary>
     public static bool IsControllerOwned(string? comment)
         => TryReadMarker(comment, out _);
@@ -37,27 +42,76 @@ public static class ActualFilterMarker
                || marker.StartsWith(MfcGuardPrefix, StringComparison.Ordinal));
 
     /// <summary>
-    /// Guard marker has a non-empty remainder. Strict <c>mfc:guard:v1:</c> form is also accepted;
-    /// malformed empty <c>fwc:guard:</c>/<c>mfc:guard:</c> is not valid (Policy Model §46.1 #6).
+    /// Guard marker is a strict Spec §15 token:
+    /// <c>mfc:guard:v1:&lt;16-hex-id&gt;:{4|6}:{i|o}:&lt;ordinal&gt;</c> at the start of the comment.
+    /// Legacy <c>fwc:guard:*</c> / arbitrary <c>mfc:guard:</c> suffixes are ownership markers but not valid.
     /// </summary>
     public static bool IsValidGuardMarker(string? comment)
+        => TryParseStrictGuardMarker(comment, out _, out _, out _, out _);
+
+    /// <summary>
+    /// Parses a strict Spec §15 guard marker that occupies the first token of <paramref name="comment"/>.
+    /// Shared by ManagementPath and Onboarding <c>GuardMarker</c> (Policy → no Onboarding dependency).
+    /// </summary>
+    public static bool TryParseStrictGuardMarker(
+        string? comment,
+        out string profileIdHex,
+        out char familyCode,
+        out char directionCode,
+        out int ordinal)
     {
-        if (!TryReadMarker(comment, out string? marker) || marker is null)
+        profileIdHex = string.Empty;
+        familyCode = '\0';
+        directionCode = '\0';
+        ordinal = 0;
+        if (string.IsNullOrWhiteSpace(comment)
+            || !comment.StartsWith(MfcGuardV1Prefix, StringComparison.Ordinal))
         {
             return false;
         }
 
-        if (marker.StartsWith(FwcGuardPrefix, StringComparison.Ordinal))
+        if (!TryReadMarker(comment, out string? marker)
+            || marker is null
+            || !comment.StartsWith(marker, StringComparison.Ordinal))
         {
-            return marker.Length > FwcGuardPrefix.Length;
+            return false;
         }
 
-        if (marker.StartsWith(MfcGuardPrefix, StringComparison.Ordinal))
+        // mfc:guard:v1:<id>:<4|6>:<i|o>:<ordinal>
+        string[] parts = marker.Split(':');
+        if (parts.Length != 7
+            || !string.Equals(parts[0], "mfc", StringComparison.Ordinal)
+            || !string.Equals(parts[1], "guard", StringComparison.Ordinal)
+            || !string.Equals(parts[2], "v1", StringComparison.Ordinal))
         {
-            return marker.Length > MfcGuardPrefix.Length;
+            return false;
         }
 
-        return false;
+        if (!IsGuardProfileIdHex(parts[3]))
+        {
+            return false;
+        }
+
+        if (parts[4] is not ("4" or "6"))
+        {
+            return false;
+        }
+
+        if (parts[5] is not ("i" or "o"))
+        {
+            return false;
+        }
+
+        if (!int.TryParse(parts[6], NumberStyles.None, CultureInfo.InvariantCulture, out ordinal)
+            || ordinal < 0)
+        {
+            return false;
+        }
+
+        profileIdHex = parts[3];
+        familyCode = parts[4][0];
+        directionCode = parts[5][0];
+        return true;
     }
 
     /// <summary>Unmanaged means no valid <c>fwc:</c>/<c>mfc:</c> marker (MVP §12.2).</summary>
@@ -104,6 +158,26 @@ public static class ActualFilterMarker
         }
 
         return IsCompilerArtifactIdToken(parts[3]);
+    }
+
+    private static bool IsGuardProfileIdHex(string token)
+    {
+        if (token.Length != 16)
+        {
+            return false;
+        }
+
+        foreach (char c in token)
+        {
+            if (c is (>= '0' and <= '9') or (>= 'a' and <= 'f'))
+            {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     private static bool IsCompilerArtifactIdToken(string token)

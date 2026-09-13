@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **W7-224** ([#855](https://github.com/sesquicadaver/MTDirector/issues/855)): AUDIT-GUARD-01 — ManagementPath strict `mfc:guard:v1` markers, full TCP state sets, `/0` ban, marker uniqueness, and pre-guard predicate intersection (`AuditGuard01*` + `AuditGuard01CompleteGuardContractW7224LivingSpecTests`). **§3.C NEXT = W7-225 (#856)**.
+
 - **W7-222** ([#849](https://github.com/sesquicadaver/MTDirector/issues/849)): AUDIT-DIFF-01 — semantic policy diff uses separate catalogs, first-match accept space, and chain-contract disposition (`AuditDiff01*` + `AuditDiff01SemanticReachabilityW7222LivingSpecTests`). **§3.C NEXT = W7-223 (#850)**.
 
 - **W7-220** ([#845](https://github.com/sesquicadaver/MTDirector/issues/845)): AUDIT-AN-02 — analysis fingerprint CAS uses controller-computed current (`PolicyDependencyFingerprintCas`, live calculator DI); optional Record `node_id`; Desktop passes Compose node (`AuditAn02FingerprintCasW7220LivingSpecTests`). **§3.C NEXT = W7-221 (#846)**.
