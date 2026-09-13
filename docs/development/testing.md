@@ -3644,7 +3644,7 @@ Policy Model §54–§61 + Issue Set M2-16 AC#1–12 → Domain `PolicyEvidenceA
 | Managed rule UUID for diff | no fuzzy match; reconstituted identical predicate ≠ MODIFIED | `Ac5ManagedRuleUuidIsUsedForDiff` |
 | Added/removed/modified/moved/enabled/disabled | UUID change classes | `Ac6AddedRemovedModifiedMovedEnabledDisabledAreDetermined` |
 | Object changes have impact set | address UUID + dependent rule ids | `Ac7ObjectChangesHaveImpactSet` |
-| Newly accepted / newly denied packet spaces | `Relate` on union of enabled ACCEPT/FastTrack | `Ac8NewlyAcceptedAndNewlyDeniedPacketSpacesAreClassified` |
+| Newly accepted / newly denied packet spaces | `Relate` on first-match accepted space (per-surface; W7-222 / AUDIT-DIFF-01) | `Ac8NewlyAcceptedAndNewlyDeniedPacketSpacesAreClassified`; `AuditDiff01*` |
 | Risk from normative mapping | add-allow HIGH; identical NONE/LOW | `Ac9RiskUsesNormativeMapping` |
 | Management / FastTrack / exception / default minimums | signals + FastTrack UUID change | `Ac10ManagementFastTrackExceptionAndDefaultHaveMinimumRisk` |
 | Diff and risk deterministic | same inputs → same evidence hash | `Ac11DiffAndRiskAreDeterministic` |
