@@ -11,6 +11,66 @@ namespace Mfc.UnitTests.Policy;
 public sealed class PolicyApprovalWorkflowTests
 {
     [Fact]
+    public void AcMandatoryTestCoverageRequiredForPassAndApproval()
+    {
+        (Mfc.Domain.Policy.Policy policy, PolicyRevision revision, PolicyAnalysisRun run) = InReviewWithRun();
+        Guid required = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Assert.False(run.IsPass([required]));
+        Assert.True(run.IsPass());
+        PolicyApprovalEvaluation incomplete = PolicyApprovalGate.Evaluate(
+            revision,
+            policy,
+            run,
+            run.BundleHash,
+            run.DependencyFingerprint,
+            [],
+            [],
+            UserId.New(),
+            isSecurityOwner: false,
+            requiredTestIds: [required]);
+        Assert.Equal(PolicyApprovalCodes.TestsIncomplete, incomplete.ErrorCode);
+        PolicyApprovalTestOutcome matching = new()
+        {
+            TestId = new PolicyTestId(required),
+            Origin = PolicyEvidenceAnalysisCodes.OriginUser,
+            Outcome = PolicyEvidenceAnalysisCodes.OutcomePass,
+            Proof = PolicyEvidenceAnalysisCodes.ProofProven,
+        };
+        PolicyAnalysisRun covered = PolicyAnalysisRun.Create(
+            revision.Id,
+            revision.ContentHash,
+            run.LogicalEffectiveHash,
+            run.AnalysisContextHash,
+            run.EvidenceContextHash,
+            run.TopologyProjectionHash,
+            run.ImpactSetHash,
+            run.PerDeviceAnalysisHashes,
+            run.DependencyFingerprint,
+            run.RiskLevel,
+            run.EvidenceSignalsPresent,
+            run.AnalyzerVersion,
+            run.PolicySchemaVersion,
+            run.PipelineVersion,
+            run.Findings,
+            [matching],
+            run.CreatedBy,
+            run.CreatedAtUtc);
+        Assert.True(covered.IsPass([required]));
+        PolicyApprovalEvaluation ok = PolicyApprovalGate.Evaluate(
+            revision,
+            policy,
+            covered,
+            covered.BundleHash,
+            covered.DependencyFingerprint,
+            [],
+            [],
+            UserId.New(),
+            isSecurityOwner: false,
+            requiredTestIds: [required]);
+        Assert.Equal(PolicyApprovalCodes.OutcomeApprove, ok.Outcome);
+    }
+
+    [Fact]
     public void Ac1AnalysisRunIsImmutableAndBundleHashIsContentAddressed()
     {
         PolicyAnalysisRun run = ValidRun();

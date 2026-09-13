@@ -450,6 +450,167 @@ public sealed class PolicyApprovalUseCaseTests
         Assert.Equal("conflict", conflict.Error!.Code);
     }
 
+    [Fact]
+    public async Task RecordAnalysisRunRejectsIncompleteDocumentTestCoverage()
+    {
+        FakeAuthorizationBoundary auth = new();
+        FakePolicyStore policies = new();
+        FakePolicyApprovalStore approvals = new();
+        FakeIdempotencyStore idempotency = new();
+        FakeAuditEventWriter audit = new();
+        CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
+        ApplicationResult<PolicyDraftView> draft = await create.ExecuteAsync(new CreateDraftPolicyCommand
+        {
+            Actor = "author",
+            IdempotencyKey = Guid.NewGuid(),
+            Name = "coverage",
+            Kind = PolicyKind.CompanyBaseline,
+            OwnerScope = PolicyOwnerScope.Company,
+        });
+        Assert.True(draft.IsSuccess);
+        Guid mandatoryTestId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+        ReplacePolicyTestsUseCase replaceTests = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
+        ApplicationResult<PolicyRevisionView> withTests = await replaceTests.ExecuteAsync(new ReplacePolicyTestsCommand
+        {
+            Actor = "author",
+            IdempotencyKey = Guid.NewGuid(),
+            RevisionId = draft.Value!.RevisionId,
+            ExpectedContentHash = Convert.FromHexString(draft.Value.ContentHashHex),
+            TestJsonElements = ["""{"id":"aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"}"""],
+        });
+        Assert.True(withTests.IsSuccess, withTests.Error?.Message);
+        ValidateRevisionUseCase validate = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
+        ApplicationResult<PolicyRevisionView> validated = await validate.ExecuteAsync(new ValidateRevisionCommand
+        {
+            Actor = "author",
+            IdempotencyKey = Guid.NewGuid(),
+            RevisionId = draft.Value.RevisionId,
+            ExpectedContentHash = Convert.FromHexString(withTests.Value!.ContentHashHex),
+        });
+        Assert.True(validated.IsSuccess, validated.Error?.Message);
+        SubmitRevisionForReviewUseCase submit = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
+        ApplicationResult<PolicyRevisionView> submitted = await submit.ExecuteAsync(new SubmitRevisionForReviewCommand
+        {
+            Actor = "author",
+            IdempotencyKey = Guid.NewGuid(),
+            RevisionId = draft.Value.RevisionId,
+            ExpectedContentHash = Convert.FromHexString(validated.Value!.ContentHashHex),
+        });
+        Assert.True(submitted.IsSuccess, submitted.Error?.Message);
+
+        RecordAnalysisRunUseCase record = new(auth, policies, approvals, idempotency, audit, new FakeUnitOfWork());
+        byte[] fingerprint = PolicyApprovalHasher.HashDependencyFingerprint(Vector()).Bytes.ToArray();
+        ApplicationResult<PolicyAnalysisRunView> missing = await record.ExecuteAsync(new RecordAnalysisRunCommand
+        {
+            Actor = "author",
+            IdempotencyKey = Guid.NewGuid(),
+            RevisionId = draft.Value.RevisionId,
+            ExpectedContentHash = Convert.FromHexString(submitted.Value!.ContentHashHex),
+            LogicalEffectiveHash = H("logical").Bytes.ToArray(),
+            AnalysisContextHash = H("analysis").Bytes.ToArray(),
+            EvidenceContextHash = H("evidence").Bytes.ToArray(),
+            TopologyProjectionHash = H("topology").Bytes.ToArray(),
+            ImpactSetHash = H("impact").Bytes.ToArray(),
+            PerDeviceAnalysisHashes = [H("device").Bytes.ToArray()],
+            DependencyFingerprint = fingerprint,
+            RiskLevel = PolicyEvidenceAnalysisCodes.RiskLow,
+            EvidenceSignalsPresent = true,
+            AnalyzerVersion = PolicyApprovalCodes.AnalyzerVersion,
+            PolicySchemaVersion = PolicyDocument.SchemaName,
+            PipelineVersion = PolicyPipelineV1.Version,
+            Findings = [],
+            TestResults =
+            [
+                new PolicyApprovalTestInput
+                {
+                    TestId = Guid.NewGuid(),
+                    Origin = PolicyEvidenceAnalysisCodes.OriginSystem,
+                    Outcome = PolicyEvidenceAnalysisCodes.OutcomePass,
+                    Proof = PolicyEvidenceAnalysisCodes.ProofProven,
+                },
+            ],
+        });
+        Assert.True(missing.IsFailure);
+        Assert.Equal(PolicyApprovalCodes.TestsIncomplete, missing.Error!.Code);
+
+        ApplicationResult<PolicyAnalysisRunView> covered = await record.ExecuteAsync(new RecordAnalysisRunCommand
+        {
+            Actor = "author",
+            IdempotencyKey = Guid.NewGuid(),
+            RevisionId = draft.Value.RevisionId,
+            ExpectedContentHash = Convert.FromHexString(submitted.Value.ContentHashHex),
+            LogicalEffectiveHash = H("logical").Bytes.ToArray(),
+            AnalysisContextHash = H("analysis").Bytes.ToArray(),
+            EvidenceContextHash = H("evidence").Bytes.ToArray(),
+            TopologyProjectionHash = H("topology").Bytes.ToArray(),
+            ImpactSetHash = H("impact").Bytes.ToArray(),
+            PerDeviceAnalysisHashes = [H("device").Bytes.ToArray()],
+            DependencyFingerprint = fingerprint,
+            RiskLevel = PolicyEvidenceAnalysisCodes.RiskLow,
+            EvidenceSignalsPresent = true,
+            AnalyzerVersion = PolicyApprovalCodes.AnalyzerVersion,
+            PolicySchemaVersion = PolicyDocument.SchemaName,
+            PipelineVersion = PolicyPipelineV1.Version,
+            Findings = [],
+            TestResults =
+            [
+                new PolicyApprovalTestInput
+                {
+                    TestId = mandatoryTestId,
+                    Origin = PolicyEvidenceAnalysisCodes.OriginUser,
+                    Outcome = PolicyEvidenceAnalysisCodes.OutcomePass,
+                    Proof = PolicyEvidenceAnalysisCodes.ProofProven,
+                },
+            ],
+        });
+        Assert.True(covered.IsSuccess, covered.Error?.Message);
+    }
+
+    [Fact]
+    public async Task RecordAnalysisRunNormalizesInfoSeverityToWarning()
+    {
+        Fixture fx = await SeedInReviewAsync();
+        RecordAnalysisRunCommand command = RecordCommand(fx);
+        command = new RecordAnalysisRunCommand
+        {
+            Actor = command.Actor,
+            IdempotencyKey = Guid.NewGuid(),
+            RevisionId = command.RevisionId,
+            ExpectedContentHash = command.ExpectedContentHash,
+            LogicalEffectiveHash = command.LogicalEffectiveHash,
+            AnalysisContextHash = command.AnalysisContextHash,
+            EvidenceContextHash = command.EvidenceContextHash,
+            TopologyProjectionHash = command.TopologyProjectionHash,
+            ImpactSetHash = command.ImpactSetHash,
+            PerDeviceAnalysisHashes = command.PerDeviceAnalysisHashes,
+            DependencyFingerprint = command.DependencyFingerprint,
+            RiskLevel = command.RiskLevel,
+            EvidenceSignalsPresent = command.EvidenceSignalsPresent,
+            AnalyzerVersion = command.AnalyzerVersion,
+            PolicySchemaVersion = command.PolicySchemaVersion,
+            PipelineVersion = command.PipelineVersion,
+            Findings =
+            [
+                new PolicyApprovalFindingInput
+                {
+                    Code = PolicyComposeCodes.UnusedPolicyObject,
+                    Severity = "INFO",
+                    Message = "unused",
+                    Target = "compose",
+                },
+            ],
+            TestResults = command.TestResults,
+        };
+        ApplicationResult<PolicyAnalysisRunView> result = await fx.Record.ExecuteAsync(command);
+        Assert.True(result.IsSuccess, result.Error?.Message);
+        PolicyAnalysisRun? run = await fx.Approvals.GetAnalysisRunAsync(new PolicyAnalysisRunId(result.Value!.Id));
+        Assert.NotNull(run);
+        Assert.Contains(
+            run!.Findings,
+            f => f.Code == PolicyComposeCodes.UnusedPolicyObject
+                 && f.Severity == PolicyEvidenceAnalysisCodes.SeverityWarning);
+    }
+
     [Theory]
     [InlineData("analysis")]
     [InlineData("evidence")]

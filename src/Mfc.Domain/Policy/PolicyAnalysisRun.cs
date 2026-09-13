@@ -278,12 +278,22 @@ public sealed class PolicyAnalysisRun
     /// <summary>
     /// True when the run has no BLOCKER findings and every test is a proven PASS
     /// (same gate as approval / compiler <c>AnalysisPassed</c>).
+    /// When <paramref name="requiredTestIds"/> is non-empty, every document test id must appear.
     /// </summary>
-    public bool IsPass()
+    public bool IsPass(IReadOnlyCollection<Guid>? requiredTestIds = null)
     {
         if (Findings.Any(static f => f.Severity == PolicyEvidenceAnalysisCodes.SeverityBlocker))
         {
             return false;
+        }
+
+        if (requiredTestIds is { Count: > 0 })
+        {
+            HashSet<Guid> recorded = TestResults.Select(static t => t.TestId.Value).ToHashSet();
+            if (requiredTestIds.Any(id => !recorded.Contains(id)))
+            {
+                return false;
+            }
         }
 
         foreach (PolicyApprovalTestOutcome test in TestResults)

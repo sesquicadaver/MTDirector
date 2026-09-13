@@ -1580,6 +1580,15 @@ Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryZonesA11yRegre
 
 
 
+
+## Living Specification — AUDIT-AN-01 Validate/Record analysis (W7-218)
+
+| AC | Normative / code | Test |
+|----|------------------|------|
+| Validate structural + Record test coverage + Compose WARNING | `ValidateRevisionUseCase`, `PolicyRevisionStructuralAnalysis`, `PolicyApprovalGate`, `PolicyPanelService` | `AuditAn01ValidateRecordAnalysisW7218LivingSpecTests.Ac1Plan26AndGatesLockAuditAn01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditAn01ValidateRecordAnalysisW7218"`.
+
 ## Living Specification — Product tranche seed after AUDIT-CAP-02 (W7-217)
 
 Issue [#838](https://github.com/sesquicadaver/MTDirector/issues/838) AC → module → tests:
