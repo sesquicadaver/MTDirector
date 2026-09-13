@@ -77,6 +77,17 @@ public sealed class RouterOsSnapshotCapturePortLivingSpecTests
     }
 
     [Fact]
+    public async Task Ac8bRequiredSectionFailureSurfacesSnapshotRequiredSectionFailed()
+    {
+        // AUDIT-CAP-02: stable fingerprints over a persistent required trap still must not complete.
+        RouterOsDiscoveryDataset dataset = RouterOsCaptureTestFixtures.WithFailedRequired(RosReadCommandId.Ipv4Filter);
+        RouterOsSnapshotCapturePort port = new(new FixtureStableReadAttemptFactoryProvider(dataset));
+        InvalidOperationException ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            port.CaptureAsync(MinimalTarget()));
+        Assert.StartsWith(RequiredSectionCaptureGate.FailureCodePrefix, ex.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Ac9DiscoveryReaderCatalogIncludesSystemIdentityCommand()
     {
         Assert.Contains(RosReadCommandId.SystemIdentity, RouterOsDiscoveryCommandCatalog.All);

@@ -140,6 +140,11 @@ public sealed class CaptureSnapshotUseCase
                 return ApplicationResults.Fail(ApplicationError.SnapshotTooLarge(ex.Message));
             }
 
+            if (ex.Message.StartsWith("SNAPSHOT_REQUIRED_SECTION_FAILED", StringComparison.Ordinal))
+            {
+                return ApplicationResults.Fail(ApplicationError.Failed(ex.Message));
+            }
+
             return ApplicationResults.Fail(ApplicationError.Failed(ex.Message));
         }
         catch (OperationCanceledException)

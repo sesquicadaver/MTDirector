@@ -1578,6 +1578,19 @@ Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryZonesA11yRegre
 
 
 
+
+## Living Specification — AUDIT-CAP-02 required-section fail-closed (W7-216)
+
+Issue [#837](https://github.com/sesquicadaver/MTDirector/issues/837) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Plan-26 / queue lock AUDIT-CAP-02 DONE | plan-26, ROADMAP, continuous, known-limitations | `AuditCap02RequiredSectionFailClosedW7216LivingSpecTests.Ac1Plan26AndGateLockAuditCap02` |
+| Required !trap rejects completed build | `RequiredSectionCaptureGate`, `SnapshotCaptureResultBuilder` | `SnapshotCaptureResultBuilderTests.BuildRejectsFailedRequiredFirewallFilter` |
+| Capture port surfaces SNAPSHOT_REQUIRED_SECTION_FAILED | `RouterOsSnapshotCapturePort` | `RouterOsSnapshotCapturePortLivingSpecTests.Ac8bRequiredSectionFailureSurfacesSnapshotRequiredSectionFailed` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditCap02RequiredSectionFailClosedW7216|FullyQualifiedName~SnapshotCaptureResultBuilderTests"`.
+
 ## Living Specification — Product tranche seed after AUDIT-CAP-01 (W7-215)
 
 Issue [#834](https://github.com/sesquicadaver/MTDirector/issues/834) AC → module → tests:
