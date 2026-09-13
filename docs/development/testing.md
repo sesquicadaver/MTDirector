@@ -1591,6 +1591,16 @@ Issue [#849](https://github.com/sesquicadaver/MTDirector/issues/849) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~AuditDiff01SemanticReachabilityW7222"`.
 
+## Living Specification — AUDIT-GUARD-01 complete guard contract (W7-224)
+
+Issue [#855](https://github.com/sesquicadaver/MTDirector/issues/855) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Strict marker + full state sets + `/0` ban + uniqueness + predicate intersection | `ManagementPathAnalysis`, `ActualFilterMarker` | `AuditGuard01CompleteGuardContractW7224LivingSpecTests`, `ManagementPathAnalysisTests.AuditGuard01*` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditGuard01"`.
+
 ## Living Specification — Product tranche seed after AUDIT-DIFF-01 (W7-223)
 
 Issue [#850](https://github.com/sesquicadaver/MTDirector/issues/850) AC → module → tests:
@@ -3553,7 +3563,7 @@ Policy Model §46–§46.1 + Onboarding §15–§16 + Issue Set M2-13 AC#1–12 
 | Source restrictions | `MANAGEMENT_SOURCE_NOT_ALLOWED` | `Ac2SourceRestrictionBlocksDisallowedPrefix` |
 | Unparseable IP-service allowlist | `MANAGEMENT_PATH_INDETERMINATE` | `UnparseableSourceRestrictionIsIndeterminate` |
 | Guard exists and precedes anchor | `MANAGEMENT_GUARD_MISSING` / `MANAGEMENT_GUARD_MOVED` | `Ac3GuardMustExistAndPrecedeAnchor` |
-| Guard ownership marker valid | `MANAGEMENT_PATH_INDETERMINATE` | `Ac4InvalidGuardMarkerIsIndeterminate` |
+| Guard ownership marker valid | `MANAGEMENT_GUARD_INVALID` (strict `mfc:guard:v1`; W7-224) | `Ac4InvalidGuardMarkerIsGuardInvalid`; `AuditGuard01*` |
 | TCP NEW to API-SSL | `MANAGEMENT_INPUT_BLOCKED` | `Ac5TcpNewMustBeAllowedOnInput` |
 | OUTPUT ESTABLISHED reply | `MANAGEMENT_OUTPUT_BLOCKED` | `Ac6OutputEstablishedReplyMustBeAllowed` |
 | Each VRRP member by physical address | `Analyze` + `WithDestination` on that member's snapshot | `Ac7EachVrrpMemberIsCheckedByPhysicalAddress` |
@@ -3571,7 +3581,7 @@ Policy Model §46–§46.1 + Onboarding §15–§16 + Issue Set M2-13 AC#1–12 
 | Discovery mapper (address + dynamics) | `ManagementPathBlockerMapper` | `DiscoveryMapsApiSslAddressAndFilterWithoutCreatingGuards` |
 | `MANAGEMENT_*` trailer | FailedPrecondition, retryable=false | `SequenceAndActualFilterBlockersAreFailedPreconditionNotRetryable` |
 
-**Residuals:** Desktop OUT; no new RPC; compose unchanged (management-path is analysis, not a company document). Production entry is `Analyze()` on **one** physical-device snapshot; caller iterates members with `WithDestination` and that member's filter/API-SSL facts. VIP-only fail-closed requires the profile's physical/virtual address lists (VRRP discovery is available to callers after M2-14; this mapper still does not auto-fill them). Over-broad `0.0.0.0/0` / `::/0` and strict `mfc:guard:v1:` onboarding verification are M5-03 (DONE). VRRP protocol-112 advertisement/sync flows are M2-14 (DONE). Deploy gating of these blockers is N1-06. Guards are never auto-created. M2-12 one-argument and N1-04 two-argument analysis-context preimages are unchanged. Controller never disables L2/L3 hardware offload.
+**Residuals:** Desktop OUT; no new RPC; compose unchanged (management-path is analysis, not a company document). Production entry is `Analyze()` on **one** physical-device snapshot; caller iterates members with `WithDestination` and that member's filter/API-SSL facts. VIP-only fail-closed requires the profile's physical/virtual address lists (VRRP discovery is available to callers after M2-14; this mapper still does not auto-fill them). Over-broad `0.0.0.0/0` / `::/0`, strict `mfc:guard:v1`, full TCP state sets, and pre-guard predicate intersection are closed in ManagementPath by **W7-224 / AUDIT-GUARD-01** (M5-03 onboarding verifier remains separate). VRRP protocol-112 advertisement/sync flows are M2-14 (DONE). Deploy gating of these blockers is N1-06. Guards are never auto-created. M2-12 one-argument and N1-04 two-argument analysis-context preimages are unchanged. Controller never disables L2/L3 hardware offload.
 
 Filter:
 ```bash

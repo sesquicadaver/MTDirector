@@ -374,14 +374,38 @@ public static class ManagementPathAnalysis
             return;
         }
 
+        HashSet<string> seenMarkers = new(StringComparer.Ordinal);
         foreach (ActualFilterRule guard in guards)
         {
             if (!ActualFilterMarker.IsValidGuardMarker(guard.Comment)
                 || !MarkerStartsComment(guard.Comment))
             {
                 findings.Add(Finding(
-                    ManagementPathAnalysisCodes.PathIndeterminate,
-                    "Management guard ownership marker is invalid.",
+                    ManagementPathAnalysisCodes.GuardInvalid,
+                    "Management guard ownership marker is invalid (strict mfc:guard:v1 required).",
+                    chain,
+                    guard.Ordinal,
+                    witness));
+                continue;
+            }
+
+            if (!ActualFilterMarker.TryReadMarker(guard.Comment, out string? markerToken)
+                || markerToken is null)
+            {
+                findings.Add(Finding(
+                    ManagementPathAnalysisCodes.GuardInvalid,
+                    "Management guard ownership marker cannot be read.",
+                    chain,
+                    guard.Ordinal,
+                    witness));
+                continue;
+            }
+
+            if (!seenMarkers.Add(markerToken))
+            {
+                findings.Add(Finding(
+                    ManagementPathAnalysisCodes.GuardInvalid,
+                    $"Management guard marker '{markerToken}' is duplicated on {chain}.",
                     chain,
                     guard.Ordinal,
                     witness));
@@ -494,22 +518,20 @@ public static class ManagementPathAnalysis
             return;
         }
 
-        if (requireNew && !HasToken(states, "new"))
+        HashSet<string> requiredStates = requireNew
+            ? new(StringComparer.OrdinalIgnoreCase) { "new", "established" }
+            : new(StringComparer.OrdinalIgnoreCase) { "established", "related" };
+        string[] stateTokens = states.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        if (stateTokens.Length == 0
+            || stateTokens.Any(t => !requiredStates.Contains(t))
+            || requiredStates.Any(required =>
+                !stateTokens.Any(t => string.Equals(t, required, StringComparison.OrdinalIgnoreCase))))
         {
             findings.Add(Finding(
-                blockedCode,
-                "Management input guard does not allow TCP NEW.",
-                chain,
-                guard.Ordinal,
-                witness));
-            return;
-        }
-
-        if (!requireNew && !HasToken(states, "established"))
-        {
-            findings.Add(Finding(
-                blockedCode,
-                "Management output guard does not allow TCP ESTABLISHED.",
+                ManagementPathAnalysisCodes.GuardTooBroad,
+                requireNew
+                    ? $"Management input guard connection-state '{states}' must be exactly new+established (full TCP flow proof)."
+                    : $"Management output guard connection-state '{states}' must be exactly established+related.",
                 chain,
                 guard.Ordinal,
                 witness));
@@ -551,6 +573,18 @@ public static class ManagementPathAnalysis
                 witness));
             return;
         }
+
+        if (sourceMatchers.Any(IsDefaultRoute))
+        {
+            findings.Add(Finding(
+                ManagementPathAnalysisCodes.GuardTooBroad,
+                $"Management {chain} guard rejects default route in '{sourceField}'.",
+                chain,
+                guard.Ordinal,
+                witness));
+            return;
+        }
+
         foreach (AddressPrefix controller in profile.ControllerSourcePrefixes.Where(p => p.Family == family))
         {
             if (!sourceMatchers.Any(m => m.Contains(controller)))
@@ -594,6 +628,17 @@ public static class ManagementPathAnalysis
             findings.Add(Finding(
                 ManagementPathAnalysisCodes.PathIndeterminate,
                 $"Management {chain} guard address '{destField}' cannot be parsed.",
+                chain,
+                guard.Ordinal,
+                witness));
+            return;
+        }
+
+        if (destMatchers.Any(IsDefaultRoute))
+        {
+            findings.Add(Finding(
+                ManagementPathAnalysisCodes.GuardTooBroad,
+                $"Management {chain} guard rejects default route in '{destField}'.",
                 chain,
                 guard.Ordinal,
                 witness));
@@ -670,18 +715,161 @@ public static class ManagementPathAnalysis
                 continue;
             }
 
-            if (string.Equals(rule.Action, "drop", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(rule.Action, "reject", StringComparison.OrdinalIgnoreCase))
+            if (!(string.Equals(rule.Action, "drop", StringComparison.OrdinalIgnoreCase)
+                  || string.Equals(rule.Action, "reject", StringComparison.OrdinalIgnoreCase)))
+            {
+                continue;
+            }
+
+            WitnessMatch intersection = IntersectsManagementWitness(rule, witness);
+            if (intersection == WitnessMatch.Miss)
+            {
+                continue;
+            }
+
+            if (intersection == WitnessMatch.Indeterminate)
             {
                 findings.Add(Finding(
-                    blockedCode,
-                    $"Unmanaged pre-anchor {chain} {rule.Action} at ordinal {rule.Ordinal} blocks the management path.",
+                    ManagementPathAnalysisCodes.PathIndeterminate,
+                    $"Unmanaged pre-anchor {chain} {rule.Action} at ordinal {rule.Ordinal} cannot be proven disjoint from the management packet.",
                     chain,
                     rule.Ordinal,
                     witness));
+                continue;
             }
+
+            findings.Add(Finding(
+                blockedCode,
+                $"Unmanaged pre-anchor {chain} {rule.Action} at ordinal {rule.Ordinal} blocks the management path.",
+                chain,
+                rule.Ordinal,
+                witness));
         }
     }
+
+    private enum WitnessMatch
+    {
+        Hit,
+        Miss,
+        Indeterminate,
+    }
+
+    /// <summary>
+    /// Whether an unmanaged rule's known matchers can hit the management witness packet.
+    /// Empty matchers hit everything; mismatched protocol/port/state/address miss.
+    /// </summary>
+    private static WitnessMatch IntersectsManagementWitness(ActualFilterRule rule, PolicyWitnessPacket? witness)
+    {
+        if (witness is null)
+        {
+            return WitnessMatch.Indeterminate;
+        }
+
+        if (rule.KnownMatchers.Count == 0)
+        {
+            return WitnessMatch.Hit;
+        }
+
+        if (rule.KnownMatchers.TryGetValue("protocol", out string? protocol))
+        {
+            if (witness.Protocol is null)
+            {
+                return WitnessMatch.Indeterminate;
+            }
+
+            if (!IsTcp(protocol) && witness.Protocol == IpProtocol.Tcp)
+            {
+                if (string.Equals(protocol, "udp", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(protocol, "17", StringComparison.Ordinal)
+                    || string.Equals(protocol, "icmp", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(protocol, "1", StringComparison.Ordinal))
+                {
+                    return WitnessMatch.Miss;
+                }
+
+                return WitnessMatch.Indeterminate;
+            }
+
+            if (IsTcp(protocol) && witness.Protocol != IpProtocol.Tcp)
+            {
+                return WitnessMatch.Miss;
+            }
+        }
+
+        if (rule.KnownMatchers.TryGetValue("connection-state", out string? states)
+            && witness.ConnectionState is ConnectionState packetState)
+        {
+            string expected = packetState.ToString();
+            string[] parts = states.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length > 0
+                && !parts.Any(p => string.Equals(p, expected, StringComparison.OrdinalIgnoreCase)))
+            {
+                return WitnessMatch.Miss;
+            }
+        }
+
+        if (rule.KnownMatchers.TryGetValue("dst-port", out string? dstPort)
+            && witness.DestinationPort is ushort witnessDst)
+        {
+            if (!PortContains(dstPort, witnessDst))
+            {
+                return WitnessMatch.Miss;
+            }
+        }
+
+        if (rule.KnownMatchers.TryGetValue("src-port", out string? srcPort)
+            && witness.SourcePort is ushort witnessSrc)
+        {
+            if (!PortContains(srcPort, witnessSrc))
+            {
+                return WitnessMatch.Miss;
+            }
+        }
+
+        if (rule.KnownMatchers.TryGetValue("src-address", out string? srcAddress))
+        {
+            WitnessMatch address = AddressIntersectsWitness(srcAddress, witness.SourceAddress);
+            if (address != WitnessMatch.Hit)
+            {
+                return address;
+            }
+        }
+
+        if (rule.KnownMatchers.TryGetValue("dst-address", out string? dstAddress))
+        {
+            WitnessMatch address = AddressIntersectsWitness(dstAddress, witness.DestinationAddress);
+            if (address != WitnessMatch.Hit)
+            {
+                return address;
+            }
+        }
+
+        return WitnessMatch.Hit;
+    }
+
+    private static WitnessMatch AddressIntersectsWitness(string matcherCsv, string? packetAddress)
+    {
+        if (string.IsNullOrWhiteSpace(packetAddress))
+        {
+            return WitnessMatch.Indeterminate;
+        }
+
+        if (!TryParseHost(packetAddress, out IPAddress packetIp))
+        {
+            return WitnessMatch.Indeterminate;
+        }
+
+        List<AddressPrefix> prefixes = ParsePrefixList(matcherCsv, out bool invalid);
+        if (invalid || prefixes.Count == 0)
+        {
+            return WitnessMatch.Indeterminate;
+        }
+
+        return prefixes.Any(p => p.Contains(packetIp)) ? WitnessMatch.Hit : WitnessMatch.Miss;
+    }
+
+    private static bool IsDefaultRoute(AddressPrefix prefix)
+        => prefix.PrefixLength == 0;
 
     private static List<ManagementSystemTest> BuildSystemTests(
         PolicyWitnessPacket? inputWitness,
@@ -778,10 +966,6 @@ public static class ManagementPathAnalysis
         => string.Equals(protocol, "tcp", StringComparison.OrdinalIgnoreCase)
            || string.Equals(protocol, "6", StringComparison.Ordinal);
 
-    private static bool HasToken(string csv, string token)
-        => csv.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
-            .Any(part => string.Equals(part, token, StringComparison.OrdinalIgnoreCase));
-
     private static bool PortContains(string? field, ushort port)
     {
         if (string.IsNullOrWhiteSpace(field))
@@ -871,7 +1055,8 @@ public static class ManagementPathAnalysis
         }
 
         string trimmed = comment.TrimStart();
-        return trimmed.StartsWith(ActualFilterMarker.FwcGuardPrefix, StringComparison.Ordinal)
+        return trimmed.StartsWith(ActualFilterMarker.MfcGuardV1Prefix, StringComparison.Ordinal)
+               || trimmed.StartsWith(ActualFilterMarker.FwcGuardPrefix, StringComparison.Ordinal)
                || trimmed.StartsWith(ActualFilterMarker.MfcGuardPrefix, StringComparison.Ordinal);
     }
 
