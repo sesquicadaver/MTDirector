@@ -1,0 +1,45 @@
+using Xunit;
+
+namespace Mfc.UnitTests.Release;
+
+/// <summary>W7-225: known-limitations / queue seed locks AUDIT-DEP-01 (W7-226) after AUDIT-GUARD-01.</summary>
+public sealed class ProductTrancheSeedW7225LivingSpecTests
+{
+    [Fact]
+    public void Ac1KnownLimitationsAndQueueSeedAuditDep01AsNext()
+    {
+        string root = RepoRoot();
+        string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
+        string roadmap = File.ReadAllText(Path.Combine(root, "ROADMAP.md"));
+        string plan = File.ReadAllText(Path.Combine(root, "docs/planning/continuous-queue-plan.md"));
+        string plan26 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-26-code-audit-remediation-11cb746.md"));
+
+        Assert.Contains("Intentional residual (W7-225 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-DEP-01", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-226", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-226", roadmap, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-DEP-01 — Background recovery must not race active deployment", roadmap, StringComparison.Ordinal);
+        Assert.Contains("W7-226", plan, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-DEP-01", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-225 DONE", plan26, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-DEP-01", plan26, StringComparison.Ordinal);
+        Assert.Contains("W7-226", plan26, StringComparison.Ordinal);
+        Assert.Contains("W7-225", roadmap, StringComparison.Ordinal);
+    }
+
+    private static string RepoRoot()
+    {
+        DirectoryInfo? dir = new(AppContext.BaseDirectory);
+        while (dir is not null)
+        {
+            if (File.Exists(Path.Combine(dir.FullName, "ROADMAP.md")))
+            {
+                return dir.FullName;
+            }
+
+            dir = dir.Parent;
+        }
+
+        throw new InvalidOperationException("Repository root not found.");
+    }
+}
