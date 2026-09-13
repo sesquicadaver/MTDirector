@@ -1601,6 +1601,17 @@ Issue [#856](https://github.com/sesquicadaver/MTDirector/issues/856) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7225"`.
 
+
+## Living Specification — AUDIT-DEP-01 recovery ownership gate (W7-226)
+
+Issue [#859](https://github.com/sesquicadaver/MTDirector/issues/859) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Skip recovery while live lock held; Start lock + IntentRecorded; expire after Execute | `DeploymentOwnership`, `StartDeploymentUseCase`, `RecoverNonterminalOperationsJobUseCase` | `AuditDep01RecoveryLockW7226LivingSpecTests`, `AuditDep01RecoveryLockTests`, `DeploymentOwnershipTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditDep01"`.
+
 ## Living Specification — AUDIT-GUARD-01 complete guard contract (W7-224)
 
 Issue [#855](https://github.com/sesquicadaver/MTDirector/issues/855) AC → module → tests:

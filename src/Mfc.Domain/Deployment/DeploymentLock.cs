@@ -102,4 +102,14 @@ public sealed class DeploymentLock
             throw new DomainInvariantException($"{DeploymentCodes.LockOwnerMismatch}: lock owner mismatch.");
         }
     }
+
+    /// <summary>
+    /// Ends the live lease immediately (row retained). Used when the owning Start call leaves Execute.
+    /// </summary>
+    public void Expire(DateTimeOffset nowUtc)
+    {
+        DateTimeOffset now = nowUtc.ToUniversalTime();
+        HeartbeatAtUtc = now;
+        ExpiresAtUtc = now;
+    }
 }

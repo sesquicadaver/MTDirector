@@ -121,6 +121,21 @@ public sealed class RecoverNonterminalOperationsJobUseCase
                 };
             }
 
+            DeploymentLock? deploymentLock = await _deployments
+                .GetLockByNodeAsync(operation.NodeId, cancellationToken)
+                .ConfigureAwait(false);
+            if (!DeploymentOwnership.IsAbandonedForRecovery(deploymentLock, operation.Id, now))
+            {
+                // Live owner still holds the Node lease — do not RecoverAsync / Save (AUDIT-DEP-01).
+                return new OperationRecoveryJobItemResult
+                {
+                    OperationId = operation.Id.Value,
+                    Kind = "deployment",
+                    Succeeded = true,
+                    ErrorCode = DeploymentOwnership.RecoverySkippedLockHeld,
+                };
+            }
+
             DeploymentWorkflowRecoveryResult recovered = await _deploymentRuntime
                 .RecoverAsync(node, plan, operation, now, cancellationToken)
                 .ConfigureAwait(false);

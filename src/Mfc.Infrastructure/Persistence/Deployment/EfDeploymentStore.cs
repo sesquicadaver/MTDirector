@@ -233,6 +233,30 @@ public sealed class EfDeploymentStore : IDeploymentStore
         await _db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task ReplaceExpiredLockAsync(
+        DeploymentLock deploymentLock,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(deploymentLock);
+        DeploymentLockEntity entity = await _db.DeploymentLocks
+            .SingleAsync(l => l.NodeId == deploymentLock.NodeId.Value, cancellationToken)
+            .ConfigureAwait(false);
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        if (now < entity.ExpiresAtUtc)
+        {
+            throw new PersistenceConflictException(
+                DeploymentCodes.LockHeld,
+                "Cannot replace a live deployment lock.");
+        }
+
+        entity.DeploymentId = deploymentLock.DeploymentId.Value;
+        entity.OwnerInstanceId = deploymentLock.OwnerInstanceId;
+        entity.AcquiredAtUtc = deploymentLock.AcquiredAtUtc;
+        entity.HeartbeatAtUtc = deploymentLock.HeartbeatAtUtc;
+        entity.ExpiresAtUtc = deploymentLock.ExpiresAtUtc;
+        await _db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+    }
+
     public async Task<DeploymentLock?> GetLockByNodeAsync(
         NodeId nodeId,
         CancellationToken cancellationToken = default)

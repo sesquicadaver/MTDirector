@@ -48,6 +48,11 @@ public interface IDeploymentStore
 
     Task SaveLockAsync(DeploymentLock deploymentLock, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Replaces an expired Node lock row with a new ownership lease (AUDIT-DEP-01 Start path).
+    /// </summary>
+    Task ReplaceExpiredLockAsync(DeploymentLock deploymentLock, CancellationToken cancellationToken = default);
+
     Task<DeploymentLock?> GetLockByNodeAsync(NodeId nodeId, CancellationToken cancellationToken = default);
 
     /// <summary>Locks owned by this controller instance (M6-03 durable lock heartbeat).</summary>
