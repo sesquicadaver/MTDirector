@@ -383,6 +383,7 @@ public interface IPolicyPanelService
         byte[] logicalEffectiveHash,
         string riskLevel,
         IReadOnlyList<PolicyFindingListItem>? composeFindings = null,
+        Guid? nodeId = null,
         CancellationToken cancellationToken = default);
 
     Task<PolicyAnalysisRunListItem> AcknowledgeWarningAsync(
@@ -846,11 +847,13 @@ public sealed class PolicyPanelService : IPolicyPanelService
         byte[] logicalEffectiveHash,
         string riskLevel,
         IReadOnlyList<PolicyFindingListItem>? composeFindings = null,
+        Guid? nodeId = null,
         CancellationToken cancellationToken = default)
     {
         // Residual: full NODE_EFFECTIVE / per-device analysis hashes need device context.
         // Desktop reuses the logical-effective (or content) hash slots so RecordAnalysisRun
         // remains callable for risk display + approve/bind wiring without RouterOS.
+        // When nodeId is set, Controller overwrites dependency_fingerprint with live digest (AUDIT-AN-02).
         byte[] contextHash = logicalEffectiveHash.Length == 32 ? logicalEffectiveHash : expectedContentHash;
         List<PolicyAnalysisFinding> findings = [];
         List<PolicyFindingListItem> ackable = [];
@@ -899,6 +902,7 @@ public sealed class PolicyPanelService : IPolicyPanelService
                 DesktopPipelineVersion,
                 findings,
                 testResults: null,
+                nodeId,
                 cancellationToken)
             .ConfigureAwait(false);
         return new PolicyAnalysisRunListItem

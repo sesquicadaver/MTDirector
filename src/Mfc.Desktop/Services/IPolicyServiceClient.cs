@@ -136,6 +136,7 @@ public interface IPolicyServiceClient
         string pipelineVersion,
         IReadOnlyList<PolicyAnalysisFinding>? findings = null,
         IReadOnlyList<PolicyAnalysisTestResult>? testResults = null,
+        Guid? nodeId = null,
         CancellationToken cancellationToken = default);
 
     Task<PolicyAnalysisRun> AcknowledgeWarningAsync(

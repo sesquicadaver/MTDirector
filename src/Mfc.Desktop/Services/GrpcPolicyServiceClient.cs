@@ -395,6 +395,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
         string pipelineVersion,
         IReadOnlyList<PolicyAnalysisFinding>? findings = null,
         IReadOnlyList<PolicyAnalysisTestResult>? testResults = null,
+        Guid? nodeId = null,
         CancellationToken cancellationToken = default)
     {
         PolicyService.PolicyServiceClient client = CreateClient();
@@ -424,6 +425,11 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
         if (testResults is not null)
         {
             request.TestResults.AddRange(testResults);
+        }
+
+        if (nodeId is Guid concreteNodeId)
+        {
+            request.NodeId = DesktopProtoUuid.FromGuid(concreteNodeId);
         }
 
         return await client.RecordAnalysisRunAsync(request, ActorHeaders(), cancellationToken: cancellationToken)

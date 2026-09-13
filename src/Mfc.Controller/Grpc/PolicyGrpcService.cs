@@ -378,6 +378,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
                 PipelineVersion = request.PipelineVersion,
                 Findings = request.Findings.Select(PolicyProtoMapper.ToInput).ToArray(),
                 TestResults = request.TestResults.Select(PolicyProtoMapper.ToInput).ToArray(),
+                NodeId = ProtoUuid.ToNullableGuid(request.NodeId),
             },
             context.CancellationToken).ConfigureAwait(false);
         return PolicyProtoMapper.ToProto(Unwrap(result));

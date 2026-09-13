@@ -25,6 +25,7 @@ public sealed class ActivateDesiredBindingUseCase
     private readonly IAuditEventWriter _audit;
     private readonly IClock _clock;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IPolicyDependencyFingerprintCalculator _fingerprints;
 
     public ActivateDesiredBindingUseCase(
         IAuthorizationBoundary auth,
@@ -33,7 +34,8 @@ public sealed class ActivateDesiredBindingUseCase
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
         IClock clock,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IPolicyDependencyFingerprintCalculator? fingerprints = null)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(policies);
@@ -49,6 +51,7 @@ public sealed class ActivateDesiredBindingUseCase
         _audit = audit;
         _clock = clock;
         _unitOfWork = unitOfWork;
+        _fingerprints = fingerprints ?? new PassthroughPolicyDependencyFingerprintCalculator();
     }
 
     public async Task<ApplicationResult<PolicyBindingView>> ExecuteAsync(
@@ -120,12 +123,35 @@ public sealed class ActivateDesiredBindingUseCase
         }
 
         ApplicationError? fpErr = PolicyRevisionSupport.TryHash(
-            command.CurrentDependencyFingerprint, "current_dependency_fingerprint", out Hash256? fingerprint);
+            command.CurrentDependencyFingerprint, "current_dependency_fingerprint", out Hash256? clientExpected);
         if (fpErr is not null)
         {
             return ApplicationResults.Fail(fpErr);
         }
 
+        Hash256 serverCurrent = await _fingerprints.ComputeCurrentAsync(
+                new DependencyFingerprintRequest
+                {
+                    AnalyzerVersion = run.AnalyzerVersion,
+                    PolicySchemaVersion = run.PolicySchemaVersion,
+                    PipelineVersion = run.PipelineVersion,
+                    NodeId = null,
+                    FrozenRunFingerprint = run.DependencyFingerprint,
+                },
+                cancellationToken)
+            .ConfigureAwait(false);
+        ApplicationError? fingerprintCas = PolicyDependencyFingerprintCas.Evaluate(
+            run.DependencyFingerprint,
+            clientExpected!,
+            serverCurrent,
+            PolicyApprovalCodes.BindingStale,
+            "current_dependency_fingerprint CAS mismatch with server-computed dependency fingerprint.");
+        if (fingerprintCas is not null)
+        {
+            return ApplicationResults.Fail(fingerprintCas);
+        }
+
+        Hash256 fingerprint = serverCurrent;
         PolicyBindingScope scope = PolicyDesiredBinding.ScopeFor(policy.Kind);
         Guid? scopeId = scope == PolicyBindingScope.Company ? null : policy.OwnerId;
         IReadOnlyList<PolicyDesiredBinding> existing = await _approvals

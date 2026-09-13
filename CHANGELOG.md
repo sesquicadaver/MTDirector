@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **W7-220** ([#845](https://github.com/sesquicadaver/MTDirector/issues/845)): AUDIT-AN-02 — analysis fingerprint CAS uses controller-computed current (`PolicyDependencyFingerprintCas`, live calculator DI); optional Record `node_id`; Desktop passes Compose node (`AuditAn02FingerprintCasW7220LivingSpecTests`). **§3.C NEXT = W7-221 (#846)**.
+
 - **W7-218** ([#841](https://github.com/sesquicadaver/MTDirector/issues/841)): AUDIT-AN-01 — Validate runs structural analysis; Record rejects incomplete document-test coverage (`POLICY_APPROVAL_TESTS_INCOMPLETE`), merges structural findings, maps INFO→WARNING; Desktop Compose/Record uses WARNING (`AuditAn01ValidateRecordAnalysisW7218LivingSpecTests`). **§3.C NEXT = W7-219 (#842)**.
 
 - **Neighbor candidates duplicates:** `NeighborCandidateFilter` collapses multi-homed MNDP rows with the same `identity` (mgmt/LAN/VIP) into one ComboBox suggestion and prefers the address in the seed device’s IPv4 `/24` (GNS3 lab: one row per peer instead of 2–3). Living Spec `Ac2b` + unit coverage.

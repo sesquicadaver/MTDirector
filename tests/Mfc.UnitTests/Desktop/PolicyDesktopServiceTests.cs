@@ -766,6 +766,7 @@ public sealed class PolicyDesktopServiceTests
             string pipelineVersion,
             IReadOnlyList<PolicyAnalysisFinding>? findings = null,
             IReadOnlyList<PolicyAnalysisTestResult>? testResults = null,
+            Guid? nodeId = null,
             CancellationToken cancellationToken = default)
             => Task.FromResult(AnalysisRunResponse);
 

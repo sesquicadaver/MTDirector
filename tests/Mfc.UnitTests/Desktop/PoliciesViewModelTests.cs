@@ -777,6 +777,7 @@ public sealed class PoliciesViewModelTests
             byte[] logicalEffectiveHash,
             string riskLevel,
             IReadOnlyList<PolicyFindingListItem>? composeFindings = null,
+            Guid? nodeId = null,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
@@ -1091,6 +1092,7 @@ public sealed class PoliciesViewModelTests
             byte[] logicalEffectiveHash,
             string riskLevel,
             IReadOnlyList<PolicyFindingListItem>? composeFindings = null,
+            Guid? nodeId = null,
             CancellationToken cancellationToken = default)
         {
             List<PolicyFindingListItem> ackable = [];

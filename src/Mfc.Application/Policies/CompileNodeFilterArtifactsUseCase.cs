@@ -90,6 +90,7 @@ public sealed class CompileNodeFilterArtifactsUseCase
     private readonly ISnapshotStore _snapshots;
     private readonly IFilterArtifactStore _artifacts;
     private readonly IClock _clock;
+    private readonly IPolicyDependencyFingerprintCalculator _fingerprints;
     private readonly DeviceFilterCompiler _compiler = new();
 
     public CompileNodeFilterArtifactsUseCase(
@@ -103,7 +104,8 @@ public sealed class CompileNodeFilterArtifactsUseCase
         IZoneResolveObservationSource observations,
         ISnapshotStore snapshots,
         IFilterArtifactStore artifacts,
-        IClock clock)
+        IClock clock,
+        IPolicyDependencyFingerprintCalculator? fingerprints = null)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
@@ -127,6 +129,7 @@ public sealed class CompileNodeFilterArtifactsUseCase
         _snapshots = snapshots;
         _artifacts = artifacts;
         _clock = clock;
+        _fingerprints = fingerprints ?? new PassthroughPolicyDependencyFingerprintCalculator();
     }
 
     public async Task<ApplicationResult<CompileNodeFilterArtifactsView>> ExecuteAsync(
@@ -144,8 +147,8 @@ public sealed class CompileNodeFilterArtifactsUseCase
         ApplicationError? fingerprintError = PolicyRevisionSupport.TryHash(
             command.CurrentDependencyFingerprint,
             "current_dependency_fingerprint",
-            out Hash256? currentFingerprint);
-        if (fingerprintError is not null || currentFingerprint is null)
+            out Hash256? clientExpectedFingerprint);
+        if (fingerprintError is not null || clientExpectedFingerprint is null)
         {
             return ApplicationResults.Fail(fingerprintError!);
         }
@@ -204,8 +207,32 @@ public sealed class CompileNodeFilterArtifactsUseCase
         HashSet<Guid>? requiredTestIds = runDocument.IsSuccess
             ? PolicyCatalogViewMapper.ExtractTestIds(runDocument.Value!.Tests)
             : null;
+        Hash256 serverCurrent = await _fingerprints.ComputeCurrentAsync(
+                new DependencyFingerprintRequest
+                {
+                    AnalyzerVersion = run.AnalyzerVersion,
+                    PolicySchemaVersion = run.PolicySchemaVersion,
+                    PipelineVersion = run.PipelineVersion,
+                    NodeId = node.Id,
+                    FrozenRunFingerprint = run.DependencyFingerprint,
+                },
+                cancellationToken)
+            .ConfigureAwait(false);
+        ApplicationError? fingerprintCas = PolicyDependencyFingerprintCas.Evaluate(
+            run.DependencyFingerprint,
+            clientExpectedFingerprint!,
+            serverCurrent,
+            PolicyCompilerCodes.CompilerAnalysisStale,
+            "current_dependency_fingerprint CAS mismatch with server-computed dependency fingerprint.");
+        if (fingerprintCas is not null)
+        {
+            return ApplicationResults.Fail(fingerprintCas);
+        }
+
         bool analysisPassed = run.IsPass(requiredTestIds);
-        bool analysisCurrent = run.DependencyFingerprint.Equals(currentFingerprint);
+        bool analysisCurrent = PolicyDependencyFingerprintCas.IsAnalysisCurrent(
+            run.DependencyFingerprint,
+            serverCurrent);
         bool inputApproved = revision.State == PolicyRevisionState.Approved
             && revision.ApprovedAnalysisRunId == run.Id
             && revision.ApprovedBundleHash is not null
