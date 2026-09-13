@@ -15,6 +15,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-219** ([#842](https://github.com/sesquicadaver/MTDirector/issues/842)): Seed next PLAN-26 row after AUDIT-AN-01 → AUDIT-AN-02 (`ProductTrancheSeedW7219LivingSpecTests`). **§3.C NEXT = W7-220 (#845)**.
+
 - **W7-217** ([#838](https://github.com/sesquicadaver/MTDirector/issues/838)): Seed next PLAN-26 row after AUDIT-CAP-02 → AUDIT-AN-01 (`ProductTrancheSeedW7217LivingSpecTests`). **§3.C NEXT = W7-218 (#841)**.
 
 - **W7-216** ([#837](https://github.com/sesquicadaver/MTDirector/issues/837)): AUDIT-CAP-02 — required discovery section failures fail closed via `RequiredSectionCaptureGate` (`AuditCap02RequiredSectionFailClosedW7216LivingSpecTests`). **§3.C NEXT = W7-217 (#838)**.
