@@ -27,6 +27,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-231** ([#868](https://github.com/sesquicadaver/MTDirector/issues/868)): Seed next PLAN-26 row after AUDIT-DEP-03 → AUDIT-GUI-01 (`ProductTrancheSeedW7231LivingSpecTests`). **§3.C NEXT = W7-232 (#871)**.
+
 - **W7-229** ([#864](https://github.com/sesquicadaver/MTDirector/issues/864)): Seed next PLAN-26 row after AUDIT-DEP-02 → AUDIT-DEP-03 (`ProductTrancheSeedW7229LivingSpecTests`). **§3.C NEXT = W7-230 (#867)**.
 
 - **W7-227** ([#860](https://github.com/sesquicadaver/MTDirector/issues/860)): Seed next PLAN-26 row after AUDIT-DEP-01 → AUDIT-DEP-02 (`ProductTrancheSeedW7227LivingSpecTests`). **§3.C NEXT = W7-228 (#863)**.
@@ -383,6 +385,8 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Added
 
+- **W7-231** ([#868](https://github.com/sesquicadaver/MTDirector/issues/868)): Seed next PLAN-26 row after AUDIT-DEP-03 → AUDIT-GUI-01 (`ProductTrancheSeedW7231LivingSpecTests`). **§3.C NEXT = W7-232 (#871)**.
+
 - **W7-229** ([#864](https://github.com/sesquicadaver/MTDirector/issues/864)): Seed next PLAN-26 row after AUDIT-DEP-02 → AUDIT-DEP-03 (`ProductTrancheSeedW7229LivingSpecTests`). **§3.C NEXT = W7-230 (#867)**.
 
 - **W7-178** ([#759](https://github.com/sesquicadaver/MTDirector/issues/759)): Seed next product tranche after PLAN-19 → PLAN-20 (`ProductTrancheSeedW7178LivingSpecTests`). **§3.C NEXT = W7-179 (#760)**.
@@ -593,6 +597,8 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 - ROADMAP: M3-02 managed chain layout DONE; NEXT = M3-03 (#70); counters 69/109 MVP done (40 remaining).
 
 ### Added
+
+- **W7-231** ([#868](https://github.com/sesquicadaver/MTDirector/issues/868)): Seed next PLAN-26 row after AUDIT-DEP-03 → AUDIT-GUI-01 (`ProductTrancheSeedW7231LivingSpecTests`). **§3.C NEXT = W7-232 (#871)**.
 
 - **W7-229** ([#864](https://github.com/sesquicadaver/MTDirector/issues/864)): Seed next PLAN-26 row after AUDIT-DEP-02 → AUDIT-DEP-03 (`ProductTrancheSeedW7229LivingSpecTests`). **§3.C NEXT = W7-230 (#867)**.
 

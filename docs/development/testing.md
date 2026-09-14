@@ -1656,6 +1656,17 @@ Issue [#867](https://github.com/sesquicadaver/MTDirector/issues/867) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~AuditDep03"`.
 
+
+## Living Specification — Product tranche seed after AUDIT-DEP-03 (W7-231)
+
+Issue [#868](https://github.com/sesquicadaver/MTDirector/issues/868) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed AUDIT-GUI-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-26 | `ProductTrancheSeedW7231LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditGui01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7231"`.
+
 ## Living Specification — AUDIT-GUARD-01 complete guard contract (W7-224)
 
 Issue [#855](https://github.com/sesquicadaver/MTDirector/issues/855) AC → module → tests:
