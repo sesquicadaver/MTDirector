@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **W7-230** ([#867](https://github.com/sesquicadaver/MTDirector/issues/867)): AUDIT-DEP-03 — VRRP reachability/traffic from live RouterOS observations (`VrrpMemberLiveFactsObserver`, interface counters) (`AuditDep03VrrpLiveFactsW7230LivingSpecTests`). **§3.C NEXT = W7-231 (#868)**.
+
 - **W7-228** ([#863](https://github.com/sesquicadaver/MTDirector/issues/863)): AUDIT-DEP-02 — watchdog deadline uses RouterOS clock (`ReadRouterClockAsync` / `RouterOsClockParser`), monotonic remaining TTL (`WatchdogTimeBudget`), router-local start-date/time; recovery/rollback fail closed on cleanup (`WATCHDOG_CLEANUP_INCOMPLETE`) (`AuditDep02WatchdogClockTtlW7228LivingSpecTests`). **§3.C NEXT = W7-229 (#864)**.
 
 - **W7-226** ([#859](https://github.com/sesquicadaver/MTDirector/issues/859)): AUDIT-DEP-01 — Start acquires durable Node lock and IntentRecorded journal before Execute; background recovery skips live leases (`DEPLOYMENT_LOCK_HELD`); lease expires when Start leaves Execute (`AuditDep01RecoveryLockW7226LivingSpecTests`). **§3.C NEXT = W7-227 (#860)**.
@@ -371,6 +373,8 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Fixed
 
+- **W7-230** ([#867](https://github.com/sesquicadaver/MTDirector/issues/867)): AUDIT-DEP-03 — VRRP reachability/traffic from live RouterOS observations (`VrrpMemberLiveFactsObserver`, interface counters) (`AuditDep03VrrpLiveFactsW7230LivingSpecTests`). **§3.C NEXT = W7-231 (#868)**.
+
 - Stabilized `StableReadCoordinatorTests.FullCaptureTimeoutCancelsCoordination` — deterministic hang-until-cancel instead of race-prone fixed delay (CI flake on `main`).
 
 ### Changed
@@ -501,6 +505,8 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 - Pin transitive `SSH.NET` to 2026.0.0 (CPM) so NuGet audit no longer fails restore on GHSA-q939-rpr3-3284 from Testcontainers 4.13.
 
 ### Fixed
+
+- **W7-230** ([#867](https://github.com/sesquicadaver/MTDirector/issues/867)): AUDIT-DEP-03 — VRRP reachability/traffic from live RouterOS observations (`VrrpMemberLiveFactsObserver`, interface counters) (`AuditDep03VrrpLiveFactsW7230LivingSpecTests`). **§3.C NEXT = W7-231 (#868)**.
 
 - Actual-filter managed-chain detection now recognizes Compiler Spec §8 namespaces `mfc4.` / `mfc6.` (plus legacy `mfc.` / `fwc.`) so analysis does not treat layout roots as unmanaged jumps.
 - TCP flag intersection: identical `required_present`/`required_absent` is a set-union, not a duplicate-throw empty cube, so exception overlap stays fail-closed.

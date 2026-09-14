@@ -39,7 +39,7 @@ internal sealed class RouterOsVrrpMemberDeploymentRuntime : IVrrpMemberDeploymen
     public DeviceId DeviceId { get; }
 
     public Task<bool> IsReachableAsync(CancellationToken cancellationToken = default)
-        => Task.FromResult(true);
+        => _device.ProbeReachableAsync(cancellationToken);
 
     public Task<VrrpMemberRoleSnapshot> ReadRoleSnapshotAsync(CancellationToken cancellationToken = default)
         => _device.ReadVrrpRoleSnapshotAsync(cancellationToken);

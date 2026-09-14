@@ -231,8 +231,26 @@ public sealed class RouterOsDeploymentDeviceSession
         return (names, disabled);
     }
 
+    /// <summary>Bounded API-SSL liveness for partial-failure rollback (AUDIT-DEP-03).</summary>
+    public Task<bool> ProbeReachableAsync(CancellationToken cancellationToken = default)
+        => VrrpMemberLiveFactsObserver.ProbeReachableAsync(RosSession, cancellationToken);
+
     public async Task<VrrpMemberRoleSnapshot> ReadVrrpRoleSnapshotAsync(CancellationToken cancellationToken = default)
     {
+        bool reachable = await VrrpMemberLiveFactsObserver
+            .ProbeReachableAsync(RosSession, cancellationToken)
+            .ConfigureAwait(false);
+        if (!reachable)
+        {
+            return new VrrpMemberRoleSnapshot
+            {
+                DeviceId = DeviceId,
+                HasIndependentRoutedTraffic = false,
+                Reachable = false,
+                Instances = [],
+            };
+        }
+
         VrrpDiscoveryResult discovery = await VrrpDiscovery.DiscoverAsync(RosSession, cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         List<VrrpInstanceRoleFact> instances = discovery.Instances
@@ -243,10 +261,13 @@ public sealed class RouterOsDeploymentDeviceSession
                 ObservedState = i.DomainObservedState,
             })
             .ToList();
+        bool independentTraffic = await VrrpMemberLiveFactsObserver
+            .ObserveIndependentRoutedTrafficAsync(RosSession, cancellationToken)
+            .ConfigureAwait(false);
         return new VrrpMemberRoleSnapshot
         {
             DeviceId = DeviceId,
-            HasIndependentRoutedTraffic = false,
+            HasIndependentRoutedTraffic = independentTraffic,
             Reachable = true,
             Instances = instances,
         };
