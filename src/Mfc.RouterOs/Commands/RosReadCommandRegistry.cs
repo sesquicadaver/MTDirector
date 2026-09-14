@@ -83,7 +83,12 @@ public static class RosReadCommandRegistry
                     P("dynamic", RosPropertyClassification.ObservationTyped),
                     P("running", RosPropertyClassification.ObservationTyped),
                     P("slave", RosPropertyClassification.ObservationTyped),
-                    P("invalid", RosPropertyClassification.ObservationTyped))),
+                    P("invalid", RosPropertyClassification.ObservationTyped),
+                    // AUDIT-DEP-03: counters prove independent routed traffic (not VRRP VIP-only).
+                    P("rx-byte", RosPropertyClassification.ObservationTyped),
+                    P("tx-byte", RosPropertyClassification.ObservationTyped),
+                    P("rx-packet", RosPropertyClassification.ObservationTyped),
+                    P("tx-packet", RosPropertyClassification.ObservationTyped))),
             Def(RosReadCommandId.Ipv4Addresses, "/ip/address/print", RosResultShape.UnorderedCollection, RosRequirement.Required, RosPassPolicy.BothPasses,
                 Props("ipv4_addresses",
                     P(".id", RosPropertyClassification.RawOnly),

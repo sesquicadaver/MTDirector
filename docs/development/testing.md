@@ -1645,6 +1645,17 @@ Issue [#864](https://github.com/sesquicadaver/MTDirector/issues/864) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7229"`.
 
+
+## Living Specification — AUDIT-DEP-03 VRRP live reachability/traffic (W7-230)
+
+Issue [#867](https://github.com/sesquicadaver/MTDirector/issues/867) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Observe reachability + independent routed traffic; no fabricated true/false | `VrrpMemberLiveFactsObserver`, `RouterOsVrrpMemberDeploymentRuntime`, `RouterOsDeploymentDeviceSession` | `AuditDep03VrrpLiveFactsW7230LivingSpecTests`, `VrrpMemberLiveFactsObserverTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditDep03"`.
+
 ## Living Specification — AUDIT-GUARD-01 complete guard contract (W7-224)
 
 Issue [#855](https://github.com/sesquicadaver/MTDirector/issues/855) AC → module → tests:
