@@ -1,7 +1,7 @@
 # PLAN-28 — Desktop residual field / control AutomationProperties tranche
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-244); seed **W7-245 (#896) OPEN** → **DESK-A11Y-FIELD-01**; implement **W7-246 (#898) OPEN**; seed **W7-247 (#899) OPEN** → **DESK-A11Y-CTRL-01**  
+**Status:** Inventory **DONE** (W7-244); seed **W7-245 (#896) DONE**; **§3.C NEXT = W7-246 (#898)** **DESK-A11Y-FIELD-01**; seed **W7-247 (#899) OPEN** → **DESK-A11Y-CTRL-01**  
 **PLAN issue / queue:** [W7-244 / PLAN-28 #895](https://github.com/sesquicadaver/MTDirector/issues/895) **DONE**  
 **Predecessor:** PLAN-27 Desktop Snapshot/Node/Drift/Audit button AutomationProperties residual **COMPLETE**; button-name waves PLAN-16…27  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -45,10 +45,10 @@ Absorb residual non-button Desktop `AutomationProperties.Name` gaps after all ~6
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-A11Y-FIELD-01** | Zones / Policies draft TextBox Names | Zones New/Edit/Binding values TextBoxes; Policies revision/draft/safety/rule/object/compose/compile TextBoxes (see evidence table) | implement **W7-246 (#898)**; seed **W7-245 (#896) OPEN** |
+| 1 | **DESK-A11Y-FIELD-01** | Zones / Policies draft TextBox Names | Zones New/Edit/Binding values TextBoxes; Policies revision/draft/safety/rule/object/compose/compile TextBoxes (see evidence table) | **W7-246 (#898)** (**§3.C NEXT**); seed **W7-245 (#896) DONE** |
 | 2 | **DESK-A11Y-CTRL-01** | Snapshot/Diff ComboBox & CheckBox + TabItem (+ Zones/Policies selector ComboBoxes) | Snapshot `Technical` + Captures; Diff Base/Target + config/obs-only CheckBoxes; panel TabItem Headers; Zones BindingKinds; Policies Families/Chains/Stages/Effects/catalog selectors | seed **W7-247 (#899) OPEN** (opens CTRL implement after FIELD) |
 
-Inventory (**W7-244 DONE**) locked ranking and opened FIELD implement (**W7-246**) + CTRL seed (**W7-247**). Seed **W7-245** advances §3.C NEXT to the first implement after inventory DONE.
+Inventory (**W7-244 DONE**) locked ranking and opened FIELD implement (**W7-246**) + CTRL seed (**W7-247**). Seed **W7-245 DONE** advanced §3.C NEXT to **W7-246** (first implement).
 
 ## Dual track
 
@@ -62,9 +62,9 @@ PLAN-27 ranks 1…2 (**DESK-A11Y-SNAP-01**, **DESK-A11Y-PANEL-01**) are **DONE**
 
 1. **PLAN-27 COMPLETE** (W7-242 DESK-A11Y-PANEL-01; seed **W7-243 DONE**).  
 2. **W7-244 DONE** — PLAN-28 inventory; opened **W7-246** / **W7-247**.  
-3. **W7-245 OPEN** — seed advances NEXT to **DESK-A11Y-FIELD-01** (**W7-246**).  
+3. **W7-245 DONE** — seed advanced NEXT to **DESK-A11Y-FIELD-01** (**W7-246**).  
 4. Execute ranked FIELD/CTRL rows atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-245 (#896)** — Seed first PLAN-28 atomic row after inventory → DESK-A11Y-FIELD-01.
+**§3.C NEXT = W7-246 (#898)** — DESK-A11Y-FIELD-01 — Zones / Policies draft TextBox AutomationProperties.Name.

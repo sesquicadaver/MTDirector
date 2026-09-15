@@ -1702,6 +1702,16 @@ Issue [#875](https://github.com/sesquicadaver/MTDirector/issues/875) AC → modu
 Filter: `dotnet test --filter "FullyQualifiedName~AllowListedOperatorAuthorizationBoundary|AuditAuth01AllowlistedOperatorsW7234"`.
 
 
+## Living Specification — Product tranche seed DESK-A11Y-FIELD-01 (W7-245)
+
+Issue [#896](https://github.com/sesquicadaver/MTDirector/issues/896) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-A11Y-FIELD-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-28 | `ProductTrancheSeedW7245LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskA11yField01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7245"`.
+
 ## Living Specification — PLAN-28 residual field/control a11y inventory (W7-244)
 
 Issue [#895](https://github.com/sesquicadaver/MTDirector/issues/895) AC → module → tests:
