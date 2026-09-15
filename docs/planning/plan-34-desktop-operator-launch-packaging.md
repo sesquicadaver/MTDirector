@@ -1,7 +1,7 @@
 # PLAN-34 — Desktop operator launch packaging templates (.desktop / Windows shortcut)
 
 **Date:** 2026-09-15 (inventory **DONE** @ `3e112bf`; seed W7-279 **DONE**)  
-**Status:** Inventory **DONE** (W7-278); seed **W7-279 (#964) DONE**; implement **W7-280 (#966) DONE**; WIN seed **W7-281 (#967) DONE**; WIN implement **W7-282 (#971) DONE**; COMPLETE **W7-283 (#972) OPEN** (**§3.C NEXT**); predecessor **PLAN-33 COMPLETE**  
+**Status:** **PLAN-34 COMPLETE** — Inventory **DONE** (W7-278); seed **W7-279 (#964) DONE**; implement **W7-280 (#966) DONE**; WIN seed **W7-281 (#967) DONE**; WIN implement **W7-282 (#971) DONE**; COMPLETE seed **W7-283 (#972) DONE**; successor **PLAN-35** inventory **W7-284 (#975) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-278 / PLAN-34 #963](https://github.com/sesquicadaver/MTDirector/issues/963) **DONE**  
 **Predecessor:** PLAN-33 Desktop Inventory TreeView a11y **COMPLETE** (TREE-01 sole; TAB-01 dropped)  
 **Normative files:** [`package-desktop.sh`](../../scripts/release/package-desktop.sh), [`packaging.md`](../release/packaging.md)  
@@ -52,6 +52,10 @@ Product §3 never waits on GNS3.
 
 PLAN-33 sole ranked row (**DESK-A11Y-TREE-01**) is **DONE**. **DESK-A11Y-TAB-01** stays dropped. No further PLAN-33 product rows.
 
+## Adjacent residuals (seeded as PLAN-34 COMPLETE / PLAN-35)
+
+- Desktop launch-template publish bundling (`package-desktop.sh` → `OUT_DIR/desktop/`) — **PLAN-35** [`plan-35-desktop-launch-template-publish-bundling.md`](plan-35-desktop-launch-template-publish-bundling.md)
+
 ## Adjacent residuals (not seeded here)
 
 - Unnamed TabControl containers — deferred vanity (TabItems already named)  
@@ -64,8 +68,9 @@ PLAN-33 sole ranked row (**DESK-A11Y-TREE-01**) is **DONE**. **DESK-A11Y-TAB-01*
 1. **PLAN-33 COMPLETE** (W7-276 DESK-A11Y-TREE-01; seed **W7-277 DONE**).  
 2. **W7-278 DONE** — PLAN-34 inventory; opened **W7-280 (#966)** LINUX implement + **W7-281 (#967)** WIN seed.  
 3. **W7-279 DONE** — seed first PLAN-34 implement → DESK-HOST-LINUX-01.  
-4. **W7-280 DONE** / **W7-282 DONE** — both DESK-HOST ranks shipped; **W7-283 OPEN** (**§3.C NEXT**) — PLAN-34 COMPLETE → PLAN-35.
+4. **W7-280 DONE** / **W7-282 DONE** — both DESK-HOST ranks shipped; **W7-283 DONE** — PLAN-34 COMPLETE → PLAN-35.
+5. Successor **PLAN-35** inventory **W7-284 OPEN** (**§3.C NEXT**).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-283 (#972)** — Seed PLAN-34 COMPLETE → PLAN-35 after DESK-HOST-WIN-01.
+**§3.C NEXT = W7-284 (#975)** — PLAN-35 Inventory Desktop launch-template publish bundling after PLAN-34.

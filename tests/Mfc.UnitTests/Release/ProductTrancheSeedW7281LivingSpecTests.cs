@@ -31,21 +31,21 @@ public sealed class ProductTrancheSeedW7281LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-283 | [#972](https://github.com/sesquicadaver/MTDirector/issues/972) | Seed next after DESK-HOST-WIN-01 (PLAN-34 COMPLETE) | **OPEN**",
+            "W7-283 | [#972](https://github.com/sesquicadaver/MTDirector/issues/972) | Seed next after DESK-HOST-WIN-01 (PLAN-34 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-283 (#972)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-284 (#975)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-281 (#967) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-282", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-HOST-WIN-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-283 (#972)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-284 (#975)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-281 (#967) DONE", plan34, StringComparison.Ordinal);
         Assert.Contains("DESK-HOST-WIN-01", plan34, StringComparison.Ordinal);
         Assert.Contains("W7-282", plan34, StringComparison.Ordinal);
         Assert.Contains("W7-283", plan34, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-283 (#972)", plan34, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-284 (#975)", plan34, StringComparison.Ordinal);
         Assert.Contains("packaging/windows/mfc-desktop-start-menu.ps1", plan34, StringComparison.Ordinal);
     }
 
