@@ -370,8 +370,8 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         Assert.NotNull(snapshot.GetProperty(nameof(SnapshotViewerViewModel.ConfigurationRecords)));
         Assert.NotNull(snapshot.GetProperty(nameof(SnapshotViewerViewModel.ObservationRecords)));
         string axaml = ReadMainWindowAxaml();
-        Assert.Contains("<TabItem Header=\"Configuration\">", axaml, StringComparison.Ordinal);
-        Assert.Contains("<TabItem Header=\"Observations\">", axaml, StringComparison.Ordinal);
+        Assert.Contains("<TabItem Header=\"Configuration\"", axaml, StringComparison.Ordinal);
+        Assert.Contains("<TabItem Header=\"Observations\"", axaml, StringComparison.Ordinal);
         Assert.Contains("Snapshot.ConfigurationRecords", axaml, StringComparison.Ordinal);
         Assert.Contains("Snapshot.ObservationRecords", axaml, StringComparison.Ordinal);
         Assert.Contains("IsSnapshotsSelected", axaml, StringComparison.Ordinal);
