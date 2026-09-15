@@ -32,8 +32,8 @@ public sealed class Plan32ControllerHostProcessPackagingW7268LivingSpecTests
         Assert.Contains("packaging/windows/mfc-controller.winsw.xml", plan32, StringComparison.Ordinal);
         Assert.Contains("--self-contained false", plan32, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/controller", plan32, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-269 (#944)", plan32, StringComparison.Ordinal);
-        Assert.Contains("W7-269 (#944) OPEN", plan32, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-270 (#946)", plan32, StringComparison.Ordinal);
+        Assert.Contains("W7-269 (#944) DONE", plan32, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-268 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-SYSTEMD-01", limitations, StringComparison.Ordinal);
@@ -46,7 +46,7 @@ public sealed class Plan32ControllerHostProcessPackagingW7268LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-269 | [#944](https://github.com/sesquicadaver/MTDirector/issues/944) | Seed first PLAN-32 atomic row after inventory → OPS-HOST-SYSTEMD-01 | **OPEN**",
+            "W7-269 | [#944](https://github.com/sesquicadaver/MTDirector/issues/944) | Seed first PLAN-32 atomic row after inventory → OPS-HOST-SYSTEMD-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -57,7 +57,7 @@ public sealed class Plan32ControllerHostProcessPackagingW7268LivingSpecTests
             "W7-271 | [#947](https://github.com/sesquicadaver/MTDirector/issues/947) | Seed next PLAN-32 row after OPS-HOST-SYSTEMD-01 → OPS-HOST-WINSVC-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-269 (#944)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-270 (#946)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-269", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-270", continuous, StringComparison.Ordinal);
