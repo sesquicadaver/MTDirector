@@ -4,6 +4,7 @@ namespace Mfc.UnitTests.Release;
 
 /// <summary>
 /// W7-251: known-limitations / queue seed locked DESK-CONN-HEALTH-01 (W7-252) after PLAN-29 inventory.
+/// Historical: HEALTH-01 DONE; NEXT advanced to W7-253 RECONNECT seed.
 /// </summary>
 public sealed class ProductTrancheSeedW7251LivingSpecTests
 {
@@ -26,20 +27,20 @@ public sealed class ProductTrancheSeedW7251LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-252 | [#910](https://github.com/sesquicadaver/MTDirector/issues/910) | DESK-CONN-HEALTH-01 — Connected-state periodic gRPC health probe after Controller stop | **OPEN**",
+            "W7-252 | [#910](https://github.com/sesquicadaver/MTDirector/issues/910) | DESK-CONN-HEALTH-01 — Connected-state periodic gRPC health probe after Controller stop | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-252 (#910)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-253 (#911)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-251 DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-252", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-HEALTH-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-252 (#910)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-253 (#911)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-251 DONE", plan29, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-HEALTH-01", plan29, StringComparison.Ordinal);
         Assert.Contains("W7-252", plan29, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-252 (#910)", plan29, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-253 (#911)", plan29, StringComparison.Ordinal);
         Assert.Contains("seeded as **W7-252**", limitations, StringComparison.Ordinal);
     }
 

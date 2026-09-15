@@ -164,7 +164,21 @@ public sealed class ControllerConnectionService : IControllerConnectionService
             {
                 if (_state == ControllerConnectionState.Connected)
                 {
-                    await Task.Delay(_options.ReconnectDelayMilliseconds, token).ConfigureAwait(false);
+                    // DESK-CONN-HEALTH-01: probe while Connected (not delay-only).
+                    await Task.Delay(_options.ConnectedHealthProbeIntervalMilliseconds, token).ConfigureAwait(false);
+                    await _gate.WaitAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        if (_state == ControllerConnectionState.Connected)
+                        {
+                            await ProbeConnectedHealthOrLeaveAsync(token).ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        _gate.Release();
+                    }
+
                     continue;
                 }
 
@@ -202,6 +216,56 @@ public sealed class ControllerConnectionService : IControllerConnectionService
         finally
         {
             Interlocked.Exchange(ref _reconnectLoopRunning, 0);
+        }
+    }
+
+    /// <summary>
+    /// Re-runs bounded <c>Health.Check</c> on the live channel. On non-Serving / transport failure,
+    /// leaves <see cref="ControllerConnectionState.Connected"/> so shell StatusText/LastError update.
+    /// </summary>
+    private async Task ProbeConnectedHealthOrLeaveAsync(CancellationToken cancellationToken)
+    {
+        if (_channel is null || _state != ControllerConnectionState.Connected)
+        {
+            return;
+        }
+
+        try
+        {
+            using CancellationTokenSource timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            timeoutCts.CancelAfter(TimeSpan.FromSeconds(_options.HealthCheckTimeoutSeconds));
+
+            Health.HealthClient client = new(_channel);
+            HealthCheckResponse response = await client.CheckAsync(
+                    new HealthCheckRequest(),
+                    cancellationToken: timeoutCts.Token)
+                .ConfigureAwait(false);
+
+            if (response.Status != HealthCheckResponse.Types.ServingStatus.Serving)
+            {
+                SetState(ControllerConnectionState.Disconnected, $"Health status: {response.Status}");
+                await DisposeChannelAsync().ConfigureAwait(false);
+            }
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            SetState(ControllerConnectionState.Disconnected, "Health check timed out.");
+            await DisposeChannelAsync().ConfigureAwait(false);
+        }
+        catch (RpcException ex) when (ex.StatusCode == StatusCode.Unauthenticated || ex.StatusCode == StatusCode.PermissionDenied)
+        {
+            SetState(ControllerConnectionState.AuthenticationFailed, ex.Status.Detail);
+            await DisposeChannelAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex) when (IsTlsFailure(ex))
+        {
+            SetState(ControllerConnectionState.TlsError, ex.Message);
+            await DisposeChannelAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            SetState(ControllerConnectionState.Disconnected, ex.Message);
+            await DisposeChannelAsync().ConfigureAwait(false);
         }
     }
 

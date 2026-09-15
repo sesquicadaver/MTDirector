@@ -1757,6 +1757,17 @@ Issue [#895](https://github.com/sesquicadaver/MTDirector/issues/895) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan28DesktopResidualFieldControlAutomationW7244"`.
 
+## Living Specification — DESK-CONN-HEALTH-01 Connected health probe (W7-252)
+
+Issue [#910](https://github.com/sesquicadaver/MTDirector/issues/910) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Connected-state periodic Health.Check; leave Connected on Controller stop | `ControllerConnectionService`, `DesktopOptions`, shell StatusText/LastError sync | `DeskConnHealth01W7252LivingSpecTests.Ac1ConnectedBranchProbesHealthAndLeavesConnectedOnFailure` |
+| Integration: Connected → Controller stop → leave Connected + LastError | `ControllerConnectionServiceTests` | `ConnectedHealthProbeLeavesConnectedWhenControllerStops` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DeskConnHealth01W7252|FullyQualifiedName~ConnectedHealthProbeLeavesConnected"`.
+
 ## Living Specification — Product tranche seed DESK-CONN-HEALTH-01 (W7-251)
 
 Issue [#908](https://github.com/sesquicadaver/MTDirector/issues/908) AC → module → tests:

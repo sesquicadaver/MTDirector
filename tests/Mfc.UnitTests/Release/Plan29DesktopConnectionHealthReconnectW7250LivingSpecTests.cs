@@ -26,11 +26,11 @@ public sealed class Plan29DesktopConnectionHealthReconnectW7250LivingSpecTests
         Assert.Contains("W7-253", plan29, StringComparison.Ordinal);
         Assert.Contains("W7-251", plan29, StringComparison.Ordinal);
         Assert.Contains("RunReconnectLoopAsync", plan29, StringComparison.Ordinal);
-        Assert.Contains("Task.Delay", plan29, StringComparison.Ordinal);
+        Assert.Contains("ProbeConnectedHealthOrLeaveAsync", plan29, StringComparison.Ordinal);
         Assert.Contains("Health.Check", plan29, StringComparison.Ordinal);
         Assert.Contains("ConnectedHealthProbeIntervalMilliseconds", plan29, StringComparison.Ordinal);
         Assert.Contains("ControllerConnectionService.cs", plan29, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-252 (#910)", plan29, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-253 (#911)", plan29, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-250 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-HEALTH-01", limitations, StringComparison.Ordinal);
@@ -43,14 +43,14 @@ public sealed class Plan29DesktopConnectionHealthReconnectW7250LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-252 | [#910](https://github.com/sesquicadaver/MTDirector/issues/910) | DESK-CONN-HEALTH-01 — Connected-state periodic gRPC health probe after Controller stop | **OPEN**",
+            "W7-252 | [#910](https://github.com/sesquicadaver/MTDirector/issues/910) | DESK-CONN-HEALTH-01 — Connected-state periodic gRPC health probe after Controller stop | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-253 | [#911](https://github.com/sesquicadaver/MTDirector/issues/911) | Seed next PLAN-29 row after DESK-CONN-HEALTH-01 → DESK-CONN-RECONNECT-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-252 (#910)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-253 (#911)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-251", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-252", continuous, StringComparison.Ordinal);
@@ -64,6 +64,7 @@ public sealed class Plan29DesktopConnectionHealthReconnectW7250LivingSpecTests
         Assert.Contains("MaxReconnectAttempts", options, StringComparison.Ordinal);
         Assert.Contains("ReconnectDelayMilliseconds", options, StringComparison.Ordinal);
         Assert.Contains("HealthCheckTimeoutSeconds", options, StringComparison.Ordinal);
+        Assert.Contains("ConnectedHealthProbeIntervalMilliseconds", options, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()
