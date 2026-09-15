@@ -1831,6 +1831,19 @@ Issue [#922](https://github.com/sesquicadaver/MTDirector/issues/922) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~WatchOwn01OperationOwnerAclW7258"`.
 
+## Living Specification — WATCH-BP-01 hub backpressure (W7-260)
+
+Issue [#927](https://github.com/sesquicadaver/MTDirector/issues/927) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Bounded channels + disconnect-on-full + history cap constants | Capture/Deployment/Onboarding ProgressHub | `WatchBp01HubBackpressureW7260LivingSpecTests.Ac1HubsUseBoundedChannelsDisconnectOnFullAndHistoryCap` |
+| Live `_history` cap while retained | ProgressHubs | `WatchBp01HubBackpressureW7260LivingSpecTests.Ac2LiveHistoryCapAppliesWhileOperationRetained` |
+| Slow-subscriber full does not block Publish | CaptureProgressHub | `WatchBp01HubBackpressureW7260LivingSpecTests.Ac3SlowSubscriberDisconnectOnFullDoesNotBlockPublish` |
+| Docs advance NEXT to W7-261 PLAN-30 COMPLETE seed | ROADMAP / plan-30 / known-limitations | `WatchBp01HubBackpressureW7260LivingSpecTests.Ac4DocsAdvanceNextToPlan30CompleteSeed` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~WatchBp01HubBackpressureW7260"`.
+
 ## Living Specification — Product tranche seed WATCH-BP-01 (W7-259)
 
 Issue [#923](https://github.com/sesquicadaver/MTDirector/issues/923) AC → module → tests:

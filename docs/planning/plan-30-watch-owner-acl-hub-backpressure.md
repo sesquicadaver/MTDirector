@@ -1,7 +1,7 @@
 # PLAN-30 — Watch operation-owner ACL / hub slow-subscriber backpressure
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-256); seed **W7-257 (#920) DONE**; implement **W7-258 (#922) DONE**; seed **W7-259 (#923) DONE**; implement **W7-260 (#927) OPEN** (**§3.C NEXT**); follow-up **W7-261 (#928)** (PLAN-30 COMPLETE)  
+**Status:** Inventory **DONE** (W7-256); seed **W7-257 (#920) DONE**; implement **W7-258 (#922) DONE**; seed **W7-259 (#923) DONE**; implement **W7-260 (#927) DONE**; seed **W7-261 (#928) OPEN** (**§3.C NEXT**) (PLAN-30 COMPLETE)  
 **PLAN issue / queue:** [W7-256 / PLAN-30 #919](https://github.com/sesquicadaver/MTDirector/issues/919) **DONE**  
 **Predecessor:** PLAN-29 Desktop connection health / reconnect **COMPLETE**; AUDIT-INT-01 deferred Watch ownership / hub backpressure from audit `11cb746` §19  
 **Normative files:** [`SnapshotGrpcService.cs`](../../src/Mfc.Controller/Grpc/SnapshotGrpcService.cs), [`DeploymentGrpcService.cs`](../../src/Mfc.Controller/Grpc/DeploymentGrpcService.cs), [`OnboardingGrpcService.cs`](../../src/Mfc.Controller/Grpc/OnboardingGrpcService.cs), [`CaptureProgressHub.cs`](../../src/Mfc.Controller/Grpc/CaptureProgressHub.cs), [`DeploymentProgressHub.cs`](../../src/Mfc.Controller/Grpc/DeploymentProgressHub.cs), [`OnboardingProgressHub.cs`](../../src/Mfc.Controller/Grpc/OnboardingProgressHub.cs)  
@@ -42,7 +42,7 @@ Absorb the **product-critical** AUDIT §19 residuals left after AUDIT-INT-01: Wa
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **WATCH-OWN-01** | Bind Watch to operation owner (beyond Read permission) | `EnsureWatchAuthorizedAsync` permission-only; hubs lack owner; audit §19 ownership | implement **W7-258 (#922) DONE**; seed **W7-257 (#920) DONE** |
-| 2 | **WATCH-BP-01** | Bounded hub subscriber channels / slow-subscriber backpressure + live `_history` cap | `CreateUnbounded` ×3 ProgressHubs; unbounded `_history` while retained | implement **W7-260 (#927) OPEN** (**§3.C NEXT**); seed **W7-259 (#923) DONE**; follow-up **W7-261 (#928)** |
+| 2 | **WATCH-BP-01** | Bounded hub subscriber channels / slow-subscriber backpressure + live `_history` cap | was `CreateUnbounded` ×3; unbounded `_history` | implement **W7-260 (#927) DONE**; seed **W7-259 (#923) DONE**; follow-up **W7-261 (#928) OPEN** (**§3.C NEXT**) |
 
 Inventory (**W7-256 DONE**) locked ranking and opened OWN implement (**W7-258**) + BP seed (**W7-259**). Seed **W7-257 DONE** advanced §3.C NEXT to the first implement after inventory DONE. No third vanity rank — history bound stays inside **WATCH-BP-01**; AUDIT-INT-01 Read/prune locks remain the regression corpus. Seed IDs **WATCH-OWN-01** / **WATCH-BP-01** are the canonical atomic row names (owner ACL / hub backpressure).
 
@@ -65,8 +65,9 @@ PLAN-29 ranks 1…2 (**DESK-CONN-HEALTH-01**, **DESK-CONN-RECONNECT-01**) are **
 3. **W7-257 DONE** — seed advanced NEXT to **WATCH-OWN-01** (**W7-258**).  
 4. **W7-258 DONE** — WATCH-OWN-01 owner ACL beyond Read.
 5. **W7-259 DONE** — seed advanced NEXT to **WATCH-BP-01** (**W7-260**); opened **W7-261** PLAN-30 COMPLETE follow-up.
-6. **W7-260 OPEN** — WATCH-BP-01 bounded ProgressHub channels + live `_history` cap.
+6. **W7-260 DONE** — WATCH-BP-01 bounded ProgressHub channels + live `_history` cap (capacity 64, disconnect-on-full, history 256).
+7. **W7-261 OPEN** — seed after WATCH-BP-01 (PLAN-30 COMPLETE).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-260 (#927)** — WATCH-BP-01 bounded ProgressHub subscriber channels / slow-subscriber backpressure + live `_history` cap.
+**§3.C NEXT = W7-261 (#928)** — Seed next after WATCH-BP-01 (PLAN-30 COMPLETE).

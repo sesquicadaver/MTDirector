@@ -33,7 +33,7 @@ public sealed class Plan30WatchOwnerAclHubBackpressureW7256LivingSpecTests
         Assert.Contains("CreateUnbounded", plan30, StringComparison.Ordinal);
         Assert.Contains("CreatedBy", plan30, StringComparison.Ordinal);
         Assert.Contains("892a073", plan30, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-260 (#927)", plan30, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-261 (#928)", plan30, StringComparison.Ordinal);
         Assert.Contains("W7-257 (#920) DONE", plan30, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-256 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -59,10 +59,10 @@ public sealed class Plan30WatchOwnerAclHubBackpressureW7256LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-260 | [#927](https://github.com/sesquicadaver/MTDirector/issues/927) | WATCH-BP-01 — Bounded ProgressHub subscriber channels / slow-subscriber backpressure + live `_history` cap | **OPEN**",
+            "W7-260 | [#927](https://github.com/sesquicadaver/MTDirector/issues/927) | WATCH-BP-01 — Bounded ProgressHub subscriber channels / slow-subscriber backpressure + live `_history` cap | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-260 (#927)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-261 (#928)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-257", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-258", continuous, StringComparison.Ordinal);
@@ -77,9 +77,9 @@ public sealed class Plan30WatchOwnerAclHubBackpressureW7256LivingSpecTests
         Assert.Contains("DeploymentRead", deploymentGrpc, StringComparison.Ordinal);
         Assert.Contains("EnsureWatchAuthorizedAsync", onboardingGrpc, StringComparison.Ordinal);
         Assert.Contains("OnboardingRead", onboardingGrpc, StringComparison.Ordinal);
-        Assert.Contains("Channel.CreateUnbounded", captureHub, StringComparison.Ordinal);
-        Assert.Contains("Channel.CreateUnbounded", deploymentHub, StringComparison.Ordinal);
-        Assert.Contains("Channel.CreateUnbounded", onboardingHub, StringComparison.Ordinal);
+        Assert.Contains("Channel.CreateBounded", captureHub, StringComparison.Ordinal);
+        Assert.Contains("Channel.CreateBounded", deploymentHub, StringComparison.Ordinal);
+        Assert.Contains("Channel.CreateBounded", onboardingHub, StringComparison.Ordinal);
         Assert.Contains("_history", captureHub, StringComparison.Ordinal);
     }
 

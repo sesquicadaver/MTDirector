@@ -10,9 +10,17 @@ namespace Mfc.Controller.Grpc;
 /// In-memory fan-out for CaptureProgress streams (M1-26 WatchCapture).
 /// Buffers events so late WatchCapture subscribers still observe COMPLETED/FAILED.
 /// Prunes terminal operations after the last subscriber leaves (AUDIT-INT-01 §19).
+/// Bounded subscriber channels + live history cap (WATCH-BP-01): slow subscribers are
+/// disconnected when the channel is full (fail-closed; no silent DropWrite).
 /// </summary>
 public sealed class CaptureProgressHub
 {
+    /// <summary>Per-subscriber live channel capacity (WATCH-BP-01).</summary>
+    public const int SubscriberChannelCapacity = 64;
+
+    /// <summary>Max retained replay events while the operation stays in the hub (WATCH-BP-01).</summary>
+    public const int MaxRetainedHistoryEvents = 256;
+
     private readonly ConcurrentDictionary<Guid, OperationStream> _operations = new();
 
     /// <summary>Registers a new capture operation owned by <paramref name="ownerActor"/> and returns its id.</summary>
@@ -141,6 +149,11 @@ public sealed class CaptureProgressHub
             lock (_gate)
             {
                 _history.Add(progress);
+                while (_history.Count > MaxRetainedHistoryEvents)
+                {
+                    _history.RemoveAt(0);
+                }
+
                 if (IsTerminal(progress.Stage))
                 {
                     _terminal = true;
@@ -151,7 +164,15 @@ public sealed class CaptureProgressHub
 
             foreach (Channel<CaptureProgress> channel in subscribers)
             {
-                channel.Writer.TryWrite(progress);
+                if (!channel.Writer.TryWrite(progress))
+                {
+                    // Fail-closed: disconnect slow subscriber instead of silent DropWrite.
+                    channel.Writer.TryComplete();
+                    lock (_gate)
+                    {
+                        _subscribers.Remove(channel);
+                    }
+                }
             }
 
             if (_terminal)
@@ -166,12 +187,13 @@ public sealed class CaptureProgressHub
         public async IAsyncEnumerable<CaptureProgress> ReadAsync(
             [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            Channel<CaptureProgress> channel = Channel.CreateUnbounded<CaptureProgress>(
-                new UnboundedChannelOptions
+            Channel<CaptureProgress> channel = Channel.CreateBounded<CaptureProgress>(
+                new BoundedChannelOptions(SubscriberChannelCapacity)
                 {
                     SingleReader = true,
                     SingleWriter = false,
                     AllowSynchronousContinuations = false,
+                    FullMode = BoundedChannelFullMode.Wait,
                 });
 
             CaptureProgress[] replay;

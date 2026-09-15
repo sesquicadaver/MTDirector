@@ -11,9 +11,17 @@ namespace Mfc.Controller.Grpc;
 /// In-memory fan-out for WatchOnboarding (M5-09).
 /// Replay includes events after an earlier terminal (Committed → rollback) so a second Watch sees rollback progress
 /// (W6-04 / CONT-01 parity) while retained. Prunes after terminal + last reader leaves (AUDIT-INT-01 §19).
+/// Bounded subscriber channels + live history cap (WATCH-BP-01): slow subscribers are
+/// disconnected when the channel is full (fail-closed; no silent DropWrite).
 /// </summary>
 public sealed class OnboardingProgressHub
 {
+    /// <summary>Per-subscriber live channel capacity (WATCH-BP-01).</summary>
+    public const int SubscriberChannelCapacity = 64;
+
+    /// <summary>Max retained replay events while the operation stays in the hub (WATCH-BP-01).</summary>
+    public const int MaxRetainedHistoryEvents = 256;
+
     private readonly ConcurrentDictionary<Guid, OperationStream> _operations = new();
 
     public void Ensure(Guid operationId)
@@ -131,6 +139,11 @@ public sealed class OnboardingProgressHub
             lock (_gate)
             {
                 _history.Add(progress);
+                while (_history.Count > MaxRetainedHistoryEvents)
+                {
+                    _history.RemoveAt(0);
+                }
+
                 if (OnboardingProtoMapper.IsTerminal(progress.State))
                 {
                     _terminal = true;
@@ -141,7 +154,15 @@ public sealed class OnboardingProgressHub
 
             foreach (Channel<OnboardingProgress> channel in subscribers)
             {
-                channel.Writer.TryWrite(progress);
+                if (!channel.Writer.TryWrite(progress))
+                {
+                    // Fail-closed: disconnect slow subscriber instead of silent DropWrite.
+                    channel.Writer.TryComplete();
+                    lock (_gate)
+                    {
+                        _subscribers.Remove(channel);
+                    }
+                }
             }
 
             if (_terminal)
@@ -156,12 +177,13 @@ public sealed class OnboardingProgressHub
         public async IAsyncEnumerable<OnboardingProgress> ReadAsync(
             [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            Channel<OnboardingProgress> channel = Channel.CreateUnbounded<OnboardingProgress>(
-                new UnboundedChannelOptions
+            Channel<OnboardingProgress> channel = Channel.CreateBounded<OnboardingProgress>(
+                new BoundedChannelOptions(SubscriberChannelCapacity)
                 {
                     SingleReader = true,
                     SingleWriter = false,
                     AllowSynchronousContinuations = false,
+                    FullMode = BoundedChannelFullMode.Wait,
                 });
 
             OnboardingProgress[] replay;
