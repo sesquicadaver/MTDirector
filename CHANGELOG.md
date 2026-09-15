@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-274** ([#955](https://github.com/sesquicadaver/MTDirector/issues/955)): PLAN-33 inventory DONE — ranked sole **DESK-A11Y-TREE-01**; dropped **DESK-A11Y-TAB-01**; opened **W7-276 (#958)** / **W7-277 (#959)** (`Plan33DesktopInventoryTreeviewA11yW7274LivingSpecTests`). **§3.C NEXT = W7-275 (#956)**.
+- **W7-275** ([#956](https://github.com/sesquicadaver/MTDirector/issues/956)): Seed PLAN-33 first atomic row → DESK-A11Y-TREE-01 as §3.C NEXT; keep **W7-276 (#958)** implement + **W7-277 (#959)** COMPLETE follow-up open (`ProductTrancheSeedW7275LivingSpecTests`). **§3.C NEXT = W7-276 (#958)**.
+
+- **W7-274** ([#955](https://github.com/sesquicadaver/MTDirector/issues/955)): PLAN-33 inventory DONE — ranked sole **DESK-A11Y-TREE-01**; dropped **DESK-A11Y-TAB-01**; opened **W7-276 (#958)** / **W7-277 (#959)** (`Plan33DesktopInventoryTreeviewA11yW7274LivingSpecTests`). **§3.C NEXT was W7-275 (#956)** (advanced by W7-275).
 
 - **W7-273** ([#952](https://github.com/sesquicadaver/MTDirector/issues/952)): Seed PLAN-32 COMPLETE → PLAN-33 Desktop Inventory TreeView / residual TabControl a11y tranche (`ProductTrancheSeedW7273LivingSpecTests`). **§3.C NEXT was W7-274 (#955)** (advanced by W7-274).
 

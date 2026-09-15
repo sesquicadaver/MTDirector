@@ -1,7 +1,7 @@
 # PLAN-33 — Desktop Inventory TreeView / residual TabControl a11y
 
-**Date:** 2026-09-15 (inventory **DONE** @ `50f1ae1`)  
-**Status:** Inventory **DONE** (W7-274); seed **W7-275 (#956) OPEN** (**§3.C NEXT**); implement **W7-276 (#958) OPEN**; COMPLETE seed **W7-277 (#959) OPEN**; predecessor **PLAN-32 COMPLETE**  
+**Date:** 2026-09-15 (inventory **DONE** @ `50f1ae1`; seed **W7-275 DONE**)  
+**Status:** Inventory **DONE** (W7-274); seed **W7-275 (#956) DONE**; implement **W7-276 (#958) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-277 (#959) OPEN**; predecessor **PLAN-32 COMPLETE**  
 **PLAN issue / queue:** [W7-274 / PLAN-33 #955](https://github.com/sesquicadaver/MTDirector/issues/955) **DONE**  
 **Predecessor:** PLAN-32 Controller host-process packaging templates **COMPLETE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -40,10 +40,10 @@ Absorb the highest-value **product** continuous-queue a11y gap after PLAN-32 clo
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-A11Y-TREE-01** | Inventory TreeView control-level `AutomationProperties.Name` (recommended: `Inventory`) | `MainWindow.axaml` ~86 TreeView without Name; PLAN-32 adjacent residual | seed **W7-275 (#956)** → implement **W7-276 (#958)**; COMPLETE seed **W7-277 (#959)** |
+| 1 | **DESK-A11Y-TREE-01** | Inventory TreeView control-level `AutomationProperties.Name` (recommended: `Inventory`) | `MainWindow.axaml` ~86 TreeView without Name; PLAN-32 adjacent residual | seed **W7-275 (#956) DONE** → implement **W7-276 (#958)** (**NEXT**); COMPLETE seed **W7-277 (#959)** |
 | — | **DESK-A11Y-TAB-01** | *(dropped)* Residual unnamed TabControl containers | 3 TabControls lack container Name; TabItems already named | **not seeded** — deferred vanity outside PLAN-33 |
 
-Inventory (**W7-274**) ranked TREE-01 as the sole product row, dropped TAB-01, and opened implement + COMPLETE follow-up seeds; seed **W7-275** advances NEXT to TREE-01 implement.
+Inventory (**W7-274**) ranked TREE-01 as the sole product row, dropped TAB-01, and opened implement + COMPLETE follow-up seeds; seed **W7-275** advanced NEXT to TREE-01 implement.
 
 ## Dual track
 
@@ -64,9 +64,9 @@ PLAN-32 ranks 1…2 (**OPS-HOST-SYSTEMD-01**, **OPS-HOST-WINSVC-01**) are **DONE
 
 1. **PLAN-32 COMPLETE** (W7-272 OPS-HOST-WINSVC-01; seed **W7-273 DONE**).  
 2. **W7-274 DONE** — PLAN-33 inventory → opened TREE-01 implement **W7-276 (#958)** + COMPLETE seed **W7-277 (#959)**; dropped TAB-01.  
-3. **W7-275 OPEN** (**§3.C NEXT**) — seed first PLAN-33 implement after inventory.  
-4. Execute **DESK-A11Y-TREE-01** (**W7-276**); then COMPLETE seed **W7-277** → next product tranche.
+3. **W7-275 DONE** — seeded first PLAN-33 implement after inventory.  
+4. **W7-276 OPEN** (**§3.C NEXT**) — execute **DESK-A11Y-TREE-01**; then COMPLETE seed **W7-277** → next product tranche.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-275 (#956)** — Seed first PLAN-33 atomic row after inventory → DESK-A11Y-TREE-01.
+**§3.C NEXT = W7-276 (#958)** — DESK-A11Y-TREE-01 — Inventory TreeView AutomationProperties.Name.

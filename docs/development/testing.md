@@ -1951,6 +1951,16 @@ Issue [#946](https://github.com/sesquicadaver/MTDirector/issues/946) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~OpsHostSystemd01ControllerUnitW7270"`.
 
+## Living Specification — Product tranche seed DESK-A11Y-TREE-01 (W7-275)
+
+Issue [#956](https://github.com/sesquicadaver/MTDirector/issues/956) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-A11Y-TREE-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-33 | `ProductTrancheSeedW7275LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskA11yTree01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7275"`.
+
 ## Living Specification — PLAN-33 Desktop Inventory TreeView a11y inventory (W7-274)
 
 Issue [#955](https://github.com/sesquicadaver/MTDirector/issues/955) AC → module → tests:
