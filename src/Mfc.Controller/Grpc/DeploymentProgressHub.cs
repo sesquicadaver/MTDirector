@@ -11,9 +11,17 @@ namespace Mfc.Controller.Grpc;
 /// In-memory fan-out for WatchDeployment (M4-12).
 /// Replay includes events after an earlier terminal (Committed → rollback) so a second Watch sees rollback progress
 /// while the operation remains retained. Prunes after terminal + last reader leaves (AUDIT-INT-01 §19).
+/// Bounded subscriber channels + live history cap (WATCH-BP-01): slow subscribers are
+/// disconnected when the channel is full (fail-closed; no silent DropWrite).
 /// </summary>
 public sealed class DeploymentProgressHub
 {
+    /// <summary>Per-subscriber live channel capacity (WATCH-BP-01).</summary>
+    public const int SubscriberChannelCapacity = 64;
+
+    /// <summary>Max retained replay events while the operation stays in the hub (WATCH-BP-01).</summary>
+    public const int MaxRetainedHistoryEvents = 256;
+
     private readonly ConcurrentDictionary<Guid, OperationStream> _operations = new();
 
     public void Ensure(Guid operationId)
@@ -131,6 +139,11 @@ public sealed class DeploymentProgressHub
             lock (_gate)
             {
                 _history.Add(progress);
+                while (_history.Count > MaxRetainedHistoryEvents)
+                {
+                    _history.RemoveAt(0);
+                }
+
                 if (DeploymentProtoMapper.IsTerminal(progress.State))
                 {
                     _terminal = true;
@@ -141,7 +154,15 @@ public sealed class DeploymentProgressHub
 
             foreach (Channel<DeploymentProgress> channel in subscribers)
             {
-                channel.Writer.TryWrite(progress);
+                if (!channel.Writer.TryWrite(progress))
+                {
+                    // Fail-closed: disconnect slow subscriber instead of silent DropWrite.
+                    channel.Writer.TryComplete();
+                    lock (_gate)
+                    {
+                        _subscribers.Remove(channel);
+                    }
+                }
             }
 
             if (_terminal)
@@ -156,12 +177,13 @@ public sealed class DeploymentProgressHub
         public async IAsyncEnumerable<DeploymentProgress> ReadAsync(
             [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            Channel<DeploymentProgress> channel = Channel.CreateUnbounded<DeploymentProgress>(
-                new UnboundedChannelOptions
+            Channel<DeploymentProgress> channel = Channel.CreateBounded<DeploymentProgress>(
+                new BoundedChannelOptions(SubscriberChannelCapacity)
                 {
                     SingleReader = true,
                     SingleWriter = false,
                     AllowSynchronousContinuations = false,
+                    FullMode = BoundedChannelFullMode.Wait,
                 });
 
             DeploymentProgress[] replay;
