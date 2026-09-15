@@ -1757,6 +1757,16 @@ Issue [#895](https://github.com/sesquicadaver/MTDirector/issues/895) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan28DesktopResidualFieldControlAutomationW7244"`.
 
+## Living Specification — PLAN-29 Desktop connection health / reconnect inventory (W7-250)
+
+Issue [#907](https://github.com/sesquicadaver/MTDirector/issues/907) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ranked DESK-CONN-HEALTH/RECONNECT + seed DESK-CONN-HEALTH-01 | plan-29 + queue docs + `ControllerConnectionService` | `Plan29DesktopConnectionHealthReconnectW7250LivingSpecTests.Ac1Plan29InventoryDocumentsRankedRowsAndSeedsDeskConnHealth01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan29DesktopConnectionHealthReconnectW7250"`.
+
 ## Living Specification — Product tranche seed after DESK-A11Y-CTRL-01 / PLAN-28 COMPLETE (W7-249)
 
 Issue [#904](https://github.com/sesquicadaver/MTDirector/issues/904) AC → module → tests:

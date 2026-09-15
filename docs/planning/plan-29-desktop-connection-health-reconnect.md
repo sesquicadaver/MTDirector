@@ -1,10 +1,10 @@
 # PLAN-29 — Desktop connection health / reconnect after Controller stop
 
-**Date:** 2026-09-15  
-**Status:** Inventory **OPEN** (W7-250); seeded by **W7-249 DONE** after **PLAN-28 COMPLETE**  
-**PLAN issue / queue:** [W7-250 / PLAN-29 #907](https://github.com/sesquicadaver/MTDirector/issues/907)  
+**Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
+**Status:** Inventory **DONE** (W7-250); seed **W7-251 (#908) OPEN** → **DESK-CONN-HEALTH-01**; implement **W7-252 (#910) OPEN**; seed **W7-253 (#911) OPEN** → **DESK-CONN-RECONNECT-01**  
+**PLAN issue / queue:** [W7-250 / PLAN-29 #907](https://github.com/sesquicadaver/MTDirector/issues/907) **DONE**  
 **Predecessor:** PLAN-28 Desktop residual field/control AutomationProperties **COMPLETE**; AUDIT-INT-01 deferred connection-health residual from audit `11cb746` §18  
-**Normative files:** [`ControllerConnectionService.cs`](../../src/Mfc.Desktop/Services/ControllerConnectionService.cs), [`ShellViewModel.cs`](../../src/Mfc.Desktop/ViewModels/ShellViewModel.cs), [`DesktopOptions.cs`](../../src/Mfc.Desktop/Configuration/DesktopOptions.cs)  
+**Normative files:** [`ControllerConnectionService.cs`](../../src/Mfc.Desktop/Services/ControllerConnectionService.cs), [`ShellViewModel.cs`](../../src/Mfc.Desktop/ViewModels/ShellViewModel.cs), [`DesktopOptions.cs`](../../src/Mfc.Desktop/Configuration/DesktopOptions.cs), [`DesktopConnectionStatusText.cs`](../../src/Mfc.Desktop/Services/DesktopConnectionStatusText.cs)  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md) §18  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
@@ -22,26 +22,29 @@ Absorb the **product-critical** Desktop connection residual left after AUDIT-INT
 - Re-opening PLAN-28 DESK-A11Y-FIELD/CTRL product rows  
 - PLAN-28 deferred ListBox hosts / Drift–Audit read-only JSON TextBoxes (remain deferred a11y)  
 - Replacing PLAN-09 DESK-CONN / DESK-MTLS / DESK-AUTH Living Spec locks  
-- Operation-owner ACL / slow-subscriber hub backpressure (audit §19 adjacent residuals — note only; not PLAN-29 vanity rows unless inventory evidence elevates them)
+- Operation-owner ACL / slow-subscriber hub backpressure (audit §19 adjacent residuals — note only; not PLAN-29 vanity rows)
 
-## Inventory evidence (seed baseline after PLAN-28)
+## Inventory evidence (2026-09-15 `ControllerConnectionService` @ `c5aebcd`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
-| Connect health check | Health.Check on ConnectCore | OK |
-| Reconnect loop while Connected | `Task.Delay` only (`ControllerConnectionService` ~165–168) | No periodic health; Controller stop can leave shell Connected |
-| Shell status sync | `ShellViewModel` formats from connection StateChanged | Depends on connection service detecting drop |
-| AuthFailed / TlsError paths | Loop breaks; DESK-AUTH Living Spec | Locked — do not regress |
-| MaxReconnectAttempts / delay options | `DesktopOptions` | May need probe interval distinct from reconnect delay (inventory refines) |
+| Connect health check | `Health.Check` in `ConnectCoreAsync` (~101–114); timeout via `HealthCheckTimeoutSeconds` | OK |
+| Reconnect loop while Connected | `Task.Delay(_options.ReconnectDelayMilliseconds)` only (`RunReconnectLoopAsync` ~165–168); `continue` without probe | **No periodic health**; Controller stop can leave shell Connected |
+| Leave Connected on probe fail | Not implemented on Connected idle path | Must set Disconnected + LastError, dispose channel, raise `StateChanged` |
+| AuthFailed / TlsError paths | Loop `break` (~171–174); DESK-AUTH Living Spec | Locked — do not regress |
+| Reconnect after non-Connected | `ConnectCoreAsync` under gate; `MaxReconnectAttempts` + reconnect delay (~176–195) | Exists but never entered from Connected idle without a drop signal |
+| `DesktopOptions` | `HealthCheckTimeoutSeconds`, `MaxReconnectAttempts`, `ReconnectDelayMilliseconds` | No distinct Connected probe interval — HEALTH-01 may add `ConnectedHealthProbeIntervalMilliseconds` or document reuse of reconnect delay |
+| Shell status sync | `ShellViewModel.OnConnectionStateChanged` → `DesktopConnectionStatusText.Format` | Depends on connection service detecting drop; ErrorText from `LastError` |
+| `Channel` property | Non-null only while `Connected` | Stale Connected keeps channel exposed to callers |
 
-## Ranked Desktop connection health tranche (seed baseline)
+## Ranked Desktop connection health tranche
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-CONN-HEALTH-01** | Connected-state periodic health probe; leave Connected when Controller stops | `RunReconnectLoopAsync` Connected idle branch; audit §18 | queued after inventory **W7-250**; seed **W7-251 (#908)** |
-| 2 | **DESK-CONN-RECONNECT-01** | Bounded reconnect + shell StatusText/LastError after health-fail drop | `ControllerConnectionService` reconnect attempts; `ShellViewModel` / `DesktopConnectionStatusText` | after HEALTH (inventory may refine / split / add regression)
+| 1 | **DESK-CONN-HEALTH-01** | Connected-state periodic health probe; leave Connected when Controller stops | `RunReconnectLoopAsync` Connected idle branch (~165–168); audit §18; options probe interval | implement **W7-252 (#910)**; seed **W7-251 (#908) OPEN** |
+| 2 | **DESK-CONN-RECONNECT-01** | Bounded reconnect + shell StatusText/LastError after health-fail drop | Reconnect attempts (~176–195); `ShellViewModel` / `DesktopConnectionStatusText` | seed **W7-253 (#911) OPEN** (opens RECONNECT implement after HEALTH) |
 
-Inventory (**W7-250**) may refine ranking, split probe vs reconnect vs shell chrome, add a regression lock row, and open implement issues; seed **W7-251** advances NEXT to the first implement after inventory DONE.
+Inventory (**W7-250 DONE**) locked ranking and opened HEALTH implement (**W7-252**) + RECONNECT seed (**W7-253**). Seed **W7-251** advances §3.C NEXT to the first implement after inventory DONE. No third vanity rank — PLAN-09 connection/TLS/auth locks remain the regression corpus.
 
 ## Dual track
 
@@ -56,15 +59,15 @@ PLAN-28 ranks 1…2 (**DESK-A11Y-FIELD-01**, **DESK-A11Y-CTRL-01**) are **DONE**
 - Operation-owner ACL on Watch/read paths beyond AUDIT-INT-01 Read permissions (audit §19 ownership nuance).  
 - Slow-subscriber / unbounded hub backpressure beyond terminal prune from AUDIT-INT-01.  
 
-These stay documented for a later continuous tranche unless inventory elevates them with concrete implement evidence.
+These stay documented for a later continuous tranche — inventory did **not** elevate them (no Desktop connection-health implement evidence).
 
 ## §3.C ordering
 
 1. **PLAN-28 COMPLETE** (W7-248 DESK-A11Y-CTRL-01; seed **W7-249 DONE**).  
-2. **W7-250 OPEN** — PLAN-29 inventory → open first health/reconnect implement + follow-up seeds.  
-3. **W7-251 OPEN** — seed first PLAN-29 implement after inventory.  
+2. **W7-250 DONE** — PLAN-29 inventory; opened **W7-252** / **W7-253**.  
+3. **W7-251 OPEN** — seed advances NEXT to **DESK-CONN-HEALTH-01** (**W7-252**).  
 4. Execute ranked HEALTH/RECONNECT rows atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-250 (#907)** — PLAN-29 Inventory Desktop connection health / reconnect after Controller stop (AUDIT §18 residual) after PLAN-28.
+**§3.C NEXT = W7-251 (#908)** — Seed first PLAN-29 atomic row after inventory → DESK-CONN-HEALTH-01.
