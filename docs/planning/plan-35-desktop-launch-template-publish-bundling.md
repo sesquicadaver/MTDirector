@@ -1,7 +1,7 @@
 # PLAN-35 — Desktop launch-template publish bundling (package-desktop → OUT_DIR/desktop)
 
 **Date:** 2026-09-15 (inventory **DONE** @ `d461b82`)  
-**Status:** Inventory **DONE** (W7-284); seed **W7-285 (#976) OPEN**; implement **W7-286 (#978) OPEN**; COMPLETE seed **W7-287 (#979) OPEN**; predecessor **PLAN-34 COMPLETE**  
+**Status:** Inventory **DONE** (W7-284); seed **W7-285 (#976) DONE**; implement **W7-286 (#978) OPEN**; COMPLETE seed **W7-287 (#979) OPEN**; predecessor **PLAN-34 COMPLETE**  
 **PLAN issue / queue:** [W7-284 / PLAN-35 #975](https://github.com/sesquicadaver/MTDirector/issues/975) **DONE**  
 **Predecessor:** PLAN-34 Desktop operator launch packaging templates **COMPLETE** (DESK-HOST-LINUX-01 + DESK-HOST-WIN-01)  
 **Normative files:** [`package-desktop.sh`](../../scripts/release/package-desktop.sh), [`mfc-desktop.desktop`](../../packaging/linux/mfc-desktop.desktop), [`mfc-desktop-start-menu.ps1`](../../packaging/windows/mfc-desktop-start-menu.ps1), [`packaging.md`](../release/packaging.md)  
@@ -66,9 +66,9 @@ PLAN-34 ranks 1…2 (**DESK-HOST-LINUX-01**, **DESK-HOST-WIN-01**) are **DONE**.
 
 1. **PLAN-34 COMPLETE** (W7-282 DESK-HOST-WIN-01; seed **W7-283 DONE**).  
 2. **W7-284 DONE** — PLAN-35 inventory; opened **W7-286 (#978)** BUNDLE implement + **W7-287 (#979)** COMPLETE seed.  
-3. **W7-285 OPEN** — seed first PLAN-35 implement → DESK-HOST-BUNDLE-01.  
+3. **W7-285 DONE** — seed first PLAN-35 implement → DESK-HOST-BUNDLE-01.  
 4. Execute sole DESK-HOST-BUNDLE-01 row atomically; then W7-287 → PLAN-36.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-285 (#976)** — Seed first PLAN-35 atomic row after inventory → DESK-HOST-BUNDLE-01.
+**§3.C NEXT = W7-286 (#978)** — DESK-HOST-BUNDLE-01 implement after seed.

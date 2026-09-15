@@ -2002,6 +2002,17 @@ Issue [#964](https://github.com/sesquicadaver/MTDirector/issues/964) AC → modu
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7279"`.
 
 
+
+## Living Specification — Product tranche seed DESK-HOST-BUNDLE-01 (W7-285)
+
+Issue [#976](https://github.com/sesquicadaver/MTDirector/issues/976) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-HOST-BUNDLE-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-35 | `ProductTrancheSeedW7285LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskHostBundle01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7285"`.
+
 ## Living Specification — PLAN-35 Desktop launch-template publish bundling inventory (W7-284)
 
 Issue [#975](https://github.com/sesquicadaver/MTDirector/issues/975) AC → module → tests:
