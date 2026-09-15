@@ -2,11 +2,11 @@ using Xunit;
 
 namespace Mfc.UnitTests.Release;
 
-/// <summary>W7-232: known-limitations / queue lock AUDIT-GUI-01 DONE; §3.C NEXT = W7-233 AUDIT-AUTH-01 seed.</summary>
+/// <summary>W7-232: historical residual lock AUDIT-GUI-01 DONE (not current §3.C NEXT).</summary>
 public sealed class ProductTrancheAuditGui01W7232LivingSpecTests
 {
     [Fact]
-    public void Ac1KnownLimitationsAndQueueLockAuditGui01DoneNextAuthSeed()
+    public void Ac1KnownLimitationsAndQueueLockAuditGui01DoneHistoricalResidual()
     {
         string root = RepoRoot();
         string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
@@ -19,7 +19,6 @@ public sealed class ProductTrancheAuditGui01W7232LivingSpecTests
         Assert.Contains("CreatePlanFromSealedArtifacts", limitations, StringComparison.Ordinal);
         Assert.Contains("W7-233", limitations, StringComparison.Ordinal);
         Assert.Contains("AUDIT-AUTH-01", limitations, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-233 (#872)", roadmap, StringComparison.Ordinal);
         Assert.Contains(
             "W7-232 | [#871](https://github.com/sesquicadaver/MTDirector/issues/871) | AUDIT-GUI-01 — Onboarding/Deployment synthetic payloads; Deploy never enables | **DONE**",
             roadmap,
@@ -29,7 +28,7 @@ public sealed class ProductTrancheAuditGui01W7232LivingSpecTests
         Assert.Contains("W7-232 DONE", plan26, StringComparison.Ordinal);
         Assert.Contains("AUDIT-GUI-01", plan26, StringComparison.Ordinal);
         Assert.Contains("W7-233", plan26, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-233 (#872)", plan26, StringComparison.Ordinal);
+        Assert.Contains("W7-233 DONE", plan26, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

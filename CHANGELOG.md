@@ -29,6 +29,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-233** ([#872](https://github.com/sesquicadaver/MTDirector/issues/872)): Seed next PLAN-26 row after AUDIT-GUI-01 → AUDIT-AUTH-01 (`ProductTrancheSeedW7233LivingSpecTests`). **§3.C NEXT = W7-234 (#875)**.
+
 - **W7-231** ([#868](https://github.com/sesquicadaver/MTDirector/issues/868)): Seed next PLAN-26 row after AUDIT-DEP-03 → AUDIT-GUI-01 (`ProductTrancheSeedW7231LivingSpecTests`). **§3.C NEXT = W7-232 (#871)**.
 
 - **W7-229** ([#864](https://github.com/sesquicadaver/MTDirector/issues/864)): Seed next PLAN-26 row after AUDIT-DEP-02 → AUDIT-DEP-03 (`ProductTrancheSeedW7229LivingSpecTests`). **§3.C NEXT = W7-230 (#867)**.
