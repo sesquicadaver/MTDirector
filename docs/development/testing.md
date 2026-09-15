@@ -1702,6 +1702,18 @@ Issue [#875](https://github.com/sesquicadaver/MTDirector/issues/875) AC → modu
 Filter: `dotnet test --filter "FullyQualifiedName~AllowListedOperatorAuthorizationBoundary|AuditAuth01AllowlistedOperatorsW7234"`.
 
 
+## Living Specification — DESK-A11Y-SNAP-01 Snapshot AutomationProperties (W7-240)
+
+Issue [#886](https://github.com/sesquicadaver/MTDirector/issues/886) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Snapshot / Semantic-diff primary action Names | `MainWindow.axaml` | `DesktopSnapshotAutomationLivingSpecTests.Ac1SnapshotAndSemanticDiffButtonsExposeAutomationPropertiesName` |
+| PLAN-27 + docs lock | plan-27 + testing + known-limitations | `DesktopSnapshotAutomationLivingSpecTests.Ac2Plan27AndTestingDocLockA11ySnap01` |
+| SNAP-01 DONE + queue seed PANEL-01 as NEXT | known-limitations + ROADMAP + continuous + plan-27 | `ProductTrancheSeedW7240LivingSpecTests.Ac1Snap01DoneAndQueueSeedsDeskA11yPanel01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopSnapshotAutomationLivingSpecTests|ProductTrancheSeedW7240"`.
+
 ## Living Specification — Product tranche seed DESK-A11Y-SNAP-01 (W7-239)
 
 Issue [#884](https://github.com/sesquicadaver/MTDirector/issues/884) AC → module → tests:

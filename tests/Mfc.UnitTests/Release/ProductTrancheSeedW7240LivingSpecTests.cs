@@ -3,12 +3,12 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-239: known-limitations / queue seed locked DESK-A11Y-SNAP-01 (W7-240) after PLAN-27 inventory. Historical: SNAP-01 DONE; NEXT advanced to W7-241.
+/// W7-240: DESK-A11Y-SNAP-01 DONE; known-limitations / queue advance locks W7-241 seed DESK-A11Y-PANEL-01 as §3.C NEXT.
 /// </summary>
-public sealed class ProductTrancheSeedW7239LivingSpecTests
+public sealed class ProductTrancheSeedW7240LivingSpecTests
 {
     [Fact]
-    public void Ac1KnownLimitationsAndQueueSeedDeskA11ySnap01AsNext()
+    public void Ac1Snap01DoneAndQueueSeedsDeskA11yPanel01AsNext()
     {
         string root = RepoRoot();
         string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
@@ -16,31 +16,31 @@ public sealed class ProductTrancheSeedW7239LivingSpecTests
         string plan = File.ReadAllText(Path.Combine(root, "docs/planning/continuous-queue-plan.md"));
         string plan27 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-27-desktop-snapshot-panel-automation.md"));
 
-        Assert.Contains("Intentional residual (W7-239 Living Spec lock)", limitations, StringComparison.Ordinal);
-        Assert.Contains("DESK-A11Y-SNAP-01", limitations, StringComparison.Ordinal);
-        Assert.Contains("W7-240", limitations, StringComparison.Ordinal);
+        Assert.Contains("Intentional residual (W7-240 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("DESK-A11Y-SNAP-01 DONE", limitations, StringComparison.Ordinal);
+        Assert.Contains("DESK-A11Y-PANEL-01", limitations, StringComparison.Ordinal);
         Assert.Contains("W7-241", limitations, StringComparison.Ordinal);
+        Assert.Contains("DesktopSnapshotAutomationLivingSpecTests", limitations, StringComparison.Ordinal);
 
-        Assert.Contains(
-            "W7-239 | [#884](https://github.com/sesquicadaver/MTDirector/issues/884) | Seed first PLAN-27 atomic row after inventory → DESK-A11Y-SNAP-01 | **DONE**",
-            roadmap,
-            StringComparison.Ordinal);
         Assert.Contains(
             "W7-240 | [#886](https://github.com/sesquicadaver/MTDirector/issues/886) | DESK-A11Y-SNAP-01 — Snapshot Capture/Reload/Compare/Copy AutomationProperties.Name | **DONE**",
             roadmap,
             StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-241 | [#887](https://github.com/sesquicadaver/MTDirector/issues/887) | Seed next PLAN-27 row after DESK-A11Y-SNAP-01 → DESK-A11Y-PANEL-01 | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-241 (#887)", roadmap, StringComparison.Ordinal);
 
-        Assert.Contains("W7-239 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("W7-240", plan, StringComparison.Ordinal);
-        Assert.Contains("DESK-A11Y-SNAP-01", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-240 DONE", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-241", plan, StringComparison.Ordinal);
+        Assert.Contains("DESK-A11Y-PANEL-01", plan, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-241 (#887)", plan, StringComparison.Ordinal);
 
-        Assert.Contains("W7-239 DONE", plan27, StringComparison.Ordinal);
+        Assert.Contains("W7-240 DONE", plan27, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-SNAP-01", plan27, StringComparison.Ordinal);
-        Assert.Contains("W7-240", plan27, StringComparison.Ordinal);
+        Assert.Contains("DESK-A11Y-PANEL-01", plan27, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-241 (#887)", plan27, StringComparison.Ordinal);
-        Assert.Contains("seeded as **W7-240**", limitations, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

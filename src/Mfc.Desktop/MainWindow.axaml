@@ -761,9 +761,11 @@
                             VerticalAlignment="Center" />
                   <Button Classes="mfc-action"
                           Content="Reload"
+                          AutomationProperties.Name="Reload"
                           Command="{Binding Snapshot.ReloadCommand}" />
                   <Button Classes="mfc-action"
                           Content="Capture"
+                          AutomationProperties.Name="Capture"
                           Command="{Binding Snapshot.CaptureCommand}" />
                 </WrapPanel>
                 <TextBlock Classes="mfc-muted"
@@ -807,6 +809,7 @@
               <DockPanel Grid.Column="2" Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
                 <Button Classes="mfc-action"
                         Content="Copy sanitized"
+                        AutomationProperties.Name="Copy sanitized"
                         Command="{Binding Snapshot.CopySanitizedCommand}"
                         DockPanel.Dock="Right"
                         MinWidth="120"
@@ -969,11 +972,13 @@
                   </StackPanel>
                   <Button Classes="mfc-action"
                           Content="Compare"
+                          AutomationProperties.Name="Compare"
                           Command="{Binding Diff.CompareCommand}"
                           VerticalAlignment="Bottom"
                           MinWidth="100" />
                   <Button Classes="mfc-action"
                           Content="Reload captures"
+                          AutomationProperties.Name="Reload captures"
                           Command="{Binding Diff.ReloadCapturesCommand}"
                           VerticalAlignment="Bottom"
                           MinWidth="120" />
