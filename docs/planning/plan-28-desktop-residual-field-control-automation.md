@@ -1,9 +1,10 @@
 # PLAN-28 — Desktop residual field / control AutomationProperties tranche
 
-**Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-244); seed **W7-245 (#896) DONE**; **DESK-A11Y-FIELD-01 W7-246 (#898) DONE**; seed **W7-247 (#899) DONE**; **DESK-A11Y-CTRL-01 W7-248 (#903) DONE**; follow-up seed **W7-249 (#904) OPEN** (**§3.C NEXT** / PLAN-28 COMPLETE)  
+**Date:** 2026-09-15 (inventory **DONE** 2026-09-15; **COMPLETE** 2026-09-15)  
+**Status:** **PLAN-28 COMPLETE** — Inventory **DONE** (W7-244); seed **W7-245 (#896) DONE**; **DESK-A11Y-FIELD-01 W7-246 (#898) DONE**; seed **W7-247 (#899) DONE**; **DESK-A11Y-CTRL-01 W7-248 (#903) DONE**; seed **W7-249 (#904) DONE**; successor **PLAN-29** (inventory **W7-250 (#907) OPEN**; seed **W7-251 (#908) OPEN**)  
 **PLAN issue / queue:** [W7-244 / PLAN-28 #895](https://github.com/sesquicadaver/MTDirector/issues/895) **DONE**  
 **Predecessor:** PLAN-27 Desktop Snapshot/Node/Drift/Audit button AutomationProperties residual **COMPLETE**; button-name waves PLAN-16…27  
+**Successor:** [`plan-29-desktop-connection-health-reconnect.md`](plan-29-desktop-connection-health-reconnect.md) (Desktop connection health / reconnect after Controller stop; AUDIT §18 residual)  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
@@ -46,9 +47,9 @@ Absorb residual non-button Desktop `AutomationProperties.Name` gaps after all ~6
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **DESK-A11Y-FIELD-01** | Zones / Policies draft TextBox Names | Zones New/Edit/Binding values TextBoxes; Policies revision/draft/safety/rule/object/compose/compile TextBoxes | **W7-246 (#898) DONE**; seed **W7-245 (#896) DONE** |
-| 2 | **DESK-A11Y-CTRL-01** | Snapshot/Diff ComboBox & CheckBox + TabItem (+ Zones/Policies selector ComboBoxes) | Snapshot `Technical` + Captures; Diff Base/Target + config/obs-only CheckBoxes; panel TabItem Headers; Zones BindingKinds; Policies Families/Chains/Stages/Effects/catalog selectors | seed **W7-247 (#899) DONE**; implement **W7-248 (#903) DONE** (`DesktopSnapshotDiffControlAutomationLivingSpecTests`); follow-up **W7-249 (#904) OPEN** (**§3.C NEXT**) |
+| 2 | **DESK-A11Y-CTRL-01** | Snapshot/Diff ComboBox & CheckBox + TabItem (+ Zones/Policies selector ComboBoxes) | Snapshot `Technical` + Captures; Diff Base/Target + config/obs-only CheckBoxes; panel TabItem Headers; Zones BindingKinds; Policies Families/Chains/Stages/Effects/catalog selectors | seed **W7-247 (#899) DONE**; implement **W7-248 (#903) DONE** (`DesktopSnapshotDiffControlAutomationLivingSpecTests`); follow-up **W7-249 (#904) DONE** |
 
-Inventory (**W7-244 DONE**) locked ranking and opened FIELD implement (**W7-246**) + CTRL seed (**W7-247**). Seed **W7-245 DONE** advanced §3.C NEXT to **W7-246**. **W7-246 DONE** advanced NEXT to **W7-247**. Seed **W7-247 DONE** advanced NEXT to **W7-248** and opened **W7-249**. **W7-248 DONE** advanced NEXT to **W7-249**.
+Inventory (**W7-244 DONE**) locked ranking and opened FIELD implement (**W7-246**) + CTRL seed (**W7-247**). Seed **W7-245 DONE** advanced §3.C NEXT to **W7-246**. **W7-246 DONE** advanced NEXT to **W7-247**. Seed **W7-247 DONE** advanced NEXT to **W7-248** and opened **W7-249**. **W7-248 DONE** advanced NEXT to **W7-249**. **W7-249 DONE** closed PLAN-28 and seeded **PLAN-29**.
 
 ## Dual track
 
@@ -58,6 +59,13 @@ Product §3 never waits on GNS3.
 
 PLAN-27 ranks 1…2 (**DESK-A11Y-SNAP-01**, **DESK-A11Y-PANEL-01**) are **DONE**. All primary Desktop Buttons expose AutomationProperties.Name. No further PLAN-27 product rows.
 
+## Residual notes (COMPLETE)
+
+- All ranked FIELD/CTRL remediations 1…2 closed on `main`.  
+- Deferred ListBox hosts and Drift/Audit read-only JSON TextBoxes remain intentional a11y residuals (not §3 stop-gates).  
+- No further PLAN-28 product rows — continuous queue advances to **PLAN-29** (Desktop connection health / reconnect after Controller stop; AUDIT §18 residual).  
+- Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates.
+
 ## §3.C ordering
 
 1. **PLAN-27 COMPLETE** (W7-242 DESK-A11Y-PANEL-01; seed **W7-243 DONE**).  
@@ -65,8 +73,9 @@ PLAN-27 ranks 1…2 (**DESK-A11Y-SNAP-01**, **DESK-A11Y-PANEL-01**) are **DONE**
 3. **W7-245 DONE** — seed advanced NEXT to **DESK-A11Y-FIELD-01** (**W7-246**).  
 4. **W7-246 DONE** — DESK-A11Y-FIELD-01 Names locked (`DesktopZonesPoliciesFieldAutomationLivingSpecTests`).  
 5. **W7-247 DONE** — seed advanced NEXT to **DESK-A11Y-CTRL-01** (**W7-248**); follow-up **W7-249** (PLAN-28 COMPLETE).  
-6. **W7-248 DONE** — DESK-A11Y-CTRL-01 Names locked (`DesktopSnapshotDiffControlAutomationLivingSpecTests`); §3.C NEXT → **W7-249**.
+6. **W7-248 DONE** — DESK-A11Y-CTRL-01 Names locked (`DesktopSnapshotDiffControlAutomationLivingSpecTests`); §3.C NEXT → **W7-249**.  
+7. **W7-249 DONE** — PLAN-28 COMPLETE; seeded PLAN-29 (**W7-250** / **W7-251**).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-249 (#904)** — Seed next after DESK-A11Y-CTRL-01 (PLAN-28 COMPLETE).
+**PLAN-28 COMPLETE.** Successor **PLAN-29** inventory **OPEN** (W7-250); seed **W7-251 OPEN**. **§3.C NEXT = W7-250 (#907)** — PLAN-29 Inventory Desktop connection health / reconnect after Controller stop.
