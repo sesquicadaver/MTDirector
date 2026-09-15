@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-236** ([#879](https://github.com/sesquicadaver/MTDirector/issues/879)): AUDIT-INT-01 — FastTrack topology in compile from last capture; fresh verification session TCP/TLS disposal; Watch auth (Snapshot/Deployment/Onboarding Read); Desktop OperationId + live ProgressLines; ProgressHub terminal prune (`AuditInt01W7236LivingSpecTests`). **§3.C NEXT = W7-237 (#880)**.
+- **W7-237** ([#880](https://github.com/sesquicadaver/MTDirector/issues/880)): Seed PLAN-26 COMPLETE → PLAN-27 Snapshot/Panel a11y residual tranche (`ProductTrancheSeedW7237LivingSpecTests`). **§3.C NEXT = W7-238 (#883)**.
+
+- **W7-236** ([#879](https://github.com/sesquicadaver/MTDirector/issues/879)): AUDIT-INT-01 — FastTrack topology in compile from last capture; fresh verification session TCP/TLS disposal; Watch auth (Snapshot/Deployment/Onboarding Read); Desktop OperationId + live ProgressLines; ProgressHub terminal prune (`AuditInt01W7236LivingSpecTests`). **§3.C NEXT was W7-237 (#880)** (advanced by W7-237).
 
 - **W7-234** ([#875](https://github.com/sesquicadaver/MTDirector/issues/875)): AUDIT-AUTH-01 — Production operator authorization deny-by-default allowlist (`AllowListedOperatorAuthorizationBoundary`, `Mfc:Authorization:Operators`); Development AllowAll unchanged; SystemActor wrapper kept (`AllowListedOperatorAuthorizationBoundaryTests`, `AuditAuth01AllowlistedOperatorsW7234LivingSpecTests`). **§3.C NEXT = W7-235 (#876)**.
 

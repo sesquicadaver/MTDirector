@@ -1702,6 +1702,16 @@ Issue [#875](https://github.com/sesquicadaver/MTDirector/issues/875) AC → modu
 Filter: `dotnet test --filter "FullyQualifiedName~AllowListedOperatorAuthorizationBoundary|AuditAuth01AllowlistedOperatorsW7234"`.
 
 
+## Living Specification — Product tranche seed after AUDIT-INT-01 / PLAN-26 COMPLETE (W7-237)
+
+Issue [#880](https://github.com/sesquicadaver/MTDirector/issues/880) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-26 COMPLETE + queue seed PLAN-27 inventory as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-26, plan-27 | `ProductTrancheSeedW7237LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan27AfterPlan26Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7237"`.
+
 ## Living Specification — Product tranche seed after AUDIT-AUTH-01 (W7-235)
 
 Issue [#876](https://github.com/sesquicadaver/MTDirector/issues/876) AC → module → tests:
@@ -1723,7 +1733,7 @@ Issue [#879](https://github.com/sesquicadaver/MTDirector/issues/879) AC → modu
 | AC-WATCH-AUTH ResolveActor + Read permissions before hub | `SnapshotGrpcService`, `DeploymentGrpcService`, `OnboardingGrpcService` | `AuditInt01W7236LivingSpecTests.AcWatchAuthResolveActorAndReadPermissionsBeforeHub` |
 | AC-OPID Desktop OperationId after Start + live ProgressLines | `DeploymentViewModel`, `OnboardingViewModel` | `AuditInt01W7236LivingSpecTests.AcOpidDesktopSetsOperationIdImmediatelyAfterStart`, `DeploymentViewModelTests.StartKeepsOperationIdWhenWatchFails` |
 | AC-HUB prune after terminal + last reader | `CaptureProgressHub`, `DeploymentProgressHub`, `OnboardingProgressHub` | `AuditInt01W7236LivingSpecTests.AcHubPrunesAfterTerminalWatchCompletes` |
-| AC-DOCS queue → W7-237 | ROADMAP / plan-26 / continuous / known-limitations / CHANGELOG | `AuditInt01W7236LivingSpecTests.AcDocsQueueAdvancesToW7237` |
+| AC-DOCS queue past W7-237 | ROADMAP / plan-26 / continuous / known-limitations / CHANGELOG | `AuditInt01W7236LivingSpecTests.AcDocsQueueAdvancesPastW7237` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~AuditInt01W7236|StartKeepsOperationIdWhenWatchFails"`.
 

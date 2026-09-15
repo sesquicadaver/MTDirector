@@ -1,13 +1,14 @@
 # PLAN-26 — Code-audit remediation tranche (`11cb746`)
 
-**Date:** 2026-09-11 (inventory **DONE** 2026-09-11)  
-**Status:** Seed **W7-205 DONE**; Inventory **DONE** (W7-206); **AUDIT-RULE-01 DONE** (W7-210); seed **W7-211 DONE**; **AUDIT-CTX-01 DONE** (W7-212); seed **W7-213 DONE**; **AUDIT-CAP-01 DONE** (W7-214); seed **W7-215 DONE**; **AUDIT-CAP-02 DONE** (W7-216); seed **W7-217 DONE**; **AUDIT-AN-01 DONE** (W7-218); seed **W7-219 DONE**; **AUDIT-AN-02 DONE** (W7-220); seed **W7-221 DONE**; **AUDIT-DIFF-01 DONE** (W7-222); seed **W7-223 DONE**; **AUDIT-GUARD-01 DONE** (W7-224); seed **W7-225 DONE**; **AUDIT-DEP-01 DONE** (W7-226); seed **W7-227 DONE**; **AUDIT-DEP-02 DONE** (W7-228); seed **W7-229 DONE**; **AUDIT-DEP-03 DONE** (W7-230); seed **W7-231 DONE**; **AUDIT-GUI-01 DONE** (W7-232); seed **W7-233 DONE**; **AUDIT-AUTH-01 DONE** (**W7-234 (#875) DONE**); seed **W7-235 DONE**; **W7-236 (#879) DONE** AUDIT-INT-01; next **W7-237 (#880)** (PLAN-26 COMPLETE seed)  
+**Date:** 2026-09-11 (inventory **DONE** 2026-09-11; **COMPLETE** 2026-09-15)  
+**Status:** **PLAN-26 COMPLETE** — seed **W7-205 DONE**; Inventory **DONE** (W7-206); ranks 1…14 **DONE** (AUDIT-RULE-01…AUDIT-INT-01); seed **W7-237 DONE**; successor **PLAN-27** (W7-238 inventory OPEN)  
 **Audit SHA:** `11cb746de60191e6eb83e52013f7f544306d5c9d`  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md)  
 **Predecessor:** PLAN-25 Desktop Inventory/Zones/Add-router AutomationProperties **COMPLETE**  
+**Successor:** [`plan-27-desktop-snapshot-panel-automation.md`](plan-27-desktop-snapshot-panel-automation.md) (deferred DESK-A11Y-SNAP-01 / DESK-A11Y-PANEL-01)  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
-Static code audit (2026-09-11) found material P1 defects in capture projection, policy update/analysis, deployment recovery/watchdog, and GUI synthetic plans. Green CI does not prove GUI→Controller→CHR. Inventory of remediation into atomic §3 rows is **DONE**; lab/CHR/`WriteEnabled` are **not** stop-gates.
+Static code audit (2026-09-11) found material P1 defects in capture projection, policy update/analysis, deployment recovery/watchdog, and GUI synthetic plans. Green CI does not prove GUI→Controller→CHR. Inventory of remediation into atomic §3 rows is **DONE**; all ranked remediations are **DONE**; lab/CHR/`WriteEnabled` are **not** stop-gates.
 
 ## Principles
 
@@ -44,9 +45,15 @@ Normative audit §§01–19 mapped to ranked IDs below. First wave (issue body):
 | 11 | **AUDIT-DEP-03** | Fake VRRP reachability/traffic facts (§15) | `RouterOsVrrpMemberDeploymentRuntime` | **W7-230 (#867) DONE**; seed **W7-231 (#868)** |
 | 12 | **AUDIT-GUI-01** | Onboarding/Deployment synthetic payloads; Deploy never enables (§11) | `OnboardingViewModel.DefaultFacts`, `DeploymentViewModel`, `PoliciesViewModel.CanNeverDeploy` | **W7-232 (#871) DONE**; seed **W7-233 (#872) DONE** |
 | 13 | **AUDIT-AUTH-01** | Production operator authorization DenyAll (§12) | `Program.cs`, `AllowListedOperatorAuthorizationBoundary` | **W7-234 (#875) DONE**; seed **W7-235 (#876) DONE** |
-| 14 | **AUDIT-INT-01** | FastTrack topology not wired (§16); verification session disposal (§17); progress/Watch/auth/hubs (§18–19) | compile context, deployment sessions, gRPC Watch hubs | **W7-236 (#879) DONE**; seed **W7-237 (#880)** (PLAN-26 COMPLETE) |
+| 14 | **AUDIT-INT-01** | FastTrack topology not wired (§16); verification session disposal (§17); progress/Watch/auth/hubs (§18–19) | compile context, deployment sessions, gRPC Watch hubs | **W7-236 (#879) DONE**; seed **W7-237 (#880) DONE** |
 
 Disconnected DI/callers table in the audit (locks, evidence mappers, multi-WAN verifier, incident TTL job, watchdog residue) is absorbed into **AUDIT-DEP-*** / **AUDIT-INT-01** acceptance notes — not separate vanity deletes.
+
+## Residual notes (COMPLETE)
+
+- All ranked remediations 1…14 closed on `main`.  
+- No further PLAN-26 product rows — continuous queue advances to **PLAN-27** (deferred Desktop Snapshot/Panel a11y from PLAN-25).  
+- Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates.
 
 ## Dual track
 
@@ -84,8 +91,8 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/c
 28. **W7-234 DONE** — AUDIT-AUTH-01 deny-by-default operator allowlist.
 29. **W7-235 DONE** — seeded **W7-236** / **W7-237**.
 30. **W7-236 DONE** — AUDIT-INT-01 closed (rank 14 last remediation).
-31. Execute **W7-237** seed → PLAN-26 COMPLETE / next continuous tranche.
+31. **W7-237 DONE** — PLAN-26 COMPLETE; seeded PLAN-27 (**W7-238** / **W7-239**).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-237 (#880)** — Seed next after AUDIT-INT-01 (PLAN-26 COMPLETE).
+**PLAN-26 COMPLETE.** **§3.C NEXT = W7-238 (#883)** — PLAN-27 Inventory Desktop Snapshot/Node/Drift/Audit AutomationProperties residual tranche after PLAN-26.
