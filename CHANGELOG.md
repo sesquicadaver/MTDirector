@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-243** ([#892](https://github.com/sesquicadaver/MTDirector/issues/892)): Seed PLAN-27 COMPLETE → PLAN-28 residual field/control a11y tranche (`ProductTrancheSeedW7243LivingSpecTests`). **§3.C NEXT = W7-244 (#895)**.
+- **W7-244** ([#895](https://github.com/sesquicadaver/MTDirector/issues/895)): PLAN-28 inventory DONE — ranked **DESK-A11Y-FIELD-01** / **DESK-A11Y-CTRL-01**; opened **W7-246 (#898)** / **W7-247 (#899)** (`Plan28DesktopResidualFieldControlAutomationW7244LivingSpecTests`). **§3.C NEXT = W7-245 (#896)**.
+
+- **W7-243** ([#892](https://github.com/sesquicadaver/MTDirector/issues/892)): Seed PLAN-27 COMPLETE → PLAN-28 residual field/control a11y tranche (`ProductTrancheSeedW7243LivingSpecTests`). **§3.C NEXT was W7-244 (#895)** (advanced by W7-244).
 
 - **W7-242** ([#891](https://github.com/sesquicadaver/MTDirector/issues/891)): DESK-A11Y-PANEL-01 Node Refresh / Validate / Capture-all / RoutingAssurance / Drift / Audit Refresh AutomationProperties.Name (`DesktopPanelAutomationLivingSpecTests`, `ProductTrancheSeedW7242LivingSpecTests`). **§3.C NEXT was W7-243 (#892)** (advanced by W7-243).
 - **W7-241** ([#887](https://github.com/sesquicadaver/MTDirector/issues/887)): Seed PLAN-27 next atomic row → DESK-A11Y-PANEL-01 as §3.C NEXT; opened **W7-242 (#891)** implement + **W7-243 (#892)** PLAN-27 COMPLETE follow-up (`ProductTrancheSeedW7241LivingSpecTests`). **§3.C NEXT was W7-242 (#891)** (advanced by W7-242).

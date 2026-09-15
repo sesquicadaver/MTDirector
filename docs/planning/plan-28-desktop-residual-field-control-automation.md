@@ -1,17 +1,17 @@
 # PLAN-28 — Desktop residual field / control AutomationProperties tranche
 
-**Date:** 2026-09-15  
-**Status:** Inventory **OPEN** (W7-244); seeded by **W7-243 DONE** after **PLAN-27 COMPLETE**  
-**PLAN issue / queue:** [W7-244 / PLAN-28 #895](https://github.com/sesquicadaver/MTDirector/issues/895)  
+**Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
+**Status:** Inventory **DONE** (W7-244); seed **W7-245 (#896) OPEN** → **DESK-A11Y-FIELD-01**; implement **W7-246 (#898) OPEN**; seed **W7-247 (#899) OPEN** → **DESK-A11Y-CTRL-01**  
+**PLAN issue / queue:** [W7-244 / PLAN-28 #895](https://github.com/sesquicadaver/MTDirector/issues/895) **DONE**  
 **Predecessor:** PLAN-27 Desktop Snapshot/Node/Drift/Audit button AutomationProperties residual **COMPLETE**; button-name waves PLAN-16…27  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
-Absorb residual non-button Desktop `AutomationProperties.Name` gaps after all ~60 Buttons are named. Evidence baseline (2026-09-15 `MainWindow.axaml`): TextBox ~21 missing Name, ComboBox ~18, CheckBox ~3, TabItems, plus Policies draft / Zones / Snapshot-Diff selectors still without Names. Button Names from PLAN-16…27 remain locked — **do not regress**.
+Absorb residual non-button Desktop `AutomationProperties.Name` gaps after all ~60 Buttons are named. Evidence baseline (2026-09-15 `MainWindow.axaml` @ `c3b3461`): TextBox **21** missing Name, ComboBox **18**, CheckBox **3**, TabItem **7** (ListBox hosts deferred). Button Names from PLAN-16…27 remain locked — **do not regress**.
 
 ## Principles
 
-1. Operator-facing fields and selectors expose AutomationProperties.Name matching label / intent.  
+1. Operator-facing fields and selectors expose AutomationProperties.Name matching label / PlaceholderText / Content / Header intent.  
 2. Living Spec locks Name without changing bindings or Commands.  
 3. Lab / CHR / `WriteEnabled` are **not** stop-gates.  
 4. Do not invent further PLAN-27 DESK-A11Y-SNAP/PANEL rows — that tranche is **COMPLETE**.
@@ -21,27 +21,34 @@ Absorb residual non-button Desktop `AutomationProperties.Name` gaps after all ~6
 - Re-opening PLAN-27 SNAP/PANEL product rows  
 - New Snapshot / Drift / Audit / Policy RPCs  
 - Replacing PLAN-16…27 Button Name locks  
-- Naming every ListBox item host (inventory may defer list containers)
+- Naming every ListBox item host (deferred; inventory does not seed list containers)  
+- Read-only Drift SemanticDiff / Audit Payload JSON TextBoxes (display surfaces; defer unless CTRL follow-up expands)
 
-## Inventory evidence (seed baseline after PLAN-27)
+## Inventory evidence (2026-09-15 `MainWindow.axaml`)
 
-| Surface | Named | Still missing Name (coarse) |
-|---------|-------|-----------------------------|
+| Surface | Named | Still missing Name (concrete) |
+|---------|-------|-------------------------------|
 | Desktop Buttons (~60) | yes (PLAN-16…27) | — |
-| Zones TextBoxes | partial | residual TextBox Names |
-| Snapshot / Semantic-diff ComboBoxes & CheckBoxes | partial | residual ComboBox / CheckBox Names |
-| Policies draft / authoring fields | partial | residual TextBox / ComboBox Names |
-| TabItems (panel chrome) | no | TabItem Names |
-| Other fields | mixed | inventory refines |
+| Add-router Inventory fields | yes (PLAN-25 / prior) | — |
+| Incident assessment TextBoxes | yes (PLAN-16…18) | — |
+| Zones TextBoxes | **no** | `Zones.NewZoneKey` / `NewZoneName` / `NewZoneDescription`; `EditZoneName` / `EditZoneDescription`; `BindingValuesText` (placeholders `key`, `name`, `description (optional)`, `description (empty clears)`, `values (comma-separated)`) |
+| Zones BindingKinds ComboBox | **no** | Node bindings kind selector (`Zones.BindingKinds`) |
+| Policies draft / authoring TextBoxes | **no** | `Policies.RevisionIdText`; draft name (`draft name (CompanyBaseline)` / `DraftNameText`); safety device + controller CIDR; rule description; address name + entries; service name + TCP port; contract disposition; compose node; baseline revision UUID; capability hash |
+| Policies selector ComboBoxes | **no** | Families / Chains / Stages / Effects; address family; contract family/chain/reject mode; diff baseline catalog |
+| Snapshot CheckBox / Captures ComboBox | **no** | `Technical`; Captures selector |
+| Semantic diff ComboBoxes / CheckBoxes | **no** | Base / Target capture; `Configuration only` / `Observations only` |
+| Panel TabItems | **no** | Snapshot, Configuration, Observations, Semantic diff, Onboarding, Deploy, Incident |
+| Drift / Audit read-only TextBoxes | **no** (deferred) | Semantic diff text; Audit payload JSON |
+| ListBox hosts | **no** (deferred) | Zones / Snapshot / Policies / Drift / Audit lists |
 
-## Ranked Desktop residual field/control a11y tranche (seed baseline)
+## Ranked Desktop residual field/control a11y tranche
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-A11Y-FIELD-01** | Zones / Policies draft TextBox Names | Zones + Policies authoring TextBoxes missing Name | queued after inventory **W7-244**; seed **W7-245 (#896)** |
-| 2 | **DESK-A11Y-CTRL-01** | Snapshot/Diff ComboBox & CheckBox + TabItem Names | Snapshot/Diff selectors, CheckBoxes, TabItems | after FIELD (inventory may refine / split / add regression)
+| 1 | **DESK-A11Y-FIELD-01** | Zones / Policies draft TextBox Names | Zones New/Edit/Binding values TextBoxes; Policies revision/draft/safety/rule/object/compose/compile TextBoxes (see evidence table) | implement **W7-246 (#898)**; seed **W7-245 (#896) OPEN** |
+| 2 | **DESK-A11Y-CTRL-01** | Snapshot/Diff ComboBox & CheckBox + TabItem (+ Zones/Policies selector ComboBoxes) | Snapshot `Technical` + Captures; Diff Base/Target + config/obs-only CheckBoxes; panel TabItem Headers; Zones BindingKinds; Policies Families/Chains/Stages/Effects/catalog selectors | seed **W7-247 (#899) OPEN** (opens CTRL implement after FIELD) |
 
-Inventory (**W7-244**) may refine ranking, split surfaces, add a regression lock row, and open implement issues; seed **W7-245** advances NEXT to the first implement after inventory DONE.
+Inventory (**W7-244 DONE**) locked ranking and opened FIELD implement (**W7-246**) + CTRL seed (**W7-247**). Seed **W7-245** advances §3.C NEXT to the first implement after inventory DONE.
 
 ## Dual track
 
@@ -54,10 +61,10 @@ PLAN-27 ranks 1…2 (**DESK-A11Y-SNAP-01**, **DESK-A11Y-PANEL-01**) are **DONE**
 ## §3.C ordering
 
 1. **PLAN-27 COMPLETE** (W7-242 DESK-A11Y-PANEL-01; seed **W7-243 DONE**).  
-2. **W7-244 OPEN** — PLAN-28 inventory → open first field/control implement + follow-up seeds.  
-3. **W7-245 OPEN** — seed first PLAN-28 implement after inventory.  
+2. **W7-244 DONE** — PLAN-28 inventory; opened **W7-246** / **W7-247**.  
+3. **W7-245 OPEN** — seed advances NEXT to **DESK-A11Y-FIELD-01** (**W7-246**).  
 4. Execute ranked FIELD/CTRL rows atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-244 (#895)** — PLAN-28 Inventory Desktop residual field/control AutomationProperties tranche after PLAN-27.
+**§3.C NEXT = W7-245 (#896)** — Seed first PLAN-28 atomic row after inventory → DESK-A11Y-FIELD-01.
