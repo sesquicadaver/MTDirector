@@ -1,7 +1,7 @@
 # PLAN-35 — Desktop launch-template publish bundling (package-desktop → OUT_DIR/desktop)
 
 **Date:** 2026-09-15 (inventory **DONE** @ `d461b82`)  
-**Status:** Inventory **DONE** (W7-284); seed **W7-285 (#976) DONE**; implement **W7-286 (#978) DONE**; COMPLETE seed **W7-287 (#979) OPEN**; predecessor **PLAN-34 COMPLETE**  
+**Status:** **PLAN-35 COMPLETE** — Inventory **DONE** (W7-284); seed **W7-285 (#976) DONE**; implement **W7-286 (#978) DONE**; COMPLETE seed **W7-287 (#979) DONE**; successor **PLAN-36** inventory **W7-288 (#983) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-284 / PLAN-35 #975](https://github.com/sesquicadaver/MTDirector/issues/975) **DONE**  
 **Predecessor:** PLAN-34 Desktop operator launch packaging templates **COMPLETE** (DESK-HOST-LINUX-01 + DESK-HOST-WIN-01)  
 **Normative files:** [`package-desktop.sh`](../../scripts/release/package-desktop.sh), [`mfc-desktop.desktop`](../../packaging/linux/mfc-desktop.desktop), [`mfc-desktop-start-menu.ps1`](../../packaging/windows/mfc-desktop-start-menu.ps1), [`packaging.md`](../release/packaging.md)  
@@ -53,7 +53,7 @@ PLAN-34 ranks 1…2 (**DESK-HOST-LINUX-01**, **DESK-HOST-WIN-01**) are **DONE**.
 
 ## Adjacent residuals (seeded as PLAN-35 COMPLETE / PLAN-36)
 
-- Controller host-template publish bundling (`package-controller.sh` → `OUT_DIR/controller/` for systemd + WinSW) — expected **PLAN-36** after W7-287
+- Controller host-template publish bundling (`package-controller.sh` → `OUT_DIR/controller/` for systemd + WinSW) — **PLAN-36** [`plan-36-controller-host-template-publish-bundling.md`](plan-36-controller-host-template-publish-bundling.md)
 
 ## Adjacent residuals (not seeded here)
 
@@ -71,4 +71,4 @@ PLAN-34 ranks 1…2 (**DESK-HOST-LINUX-01**, **DESK-HOST-WIN-01**) are **DONE**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-287 (#979)** — Seed next after DESK-HOST-BUNDLE-01 (PLAN-35 COMPLETE).
+**§3.C NEXT = W7-288 (#983)** — PLAN-36 Inventory Controller host-template publish bundling after PLAN-35.

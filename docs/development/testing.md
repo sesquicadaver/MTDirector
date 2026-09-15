@@ -2004,6 +2004,17 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7279"`.
 
 
 
+
+## Living Specification — Product tranche seed PLAN-36 after PLAN-35 COMPLETE (W7-287)
+
+Issue [#979](https://github.com/sesquicadaver/MTDirector/issues/979) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed PLAN-36 inventory after PLAN-35 COMPLETE | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-35, plan-36 | `ProductTrancheSeedW7287LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan36AfterPlan35Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7287"`.
+
 ## Living Specification — DESK-HOST-BUNDLE-01 package-desktop launch-template bundling (W7-286)
 
 Issue [#978](https://github.com/sesquicadaver/MTDirector/issues/978) AC → module → tests:
