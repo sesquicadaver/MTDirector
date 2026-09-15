@@ -1,9 +1,10 @@
 # PLAN-32 — Controller host-process packaging templates (systemd / Windows Service)
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-268); seed **W7-269 (#944) DONE**; implement **W7-270 (#946) DONE**; seed **W7-271 (#947) DONE**; implement **W7-272 (#951) DONE**; COMPLETE seed **W7-273 (#952) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-32 COMPLETE** — Inventory **DONE** (W7-268); seed **W7-269 (#944) DONE**; implement **W7-270 (#946) DONE**; seed **W7-271 (#947) DONE**; implement **W7-272 (#951) DONE**; seed **W7-273 (#952) DONE**; successor **PLAN-33** inventory **W7-274 (#955) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-268 / PLAN-32 #943](https://github.com/sesquicadaver/MTDirector/issues/943) **DONE**  
 **Predecessor:** PLAN-31 Desktop residual ListBox / Drift–Audit read-only a11y **COMPLETE**  
+**Successor:** [`plan-33-desktop-inventory-treeview-a11y.md`](plan-33-desktop-inventory-treeview-a11y.md) (Desktop Inventory TreeView / residual TabControl a11y)  
 **Normative files:** [`docs/howto/build-and-run.md`](../howto/build-and-run.md), [`docs/operations/installation.md`](../operations/installation.md), [`docs/release/packaging.md`](../release/packaging.md), [`scripts/release/`](../../scripts/release/)  
 **Normative prior locks:** W7-22 zip/tar installer substitute; W7-23 SHA256SUMS; W7-24 SBOM; QG-SIGN-01 — **do not regress / do not invent MSI**  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
@@ -57,7 +58,7 @@ Absorb the highest-value **ops/packaging** continuous-queue gap after Desktop op
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **OPS-HOST-SYSTEMD-01** | systemd unit template (+ docs) for framework-dependent Controller matching `$OUT_DIR/controller` layout | HOWTO §6.4; `packaging/systemd/mfc-controller.service`; `package-controller.sh` `--self-contained false` | implement **W7-270 (#946) DONE**; seed **W7-269 (#944) DONE** |
-| 2 | **OPS-HOST-WINSVC-01** | Windows Service host template (+ docs) for Controller (`win-x64` publish → `Mfc.Controller.exe`) | HOWTO §6.4; installation.md Windows path is manual exe; no WinSW/sc template | implement **W7-272 (#951) DONE**; seed **W7-271 (#947) DONE**; COMPLETE **W7-273 (#952) OPEN** |
+| 2 | **OPS-HOST-WINSVC-01** | Windows Service host template (+ docs) for Controller (`win-x64` publish → `Mfc.Controller.exe`) | HOWTO §6.4; installation.md Windows path is manual exe; no WinSW/sc template | implement **W7-272 (#951) DONE**; seed **W7-271 (#947) DONE**; COMPLETE **W7-273 (#952) DONE** |
 
 Inventory (**W7-268 DONE**) locked ranking and opened SYSTEMD implement (**W7-270**) + WINSVC seed (**W7-271**). Seed **W7-269 DONE** advanced NEXT to SYSTEMD; **W7-270 DONE** shipped `packaging/systemd/mfc-controller.service`. Seed **W7-271 DONE** advanced NEXT to **OPS-HOST-WINSVC-01** (**W7-272**); COMPLETE follow-up **W7-273 OPEN**. No third vanity rank — MSI/AppImage stay W7-22 residuals; self-contained default stays locked unless a later PLAN re-opens packaging policy. Canonical atomic row names: **OPS-HOST-SYSTEMD-01** / **OPS-HOST-WINSVC-01**.
 
@@ -84,8 +85,8 @@ PLAN-31 ranks 1…2 (**DESK-A11Y-LIST-01**, **DESK-A11Y-RO-01**) are **DONE**. N
 4. **W7-270 DONE** — OPS-HOST-SYSTEMD-01 unit template + docs.  
 5. **W7-271 DONE** — seed advanced NEXT to **OPS-HOST-WINSVC-01** (**W7-272**).
 6. **W7-272 DONE** — OPS-HOST-WINSVC-01 WinSW template + docs (`packaging/windows/mfc-controller.winsw.xml`).
-7. **W7-273 OPEN** — PLAN-32 COMPLETE follow-up seed.
+7. **W7-273 DONE** — PLAN-32 COMPLETE; seeded PLAN-33 (**W7-274** / **W7-275**).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-273 (#952)** — Seed next after OPS-HOST-WINSVC-01 (PLAN-32 COMPLETE).
+**§3.C NEXT = W7-274 (#955)** — PLAN-33 Inventory Desktop Inventory TreeView / residual TabControl a11y after PLAN-32.
