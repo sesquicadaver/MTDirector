@@ -1702,6 +1702,16 @@ Issue [#875](https://github.com/sesquicadaver/MTDirector/issues/875) AC → modu
 Filter: `dotnet test --filter "FullyQualifiedName~AllowListedOperatorAuthorizationBoundary|AuditAuth01AllowlistedOperatorsW7234"`.
 
 
+## Living Specification — Product tranche seed after DESK-A11Y-PANEL-01 / PLAN-27 COMPLETE (W7-243)
+
+Issue [#892](https://github.com/sesquicadaver/MTDirector/issues/892) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-27 COMPLETE + queue seed PLAN-28 inventory as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-27, plan-28 | `ProductTrancheSeedW7243LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan28AfterPlan27Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7243"`.
+
 ## Living Specification — DESK-A11Y-PANEL-01 Node/Drift/Audit AutomationProperties (W7-242)
 
 Issue [#891](https://github.com/sesquicadaver/MTDirector/issues/891) AC → module → tests:
@@ -1710,7 +1720,7 @@ Issue [#891](https://github.com/sesquicadaver/MTDirector/issues/891) AC → modu
 |-------------|--------|------|
 | Node / RoutingAssurance / Drift / Audit primary action Names | `MainWindow.axaml` | `DesktopPanelAutomationLivingSpecTests.Ac1NodeDriftAuditButtonsExposeAutomationPropertiesName` |
 | PLAN-27 + docs lock | plan-27 + testing + known-limitations | `DesktopPanelAutomationLivingSpecTests.Ac2Plan27AndTestingDocLockA11yPanel01` |
-| PANEL-01 DONE + queue advanced to PLAN-27 COMPLETE seed | known-limitations + ROADMAP + continuous + plan-27 | `ProductTrancheSeedW7242LivingSpecTests.Ac1Panel01DoneAndQueueAdvancesToPlan27CompleteSeed` |
+| PANEL-01 DONE + queue advanced past PLAN-27 COMPLETE seed | known-limitations + ROADMAP + continuous + plan-27 | `ProductTrancheSeedW7242LivingSpecTests.Ac1Panel01DoneAndQueueAdvancesToPlan27CompleteSeed` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopPanelAutomationLivingSpecTests|ProductTrancheSeedW7242"`.
 

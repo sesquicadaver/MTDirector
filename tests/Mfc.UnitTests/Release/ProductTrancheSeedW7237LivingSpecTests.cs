@@ -4,7 +4,7 @@ namespace Mfc.UnitTests.Release;
 
 /// <summary>
 /// W7-237: PLAN-26 COMPLETE; known-limitations / queue seed locked PLAN-27 inventory (W7-238)
-/// and follow-up seed W7-239 after AUDIT-INT-01. Historical: inventory DONE; seed W7-239 DONE; SNAP-01 W7-240 DONE; NEXT advanced to W7-243.
+/// and follow-up seed W7-239 after AUDIT-INT-01. Historical: inventory DONE; SNAP/PANEL DONE; PLAN-27 COMPLETE; NEXT advanced to W7-244.
 /// </summary>
 public sealed class ProductTrancheSeedW7237LivingSpecTests
 {
@@ -38,21 +38,21 @@ public sealed class ProductTrancheSeedW7237LivingSpecTests
             "W7-239 | [#884](https://github.com/sesquicadaver/MTDirector/issues/884) | Seed first PLAN-27 atomic row after inventory → DESK-A11Y-SNAP-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-243 (#892)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-244 (#895)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-26 COMPLETE", plan26, StringComparison.Ordinal);
         Assert.Contains("W7-237 DONE", plan26, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-243 (#892)", plan26, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-244 (#895)", plan26, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-27", plan, StringComparison.Ordinal);
         Assert.Contains("W7-238", plan, StringComparison.Ordinal);
         Assert.Contains("W7-237 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-243 (#892)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-244 (#895)", plan, StringComparison.Ordinal);
 
         Assert.Contains("DESK-A11Y-SNAP-01", plan27, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-PANEL-01", plan27, StringComparison.Ordinal);
         Assert.Contains("Inventory **DONE**", plan27, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-243 (#892)", plan27, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-244 (#895)", plan27, StringComparison.Ordinal);
         Assert.Contains("seeded as **W7-238**", limitations, StringComparison.Ordinal);
     }
 
