@@ -1675,8 +1675,9 @@ Issue [#871](https://github.com/sesquicadaver/MTDirector/issues/871) AC → modu
 | AC / вимога | Модуль | Тест |
 |-------------|--------|------|
 | No Desktop fabrications; sealed CreatePlanFromSealedArtifacts + Compile handoff; Policies Deploy fail-closed | `OnboardingViewModel`, `DeploymentViewModel`, `PoliciesViewModel`, `CreateDeploymentPlanFromSealedArtifactsUseCase`, `SealedCompileDeployHandoffStore` | `DesktopAuditGui01LivingSpecTests`, `ProductTrancheAuditGui01W7232LivingSpecTests` |
+| Sealed plan builder + CreatePlanFromSealedArtifacts branches (auth, empty devices, missing node/run/artifact/version, success) | `SealedDeploymentPlanBuilder`, `CreateDeploymentPlanFromSealedArtifactsUseCase` | `SealedDeploymentPlanFromArtifactsLivingSpecTests` |
 
-Filter: `dotnet test --filter "FullyQualifiedName~DesktopAuditGui01|ProductTrancheAuditGui01W7232"`.
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopAuditGui01|ProductTrancheAuditGui01W7232|SealedDeploymentPlanFromArtifacts"`.
 
 ## Living Specification — AUDIT-GUARD-01 complete guard contract (W7-224)
 
