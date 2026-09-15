@@ -2001,6 +2001,17 @@ Issue [#964](https://github.com/sesquicadaver/MTDirector/issues/964) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7279"`.
 
+
+## Living Specification — PLAN-35 Desktop launch-template publish bundling inventory (W7-284)
+
+Issue [#975](https://github.com/sesquicadaver/MTDirector/issues/975) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-35 inventory ranks sole DESK-HOST-BUNDLE-01 + seeds | plan-35, package-desktop.sh, packaging.md, ROADMAP, known-limitations | `Plan35DesktopLaunchTemplatePublishBundlingW7284LivingSpecTests.Ac1Plan35InventoryDocumentsSoleBundleRankAndSeedsDeskHostBundle01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan35DesktopLaunchTemplatePublishBundlingW7284"`.
+
 ## Living Specification — PLAN-34 Desktop operator launch packaging inventory (W7-278)
 
 Issue [#963](https://github.com/sesquicadaver/MTDirector/issues/963) AC → module → tests:

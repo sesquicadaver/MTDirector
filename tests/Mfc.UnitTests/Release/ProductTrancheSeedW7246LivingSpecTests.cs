@@ -31,17 +31,17 @@ public sealed class ProductTrancheSeedW7246LivingSpecTests
             "W7-247 | [#899](https://github.com/sesquicadaver/MTDirector/issues/899) | Seed next PLAN-28 row after DESK-A11Y-FIELD-01 → DESK-A11Y-CTRL-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-284 (#975)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-285 (#976)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-246 DONE", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-FIELD-01", plan, StringComparison.Ordinal);
         Assert.Contains("W7-247 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-284 (#975)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-285 (#976)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-246 DONE", plan28, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-FIELD-01", plan28, StringComparison.Ordinal);
         Assert.Contains("W7-247 (#899) DONE", plan28, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-284 (#975)", plan28, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-285 (#976)", plan28, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()
