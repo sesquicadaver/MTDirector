@@ -4,7 +4,7 @@ namespace Mfc.UnitTests.Release;
 
 /// <summary>
 /// W7-265: seed locked DESK-A11Y-RO-01 (W7-266); opens PLAN-31 COMPLETE follow-up (W7-267).
-/// Historical: RO-01 DONE; NEXT advanced to W7-267.
+/// Historical: RO-01 DONE; PLAN-31 COMPLETE; NEXT advanced to W7-268.
 /// </summary>
 public sealed class ProductTrancheSeedW7265LivingSpecTests
 {
@@ -32,22 +32,22 @@ public sealed class ProductTrancheSeedW7265LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-267 | [#940](https://github.com/sesquicadaver/MTDirector/issues/940) | Seed next after DESK-A11Y-RO-01 (PLAN-31 COMPLETE) | **OPEN**",
+            "W7-267 | [#940](https://github.com/sesquicadaver/MTDirector/issues/940) | Seed next after DESK-A11Y-RO-01 (PLAN-31 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-267 (#940)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-268 (#943)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-265 (#935) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-266", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-RO-01", plan, StringComparison.Ordinal);
         Assert.Contains("W7-267", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-267 (#940)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-268 (#943)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-265 (#935) DONE", plan31, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-RO-01", plan31, StringComparison.Ordinal);
         Assert.Contains("W7-266 (#939)", plan31, StringComparison.Ordinal);
         Assert.Contains("W7-267 (#940)", plan31, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-267 (#940)", plan31, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-268 (#943)", plan31, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()
