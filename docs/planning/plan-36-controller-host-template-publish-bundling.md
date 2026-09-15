@@ -1,7 +1,7 @@
 # PLAN-36 — Controller host-template publish bundling (package-controller → OUT_DIR/controller)
 
 **Date:** 2026-09-15 (inventory **DONE** @ `621f13f3`)  
-**Status:** Inventory **DONE** (W7-288); seed **W7-289 (#984) DONE**; implement **W7-290 (#986) DONE**; COMPLETE seed **W7-291 (#987) OPEN**; predecessor **PLAN-35 COMPLETE**  
+**Status:** **PLAN-36 COMPLETE** — Inventory **DONE** (W7-288); seed **W7-289 (#984) DONE**; implement **W7-290 (#986) DONE**; COMPLETE seed **W7-291 (#987) DONE**; successor **PLAN-37** inventory **W7-292 (#991) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-288 / PLAN-36 #983](https://github.com/sesquicadaver/MTDirector/issues/983) **DONE**  
 **Predecessor:** PLAN-35 Desktop launch-template publish bundling **COMPLETE** (DESK-HOST-BUNDLE-01)  
 **Normative files:** [`package-controller.sh`](../../scripts/release/package-controller.sh), [`mfc-controller.service`](../../packaging/systemd/mfc-controller.service), [`mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml), [`packaging.md`](../release/packaging.md)  
@@ -50,6 +50,10 @@ Product §3 never waits on GNS3.
 
 PLAN-35 sole ranked row (**DESK-HOST-BUNDLE-01**) is **DONE**. No further PLAN-35 product rows.
 
+## Adjacent residuals (seeded as PLAN-36 COMPLETE / PLAN-37)
+
+- Controller host env sample packaging (`mfc-controller.env.example` for `EnvironmentFile`) — **PLAN-37** [`plan-37-controller-host-env-sample-packaging.md`](plan-37-controller-host-env-sample-packaging.md)
+
 ## Adjacent residuals (not seeded here)
 
 - Unnamed TabControl containers — deferred vanity  
@@ -66,4 +70,4 @@ PLAN-35 sole ranked row (**DESK-HOST-BUNDLE-01**) is **DONE**. No further PLAN-3
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-291 (#987)** — Seed next after OPS-HOST-BUNDLE-01 (PLAN-36 COMPLETE).
+**§3.C NEXT = W7-292 (#991)** — PLAN-37 Inventory Controller host env sample packaging after PLAN-36.
