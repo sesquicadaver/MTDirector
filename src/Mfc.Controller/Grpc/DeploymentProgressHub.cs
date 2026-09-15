@@ -17,10 +17,39 @@ public sealed class DeploymentProgressHub
     private readonly ConcurrentDictionary<Guid, OperationStream> _operations = new();
 
     public void Ensure(Guid operationId)
-        => _operations.GetOrAdd(operationId, id => new OperationStream(id, TryPrune));
+        => _operations.GetOrAdd(operationId, id => new OperationStream(id, ownerActor: null, TryPrune));
+
+    /// <summary>Ensures the stream exists and binds <paramref name="ownerActor"/> when absent (WATCH-OWN-01).</summary>
+    public void Ensure(Guid operationId, string ownerActor)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(ownerActor);
+        string owner = ownerActor.Trim();
+        _operations.AddOrUpdate(
+            operationId,
+            id => new OperationStream(id, owner, TryPrune),
+            (_, existing) =>
+            {
+                existing.BindOwnerIfAbsent(owner);
+                return existing;
+            });
+    }
 
     /// <summary>True when the operation is still retained in the hub (tests / diagnostics).</summary>
     public bool Contains(Guid operationId) => _operations.ContainsKey(operationId);
+
+    /// <summary>Resolves the Start owner actor for Watch ACL (WATCH-OWN-01).</summary>
+    public bool TryGetOwnerActor(Guid operationId, out string ownerActor)
+    {
+        ownerActor = string.Empty;
+        if (!_operations.TryGetValue(operationId, out OperationStream? stream)
+            || string.IsNullOrWhiteSpace(stream.OwnerActor))
+        {
+            return false;
+        }
+
+        ownerActor = stream.OwnerActor;
+        return true;
+    }
 
     public void Publish(Guid operationId, DomainState state, string? errorCode = null, string? timelineEntry = null)
     {
@@ -75,13 +104,25 @@ public sealed class DeploymentProgressHub
         private int _activeReaders;
         private bool _terminal;
 
-        public OperationStream(Guid operationId, Action<Guid> onIdleTerminal)
+        public OperationStream(Guid operationId, string? ownerActor, Action<Guid> onIdleTerminal)
         {
             OperationId = operationId;
+            OwnerActor = string.IsNullOrWhiteSpace(ownerActor) ? null : ownerActor.Trim();
             _onIdleTerminal = onIdleTerminal;
         }
 
         public Guid OperationId { get; }
+
+        public string? OwnerActor { get; private set; }
+
+        public void BindOwnerIfAbsent(string ownerActor)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(ownerActor);
+            if (string.IsNullOrWhiteSpace(OwnerActor))
+            {
+                OwnerActor = ownerActor.Trim();
+            }
+        }
 
         public void Publish(DeploymentProgress progress)
         {

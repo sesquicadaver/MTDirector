@@ -1819,6 +1819,18 @@ Issue [#919](https://github.com/sesquicadaver/MTDirector/issues/919) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan30WatchOwnerAclHubBackpressureW7256"`.
 
+## Living Specification — WATCH-OWN-01 operation owner ACL (W7-258)
+
+Issue [#922](https://github.com/sesquicadaver/MTDirector/issues/922) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Hubs bind OwnerActor; non-owner mismatch | Capture/Deployment/Onboarding ProgressHub | `WatchOwn01OperationOwnerAclW7258LivingSpecTests.Ac1HubsBindOwnerActorAndFailClosedWithoutMatch` |
+| Watch auth compares owner beyond Read (+ CreatedBy equivalent) | Snapshot/Deployment/Onboarding gRPC | `WatchOwn01OperationOwnerAclW7258LivingSpecTests.Ac2GrpcWatchAuthComparesOwnerBeyondReadPermission` |
+| Docs advance NEXT to W7-259 seed WATCH-BP-01 | ROADMAP / plan-30 / known-limitations | `WatchOwn01OperationOwnerAclW7258LivingSpecTests.Ac3DocsAdvanceNextToWatchBp01Seed` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~WatchOwn01OperationOwnerAclW7258"`.
+
 ## Living Specification — Product tranche seed WATCH-OWN-01 (W7-257)
 
 Issue [#920](https://github.com/sesquicadaver/MTDirector/issues/920) AC → module → tests:

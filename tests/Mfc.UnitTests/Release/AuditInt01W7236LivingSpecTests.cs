@@ -61,10 +61,13 @@ public sealed class AuditInt01W7236LivingSpecTests
 
         Assert.Contains("EnsureWatchAuthorizedAsync", snapshot, StringComparison.Ordinal);
         Assert.Contains("ApplicationPermissions.SnapshotRead", snapshot, StringComparison.Ordinal);
+        Assert.Contains("TryGetOwnerActor", snapshot, StringComparison.Ordinal);
         Assert.Contains("EnsureWatchAuthorizedAsync", deployment, StringComparison.Ordinal);
         Assert.Contains("ApplicationPermissions.DeploymentRead", deployment, StringComparison.Ordinal);
+        Assert.Contains("CreatedBy", deployment, StringComparison.Ordinal);
         Assert.Contains("EnsureWatchAuthorizedAsync", onboarding, StringComparison.Ordinal);
         Assert.Contains("ApplicationPermissions.OnboardingRead", onboarding, StringComparison.Ordinal);
+        Assert.Contains("CreatedBy", onboarding, StringComparison.Ordinal);
         Assert.Contains("ApplicationError.Forbidden", snapshot, StringComparison.Ordinal);
         Assert.Contains("ApplicationError.Forbidden", deployment, StringComparison.Ordinal);
         Assert.Contains("ApplicationError.Forbidden", onboarding, StringComparison.Ordinal);
@@ -99,7 +102,7 @@ public sealed class AuditInt01W7236LivingSpecTests
     public async Task AcHubPrunesAfterTerminalWatchCompletes()
     {
         CaptureProgressHub capture = new();
-        Guid captureOp = capture.Begin(Guid.NewGuid());
+        Guid captureOp = capture.Begin(Guid.NewGuid(), "owner-a");
         capture.Publish(captureOp, CaptureStage.Completed, captureId: Guid.NewGuid());
         Assert.True(capture.Contains(captureOp));
         await foreach (CaptureProgress _ in capture.WatchAsync(captureOp, CancellationToken.None))
@@ -110,6 +113,7 @@ public sealed class AuditInt01W7236LivingSpecTests
 
         DeploymentProgressHub deployment = new();
         Guid depOp = Guid.NewGuid();
+        deployment.Ensure(depOp, "owner-a");
         deployment.Publish(depOp, DomainDeploymentState.Committed);
         Assert.True(deployment.Contains(depOp));
         await foreach (DeploymentProgress _ in deployment.WatchAsync(depOp, CancellationToken.None))
@@ -120,6 +124,7 @@ public sealed class AuditInt01W7236LivingSpecTests
 
         OnboardingProgressHub onboarding = new();
         Guid onbOp = Guid.NewGuid();
+        onboarding.Ensure(onbOp, "owner-a");
         onboarding.Publish(onbOp, DomainOnboardingState.Committed);
         Assert.True(onboarding.Contains(onbOp));
         await foreach (OnboardingProgress _ in onboarding.WatchAsync(onbOp, CancellationToken.None))
@@ -142,7 +147,7 @@ public sealed class AuditInt01W7236LivingSpecTests
         string issues = File.ReadAllText(Path.Combine(root, "ISSUES.md"));
         string readme = File.ReadAllText(Path.Combine(root, "README.md"));
 
-        Assert.Contains("§3.C NEXT = W7-258 (#922)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-259 (#923)", roadmap, StringComparison.Ordinal);
         Assert.Contains("PLAN-26 COMPLETE", roadmap, StringComparison.Ordinal);
         Assert.Contains(
             "W7-236 | [#879](https://github.com/sesquicadaver/MTDirector/issues/879) | AUDIT-INT-01 — FastTrack topology / verification session disposal / progress Watch auth hubs | **DONE**",
@@ -150,7 +155,7 @@ public sealed class AuditInt01W7236LivingSpecTests
             StringComparison.Ordinal);
         Assert.Contains("W7-236 (#879) DONE", plan26, StringComparison.Ordinal);
         Assert.Contains("PLAN-26 COMPLETE", plan26, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-258 (#922)", plan26, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-259 (#923)", plan26, StringComparison.Ordinal);
         Assert.Contains("W7-237 DONE", plan26, StringComparison.Ordinal);
         Assert.Contains("W7-236 AUDIT-INT-01", continuous, StringComparison.Ordinal);
         Assert.Contains("**DONE**", continuous, StringComparison.Ordinal);
@@ -158,8 +163,8 @@ public sealed class AuditInt01W7236LivingSpecTests
         Assert.Contains("AuditInt01W7236LivingSpecTests", testing, StringComparison.Ordinal);
         Assert.Contains("W7-236", changelog, StringComparison.Ordinal);
         Assert.Contains("AUDIT-INT-01", changelog, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-258 (#922)", issues, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-258 (#922)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-259 (#923)", issues, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-259 (#923)", readme, StringComparison.Ordinal);
         Assert.True(File.Exists(Path.Combine(
             root,
             "tests/Mfc.UnitTests/Release/AuditInt01W7236LivingSpecTests.cs")));

@@ -15,11 +15,14 @@ public sealed class CaptureProgressHub
 {
     private readonly ConcurrentDictionary<Guid, OperationStream> _operations = new();
 
-    /// <summary>Registers a new capture operation and returns its id.</summary>
-    public Guid Begin(Guid deviceId)
+    /// <summary>Registers a new capture operation owned by <paramref name="ownerActor"/> and returns its id.</summary>
+    public Guid Begin(Guid deviceId, string ownerActor)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(ownerActor);
         Guid operationId = Guid.NewGuid();
-        if (!_operations.TryAdd(operationId, new OperationStream(operationId, deviceId, TryPrune)))
+        if (!_operations.TryAdd(
+                operationId,
+                new OperationStream(operationId, deviceId, ownerActor.Trim(), TryPrune)))
         {
             throw new InvalidOperationException("Failed to register capture operation.");
         }
@@ -29,6 +32,20 @@ public sealed class CaptureProgressHub
 
     /// <summary>True when the operation is still retained in the hub (tests / diagnostics).</summary>
     public bool Contains(Guid operationId) => _operations.ContainsKey(operationId);
+
+    /// <summary>Resolves the StartCapture owner actor for Watch ACL (WATCH-OWN-01).</summary>
+    public bool TryGetOwnerActor(Guid operationId, out string ownerActor)
+    {
+        ownerActor = string.Empty;
+        if (!_operations.TryGetValue(operationId, out OperationStream? stream)
+            || string.IsNullOrWhiteSpace(stream.OwnerActor))
+        {
+            return false;
+        }
+
+        ownerActor = stream.OwnerActor;
+        return true;
+    }
 
     /// <summary>
     /// Publishes a progress event to all watchers of <paramref name="operationId"/>.
@@ -102,16 +119,20 @@ public sealed class CaptureProgressHub
         private int _activeReaders;
         private bool _terminal;
 
-        public OperationStream(Guid operationId, Guid deviceId, Action<Guid> onIdleTerminal)
+        public OperationStream(Guid operationId, Guid deviceId, string ownerActor, Action<Guid> onIdleTerminal)
         {
+            ArgumentException.ThrowIfNullOrWhiteSpace(ownerActor);
             OperationId = operationId;
             DeviceId = deviceId;
+            OwnerActor = ownerActor;
             _onIdleTerminal = onIdleTerminal;
         }
 
         public Guid OperationId { get; }
 
         public Guid DeviceId { get; }
+
+        public string OwnerActor { get; }
 
         public void Publish(CaptureProgress progress)
         {

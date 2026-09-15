@@ -81,7 +81,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
     {
         Guid deviceId = ProtoUuid.ToGuid(request.DeviceId);
         Guid idempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey);
-        Guid operationId = _progressHub.Begin(deviceId);
+        Guid operationId = _progressHub.Begin(deviceId, ResolveActor(context));
         _progressHub.Publish(operationId, CaptureStage.Queued);
 
         try
@@ -152,7 +152,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
     {
         Guid nodeId = ProtoUuid.ToGuid(request.NodeId);
         Guid idempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey);
-        Guid operationId = _progressHub.Begin(Guid.Empty);
+        Guid operationId = _progressHub.Begin(Guid.Empty, ResolveActor(context));
         _progressHub.Publish(operationId, CaptureStage.Queued, deviceId: Guid.Empty);
 
         try
@@ -242,8 +242,8 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(responseStream);
-        await EnsureWatchAuthorizedAsync(context).ConfigureAwait(false);
         Guid operationId = ProtoUuid.ToGuid(request.OperationId);
+        await EnsureWatchAuthorizedAsync(context, operationId).ConfigureAwait(false);
         await foreach (CaptureProgress progress in _progressHub
                            .WatchAsync(operationId, context.CancellationToken)
                            .ConfigureAwait(false))
@@ -380,7 +380,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
     private string ResolveActor(ServerCallContext context) =>
         _actors.Resolve(context, _environment, "dev");
 
-    private async Task EnsureWatchAuthorizedAsync(ServerCallContext context)
+    private async Task EnsureWatchAuthorizedAsync(ServerCallContext context, Guid operationId)
     {
         string actor = ResolveActor(context);
         try
@@ -394,6 +394,13 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
         catch (UnauthorizedAccessException ex)
         {
             throw GrpcApplicationErrorMapper.ToRpcException(ApplicationError.Forbidden(ex.Message));
+        }
+
+        if (!_progressHub.TryGetOwnerActor(operationId, out string ownerActor)
+            || !string.Equals(ownerActor, actor, StringComparison.Ordinal))
+        {
+            throw GrpcApplicationErrorMapper.ToRpcException(
+                ApplicationError.Forbidden("Watch requires the operation owner."));
         }
     }
 

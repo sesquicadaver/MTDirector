@@ -33,7 +33,7 @@ public sealed class Plan30WatchOwnerAclHubBackpressureW7256LivingSpecTests
         Assert.Contains("CreateUnbounded", plan30, StringComparison.Ordinal);
         Assert.Contains("CreatedBy", plan30, StringComparison.Ordinal);
         Assert.Contains("892a073", plan30, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-258 (#922)", plan30, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-259 (#923)", plan30, StringComparison.Ordinal);
         Assert.Contains("W7-257 (#920) DONE", plan30, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-256 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -51,14 +51,14 @@ public sealed class Plan30WatchOwnerAclHubBackpressureW7256LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-258 | [#922](https://github.com/sesquicadaver/MTDirector/issues/922) | WATCH-OWN-01 — Bind Watch RPCs to operation owner beyond Read permission | **OPEN**",
+            "W7-258 | [#922](https://github.com/sesquicadaver/MTDirector/issues/922) | WATCH-OWN-01 — Bind Watch RPCs to operation owner beyond Read permission | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-259 | [#923](https://github.com/sesquicadaver/MTDirector/issues/923) | Seed next PLAN-30 row after WATCH-OWN-01 → WATCH-BP-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-258 (#922)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-259 (#923)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-257", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-258", continuous, StringComparison.Ordinal);

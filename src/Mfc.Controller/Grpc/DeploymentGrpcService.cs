@@ -1,10 +1,12 @@
 using Grpc.Core;
 using Mfc.Application.Abstractions.Authorization;
+using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Common;
 using Mfc.Application.Deployment;
 using Mfc.Contracts.Mfc.V1;
 using Mfc.Domain;
 using Mfc.Domain.Deployment;
+using Mfc.Domain.Deployment.Primitives;
 using Mfc.Domain.Policy;
 
 namespace Mfc.Controller.Grpc;
@@ -19,6 +21,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
     private readonly StartDeploymentUseCase _start;
     private readonly RollbackDeploymentWorkflowUseCase _rollback;
     private readonly GetDeploymentRecoveryStatusUseCase _recovery;
+    private readonly IDeploymentStore _operations;
     private readonly DeploymentProgressHub _progress;
     private readonly IAuthorizationBoundary _auth;
     private readonly GrpcRequestActorResolver _actors;
@@ -30,6 +33,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         StartDeploymentUseCase start,
         RollbackDeploymentWorkflowUseCase rollback,
         GetDeploymentRecoveryStatusUseCase recovery,
+        IDeploymentStore operations,
         DeploymentProgressHub progress,
         IAuthorizationBoundary auth,
         GrpcRequestActorResolver actors,
@@ -40,6 +44,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         ArgumentNullException.ThrowIfNull(start);
         ArgumentNullException.ThrowIfNull(rollback);
         ArgumentNullException.ThrowIfNull(recovery);
+        ArgumentNullException.ThrowIfNull(operations);
         ArgumentNullException.ThrowIfNull(progress);
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(actors);
@@ -49,6 +54,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         _start = start;
         _rollback = rollback;
         _recovery = recovery;
+        _operations = operations;
         _progress = progress;
         _auth = auth;
         _actors = actors;
@@ -143,10 +149,11 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         ServerCallContext context)
     {
         ArgumentNullException.ThrowIfNull(request);
+        string actor = ResolveActor(context);
         ApplicationResult<DeploymentOperationSummaryView> result = await _start.ExecuteAsync(
             new StartDeploymentCommand
             {
-                Actor = ResolveActor(context),
+                Actor = actor,
                 IdempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey),
                 PlanId = ProtoUuid.ToGuid(request.PlanId),
                 PlanHash = DeploymentProtoMapper.ToHashBytes(request.PlanHash),
@@ -154,7 +161,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
             },
             context.CancellationToken).ConfigureAwait(false);
         DeploymentOperationSummaryView view = Unwrap(result);
-        _progress.Ensure(view.OperationId);
+        _progress.Ensure(view.OperationId, actor);
         foreach (string entry in view.Timeline)
         {
             _progress.Publish(view.OperationId, view.State, view.ErrorCode, entry);
@@ -170,8 +177,8 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         ServerCallContext context)
     {
         ArgumentNullException.ThrowIfNull(request);
-        await EnsureWatchAuthorizedAsync(context).ConfigureAwait(false);
         Guid operationId = ProtoUuid.ToGuid(request.OperationId);
+        await EnsureWatchAuthorizedAsync(context, operationId).ConfigureAwait(false);
         await foreach (DeploymentProgress progress in _progress.WatchAsync(operationId, context.CancellationToken)
                            .ConfigureAwait(false))
         {
@@ -184,16 +191,17 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         ServerCallContext context)
     {
         ArgumentNullException.ThrowIfNull(request);
+        string actor = ResolveActor(context);
         ApplicationResult<DeploymentOperationSummaryView> result = await _rollback.ExecuteAsync(
             new RollbackDeploymentCommand
             {
-                Actor = ResolveActor(context),
+                Actor = actor,
                 IdempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey),
                 OperationId = ProtoUuid.ToGuid(request.OperationId),
             },
             context.CancellationToken).ConfigureAwait(false);
         DeploymentOperationSummaryView view = Unwrap(result);
-        _progress.Ensure(view.OperationId);
+        _progress.Ensure(view.OperationId, actor);
         foreach (string entry in view.Timeline)
         {
             _progress.Publish(view.OperationId, view.State, view.ErrorCode, entry);
@@ -239,7 +247,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
     private string ResolveActor(ServerCallContext context) =>
         _actors.Resolve(context, _environment, "development");
 
-    private async Task EnsureWatchAuthorizedAsync(ServerCallContext context)
+    private async Task EnsureWatchAuthorizedAsync(ServerCallContext context, Guid operationId)
     {
         string actor = ResolveActor(context);
         try
@@ -254,6 +262,30 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         {
             throw GrpcApplicationErrorMapper.ToRpcException(ApplicationError.Forbidden(ex.Message));
         }
+
+        if (_progress.TryGetOwnerActor(operationId, out string hubOwner))
+        {
+            if (!string.Equals(hubOwner, actor, StringComparison.Ordinal))
+            {
+                throw GrpcApplicationErrorMapper.ToRpcException(
+                    ApplicationError.Forbidden("Watch requires the operation owner."));
+            }
+
+            return;
+        }
+
+        DeploymentOperation? operation = await _operations
+            .GetOperationAsync(new DeploymentOperationId(operationId), context.CancellationToken)
+            .ConfigureAwait(false);
+        if (operation is not null
+            && operation.CreatedBy.Value == ActorKey.FromActor(actor))
+        {
+            _progress.Ensure(operationId, actor);
+            return;
+        }
+
+        throw GrpcApplicationErrorMapper.ToRpcException(
+            ApplicationError.Forbidden("Watch requires the operation owner."));
     }
 
     private static T Unwrap<T>(ApplicationResult<T> result)
