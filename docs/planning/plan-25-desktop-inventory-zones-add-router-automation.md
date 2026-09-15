@@ -31,7 +31,7 @@ Inventory / Zones primary action buttons expose `AutomationProperties.Name` matc
 | Inventory tree / detail | Content + AutomationProperties.Name (`Refresh`, `Inventory Probe`) | — |
 | Zones | Content + AutomationProperties.Name (`Resolve node`, `Resolve device`, `Create`, `Delete`, `Update zone`, `Upsert binding`, `Delete binding`, `Refresh`) | — |
 | Snapshots | no | **PLAN-27** **DESK-A11Y-SNAP-01** |
-| Node / Drift / Audit | no | **PLAN-27** **DESK-A11Y-PANEL-01** |
+| Node / Drift / Audit | yes (W7-242) | — |
 
 ## Ranked Desktop Inventory/Zones a11y tranche
 
@@ -40,7 +40,7 @@ Inventory / Zones primary action buttons expose `AutomationProperties.Name` matc
 | 1 | **DESK-A11Y-INV-01** | Inventory + Zones primary actions lack AutomationProperties.Name | `MainWindow.axaml` Inventory/Zones | **W7-207 DONE** (#817) |
 | 2 | **DESK-A11Y-INV-02** | Regression: inv/zones Names + ops + Policies/shell/Incident Names matrix | Living Spec matrix | **W7-209 DONE** (#821); seeded by **W7-208 DONE** (#818); **PLAN-25 COMPLETE** |
 | 3 | **DESK-A11Y-SNAP-01** | Snapshot Capture/Reload/Compare/Copy Names | Snapshots tabs | **PLAN-27** **W7-240 (#886) DONE** (inventory W7-238 DONE; seed W7-239 DONE) |
-| 4 | **DESK-A11Y-PANEL-01** | Node VRRP validate + Drift/Audit Refresh Names | Node/Drift/Audit | **PLAN-27** **W7-242 (#891)** (**§3.C NEXT**; seed W7-241 DONE) |
+| 4 | **DESK-A11Y-PANEL-01** | Node VRRP validate + Drift/Audit Refresh Names | Node/Drift/Audit | **PLAN-27** **W7-242 (#891) DONE**; seed W7-241 DONE; NEXT **W7-243** |
 
 ## Dual track
 
@@ -48,8 +48,8 @@ Product §3 never waits on GNS3.
 
 ## Successor
 
-**PLAN-26 COMPLETE** ([`plan-26-code-audit-remediation-11cb746.md`](plan-26-code-audit-remediation-11cb746.md)). Deferred SNAP/PANEL residuals continue in **PLAN-27**: [`plan-27-desktop-snapshot-panel-automation.md`](plan-27-desktop-snapshot-panel-automation.md) (inventory **W7-238 DONE**; seed **W7-239 DONE**; SNAP-01 **W7-240 DONE**; seed **W7-241 DONE**; NEXT **W7-242**).
+**PLAN-26 COMPLETE** ([`plan-26-code-audit-remediation-11cb746.md`](plan-26-code-audit-remediation-11cb746.md)). Deferred SNAP/PANEL residuals continue in **PLAN-27**: [`plan-27-desktop-snapshot-panel-automation.md`](plan-27-desktop-snapshot-panel-automation.md) (inventory **W7-238 DONE**; seed **W7-239 DONE**; SNAP-01 **W7-240 DONE**; seed **W7-241 DONE**; PANEL-01 **W7-242 DONE**; NEXT **W7-243**).
 
 ## §3.C NEXT
 
-**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** PLAN-27 inventory **DONE** (W7-238); seed **W7-239 DONE**; SNAP-01 **W7-240 DONE**; seed **W7-241 DONE**. **§3.C NEXT = W7-242 (#891)** — DESK-A11Y-PANEL-01.
+**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** PLAN-27 inventory **DONE** (W7-238); seed **W7-239 DONE**; SNAP-01 **W7-240 DONE**; seed **W7-241 DONE**; PANEL-01 **W7-242 DONE**. **§3.C NEXT = W7-243 (#892)** — PLAN-27 COMPLETE seed.

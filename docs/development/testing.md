@@ -1702,7 +1702,20 @@ Issue [#875](https://github.com/sesquicadaver/MTDirector/issues/875) AC → modu
 Filter: `dotnet test --filter "FullyQualifiedName~AllowListedOperatorAuthorizationBoundary|AuditAuth01AllowlistedOperatorsW7234"`.
 
 
+## Living Specification — DESK-A11Y-PANEL-01 Node/Drift/Audit AutomationProperties (W7-242)
+
+Issue [#891](https://github.com/sesquicadaver/MTDirector/issues/891) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Node / RoutingAssurance / Drift / Audit primary action Names | `MainWindow.axaml` | `DesktopPanelAutomationLivingSpecTests.Ac1NodeDriftAuditButtonsExposeAutomationPropertiesName` |
+| PLAN-27 + docs lock | plan-27 + testing + known-limitations | `DesktopPanelAutomationLivingSpecTests.Ac2Plan27AndTestingDocLockA11yPanel01` |
+| PANEL-01 DONE + queue advanced to PLAN-27 COMPLETE seed | known-limitations + ROADMAP + continuous + plan-27 | `ProductTrancheSeedW7242LivingSpecTests.Ac1Panel01DoneAndQueueAdvancesToPlan27CompleteSeed` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopPanelAutomationLivingSpecTests|ProductTrancheSeedW7242"`.
+
 ## Living Specification — Product tranche seed DESK-A11Y-PANEL-01 (W7-241)
+
 
 Issue [#887](https://github.com/sesquicadaver/MTDirector/issues/887) AC → module → tests:
 

@@ -503,6 +503,7 @@
             <DockPanel LastChildFill="True">
               <Button Classes="mfc-action"
                       Content="Refresh"
+                      AutomationProperties.Name="Refresh"
                       Command="{Binding Node.RefreshCommand}"
                       DockPanel.Dock="Right"
                       Margin="8,0,0,0" />
@@ -581,10 +582,12 @@
             <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding Node.IsVrrpNode}">
               <Button Classes="mfc-action"
                       Content="Validate (last captures)"
+                      AutomationProperties.Name="Validate (last captures)"
                       Command="{Binding Node.ValidateVrrpPairCommand}"
                       MinWidth="180" />
               <Button Classes="mfc-action"
                       Content="Capture all members + validate"
+                      AutomationProperties.Name="Capture all members + validate"
                       Command="{Binding Node.CaptureAllMembersAndValidateCommand}"
                       MinWidth="220" />
             </StackPanel>
@@ -656,6 +659,7 @@
                 <DockPanel LastChildFill="True">
                   <Button Classes="mfc-action"
                           Content="Refresh"
+                          AutomationProperties.Name="Refresh"
                           Command="{Binding RoutingAssurance.RefreshCommand}"
                           DockPanel.Dock="Right"
                           Margin="8,0,0,0" />
@@ -1840,7 +1844,7 @@
               ClipToBounds="True">
           <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
             <WrapPanel DockPanel.Dock="Right" Classes="mfc-toolbar" ItemSpacing="8" Margin="8,0,0,0">
-              <Button Classes="mfc-action" Content="Refresh" Command="{Binding Drift.RefreshCommand}" />
+              <Button Classes="mfc-action" Content="Refresh" AutomationProperties.Name="Refresh" Command="{Binding Drift.RefreshCommand}" />
             </WrapPanel>
             <StackPanel Spacing="2">
               <TextBlock Classes="mfc-module-title" Text="Drift" />
@@ -1963,7 +1967,7 @@
               ClipToBounds="True">
           <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
             <WrapPanel DockPanel.Dock="Right" Classes="mfc-toolbar" ItemSpacing="8" Margin="8,0,0,0">
-              <Button Classes="mfc-action" Content="Refresh" Command="{Binding Audit.RefreshCommand}" />
+              <Button Classes="mfc-action" Content="Refresh" AutomationProperties.Name="Refresh" Command="{Binding Audit.RefreshCommand}" />
             </WrapPanel>
             <StackPanel Spacing="2">
               <TextBlock Classes="mfc-module-title" Text="Audit" />

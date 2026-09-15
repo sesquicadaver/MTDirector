@@ -3,13 +3,12 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-241: known-limitations / queue seed locked DESK-A11Y-PANEL-01 (W7-242) after SNAP-01;
-/// historical: PANEL-01 DONE; NEXT advanced to W7-243 PLAN-27 COMPLETE seed.
+/// W7-242: DESK-A11Y-PANEL-01 DONE; §3.C NEXT advanced to W7-243 PLAN-27 COMPLETE seed.
 /// </summary>
-public sealed class ProductTrancheSeedW7241LivingSpecTests
+public sealed class ProductTrancheSeedW7242LivingSpecTests
 {
     [Fact]
-    public void Ac1KnownLimitationsAndQueueSeedDeskA11yPanel01AsNext()
+    public void Ac1Panel01DoneAndQueueAdvancesToPlan27CompleteSeed()
     {
         string root = RepoRoot();
         string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
@@ -17,16 +16,12 @@ public sealed class ProductTrancheSeedW7241LivingSpecTests
         string plan = File.ReadAllText(Path.Combine(root, "docs/planning/continuous-queue-plan.md"));
         string plan27 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-27-desktop-snapshot-panel-automation.md"));
 
-        Assert.Contains("Intentional residual (W7-241 Living Spec lock)", limitations, StringComparison.Ordinal);
-        Assert.Contains("DESK-A11Y-PANEL-01", limitations, StringComparison.Ordinal);
-        Assert.Contains("W7-242", limitations, StringComparison.Ordinal);
+        Assert.Contains("Intentional residual (W7-242 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("DESK-A11Y-PANEL-01 DONE", limitations, StringComparison.Ordinal);
+        Assert.Contains("DesktopPanelAutomationLivingSpecTests", limitations, StringComparison.Ordinal);
         Assert.Contains("W7-243", limitations, StringComparison.Ordinal);
-        Assert.Contains("seeded as **W7-242**", limitations, StringComparison.Ordinal);
+        Assert.Contains("PLAN-27 COMPLETE", limitations, StringComparison.Ordinal);
 
-        Assert.Contains(
-            "W7-241 | [#887](https://github.com/sesquicadaver/MTDirector/issues/887) | Seed next PLAN-27 row after DESK-A11Y-SNAP-01 → DESK-A11Y-PANEL-01 | **DONE**",
-            roadmap,
-            StringComparison.Ordinal);
         Assert.Contains(
             "W7-242 | [#891](https://github.com/sesquicadaver/MTDirector/issues/891) | DESK-A11Y-PANEL-01 — Node Refresh / Validate / Drift / Audit Refresh AutomationProperties.Name | **DONE**",
             roadmap,
@@ -37,15 +32,13 @@ public sealed class ProductTrancheSeedW7241LivingSpecTests
             StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-243 (#892)", roadmap, StringComparison.Ordinal);
 
-        Assert.Contains("W7-241 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("W7-242", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-242 DONE", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-PANEL-01", plan, StringComparison.Ordinal);
         Assert.Contains("W7-243", plan, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-243 (#892)", plan, StringComparison.Ordinal);
 
-        Assert.Contains("W7-241 (#887) DONE", plan27, StringComparison.Ordinal);
+        Assert.Contains("W7-242 DONE", plan27, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-PANEL-01", plan27, StringComparison.Ordinal);
-        Assert.Contains("W7-242 (#891) DONE", plan27, StringComparison.Ordinal);
         Assert.Contains("W7-243 (#892)", plan27, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-243 (#892)", plan27, StringComparison.Ordinal);
     }
