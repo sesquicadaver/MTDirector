@@ -2,7 +2,7 @@ using Xunit;
 
 namespace Mfc.UnitTests.Release;
 
-/// <summary>W7-234: AUDIT-AUTH-01 production allowlist; §3.C NEXT advances to W7-235.</summary>
+/// <summary>W7-234: AUDIT-AUTH-01 production allowlist; §3.C NEXT advanced via W7-235 seed to W7-236.</summary>
 public sealed class AuditAuth01AllowlistedOperatorsW7234LivingSpecTests
 {
     [Fact]
@@ -43,10 +43,11 @@ public sealed class AuditAuth01AllowlistedOperatorsW7234LivingSpecTests
 
         Assert.Contains("AUDIT-AUTH-01", plan26, StringComparison.Ordinal);
         Assert.Contains("W7-234 (#875) DONE", plan26, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-235 (#876)", plan26, StringComparison.Ordinal);
+        Assert.Contains("W7-235 DONE", plan26, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-236 (#879)", plan26, StringComparison.Ordinal);
         Assert.Contains("Intentional residual (W7-234 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("AllowListedOperatorAuthorizationBoundary", limitations, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-235 (#876)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-236 (#879)", roadmap, StringComparison.Ordinal);
         Assert.Contains(
             "W7-234 | [#875](https://github.com/sesquicadaver/MTDirector/issues/875) | AUDIT-AUTH-01 — Production operator authorization DenyAll | **DONE**",
             roadmap,

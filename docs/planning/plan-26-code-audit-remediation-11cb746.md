@@ -1,7 +1,7 @@
 # PLAN-26 — Code-audit remediation tranche (`11cb746`)
 
 **Date:** 2026-09-11 (inventory **DONE** 2026-09-11)  
-**Status:** Seed **W7-205 DONE**; Inventory **DONE** (W7-206); **AUDIT-RULE-01 DONE** (W7-210); seed **W7-211 DONE**; **AUDIT-CTX-01 DONE** (W7-212); seed **W7-213 DONE**; **AUDIT-CAP-01 DONE** (W7-214); seed **W7-215 DONE**; **AUDIT-CAP-02 DONE** (W7-216); seed **W7-217 DONE**; **AUDIT-AN-01 DONE** (W7-218); seed **W7-219 DONE**; **AUDIT-AN-02 DONE** (W7-220); seed **W7-221 DONE**; **AUDIT-DIFF-01 DONE** (W7-222); seed **W7-223 DONE**; **AUDIT-GUARD-01 DONE** (W7-224); seed **W7-225 DONE**; **AUDIT-DEP-01 DONE** (W7-226); seed **W7-227 DONE**; **AUDIT-DEP-02 DONE** (W7-228); seed **W7-229 DONE**; **AUDIT-DEP-03 DONE** (W7-230); seed **W7-231 DONE**; **AUDIT-GUI-01 DONE** (W7-232); seed **W7-233 DONE**; **AUDIT-AUTH-01 DONE** (**W7-234 (#875) DONE**); next **W7-235 (#876)** seed AUDIT-INT-01  
+**Status:** Seed **W7-205 DONE**; Inventory **DONE** (W7-206); **AUDIT-RULE-01 DONE** (W7-210); seed **W7-211 DONE**; **AUDIT-CTX-01 DONE** (W7-212); seed **W7-213 DONE**; **AUDIT-CAP-01 DONE** (W7-214); seed **W7-215 DONE**; **AUDIT-CAP-02 DONE** (W7-216); seed **W7-217 DONE**; **AUDIT-AN-01 DONE** (W7-218); seed **W7-219 DONE**; **AUDIT-AN-02 DONE** (W7-220); seed **W7-221 DONE**; **AUDIT-DIFF-01 DONE** (W7-222); seed **W7-223 DONE**; **AUDIT-GUARD-01 DONE** (W7-224); seed **W7-225 DONE**; **AUDIT-DEP-01 DONE** (W7-226); seed **W7-227 DONE**; **AUDIT-DEP-02 DONE** (W7-228); seed **W7-229 DONE**; **AUDIT-DEP-03 DONE** (W7-230); seed **W7-231 DONE**; **AUDIT-GUI-01 DONE** (W7-232); seed **W7-233 DONE**; **AUDIT-AUTH-01 DONE** (**W7-234 (#875) DONE**); seed **W7-235 DONE**; next **W7-236 (#879)** AUDIT-INT-01; seed **W7-237 (#880)**  
 **Audit SHA:** `11cb746de60191e6eb83e52013f7f544306d5c9d`  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md)  
 **Predecessor:** PLAN-25 Desktop Inventory/Zones/Add-router AutomationProperties **COMPLETE**  
@@ -43,8 +43,8 @@ Normative audit §§01–19 mapped to ranked IDs below. First wave (issue body):
 | 10 | **AUDIT-DEP-02** | Watchdog uses Controller clock + fixed TTL (§08); cleanup result ignored (§09) | `RouterOsDeploymentRuntime`, `RecoverDeploymentUseCase` | **W7-228 (#863) DONE**; seed **W7-229 (#864)** |
 | 11 | **AUDIT-DEP-03** | Fake VRRP reachability/traffic facts (§15) | `RouterOsVrrpMemberDeploymentRuntime` | **W7-230 (#867) DONE**; seed **W7-231 (#868)** |
 | 12 | **AUDIT-GUI-01** | Onboarding/Deployment synthetic payloads; Deploy never enables (§11) | `OnboardingViewModel.DefaultFacts`, `DeploymentViewModel`, `PoliciesViewModel.CanNeverDeploy` | **W7-232 (#871) DONE**; seed **W7-233 (#872) DONE** |
-| 13 | **AUDIT-AUTH-01** | Production operator authorization DenyAll (§12) | `Program.cs`, `AllowListedOperatorAuthorizationBoundary` | **W7-234 (#875) DONE** |
-| 14 | **AUDIT-INT-01** | FastTrack topology not wired (§16); verification session disposal (§17); progress/Watch/auth/hubs (§18–19) | compile context, deployment sessions, gRPC Watch hubs | seed **W7-235 (#876)** after AUDIT-AUTH-01 |
+| 13 | **AUDIT-AUTH-01** | Production operator authorization DenyAll (§12) | `Program.cs`, `AllowListedOperatorAuthorizationBoundary` | **W7-234 (#875) DONE**; seed **W7-235 (#876) DONE** |
+| 14 | **AUDIT-INT-01** | FastTrack topology not wired (§16); verification session disposal (§17); progress/Watch/auth/hubs (§18–19) | compile context, deployment sessions, gRPC Watch hubs | **W7-236 (#879)**; seed **W7-237 (#880)** (PLAN-26 COMPLETE after INT) |
 
 Disconnected DI/callers table in the audit (locks, evidence mappers, multi-WAN verifier, incident TTL job, watchdog residue) is absorbed into **AUDIT-DEP-*** / **AUDIT-INT-01** acceptance notes — not separate vanity deletes.
 
@@ -82,8 +82,9 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/c
 26. **W7-232 DONE** — AUDIT-GUI-01.
 27. **W7-233 DONE** — seeded **W7-234** / **W7-235**.
 28. **W7-234 DONE** — AUDIT-AUTH-01 deny-by-default operator allowlist.
-29. Execute rank 14 atomically starting at **W7-235** → seed AUDIT-INT-01.
+29. **W7-235 DONE** — seeded **W7-236** / **W7-237**.
+30. Execute rank 14 atomically starting at **W7-236** → **AUDIT-INT-01** (last ranked remediation; then W7-237 closes PLAN-26 / notes COMPLETE).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-235 (#876)** — Seed next PLAN-26 row after AUDIT-AUTH-01 → AUDIT-INT-01.
+**§3.C NEXT = W7-236 (#879)** — AUDIT-INT-01 — FastTrack topology / verification session disposal / progress Watch auth hubs.
