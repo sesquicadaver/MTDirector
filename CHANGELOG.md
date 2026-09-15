@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-260** ([#927](https://github.com/sesquicadaver/MTDirector/issues/927)): WATCH-BP-01 — ProgressHubs use bounded subscriber channels (capacity 64, disconnect-on-full) + live `_history` cap 256 (`WatchBp01HubBackpressureW7260LivingSpecTests`). **§3.C NEXT = W7-261 (#928)**.
+- **W7-261** ([#928](https://github.com/sesquicadaver/MTDirector/issues/928)): Seed PLAN-30 COMPLETE → PLAN-31 Desktop residual ListBox / Drift–Audit read-only a11y tranche (`ProductTrancheSeedW7261LivingSpecTests`). **§3.C NEXT = W7-262 (#931)**.
+
+- **W7-260** ([#927](https://github.com/sesquicadaver/MTDirector/issues/927)): WATCH-BP-01 — ProgressHubs use bounded subscriber channels (capacity 64, disconnect-on-full) + live `_history` cap 256 (`WatchBp01HubBackpressureW7260LivingSpecTests`). **§3.C NEXT was W7-261 (#928)** (advanced by W7-261).
 
 - **W7-259** ([#923](https://github.com/sesquicadaver/MTDirector/issues/923)): Seed PLAN-30 next atomic row → WATCH-BP-01 as §3.C NEXT; opened **W7-260 (#927)** implement + **W7-261 (#928)** PLAN-30 COMPLETE follow-up (`ProductTrancheSeedW7259LivingSpecTests`). **§3.C NEXT was W7-260 (#927)** (advanced by W7-260).
 

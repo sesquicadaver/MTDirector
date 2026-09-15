@@ -1,9 +1,10 @@
 # PLAN-30 — Watch operation-owner ACL / hub slow-subscriber backpressure
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-256); seed **W7-257 (#920) DONE**; implement **W7-258 (#922) DONE**; seed **W7-259 (#923) DONE**; implement **W7-260 (#927) DONE**; seed **W7-261 (#928) OPEN** (**§3.C NEXT**) (PLAN-30 COMPLETE)  
+**Status:** **PLAN-30 COMPLETE** — Inventory **DONE** (W7-256); seed **W7-257 (#920) DONE**; implement **W7-258 (#922) DONE**; seed **W7-259 (#923) DONE**; implement **W7-260 (#927) DONE**; seed **W7-261 (#928) DONE**; successor **PLAN-31** inventory **W7-262 (#931) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-256 / PLAN-30 #919](https://github.com/sesquicadaver/MTDirector/issues/919) **DONE**  
 **Predecessor:** PLAN-29 Desktop connection health / reconnect **COMPLETE**; AUDIT-INT-01 deferred Watch ownership / hub backpressure from audit `11cb746` §19  
+**Successor:** [`plan-31-desktop-residual-listbox-readonly-a11y.md`](plan-31-desktop-residual-listbox-readonly-a11y.md) (Desktop residual ListBox / Drift–Audit read-only a11y; PLAN-28 deferred)  
 **Normative files:** [`SnapshotGrpcService.cs`](../../src/Mfc.Controller/Grpc/SnapshotGrpcService.cs), [`DeploymentGrpcService.cs`](../../src/Mfc.Controller/Grpc/DeploymentGrpcService.cs), [`OnboardingGrpcService.cs`](../../src/Mfc.Controller/Grpc/OnboardingGrpcService.cs), [`CaptureProgressHub.cs`](../../src/Mfc.Controller/Grpc/CaptureProgressHub.cs), [`DeploymentProgressHub.cs`](../../src/Mfc.Controller/Grpc/DeploymentProgressHub.cs), [`OnboardingProgressHub.cs`](../../src/Mfc.Controller/Grpc/OnboardingProgressHub.cs)  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md) §19  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
@@ -20,7 +21,7 @@ Absorb the **product-critical** AUDIT §19 residuals left after AUDIT-INT-01: Wa
 ## Out of scope (do not seed)
 
 - Re-opening PLAN-29 DESK-CONN-HEALTH/RECONNECT product rows  
-- PLAN-28 deferred ListBox hosts / Drift–Audit read-only JSON TextBoxes (remain deferred a11y)  
+- PLAN-28 deferred ListBox hosts / Drift–Audit read-only JSON TextBoxes (seeded as **PLAN-31**)  
 - Replacing AUDIT-INT-01 Read permission / terminal-prune Living Spec locks  
 - Re-opening PLAN-26 ranked AUDIT-RULE…AUDIT-INT product rows
 
@@ -42,7 +43,7 @@ Absorb the **product-critical** AUDIT §19 residuals left after AUDIT-INT-01: Wa
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **WATCH-OWN-01** | Bind Watch to operation owner (beyond Read permission) | `EnsureWatchAuthorizedAsync` permission-only; hubs lack owner; audit §19 ownership | implement **W7-258 (#922) DONE**; seed **W7-257 (#920) DONE** |
-| 2 | **WATCH-BP-01** | Bounded hub subscriber channels / slow-subscriber backpressure + live `_history` cap | was `CreateUnbounded` ×3; unbounded `_history` | implement **W7-260 (#927) DONE**; seed **W7-259 (#923) DONE**; follow-up **W7-261 (#928) OPEN** (**§3.C NEXT**) |
+| 2 | **WATCH-BP-01** | Bounded hub subscriber channels / slow-subscriber backpressure + live `_history` cap | was `CreateUnbounded` ×3; unbounded `_history` | implement **W7-260 (#927) DONE**; seed **W7-259 (#923) DONE**; follow-up **W7-261 (#928) DONE** |
 
 Inventory (**W7-256 DONE**) locked ranking and opened OWN implement (**W7-258**) + BP seed (**W7-259**). Seed **W7-257 DONE** advanced §3.C NEXT to the first implement after inventory DONE. No third vanity rank — history bound stays inside **WATCH-BP-01**; AUDIT-INT-01 Read/prune locks remain the regression corpus. Seed IDs **WATCH-OWN-01** / **WATCH-BP-01** are the canonical atomic row names (owner ACL / hub backpressure).
 
@@ -54,9 +55,11 @@ Product §3 never waits on GNS3.
 
 PLAN-29 ranks 1…2 (**DESK-CONN-HEALTH-01**, **DESK-CONN-RECONNECT-01**) are **DONE**. No further PLAN-29 product rows.
 
-## Adjacent residuals (not seeded here)
+## Residual notes (COMPLETE)
 
-- PLAN-28 deferred ListBox hosts and Drift/Audit read-only JSON TextBoxes (intentional a11y residuals, not §3 stop-gates).  
+- PLAN-30 ranks 1…2 (**WATCH-OWN-01**, **WATCH-BP-01**) are **DONE**. No further PLAN-30 product rows.  
+- PLAN-28 deferred ListBox hosts and Drift/Audit read-only JSON TextBoxes are seeded as **PLAN-31**.  
+- Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates.
 
 ## §3.C ordering
 
@@ -66,8 +69,8 @@ PLAN-29 ranks 1…2 (**DESK-CONN-HEALTH-01**, **DESK-CONN-RECONNECT-01**) are **
 4. **W7-258 DONE** — WATCH-OWN-01 owner ACL beyond Read.
 5. **W7-259 DONE** — seed advanced NEXT to **WATCH-BP-01** (**W7-260**); opened **W7-261** PLAN-30 COMPLETE follow-up.
 6. **W7-260 DONE** — WATCH-BP-01 bounded ProgressHub channels + live `_history` cap (capacity 64, disconnect-on-full, history 256).
-7. **W7-261 OPEN** — seed after WATCH-BP-01 (PLAN-30 COMPLETE).
+7. **W7-261 DONE** — PLAN-30 COMPLETE; seeded PLAN-31 (**W7-262** / **W7-263**).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-261 (#928)** — Seed next after WATCH-BP-01 (PLAN-30 COMPLETE).
+**PLAN-30 COMPLETE.** Successor **PLAN-31** inventory **OPEN** (W7-262). **§3.C NEXT = W7-262 (#931)** — PLAN-31 Inventory Desktop residual ListBox / Drift–Audit read-only a11y.

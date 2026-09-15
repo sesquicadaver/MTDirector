@@ -1,10 +1,10 @@
 # PLAN-29 — Desktop connection health / reconnect after Controller stop
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15; **COMPLETE** 2026-09-15)  
-**Status:** **PLAN-29 COMPLETE** — Inventory **DONE** (W7-250); seed **W7-251 (#908) DONE**; **DESK-CONN-HEALTH-01 W7-252 (#910) DONE**; seed **W7-253 (#911) DONE**; **DESK-CONN-RECONNECT-01 W7-254 (#915) DONE**; seed **W7-255 (#916) DONE**; successor **PLAN-30** (inventory **W7-256 (#919) DONE**; seed **W7-257 (#920) DONE**; implement **W7-258 (#922) DONE**; seed **W7-259 (#923) DONE**; implement **W7-260 (#927) DONE**; seed **W7-261 (#928) OPEN** (**§3.C NEXT**))  
+**Status:** **PLAN-29 COMPLETE** — Inventory **DONE** (W7-250); seed **W7-251 (#908) DONE**; **DESK-CONN-HEALTH-01 W7-252 (#910) DONE**; seed **W7-253 (#911) DONE**; **DESK-CONN-RECONNECT-01 W7-254 (#915) DONE**; seed **W7-255 (#916) DONE**; successor **PLAN-30 COMPLETE / PLAN-31** (inventory **W7-256 (#919) DONE**; seed **W7-257 (#920) DONE**; implement **W7-258 (#922) DONE**; seed **W7-259 (#923) DONE**; implement **W7-260 (#927) DONE**; seed **W7-261 (#928) DONE**; **PLAN-30 COMPLETE**; successor **PLAN-31** inventory **W7-262 (#931) OPEN** (**§3.C NEXT**))  
 **PLAN issue / queue:** [W7-250 / PLAN-29 #907](https://github.com/sesquicadaver/MTDirector/issues/907) **DONE**  
 **Predecessor:** PLAN-28 Desktop residual field/control AutomationProperties **COMPLETE**; AUDIT-INT-01 deferred connection-health residual from audit `11cb746` §18  
-**Successor:** [`plan-30-watch-owner-acl-hub-backpressure.md`](plan-30-watch-owner-acl-hub-backpressure.md) (Watch operation-owner ACL / hub slow-subscriber backpressure; AUDIT §19 residual)  
+**Successor:** [`plan-30-watch-owner-acl-hub-backpressure.md`](plan-30-watch-owner-acl-hub-backpressure.md) (**COMPLETE**); [`plan-31-desktop-residual-listbox-readonly-a11y.md`](plan-31-desktop-residual-listbox-readonly-a11y.md) (Desktop residual ListBox / Drift–Audit read-only a11y)  
 **Normative files:** [`ControllerConnectionService.cs`](../../src/Mfc.Desktop/Services/ControllerConnectionService.cs), [`ShellViewModel.cs`](../../src/Mfc.Desktop/ViewModels/ShellViewModel.cs), [`DesktopOptions.cs`](../../src/Mfc.Desktop/Configuration/DesktopOptions.cs), [`DesktopConnectionStatusText.cs`](../../src/Mfc.Desktop/Services/DesktopConnectionStatusText.cs)  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md) §18  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
@@ -23,7 +23,7 @@ Absorb the **product-critical** Desktop connection residual left after AUDIT-INT
 - Re-opening PLAN-28 DESK-A11Y-FIELD/CTRL product rows  
 - PLAN-28 deferred ListBox hosts / Drift–Audit read-only JSON TextBoxes (remain deferred a11y)  
 - Replacing PLAN-09 DESK-CONN / DESK-MTLS / DESK-AUTH Living Spec locks  
-- Operation-owner ACL / slow-subscriber hub backpressure (audit §19 — successor **PLAN-30**)
+- Operation-owner ACL / slow-subscriber hub backpressure (audit §19 — successor **PLAN-30 COMPLETE / PLAN-31**)
 
 ## Inventory evidence (2026-09-15 `ControllerConnectionService` @ `c5aebcd`)
 
@@ -58,11 +58,11 @@ PLAN-28 ranks 1…2 (**DESK-A11Y-FIELD-01**, **DESK-A11Y-CTRL-01**) are **DONE**
 ## Residual notes (COMPLETE)
 
 - All ranked HEALTH/RECONNECT remediations 1…2 closed on `main`.  
-- No further PLAN-29 product rows — continuous queue advances to **PLAN-30** (Watch operation-owner ACL / hub slow-subscriber backpressure; AUDIT §19 residual).  
+- No further PLAN-29 product rows — continuous queue advances to **PLAN-30 COMPLETE / PLAN-31** (Watch operation-owner ACL / hub slow-subscriber backpressure; AUDIT §19 residual).  
 - PLAN-28 deferred ListBox hosts and Drift/Audit JSON TextBoxes remain intentional a11y residuals (not §3 stop-gates).  
 - Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates.
 
-## Adjacent residuals (seeded as PLAN-30)
+## Adjacent residuals (seeded as PLAN-30 COMPLETE / PLAN-31)
 
 - Operation-owner ACL on Watch/read paths beyond AUDIT-INT-01 Read permissions (audit §19 ownership nuance) — **WATCH-OWN-01**.  
 - Slow-subscriber / unbounded hub backpressure beyond terminal prune from AUDIT-INT-01 — **WATCH-BP-01**.  
@@ -77,8 +77,8 @@ Evidence at PLAN-29 COMPLETE: `EnsureWatchAuthorizedAsync` still Read-only; Prog
 4. **W7-252 DONE** — DESK-CONN-HEALTH-01 Connected-state periodic `Health.Check`; leave Connected on Controller stop.  
 5. **W7-253 DONE** — seed advanced NEXT to **DESK-CONN-RECONNECT-01** (**W7-254**); opened **W7-255** PLAN-29 COMPLETE follow-up.  
 6. **W7-254 DONE** — DESK-CONN-RECONNECT-01 bounded reconnect + shell StatusText/LastError.  
-7. **W7-255 DONE** — PLAN-29 COMPLETE; seeded PLAN-30 (**W7-256** / **W7-257**).
+7. **W7-255 DONE** — PLAN-29 COMPLETE; seeded PLAN-30 COMPLETE / PLAN-31 (**W7-256** / **W7-257**).
 
 ## §3.C NEXT
 
-**PLAN-29 COMPLETE.** Successor **PLAN-30** inventory **DONE** (W7-256). **§3.C NEXT = W7-261 (#928)** — Seed next after WATCH-BP-01 (PLAN-30 COMPLETE).
+**PLAN-29 COMPLETE.** Successor **PLAN-30 COMPLETE / PLAN-31** inventory **DONE** (W7-256). **§3.C NEXT = W7-262 (#931)** — Seed next after WATCH-BP-01 (PLAN-30 COMPLETE / PLAN-31 COMPLETE).

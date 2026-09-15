@@ -1840,7 +1840,7 @@ Issue [#927](https://github.com/sesquicadaver/MTDirector/issues/927) AC → modu
 | Bounded channels + disconnect-on-full + history cap constants | Capture/Deployment/Onboarding ProgressHub | `WatchBp01HubBackpressureW7260LivingSpecTests.Ac1HubsUseBoundedChannelsDisconnectOnFullAndHistoryCap` |
 | Live `_history` cap while retained | ProgressHubs | `WatchBp01HubBackpressureW7260LivingSpecTests.Ac2LiveHistoryCapAppliesWhileOperationRetained` |
 | Slow-subscriber full does not block Publish | CaptureProgressHub | `WatchBp01HubBackpressureW7260LivingSpecTests.Ac3SlowSubscriberDisconnectOnFullDoesNotBlockPublish` |
-| Docs advance NEXT to W7-261 PLAN-30 COMPLETE seed | ROADMAP / plan-30 / known-limitations | `WatchBp01HubBackpressureW7260LivingSpecTests.Ac4DocsAdvanceNextToPlan30CompleteSeed` |
+| Docs advance past BP-01 (historical seed W7-261 DONE; NEXT now W7-262) | ROADMAP / plan-30 / known-limitations | `WatchBp01HubBackpressureW7260LivingSpecTests.Ac4DocsAdvanceNextToPlan30CompleteSeed` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~WatchBp01HubBackpressureW7260"`.
 
@@ -1863,6 +1863,16 @@ Issue [#920](https://github.com/sesquicadaver/MTDirector/issues/920) AC → modu
 | known-limitations + queue seed WATCH-OWN-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-30 | `ProductTrancheSeedW7257LivingSpecTests.Ac1KnownLimitationsAndQueueSeedWatchOwn01AsNext` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7257"`.
+
+## Living Specification — Product tranche seed after WATCH-BP-01 / PLAN-30 COMPLETE (W7-261)
+
+Issue [#928](https://github.com/sesquicadaver/MTDirector/issues/928) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-30 COMPLETE + queue seed PLAN-31 inventory as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-30, plan-31 | `ProductTrancheSeedW7261LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan31AfterPlan30Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7261"`.
 
 ## Living Specification — Product tranche seed after DESK-CONN-RECONNECT-01 / PLAN-29 COMPLETE (W7-255)
 
