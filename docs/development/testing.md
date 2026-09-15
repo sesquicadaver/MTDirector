@@ -1768,6 +1768,16 @@ Issue [#910](https://github.com/sesquicadaver/MTDirector/issues/910) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DeskConnHealth01W7252|FullyQualifiedName~ConnectedHealthProbeLeavesConnected"`.
 
+## Living Specification — Product tranche seed DESK-CONN-RECONNECT-01 (W7-253)
+
+Issue [#911](https://github.com/sesquicadaver/MTDirector/issues/911) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-CONN-RECONNECT-01 as NEXT; PLAN-29 COMPLETE follow-up opened | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-29 | `ProductTrancheSeedW7253LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskConnReconnect01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7253"`.
+
 ## Living Specification — Product tranche seed DESK-CONN-HEALTH-01 (W7-251)
 
 Issue [#908](https://github.com/sesquicadaver/MTDirector/issues/908) AC → module → tests:

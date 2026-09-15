@@ -73,4 +73,4 @@ PLAN-26 ranks 1…14 (**AUDIT-RULE-01** … **AUDIT-INT-01**) are **DONE**. Disc
 
 ## §3.C NEXT
 
-**PLAN-27 COMPLETE.** Successor **PLAN-28 COMPLETE**; **PLAN-29** inventory **DONE** (W7-250); seed **W7-251 DONE**; **DESK-CONN-HEALTH-01 W7-252 DONE**. **§3.C NEXT = W7-253 (#911)** — seed → DESK-CONN-RECONNECT-01.
+**PLAN-27 COMPLETE.** Successor **PLAN-28 COMPLETE**; **PLAN-29** inventory **DONE** (W7-250); seed **W7-251 DONE**; **DESK-CONN-HEALTH-01 W7-252 DONE**. **§3.C NEXT = W7-254 (#915)** — seed → DESK-CONN-RECONNECT-01.
