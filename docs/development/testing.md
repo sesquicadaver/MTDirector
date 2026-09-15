@@ -1702,6 +1702,18 @@ Issue [#875](https://github.com/sesquicadaver/MTDirector/issues/875) AC → modu
 Filter: `dotnet test --filter "FullyQualifiedName~AllowListedOperatorAuthorizationBoundary|AuditAuth01AllowlistedOperatorsW7234"`.
 
 
+## Living Specification — DESK-A11Y-FIELD-01 Zones/Policies TextBox AutomationProperties (W7-246)
+
+Issue [#898](https://github.com/sesquicadaver/MTDirector/issues/898) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Zones / Policies draft TextBox Names | `MainWindow.axaml` | `DesktopZonesPoliciesFieldAutomationLivingSpecTests.Ac1ZonesAndPoliciesDraftTextBoxesExposeAutomationPropertiesName` |
+| PLAN-28 + docs lock | plan-28 + testing + known-limitations | `DesktopZonesPoliciesFieldAutomationLivingSpecTests.Ac2Plan28AndTestingDocLockA11yField01` |
+| FIELD-01 DONE + queue advanced to CTRL-01 seed | known-limitations + ROADMAP + continuous + plan-28 | `ProductTrancheSeedW7246LivingSpecTests.Ac1Field01DoneAndQueueAdvancesToDeskA11yCtrl01Seed` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopZonesPoliciesFieldAutomationLivingSpecTests|ProductTrancheSeedW7246"`.
+
 ## Living Specification — Product tranche seed DESK-A11Y-FIELD-01 (W7-245)
 
 Issue [#896](https://github.com/sesquicadaver/MTDirector/issues/896) AC → module → tests:
