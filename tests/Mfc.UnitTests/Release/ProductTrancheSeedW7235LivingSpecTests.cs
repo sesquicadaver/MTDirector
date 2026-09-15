@@ -4,7 +4,7 @@ namespace Mfc.UnitTests.Release;
 
 /// <summary>
 /// W7-235: known-limitations / queue seed locked AUDIT-INT-01 (W7-236) after AUDIT-AUTH-01.
-/// Historical seed residue: locked AUDIT-INT-01 queue after AUDIT-AUTH-01; NEXT later advanced past W7-237.
+/// Historical seed residue: locked AUDIT-INT-01 queue after AUDIT-AUTH-01; NEXT later advanced past W7-239.
 /// </summary>
 public sealed class ProductTrancheSeedW7235LivingSpecTests
 {
@@ -43,8 +43,8 @@ public sealed class ProductTrancheSeedW7235LivingSpecTests
         Assert.Contains("W7-237", plan26, StringComparison.Ordinal);
         Assert.Contains("rank 14", plan26, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("seeded as **W7-236**", limitations, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-239 (#884)", roadmap, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-239 (#884)", plan26, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-240 (#886)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-240 (#886)", plan26, StringComparison.Ordinal);
         Assert.Contains("W7-237 DONE", plan26, StringComparison.Ordinal);
         Assert.Contains("W7-236 (#879) DONE", plan26, StringComparison.Ordinal);
     }
