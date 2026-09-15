@@ -18,6 +18,11 @@ public sealed class ControllerOptions
     [Required]
     public AuthenticationHostOptions Authentication { get; init; } = new();
 
+    /// <summary>
+    /// Deny-by-default operator permission allowlist (AUDIT-AUTH-01). Empty Operators is fail-closed.
+    /// </summary>
+    public AuthorizationHostOptions Authorization { get; init; } = new();
+
     [Required]
     public DatabaseHostOptions Database { get; init; } = new();
 }
@@ -93,6 +98,26 @@ public sealed class AuthenticationHostOptions
     /// Forbidden outside Development — Production must bind actor to TLS/auth principal (see <c>GrpcRequestActorResolver</c>).
     /// </summary>
     public bool AllowMetadataActor { get; init; }
+}
+
+/// <summary>Config-file operator→permissions grants. Not a full RBAC store.</summary>
+public sealed class AuthorizationHostOptions
+{
+    /// <summary>
+    /// Allowlisted operators. Bound from <c>Mfc:Authorization:Operators</c>. Empty list denies all
+    /// operator checks (same fail-closed posture as DenyAll).
+    /// </summary>
+    public List<OperatorAuthorizationEntry> Operators { get; init; } = [];
+}
+
+/// <summary>One operator principal and the named application permissions it may invoke.</summary>
+public sealed class OperatorAuthorizationEntry
+{
+    /// <summary>Authenticated principal / certificate CN to match (ordinal, trimmed).</summary>
+    public string Actor { get; init; } = string.Empty;
+
+    /// <summary>Named <c>ApplicationPermissions</c> constants; unknown names never grant.</summary>
+    public string[] Permissions { get; init; } = [];
 }
 
 public sealed class DatabaseHostOptions

@@ -239,7 +239,7 @@ public static class Program
             StringComparison.OrdinalIgnoreCase);
         IAuthorizationBoundary inner = isDevelopment && options.Authentication.AllowDevelopmentAuthentication
             ? new AllowAllAuthorizationBoundary()
-            : new DenyAllAuthorizationBoundary();
+            : new AllowListedOperatorAuthorizationBoundary(options.Authorization.Operators);
         services.AddSingleton<IAuthorizationBoundary>(
             new SystemActorAuthorizationBoundary(inner, jobOptions.SystemActor));
     }
