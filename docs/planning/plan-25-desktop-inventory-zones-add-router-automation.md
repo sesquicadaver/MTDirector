@@ -39,8 +39,8 @@ Inventory / Zones primary action buttons expose `AutomationProperties.Name` matc
 |------|----|-----|----------|-------|
 | 1 | **DESK-A11Y-INV-01** | Inventory + Zones primary actions lack AutomationProperties.Name | `MainWindow.axaml` Inventory/Zones | **W7-207 DONE** (#817) |
 | 2 | **DESK-A11Y-INV-02** | Regression: inv/zones Names + ops + Policies/shell/Incident Names matrix | Living Spec matrix | **W7-209 DONE** (#821); seeded by **W7-208 DONE** (#818); **PLAN-25 COMPLETE** |
-| 3 | **DESK-A11Y-SNAP-01** | Snapshot Capture/Reload/Compare/Copy Names | Snapshots tabs | **PLAN-27** (seeded W7-237; inventory W7-238) |
-| 4 | **DESK-A11Y-PANEL-01** | Node VRRP validate + Drift/Audit Refresh Names | Node/Drift/Audit | **PLAN-27** (after SNAP) |
+| 3 | **DESK-A11Y-SNAP-01** | Snapshot Capture/Reload/Compare/Copy Names | Snapshots tabs | **PLAN-27** **W7-240 (#886)** (inventory W7-238 DONE; seed W7-239) |
+| 4 | **DESK-A11Y-PANEL-01** | Node VRRP validate + Drift/Audit Refresh Names | Node/Drift/Audit | **PLAN-27** seed **W7-241 (#887)** after SNAP |
 
 ## Dual track
 
@@ -48,8 +48,8 @@ Product §3 never waits on GNS3.
 
 ## Successor
 
-**PLAN-26 COMPLETE** ([`plan-26-code-audit-remediation-11cb746.md`](plan-26-code-audit-remediation-11cb746.md)). Deferred SNAP/PANEL residuals continue in **PLAN-27**: [`plan-27-desktop-snapshot-panel-automation.md`](plan-27-desktop-snapshot-panel-automation.md) (inventory **W7-238 (#883)**).
+**PLAN-26 COMPLETE** ([`plan-26-code-audit-remediation-11cb746.md`](plan-26-code-audit-remediation-11cb746.md)). Deferred SNAP/PANEL residuals continue in **PLAN-27**: [`plan-27-desktop-snapshot-panel-automation.md`](plan-27-desktop-snapshot-panel-automation.md) (inventory **W7-238 DONE**; NEXT seed **W7-239** → **W7-240**).
 
 ## §3.C NEXT
 
-**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** **§3.C NEXT = W7-238 (#883)** — PLAN-27 inventory.
+**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** PLAN-27 inventory **DONE** (W7-238). **§3.C NEXT = W7-239 (#884)** — seed DESK-A11Y-SNAP-01.
