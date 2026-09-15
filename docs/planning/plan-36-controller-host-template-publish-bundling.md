@@ -1,7 +1,7 @@
 # PLAN-36 — Controller host-template publish bundling (package-controller → OUT_DIR/controller)
 
 **Date:** 2026-09-15 (inventory **DONE** @ `621f13f3`)  
-**Status:** Inventory **DONE** (W7-288); seed **W7-289 (#984) OPEN**; implement **W7-290 (#986) OPEN**; COMPLETE seed **W7-291 (#987) OPEN**; predecessor **PLAN-35 COMPLETE**  
+**Status:** Inventory **DONE** (W7-288); seed **W7-289 (#984) DONE**; implement **W7-290 (#986) OPEN**; COMPLETE seed **W7-291 (#987) OPEN**; predecessor **PLAN-35 COMPLETE**  
 **PLAN issue / queue:** [W7-288 / PLAN-36 #983](https://github.com/sesquicadaver/MTDirector/issues/983) **DONE**  
 **Predecessor:** PLAN-35 Desktop launch-template publish bundling **COMPLETE** (DESK-HOST-BUNDLE-01)  
 **Normative files:** [`package-controller.sh`](../../scripts/release/package-controller.sh), [`mfc-controller.service`](../../packaging/systemd/mfc-controller.service), [`mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml), [`packaging.md`](../release/packaging.md)  
@@ -61,9 +61,9 @@ PLAN-35 sole ranked row (**DESK-HOST-BUNDLE-01**) is **DONE**. No further PLAN-3
 
 1. **PLAN-35 COMPLETE** (W7-286 DESK-HOST-BUNDLE-01; seed **W7-287 DONE**).  
 2. **W7-288 DONE** — PLAN-36 inventory; opened **W7-290 (#986)** BUNDLE implement + **W7-291 (#987)** COMPLETE seed.  
-3. **W7-289 OPEN** — seed first PLAN-36 implement → OPS-HOST-BUNDLE-01.  
+3. **W7-289 DONE** — seed first PLAN-36 implement → OPS-HOST-BUNDLE-01.  
 4. Execute sole OPS-HOST-BUNDLE-01 row atomically; then W7-291 → PLAN-37.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-289 (#984)** — Seed first PLAN-36 atomic row after inventory → OPS-HOST-BUNDLE-01.
+**§3.C NEXT = W7-290 (#986)** — OPS-HOST-BUNDLE-01 implement after seed.
