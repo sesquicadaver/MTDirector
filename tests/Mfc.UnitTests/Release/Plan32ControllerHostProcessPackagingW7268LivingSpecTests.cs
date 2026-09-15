@@ -26,13 +26,15 @@ public sealed class Plan32ControllerHostProcessPackagingW7268LivingSpecTests
         Assert.Contains("OPS-HOST-WINSVC-01", plan32, StringComparison.Ordinal);
         Assert.Contains("W7-270", plan32, StringComparison.Ordinal);
         Assert.Contains("W7-271", plan32, StringComparison.Ordinal);
+        Assert.Contains("W7-272", plan32, StringComparison.Ordinal);
+        Assert.Contains("W7-273", plan32, StringComparison.Ordinal);
         Assert.Contains("W7-269", plan32, StringComparison.Ordinal);
         Assert.Contains("a8834eb", plan32, StringComparison.Ordinal);
         Assert.Contains("packaging/systemd/mfc-controller.service", plan32, StringComparison.Ordinal);
         Assert.Contains("packaging/windows/mfc-controller.winsw.xml", plan32, StringComparison.Ordinal);
         Assert.Contains("--self-contained false", plan32, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/controller", plan32, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-271 (#947)", plan32, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-272 (#951)", plan32, StringComparison.Ordinal);
         Assert.Contains("W7-269 (#944) DONE", plan32, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-268 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -54,10 +56,18 @@ public sealed class Plan32ControllerHostProcessPackagingW7268LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-271 | [#947](https://github.com/sesquicadaver/MTDirector/issues/947) | Seed next PLAN-32 row after OPS-HOST-SYSTEMD-01 → OPS-HOST-WINSVC-01 | **OPEN**",
+            "W7-271 | [#947](https://github.com/sesquicadaver/MTDirector/issues/947) | Seed next PLAN-32 row after OPS-HOST-SYSTEMD-01 → OPS-HOST-WINSVC-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-271 (#947)", roadmap, StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-272 | [#951](https://github.com/sesquicadaver/MTDirector/issues/951) | OPS-HOST-WINSVC-01 — Windows Service host template for framework-dependent Controller | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-273 | [#952](https://github.com/sesquicadaver/MTDirector/issues/952) | Seed next after OPS-HOST-WINSVC-01 (PLAN-32 COMPLETE) | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-272 (#951)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-269", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-270", continuous, StringComparison.Ordinal);
