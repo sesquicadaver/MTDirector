@@ -1701,6 +1701,17 @@ Issue [#875](https://github.com/sesquicadaver/MTDirector/issues/875) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~AllowListedOperatorAuthorizationBoundary|AuditAuth01AllowlistedOperatorsW7234"`.
 
+
+## Living Specification — Product tranche seed after AUDIT-AUTH-01 (W7-235)
+
+Issue [#876](https://github.com/sesquicadaver/MTDirector/issues/876) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed AUDIT-INT-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-26 | `ProductTrancheSeedW7235LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditInt01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7235"`.
+
 ## Living Specification — AUDIT-GUARD-01 complete guard contract (W7-224)
 
 Issue [#855](https://github.com/sesquicadaver/MTDirector/issues/855) AC → module → tests:
