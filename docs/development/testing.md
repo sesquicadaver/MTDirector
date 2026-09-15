@@ -1702,6 +1702,16 @@ Issue [#875](https://github.com/sesquicadaver/MTDirector/issues/875) AC → modu
 Filter: `dotnet test --filter "FullyQualifiedName~AllowListedOperatorAuthorizationBoundary|AuditAuth01AllowlistedOperatorsW7234"`.
 
 
+## Living Specification — Product tranche seed DESK-A11Y-PANEL-01 (W7-241)
+
+Issue [#887](https://github.com/sesquicadaver/MTDirector/issues/887) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-A11Y-PANEL-01 as NEXT; PLAN-27 COMPLETE follow-up opened | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-27 | `ProductTrancheSeedW7241LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskA11yPanel01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7241"`.
+
 ## Living Specification — DESK-A11Y-SNAP-01 Snapshot AutomationProperties (W7-240)
 
 Issue [#886](https://github.com/sesquicadaver/MTDirector/issues/886) AC → module → tests:
@@ -1710,7 +1720,7 @@ Issue [#886](https://github.com/sesquicadaver/MTDirector/issues/886) AC → modu
 |-------------|--------|------|
 | Snapshot / Semantic-diff primary action Names | `MainWindow.axaml` | `DesktopSnapshotAutomationLivingSpecTests.Ac1SnapshotAndSemanticDiffButtonsExposeAutomationPropertiesName` |
 | PLAN-27 + docs lock | plan-27 + testing + known-limitations | `DesktopSnapshotAutomationLivingSpecTests.Ac2Plan27AndTestingDocLockA11ySnap01` |
-| SNAP-01 DONE + queue seed PANEL-01 as NEXT | known-limitations + ROADMAP + continuous + plan-27 | `ProductTrancheSeedW7240LivingSpecTests.Ac1Snap01DoneAndQueueSeedsDeskA11yPanel01AsNext` |
+| SNAP-01 DONE + queue advanced past PANEL-01 seed | known-limitations + ROADMAP + continuous + plan-27 | `ProductTrancheSeedW7240LivingSpecTests.Ac1Snap01DoneAndQueueSeedsDeskA11yPanel01AsNext` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopSnapshotAutomationLivingSpecTests|ProductTrancheSeedW7240"`.
 

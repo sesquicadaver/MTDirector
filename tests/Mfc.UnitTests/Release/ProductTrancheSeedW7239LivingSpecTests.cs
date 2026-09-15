@@ -3,7 +3,7 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-239: known-limitations / queue seed locked DESK-A11Y-SNAP-01 (W7-240) after PLAN-27 inventory. Historical: SNAP-01 DONE; NEXT advanced to W7-241.
+/// W7-239: known-limitations / queue seed locked DESK-A11Y-SNAP-01 (W7-240) after PLAN-27 inventory. Historical: SNAP-01 DONE; seed W7-241 DONE; NEXT advanced to W7-242.
 /// </summary>
 public sealed class ProductTrancheSeedW7239LivingSpecTests
 {
@@ -29,17 +29,17 @@ public sealed class ProductTrancheSeedW7239LivingSpecTests
             "W7-240 | [#886](https://github.com/sesquicadaver/MTDirector/issues/886) | DESK-A11Y-SNAP-01 — Snapshot Capture/Reload/Compare/Copy AutomationProperties.Name | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-241 (#887)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-242 (#891)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-239 DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-240", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-SNAP-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-241 (#887)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-242 (#891)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-239 DONE", plan27, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-SNAP-01", plan27, StringComparison.Ordinal);
         Assert.Contains("W7-240", plan27, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-241 (#887)", plan27, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-242 (#891)", plan27, StringComparison.Ordinal);
         Assert.Contains("seeded as **W7-240**", limitations, StringComparison.Ordinal);
     }
 

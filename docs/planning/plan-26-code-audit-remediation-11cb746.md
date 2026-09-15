@@ -95,4 +95,4 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/c
 
 ## §3.C NEXT
 
-**PLAN-26 COMPLETE.** PLAN-27 inventory **DONE** (W7-238); seed **W7-239 DONE**. **§3.C NEXT = W7-241 (#887)** — seed DESK-A11Y-PANEL-01 after SNAP-01.
+**PLAN-26 COMPLETE.** PLAN-27 inventory **DONE** (W7-238); seed **W7-239 DONE**; SNAP-01 **W7-240 DONE**; seed **W7-241 DONE**. **§3.C NEXT = W7-242 (#891)** — DESK-A11Y-PANEL-01.
