@@ -1,7 +1,7 @@
 # PLAN-28 — Desktop residual field / control AutomationProperties tranche
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15; **COMPLETE** 2026-09-15)  
-**Status:** **PLAN-28 COMPLETE** — Inventory **DONE** (W7-244); seed **W7-245 (#896) DONE**; **DESK-A11Y-FIELD-01 W7-246 (#898) DONE**; seed **W7-247 (#899) DONE**; **DESK-A11Y-CTRL-01 W7-248 (#903) DONE**; seed **W7-249 (#904) DONE**; successor **PLAN-29** (inventory **W7-250 (#907) DONE**; seed **W7-251 (#908) DONE**; **DESK-CONN-HEALTH-01 W7-252 (#910) DONE**; seed **W7-253 (#911) DONE**; implement **W7-254 (#915) OPEN** (**§3.C NEXT**))  
+**Status:** **PLAN-28 COMPLETE** — Inventory **DONE** (W7-244); seed **W7-245 (#896) DONE**; **DESK-A11Y-FIELD-01 W7-246 (#898) DONE**; seed **W7-247 (#899) DONE**; **DESK-A11Y-CTRL-01 W7-248 (#903) DONE**; seed **W7-249 (#904) DONE**; successor **PLAN-29** (inventory **W7-250 (#907) DONE**; seed **W7-251 (#908) DONE**; **DESK-CONN-HEALTH-01 W7-252 (#910) DONE**; seed **W7-253 (#911) DONE**; implement **W7-254 (#915) DONE**; seed **W7-255 (#916) OPEN** (**§3.C NEXT**))  
 **PLAN issue / queue:** [W7-244 / PLAN-28 #895](https://github.com/sesquicadaver/MTDirector/issues/895) **DONE**  
 **Predecessor:** PLAN-27 Desktop Snapshot/Node/Drift/Audit button AutomationProperties residual **COMPLETE**; button-name waves PLAN-16…27  
 **Successor:** [`plan-29-desktop-connection-health-reconnect.md`](plan-29-desktop-connection-health-reconnect.md) (Desktop connection health / reconnect after Controller stop; AUDIT §18 residual)  
@@ -78,4 +78,4 @@ PLAN-27 ranks 1…2 (**DESK-A11Y-SNAP-01**, **DESK-A11Y-PANEL-01**) are **DONE**
 
 ## §3.C NEXT
 
-**PLAN-28 COMPLETE.** Successor **PLAN-29** inventory **DONE** (W7-250); seed **W7-251 DONE**; **DESK-CONN-HEALTH-01 W7-252 DONE**. **§3.C NEXT = W7-254 (#915)** — DESK-CONN-RECONNECT-01.
+**PLAN-28 COMPLETE.** Successor **PLAN-29** inventory **DONE** (W7-250); seed **W7-251 DONE**; **DESK-CONN-HEALTH-01 W7-252 DONE**. **§3.C NEXT = W7-255 (#916)** — DESK-CONN-RECONNECT-01.
