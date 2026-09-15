@@ -1809,13 +1809,23 @@ Issue [#907](https://github.com/sesquicadaver/MTDirector/issues/907) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan29DesktopConnectionHealthReconnectW7250"`.
 
+## Living Specification — PLAN-30 Watch owner ACL / hub backpressure inventory (W7-256)
+
+Issue [#919](https://github.com/sesquicadaver/MTDirector/issues/919) AC → module → tests:
+
+| AC | Module / docs | Tests |
+|----|---------------|-------|
+| Ranked WATCH-OWN/BP + seed WATCH-OWN-01 | plan-30 + queue docs + EnsureWatchAuthorizedAsync / ProgressHubs | `Plan30WatchOwnerAclHubBackpressureW7256LivingSpecTests.Ac1Plan30InventoryDocumentsRankedRowsAndSeedsWatchOwn01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan30WatchOwnerAclHubBackpressureW7256"`.
+
 ## Living Specification — Product tranche seed after DESK-CONN-RECONNECT-01 / PLAN-29 COMPLETE (W7-255)
 
 Issue [#916](https://github.com/sesquicadaver/MTDirector/issues/916) AC → module → tests:
 
 | AC / вимога | Модуль | Тест |
 |-------------|--------|------|
-| PLAN-29 COMPLETE + queue seed PLAN-30 inventory as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-29, plan-30 | `ProductTrancheSeedW7255LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan30AfterPlan29Complete` |
+| PLAN-29 COMPLETE + queue seeded PLAN-30 inventory (advanced to W7-257 seed) | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-29, plan-30 | `ProductTrancheSeedW7255LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan30AfterPlan29Complete` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7255"`.
 
