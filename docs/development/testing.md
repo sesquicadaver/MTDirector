@@ -1904,6 +1904,16 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7267"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7269"`.
 
+## Living Specification — OPS-HOST-SYSTEMD-01 Controller systemd unit (W7-270)
+
+Issue [#946](https://github.com/sesquicadaver/MTDirector/issues/946) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| systemd unit template + docs for framework-dependent Controller | `packaging/systemd/mfc-controller.service`, HOWTO/installation/packaging, plan-32 | `OpsHostSystemd01ControllerUnitW7270LivingSpecTests.Ac1SystemdUnitTemplateMatchesPackageControllerLayoutAndDocs` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~OpsHostSystemd01ControllerUnitW7270"`.
+
 ## Living Specification — PLAN-32 Controller host-process packaging inventory (W7-268)
 
 Issue [#943](https://github.com/sesquicadaver/MTDirector/issues/943) AC → module → tests:

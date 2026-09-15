@@ -25,6 +25,23 @@ See also [`prerequisite-checklist.md`](prerequisite-checklist.md) for RouterOS d
 3. Apply schema with the migrations bundle (`OUT_DIR/migrations/mfc-ef-migrations`) **or** Development `--migrate-only`.
 4. Start `Mfc.Controller` and verify gRPC health.
 
+### Linux systemd (OPS-HOST-SYSTEMD-01)
+
+Framework-dependent Controller can run under systemd using the repo template [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service) (matches `package-controller.sh` layout: `/opt/mfc/controller/Mfc.Controller`).
+
+```bash
+sudo install -d -o mfc -g mfc /opt/mfc/controller
+sudo rsync -a "$OUT_DIR/controller/" /opt/mfc/controller/
+sudo install -m 0644 packaging/systemd/mfc-controller.service /etc/systemd/system/mfc-controller.service
+sudo install -d /etc/mfc
+# create /etc/mfc/controller.env with MFC__Database__ConnectionString, TLS, etc.
+sudo systemctl daemon-reload
+sudo systemctl enable --now mfc-controller.service
+sudo systemctl status mfc-controller.service
+```
+
+Windows Service host template remains **OPS-HOST-WINSVC-01** (not this row). Native MSI/setup remains out of scope (W7-22).
+
 ## Desktop
 
 1. Obtain `Mfc.Desktop-<rid>.zip` (or `.tar.gz`) from `scripts/release/package-desktop.sh` (`linux-x64` or `win-x64`).

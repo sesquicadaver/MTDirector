@@ -34,6 +34,13 @@ ls -la "$OUT_DIR"
 | `run-dependency-scan.sh` | `OUT_DIR/dependency-scan.txt` |
 | `generate-sbom-and-checksums.sh` | `OUT_DIR/sbom.cdx.json`, `SHA256SUMS`, `SHA256SUMS.asc` |
 
+## Host-process templates
+
+| Template | Path | Notes |
+|----------|------|-------|
+| systemd (Linux) | [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service) | OPS-HOST-SYSTEMD-01 — framework-dependent Controller; `WorkingDirectory`/`ExecStart` → `/opt/mfc/controller/Mfc.Controller` |
+| Windows Service | *(OPS-HOST-WINSVC-01)* | Not yet in tree; do not invent MSI (W7-22) |
+
 ## Desktop installer (MVP)
 
 Avalonia Desktop is packaged as a **framework-dependent publish directory archived as zip/tar**. That archive is the MVP **installer substitute** (not MSI/setup.exe). A native MSI/AppImage/setup.exe is a documented residual (see [`known-limitations.md`](known-limitations.md)).

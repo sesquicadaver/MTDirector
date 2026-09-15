@@ -32,7 +32,7 @@ public sealed class Plan32ControllerHostProcessPackagingW7268LivingSpecTests
         Assert.Contains("packaging/windows/mfc-controller.winsw.xml", plan32, StringComparison.Ordinal);
         Assert.Contains("--self-contained false", plan32, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/controller", plan32, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-270 (#946)", plan32, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-271 (#947)", plan32, StringComparison.Ordinal);
         Assert.Contains("W7-269 (#944) DONE", plan32, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-268 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -50,14 +50,14 @@ public sealed class Plan32ControllerHostProcessPackagingW7268LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-270 | [#946](https://github.com/sesquicadaver/MTDirector/issues/946) | OPS-HOST-SYSTEMD-01 — systemd unit template for framework-dependent Controller | **OPEN**",
+            "W7-270 | [#946](https://github.com/sesquicadaver/MTDirector/issues/946) | OPS-HOST-SYSTEMD-01 — systemd unit template for framework-dependent Controller | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-271 | [#947](https://github.com/sesquicadaver/MTDirector/issues/947) | Seed next PLAN-32 row after OPS-HOST-SYSTEMD-01 → OPS-HOST-WINSVC-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-270 (#946)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-271 (#947)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-269", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-270", continuous, StringComparison.Ordinal);
@@ -66,16 +66,17 @@ public sealed class Plan32ControllerHostProcessPackagingW7268LivingSpecTests
         Assert.Contains("plan-32-controller-host-process-packaging.md", docsIndex, StringComparison.Ordinal);
         Assert.Contains("Plan32ControllerHostProcessPackagingW7268", testing, StringComparison.Ordinal);
 
-        Assert.Contains("Немає systemd unit / Windows Service шаблонів у репо", howto, StringComparison.Ordinal);
+        Assert.Contains("packaging/systemd/mfc-controller.service", howto, StringComparison.Ordinal);
         Assert.Contains("Start `Mfc.Controller`", installation, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", packaging, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/controller/", packaging, StringComparison.Ordinal);
         Assert.Contains("DEST=\"$OUT_DIR/controller\"", packageController, StringComparison.Ordinal);
         Assert.Contains("--self-contained false", packageController, StringComparison.Ordinal);
-        Assert.False(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.service")));
-        Assert.Empty(Directory.Exists(Path.Combine(root, "packaging"))
-            ? Directory.GetFiles(Path.Combine(root, "packaging"), "*.service", SearchOption.AllDirectories)
-            : Array.Empty<string>());
+        Assert.True(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.service")));
+        Assert.Contains(
+            "ExecStart=/opt/mfc/controller/Mfc.Controller",
+            File.ReadAllText(Path.Combine(root, "packaging/systemd/mfc-controller.service")),
+            StringComparison.Ordinal);
     }
 
     private static string RepoRoot()
