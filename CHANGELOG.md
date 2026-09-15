@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-256** ([#919](https://github.com/sesquicadaver/MTDirector/issues/919)): PLAN-30 inventory DONE — ranked **WATCH-OWN-01** / **WATCH-BP-01**; opened **W7-258 (#922)** / **W7-259 (#923)** (`Plan30WatchOwnerAclHubBackpressureW7256LivingSpecTests`). **§3.C NEXT = W7-257 (#920)**.
+- **W7-257** ([#920](https://github.com/sesquicadaver/MTDirector/issues/920)): Seed PLAN-30 first atomic row → WATCH-OWN-01 as §3.C NEXT (`ProductTrancheSeedW7257LivingSpecTests`). **§3.C NEXT = W7-258 (#922)**.
+
+- **W7-256** ([#919](https://github.com/sesquicadaver/MTDirector/issues/919)): PLAN-30 inventory DONE — ranked **WATCH-OWN-01** / **WATCH-BP-01**; opened **W7-258 (#922)** / **W7-259 (#923)** (`Plan30WatchOwnerAclHubBackpressureW7256LivingSpecTests`). **§3.C NEXT was W7-257 (#920)** (advanced by W7-257).
 
 - **W7-255** ([#916](https://github.com/sesquicadaver/MTDirector/issues/916)): Seed PLAN-29 COMPLETE → PLAN-30 Watch operation-owner ACL / hub slow-subscriber backpressure tranche (`ProductTrancheSeedW7255LivingSpecTests`). **§3.C NEXT was W7-256 (#919)** (advanced by W7-256).
 
