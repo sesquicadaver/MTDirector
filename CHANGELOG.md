@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-272** ([#951](https://github.com/sesquicadaver/MTDirector/issues/951)): OPS-HOST-WINSVC-01 — WinSW Windows Service template `packaging/windows/mfc-controller.winsw.xml` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostWinsvc01ControllerUnitW7272LivingSpecTests`). **§3.C NEXT = W7-273 (#952)**.
+- **W7-273** ([#952](https://github.com/sesquicadaver/MTDirector/issues/952)): Seed PLAN-32 COMPLETE → PLAN-33 Desktop Inventory TreeView / residual TabControl a11y tranche (`ProductTrancheSeedW7273LivingSpecTests`). **§3.C NEXT = W7-274 (#955)**.
+
+- **W7-272** ([#951](https://github.com/sesquicadaver/MTDirector/issues/951)): OPS-HOST-WINSVC-01 — WinSW Windows Service template `packaging/windows/mfc-controller.winsw.xml` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostWinsvc01ControllerUnitW7272LivingSpecTests`). **§3.C NEXT was W7-273 (#952)** (advanced by W7-273).
 
 - **W7-271** ([#947](https://github.com/sesquicadaver/MTDirector/issues/947)): Seed PLAN-32 next atomic row → OPS-HOST-WINSVC-01 as §3.C NEXT; opened **W7-272 (#951)** implement + **W7-273 (#952)** PLAN-32 COMPLETE follow-up (`ProductTrancheSeedW7271LivingSpecTests`). **§3.C NEXT was W7-272 (#951)** (advanced by W7-272).
 
@@ -452,7 +454,9 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Fixed
 
-- **W7-272** ([#951](https://github.com/sesquicadaver/MTDirector/issues/951)): OPS-HOST-WINSVC-01 — WinSW Windows Service template `packaging/windows/mfc-controller.winsw.xml` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostWinsvc01ControllerUnitW7272LivingSpecTests`). **§3.C NEXT = W7-273 (#952)**.
+- **W7-273** ([#952](https://github.com/sesquicadaver/MTDirector/issues/952)): Seed PLAN-32 COMPLETE → PLAN-33 Desktop Inventory TreeView / residual TabControl a11y tranche (`ProductTrancheSeedW7273LivingSpecTests`). **§3.C NEXT = W7-274 (#955)**.
+
+- **W7-272** ([#951](https://github.com/sesquicadaver/MTDirector/issues/951)): OPS-HOST-WINSVC-01 — WinSW Windows Service template `packaging/windows/mfc-controller.winsw.xml` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostWinsvc01ControllerUnitW7272LivingSpecTests`). **§3.C NEXT was W7-273 (#952)** (advanced by W7-273).
 
 - **W7-271** ([#947](https://github.com/sesquicadaver/MTDirector/issues/947)): Seed PLAN-32 next atomic row → OPS-HOST-WINSVC-01 as §3.C NEXT; opened **W7-272 (#951)** implement + **W7-273 (#952)** PLAN-32 COMPLETE follow-up (`ProductTrancheSeedW7271LivingSpecTests`). **§3.C NEXT was W7-272 (#951)** (advanced by W7-272).
 
@@ -591,7 +595,9 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Fixed
 
-- **W7-272** ([#951](https://github.com/sesquicadaver/MTDirector/issues/951)): OPS-HOST-WINSVC-01 — WinSW Windows Service template `packaging/windows/mfc-controller.winsw.xml` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostWinsvc01ControllerUnitW7272LivingSpecTests`). **§3.C NEXT = W7-273 (#952)**.
+- **W7-273** ([#952](https://github.com/sesquicadaver/MTDirector/issues/952)): Seed PLAN-32 COMPLETE → PLAN-33 Desktop Inventory TreeView / residual TabControl a11y tranche (`ProductTrancheSeedW7273LivingSpecTests`). **§3.C NEXT = W7-274 (#955)**.
+
+- **W7-272** ([#951](https://github.com/sesquicadaver/MTDirector/issues/951)): OPS-HOST-WINSVC-01 — WinSW Windows Service template `packaging/windows/mfc-controller.winsw.xml` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostWinsvc01ControllerUnitW7272LivingSpecTests`). **§3.C NEXT was W7-273 (#952)** (advanced by W7-273).
 
 - **W7-271** ([#947](https://github.com/sesquicadaver/MTDirector/issues/947)): Seed PLAN-32 next atomic row → OPS-HOST-WINSVC-01 as §3.C NEXT; opened **W7-272 (#951)** implement + **W7-273 (#952)** PLAN-32 COMPLETE follow-up (`ProductTrancheSeedW7271LivingSpecTests`). **§3.C NEXT was W7-272 (#951)** (advanced by W7-272).
 

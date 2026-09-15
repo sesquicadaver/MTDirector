@@ -1896,6 +1896,7 @@ Issue [#932](https://github.com/sesquicadaver/MTDirector/issues/932) AC → modu
 | known-limitations + queue seed PLAN-32 inventory after PLAN-31 COMPLETE | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-31, plan-32 | `ProductTrancheSeedW7267LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan32AfterPlan31Complete` |
 | known-limitations + queue seed OPS-HOST-SYSTEMD-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-32 | `ProductTrancheSeedW7269LivingSpecTests.Ac1KnownLimitationsAndQueueSeedOpsHostSystemd01AsNext` |
 | known-limitations + queue seed OPS-HOST-WINSVC-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-32 | `ProductTrancheSeedW7271LivingSpecTests.Ac1KnownLimitationsAndQueueSeedOpsHostWinsvc01AsNext` |
+| known-limitations + queue seed PLAN-33 inventory after PLAN-32 COMPLETE | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-32, plan-33 | `ProductTrancheSeedW7273LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan33AfterPlan32Complete` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7263"`.
 
@@ -1907,6 +1908,17 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7269"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7271"`.
 
+
+## Living Specification — Product tranche seed PLAN-33 after PLAN-32 COMPLETE (W7-273)
+
+Issue [#952](https://github.com/sesquicadaver/MTDirector/issues/952) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed PLAN-33 inventory after PLAN-32 COMPLETE | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-32, plan-33 | `ProductTrancheSeedW7273LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan33AfterPlan32Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7273"`.
+
 ## Living Specification — Product tranche seed OPS-HOST-WINSVC-01 (W7-271)
 
 Issue [#947](https://github.com/sesquicadaver/MTDirector/issues/947) AC → module → tests:
@@ -1914,6 +1926,7 @@ Issue [#947](https://github.com/sesquicadaver/MTDirector/issues/947) AC → modu
 | AC / вимога | Модуль | Тест |
 |-------------|--------|------|
 | known-limitations + queue seed OPS-HOST-WINSVC-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-32 | `ProductTrancheSeedW7271LivingSpecTests.Ac1KnownLimitationsAndQueueSeedOpsHostWinsvc01AsNext` |
+| known-limitations + queue seed PLAN-33 inventory after PLAN-32 COMPLETE | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-32, plan-33 | `ProductTrancheSeedW7273LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan33AfterPlan32Complete` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7271"`.
 
