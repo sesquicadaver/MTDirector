@@ -1,7 +1,7 @@
 # PLAN-35 — Desktop launch-template publish bundling (package-desktop → OUT_DIR/desktop)
 
 **Date:** 2026-09-15 (inventory **DONE** @ `d461b82`)  
-**Status:** Inventory **DONE** (W7-284); seed **W7-285 (#976) DONE**; implement **W7-286 (#978) OPEN**; COMPLETE seed **W7-287 (#979) OPEN**; predecessor **PLAN-34 COMPLETE**  
+**Status:** Inventory **DONE** (W7-284); seed **W7-285 (#976) DONE**; implement **W7-286 (#978) DONE**; COMPLETE seed **W7-287 (#979) OPEN**; predecessor **PLAN-34 COMPLETE**  
 **PLAN issue / queue:** [W7-284 / PLAN-35 #975](https://github.com/sesquicadaver/MTDirector/issues/975) **DONE**  
 **Predecessor:** PLAN-34 Desktop operator launch packaging templates **COMPLETE** (DESK-HOST-LINUX-01 + DESK-HOST-WIN-01)  
 **Normative files:** [`package-desktop.sh`](../../scripts/release/package-desktop.sh), [`mfc-desktop.desktop`](../../packaging/linux/mfc-desktop.desktop), [`mfc-desktop-start-menu.ps1`](../../packaging/windows/mfc-desktop-start-menu.ps1), [`packaging.md`](../release/packaging.md)  
@@ -39,7 +39,7 @@ Absorb the highest-value **product** continuous-queue packaging gap after PLAN-3
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-HOST-BUNDLE-01** | `package-desktop.sh` copies Linux `.desktop` + Windows Start Menu sketch into `$OUT_DIR/desktop/` (dry-run + real publish) + docs/Living Spec | PLAN-34 artifacts; package script omits copy @ `d461b82` | implement **W7-286 (#978)** after seed **W7-285 (#976)** |
+| 1 | **DESK-HOST-BUNDLE-01** | `package-desktop.sh` copies Linux `.desktop` + Windows Start Menu sketch into `$OUT_DIR/desktop/` (dry-run + real publish) + docs/Living Spec | PLAN-34 artifacts; package script omits copy @ `d461b82` | implement **W7-286 (#978)** implement **W7-286 (#978) DONE**; after seed **W7-285 (#976)** |
 
 Inventory (**W7-284 DONE**) confirmed sole rank (BUNDLE-01 kept; no MSI/AppImage vanity rank). Seed **W7-285** advances NEXT to DESK-HOST-BUNDLE-01 implement; COMPLETE seed **W7-287** opens after BUNDLE-01.
 
@@ -71,4 +71,4 @@ PLAN-34 ranks 1…2 (**DESK-HOST-LINUX-01**, **DESK-HOST-WIN-01**) are **DONE**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-286 (#978)** — DESK-HOST-BUNDLE-01 implement after seed.
+**§3.C NEXT = W7-287 (#979)** — Seed next after DESK-HOST-BUNDLE-01 (PLAN-35 COMPLETE).

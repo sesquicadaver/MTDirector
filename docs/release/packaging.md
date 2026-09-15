@@ -29,7 +29,7 @@ ls -la "$OUT_DIR"
 | Script | Output |
 |--------|--------|
 | `package-controller.sh` | `OUT_DIR/controller/` + `controller.artifact-path.txt` |
-| `package-desktop.sh` | `OUT_DIR/desktop/` + `Mfc.Desktop-<rid>.zip` (or `.tar.gz`) + `desktop.artifact-path.txt` |
+| `package-desktop.sh` | `OUT_DIR/desktop/` (includes bundled `mfc-desktop.desktop` + `mfc-desktop-start-menu.ps1`, DESK-HOST-BUNDLE-01) + `Mfc.Desktop-<rid>.zip` (or `.tar.gz`) + `desktop.artifact-path.txt` |
 | `create-migration-bundle.sh` | `OUT_DIR/migrations/mfc-ef-migrations` |
 | `run-dependency-scan.sh` | `OUT_DIR/dependency-scan.txt` |
 | `generate-sbom-and-checksums.sh` | `OUT_DIR/sbom.cdx.json`, `SHA256SUMS`, `SHA256SUMS.asc` |
@@ -45,8 +45,8 @@ ls -la "$OUT_DIR"
 
 | Template | Path | Notes |
 |----------|------|-------|
-| freedesktop `.desktop` (Linux) | [`../../packaging/linux/mfc-desktop.desktop`](../../packaging/linux/mfc-desktop.desktop) | DESK-HOST-LINUX-01 — framework-dependent Desktop; `Exec`/`Path` → `/opt/mfc/desktop/Mfc.Desktop` |
-| Windows Start Menu sketch | [`../../packaging/windows/mfc-desktop-start-menu.ps1`](../../packaging/windows/mfc-desktop-start-menu.ps1) | DESK-HOST-WIN-01 — framework-dependent Desktop; creates Start Menu `.lnk` → `C:\mfc\desktop\Mfc.Desktop.exe`; do not invent MSI/AppImage (W7-22) |
+| freedesktop `.desktop` (Linux) | [`../../packaging/linux/mfc-desktop.desktop`](../../packaging/linux/mfc-desktop.desktop) | DESK-HOST-LINUX-01 — framework-dependent Desktop; `Exec`/`Path` → `/opt/mfc/desktop/Mfc.Desktop`; also copied into `$OUT_DIR/desktop/` by `package-desktop.sh` (DESK-HOST-BUNDLE-01) |
+| Windows Start Menu sketch | [`../../packaging/windows/mfc-desktop-start-menu.ps1`](../../packaging/windows/mfc-desktop-start-menu.ps1) | DESK-HOST-WIN-01 — framework-dependent Desktop; creates Start Menu `.lnk` → `C:\mfc\desktop\Mfc.Desktop.exe`; also copied into `$OUT_DIR/desktop/` by `package-desktop.sh` (DESK-HOST-BUNDLE-01); do not invent MSI/AppImage (W7-22) |
 
 ## Desktop installer (MVP)
 

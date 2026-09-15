@@ -28,27 +28,27 @@ public sealed class ProductTrancheSeedW7285LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-286 | [#978](https://github.com/sesquicadaver/MTDirector/issues/978) | DESK-HOST-BUNDLE-01 — package-desktop copies launch templates into OUT_DIR/desktop | **OPEN**",
+            "W7-286 | [#978](https://github.com/sesquicadaver/MTDirector/issues/978) | DESK-HOST-BUNDLE-01 — package-desktop copies launch templates into OUT_DIR/desktop | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-287 | [#979](https://github.com/sesquicadaver/MTDirector/issues/979) | Seed next after DESK-HOST-BUNDLE-01 (PLAN-35 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-286 (#978)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-287 (#979)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-285 (#976) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-286", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-HOST-BUNDLE-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-286 (#978)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-287 (#979)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-285 (#976) DONE", plan35, StringComparison.Ordinal);
         Assert.Contains("DESK-HOST-BUNDLE-01", plan35, StringComparison.Ordinal);
         Assert.Contains("W7-286", plan35, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-286 (#978)", plan35, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-287 (#979)", plan35, StringComparison.Ordinal);
 
         Assert.Contains("DEST=\"$OUT_DIR/desktop\"", packageDesktop, StringComparison.Ordinal);
-        Assert.DoesNotContain("mfc-desktop.desktop", packageDesktop, StringComparison.Ordinal);
+        Assert.Contains("mfc-desktop.desktop", packageDesktop, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

@@ -2003,6 +2003,18 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7279"`.
 
 
 
+
+## Living Specification — DESK-HOST-BUNDLE-01 package-desktop launch-template bundling (W7-286)
+
+Issue [#978](https://github.com/sesquicadaver/MTDirector/issues/978) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| package-desktop copies templates + docs lock | `scripts/release/package-desktop.sh`, packaging/HOWTO/installation, plan-35 | `DeskHostBundle01PackageDesktopLaunchTemplatesW7286LivingSpecTests.Ac1PackageDesktopScriptCopiesLaunchTemplatesAndDocsLock` |
+| dry-run OUT_DIR/desktop contains bundled templates | `scripts/release/package-desktop.sh` | `DeskHostBundle01PackageDesktopLaunchTemplatesW7286LivingSpecTests.Ac2DryRunPublishTreeContainsBundledLaunchTemplates` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DeskHostBundle01PackageDesktopLaunchTemplatesW7286"`.
+
 ## Living Specification — Product tranche seed DESK-HOST-BUNDLE-01 (W7-285)
 
 Issue [#976](https://github.com/sesquicadaver/MTDirector/issues/976) AC → module → tests:

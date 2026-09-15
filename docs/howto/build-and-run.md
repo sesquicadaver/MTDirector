@@ -163,7 +163,7 @@ ls -la "$OUT_DIR"
 Артефакти:
 
 - `OUT_DIR/controller/` — `Mfc.Controller`
-- `OUT_DIR/desktop/` + `Mfc.Desktop-linux-x64.zip` (або `.tar.gz`)
+- `OUT_DIR/desktop/` (включно з `mfc-desktop.desktop` + `mfc-desktop-start-menu.ps1`, DESK-HOST-BUNDLE-01) + `Mfc.Desktop-linux-x64.zip` (або `.tar.gz`)
 - `OUT_DIR/migrations/mfc-ef-migrations`
 - `OUT_DIR/SHA256SUMS`
 
@@ -205,7 +205,7 @@ cd "$OUT_DIR/controller"
 
 **Controller (Windows, WinSW):** шаблон — [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml). Типово: `MFC_RELEASE_RID=win-x64` publish → `C:\mfc\controller\`, скопіювати XML як `mfc-controller.xml` поруч із WinSW `mfc-controller.exe`, виставити `MFC__…`, потім `mfc-controller.exe install/start`. Деталі — [`../operations/installation.md`](../operations/installation.md).
 
-**Desktop (Linux):** шаблон freedesktop desktop-entry — [`../../packaging/linux/mfc-desktop.desktop`](../../packaging/linux/mfc-desktop.desktop) (DESK-HOST-LINUX-01). Типово: розпакувати publish zip у `/opt/mfc`, встановити `.desktop` у `/usr/share/applications/` або `~/.local/share/applications/`, потім запускати з меню або `/opt/mfc/desktop/Mfc.Desktop`.
+**Desktop (Linux):** шаблон freedesktop desktop-entry — [`../../packaging/linux/mfc-desktop.desktop`](../../packaging/linux/mfc-desktop.desktop) (DESK-HOST-LINUX-01); `package-desktop.sh` також кладе копію в `$OUT_DIR/desktop/mfc-desktop.desktop` (DESK-HOST-BUNDLE-01). Типово: розпакувати publish zip у `/opt/mfc`, встановити `.desktop` з артефакту або з `packaging/linux/` у `/usr/share/applications/` або `~/.local/share/applications/`, потім запускати з меню або `/opt/mfc/desktop/Mfc.Desktop`.
 
 ```bash
 unzip "$OUT_DIR/Mfc.Desktop-linux-x64.zip" -d /opt/mfc
@@ -214,7 +214,7 @@ sudo install -m 0644 packaging/linux/mfc-desktop.desktop /usr/share/applications
 /opt/mfc/desktop/Mfc.Desktop
 ```
 
-**Desktop (Windows):** шаблон Start Menu shortcut — [`../../packaging/windows/mfc-desktop-start-menu.ps1`](../../packaging/windows/mfc-desktop-start-menu.ps1) (DESK-HOST-WIN-01). Типово: розпакувати `Mfc.Desktop-win-x64.zip` у `C:\mfc\desktop\`, виставити `ControllerEndpoint`, потім `powershell -File packaging\windows\mfc-desktop-start-menu.ps1 -InstallRoot C:\mfc\desktop`.
+**Desktop (Windows):** шаблон Start Menu shortcut — [`../../packaging/windows/mfc-desktop-start-menu.ps1`](../../packaging/windows/mfc-desktop-start-menu.ps1) (DESK-HOST-WIN-01); `package-desktop.sh` також кладе копію в `$OUT_DIR/desktop/mfc-desktop-start-menu.ps1` (DESK-HOST-BUNDLE-01). Типово: розпакувати `Mfc.Desktop-win-x64.zip` у `C:\mfc\desktop\`, виставити `ControllerEndpoint`, потім `powershell -File C:\mfc\desktop\mfc-desktop-start-menu.ps1 -InstallRoot C:\mfc\desktop` (або з `packaging\windows\`).
 
 Офіційна install-нотатка (коротша): [`../operations/installation.md`](../operations/installation.md).
 
