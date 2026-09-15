@@ -1,7 +1,7 @@
 # PLAN-28 — Desktop residual field / control AutomationProperties tranche
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-244); seed **W7-245 (#896) DONE**; **DESK-A11Y-FIELD-01 W7-246 (#898) DONE**; seed **W7-247 (#899) DONE**; **DESK-A11Y-CTRL-01 W7-248 (#903) OPEN** (**§3.C NEXT**); follow-up seed **W7-249 (#904) OPEN** (PLAN-28 COMPLETE)  
+**Status:** Inventory **DONE** (W7-244); seed **W7-245 (#896) DONE**; **DESK-A11Y-FIELD-01 W7-246 (#898) DONE**; seed **W7-247 (#899) DONE**; **DESK-A11Y-CTRL-01 W7-248 (#903) DONE**; follow-up seed **W7-249 (#904) OPEN** (**§3.C NEXT** / PLAN-28 COMPLETE)  
 **PLAN issue / queue:** [W7-244 / PLAN-28 #895](https://github.com/sesquicadaver/MTDirector/issues/895) **DONE**  
 **Predecessor:** PLAN-27 Desktop Snapshot/Node/Drift/Audit button AutomationProperties residual **COMPLETE**; button-name waves PLAN-16…27  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -32,12 +32,12 @@ Absorb residual non-button Desktop `AutomationProperties.Name` gaps after all ~6
 | Add-router Inventory fields | yes (PLAN-25 / prior) | — |
 | Incident assessment TextBoxes | yes (PLAN-16…18) | — |
 | Zones TextBoxes | **yes** (W7-246 FIELD-01) | Named: `Zones.NewZoneKey` / `NewZoneName` / `NewZoneDescription`; `EditZoneName` / `EditZoneDescription`; `BindingValuesText` (placeholders `key`, `name`, `description (optional)`, `description (empty clears)`, `values (comma-separated)`) |
-| Zones BindingKinds ComboBox | **no** | Node bindings kind selector (`Zones.BindingKinds`) |
+| Zones BindingKinds ComboBox | **yes** (W7-248 CTRL-01) | Named: `binding kind` (`Zones.BindingKinds`) |
 | Policies draft / authoring TextBoxes | **yes** (W7-246 FIELD-01) | Named: `Policies.RevisionIdText`; draft name (`draft name (CompanyBaseline)` / `DraftNameText`); safety device + controller CIDR; rule description; address name + entries; service name + TCP port; contract disposition; compose node; baseline revision UUID; capability hash |
-| Policies selector ComboBoxes | **no** | Families / Chains / Stages / Effects; address family; contract family/chain/reject mode; diff baseline catalog |
-| Snapshot CheckBox / Captures ComboBox | **no** | `Technical`; Captures selector |
-| Semantic diff ComboBoxes / CheckBoxes | **no** | Base / Target capture; `Configuration only` / `Observations only` |
-| Panel TabItems | **no** | Snapshot, Configuration, Observations, Semantic diff, Onboarding, Deploy, Incident |
+| Policies selector ComboBoxes | **yes** (W7-248 CTRL-01) | Named: `Families` / `Chains` / `Stages` / `Effects`; `address family`; `contract family` / `contract chain` / `reject mode`; `diff baseline catalog` |
+| Snapshot CheckBox / Captures ComboBox | **yes** (W7-248 CTRL-01) | Named: `Technical`; `Captures` |
+| Semantic diff ComboBoxes / CheckBoxes | **yes** (W7-248 CTRL-01) | Named: `Base capture` / `Target capture`; `Configuration only` / `Observations only` |
+| Panel TabItems | **yes** (W7-248 CTRL-01) | Named: Snapshot, Configuration, Observations, Semantic diff, Onboarding, Deploy, Incident |
 | Drift / Audit read-only TextBoxes | **no** (deferred) | Semantic diff text; Audit payload JSON |
 | ListBox hosts | **no** (deferred) | Zones / Snapshot / Policies / Drift / Audit lists |
 
@@ -46,9 +46,9 @@ Absorb residual non-button Desktop `AutomationProperties.Name` gaps after all ~6
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **DESK-A11Y-FIELD-01** | Zones / Policies draft TextBox Names | Zones New/Edit/Binding values TextBoxes; Policies revision/draft/safety/rule/object/compose/compile TextBoxes | **W7-246 (#898) DONE**; seed **W7-245 (#896) DONE** |
-| 2 | **DESK-A11Y-CTRL-01** | Snapshot/Diff ComboBox & CheckBox + TabItem (+ Zones/Policies selector ComboBoxes) | Snapshot `Technical` + Captures; Diff Base/Target + config/obs-only CheckBoxes; panel TabItem Headers; Zones BindingKinds; Policies Families/Chains/Stages/Effects/catalog selectors | seed **W7-247 (#899) DONE**; implement **W7-248 (#903) OPEN** (**§3.C NEXT**); follow-up **W7-249 (#904) OPEN** |
+| 2 | **DESK-A11Y-CTRL-01** | Snapshot/Diff ComboBox & CheckBox + TabItem (+ Zones/Policies selector ComboBoxes) | Snapshot `Technical` + Captures; Diff Base/Target + config/obs-only CheckBoxes; panel TabItem Headers; Zones BindingKinds; Policies Families/Chains/Stages/Effects/catalog selectors | seed **W7-247 (#899) DONE**; implement **W7-248 (#903) DONE** (`DesktopSnapshotDiffControlAutomationLivingSpecTests`); follow-up **W7-249 (#904) OPEN** (**§3.C NEXT**) |
 
-Inventory (**W7-244 DONE**) locked ranking and opened FIELD implement (**W7-246**) + CTRL seed (**W7-247**). Seed **W7-245 DONE** advanced §3.C NEXT to **W7-246**. **W7-246 DONE** advanced NEXT to **W7-247**. Seed **W7-247 DONE** advanced NEXT to **W7-248** and opened **W7-249**.
+Inventory (**W7-244 DONE**) locked ranking and opened FIELD implement (**W7-246**) + CTRL seed (**W7-247**). Seed **W7-245 DONE** advanced §3.C NEXT to **W7-246**. **W7-246 DONE** advanced NEXT to **W7-247**. Seed **W7-247 DONE** advanced NEXT to **W7-248** and opened **W7-249**. **W7-248 DONE** advanced NEXT to **W7-249**.
 
 ## Dual track
 
@@ -65,8 +65,8 @@ PLAN-27 ranks 1…2 (**DESK-A11Y-SNAP-01**, **DESK-A11Y-PANEL-01**) are **DONE**
 3. **W7-245 DONE** — seed advanced NEXT to **DESK-A11Y-FIELD-01** (**W7-246**).  
 4. **W7-246 DONE** — DESK-A11Y-FIELD-01 Names locked (`DesktopZonesPoliciesFieldAutomationLivingSpecTests`).  
 5. **W7-247 DONE** — seed advanced NEXT to **DESK-A11Y-CTRL-01** (**W7-248**); follow-up **W7-249** (PLAN-28 COMPLETE).  
-6. Execute ranked CTRL row atomically (**W7-248**).
+6. **W7-248 DONE** — DESK-A11Y-CTRL-01 Names locked (`DesktopSnapshotDiffControlAutomationLivingSpecTests`); §3.C NEXT → **W7-249**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-248 (#903)** — DESK-A11Y-CTRL-01 — Snapshot/Diff ComboBox & CheckBox + TabItem AutomationProperties.Name.
+**§3.C NEXT = W7-249 (#904)** — Seed next after DESK-A11Y-CTRL-01 (PLAN-28 COMPLETE).

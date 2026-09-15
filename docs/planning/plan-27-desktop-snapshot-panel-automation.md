@@ -73,4 +73,4 @@ PLAN-26 ranks 1…14 (**AUDIT-RULE-01** … **AUDIT-INT-01**) are **DONE**. Disc
 
 ## §3.C NEXT
 
-**PLAN-27 COMPLETE.** Successor **PLAN-28** inventory **DONE** (W7-244); seed **W7-245 DONE**; implement **W7-246 DONE**; seed **W7-247 DONE**; implement **W7-248 OPEN** → CTRL-01; follow-up **W7-249**. **§3.C NEXT = W7-248 (#903)** — DESK-A11Y-CTRL-01.
+**PLAN-27 COMPLETE.** Successor **PLAN-28** inventory **DONE** (W7-244); seed **W7-245 DONE**; implement **W7-246 DONE**; seed **W7-247 DONE**; implement **W7-248 DONE**; follow-up **W7-249 OPEN**. **§3.C NEXT = W7-249 (#904)** — PLAN-28 COMPLETE seed.

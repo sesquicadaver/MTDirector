@@ -1714,6 +1714,19 @@ Issue [#898](https://github.com/sesquicadaver/MTDirector/issues/898) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopZonesPoliciesFieldAutomationLivingSpecTests|ProductTrancheSeedW7246"`.
 
+## Living Specification — DESK-A11Y-CTRL-01 Snapshot/Diff control AutomationProperties (W7-248)
+
+Issue [#903](https://github.com/sesquicadaver/MTDirector/issues/903) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Snapshot/Diff ComboBox & CheckBox + Zones/Policies selector Names | `MainWindow.axaml` | `DesktopSnapshotDiffControlAutomationLivingSpecTests.Ac1SnapshotDiffZonesPoliciesControlsExposeAutomationPropertiesName` |
+| Panel TabItem Names | `MainWindow.axaml` | `DesktopSnapshotDiffControlAutomationLivingSpecTests.Ac2PanelTabItemsExposeAutomationPropertiesName` |
+| PLAN-28 + docs lock | plan-28 + testing + known-limitations | `DesktopSnapshotDiffControlAutomationLivingSpecTests.Ac3Plan28AndTestingDocLockA11yCtrl01` |
+| CTRL-01 DONE + queue advanced to PLAN-28 COMPLETE seed | known-limitations + ROADMAP + continuous + plan-28 | `ProductTrancheSeedW7248LivingSpecTests.Ac1Ctrl01DoneAndQueueAdvancesToPlan28CompleteSeed` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopSnapshotDiffControlAutomationLivingSpecTests|ProductTrancheSeedW7248"`.
+
 ## Living Specification — Product tranche seed DESK-A11Y-CTRL-01 (W7-247)
 
 Issue [#899](https://github.com/sesquicadaver/MTDirector/issues/899) AC → module → tests:
