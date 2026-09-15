@@ -30,18 +30,18 @@ public sealed class ProductTrancheSeedW7248LivingSpecTests
             "W7-249 | [#904](https://github.com/sesquicadaver/MTDirector/issues/904) | Seed next after DESK-A11Y-CTRL-01 (PLAN-28 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-279 (#964)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-280 (#966)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-248 DONE", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-CTRL-01", plan, StringComparison.Ordinal);
         Assert.Contains("W7-249", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-279 (#964)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-280 (#966)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-248 DONE", plan28, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-CTRL-01", plan28, StringComparison.Ordinal);
         Assert.Contains("W7-249 (#904)", plan28, StringComparison.Ordinal);
         Assert.Contains("PLAN-28 COMPLETE", plan28, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-279 (#964)", plan28, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-280 (#966)", plan28, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

@@ -1951,6 +1951,16 @@ Issue [#946](https://github.com/sesquicadaver/MTDirector/issues/946) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~OpsHostSystemd01ControllerUnitW7270"`.
 
+## Living Specification — Product tranche seed DESK-HOST-LINUX-01 (W7-279)
+
+Issue [#964](https://github.com/sesquicadaver/MTDirector/issues/964) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-HOST-LINUX-01 after PLAN-34 inventory | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-34 | `ProductTrancheSeedW7279LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskHostLinux01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7279"`.
+
 ## Living Specification — PLAN-34 Desktop operator launch packaging inventory (W7-278)
 
 Issue [#963](https://github.com/sesquicadaver/MTDirector/issues/963) AC → module → tests:
