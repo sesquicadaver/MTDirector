@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **W7-240** ([#886](https://github.com/sesquicadaver/MTDirector/issues/886)): DESK-A11Y-SNAP-01 Snapshot Capture/Reload/Compare/Copy AutomationProperties.Name (`DesktopSnapshotAutomationLivingSpecTests`, `ProductTrancheSeedW7240LivingSpecTests`). **§3.C NEXT = W7-241 (#887)**.
 - **W7-239** ([#884](https://github.com/sesquicadaver/MTDirector/issues/884)): Seed PLAN-27 first atomic row → DESK-A11Y-SNAP-01 as §3.C NEXT (`ProductTrancheSeedW7239LivingSpecTests`). **§3.C NEXT = W7-240 (#886)**.
 
 - **W7-238** ([#883](https://github.com/sesquicadaver/MTDirector/issues/883)): PLAN-27 inventory DONE — ranked **DESK-A11Y-SNAP-01** / **DESK-A11Y-PANEL-01**; opened **W7-240 (#886)** / **W7-241 (#887)** (`Plan27DesktopSnapshotPanelAutomationW7238LivingSpecTests`). **§3.C NEXT was W7-239 (#884)** (advanced by W7-239).
