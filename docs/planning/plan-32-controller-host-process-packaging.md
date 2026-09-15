@@ -1,10 +1,10 @@
 # PLAN-32 — Controller host-process packaging templates (systemd / Windows Service)
 
-**Date:** 2026-09-15 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-268); seed **W7-269 (#944) OPEN**; predecessor **PLAN-31 COMPLETE**  
-**PLAN issue / queue:** [W7-268 / PLAN-32 #943](https://github.com/sesquicadaver/MTDirector/issues/943) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
+**Status:** Inventory **DONE** (W7-268); seed **W7-269 (#944) OPEN** → **OPS-HOST-SYSTEMD-01**; implement **W7-270 (#946) OPEN**; seed **W7-271 (#947) OPEN** → **OPS-HOST-WINSVC-01**  
+**PLAN issue / queue:** [W7-268 / PLAN-32 #943](https://github.com/sesquicadaver/MTDirector/issues/943) **DONE**  
 **Predecessor:** PLAN-31 Desktop residual ListBox / Drift–Audit read-only a11y **COMPLETE**  
-**Normative files:** [`docs/howto/build-and-run.md`](../howto/build-and-run.md), [`docs/operations/installation.md`](../operations/installation.md), [`docs/release/packaging.md`](packaging.md via `docs/release/`), [`scripts/release/`](../../scripts/release/)  
+**Normative files:** [`docs/howto/build-and-run.md`](../howto/build-and-run.md), [`docs/operations/installation.md`](../operations/installation.md), [`docs/release/packaging.md`](../release/packaging.md), [`scripts/release/`](../../scripts/release/)  
 **Normative prior locks:** W7-22 zip/tar installer substitute; W7-23 SHA256SUMS; W7-24 SBOM; QG-SIGN-01 — **do not regress / do not invent MSI**  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
@@ -26,25 +26,40 @@ Absorb the highest-value **ops/packaging** continuous-queue gap after Desktop op
 - Changing default `--self-contained false` publish policy without inventory evidence  
 - Ops / CRS / physical lab live runners as §3 stop-gates
 
-## Inventory evidence (seed baseline 2026-09-15 `main` @ `9c945a5`)
+## Inventory evidence (2026-09-15 `main` @ `a8834eb`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
-| HOWTO packaging gaps | §6.4 documents missing systemd / Windows Service templates | No repo templates |
-| `docs/operations/installation.md` | Manual start of `Mfc.Controller` after extract | No unit/service install steps |
-| `scripts/release/package-controller.sh` | Framework-dependent publish directory | No accompanying `.service` / WinSW / sc.exe template artifact |
-| Desktop a11y (PLAN-16…31) | Buttons / fields / ListBox hosts / RO TextBoxes named | Saturated — do not invent nested-ListBox vanity |
-| Inventory TreeView | Primary browse `TreeView` without Name | Adjacent residual (not this tranche) |
+| HOWTO §6.4 gap #4 | Explicit: «Немає systemd unit / Windows Service шаблонів у репо (ручний host або власний unit)» | No repo templates |
+| HOWTO §4 «Запуск з пакету» | Linux: `cd "$OUT_DIR/controller"` → `./Mfc.Controller` (foreground) | No `systemctl enable --now` path |
+| `docs/operations/installation.md` Controller § | Steps 1–4: obtain package → configure `MFC__…` → migrations → **Start `Mfc.Controller` and verify gRPC health** | Manual process start only; no unit/service install |
+| `docs/release/packaging.md` | `package-controller.sh` → `OUT_DIR/controller/` + `controller.artifact-path.txt`; Desktop zip = installer substitute | No service artifact column; MSI residual locked |
+| `scripts/release/package-controller.sh` | `DEST="$OUT_DIR/controller"`; `dotnet publish … -r "$RID" --self-contained false -o "$DEST"`; dry-run writes `Mfc.Controller` + `Mfc.Controller.runtimeconfig.json` | No accompanying `.service` / WinSW / sc.exe template copy |
+| `scripts/release/` siblings | `package-desktop.sh`, `create-migration-bundle.sh`, `generate-sbom-and-checksums.sh`, `run-dependency-scan.sh`, `_common.sh` | None emit host-process unit/service files |
+| Repo `*.service` | **0** files under tree (excluding `.git`) | Template path not yet present |
 | W7-22…24 packaging locks | zip/tar + SHA256SUMS + SBOM Living Spec locked | Do not regress |
+| Desktop a11y (PLAN-16…31) | Buttons / fields / ListBox hosts / RO TextBoxes named | Saturated — do not invent nested-ListBox vanity |
 
-## Ranked Controller host-process packaging tranche (seed baseline)
+### Publish layout contract (locked for templates)
+
+| Item | Value |
+|------|-------|
+| Output dir | `$OUT_DIR/controller/` |
+| Entrypoint (linux-x64) | `Mfc.Controller` (executable, framework-dependent) |
+| Runtimeconfig | `Mfc.Controller.runtimeconfig.json` (tfm `net10.0`, `Microsoft.AspNetCore.App`) |
+| Default RID | `linux-x64` (`MFC_RELEASE_RID`) |
+| Self-contained | **false** (requires host ASP.NET Core / .NET runtime) |
+| Intended systemd unit path | `packaging/systemd/mfc-controller.service` |
+| Intended Windows Service template path | `packaging/windows/mfc-controller.winsw.xml` (WinSW-style; inventory locks path — implement may refine contents) |
+
+## Ranked Controller host-process packaging tranche
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **OPS-HOST-SYSTEMD-01** | systemd unit template (+ docs) for framework-dependent Controller | HOWTO §6.4; no `.service` in repo | after inventory **W7-268**; seed **W7-269 (#944)** |
-| 2 | **OPS-HOST-WINSVC-01** | Windows Service host template (+ docs) for Controller | HOWTO §6.4; installation.md Windows path is manual exe | after SYSTEMD (inventory may refine / split)
+| 1 | **OPS-HOST-SYSTEMD-01** | systemd unit template (+ docs) for framework-dependent Controller matching `$OUT_DIR/controller` layout | HOWTO §6.4 #4; **0** `*.service`; `package-controller.sh` `--self-contained false` | implement **W7-270 (#946)**; seed **W7-269 (#944) OPEN** |
+| 2 | **OPS-HOST-WINSVC-01** | Windows Service host template (+ docs) for Controller (`win-x64` publish → `Mfc.Controller.exe`) | HOWTO §6.4 #4; installation.md Windows path is manual exe; no WinSW/sc template | seed **W7-271 (#947) OPEN** (opens WINSVC implement after SYSTEMD) |
 
-Inventory (**W7-268**) may refine ranking, add Living Spec locks for template paths, and open implement issues; seed **W7-269** advances NEXT to the first implement after inventory DONE.
+Inventory (**W7-268 DONE**) locked ranking and opened SYSTEMD implement (**W7-270**) + WINSVC seed (**W7-271**). Seed **W7-269** advances §3.C NEXT to the first implement after inventory DONE. No third vanity rank — MSI/AppImage stay W7-22 residuals; self-contained default stays locked unless a later PLAN re-opens packaging policy. Canonical atomic row names: **OPS-HOST-SYSTEMD-01** / **OPS-HOST-WINSVC-01**.
 
 ## Dual track
 
@@ -64,10 +79,10 @@ PLAN-31 ranks 1…2 (**DESK-A11Y-LIST-01**, **DESK-A11Y-RO-01**) are **DONE**. N
 ## §3.C ordering
 
 1. **PLAN-31 COMPLETE** (W7-266 DESK-A11Y-RO-01; seed **W7-267 DONE**).  
-2. **W7-268 OPEN** — PLAN-32 inventory → open first host-process implement + follow-up seeds.  
-3. **W7-269 OPEN** — seed first PLAN-32 implement after inventory.  
+2. **W7-268 DONE** — PLAN-32 inventory; opened **W7-270** / **W7-271**.  
+3. **W7-269 OPEN** — seed advances NEXT to **OPS-HOST-SYSTEMD-01** (**W7-270**).  
 4. Execute ranked OPS-HOST-SYSTEMD / OPS-HOST-WINSVC rows atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-268 (#943)** — PLAN-32 Inventory Controller host-process packaging templates (systemd / Windows Service) after PLAN-31.
+**§3.C NEXT = W7-269 (#944)** — Seed first PLAN-32 atomic row after inventory → OPS-HOST-SYSTEMD-01.

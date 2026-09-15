@@ -5,6 +5,7 @@ namespace Mfc.UnitTests.Release;
 /// <summary>
 /// W7-267: PLAN-31 COMPLETE; known-limitations / queue seed locked PLAN-32 inventory (W7-268)
 /// and follow-up seed W7-269 after DESK-A11Y-RO-01.
+/// Historical: inventory DONE; SYSTEMD/WINSVC opened; seed W7-269 OPEN → OPS-HOST-SYSTEMD-01.
 /// </summary>
 public sealed class ProductTrancheSeedW7267LivingSpecTests
 {
@@ -34,29 +35,29 @@ public sealed class ProductTrancheSeedW7267LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-268 | [#943](https://github.com/sesquicadaver/MTDirector/issues/943) | PLAN-32 — Inventory Controller host-process packaging templates (systemd / Windows Service) | **OPEN**",
+            "W7-268 | [#943](https://github.com/sesquicadaver/MTDirector/issues/943) | PLAN-32 — Inventory Controller host-process packaging templates (systemd / Windows Service) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-269 | [#944](https://github.com/sesquicadaver/MTDirector/issues/944) | Seed first PLAN-32 atomic row after inventory → OPS-HOST-SYSTEMD-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-268 (#943)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-269 (#944)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-31 COMPLETE", plan31, StringComparison.Ordinal);
         Assert.Contains("W7-267 (#940) DONE", plan31, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-268 (#943)", plan31, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-269 (#944)", plan31, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-32", plan, StringComparison.Ordinal);
         Assert.Contains("W7-268", plan, StringComparison.Ordinal);
         Assert.Contains("W7-267 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-268 (#943)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-269 (#944)", plan, StringComparison.Ordinal);
 
         Assert.Contains("OPS-HOST-SYSTEMD-01", plan32, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-WINSVC-01", plan32, StringComparison.Ordinal);
-        Assert.Contains("Inventory **OPEN**", plan32, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-268 (#943)", plan32, StringComparison.Ordinal);
-        Assert.Contains("9c945a5", plan32, StringComparison.Ordinal);
+        Assert.Contains("Inventory **DONE**", plan32, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-269 (#944)", plan32, StringComparison.Ordinal);
+        Assert.Contains("a8834eb", plan32, StringComparison.Ordinal);
 
         Assert.Contains("systemd", howto, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Windows Service", howto, StringComparison.Ordinal);

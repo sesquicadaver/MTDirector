@@ -1,7 +1,7 @@
 # PLAN-31 — Desktop residual ListBox / Drift–Audit read-only a11y
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** **PLAN-31 COMPLETE** — Inventory **DONE** (W7-262); seed **W7-263 (#932) DONE**; implement **W7-264 (#934) DONE**; seed **W7-265 (#935) DONE**; implement **W7-266 (#939) DONE**; seed **W7-267 (#940) DONE**; successor **PLAN-32** inventory **W7-268 (#943) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-31 COMPLETE** — Inventory **DONE** (W7-262); seed **W7-263 (#932) DONE**; implement **W7-264 (#934) DONE**; seed **W7-265 (#935) DONE**; implement **W7-266 (#939) DONE**; seed **W7-267 (#940) DONE**; successor **PLAN-32** inventory **W7-268 (#943) DONE**; seed **W7-269 (#944) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-262 / PLAN-31 #931](https://github.com/sesquicadaver/MTDirector/issues/931) **DONE**  
 **Predecessor:** PLAN-30 Watch operation-owner ACL / hub backpressure **COMPLETE**; PLAN-28 deferred ListBox hosts / Drift–Audit read-only JSON TextBoxes  
 **Successor:** [`plan-32-controller-host-process-packaging.md`](plan-32-controller-host-process-packaging.md) (Controller host-process packaging templates)  
@@ -88,4 +88,4 @@ PLAN-30 ranks 1…2 (**WATCH-OWN-01**, **WATCH-BP-01**) are **DONE**. No further
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-268 (#943)** — PLAN-32 Inventory Controller host-process packaging templates after PLAN-31.
+**§3.C NEXT = W7-269 (#944)** — Seed first PLAN-32 atomic row after inventory → OPS-HOST-SYSTEMD-01.

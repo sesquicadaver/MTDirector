@@ -1901,6 +1901,16 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7265"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7267"`.
 
+## Living Specification — PLAN-32 Controller host-process packaging inventory (W7-268)
+
+Issue [#943](https://github.com/sesquicadaver/MTDirector/issues/943) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ranked OPS-HOST-SYSTEMD/WINSVC + seed OPS-HOST-SYSTEMD-01 | plan-32 + queue docs + HOWTO/installation/packaging + `package-controller.sh` evidence | `Plan32ControllerHostProcessPackagingW7268LivingSpecTests.Ac1Plan32InventoryDocumentsRankedRowsAndSeedsOpsHostSystemd01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan32ControllerHostProcessPackagingW7268"`.
+
 ## Living Specification — PLAN-31 Desktop residual ListBox / Drift–Audit read-only a11y inventory (W7-262)
 
 Issue [#931](https://github.com/sesquicadaver/MTDirector/issues/931) AC → module → tests:
