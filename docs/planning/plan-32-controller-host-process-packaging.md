@@ -1,14 +1,14 @@
 # PLAN-32 — Controller host-process packaging templates (systemd / Windows Service)
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-268); seed **W7-269 (#944) DONE**; implement **W7-270 (#946) OPEN** (**§3.C NEXT**); seed **W7-271 (#947) OPEN** → **OPS-HOST-WINSVC-01**  
+**Status:** Inventory **DONE** (W7-268); seed **W7-269 (#944) DONE**; implement **W7-270 (#946) DONE**; seed **W7-271 (#947) OPEN** (**§3.C NEXT**) → **OPS-HOST-WINSVC-01**  
 **PLAN issue / queue:** [W7-268 / PLAN-32 #943](https://github.com/sesquicadaver/MTDirector/issues/943) **DONE**  
 **Predecessor:** PLAN-31 Desktop residual ListBox / Drift–Audit read-only a11y **COMPLETE**  
 **Normative files:** [`docs/howto/build-and-run.md`](../howto/build-and-run.md), [`docs/operations/installation.md`](../operations/installation.md), [`docs/release/packaging.md`](../release/packaging.md), [`scripts/release/`](../../scripts/release/)  
 **Normative prior locks:** W7-22 zip/tar installer substitute; W7-23 SHA256SUMS; W7-24 SBOM; QG-SIGN-01 — **do not regress / do not invent MSI**  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
-Absorb the highest-value **ops/packaging** continuous-queue gap after Desktop operator a11y saturation (PLAN-16…31): release packages are framework-dependent zip/tar, but the repo has **no** managed host-process templates for Controller (systemd unit / Windows Service). Operators must invent their own units. MSI/AppImage remain intentional MVP residuals — **do not re-open**. Nested ListBox item-template a11y stays deferred vanity.
+Absorb the highest-value **ops/packaging** continuous-queue gap after Desktop operator a11y saturation (PLAN-16…31): release packages are framework-dependent zip/tar. **OPS-HOST-SYSTEMD-01** ships the Linux systemd unit template; **OPS-HOST-WINSVC-01** remains for Windows Service. MSI/AppImage remain intentional MVP residuals — **do not re-open**. Nested ListBox item-template a11y stays deferred vanity.
 
 ## Principles
 
@@ -56,10 +56,10 @@ Absorb the highest-value **ops/packaging** continuous-queue gap after Desktop op
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **OPS-HOST-SYSTEMD-01** | systemd unit template (+ docs) for framework-dependent Controller matching `$OUT_DIR/controller` layout | HOWTO §6.4 #4; **0** `*.service`; `package-controller.sh` `--self-contained false` | implement **W7-270 (#946) OPEN**; seed **W7-269 (#944) DONE** |
-| 2 | **OPS-HOST-WINSVC-01** | Windows Service host template (+ docs) for Controller (`win-x64` publish → `Mfc.Controller.exe`) | HOWTO §6.4 #4; installation.md Windows path is manual exe; no WinSW/sc template | seed **W7-271 (#947) OPEN** (opens WINSVC implement after SYSTEMD) |
+| 1 | **OPS-HOST-SYSTEMD-01** | systemd unit template (+ docs) for framework-dependent Controller matching `$OUT_DIR/controller` layout | HOWTO §6.4; `packaging/systemd/mfc-controller.service`; `package-controller.sh` `--self-contained false` | implement **W7-270 (#946) DONE**; seed **W7-269 (#944) DONE** |
+| 2 | **OPS-HOST-WINSVC-01** | Windows Service host template (+ docs) for Controller (`win-x64` publish → `Mfc.Controller.exe`) | HOWTO §6.4; installation.md Windows path is manual exe; no WinSW/sc template | seed **W7-271 (#947) OPEN** (opens WINSVC implement after SYSTEMD) |
 
-Inventory (**W7-268 DONE**) locked ranking and opened SYSTEMD implement (**W7-270**) + WINSVC seed (**W7-271**). Seed **W7-269 DONE** advanced §3.C NEXT to **OPS-HOST-SYSTEMD-01** (**W7-270**). No third vanity rank — MSI/AppImage stay W7-22 residuals; self-contained default stays locked unless a later PLAN re-opens packaging policy. Canonical atomic row names: **OPS-HOST-SYSTEMD-01** / **OPS-HOST-WINSVC-01**.
+Inventory (**W7-268 DONE**) locked ranking and opened SYSTEMD implement (**W7-270**) + WINSVC seed (**W7-271**). Seed **W7-269 DONE** advanced NEXT to SYSTEMD; **W7-270 DONE** shipped `packaging/systemd/mfc-controller.service`. Seed **W7-271** advances NEXT to **OPS-HOST-WINSVC-01**. No third vanity rank — MSI/AppImage stay W7-22 residuals; self-contained default stays locked unless a later PLAN re-opens packaging policy. Canonical atomic row names: **OPS-HOST-SYSTEMD-01** / **OPS-HOST-WINSVC-01**.
 
 ## Dual track
 
@@ -81,8 +81,9 @@ PLAN-31 ranks 1…2 (**DESK-A11Y-LIST-01**, **DESK-A11Y-RO-01**) are **DONE**. N
 1. **PLAN-31 COMPLETE** (W7-266 DESK-A11Y-RO-01; seed **W7-267 DONE**).  
 2. **W7-268 DONE** — PLAN-32 inventory; opened **W7-270** / **W7-271**.  
 3. **W7-269 DONE** — seed advanced NEXT to **OPS-HOST-SYSTEMD-01** (**W7-270**).  
-4. Execute ranked OPS-HOST-SYSTEMD / OPS-HOST-WINSVC rows atomically.
+4. **W7-270 DONE** — OPS-HOST-SYSTEMD-01 unit template + docs.  
+5. **W7-271 OPEN** — seed advances NEXT to **OPS-HOST-WINSVC-01**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-270 (#946)** — OPS-HOST-SYSTEMD-01 — systemd unit template for framework-dependent Controller.
+**§3.C NEXT = W7-271 (#947)** — Seed next PLAN-32 row after OPS-HOST-SYSTEMD-01 → OPS-HOST-WINSVC-01.

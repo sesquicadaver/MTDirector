@@ -1,0 +1,39 @@
+# MTDirector Controller — systemd unit template (OPS-HOST-SYSTEMD-01 / W7-270)
+#
+# Matches framework-dependent publish layout from scripts/release/package-controller.sh:
+#   OUT_DIR/controller/Mfc.Controller
+#   OUT_DIR/controller/Mfc.Controller.runtimeconfig.json  (net10.0 + Microsoft.AspNetCore.App)
+# Default RID: linux-x64; --self-contained false (host must provide ASP.NET Core / .NET runtime).
+#
+# Install sketch (operator-owned paths; adjust User/Group/WorkingDirectory as needed):
+#   sudo install -d -o mfc -g mfc /opt/mfc/controller
+#   sudo rsync -a "$OUT_DIR/controller/" /opt/mfc/controller/
+#   sudo install -m 0644 packaging/systemd/mfc-controller.service /etc/systemd/system/mfc-controller.service
+#   sudo install -d /etc/mfc && sudoedit /etc/mfc/controller.env   # MFC__Database__ConnectionString, TLS, …
+#   sudo systemctl daemon-reload && sudo systemctl enable --now mfc-controller.service
+#
+# Do not invent MSI/AppImage here (W7-22 lock). Windows Service is OPS-HOST-WINSVC-01.
+
+[Unit]
+Description=MTDirector MikroTik Firewall Controller (Mfc.Controller)
+Documentation=file:///usr/share/doc/mfc/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=mfc
+Group=mfc
+WorkingDirectory=/opt/mfc/controller
+ExecStart=/opt/mfc/controller/Mfc.Controller
+EnvironmentFile=-/etc/mfc/controller.env
+# KillSignal matches ASP.NET Core graceful shutdown; TimeoutStopSec aligns with Grpc:ShutdownTimeoutSeconds upper bound operators typically use.
+KillSignal=SIGINT
+TimeoutStopSec=60
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
