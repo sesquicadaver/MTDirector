@@ -9,14 +9,18 @@ namespace Mfc.Controller.Grpc;
 
 /// <summary>
 /// In-memory fan-out for WatchDeployment (M4-12).
-/// Replay includes events after an earlier terminal (Committed → rollback) so a second Watch sees rollback progress.
+/// Replay includes events after an earlier terminal (Committed → rollback) so a second Watch sees rollback progress
+/// while the operation remains retained. Prunes after terminal + last reader leaves (AUDIT-INT-01 §19).
 /// </summary>
 public sealed class DeploymentProgressHub
 {
     private readonly ConcurrentDictionary<Guid, OperationStream> _operations = new();
 
     public void Ensure(Guid operationId)
-        => _operations.GetOrAdd(operationId, id => new OperationStream(id));
+        => _operations.GetOrAdd(operationId, id => new OperationStream(id, TryPrune));
+
+    /// <summary>True when the operation is still retained in the hub (tests / diagnostics).</summary>
+    public bool Contains(Guid operationId) => _operations.ContainsKey(operationId);
 
     public void Publish(Guid operationId, DomainState state, string? errorCode = null, string? timelineEntry = null)
     {
@@ -60,14 +64,22 @@ public sealed class DeploymentProgressHub
         }
     }
 
+    private void TryPrune(Guid operationId) => _operations.TryRemove(operationId, out _);
+
     private sealed class OperationStream
     {
         private readonly object _gate = new();
         private readonly List<DeploymentProgress> _history = [];
         private readonly List<Channel<DeploymentProgress>> _subscribers = [];
+        private readonly Action<Guid> _onIdleTerminal;
+        private int _activeReaders;
         private bool _terminal;
 
-        public OperationStream(Guid operationId) => OperationId = operationId;
+        public OperationStream(Guid operationId, Action<Guid> onIdleTerminal)
+        {
+            OperationId = operationId;
+            _onIdleTerminal = onIdleTerminal;
+        }
 
         public Guid OperationId { get; }
 
@@ -115,6 +127,7 @@ public sealed class DeploymentProgressHub
             bool alreadyTerminal;
             lock (_gate)
             {
+                _activeReaders++;
                 replay = [.. _history];
                 alreadyTerminal = _terminal;
                 if (!alreadyTerminal)
@@ -123,19 +136,19 @@ public sealed class DeploymentProgressHub
                 }
             }
 
-            foreach (DeploymentProgress item in replay)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                yield return item;
-            }
-
-            if (alreadyTerminal)
-            {
-                yield break;
-            }
-
             try
             {
+                foreach (DeploymentProgress item in replay)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    yield return item;
+                }
+
+                if (alreadyTerminal)
+                {
+                    yield break;
+                }
+
                 await foreach (DeploymentProgress item in channel.Reader.ReadAllAsync(cancellationToken).ConfigureAwait(false))
                 {
                     yield return item;
@@ -147,12 +160,19 @@ public sealed class DeploymentProgressHub
             }
             finally
             {
+                bool prune;
                 lock (_gate)
                 {
                     _subscribers.Remove(channel);
+                    _activeReaders--;
+                    prune = _terminal && _activeReaders == 0 && _subscribers.Count == 0;
                 }
 
                 channel.Writer.TryComplete();
+                if (prune)
+                {
+                    _onIdleTerminal(OperationId);
+                }
             }
         }
     }

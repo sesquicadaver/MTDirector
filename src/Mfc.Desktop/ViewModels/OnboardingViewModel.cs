@@ -157,22 +157,7 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
             }
 
             Sha256 planHash = PlanHash;
-            StartWatchOutcome outcome = await Task.Run(
-                    async () => await StartAndWatchAsync(planId, planHash, CancellationToken.None)
-                        .ConfigureAwait(false),
-                    CancellationToken.None)
-                .ConfigureAwait(true);
-            OperationId = DesktopProtoUuid.ToGuid(outcome.Started.OperationId);
-            ProgressLines.Clear();
-            IReadOnlyList<string> lines = outcome.WatchLines.Count > 0
-                ? outcome.WatchLines
-                : outcome.Started.Timeline;
-            foreach (string line in lines)
-            {
-                ProgressLines.Add(line);
-            }
-
-            StatusText = $"Operation {outcome.LastState}.";
+            await StartAndWatchAsync(planId, planHash, CancellationToken.None).ConfigureAwait(true);
         }).ConfigureAwait(true);
     }
 
@@ -237,24 +222,37 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
     private Guid RequireNodeId()
         => InventoryOpsSelection.RequireNode(_inventory.SelectedNode, _inventory.Roots).Id;
 
-    private async Task<StartWatchOutcome> StartAndWatchAsync(
+    private async Task StartAndWatchAsync(
         Guid planId,
         Sha256 planHash,
         CancellationToken cancellationToken)
     {
         OnboardingOperationSummary started = await _client.StartAsync(planId, planHash, cancellationToken)
-            .ConfigureAwait(false);
-        List<string> watchLines = [];
+            .ConfigureAwait(true);
+        // AUDIT-INT-01 §18: retain OperationId immediately after Start, before Watch can fail.
+        OperationId = DesktopProtoUuid.ToGuid(started.OperationId);
+        ProgressLines.Clear();
+
         OnboardingOperationState lastState = started.State;
+        bool streamed = false;
         await foreach (OnboardingProgress progress in _client
-                           .WatchAsync(DesktopProtoUuid.ToGuid(started.OperationId), cancellationToken)
-                           .ConfigureAwait(false))
+                           .WatchAsync(OperationId.Value, cancellationToken)
+                           .ConfigureAwait(true))
         {
             lastState = progress.State;
-            watchLines.Add(FormatProgress(progress));
+            ProgressLines.Add(FormatProgress(progress));
+            streamed = true;
         }
 
-        return new StartWatchOutcome(started, watchLines, lastState);
+        if (!streamed)
+        {
+            foreach (string entry in started.Timeline)
+            {
+                ProgressLines.Add(entry);
+            }
+        }
+
+        StatusText = $"Operation {lastState}.";
     }
 
     /// <summary>Rollback then Watch (off UI thread). Hub may replay Start+Rollback history after W6-04 hub fix.</summary>
@@ -375,11 +373,6 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
         TargetHint = InventoryOpsSelection.FormatTargetHint(_inventory.SelectedNode, _inventory.Roots);
         HasVrrpPairTarget = InventoryOpsSelection.IsVrrpPair(_inventory.SelectedNode, _inventory.Roots);
     }
-
-    private sealed record StartWatchOutcome(
-        OnboardingOperationSummary Started,
-        IReadOnlyList<string> WatchLines,
-        OnboardingOperationState LastState);
 
     private sealed record RollbackWatchOutcome(
         OnboardingOperationSummary Rolled,

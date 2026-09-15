@@ -1712,6 +1712,21 @@ Issue [#876](https://github.com/sesquicadaver/MTDirector/issues/876) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7235"`.
 
+## Living Specification — AUDIT-INT-01 FastTrack / disposal / Watch hubs (W7-236)
+
+Issue [#879](https://github.com/sesquicadaver/MTDirector/issues/879) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| AC-FT compile FastTrackTopology from capture; no SafeSingleWan hardcode | `CompileNodeFilterArtifactsUseCase`, `FastTrackContextMapper` | `AuditInt01W7236LivingSpecTests.AcFtCompileWiresCaptureTopologyAndNeverHardcodesSafeSingleWan` |
+| AC-DISP fresh session owns AuthenticatedRosConnection | `RouterOsDeploymentDeviceSession`, `RouterOsDeploymentSession` | `AuditInt01W7236LivingSpecTests.AcDispFreshSessionOwnsAuthenticatedConnectionOnDispose` |
+| AC-WATCH-AUTH ResolveActor + Read permissions before hub | `SnapshotGrpcService`, `DeploymentGrpcService`, `OnboardingGrpcService` | `AuditInt01W7236LivingSpecTests.AcWatchAuthResolveActorAndReadPermissionsBeforeHub` |
+| AC-OPID Desktop OperationId after Start + live ProgressLines | `DeploymentViewModel`, `OnboardingViewModel` | `AuditInt01W7236LivingSpecTests.AcOpidDesktopSetsOperationIdImmediatelyAfterStart`, `DeploymentViewModelTests.StartKeepsOperationIdWhenWatchFails` |
+| AC-HUB prune after terminal + last reader | `CaptureProgressHub`, `DeploymentProgressHub`, `OnboardingProgressHub` | `AuditInt01W7236LivingSpecTests.AcHubPrunesAfterTerminalWatchCompletes` |
+| AC-DOCS queue → W7-237 | ROADMAP / plan-26 / continuous / known-limitations / CHANGELOG | `AuditInt01W7236LivingSpecTests.AcDocsQueueAdvancesToW7237` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditInt01W7236|StartKeepsOperationIdWhenWatchFails"`.
+
 ## Living Specification — AUDIT-GUARD-01 complete guard contract (W7-224)
 
 Issue [#855](https://github.com/sesquicadaver/MTDirector/issues/855) AC → module → tests:

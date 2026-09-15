@@ -2,7 +2,10 @@ using Xunit;
 
 namespace Mfc.UnitTests.Release;
 
-/// <summary>W7-235: known-limitations / queue seed locks AUDIT-INT-01 (W7-236) after AUDIT-AUTH-01.</summary>
+/// <summary>
+/// W7-235: known-limitations / queue seed locked AUDIT-INT-01 (W7-236) after AUDIT-AUTH-01.
+/// After W7-236 delivery, NEXT advanced to W7-237 — this suite locks the historical seed residue.
+/// </summary>
 public sealed class ProductTrancheSeedW7235LivingSpecTests
 {
     [Fact]
@@ -21,7 +24,7 @@ public sealed class ProductTrancheSeedW7235LivingSpecTests
         Assert.Contains("PLAN-26 COMPLETE", limitations, StringComparison.Ordinal);
         Assert.Contains("W7-236", roadmap, StringComparison.Ordinal);
         Assert.Contains(
-            "W7-236 | [#879](https://github.com/sesquicadaver/MTDirector/issues/879) | AUDIT-INT-01 — FastTrack topology / verification session disposal / progress Watch auth hubs | **OPEN**",
+            "W7-236 | [#879](https://github.com/sesquicadaver/MTDirector/issues/879) | AUDIT-INT-01 — FastTrack topology / verification session disposal / progress Watch auth hubs | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -40,8 +43,9 @@ public sealed class ProductTrancheSeedW7235LivingSpecTests
         Assert.Contains("W7-237", plan26, StringComparison.Ordinal);
         Assert.Contains("rank 14", plan26, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("seeded as **W7-236**", limitations, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-236 (#879)", roadmap, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-236 (#879)", plan26, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-237 (#880)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-237 (#880)", plan26, StringComparison.Ordinal);
+        Assert.Contains("W7-236 (#879) DONE", plan26, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

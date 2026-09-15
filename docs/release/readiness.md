@@ -16,7 +16,7 @@ This document summarizes **code + documentation readiness** against the normativ
 | P2 read path (P2-04…P2-06) | **100% CLOSED** | Production probe + capture + DI gate |
 | P2 write path (P2-07…P2-11) | **100% CLOSED** | Runtimes + WriteEnabled gate + pilot runbook |
 | Desktop alignment P0–P2 | **CLOSED** | W1.1–W4.4 + W2.1–W2.2 |
-| Linear queue (§3.C) | **OPEN** | **§3.C NEXT = W7-236 (#879)** (AUDIT-INT-01; W7-235 seed DONE; W7-234 AUDIT-AUTH-01 DONE; W7-233 DONE); W7-113 DONE; W7-114 DONE; W7-112 DONE; W7-111 DONE; W7-110 DONE; PLAN-10 COMPLETE; W7-109 DONE; W7-108 DONE; W7-107 DONE; W7-106 DONE; W7-94 ([#586](https://github.com/sesquicadaver/MTDirector/issues/586)) **DONE**; PLAN-07 **COMPLETE**; PLAN-06 **COMPLETE**; PLAN-05 **COMPLETE** |
+| Linear queue (§3.C) | **OPEN** | **§3.C NEXT = W7-237 (#880)** (seed PLAN-26 COMPLETE; W7-236 AUDIT-INT-01 DONE; W7-235 DONE; W7-234 DONE); W7-113 DONE; W7-114 DONE; W7-112 DONE; W7-111 DONE; W7-110 DONE; PLAN-10 COMPLETE; W7-109 DONE; W7-108 DONE; W7-107 DONE; W7-106 DONE; W7-94 ([#586](https://github.com/sesquicadaver/MTDirector/issues/586)) **DONE**; PLAN-07 **COMPLETE**; PLAN-06 **COMPLETE**; PLAN-05 **COMPLETE** |
 
 **Overall code readiness (milestones):** all 139 mapped product issues are **DONE in code**. Alignment P0–P2 is **DONE**. W5 tranche is **DONE**. Residual CRS/physical lab runner stays ops — not a phase-stop.  
 **Queue integrity:** **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **PLAN-02** (#339) seeds continuous §3.C so `/autopilot` does not idle.  

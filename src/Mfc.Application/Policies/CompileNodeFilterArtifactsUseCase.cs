@@ -3,6 +3,7 @@ using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.Time;
 using Mfc.Application.Common;
 using Mfc.Application.Models;
+using Mfc.Domain.Canonicalization;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Policy;
@@ -324,18 +325,18 @@ public sealed class CompileNodeFilterArtifactsUseCase
 
         DateTimeOffset now = _clock.UtcNow;
         List<DeviceFilterCompileRequest> requests = [];
-        foreach (Device device in devices.OrderBy(static d => d.Id.Value))
+        IReadOnlyList<Device> enabledOrdered = devices
+            .Where(static d => d.Enabled)
+            .OrderBy(static d => d.Id.Value)
+            .ToArray();
+        foreach (Device device in enabledOrdered)
         {
-            if (!device.Enabled)
-            {
-                continue;
-            }
-
             ZoneResolveDeviceObservation observation = await _observations
                 .GetForDeviceAsync(device.Id, cancellationToken)
                 .ConfigureAwait(false);
             Hash256 capabilityHash;
             bool capabilityCurrent;
+            FastTrackTopologyContext? fastTrackTopology = null;
             if (device.LastCompletedCaptureId is null)
             {
                 capabilityHash = Hash256.Create(new byte[Hash256.Size]);
@@ -355,6 +356,30 @@ public sealed class CompileNodeFilterArtifactsUseCase
                 {
                     capabilityHash = capability.Value;
                     capabilityCurrent = capabilityHash.Equals(currentCapability);
+                }
+
+                IReadOnlyList<CanonicalSection> sections = await _snapshots
+                    .LoadCanonicalSectionsAsync(new SnapshotId(device.LastCompletedCaptureId.Value), cancellationToken)
+                    .ConfigureAwait(false);
+                if (sections.Count > 0)
+                {
+                    TopologyDependencyProfile topologyProfile = TopologyDependencyProfile.Create(
+                        kind: node.DeclaredKind,
+                        uplinkMode: node.DeclaredUplinkMode,
+                        declaredVrrpMemberIds: node.DeclaredKind == NodeKind.Vrrp
+                            ? devices.Select(static d => d.Id.Value.ToString("D")).ToArray()
+                            : [],
+                        observingDeviceId: device.Id.Value.ToString("D"));
+                    (
+                        TopologyDependencyCanonicalSections topologySections,
+                        IReadOnlyList<CanonicalRecord> ipv4Filter,
+                        IReadOnlyList<CanonicalRecord> packetPathNodes) =
+                        FastTrackContextMapper.FromCanonicalSnapshotSections(sections);
+                    fastTrackTopology = FastTrackContextMapper.MapTopology(
+                        topologyProfile,
+                        topologySections,
+                        ipv4Filter,
+                        packetPathNodes);
                 }
             }
 
@@ -383,6 +408,7 @@ public sealed class CompileNodeFilterArtifactsUseCase
                     Services = services,
                     ActiveWanName = null,
                 },
+                FastTrackTopology = fastTrackTopology,
                 CompiledAtUtc = now,
             });
         }

@@ -1,4 +1,5 @@
 using Grpc.Core;
+using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Common;
 using Mfc.Application.Onboarding;
@@ -22,6 +23,7 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
     private readonly GetOnboardingRecoveryStatusUseCase _recovery;
     private readonly INodeStore _nodes;
     private readonly OnboardingProgressHub _progress;
+    private readonly IAuthorizationBoundary _auth;
     private readonly GrpcRequestActorResolver _actors;
     private readonly IHostEnvironment _environment;
 
@@ -33,6 +35,7 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
         GetOnboardingRecoveryStatusUseCase recovery,
         INodeStore nodes,
         OnboardingProgressHub progress,
+        IAuthorizationBoundary auth,
         GrpcRequestActorResolver actors,
         IHostEnvironment environment)
     {
@@ -43,6 +46,7 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
         ArgumentNullException.ThrowIfNull(recovery);
         ArgumentNullException.ThrowIfNull(nodes);
         ArgumentNullException.ThrowIfNull(progress);
+        ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(actors);
         ArgumentNullException.ThrowIfNull(environment);
         _validate = validate;
@@ -52,6 +56,7 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
         _recovery = recovery;
         _nodes = nodes;
         _progress = progress;
+        _auth = auth;
         _actors = actors;
         _environment = environment;
     }
@@ -151,6 +156,7 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
         ServerCallContext context)
     {
         ArgumentNullException.ThrowIfNull(request);
+        await EnsureWatchAuthorizedAsync(context).ConfigureAwait(false);
         Guid operationId = ProtoUuid.ToGuid(request.OperationId);
         await foreach (OnboardingProgress progress in _progress.WatchAsync(operationId, context.CancellationToken)
                            .ConfigureAwait(false))
@@ -220,6 +226,23 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
 
     private string ResolveActor(ServerCallContext context) =>
         _actors.Resolve(context, _environment, "development");
+
+    private async Task EnsureWatchAuthorizedAsync(ServerCallContext context)
+    {
+        string actor = ResolveActor(context);
+        try
+        {
+            await _auth.EnsureAllowedAsync(
+                    actor,
+                    ApplicationPermissions.OnboardingRead,
+                    context.CancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            throw GrpcApplicationErrorMapper.ToRpcException(ApplicationError.Forbidden(ex.Message));
+        }
+    }
 
     private static T Unwrap<T>(ApplicationResult<T> result)
     {

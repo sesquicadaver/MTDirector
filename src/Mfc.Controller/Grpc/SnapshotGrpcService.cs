@@ -1,4 +1,5 @@
 using Grpc.Core;
+using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Common;
 using Mfc.Application.Models;
 using Mfc.Application.Snapshots;
@@ -20,6 +21,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
     private readonly GetSnapshotSectionUseCase _getSection;
     private readonly CompareSnapshotsUseCase _compare;
     private readonly CaptureProgressHub _progressHub;
+    private readonly IAuthorizationBoundary _auth;
     private readonly GrpcRequestActorResolver _actors;
     private readonly IHostEnvironment _environment;
 
@@ -31,6 +33,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
         GetSnapshotSectionUseCase getSection,
         CompareSnapshotsUseCase compare,
         CaptureProgressHub progressHub,
+        IAuthorizationBoundary auth,
         GrpcRequestActorResolver actors,
         IHostEnvironment environment)
     {
@@ -41,6 +44,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
         ArgumentNullException.ThrowIfNull(getSection);
         ArgumentNullException.ThrowIfNull(compare);
         ArgumentNullException.ThrowIfNull(progressHub);
+        ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(actors);
         ArgumentNullException.ThrowIfNull(environment);
         _capture = capture;
@@ -50,6 +54,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
         _getSection = getSection;
         _compare = compare;
         _progressHub = progressHub;
+        _auth = auth;
         _actors = actors;
         _environment = environment;
     }
@@ -237,6 +242,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(responseStream);
+        await EnsureWatchAuthorizedAsync(context).ConfigureAwait(false);
         Guid operationId = ProtoUuid.ToGuid(request.OperationId);
         await foreach (CaptureProgress progress in _progressHub
                            .WatchAsync(operationId, context.CancellationToken)
@@ -373,6 +379,23 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
 
     private string ResolveActor(ServerCallContext context) =>
         _actors.Resolve(context, _environment, "dev");
+
+    private async Task EnsureWatchAuthorizedAsync(ServerCallContext context)
+    {
+        string actor = ResolveActor(context);
+        try
+        {
+            await _auth.EnsureAllowedAsync(
+                    actor,
+                    ApplicationPermissions.SnapshotRead,
+                    context.CancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            throw GrpcApplicationErrorMapper.ToRpcException(ApplicationError.Forbidden(ex.Message));
+        }
+    }
 
     private static T Unwrap<T>(ApplicationResult<T> result)
     {
