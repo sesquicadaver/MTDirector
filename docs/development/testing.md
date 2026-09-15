@@ -1864,6 +1864,15 @@ Issue [#920](https://github.com/sesquicadaver/MTDirector/issues/920) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7257"`.
 
+## Living Specification — DESK-A11Y-RO-01 Drift/Audit read-only TextBox AutomationProperties (W7-266)
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Drift SemanticDiff + Audit PayloadJson Names | `MainWindow.axaml` | `DesktopDriftAuditReadOnlyAutomationLivingSpecTests.Ac1DriftAndAuditReadOnlyTextBoxesExposeAutomationPropertiesName` |
+| PLAN-31 + docs lock | plan-31 + testing + known-limitations | `DesktopDriftAuditReadOnlyAutomationLivingSpecTests.Ac2Plan31AndTestingDocLockA11yRo01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopDriftAuditReadOnlyAutomationLivingSpecTests"`.
+
 ## Living Specification — DESK-A11Y-LIST-01 ListBox host AutomationProperties (W7-264)
 
 Issue [#934](https://github.com/sesquicadaver/MTDirector/issues/934) AC → module → tests:
@@ -1871,7 +1880,7 @@ Issue [#934](https://github.com/sesquicadaver/MTDirector/issues/934) AC → modu
 | AC / вимога | Модуль | Тест |
 |-------------|--------|------|
 | 43 ItemsSource ListBox host Names | `MainWindow.axaml` | `DesktopListBoxHostAutomationLivingSpecTests.Ac1AllItemsSourceListBoxHostsExposeAutomationPropertiesName` |
-| Drift/Audit RO TextBoxes remain out of scope | `MainWindow.axaml` | `DesktopListBoxHostAutomationLivingSpecTests.Ac2DriftAuditReadOnlyTextBoxesRemainOutOfScope` |
+| Drift/Audit RO TextBoxes named by RO-01 | `MainWindow.axaml` | `DesktopListBoxHostAutomationLivingSpecTests.Ac2DriftAuditReadOnlyTextBoxesNamedByRo01` |
 | PLAN-31 + docs lock | plan-31 + testing + known-limitations | `DesktopListBoxHostAutomationLivingSpecTests.Ac3Plan31AndTestingDocLockA11yList01` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~DesktopListBoxHostAutomationLivingSpecTests"`.
