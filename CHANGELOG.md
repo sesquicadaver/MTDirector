@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-251** ([#908](https://github.com/sesquicadaver/MTDirector/issues/908)): Seed PLAN-29 first atomic row → DESK-CONN-HEALTH-01 as §3.C NEXT (`ProductTrancheSeedW7251LivingSpecTests`). **§3.C NEXT = W7-252 (#910)**.
+- **W7-252** ([#910](https://github.com/sesquicadaver/MTDirector/issues/910)): DESK-CONN-HEALTH-01 — Connected-state periodic gRPC `Health.Check`; leave Connected when Controller stops (`ControllerConnectionService`, `DeskConnHealth01W7252LivingSpecTests`). **§3.C NEXT = W7-253 (#911)**.
+
+- **W7-251** ([#908](https://github.com/sesquicadaver/MTDirector/issues/908)): Seed PLAN-29 first atomic row → DESK-CONN-HEALTH-01 as §3.C NEXT (`ProductTrancheSeedW7251LivingSpecTests`). **§3.C NEXT was W7-252 (#910)** (advanced by W7-252).
 
 - **W7-250** ([#907](https://github.com/sesquicadaver/MTDirector/issues/907)): PLAN-29 inventory DONE — ranked **DESK-CONN-HEALTH-01** / **DESK-CONN-RECONNECT-01**; opened **W7-252 (#910)** / **W7-253 (#911)** (`Plan29DesktopConnectionHealthReconnectW7250LivingSpecTests`). **§3.C NEXT was W7-251 (#908)** (advanced by W7-251).
 

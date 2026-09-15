@@ -1,7 +1,7 @@
 # PLAN-29 — Desktop connection health / reconnect after Controller stop
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-250); seed **W7-251 (#908) DONE**; implement **W7-252 (#910) OPEN** (**§3.C NEXT**); seed **W7-253 (#911) OPEN** → **DESK-CONN-RECONNECT-01**  
+**Status:** Inventory **DONE** (W7-250); seed **W7-251 (#908) DONE**; **DESK-CONN-HEALTH-01 W7-252 (#910) DONE**; seed **W7-253 (#911) OPEN** (**§3.C NEXT**) → **DESK-CONN-RECONNECT-01**  
 **PLAN issue / queue:** [W7-250 / PLAN-29 #907](https://github.com/sesquicadaver/MTDirector/issues/907) **DONE**  
 **Predecessor:** PLAN-28 Desktop residual field/control AutomationProperties **COMPLETE**; AUDIT-INT-01 deferred connection-health residual from audit `11cb746` §18  
 **Normative files:** [`ControllerConnectionService.cs`](../../src/Mfc.Desktop/Services/ControllerConnectionService.cs), [`ShellViewModel.cs`](../../src/Mfc.Desktop/ViewModels/ShellViewModel.cs), [`DesktopOptions.cs`](../../src/Mfc.Desktop/Configuration/DesktopOptions.cs), [`DesktopConnectionStatusText.cs`](../../src/Mfc.Desktop/Services/DesktopConnectionStatusText.cs)  
@@ -29,11 +29,11 @@ Absorb the **product-critical** Desktop connection residual left after AUDIT-INT
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
 | Connect health check | `Health.Check` in `ConnectCoreAsync` (~101–114); timeout via `HealthCheckTimeoutSeconds` | OK |
-| Reconnect loop while Connected | `Task.Delay(_options.ReconnectDelayMilliseconds)` only (`RunReconnectLoopAsync` ~165–168); `continue` without probe | **No periodic health**; Controller stop can leave shell Connected |
-| Leave Connected on probe fail | Not implemented on Connected idle path | Must set Disconnected + LastError, dispose channel, raise `StateChanged` |
+| Reconnect loop while Connected | `ProbeConnectedHealthOrLeaveAsync` after `ConnectedHealthProbeIntervalMilliseconds` (**W7-252 DONE**) | Was delay-only; now probes and leaves Connected on failure |
+| Leave Connected on probe fail | Implemented in `ProbeConnectedHealthOrLeaveAsync` (**W7-252 DONE**) | Disconnected + LastError, dispose channel, `StateChanged` |
 | AuthFailed / TlsError paths | Loop `break` (~171–174); DESK-AUTH Living Spec | Locked — do not regress |
 | Reconnect after non-Connected | `ConnectCoreAsync` under gate; `MaxReconnectAttempts` + reconnect delay (~176–195) | Exists but never entered from Connected idle without a drop signal |
-| `DesktopOptions` | `HealthCheckTimeoutSeconds`, `MaxReconnectAttempts`, `ReconnectDelayMilliseconds` | No distinct Connected probe interval — HEALTH-01 may add `ConnectedHealthProbeIntervalMilliseconds` or document reuse of reconnect delay |
+| `DesktopOptions` | `HealthCheckTimeoutSeconds`, `MaxReconnectAttempts`, `ReconnectDelayMilliseconds`, `ConnectedHealthProbeIntervalMilliseconds` | HEALTH-01 added distinct Connected probe interval |
 | Shell status sync | `ShellViewModel.OnConnectionStateChanged` → `DesktopConnectionStatusText.Format` | Depends on connection service detecting drop; ErrorText from `LastError` |
 | `Channel` property | Non-null only while `Connected` | Stale Connected keeps channel exposed to callers |
 
@@ -41,8 +41,8 @@ Absorb the **product-critical** Desktop connection residual left after AUDIT-INT
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-CONN-HEALTH-01** | Connected-state periodic health probe; leave Connected when Controller stops | `RunReconnectLoopAsync` Connected idle branch (~165–168); audit §18; options probe interval | implement **W7-252 (#910) OPEN** (**§3.C NEXT**); seed **W7-251 (#908) DONE** |
-| 2 | **DESK-CONN-RECONNECT-01** | Bounded reconnect + shell StatusText/LastError after health-fail drop | Reconnect attempts (~176–195); `ShellViewModel` / `DesktopConnectionStatusText` | seed **W7-253 (#911) OPEN** (opens RECONNECT implement after HEALTH) |
+| 1 | **DESK-CONN-HEALTH-01** | Connected-state periodic health probe; leave Connected when Controller stops | `RunReconnectLoopAsync` Connected probe via `ProbeConnectedHealthOrLeaveAsync`; audit §18; `ConnectedHealthProbeIntervalMilliseconds` | implement **W7-252 (#910) DONE**; seed **W7-251 (#908) DONE** |
+| 2 | **DESK-CONN-RECONNECT-01** | Bounded reconnect + shell StatusText/LastError after health-fail drop | Reconnect attempts; `ShellViewModel` / `DesktopConnectionStatusText` | seed **W7-253 (#911) OPEN** (**§3.C NEXT**) |
 
 Inventory (**W7-250 DONE**) locked ranking and opened HEALTH implement (**W7-252**) + RECONNECT seed (**W7-253**). Seed **W7-251** advances §3.C NEXT to the first implement after inventory DONE. No third vanity rank — PLAN-09 connection/TLS/auth locks remain the regression corpus.
 
@@ -66,8 +66,9 @@ These stay documented for a later continuous tranche — inventory did **not** e
 1. **PLAN-28 COMPLETE** (W7-248 DESK-A11Y-CTRL-01; seed **W7-249 DONE**).  
 2. **W7-250 DONE** — PLAN-29 inventory; opened **W7-252** / **W7-253**.  
 3. **W7-251 DONE** — seed advanced NEXT to **DESK-CONN-HEALTH-01** (**W7-252**).  
-4. Execute ranked HEALTH/RECONNECT rows atomically.
+4. **W7-252 DONE** — DESK-CONN-HEALTH-01 Connected-state periodic `Health.Check`; leave Connected on Controller stop.  
+5. **W7-253 OPEN** — seed → **DESK-CONN-RECONNECT-01**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-252 (#910)** — DESK-CONN-HEALTH-01 — Connected-state periodic gRPC health probe after Controller stop.
+**§3.C NEXT = W7-253 (#911)** — Seed next PLAN-29 row after DESK-CONN-HEALTH-01 → DESK-CONN-RECONNECT-01.

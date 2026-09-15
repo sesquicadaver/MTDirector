@@ -24,6 +24,12 @@ public sealed class DesktopOptions
     public int ReconnectDelayMilliseconds { get; init; } = 1000;
 
     /// <summary>
+    /// Interval between gRPC <c>Health.Check</c> probes while <see cref="ControllerConnectionState.Connected"/>
+    /// (DESK-CONN-HEALTH-01). Distinct from <see cref="ReconnectDelayMilliseconds"/>.
+    /// </summary>
+    public int ConnectedHealthProbeIntervalMilliseconds { get; init; } = 2000;
+
+    /// <summary>
     /// Optional path to a client certificate (PFX) presented to Controller when mTLS is enabled (W7-03).
     /// Empty keeps the previous no-client-cert behaviour (Development HTTP loopback).
     /// </summary>
