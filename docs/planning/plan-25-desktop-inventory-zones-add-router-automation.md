@@ -48,8 +48,8 @@ Product §3 never waits on GNS3.
 
 ## Successor
 
-**PLAN-26 COMPLETE** ([`plan-26-code-audit-remediation-11cb746.md`](plan-26-code-audit-remediation-11cb746.md)). Deferred SNAP/PANEL residuals continue in **PLAN-27**: [`plan-27-desktop-snapshot-panel-automation.md`](plan-27-desktop-snapshot-panel-automation.md) (inventory **W7-238 DONE**; seed **W7-239 DONE**; SNAP-01 **W7-240 DONE**; seed **W7-241 DONE**; PANEL-01 **W7-242 DONE**; NEXT **W7-243**).
+**PLAN-26 COMPLETE** ([`plan-26-code-audit-remediation-11cb746.md`](plan-26-code-audit-remediation-11cb746.md)). Deferred SNAP/PANEL residuals continue in **PLAN-27**: [`plan-27-desktop-snapshot-panel-automation.md`](plan-27-desktop-snapshot-panel-automation.md) (inventory **W7-238 DONE**; seed **W7-239 DONE**; SNAP-01 **W7-240 DONE**; seed **W7-241 DONE**; PANEL-01 **W7-242 DONE**; seed **W7-243 DONE**; **PLAN-27 COMPLETE**; successor **PLAN-28** NEXT **W7-244**).
 
 ## §3.C NEXT
 
-**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** PLAN-27 inventory **DONE** (W7-238); seed **W7-239 DONE**; SNAP-01 **W7-240 DONE**; seed **W7-241 DONE**; PANEL-01 **W7-242 DONE**. **§3.C NEXT = W7-243 (#892)** — PLAN-27 COMPLETE seed.
+**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** **PLAN-27 COMPLETE.** PLAN-28 inventory **OPEN** (W7-244); seed **W7-245 OPEN**. **§3.C NEXT = W7-244 (#895)** — PLAN-28 inventory.
