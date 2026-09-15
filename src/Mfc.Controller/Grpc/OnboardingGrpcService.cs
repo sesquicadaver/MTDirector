@@ -7,6 +7,7 @@ using Mfc.Contracts.Mfc.V1;
 using Mfc.Domain;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
+using Mfc.Domain.Onboarding.Primitives;
 using DomainNode = Mfc.Domain.Inventory.Node;
 
 namespace Mfc.Controller.Grpc;
@@ -22,6 +23,7 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
     private readonly RollbackOnboardingWorkflowUseCase _rollback;
     private readonly GetOnboardingRecoveryStatusUseCase _recovery;
     private readonly INodeStore _nodes;
+    private readonly IOnboardingStore _operations;
     private readonly OnboardingProgressHub _progress;
     private readonly IAuthorizationBoundary _auth;
     private readonly GrpcRequestActorResolver _actors;
@@ -34,6 +36,7 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
         RollbackOnboardingWorkflowUseCase rollback,
         GetOnboardingRecoveryStatusUseCase recovery,
         INodeStore nodes,
+        IOnboardingStore operations,
         OnboardingProgressHub progress,
         IAuthorizationBoundary auth,
         GrpcRequestActorResolver actors,
@@ -45,6 +48,7 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
         ArgumentNullException.ThrowIfNull(rollback);
         ArgumentNullException.ThrowIfNull(recovery);
         ArgumentNullException.ThrowIfNull(nodes);
+        ArgumentNullException.ThrowIfNull(operations);
         ArgumentNullException.ThrowIfNull(progress);
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(actors);
@@ -55,6 +59,7 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
         _rollback = rollback;
         _recovery = recovery;
         _nodes = nodes;
+        _operations = operations;
         _progress = progress;
         _auth = auth;
         _actors = actors;
@@ -130,17 +135,18 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
         ServerCallContext context)
     {
         ArgumentNullException.ThrowIfNull(request);
+        string actor = ResolveActor(context);
         ApplicationResult<OnboardingOperationSummaryView> result = await _start.ExecuteAsync(
             new StartOnboardingCommand
             {
-                Actor = ResolveActor(context),
+                Actor = actor,
                 IdempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey),
                 PlanId = ProtoUuid.ToGuid(request.PlanId),
                 PlanHash = OnboardingProtoMapper.ToHashBytes(request.PlanHash),
             },
             context.CancellationToken).ConfigureAwait(false);
         OnboardingOperationSummaryView view = Unwrap(result);
-        _progress.Ensure(view.OperationId);
+        _progress.Ensure(view.OperationId, actor);
         foreach (string entry in view.Timeline)
         {
             _progress.Publish(view.OperationId, view.State, view.ErrorCode, entry);
@@ -156,8 +162,8 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
         ServerCallContext context)
     {
         ArgumentNullException.ThrowIfNull(request);
-        await EnsureWatchAuthorizedAsync(context).ConfigureAwait(false);
         Guid operationId = ProtoUuid.ToGuid(request.OperationId);
+        await EnsureWatchAuthorizedAsync(context, operationId).ConfigureAwait(false);
         await foreach (OnboardingProgress progress in _progress.WatchAsync(operationId, context.CancellationToken)
                            .ConfigureAwait(false))
         {
@@ -170,16 +176,17 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
         ServerCallContext context)
     {
         ArgumentNullException.ThrowIfNull(request);
+        string actor = ResolveActor(context);
         ApplicationResult<OnboardingOperationSummaryView> result = await _rollback.ExecuteAsync(
             new RollbackOnboardingCommand
             {
-                Actor = ResolveActor(context),
+                Actor = actor,
                 IdempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey),
                 OperationId = ProtoUuid.ToGuid(request.OperationId),
             },
             context.CancellationToken).ConfigureAwait(false);
         OnboardingOperationSummaryView view = Unwrap(result);
-        _progress.Ensure(view.OperationId);
+        _progress.Ensure(view.OperationId, actor);
         foreach (string entry in view.Timeline)
         {
             _progress.Publish(view.OperationId, view.State, view.ErrorCode, entry);
@@ -227,7 +234,7 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
     private string ResolveActor(ServerCallContext context) =>
         _actors.Resolve(context, _environment, "development");
 
-    private async Task EnsureWatchAuthorizedAsync(ServerCallContext context)
+    private async Task EnsureWatchAuthorizedAsync(ServerCallContext context, Guid operationId)
     {
         string actor = ResolveActor(context);
         try
@@ -242,6 +249,30 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
         {
             throw GrpcApplicationErrorMapper.ToRpcException(ApplicationError.Forbidden(ex.Message));
         }
+
+        if (_progress.TryGetOwnerActor(operationId, out string hubOwner))
+        {
+            if (!string.Equals(hubOwner, actor, StringComparison.Ordinal))
+            {
+                throw GrpcApplicationErrorMapper.ToRpcException(
+                    ApplicationError.Forbidden("Watch requires the operation owner."));
+            }
+
+            return;
+        }
+
+        OnboardingOperation? operation = await _operations
+            .GetOperationAsync(new OnboardingOperationId(operationId), context.CancellationToken)
+            .ConfigureAwait(false);
+        if (operation is not null
+            && operation.CreatedBy.Value == ActorKey.FromActor(actor))
+        {
+            _progress.Ensure(operationId, actor);
+            return;
+        }
+
+        throw GrpcApplicationErrorMapper.ToRpcException(
+            ApplicationError.Forbidden("Watch requires the operation owner."));
     }
 
     private static T Unwrap<T>(ApplicationResult<T> result)
