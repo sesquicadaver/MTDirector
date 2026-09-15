@@ -1951,6 +1951,16 @@ Issue [#946](https://github.com/sesquicadaver/MTDirector/issues/946) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~OpsHostSystemd01ControllerUnitW7270"`.
 
+## Living Specification — Product tranche seed DESK-HOST-WIN-01 (W7-281)
+
+Issue [#967](https://github.com/sesquicadaver/MTDirector/issues/967) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-HOST-WIN-01 after LINUX-01 | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-34 | `ProductTrancheSeedW7281LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskHostWin01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7281"`.
+
 ## Living Specification — DESK-HOST-LINUX-01 freedesktop desktop-entry (W7-280)
 
 Issue [#966](https://github.com/sesquicadaver/MTDirector/issues/966) AC → module → tests:
