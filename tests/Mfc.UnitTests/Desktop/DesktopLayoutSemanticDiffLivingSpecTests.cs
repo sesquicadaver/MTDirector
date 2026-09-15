@@ -47,7 +47,7 @@ public sealed class DesktopLayoutSemanticDiffLivingSpecTests
     private static string SemanticDiffSlice()
     {
         string main = File.ReadAllText(Path.Combine(FindRepoRoot(), "src/Mfc.Desktop/MainWindow.axaml"));
-        int start = main.IndexOf("<TabItem Header=\"Semantic diff\">", StringComparison.Ordinal);
+        int start = main.IndexOf("<TabItem Header=\"Semantic diff\"", StringComparison.Ordinal);
         Assert.True(start >= 0, "Semantic diff tab missing.");
         int end = main.IndexOf("<!-- Policies -->", start, StringComparison.Ordinal);
         Assert.True(end > start, "Policies marker missing after Semantic diff.");

@@ -11,7 +11,7 @@ public sealed class DesktopLayoutSnapshotLivingSpecTests
         string main = ReadSource("src/Mfc.Desktop/MainWindow.axaml");
         int snapshotMarker = main.IndexOf("<!-- Snapshots: Snapshot + Diff -->", StringComparison.Ordinal);
         Assert.True(snapshotMarker >= 0, "Snapshot module marker missing.");
-        int semanticDiff = main.IndexOf("<TabItem Header=\"Semantic diff\">", snapshotMarker, StringComparison.Ordinal);
+        int semanticDiff = main.IndexOf("<TabItem Header=\"Semantic diff\"", snapshotMarker, StringComparison.Ordinal);
         Assert.True(semanticDiff > snapshotMarker, "Semantic diff tab missing after Snapshot.");
         string snapshotSlice = main[snapshotMarker..semanticDiff];
 
@@ -26,11 +26,11 @@ public sealed class DesktopLayoutSnapshotLivingSpecTests
     {
         string main = ReadSource("src/Mfc.Desktop/MainWindow.axaml");
         int snapshotMarker = main.IndexOf("<!-- Snapshots: Snapshot + Diff -->", StringComparison.Ordinal);
-        int semanticDiff = main.IndexOf("<TabItem Header=\"Semantic diff\">", snapshotMarker, StringComparison.Ordinal);
+        int semanticDiff = main.IndexOf("<TabItem Header=\"Semantic diff\"", snapshotMarker, StringComparison.Ordinal);
         string snapshotSlice = main[snapshotMarker..semanticDiff];
 
-        Assert.Contains("<TabItem Header=\"Configuration\">", snapshotSlice, StringComparison.Ordinal);
-        Assert.Contains("<TabItem Header=\"Observations\">", snapshotSlice, StringComparison.Ordinal);
+        Assert.Contains("<TabItem Header=\"Configuration\"", snapshotSlice, StringComparison.Ordinal);
+        Assert.Contains("<TabItem Header=\"Observations\"", snapshotSlice, StringComparison.Ordinal);
         Assert.Contains("Snapshot.ConfigurationRecords", snapshotSlice, StringComparison.Ordinal);
         Assert.Contains("Snapshot.ObservationRecords", snapshotSlice, StringComparison.Ordinal);
         Assert.Contains("MinHeight=\"{StaticResource Mfc.ListMinHeight}\"", snapshotSlice, StringComparison.Ordinal);

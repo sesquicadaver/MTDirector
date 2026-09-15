@@ -462,6 +462,7 @@
                     <StackPanel Spacing="6">
                       <TextBlock Classes="mfc-label" Text="Node bindings" />
                       <ComboBox Classes="mfc-field"
+                                AutomationProperties.Name="binding kind"
                                 ItemsSource="{Binding Zones.BindingKinds}"
                                 SelectedItem="{Binding Zones.SelectedBindingKind, Mode=TwoWay}" />
                       <TextBox Classes="mfc-field"
@@ -773,12 +774,13 @@
 
         <!-- Snapshots: Snapshot + Diff -->
         <TabControl IsVisible="{Binding IsSnapshotsSelected}">
-          <TabItem Header="Snapshot">
+          <TabItem Header="Snapshot" AutomationProperties.Name="Snapshot">
             <Grid ColumnDefinitions="220,12,*" RowDefinitions="Auto,*,Auto" Margin="0,8,0,0">
               <StackPanel Grid.Column="0" Grid.Row="0" Spacing="6" Margin="0,0,0,8">
                 <TextBlock Classes="mfc-section-title" Text="Sections" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <CheckBox Content="Technical"
+                            AutomationProperties.Name="Technical"
                             IsChecked="{Binding Snapshot.ShowTechnicalView}"
                             VerticalAlignment="Center" />
                   <Button Classes="mfc-action"
@@ -860,6 +862,7 @@
                     <TextBlock Text="{Binding Snapshot.CapabilityHashText, StringFormat=Capability digest: {0}}"
                                Classes="mfc-mono" />
                     <ComboBox Classes="mfc-field"
+                              AutomationProperties.Name="Captures"
                               ItemsSource="{Binding Snapshot.Captures}"
                               SelectedItem="{Binding Snapshot.SelectedCapture, Mode=TwoWay}"
                               MaxWidth="420"
@@ -874,7 +877,7 @@
                   </StackPanel>
 
                   <TabControl Grid.Row="1" MinHeight="{StaticResource Mfc.ListMinHeight}">
-                    <TabItem Header="Configuration">
+                    <TabItem Header="Configuration" AutomationProperties.Name="Configuration">
                       <ListBox ItemsSource="{Binding Snapshot.ConfigurationRecords}"
                                SelectedItem="{Binding Snapshot.SelectedConfigurationRecord, Mode=TwoWay}"
                                MinHeight="{StaticResource Mfc.ListMinHeight}">
@@ -890,7 +893,7 @@
                         </ListBox.ItemTemplate>
                       </ListBox>
                     </TabItem>
-                    <TabItem Header="Observations">
+                    <TabItem Header="Observations" AutomationProperties.Name="Observations">
                       <ListBox ItemsSource="{Binding Snapshot.ObservationRecords}"
                                SelectedItem="{Binding Snapshot.SelectedObservationRecord, Mode=TwoWay}"
                                MinHeight="{StaticResource Mfc.ListMinHeight}">
@@ -956,7 +959,7 @@
             </Grid>
           </TabItem>
 
-          <TabItem Header="Semantic diff">
+          <TabItem Header="Semantic diff" AutomationProperties.Name="Semantic diff">
             <Grid ColumnDefinitions="220,12,*" RowDefinitions="Auto,*" Margin="0,8,0,0">
               <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Spacing="8" Margin="0,0,0,10">
                 <TextBlock Classes="mfc-section-title" Text="Compare snapshots (server-side)" />
@@ -969,6 +972,7 @@
                   <StackPanel Spacing="4" MinWidth="200" MaxWidth="360">
                     <TextBlock Text="Base" Classes="mfc-label" />
                     <ComboBox Classes="mfc-field"
+                              AutomationProperties.Name="Base capture"
                               ItemsSource="{Binding Diff.Captures}"
                               SelectedItem="{Binding Diff.BaseCapture, Mode=TwoWay}"
                               PlaceholderText="Base capture">
@@ -982,6 +986,7 @@
                   <StackPanel Spacing="4" MinWidth="200" MaxWidth="360">
                     <TextBlock Text="Target" Classes="mfc-label" />
                     <ComboBox Classes="mfc-field"
+                              AutomationProperties.Name="Target capture"
                               ItemsSource="{Binding Diff.Captures}"
                               SelectedItem="{Binding Diff.TargetCapture, Mode=TwoWay}"
                               PlaceholderText="Target capture">
@@ -1007,8 +1012,10 @@
                 </WrapPanel>
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="16">
                   <CheckBox Content="Configuration only"
+                            AutomationProperties.Name="Configuration only"
                             IsChecked="{Binding Diff.ShowConfigurationOnly}" />
                   <CheckBox Content="Observations only"
+                            AutomationProperties.Name="Observations only"
                             IsChecked="{Binding Diff.ShowObservationOnly}" />
                 </WrapPanel>
                 <TextBlock Text="No differences"
@@ -1316,21 +1323,25 @@
                 <TextBlock Classes="mfc-label" Text="Rules" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <ComboBox Classes="mfc-field"
+                            AutomationProperties.Name="Families"
                             ItemsSource="{Binding Policies.Families}"
                             SelectedItem="{Binding Policies.SelectedFamily, Mode=TwoWay}"
                             MinWidth="100"
                             Width="120" />
                   <ComboBox Classes="mfc-field"
+                            AutomationProperties.Name="Chains"
                             ItemsSource="{Binding Policies.Chains}"
                             SelectedItem="{Binding Policies.SelectedChain, Mode=TwoWay}"
                             MinWidth="120"
                             Width="140" />
                   <ComboBox Classes="mfc-field"
+                            AutomationProperties.Name="Stages"
                             ItemsSource="{Binding Policies.Stages}"
                             SelectedItem="{Binding Policies.SelectedStage, Mode=TwoWay}"
                             MinWidth="160"
                             Width="200" />
                   <ComboBox Classes="mfc-field"
+                            AutomationProperties.Name="Effects"
                             ItemsSource="{Binding Policies.Effects}"
                             SelectedItem="{Binding Policies.SelectedEffect, Mode=TwoWay}"
                             MinWidth="120"
@@ -1376,6 +1387,7 @@
                            MinWidth="140"
                            Width="180" />
                   <ComboBox Classes="mfc-field"
+                            AutomationProperties.Name="address family"
                             ItemsSource="{Binding Policies.Families}"
                             SelectedItem="{Binding Policies.AddressFamily, Mode=TwoWay}"
                             MinWidth="100"
@@ -1452,11 +1464,13 @@
                 <TextBlock Classes="mfc-label" Text="Chain contracts" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <ComboBox Classes="mfc-field"
+                            AutomationProperties.Name="contract family"
                             ItemsSource="{Binding Policies.Families}"
                             SelectedItem="{Binding Policies.ContractFamily, Mode=TwoWay}"
                             MinWidth="100"
                             Width="120" />
                   <ComboBox Classes="mfc-field"
+                            AutomationProperties.Name="contract chain"
                             ItemsSource="{Binding Policies.Chains}"
                             SelectedItem="{Binding Policies.ContractChain, Mode=TwoWay}"
                             MinWidth="120"
@@ -1468,6 +1482,7 @@
                            MinWidth="180"
                            Width="240" />
                   <ComboBox Classes="mfc-field"
+                            AutomationProperties.Name="reject mode"
                             ItemsSource="{Binding Policies.RejectModes}"
                             SelectedItem="{Binding Policies.ContractRejectMode, Mode=TwoWay}"
                             MinWidth="140"
@@ -1510,6 +1525,7 @@
                 </WrapPanel>
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <ComboBox Classes="mfc-field"
+                            AutomationProperties.Name="diff baseline catalog"
                             ItemsSource="{Binding Policies.Catalog}"
                             SelectedItem="{Binding Policies.DiffBaselineCatalogItem}"
                             MinWidth="240"
@@ -1602,7 +1618,7 @@
         <!-- Operations: Onboarding + Deploy + recovery -->
         <!-- DESK-LAYOUT-07: Onboarding/Deploy lists use Mfc.ListMinHeight (no MaxHeight 100/120/140) -->
         <TabControl IsVisible="{Binding IsOperationsSelected}">
-          <TabItem Header="Onboarding">
+          <TabItem Header="Onboarding" AutomationProperties.Name="Onboarding">
             <ScrollViewer Margin="0,8,0,0"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled">
@@ -1668,7 +1684,7 @@
             </ScrollViewer>
           </TabItem>
 
-          <TabItem Header="Deploy">
+          <TabItem Header="Deploy" AutomationProperties.Name="Deploy">
             <ScrollViewer Margin="0,8,0,0"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled">
@@ -1761,7 +1777,7 @@
             </ScrollViewer>
           </TabItem>
 
-          <TabItem Header="Incident">
+          <TabItem Header="Incident" AutomationProperties.Name="Incident">
             <ScrollViewer Margin="0,8,0,0"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled">
