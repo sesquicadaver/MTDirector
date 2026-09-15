@@ -1864,6 +1864,18 @@ Issue [#920](https://github.com/sesquicadaver/MTDirector/issues/920) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7257"`.
 
+## Living Specification — DESK-A11Y-LIST-01 ListBox host AutomationProperties (W7-264)
+
+Issue [#934](https://github.com/sesquicadaver/MTDirector/issues/934) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| 43 ItemsSource ListBox host Names | `MainWindow.axaml` | `DesktopListBoxHostAutomationLivingSpecTests.Ac1AllItemsSourceListBoxHostsExposeAutomationPropertiesName` |
+| Drift/Audit RO TextBoxes remain out of scope | `MainWindow.axaml` | `DesktopListBoxHostAutomationLivingSpecTests.Ac2DriftAuditReadOnlyTextBoxesRemainOutOfScope` |
+| PLAN-31 + docs lock | plan-31 + testing + known-limitations | `DesktopListBoxHostAutomationLivingSpecTests.Ac3Plan31AndTestingDocLockA11yList01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopListBoxHostAutomationLivingSpecTests"`.
+
 ## Living Specification — Product tranche seed DESK-A11Y-LIST-01 (W7-263)
 
 Issue [#932](https://github.com/sesquicadaver/MTDirector/issues/932) AC → module → tests:
