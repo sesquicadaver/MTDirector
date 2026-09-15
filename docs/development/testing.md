@@ -1893,10 +1893,13 @@ Issue [#932](https://github.com/sesquicadaver/MTDirector/issues/932) AC → modu
 |-------------|--------|------|
 | known-limitations + queue seed DESK-A11Y-LIST-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-31 | `ProductTrancheSeedW7263LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskA11yList01AsNext` |
 | known-limitations + queue seed DESK-A11Y-RO-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-31 | `ProductTrancheSeedW7265LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskA11yRo01AsNext` |
+| known-limitations + queue seed PLAN-32 inventory after PLAN-31 COMPLETE | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-31, plan-32 | `ProductTrancheSeedW7267LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan32AfterPlan31Complete` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7263"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7265"`.
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7267"`.
 
 ## Living Specification — PLAN-31 Desktop residual ListBox / Drift–Audit read-only a11y inventory (W7-262)
 

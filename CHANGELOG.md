@@ -9,11 +9,13 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-266** ([#939](https://github.com/sesquicadaver/MTDirector/issues/939)): DESK-A11Y-RO-01 — Drift SemanticDiff + Audit PayloadJson read-only TextBoxes expose `AutomationProperties.Name` (`DesktopDriftAuditReadOnlyAutomationLivingSpecTests`). **§3.C NEXT = W7-267 (#940)**.
+- **W7-267** ([#940](https://github.com/sesquicadaver/MTDirector/issues/940)): Seed PLAN-31 COMPLETE → PLAN-32 Controller host-process packaging templates tranche (`ProductTrancheSeedW7267LivingSpecTests`). **§3.C NEXT = W7-268 (#943)**.
 
-- **W7-265** ([#935](https://github.com/sesquicadaver/MTDirector/issues/935)): Seed PLAN-31 next atomic row → DESK-A11Y-RO-01 as §3.C NEXT; opened **W7-266 (#939)** implement + **W7-267 (#940)** PLAN-31 COMPLETE follow-up (`ProductTrancheSeedW7265LivingSpecTests`). **§3.C NEXT = W7-267 (#940)**.
+- **W7-266** ([#939](https://github.com/sesquicadaver/MTDirector/issues/939)): DESK-A11Y-RO-01 — Drift SemanticDiff + Audit PayloadJson read-only TextBoxes expose `AutomationProperties.Name` (`DesktopDriftAuditReadOnlyAutomationLivingSpecTests`). **§3.C NEXT = W7-268 (#943)**.
 
-- **W7-264** ([#934](https://github.com/sesquicadaver/MTDirector/issues/934)): DESK-A11Y-LIST-01 — all 43 `ItemsSource` ListBox hosts in `MainWindow.axaml` expose `AutomationProperties.Name` (`DesktopListBoxHostAutomationLivingSpecTests`). **§3.C NEXT = W7-267 (#940)**.
+- **W7-265** ([#935](https://github.com/sesquicadaver/MTDirector/issues/935)): Seed PLAN-31 next atomic row → DESK-A11Y-RO-01 as §3.C NEXT; opened **W7-266 (#939)** implement + **W7-267 (#940)** PLAN-31 COMPLETE follow-up (`ProductTrancheSeedW7265LivingSpecTests`). **§3.C NEXT = W7-268 (#943)**.
+
+- **W7-264** ([#934](https://github.com/sesquicadaver/MTDirector/issues/934)): DESK-A11Y-LIST-01 — all 43 `ItemsSource` ListBox hosts in `MainWindow.axaml` expose `AutomationProperties.Name` (`DesktopListBoxHostAutomationLivingSpecTests`). **§3.C NEXT = W7-268 (#943)**.
 
 - **W7-263** ([#932](https://github.com/sesquicadaver/MTDirector/issues/932)): Seed PLAN-31 first atomic row → DESK-A11Y-LIST-01 as §3.C NEXT; keep **W7-264 (#934)** implement + **W7-265 (#935)** RO follow-up open (`ProductTrancheSeedW7263LivingSpecTests`). **§3.C NEXT was W7-264 (#934)** (advanced by W7-264).
 

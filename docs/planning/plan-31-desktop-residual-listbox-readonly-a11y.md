@@ -1,9 +1,10 @@
 # PLAN-31 — Desktop residual ListBox / Drift–Audit read-only a11y
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-262); seed **W7-263 (#932) DONE**; implement **W7-264 (#934) DONE**; seed **W7-265 (#935) DONE**; implement **W7-266 (#939) DONE**; COMPLETE seed **W7-267 (#940) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-31 COMPLETE** — Inventory **DONE** (W7-262); seed **W7-263 (#932) DONE**; implement **W7-264 (#934) DONE**; seed **W7-265 (#935) DONE**; implement **W7-266 (#939) DONE**; seed **W7-267 (#940) DONE**; successor **PLAN-32** inventory **W7-268 (#943) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-262 / PLAN-31 #931](https://github.com/sesquicadaver/MTDirector/issues/931) **DONE**  
 **Predecessor:** PLAN-30 Watch operation-owner ACL / hub backpressure **COMPLETE**; PLAN-28 deferred ListBox hosts / Drift–Audit read-only JSON TextBoxes  
+**Successor:** [`plan-32-controller-host-process-packaging.md`](plan-32-controller-host-process-packaging.md) (Controller host-process packaging templates)  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
 **Normative prior tranche:** [`plan-28-desktop-residual-field-control-automation.md`](plan-28-desktop-residual-field-control-automation.md) (deferred ListBox / Drift–Audit JSON TextBoxes)  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
@@ -58,7 +59,7 @@ Absorb the highest remaining **product** continuous-queue a11y gap after PLAN-30
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **DESK-A11Y-LIST-01** | ListBox host `AutomationProperties.Name` on all 43 `ItemsSource`-bound operator browse/select surfaces | 43 ItemsSource ListBox hosts named (W7-264 DONE); inventory baseline @ `184bb85` | implement **W7-264 (#934) DONE**; seed **W7-263 (#932) DONE**; seed **W7-265 (#935) DONE** |
-| 2 | **DESK-A11Y-RO-01** | Drift SemanticDiff + Audit PayloadJson read-only TextBox Names | Names locked (`DesktopDriftAuditReadOnlyAutomationLivingSpecTests`) | implement **W7-266 (#939) DONE**; seed **W7-265 (#935) DONE**; COMPLETE seed **W7-267 (#940) OPEN** |
+| 2 | **DESK-A11Y-RO-01** | Drift SemanticDiff + Audit PayloadJson read-only TextBox Names | Names locked (`DesktopDriftAuditReadOnlyAutomationLivingSpecTests`) | implement **W7-266 (#939) DONE**; seed **W7-265 (#935) DONE**; COMPLETE seed **W7-267 (#940) DONE** |
 
 Inventory (**W7-262 DONE**) locked ranking and opened LIST implement (**W7-264**) + RO seed (**W7-265**). Seed **W7-263** advanced NEXT to LIST; seed **W7-265** advances NEXT to RO implement (**W7-266**) and opens PLAN-31 COMPLETE follow-up (**W7-267**). No third vanity rank — nested item-template ListBoxes stay out of scope; FIELD/CTRL / HEALTH/RECONNECT / OWN/BP locks remain the regression corpus. Seed IDs **DESK-A11Y-LIST-01** / **DESK-A11Y-RO-01** are the canonical atomic row names.
 
@@ -83,8 +84,8 @@ PLAN-30 ranks 1…2 (**WATCH-OWN-01**, **WATCH-BP-01**) are **DONE**. No further
 4. **W7-264 DONE** — DESK-A11Y-LIST-01 Names locked (`DesktopListBoxHostAutomationLivingSpecTests`).  
 5. **W7-265 DONE** — seed advanced NEXT to **DESK-A11Y-RO-01** (**W7-266**); opened PLAN-31 COMPLETE follow-up (**W7-267**).  
 6. **W7-266 DONE** — DESK-A11Y-RO-01 Names locked (`DesktopDriftAuditReadOnlyAutomationLivingSpecTests`).  
-7. **W7-267 OPEN** — seed advances NEXT after PLAN-31 COMPLETE.
+7. **W7-267 DONE** — PLAN-31 COMPLETE; seeded PLAN-32 (**W7-268** / **W7-269**).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-267 (#940)** — Seed next after DESK-A11Y-RO-01 (PLAN-31 COMPLETE).
+**§3.C NEXT = W7-268 (#943)** — PLAN-32 Inventory Controller host-process packaging templates after PLAN-31.
