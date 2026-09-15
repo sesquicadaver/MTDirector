@@ -52,4 +52,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** **PLAN-27 COMPLETE.** **PLAN-28 COMPLETE.** **PLAN-29 COMPLETE.** Successor **PLAN-30** inventory **DONE** (W7-256). **§3.C NEXT = W7-262 (#931)** — WATCH-BP-01.
+**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** **PLAN-27 COMPLETE.** **PLAN-28 COMPLETE.** **PLAN-29 COMPLETE.** Successor **PLAN-30** inventory **DONE** (W7-256). **§3.C NEXT = W7-263 (#932)** — WATCH-BP-01.
