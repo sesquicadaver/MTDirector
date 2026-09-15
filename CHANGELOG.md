@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-273** ([#952](https://github.com/sesquicadaver/MTDirector/issues/952)): Seed PLAN-32 COMPLETE → PLAN-33 Desktop Inventory TreeView / residual TabControl a11y tranche (`ProductTrancheSeedW7273LivingSpecTests`). **§3.C NEXT = W7-274 (#955)**.
+- **W7-274** ([#955](https://github.com/sesquicadaver/MTDirector/issues/955)): PLAN-33 inventory DONE — ranked sole **DESK-A11Y-TREE-01**; dropped **DESK-A11Y-TAB-01**; opened **W7-276 (#958)** / **W7-277 (#959)** (`Plan33DesktopInventoryTreeviewA11yW7274LivingSpecTests`). **§3.C NEXT = W7-275 (#956)**.
+
+- **W7-273** ([#952](https://github.com/sesquicadaver/MTDirector/issues/952)): Seed PLAN-32 COMPLETE → PLAN-33 Desktop Inventory TreeView / residual TabControl a11y tranche (`ProductTrancheSeedW7273LivingSpecTests`). **§3.C NEXT was W7-274 (#955)** (advanced by W7-274).
 
 - **W7-272** ([#951](https://github.com/sesquicadaver/MTDirector/issues/951)): OPS-HOST-WINSVC-01 — WinSW Windows Service template `packaging/windows/mfc-controller.winsw.xml` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostWinsvc01ControllerUnitW7272LivingSpecTests`). **§3.C NEXT was W7-273 (#952)** (advanced by W7-273).
 
@@ -454,7 +456,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Fixed
 
-- **W7-273** ([#952](https://github.com/sesquicadaver/MTDirector/issues/952)): Seed PLAN-32 COMPLETE → PLAN-33 Desktop Inventory TreeView / residual TabControl a11y tranche (`ProductTrancheSeedW7273LivingSpecTests`). **§3.C NEXT = W7-274 (#955)**.
+- **W7-273** ([#952](https://github.com/sesquicadaver/MTDirector/issues/952)): Seed PLAN-32 COMPLETE → PLAN-33 Desktop Inventory TreeView / residual TabControl a11y tranche (`ProductTrancheSeedW7273LivingSpecTests`). **§3.C NEXT was W7-274 (#955)** (advanced by W7-274).
 
 - **W7-272** ([#951](https://github.com/sesquicadaver/MTDirector/issues/951)): OPS-HOST-WINSVC-01 — WinSW Windows Service template `packaging/windows/mfc-controller.winsw.xml` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostWinsvc01ControllerUnitW7272LivingSpecTests`). **§3.C NEXT was W7-273 (#952)** (advanced by W7-273).
 
@@ -595,7 +597,7 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Fixed
 
-- **W7-273** ([#952](https://github.com/sesquicadaver/MTDirector/issues/952)): Seed PLAN-32 COMPLETE → PLAN-33 Desktop Inventory TreeView / residual TabControl a11y tranche (`ProductTrancheSeedW7273LivingSpecTests`). **§3.C NEXT = W7-274 (#955)**.
+- **W7-273** ([#952](https://github.com/sesquicadaver/MTDirector/issues/952)): Seed PLAN-32 COMPLETE → PLAN-33 Desktop Inventory TreeView / residual TabControl a11y tranche (`ProductTrancheSeedW7273LivingSpecTests`). **§3.C NEXT was W7-274 (#955)** (advanced by W7-274).
 
 - **W7-272** ([#951](https://github.com/sesquicadaver/MTDirector/issues/951)): OPS-HOST-WINSVC-01 — WinSW Windows Service template `packaging/windows/mfc-controller.winsw.xml` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostWinsvc01ControllerUnitW7272LivingSpecTests`). **§3.C NEXT was W7-273 (#952)** (advanced by W7-273).
 

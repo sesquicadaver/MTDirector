@@ -1,19 +1,19 @@
 # PLAN-33 — Desktop Inventory TreeView / residual TabControl a11y
 
-**Date:** 2026-09-15 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-274); seed **W7-275 (#956) OPEN**; predecessor **PLAN-32 COMPLETE**  
-**PLAN issue / queue:** [W7-274 / PLAN-33 #955](https://github.com/sesquicadaver/MTDirector/issues/955) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-15 (inventory **DONE** @ `50f1ae1`)  
+**Status:** Inventory **DONE** (W7-274); seed **W7-275 (#956) OPEN** (**§3.C NEXT**); implement **W7-276 (#958) OPEN**; COMPLETE seed **W7-277 (#959) OPEN**; predecessor **PLAN-32 COMPLETE**  
+**PLAN issue / queue:** [W7-274 / PLAN-33 #955](https://github.com/sesquicadaver/MTDirector/issues/955) **DONE**  
 **Predecessor:** PLAN-32 Controller host-process packaging templates **COMPLETE**  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
 **Normative prior locks:** PLAN-16…31 Desktop AutomationProperties; PLAN-32 OPS-HOST-SYSTEMD/WINSVC — **do not regress**  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
-Absorb the highest-value **product** continuous-queue a11y gap after PLAN-32 closed Controller host-process packaging: the Inventory **TreeView** primary browse host still lacks control-level `AutomationProperties.Name` (explicit PLAN-32 adjacent residual). Nested ListBox item-template a11y stays deferred vanity. MSI/AppImage and self-contained publish default stay locked — **do not re-open**.
+Absorb the highest-value **product** continuous-queue a11y gap after PLAN-32 closed Controller host-process packaging: the Inventory **TreeView** primary browse host still lacks control-level `AutomationProperties.Name` (explicit PLAN-32 adjacent residual). Nested ListBox item-template a11y stays deferred vanity. Residual unnamed `TabControl` **containers** are **dropped** from this tranche (TabItems already named). MSI/AppImage and self-contained publish default stay locked — **do not re-open**.
 
 ## Principles
 
 1. Primary operator browse hosts (Inventory TreeView) must expose stable `AutomationProperties.Name` for AT / UI Automation.  
-2. Inventory may rank residual unnamed `TabControl` panel hosts as a second atomic row when evidence supports it.  
+2. Inventory confirmed residual unnamed `TabControl` panel hosts exist, but TabItems already carry Names — container-level TabControl Name is deferred vanity (**DESK-A11Y-TAB-01 dropped**).  
 3. Lab / CHR / `WriteEnabled` are **not** stop-gates.  
 4. Do not invent further PLAN-32 OPS-HOST product rows — that tranche is **COMPLETE**.  
 5. Do not invent nested ListBox item-template Names (vanity).
@@ -22,27 +22,28 @@ Absorb the highest-value **product** continuous-queue a11y gap after PLAN-32 clo
 
 - Re-opening PLAN-32 OPS-HOST-SYSTEMD / OPS-HOST-WINSVC product rows  
 - Nested ListBox tags without `ItemsSource` (item templates)  
+- DESK-A11Y-TAB-01 (dropped — TabItems already named)  
 - Native MSI / AppImage / changing `--self-contained false` without separate packaging inventory  
 - Ops / CRS / physical lab live runners as §3 stop-gates
 
-## Inventory evidence (seed baseline 2026-09-15 `main` @ `7a24b96`)
+## Inventory evidence (2026-09-15 `main` @ `50f1ae1`)
 
-| Surface | Current behavior | Gap |
-|---------|------------------|-----|
-| Inventory TreeView | `ItemsSource="{Binding Inventory.Roots}"` + `SelectedItem` TwoWay @ `MainWindow.axaml` ~86 | **No** `AutomationProperties.Name` on the TreeView control |
-| PLAN-32 adjacent residual | Explicitly deferred Inventory TreeView Name | Now the highest-value product a11y gap |
+| Surface | Current behavior | Gap / decision |
+|---------|------------------|----------------|
+| Inventory TreeView | `ItemsSource="{Binding Inventory.Roots}"` + `SelectedItem` TwoWay @ `MainWindow.axaml` ~86 | **No** `AutomationProperties.Name` on the TreeView control → **DESK-A11Y-TREE-01** |
+| PLAN-32 adjacent residual | Explicitly deferred Inventory TreeView Name | Confirmed highest-value product a11y gap |
 | PLAN-16…31 a11y | Buttons / fields / ListBox hosts / RO TextBoxes named | Saturated — do not invent nested-ListBox vanity |
-| TabControl panel hosts | Several `<TabControl>` opens without control-level Name | Optional rank-2 (inventory may refine / drop) |
+| TabControl panel hosts | **3** unnamed containers: Snapshots ~794, nested Snapshot Configuration/Observations ~898, Operations ~1666 | TabItems already have `AutomationProperties.Name` → **DESK-A11Y-TAB-01 dropped** (deferred vanity) |
 | PLAN-32 packaging | systemd + WinSW templates shipped | COMPLETE — do not re-open MSI (W7-22) |
 
-## Ranked Desktop Inventory TreeView a11y tranche (seed baseline)
+## Ranked Desktop Inventory TreeView a11y tranche (inventory DONE)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-A11Y-TREE-01** | Inventory TreeView control-level `AutomationProperties.Name` | `MainWindow.axaml` ~86 TreeView without Name; PLAN-32 adjacent residual | after inventory **W7-274**; seed **W7-275 (#956)** |
-| 2 | **DESK-A11Y-TAB-01** *(optional)* | Residual unnamed `TabControl` panel hosts | Seed baseline TabControl opens without Name | inventory may confirm / drop |
+| 1 | **DESK-A11Y-TREE-01** | Inventory TreeView control-level `AutomationProperties.Name` (recommended: `Inventory`) | `MainWindow.axaml` ~86 TreeView without Name; PLAN-32 adjacent residual | seed **W7-275 (#956)** → implement **W7-276 (#958)**; COMPLETE seed **W7-277 (#959)** |
+| — | **DESK-A11Y-TAB-01** | *(dropped)* Residual unnamed TabControl containers | 3 TabControls lack container Name; TabItems already named | **not seeded** — deferred vanity outside PLAN-33 |
 
-Inventory (**W7-274**) may refine ranking, drop TAB-01 if vanity, and open implement issues; seed **W7-275** advances NEXT to the first implement after inventory DONE.
+Inventory (**W7-274**) ranked TREE-01 as the sole product row, dropped TAB-01, and opened implement + COMPLETE follow-up seeds; seed **W7-275** advances NEXT to TREE-01 implement.
 
 ## Dual track
 
@@ -54,6 +55,7 @@ PLAN-32 ranks 1…2 (**OPS-HOST-SYSTEMD-01**, **OPS-HOST-WINSVC-01**) are **DONE
 
 ## Adjacent residuals (not seeded here)
 
+- Unnamed TabControl containers (Snapshots / nested Snapshot lists / Operations) — deferred vanity while TabItems remain named  
 - Nested ListBox item-template hosts — deferred vanity  
 - Self-contained / single-file publish default — separate packaging policy decision  
 - Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates
@@ -61,10 +63,10 @@ PLAN-32 ranks 1…2 (**OPS-HOST-SYSTEMD-01**, **OPS-HOST-WINSVC-01**) are **DONE
 ## §3.C ordering
 
 1. **PLAN-32 COMPLETE** (W7-272 OPS-HOST-WINSVC-01; seed **W7-273 DONE**).  
-2. **W7-274 OPEN** — PLAN-33 inventory → open first TreeView implement + follow-up seeds.  
-3. **W7-275 OPEN** — seed first PLAN-33 implement after inventory.  
-4. Execute ranked DESK-A11Y-TREE / optional DESK-A11Y-TAB rows atomically.
+2. **W7-274 DONE** — PLAN-33 inventory → opened TREE-01 implement **W7-276 (#958)** + COMPLETE seed **W7-277 (#959)**; dropped TAB-01.  
+3. **W7-275 OPEN** (**§3.C NEXT**) — seed first PLAN-33 implement after inventory.  
+4. Execute **DESK-A11Y-TREE-01** (**W7-276**); then COMPLETE seed **W7-277** → next product tranche.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-274 (#955)** — PLAN-33 Inventory Desktop Inventory TreeView / residual TabControl a11y after PLAN-32.
+**§3.C NEXT = W7-275 (#956)** — Seed first PLAN-33 atomic row after inventory → DESK-A11Y-TREE-01.
