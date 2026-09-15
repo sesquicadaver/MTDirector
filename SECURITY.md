@@ -36,6 +36,7 @@ You should receive an acknowledgement within a reasonable time. We will coordina
 - **W7-09:** Production mTLS operator checklist (RequireCertificate + TrustedCa + Desktop PFX / actor chrome) lives in `docs/operations/pilot-runbook.md`.
 - **W7-10:** successful mTLS→User map logs CN + truncated thumbprint only (`MtlsClientCertificateIdentityLog`); never PEM/passwords.
 - **W7-13 / W7-14:** the same **Information**-level principal-map log includes ASP.NET `HttpContext.TraceIdentifier` so operators can correlate Desktop Connect with Controller logs (search `TraceIdentifier=`); still no PEM/full thumbprint.
+- **W7-234 (AUDIT-AUTH-01):** Production (and Development without `AllowDevelopmentAuthentication`) uses deny-by-default `AllowListedOperatorAuthorizationBoundary` from `Mfc:Authorization:Operators`. Empty Operators stays fail-closed. `AllowAllAuthorizationBoundary` is Development-only. `SystemActorAuthorizationBoundary` still allows the configured in-process job actor. This is a config allowlist, not a RBAC database.
 - WriteEnabled production DI loads staging drafts from `IFilterArtifactStore` (`FilterArtifactStoreDeploymentArtifactMaterializer`); observed managed `resource_hash` is measured from live RouterOS state (SEC-02), not echoed from the plan.
 - Audit `EventHash` chains predecessor **bytes** (not length) plus event id; appends use Serializable + `pg_advisory_xact_lock` and a unique index on `PreviousEventHash` (SEC-03 / `AuditEventHashing`).
 

@@ -19,9 +19,9 @@ public sealed class ProductTrancheSeedW7233LivingSpecTests
         Assert.Contains("W7-234", limitations, StringComparison.Ordinal);
         Assert.Contains("W7-235", limitations, StringComparison.Ordinal);
         Assert.Contains("AUDIT-INT-01", limitations, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-234 (#875)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("W7-234", roadmap, StringComparison.Ordinal);
         Assert.Contains(
-            "W7-234 | [#875](https://github.com/sesquicadaver/MTDirector/issues/875) | AUDIT-AUTH-01 — Production operator authorization DenyAll | **OPEN**",
+            "W7-234 | [#875](https://github.com/sesquicadaver/MTDirector/issues/875) | AUDIT-AUTH-01 — Production operator authorization DenyAll | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -34,7 +34,6 @@ public sealed class ProductTrancheSeedW7233LivingSpecTests
         Assert.Contains("AUDIT-GUI-01", plan26, StringComparison.Ordinal);
         Assert.Contains("W7-234", plan26, StringComparison.Ordinal);
         Assert.Contains("W7-235", plan26, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-234 (#875)", plan26, StringComparison.Ordinal);
         Assert.Contains("seeded as **W7-234**", limitations, StringComparison.Ordinal);
     }
 

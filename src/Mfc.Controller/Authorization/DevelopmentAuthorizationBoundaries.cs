@@ -15,7 +15,8 @@ public sealed class AllowAllAuthorizationBoundary : IAuthorizationBoundary
 }
 
 /// <summary>
-/// Fail-closed boundary used outside Development until real authentication lands.
+/// Fail-closed boundary used by tests and as empty-allowlist semantics.
+/// Production composition uses <see cref="AllowListedOperatorAuthorizationBoundary"/>.
 /// </summary>
 public sealed class DenyAllAuthorizationBoundary : IAuthorizationBoundary
 {

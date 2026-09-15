@@ -1690,6 +1690,17 @@ Issue [#872](https://github.com/sesquicadaver/MTDirector/issues/872) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7233"`.
 
+## Living Specification — AUDIT-AUTH-01 operator allowlist (W7-234)
+
+Issue [#875](https://github.com/sesquicadaver/MTDirector/issues/875) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Deny-by-default allowlist grant/deny/unknown/empty; system actor wrapper; Production not AllowAll | `AllowListedOperatorAuthorizationBoundary`, `Program.RegisterAuthorization`, `Mfc:Authorization:Operators` | `AllowListedOperatorAuthorizationBoundaryTests`, `AuditAuth01AllowlistedOperatorsW7234LivingSpecTests` |
+| Queue advances NEXT to AUDIT-INT-01 seed | `ROADMAP.md`, plan-26, known-limitations | `AuditAuth01AllowlistedOperatorsW7234LivingSpecTests.Ac1ProductionCompositionUsesAllowlistNotAllowAll` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AllowListedOperatorAuthorizationBoundary|AuditAuth01AllowlistedOperatorsW7234"`.
+
 ## Living Specification — AUDIT-GUARD-01 complete guard contract (W7-224)
 
 Issue [#855](https://github.com/sesquicadaver/MTDirector/issues/855) AC → module → tests:

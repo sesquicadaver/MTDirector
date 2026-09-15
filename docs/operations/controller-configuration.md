@@ -22,8 +22,9 @@ Configuration sources (highest wins last):
 | `Security:TrustedCa:ProfilesDirectory` | Absolute path; `{dir}/{CaProfileRef}/*.{pem,crt,cer,der}` for INTERNAL_CA (SEC-04). Empty → fail-closed at materialize |
 | `Security:TrustedCa:RevocationMode` | `Online` (default), `Offline`, or `NoCheck` for INTERNAL_CA custom-chain builds |
 | `Security:TrustedCa:ClientCaProfileRef` | W7-04: profile under ProfilesDirectory for inbound mTLS client trust; required when ClientCertificateMode is Allow/Require |
-| `Authentication:AllowDevelopmentAuthentication` | Dev-only; loopback bind required |
+| `Authentication:AllowDevelopmentAuthentication` | Dev-only; loopback bind required. Enables `AllowAllAuthorizationBoundary` (never Production) |
 | `Authentication:AllowMetadataActor` | Dev-only (W7-02); documents lab metadata actor path; **forbidden outside Development**. Production binds actor to TLS/auth principal (`GrpcRequestActorResolver`) |
+| `Authorization:Operators` | AUDIT-AUTH-01 / W7-234: deny-by-default operator allowlist (`Actor` + `Permissions[]`). Empty = fail-closed like DenyAll. Production uses `AllowListedOperatorAuthorizationBoundary`; `SystemActorAuthorizationBoundary` still wraps in-process jobs |
 | `Database:ConnectionString` | PostgreSQL only |
 
 ## RouterOS production ports (P2 pilot)
@@ -82,6 +83,9 @@ export MFC__Database__ConnectionString='Host=127.0.0.1;Port=5432;Database=mfc;Us
 export MFC__Security__MasterKeyProvider=Development
 export MFC__Security__TrustedCa__ProfilesDirectory=/var/lib/mfc/trusted-ca
 export MFC__Security__TrustedCa__RevocationMode=Online
+# Production operator allowlist (empty = deny all operator checks):
+# export MFC__Authorization__Operators__0__Actor='desktop-operator'
+# export MFC__Authorization__Operators__0__Permissions__0='inventory.read'
 export ASPNETCORE_ENVIRONMENT=Development
 ```
 

@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **W7-234** ([#875](https://github.com/sesquicadaver/MTDirector/issues/875)): AUDIT-AUTH-01 — Production operator authorization deny-by-default allowlist (`AllowListedOperatorAuthorizationBoundary`, `Mfc:Authorization:Operators`); Development AllowAll unchanged; SystemActor wrapper kept (`AllowListedOperatorAuthorizationBoundaryTests`, `AuditAuth01AllowlistedOperatorsW7234LivingSpecTests`). **§3.C NEXT = W7-235 (#876)**.
+
 - **W7-232** ([#871](https://github.com/sesquicadaver/MTDirector/issues/871)): AUDIT-GUI-01 — sealed `CreatePlanFromSealedArtifacts` + Compile handoff; Policies Deploy stays fail-closed; Onboarding facts fail-closed without fabrication (`DesktopAuditGui01LivingSpecTests`, `ProductTrancheAuditGui01W7232LivingSpecTests`, `SealedDeploymentPlanFromArtifactsLivingSpecTests`). **§3.C NEXT = W7-233 (#872)**.
 
 - **W7-230** ([#867](https://github.com/sesquicadaver/MTDirector/issues/867)): AUDIT-DEP-03 — VRRP reachability/traffic from live RouterOS observations (`VrrpMemberLiveFactsObserver`, interface counters) (`AuditDep03VrrpLiveFactsW7230LivingSpecTests`). **§3.C NEXT = W7-231 (#868)**.
