@@ -1,7 +1,7 @@
 # PLAN-27 — Desktop Snapshot / Node / Drift / Audit AutomationProperties residual tranche
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15; **COMPLETE** 2026-09-15)  
-**Status:** **PLAN-27 COMPLETE** — Inventory **DONE** (W7-238); seed **W7-239 (#884) DONE**; **DESK-A11Y-SNAP-01 W7-240 (#886) DONE**; seed **W7-241 (#887) DONE**; **DESK-A11Y-PANEL-01 W7-242 (#891) DONE**; seed **W7-243 (#892) DONE**; successor **PLAN-28** (inventory **W7-244 (#895) DONE**; seed **W7-245 (#896) DONE**; implement **W7-246 (#898) DONE**; seed **W7-247 (#899) OPEN** (**§3.C NEXT**))  
+**Status:** **PLAN-27 COMPLETE** — Inventory **DONE** (W7-238); seed **W7-239 (#884) DONE**; **DESK-A11Y-SNAP-01 W7-240 (#886) DONE**; seed **W7-241 (#887) DONE**; **DESK-A11Y-PANEL-01 W7-242 (#891) DONE**; seed **W7-243 (#892) DONE**; successor **PLAN-28** (inventory **W7-244 (#895) DONE**; seed **W7-245 (#896) DONE**; implement **W7-246 (#898) DONE**; seed **W7-247 (#899) DONE**; implement **W7-248 (#903) OPEN** (**§3.C NEXT**); follow-up **W7-249 (#904) OPEN**)  
 **PLAN issue / queue:** [W7-238 / PLAN-27 #883](https://github.com/sesquicadaver/MTDirector/issues/883) **DONE**  
 **Predecessor:** PLAN-26 code-audit remediation (`11cb746`) **COMPLETE**; deferred residuals from PLAN-25  
 **Successor:** [`plan-28-desktop-residual-field-control-automation.md`](plan-28-desktop-residual-field-control-automation.md) (residual field/control AutomationProperties)  
@@ -73,4 +73,4 @@ PLAN-26 ranks 1…14 (**AUDIT-RULE-01** … **AUDIT-INT-01**) are **DONE**. Disc
 
 ## §3.C NEXT
 
-**PLAN-27 COMPLETE.** Successor **PLAN-28** inventory **DONE** (W7-244); seed **W7-245 DONE**; implement **W7-246 DONE**; seed **W7-247 OPEN** → CTRL-01. **§3.C NEXT = W7-247 (#899)** — seed DESK-A11Y-CTRL-01.
+**PLAN-27 COMPLETE.** Successor **PLAN-28** inventory **DONE** (W7-244); seed **W7-245 DONE**; implement **W7-246 DONE**; seed **W7-247 DONE**; implement **W7-248 OPEN** → CTRL-01; follow-up **W7-249**. **§3.C NEXT = W7-248 (#903)** — DESK-A11Y-CTRL-01.
