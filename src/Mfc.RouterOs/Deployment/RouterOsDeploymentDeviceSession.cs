@@ -377,6 +377,8 @@ internal sealed class RouterOsDeploymentFreshSessionFactory : IDeploymentFreshSe
         ApiSslConnectOptions options = RouterOsApiSslConnectOptionsBuilder.Build(material, password);
         AuthenticatedRosConnection connection = await AuthenticatedRosConnection.ConnectAsync(options, cancellationToken)
             .ConfigureAwait(false);
-        return new RouterOsDeploymentSession(new RouterOsDeploymentWriteChannel(connection.Session));
+        return new RouterOsDeploymentSession(
+            new RouterOsDeploymentWriteChannel(connection.Session),
+            ownedConnection: connection);
     }
 }

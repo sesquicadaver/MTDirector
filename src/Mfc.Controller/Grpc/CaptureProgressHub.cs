@@ -9,6 +9,7 @@ namespace Mfc.Controller.Grpc;
 /// <summary>
 /// In-memory fan-out for CaptureProgress streams (M1-26 WatchCapture).
 /// Buffers events so late WatchCapture subscribers still observe COMPLETED/FAILED.
+/// Prunes terminal operations after the last subscriber leaves (AUDIT-INT-01 §19).
 /// </summary>
 public sealed class CaptureProgressHub
 {
@@ -18,13 +19,16 @@ public sealed class CaptureProgressHub
     public Guid Begin(Guid deviceId)
     {
         Guid operationId = Guid.NewGuid();
-        if (!_operations.TryAdd(operationId, new OperationStream(operationId, deviceId)))
+        if (!_operations.TryAdd(operationId, new OperationStream(operationId, deviceId, TryPrune)))
         {
             throw new InvalidOperationException("Failed to register capture operation.");
         }
 
         return operationId;
     }
+
+    /// <summary>True when the operation is still retained in the hub (tests / diagnostics).</summary>
+    public bool Contains(Guid operationId) => _operations.ContainsKey(operationId);
 
     /// <summary>
     /// Publishes a progress event to all watchers of <paramref name="operationId"/>.
@@ -84,6 +88,8 @@ public sealed class CaptureProgressHub
         }
     }
 
+    private void TryPrune(Guid operationId) => _operations.TryRemove(operationId, out _);
+
     private static bool IsTerminal(CaptureStage stage)
         => stage is CaptureStage.Completed or CaptureStage.Failed or CaptureStage.Canceled;
 
@@ -92,12 +98,15 @@ public sealed class CaptureProgressHub
         private readonly object _gate = new();
         private readonly List<CaptureProgress> _history = [];
         private readonly List<Channel<CaptureProgress>> _subscribers = [];
+        private readonly Action<Guid> _onIdleTerminal;
+        private int _activeReaders;
         private bool _terminal;
 
-        public OperationStream(Guid operationId, Guid deviceId)
+        public OperationStream(Guid operationId, Guid deviceId, Action<Guid> onIdleTerminal)
         {
             OperationId = operationId;
             DeviceId = deviceId;
+            _onIdleTerminal = onIdleTerminal;
         }
 
         public Guid OperationId { get; }
@@ -148,6 +157,7 @@ public sealed class CaptureProgressHub
             bool alreadyTerminal;
             lock (_gate)
             {
+                _activeReaders++;
                 replay = [.. _history];
                 alreadyTerminal = _terminal;
                 if (!alreadyTerminal)
@@ -156,23 +166,23 @@ public sealed class CaptureProgressHub
                 }
             }
 
-            foreach (CaptureProgress item in replay)
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                yield return item;
-                if (IsTerminal(item.Stage))
+                foreach (CaptureProgress item in replay)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    yield return item;
+                    if (IsTerminal(item.Stage))
+                    {
+                        yield break;
+                    }
+                }
+
+                if (alreadyTerminal)
                 {
                     yield break;
                 }
-            }
 
-            if (alreadyTerminal)
-            {
-                yield break;
-            }
-
-            try
-            {
                 await foreach (CaptureProgress item in channel.Reader
                                    .ReadAllAsync(cancellationToken)
                                    .ConfigureAwait(false))
@@ -186,12 +196,19 @@ public sealed class CaptureProgressHub
             }
             finally
             {
+                bool prune;
                 lock (_gate)
                 {
                     _subscribers.Remove(channel);
+                    _activeReaders--;
+                    prune = _terminal && _activeReaders == 0 && _subscribers.Count == 0;
                 }
 
                 channel.Writer.TryComplete();
+                if (prune)
+                {
+                    _onIdleTerminal(OperationId);
+                }
             }
         }
     }

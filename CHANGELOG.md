@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **W7-236** ([#879](https://github.com/sesquicadaver/MTDirector/issues/879)): AUDIT-INT-01 — FastTrack topology in compile from last capture; fresh verification session TCP/TLS disposal; Watch auth (Snapshot/Deployment/Onboarding Read); Desktop OperationId + live ProgressLines; ProgressHub terminal prune (`AuditInt01W7236LivingSpecTests`). **§3.C NEXT = W7-237 (#880)**.
+
 - **W7-234** ([#875](https://github.com/sesquicadaver/MTDirector/issues/875)): AUDIT-AUTH-01 — Production operator authorization deny-by-default allowlist (`AllowListedOperatorAuthorizationBoundary`, `Mfc:Authorization:Operators`); Development AllowAll unchanged; SystemActor wrapper kept (`AllowListedOperatorAuthorizationBoundaryTests`, `AuditAuth01AllowlistedOperatorsW7234LivingSpecTests`). **§3.C NEXT = W7-235 (#876)**.
 
 - **W7-232** ([#871](https://github.com/sesquicadaver/MTDirector/issues/871)): AUDIT-GUI-01 — sealed `CreatePlanFromSealedArtifacts` + Compile handoff; Policies Deploy stays fail-closed; Onboarding facts fail-closed without fabrication (`DesktopAuditGui01LivingSpecTests`, `ProductTrancheAuditGui01W7232LivingSpecTests`, `SealedDeploymentPlanFromArtifactsLivingSpecTests`). **§3.C NEXT = W7-233 (#872)**.
@@ -31,7 +33,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- **W7-235** ([#876](https://github.com/sesquicadaver/MTDirector/issues/876)): Seed next PLAN-26 row after AUDIT-AUTH-01 → AUDIT-INT-01 (`ProductTrancheSeedW7235LivingSpecTests`). **§3.C NEXT = W7-236 (#879)**.
+- **W7-235** ([#876](https://github.com/sesquicadaver/MTDirector/issues/876)): Seed next PLAN-26 row after AUDIT-AUTH-01 → AUDIT-INT-01 (`ProductTrancheSeedW7235LivingSpecTests`). **§3.C NEXT was W7-236 (#879)** (advanced by W7-236).
 
 - **W7-233** ([#872](https://github.com/sesquicadaver/MTDirector/issues/872)): Seed next PLAN-26 row after AUDIT-GUI-01 → AUDIT-AUTH-01 (`ProductTrancheSeedW7233LivingSpecTests`). **§3.C NEXT = W7-234 (#875)**.
 

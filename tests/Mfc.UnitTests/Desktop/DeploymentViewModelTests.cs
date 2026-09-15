@@ -71,6 +71,47 @@ public sealed class DeploymentViewModelTests
     }
 
     [Fact]
+    public async Task StartKeepsOperationIdWhenWatchFails()
+    {
+        Guid nodeId = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff");
+        Guid deviceId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid planId = Guid.Parse("cccccccc-dddd-eeee-ffff-000000000000");
+        Guid operationId = Guid.Parse("33333333-4444-5555-6666-777777777777");
+        FakeConnection connection = new();
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        InventoryNodeViewModel site = BuildSiteWithSingleDevice(nodeId, deviceId);
+        inventory.Roots.Add(site);
+        inventory.SelectedNode = site.Children[0];
+        FakeDeploymentClient client = new()
+        {
+            CreatePlanOverride = SealedPlanResponse(
+                planId,
+                Hash("plan"),
+                withCapturePairs: true),
+            StartResponse = new DeploymentOperationSummary
+            {
+                OperationId = DesktopProtoUuid.FromGuid(operationId),
+                PlanId = DesktopProtoUuid.FromGuid(planId),
+                State = DeploymentOperationState.Activating,
+                Timeline = { "from-start-only" },
+            },
+            WatchThrows = new InvalidOperationException("watch transport failed"),
+        };
+        SealedCompileDeployHandoffStore handoff = new();
+        using DeploymentViewModel vm = new(client, connection, inventory, handoff);
+        SeedHandoff(handoff, nodeId, deviceId);
+
+        await vm.CreatePlanCommand.ExecuteAsync(null);
+        await vm.StartCommand.ExecuteAsync(null);
+
+        Assert.Equal(operationId, vm.OperationId);
+        Assert.Equal("watch transport failed", vm.ErrorText);
+        Assert.Equal(1, client.StartCalls);
+        Assert.Equal(1, client.WatchCalls);
+    }
+
+
+    [Fact]
     public async Task RollbackWatchesProgressAndPrefersStreamOverRollbackTimeline()
     {
         Guid operationId = Guid.Parse("33333333-4444-5555-6666-777777777777");
@@ -572,6 +613,8 @@ public sealed class DeploymentViewModelTests
 
         public IReadOnlyList<DeploymentProgress> WatchEvents { get; init; } = [];
 
+        public Exception? WatchThrows { get; init; }
+
         public DeploymentOperationSummary RollbackResponse { get; init; } = new();
 
         public int StartCalls { get; private set; }
@@ -644,6 +687,11 @@ public sealed class DeploymentViewModelTests
         {
             WatchCalls++;
             WatchedOperationId = operationId;
+            if (WatchThrows is not null)
+            {
+                throw WatchThrows;
+            }
+
             foreach (DeploymentProgress progress in WatchEvents)
             {
                 cancellationToken.ThrowIfCancellationRequested();

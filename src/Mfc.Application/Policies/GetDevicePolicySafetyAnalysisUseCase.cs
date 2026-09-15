@@ -159,12 +159,17 @@ public sealed class GetDevicePolicySafetyAnalysisUseCase
                 : [],
             observingDeviceId: device.Id.Value.ToString("D"));
 
+        (
+            TopologyDependencyCanonicalSections topologySections,
+            IReadOnlyList<CanonicalRecord> mappedIpv4Filter,
+            IReadOnlyList<CanonicalRecord> packetPathNodes) = FastTrackContextMapper.FromCanonicalSnapshotSections(sections);
+
         FastTrackAnalysisResult fastTrack = FastTrackContextMapper.Analyze(
             fastTrackRules,
             topologyProfile,
-            ToTopologySections(sections),
-            ipv4Filter,
-            PacketPathNodes(sections));
+            topologySections,
+            mappedIpv4Filter.Count > 0 ? mappedIpv4Filter : ipv4Filter,
+            packetPathNodes);
 
         return ApplicationResults.Ok(ToView(query.DeviceId, captureId, query.RevisionId, management, fastTrack));
     }
@@ -224,43 +229,6 @@ public sealed class GetDevicePolicySafetyAnalysisUseCase
 
         return [];
     }
-
-    private static List<CanonicalRecord> PacketPathNodes(IReadOnlyList<CanonicalSection> sections)
-    {
-        List<CanonicalRecord> nodes = [];
-        foreach (CanonicalSection section in sections)
-        {
-            if (section.SectionId is CanonicalSectionIds.TopologyValidation
-                or CanonicalSectionIds.TopologyContainerVeth)
-            {
-                nodes.AddRange(section.Records);
-            }
-        }
-
-        return nodes;
-    }
-
-    private static TopologyDependencyCanonicalSections ToTopologySections(IReadOnlyList<CanonicalSection> sections)
-        => new()
-        {
-            VrrpConfiguration = Records(sections, CanonicalSectionIds.HaVrrp, CanonicalDomain.Configuration),
-            VrrpObservations = Records(sections, CanonicalSectionIds.HaVrrp, CanonicalDomain.Observations),
-            RoutingTables = Records(sections, CanonicalSectionIds.RoutingTables, CanonicalDomain.Configuration),
-            RoutingRules = Records(sections, CanonicalSectionIds.RoutingRules, CanonicalDomain.Configuration),
-            Ipv4Nat = Records(sections, CanonicalSectionIds.FirewallIpv4Nat, CanonicalDomain.Configuration),
-            Ipv6Nat = Records(sections, CanonicalSectionIds.FirewallIpv6Nat, CanonicalDomain.Configuration),
-            Ipv4Raw = Records(sections, CanonicalSectionIds.FirewallIpv4Raw, CanonicalDomain.Configuration),
-            Ipv6Raw = Records(sections, CanonicalSectionIds.FirewallIpv6Raw, CanonicalDomain.Configuration),
-            Ipv4Mangle = Records(sections, CanonicalSectionIds.FirewallIpv4Mangle, CanonicalDomain.Configuration),
-            Ipv6Mangle = Records(sections, CanonicalSectionIds.FirewallIpv6Mangle, CanonicalDomain.Configuration),
-            Ipv4Settings = Records(sections, CanonicalSectionIds.NetworkIpv4Settings, CanonicalDomain.Configuration),
-            Ipv4DefaultState = Records(
-                sections, CanonicalSectionIds.RoutingIpv4DefaultState, CanonicalDomain.Configuration),
-            Ipv6DefaultState = Records(
-                sections, CanonicalSectionIds.RoutingIpv6DefaultState, CanonicalDomain.Configuration),
-            SwitchInstances = Records(sections, CanonicalSectionIds.SwitchInstances, CanonicalDomain.Configuration),
-            BridgeSettings = Records(sections, CanonicalSectionIds.BridgeSettings, CanonicalDomain.Configuration),
-        };
 
     private static PolicySafetyAnalysisView ToView(
         Guid deviceId,

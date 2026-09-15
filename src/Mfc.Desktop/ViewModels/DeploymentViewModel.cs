@@ -203,22 +203,7 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
             }
 
             Sha256 planHash = PlanHash;
-            StartWatchOutcome outcome = await Task.Run(
-                    async () => await StartAndWatchAsync(planId, planHash, CancellationToken.None)
-                        .ConfigureAwait(false),
-                    CancellationToken.None)
-                .ConfigureAwait(true);
-            OperationId = DesktopProtoUuid.ToGuid(outcome.Started.OperationId);
-            ProgressLines.Clear();
-            IReadOnlyList<string> lines = outcome.WatchLines.Count > 0
-                ? outcome.WatchLines
-                : outcome.Started.Timeline;
-            foreach (string line in lines)
-            {
-                ProgressLines.Add(line);
-            }
-
-            StatusText = $"Operation {outcome.LastState}.";
+            await StartAndWatchAsync(planId, planHash, CancellationToken.None).ConfigureAwait(true);
         }).ConfigureAwait(true);
     }
 
@@ -283,7 +268,7 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
     private Guid RequireNodeId()
         => InventoryOpsSelection.RequireNode(_inventory.SelectedNode, _inventory.Roots).Id;
 
-    private async Task<StartWatchOutcome> StartAndWatchAsync(
+    private async Task StartAndWatchAsync(
         Guid planId,
         Sha256 planHash,
         CancellationToken cancellationToken)
@@ -293,18 +278,31 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
                 planHash,
                 RequireCapturePacketPathPairs(),
                 cancellationToken)
-            .ConfigureAwait(false);
-        List<string> watchLines = [];
+            .ConfigureAwait(true);
+        // AUDIT-INT-01 §18: retain OperationId immediately after Start, before Watch can fail.
+        OperationId = DesktopProtoUuid.ToGuid(started.OperationId);
+        ProgressLines.Clear();
+
         DeploymentOperationState lastState = started.State;
+        bool streamed = false;
         await foreach (DeploymentProgress progress in _client
-                           .WatchAsync(DesktopProtoUuid.ToGuid(started.OperationId), cancellationToken)
-                           .ConfigureAwait(false))
+                           .WatchAsync(OperationId.Value, cancellationToken)
+                           .ConfigureAwait(true))
         {
             lastState = progress.State;
-            watchLines.Add(FormatProgress(progress));
+            ProgressLines.Add(FormatProgress(progress));
+            streamed = true;
         }
 
-        return new StartWatchOutcome(started, watchLines, lastState);
+        if (!streamed)
+        {
+            foreach (string entry in started.Timeline)
+            {
+                ProgressLines.Add(entry);
+            }
+        }
+
+        StatusText = $"Operation {lastState}.";
     }
 
     /// <summary>Rollback then Watch (off UI thread). Hub may replay Start+Rollback history after CONT-01 hub fix.</summary>
@@ -445,11 +443,6 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
 
     private static string ToHex(Sha256 hash)
         => Convert.ToHexString(hash.Value.Span)[..12] + "…";
-
-    private sealed record StartWatchOutcome(
-        DeploymentOperationSummary Started,
-        IReadOnlyList<string> WatchLines,
-        DeploymentOperationState LastState);
 
     private sealed record RollbackWatchOutcome(
         DeploymentOperationSummary Rolled,

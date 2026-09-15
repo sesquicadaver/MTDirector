@@ -1,4 +1,5 @@
 using Grpc.Core;
+using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Common;
 using Mfc.Application.Deployment;
 using Mfc.Contracts.Mfc.V1;
@@ -19,6 +20,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
     private readonly RollbackDeploymentWorkflowUseCase _rollback;
     private readonly GetDeploymentRecoveryStatusUseCase _recovery;
     private readonly DeploymentProgressHub _progress;
+    private readonly IAuthorizationBoundary _auth;
     private readonly GrpcRequestActorResolver _actors;
     private readonly IHostEnvironment _environment;
 
@@ -29,6 +31,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         RollbackDeploymentWorkflowUseCase rollback,
         GetDeploymentRecoveryStatusUseCase recovery,
         DeploymentProgressHub progress,
+        IAuthorizationBoundary auth,
         GrpcRequestActorResolver actors,
         IHostEnvironment environment)
     {
@@ -38,6 +41,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         ArgumentNullException.ThrowIfNull(rollback);
         ArgumentNullException.ThrowIfNull(recovery);
         ArgumentNullException.ThrowIfNull(progress);
+        ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(actors);
         ArgumentNullException.ThrowIfNull(environment);
         _createPlan = createPlan;
@@ -46,6 +50,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         _rollback = rollback;
         _recovery = recovery;
         _progress = progress;
+        _auth = auth;
         _actors = actors;
         _environment = environment;
     }
@@ -165,6 +170,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         ServerCallContext context)
     {
         ArgumentNullException.ThrowIfNull(request);
+        await EnsureWatchAuthorizedAsync(context).ConfigureAwait(false);
         Guid operationId = ProtoUuid.ToGuid(request.OperationId);
         await foreach (DeploymentProgress progress in _progress.WatchAsync(operationId, context.CancellationToken)
                            .ConfigureAwait(false))
@@ -232,6 +238,23 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
 
     private string ResolveActor(ServerCallContext context) =>
         _actors.Resolve(context, _environment, "development");
+
+    private async Task EnsureWatchAuthorizedAsync(ServerCallContext context)
+    {
+        string actor = ResolveActor(context);
+        try
+        {
+            await _auth.EnsureAllowedAsync(
+                    actor,
+                    ApplicationPermissions.DeploymentRead,
+                    context.CancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            throw GrpcApplicationErrorMapper.ToRpcException(ApplicationError.Forbidden(ex.Message));
+        }
+    }
 
     private static T Unwrap<T>(ApplicationResult<T> result)
     {

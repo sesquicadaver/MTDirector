@@ -7,6 +7,7 @@ using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
 using Mfc.Domain.Policy;
+using Mfc.RouterOs.Transport;
 
 namespace Mfc.RouterOs.Deployment;
 
@@ -25,12 +26,25 @@ public sealed class RouterOsDeploymentSession : IRouterOsDeploymentSession
         new(StringComparer.Ordinal) { ".id", "disabled" };
 
     private readonly IDeploymentWriteChannel _channel;
+    private readonly AuthenticatedRosConnection? _ownedConnection;
     private bool _disposed;
 
     public RouterOsDeploymentSession(IDeploymentWriteChannel channel)
+        : this(channel, ownedConnection: null)
+    {
+    }
+
+    /// <summary>
+    /// When <paramref name="ownedConnection"/> is set, <see cref="DisposeAsync"/> cascades to close TCP/TLS
+    /// after the session wrapper (fresh verification sessions — AUDIT-INT-01 §17).
+    /// </summary>
+    public RouterOsDeploymentSession(
+        IDeploymentWriteChannel channel,
+        AuthenticatedRosConnection? ownedConnection)
     {
         ArgumentNullException.ThrowIfNull(channel);
         _channel = channel;
+        _ownedConnection = ownedConnection;
     }
 
     public async Task<ActualManagedState> ReadManagedStateAsync(CancellationToken cancellationToken = default)
@@ -385,10 +399,18 @@ public sealed class RouterOsDeploymentSession : IRouterOsDeploymentSession
         };
     }
 
-    public ValueTask DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
-        return ValueTask.CompletedTask;
+        if (_ownedConnection is not null)
+        {
+            await _ownedConnection.DisposeAsync().ConfigureAwait(false);
+        }
     }
 
     private async Task<DeploymentWriteExecutionResult> RemoveByIdAsync(
