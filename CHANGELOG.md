@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-237** ([#880](https://github.com/sesquicadaver/MTDirector/issues/880)): Seed PLAN-26 COMPLETE → PLAN-27 Snapshot/Panel a11y residual tranche (`ProductTrancheSeedW7237LivingSpecTests`). **§3.C NEXT = W7-238 (#883)**.
+- **W7-238** ([#883](https://github.com/sesquicadaver/MTDirector/issues/883)): PLAN-27 inventory DONE — ranked **DESK-A11Y-SNAP-01** / **DESK-A11Y-PANEL-01**; opened **W7-240 (#886)** / **W7-241 (#887)** (`Plan27DesktopSnapshotPanelAutomationW7238LivingSpecTests`). **§3.C NEXT = W7-239 (#884)**.
+
+- **W7-237** ([#880](https://github.com/sesquicadaver/MTDirector/issues/880)): Seed PLAN-26 COMPLETE → PLAN-27 Snapshot/Panel a11y residual tranche (`ProductTrancheSeedW7237LivingSpecTests`). **§3.C NEXT was W7-238 (#883)** (advanced by W7-238).
 
 - **W7-236** ([#879](https://github.com/sesquicadaver/MTDirector/issues/879)): AUDIT-INT-01 — FastTrack topology in compile from last capture; fresh verification session TCP/TLS disposal; Watch auth (Snapshot/Deployment/Onboarding Read); Desktop OperationId + live ProgressLines; ProgressHub terminal prune (`AuditInt01W7236LivingSpecTests`). **§3.C NEXT was W7-237 (#880)** (advanced by W7-237).
 

@@ -1,7 +1,7 @@
 # PLAN-26 — Code-audit remediation tranche (`11cb746`)
 
 **Date:** 2026-09-11 (inventory **DONE** 2026-09-11; **COMPLETE** 2026-09-15)  
-**Status:** **PLAN-26 COMPLETE** — seed **W7-205 DONE**; Inventory **DONE** (W7-206); ranks 1…14 **DONE** (AUDIT-RULE-01…AUDIT-INT-01); seed **W7-237 DONE**; successor **PLAN-27** (W7-238 inventory OPEN)  
+**Status:** **PLAN-26 COMPLETE** — seed **W7-205 DONE**; Inventory **DONE** (W7-206); ranks 1…14 **DONE** (AUDIT-RULE-01…AUDIT-INT-01); seed **W7-237 DONE**; successor **PLAN-27** (inventory **W7-238 DONE**; NEXT seed **W7-239**)  
 **Audit SHA:** `11cb746de60191e6eb83e52013f7f544306d5c9d`  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md)  
 **Predecessor:** PLAN-25 Desktop Inventory/Zones/Add-router AutomationProperties **COMPLETE**  
@@ -95,4 +95,4 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/c
 
 ## §3.C NEXT
 
-**PLAN-26 COMPLETE.** **§3.C NEXT = W7-238 (#883)** — PLAN-27 Inventory Desktop Snapshot/Node/Drift/Audit AutomationProperties residual tranche after PLAN-26.
+**PLAN-26 COMPLETE.** PLAN-27 inventory **DONE** (W7-238). **§3.C NEXT = W7-239 (#884)** — Seed first PLAN-27 atomic row → DESK-A11Y-SNAP-01.
