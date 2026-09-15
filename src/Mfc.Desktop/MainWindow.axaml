@@ -143,6 +143,7 @@
               ClipToBounds="True"
               MinWidth="100">
         <ListBox ItemsSource="{Binding Modules}"
+                 AutomationProperties.Name="Modules"
                  SelectedItem="{Binding SelectedModule, Mode=TwoWay}"
                  Name="ModuleNavList">
           <ListBox.ItemsPanel>
@@ -442,6 +443,7 @@
                               MinWidth="120"
                               HorizontalAlignment="Left" />
                       <ListBox ItemsSource="{Binding Zones.Zones}"
+                               AutomationProperties.Name="Zones"
                                SelectedItem="{Binding Zones.SelectedZone, Mode=TwoWay}"
                                MinHeight="{StaticResource Mfc.ListMinHeight}">
                         <ListBox.ItemsPanel>
@@ -474,6 +476,7 @@
                         <Button Classes="mfc-action" Content="Delete binding" AutomationProperties.Name="Delete binding" Command="{Binding Zones.DeleteBindingCommand}" MinWidth="120" />
                       </WrapPanel>
                       <ListBox ItemsSource="{Binding Zones.Bindings}"
+                               AutomationProperties.Name="Node bindings"
                                SelectedItem="{Binding Zones.SelectedBinding, Mode=TwoWay}"
                                MinHeight="{StaticResource Mfc.ListMinHeight}">
                         <ListBox.ItemsPanel>
@@ -494,7 +497,8 @@
                              Margin="0,12,0,4" Classes="mfc-label" Text="Resolve results / blockers" />
                 </Grid>
                 <Border Classes="mfc-list-frame" MinHeight="{StaticResource Mfc.ListMinHeight}">
-                  <ListBox ItemsSource="{Binding Zones.ResolveResults}">
+                  <ListBox ItemsSource="{Binding Zones.ResolveResults}"
+                           AutomationProperties.Name="Resolve results / blockers">
                     <ListBox.ItemsPanel>
                       <ItemsPanelTemplate>
                         <VirtualizingStackPanel />
@@ -543,6 +547,7 @@
                        Text="No device workflow projections."
                        IsVisible="{Binding Node.HasNoWorkflowDeviceLines}" />
             <ListBox ItemsSource="{Binding Node.WorkflowDeviceLines}"
+                     AutomationProperties.Name="Device workflow"
                      MinHeight="{StaticResource Mfc.ListMinHeight}"
                      IsVisible="{Binding Node.HasWorkflowDeviceLines}">
               <ListBox.ItemsPanel>
@@ -554,7 +559,9 @@
             <TextBlock Classes="mfc-label" Text="Onboarding readiness" />
             <TextBlock Text="{Binding Node.OnboardingReadinessText}" TextWrapping="Wrap" />
             <TextBlock Classes="mfc-label" Text="Zones summary" />
-            <ListBox ItemsSource="{Binding Node.ZoneSummaryLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+            <ListBox ItemsSource="{Binding Node.ZoneSummaryLines}"
+                     AutomationProperties.Name="Zones summary"
+                     MinHeight="{StaticResource Mfc.ListMinHeight}">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                   <VirtualizingStackPanel />
@@ -570,6 +577,7 @@
                        Text="No devices on this VRRP Node."
                        IsVisible="{Binding Node.HasNoVrrpMembers}" />
             <ListBox ItemsSource="{Binding Node.VrrpMembers}"
+                     AutomationProperties.Name="VRRP members"
                      SelectedItem="{Binding Node.SelectedVrrpMember, Mode=TwoWay}"
                      MinHeight="{StaticResource Mfc.ListMinHeight}"
                      IsVisible="{Binding Node.HasVrrpMembers}">
@@ -614,6 +622,7 @@
                        Text="No pair consistency findings yet."
                        IsVisible="{Binding Node.HasNoVrrpPairFindings}" />
             <ListBox ItemsSource="{Binding Node.VrrpPairFindings}"
+                     AutomationProperties.Name="VRRP pair findings"
                      MinHeight="{StaticResource Mfc.ListMinHeight}"
                      IsVisible="{Binding Node.HasVrrpPairFindings}">
               <ListBox.ItemsPanel>
@@ -642,6 +651,7 @@
                        Text="No devices on this Node."
                        IsVisible="{Binding Node.HasStandaloneDeviceEmpty}" />
             <ListBox ItemsSource="{Binding Node.DeviceMembers}"
+                     AutomationProperties.Name="Devices"
                      MinHeight="{StaticResource Mfc.ListMinHeight}"
                      IsVisible="{Binding Node.HasStandaloneDeviceList}">
               <ListBox.ItemsPanel>
@@ -665,7 +675,9 @@
               </ListBox.ItemTemplate>
             </ListBox>
             <TextBlock Classes="mfc-label" Text="Device hashes" />
-            <ListBox ItemsSource="{Binding Node.DeviceHashLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+            <ListBox ItemsSource="{Binding Node.DeviceHashLines}"
+                     AutomationProperties.Name="Device hashes"
+                     MinHeight="{StaticResource Mfc.ListMinHeight}">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                   <VirtualizingStackPanel />
@@ -693,7 +705,9 @@
                 <TextBlock Text="{Binding RoutingAssurance.OperationalHashText, StringFormat=Operational digest: {0}}"
                            Classes="mfc-mono" />
                 <TextBlock Classes="mfc-label" Text="Route expectations" />
-                <ListBox ItemsSource="{Binding RoutingAssurance.ExpectationLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding RoutingAssurance.ExpectationLines}"
+                         AutomationProperties.Name="Route expectations"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -720,7 +734,9 @@
                   </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Route findings" />
-                <ListBox ItemsSource="{Binding RoutingAssurance.FindingLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding RoutingAssurance.FindingLines}"
+                         AutomationProperties.Name="Route findings"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -738,7 +754,9 @@
                   </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Trace summaries" />
-                <ListBox ItemsSource="{Binding RoutingAssurance.TraceSummaryLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding RoutingAssurance.TraceSummaryLines}"
+                         AutomationProperties.Name="Trace summaries"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -806,6 +824,7 @@
                       Classes="mfc-list-frame"
                       ClipToBounds="True">
                 <ListBox ItemsSource="{Binding Snapshot.VisibleSections}"
+                         AutomationProperties.Name="Snapshot sections"
                          SelectedItem="{Binding Snapshot.SelectedSection, Mode=TwoWay}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -879,6 +898,7 @@
                   <TabControl Grid.Row="1" MinHeight="{StaticResource Mfc.ListMinHeight}">
                     <TabItem Header="Configuration" AutomationProperties.Name="Configuration">
                       <ListBox ItemsSource="{Binding Snapshot.ConfigurationRecords}"
+                               AutomationProperties.Name="Configuration records"
                                SelectedItem="{Binding Snapshot.SelectedConfigurationRecord, Mode=TwoWay}"
                                MinHeight="{StaticResource Mfc.ListMinHeight}">
                         <ListBox.ItemsPanel>
@@ -895,6 +915,7 @@
                     </TabItem>
                     <TabItem Header="Observations" AutomationProperties.Name="Observations">
                       <ListBox ItemsSource="{Binding Snapshot.ObservationRecords}"
+                               AutomationProperties.Name="Observation records"
                                SelectedItem="{Binding Snapshot.SelectedObservationRecord, Mode=TwoWay}"
                                MinHeight="{StaticResource Mfc.ListMinHeight}">
                         <ListBox.ItemsPanel>
@@ -1049,6 +1070,7 @@
                       Classes="mfc-list-frame"
                       ClipToBounds="True">
                 <ListBox ItemsSource="{Binding Diff.SectionGroups}"
+                         AutomationProperties.Name="Diff section groups"
                          SelectedItem="{Binding Diff.SelectedSectionGroup, Mode=TwoWay}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -1074,6 +1096,7 @@
                 <Grid RowDefinitions="*,Auto,*">
                   <ListBox Grid.Row="0"
                            ItemsSource="{Binding Diff.VisibleEntries}"
+                           AutomationProperties.Name="Diff entries"
                            SelectedItem="{Binding Diff.SelectedEntry, Mode=TwoWay}"
                            MinHeight="{StaticResource Mfc.ListMinHeight}">
                     <ListBox.ItemsPanel>
@@ -1198,6 +1221,7 @@
                           MinWidth="130" />
                 </WrapPanel>
                 <ListBox ItemsSource="{Binding Policies.Catalog}"
+                         AutomationProperties.Name="Policy catalog"
                          SelectedItem="{Binding Policies.SelectedCatalogItem, Mode=TwoWay}"
                          MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
@@ -1285,7 +1309,9 @@
                            TextWrapping="Wrap" />
                 <TextBlock Text="{Binding Policies.SafetyFlagsText}" TextWrapping="Wrap" />
                 <TextBlock Classes="mfc-label" Text="ManagementPath findings" />
-                <ListBox ItemsSource="{Binding Policies.ManagementPathFindingLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Policies.ManagementPathFindingLines}"
+                         AutomationProperties.Name="ManagementPath findings"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemTemplate>
                     <DataTemplate>
                       <TextBlock Text="{Binding}" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace" />
@@ -1293,7 +1319,9 @@
                   </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="FastTrack findings" />
-                <ListBox ItemsSource="{Binding Policies.FastTrackFindingLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Policies.FastTrackFindingLines}"
+                         AutomationProperties.Name="FastTrack findings"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemTemplate>
                     <DataTemplate>
                       <TextBlock Text="{Binding}" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace" />
@@ -1301,14 +1329,18 @@
                   </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Witnesses / SYSTEM tests" />
-                <ListBox ItemsSource="{Binding Policies.SafetyWitnessLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Policies.SafetyWitnessLines}"
+                         AutomationProperties.Name="Witnesses"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemTemplate>
                     <DataTemplate>
                       <TextBlock Text="{Binding}" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace" />
                     </DataTemplate>
                   </ListBox.ItemTemplate>
                 </ListBox>
-                <ListBox ItemsSource="{Binding Policies.SafetySystemTestLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Policies.SafetySystemTestLines}"
+                         AutomationProperties.Name="SYSTEM tests"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemTemplate>
                     <DataTemplate>
                       <TextBlock Text="{Binding}" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace" />
@@ -1359,6 +1391,7 @@
                   <Button Classes="mfc-action" Content="Move down" AutomationProperties.Name="Move down" Command="{Binding Policies.MoveRuleDownCommand}" MinWidth="110" />
                 </WrapPanel>
                 <ListBox ItemsSource="{Binding Policies.Rules}"
+                         AutomationProperties.Name="Policy rules"
                          SelectedItem="{Binding Policies.SelectedRule, Mode=TwoWay}"
                          MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
@@ -1405,7 +1438,9 @@
                          AcceptsReturn="True"
                          MinHeight="56"
                          TextWrapping="Wrap" />
-                <ListBox ItemsSource="{Binding Policies.AddressObjects}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Policies.AddressObjects}"
+                         AutomationProperties.Name="Address objects"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1443,7 +1478,9 @@
                           Command="{Binding Policies.UpsertServiceCommand}"
                           MinWidth="120" />
                 </WrapPanel>
-                <ListBox ItemsSource="{Binding Policies.ServiceObjects}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Policies.ServiceObjects}"
+                         AutomationProperties.Name="Service objects"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1493,7 +1530,9 @@
                           Command="{Binding Policies.ReplaceContractsCommand}"
                           MinWidth="140" />
                 </WrapPanel>
-                <ListBox ItemsSource="{Binding Policies.ChainContracts}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Policies.ChainContracts}"
+                         AutomationProperties.Name="Chain contracts"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1556,7 +1595,9 @@
                   <Button Classes="mfc-action" Content="Compile artifacts" AutomationProperties.Name="Compile artifacts" Command="{Binding Policies.CompileCommand}" MinWidth="140" />
                 </WrapPanel>
                 <TextBlock Classes="mfc-label" Text="Revision diff" />
-                <ListBox ItemsSource="{Binding Policies.DiffRows}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Policies.DiffRows}"
+                         AutomationProperties.Name="Revision diff"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1573,7 +1614,9 @@
                   </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Revision diff (summary lines)" />
-                <ListBox ItemsSource="{Binding Policies.DiffLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Policies.DiffLines}"
+                         AutomationProperties.Name="Revision diff (summary lines)"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1588,6 +1631,7 @@
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Compose findings" />
                 <ListBox ItemsSource="{Binding Policies.Findings}"
+                         AutomationProperties.Name="Compose findings"
                          SelectedItem="{Binding Policies.SelectedFinding, Mode=TwoWay}"
                          MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
@@ -1603,7 +1647,9 @@
                   </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Compile artifacts" />
-                <ListBox ItemsSource="{Binding Policies.CompileArtifactLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Policies.CompileArtifactLines}"
+                         AutomationProperties.Name="Compile artifacts"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1642,7 +1688,9 @@
                   <Button Classes="mfc-action" Content="Recovery status" AutomationProperties.Name="Recovery status" Command="{Binding Onboarding.RecoveryCommand}" MinWidth="130" />
                 </WrapPanel>
                 <TextBlock Classes="mfc-label" Text="Prerequisite checklist" />
-                <ListBox ItemsSource="{Binding Onboarding.Findings}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Onboarding.Findings}"
+                         AutomationProperties.Name="Prerequisite checklist"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1656,7 +1704,9 @@
                   </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Anchor placements" />
-                <ListBox ItemsSource="{Binding Onboarding.Placements}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Onboarding.Placements}"
+                         AutomationProperties.Name="Anchor placements"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1673,7 +1723,9 @@
                 <TextBlock Text="{Binding Onboarding.RecoveryFactsText}"
                            Classes="mfc-mono" />
                 <TextBlock Classes="mfc-label" Text="Progress" />
-                <ListBox ItemsSource="{Binding Onboarding.ProgressLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Onboarding.ProgressLines}"
+                         AutomationProperties.Name="Onboarding progress"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1707,7 +1759,9 @@
                   <Button Classes="mfc-action" Content="Recovery status" AutomationProperties.Name="Recovery status" Command="{Binding Deployment.RecoveryCommand}" MinWidth="130" />
                 </WrapPanel>
                 <TextBlock Classes="mfc-label" Text="Policy semantic diff" />
-                <ListBox ItemsSource="{Binding Deployment.SemanticDiffRows}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Deployment.SemanticDiffRows}"
+                         AutomationProperties.Name="Policy semantic diff"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1731,7 +1785,9 @@
                   </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Artifact hash delta" />
-                <ListBox ItemsSource="{Binding Deployment.SemanticDiffLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Deployment.SemanticDiffLines}"
+                         AutomationProperties.Name="Artifact hash delta"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1739,7 +1795,9 @@
                   </ListBox.ItemsPanel>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Artifacts" />
-                <ListBox ItemsSource="{Binding Deployment.ArtifactLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Deployment.ArtifactLines}"
+                         AutomationProperties.Name="Artifacts"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1747,7 +1805,9 @@
                   </ListBox.ItemsPanel>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Activation / rollback order" />
-                <ListBox ItemsSource="{Binding Deployment.OrderLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Deployment.OrderLines}"
+                         AutomationProperties.Name="Activation / rollback order"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1755,7 +1815,9 @@
                   </ListBox.ItemsPanel>
                 </ListBox>
                 <TextBlock Classes="mfc-label" Text="Probes and watchdog" />
-                <ListBox ItemsSource="{Binding Deployment.ProbeAndWatchdogLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Deployment.ProbeAndWatchdogLines}"
+                         AutomationProperties.Name="Probes and watchdog"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1766,7 +1828,9 @@
                 <TextBlock Text="{Binding Deployment.RecoveryFactsText}"
                            Classes="mfc-mono" />
                 <TextBlock Classes="mfc-label" Text="Progress" />
-                <ListBox ItemsSource="{Binding Deployment.ProgressLines}" MinHeight="{StaticResource Mfc.ListMinHeight}">
+                <ListBox ItemsSource="{Binding Deployment.ProgressLines}"
+                         AutomationProperties.Name="Deployment progress"
+                         MinHeight="{StaticResource Mfc.ListMinHeight}">
                   <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
@@ -1911,6 +1975,7 @@
                   ClipToBounds="True"
                   MinHeight="{StaticResource Mfc.ListMinHeight}">
             <ListBox ItemsSource="{Binding Drift.Events}"
+                     AutomationProperties.Name="Drift events"
                      SelectedItem="{Binding Drift.SelectedEvent, Mode=TwoWay}"
                      Name="DriftEventsList"
                      MinHeight="{StaticResource Mfc.ListMinHeight}">
@@ -1953,6 +2018,7 @@
                            IsVisible="{Binding Drift.HasNoSelectedEventFindings}" />
               </StackPanel>
               <ListBox ItemsSource="{Binding Drift.SelectedEventFindings}"
+                       AutomationProperties.Name="Drift findings"
                        IsVisible="{Binding Drift.HasSelectedEventFindings}"
                        MinHeight="{StaticResource Mfc.ListMinHeight}">
                 <ListBox.ItemsPanel>
@@ -2033,6 +2099,7 @@
                   ClipToBounds="True"
                   MinHeight="{StaticResource Mfc.ListMinHeight}">
             <ListBox ItemsSource="{Binding Audit.Events}"
+                     AutomationProperties.Name="Audit events"
                      SelectedItem="{Binding Audit.SelectedEvent, Mode=TwoWay}"
                      Name="AuditEventsList"
                      MinHeight="{StaticResource Mfc.ListMinHeight}">
