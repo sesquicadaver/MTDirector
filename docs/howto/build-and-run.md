@@ -214,7 +214,7 @@ sudo install -m 0644 packaging/linux/mfc-desktop.desktop /usr/share/applications
 /opt/mfc/desktop/Mfc.Desktop
 ```
 
-**Desktop (Windows):** розпакувати `Mfc.Desktop-win-x64.zip`, запустити `Mfc.Desktop.exe`, виставити `ControllerEndpoint`.
+**Desktop (Windows):** шаблон Start Menu shortcut — [`../../packaging/windows/mfc-desktop-start-menu.ps1`](../../packaging/windows/mfc-desktop-start-menu.ps1) (DESK-HOST-WIN-01). Типово: розпакувати `Mfc.Desktop-win-x64.zip` у `C:\mfc\desktop\`, виставити `ControllerEndpoint`, потім `powershell -File packaging\windows\mfc-desktop-start-menu.ps1 -InstallRoot C:\mfc\desktop`.
 
 Офіційна install-нотатка (коротша): [`../operations/installation.md`](../operations/installation.md).
 

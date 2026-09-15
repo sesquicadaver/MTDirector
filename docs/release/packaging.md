@@ -46,7 +46,7 @@ ls -la "$OUT_DIR"
 | Template | Path | Notes |
 |----------|------|-------|
 | freedesktop `.desktop` (Linux) | [`../../packaging/linux/mfc-desktop.desktop`](../../packaging/linux/mfc-desktop.desktop) | DESK-HOST-LINUX-01 — framework-dependent Desktop; `Exec`/`Path` → `/opt/mfc/desktop/Mfc.Desktop` |
-| Windows Start Menu sketch | *(DESK-HOST-WIN-01)* | Planned `packaging/windows/mfc-desktop-start-menu.ps1`; do not invent MSI/AppImage (W7-22) |
+| Windows Start Menu sketch | [`../../packaging/windows/mfc-desktop-start-menu.ps1`](../../packaging/windows/mfc-desktop-start-menu.ps1) | DESK-HOST-WIN-01 — framework-dependent Desktop; creates Start Menu `.lnk` → `C:\mfc\desktop\Mfc.Desktop.exe`; do not invent MSI/AppImage (W7-22) |
 
 ## Desktop installer (MVP)
 

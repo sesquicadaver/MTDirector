@@ -14,7 +14,7 @@ See [`pilot-runbook.md`](pilot-runbook.md), [`controller-configuration.md`](cont
 - .NET runtime/SDK matching [`global.json`](../../global.json) on the Controller host (publish is framework-dependent by default).
 - PostgreSQL (only supported database).
 - TLS certificates for non-Development Controller binds.
-- Operator workstation for Desktop (Avalonia publish archive). Linux menus: install [`../../packaging/linux/mfc-desktop.desktop`](../../packaging/linux/mfc-desktop.desktop) (DESK-HOST-LINUX-01) after extracting `OUT_DIR/desktop/` to `/opt/mfc/desktop`.
+- Operator workstation for Desktop (Avalonia publish archive). Linux menus: install [`../../packaging/linux/mfc-desktop.desktop`](../../packaging/linux/mfc-desktop.desktop) (DESK-HOST-LINUX-01) after extracting `OUT_DIR/desktop/` to `/opt/mfc/desktop`. Windows Start Menu: run [`../../packaging/windows/mfc-desktop-start-menu.ps1`](../../packaging/windows/mfc-desktop-start-menu.ps1) (DESK-HOST-WIN-01) after extracting to `C:\mfc\desktop`.
 
 See also [`prerequisite-checklist.md`](prerequisite-checklist.md) for RouterOS device gates.
 
