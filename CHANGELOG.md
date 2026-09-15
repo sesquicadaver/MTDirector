@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-270** ([#946](https://github.com/sesquicadaver/MTDirector/issues/946)): OPS-HOST-SYSTEMD-01 — systemd unit template `packaging/systemd/mfc-controller.service` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostSystemd01ControllerUnitW7270LivingSpecTests`). **§3.C NEXT = W7-271 (#947)**.
+- **W7-271** ([#947](https://github.com/sesquicadaver/MTDirector/issues/947)): Seed PLAN-32 next atomic row → OPS-HOST-WINSVC-01 as §3.C NEXT; opened **W7-272 (#951)** implement + **W7-273 (#952)** PLAN-32 COMPLETE follow-up (`ProductTrancheSeedW7271LivingSpecTests`). **§3.C NEXT = W7-272 (#951)**.
+
+- **W7-270** ([#946](https://github.com/sesquicadaver/MTDirector/issues/946)): OPS-HOST-SYSTEMD-01 — systemd unit template `packaging/systemd/mfc-controller.service` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostSystemd01ControllerUnitW7270LivingSpecTests`). **§3.C NEXT was W7-271 (#947)** (advanced by W7-271).
 
 - **W7-269** ([#944](https://github.com/sesquicadaver/MTDirector/issues/944)): Seed PLAN-32 first atomic row → OPS-HOST-SYSTEMD-01 as §3.C NEXT; keep **W7-270 (#946)** implement + **W7-271 (#947)** WINSVC follow-up open (`ProductTrancheSeedW7269LivingSpecTests`). **§3.C NEXT was W7-270 (#946)** (advanced by W7-270).
 
@@ -448,6 +450,8 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Fixed
 
+- **W7-271** ([#947](https://github.com/sesquicadaver/MTDirector/issues/947)): Seed PLAN-32 next atomic row → OPS-HOST-WINSVC-01 as §3.C NEXT; opened **W7-272 (#951)** implement + **W7-273 (#952)** PLAN-32 COMPLETE follow-up (`ProductTrancheSeedW7271LivingSpecTests`). **§3.C NEXT = W7-272 (#951)**.
+
 - **W7-230** ([#867](https://github.com/sesquicadaver/MTDirector/issues/867)): AUDIT-DEP-03 — VRRP reachability/traffic from live RouterOS observations (`VrrpMemberLiveFactsObserver`, interface counters) (`AuditDep03VrrpLiveFactsW7230LivingSpecTests`). **§3.C NEXT = W7-231 (#868)**.
 
 - Stabilized `StableReadCoordinatorTests.FullCaptureTimeoutCancelsCoordination` — deterministic hang-until-cancel instead of race-prone fixed delay (CI flake on `main`).
@@ -582,6 +586,8 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 - Pin transitive `SSH.NET` to 2026.0.0 (CPM) so NuGet audit no longer fails restore on GHSA-q939-rpr3-3284 from Testcontainers 4.13.
 
 ### Fixed
+
+- **W7-271** ([#947](https://github.com/sesquicadaver/MTDirector/issues/947)): Seed PLAN-32 next atomic row → OPS-HOST-WINSVC-01 as §3.C NEXT; opened **W7-272 (#951)** implement + **W7-273 (#952)** PLAN-32 COMPLETE follow-up (`ProductTrancheSeedW7271LivingSpecTests`). **§3.C NEXT = W7-272 (#951)**.
 
 - **W7-230** ([#867](https://github.com/sesquicadaver/MTDirector/issues/867)): AUDIT-DEP-03 — VRRP reachability/traffic from live RouterOS observations (`VrrpMemberLiveFactsObserver`, interface counters) (`AuditDep03VrrpLiveFactsW7230LivingSpecTests`). **§3.C NEXT = W7-231 (#868)**.
 
