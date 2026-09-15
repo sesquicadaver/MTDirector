@@ -1951,6 +1951,16 @@ Issue [#946](https://github.com/sesquicadaver/MTDirector/issues/946) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~OpsHostSystemd01ControllerUnitW7270"`.
 
+## Living Specification — PLAN-34 Desktop operator launch packaging inventory (W7-278)
+
+Issue [#963](https://github.com/sesquicadaver/MTDirector/issues/963) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-34 inventory ranks DESK-HOST-LINUX-01 / DESK-HOST-WIN-01 + seeds | plan-34, package-desktop.sh, packaging.md, ROADMAP, known-limitations | `Plan34DesktopOperatorLaunchPackagingW7278LivingSpecTests.Ac1Plan34InventoryDocumentsRankedRowsAndSeedsDeskHostLinux01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan34DesktopOperatorLaunchPackagingW7278"`.
+
 ## Living Specification — Product tranche seed PLAN-34 after PLAN-33 COMPLETE (W7-277)
 
 Issue [#959](https://github.com/sesquicadaver/MTDirector/issues/959) AC → module → tests:
