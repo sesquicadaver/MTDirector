@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-271** ([#947](https://github.com/sesquicadaver/MTDirector/issues/947)): Seed PLAN-32 next atomic row → OPS-HOST-WINSVC-01 as §3.C NEXT; opened **W7-272 (#951)** implement + **W7-273 (#952)** PLAN-32 COMPLETE follow-up (`ProductTrancheSeedW7271LivingSpecTests`). **§3.C NEXT = W7-272 (#951)**.
+- **W7-272** ([#951](https://github.com/sesquicadaver/MTDirector/issues/951)): OPS-HOST-WINSVC-01 — WinSW Windows Service template `packaging/windows/mfc-controller.winsw.xml` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostWinsvc01ControllerUnitW7272LivingSpecTests`). **§3.C NEXT = W7-273 (#952)**.
+
+- **W7-271** ([#947](https://github.com/sesquicadaver/MTDirector/issues/947)): Seed PLAN-32 next atomic row → OPS-HOST-WINSVC-01 as §3.C NEXT; opened **W7-272 (#951)** implement + **W7-273 (#952)** PLAN-32 COMPLETE follow-up (`ProductTrancheSeedW7271LivingSpecTests`). **§3.C NEXT was W7-272 (#951)** (advanced by W7-272).
 
 - **W7-270** ([#946](https://github.com/sesquicadaver/MTDirector/issues/946)): OPS-HOST-SYSTEMD-01 — systemd unit template `packaging/systemd/mfc-controller.service` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostSystemd01ControllerUnitW7270LivingSpecTests`). **§3.C NEXT was W7-271 (#947)** (advanced by W7-271).
 
@@ -450,7 +452,9 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Fixed
 
-- **W7-271** ([#947](https://github.com/sesquicadaver/MTDirector/issues/947)): Seed PLAN-32 next atomic row → OPS-HOST-WINSVC-01 as §3.C NEXT; opened **W7-272 (#951)** implement + **W7-273 (#952)** PLAN-32 COMPLETE follow-up (`ProductTrancheSeedW7271LivingSpecTests`). **§3.C NEXT = W7-272 (#951)**.
+- **W7-272** ([#951](https://github.com/sesquicadaver/MTDirector/issues/951)): OPS-HOST-WINSVC-01 — WinSW Windows Service template `packaging/windows/mfc-controller.winsw.xml` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostWinsvc01ControllerUnitW7272LivingSpecTests`). **§3.C NEXT = W7-273 (#952)**.
+
+- **W7-271** ([#947](https://github.com/sesquicadaver/MTDirector/issues/947)): Seed PLAN-32 next atomic row → OPS-HOST-WINSVC-01 as §3.C NEXT; opened **W7-272 (#951)** implement + **W7-273 (#952)** PLAN-32 COMPLETE follow-up (`ProductTrancheSeedW7271LivingSpecTests`). **§3.C NEXT was W7-272 (#951)** (advanced by W7-272).
 
 - **W7-230** ([#867](https://github.com/sesquicadaver/MTDirector/issues/867)): AUDIT-DEP-03 — VRRP reachability/traffic from live RouterOS observations (`VrrpMemberLiveFactsObserver`, interface counters) (`AuditDep03VrrpLiveFactsW7230LivingSpecTests`). **§3.C NEXT = W7-231 (#868)**.
 
@@ -587,7 +591,9 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Fixed
 
-- **W7-271** ([#947](https://github.com/sesquicadaver/MTDirector/issues/947)): Seed PLAN-32 next atomic row → OPS-HOST-WINSVC-01 as §3.C NEXT; opened **W7-272 (#951)** implement + **W7-273 (#952)** PLAN-32 COMPLETE follow-up (`ProductTrancheSeedW7271LivingSpecTests`). **§3.C NEXT = W7-272 (#951)**.
+- **W7-272** ([#951](https://github.com/sesquicadaver/MTDirector/issues/951)): OPS-HOST-WINSVC-01 — WinSW Windows Service template `packaging/windows/mfc-controller.winsw.xml` for framework-dependent Controller + HOWTO/installation/packaging docs (`OpsHostWinsvc01ControllerUnitW7272LivingSpecTests`). **§3.C NEXT = W7-273 (#952)**.
+
+- **W7-271** ([#947](https://github.com/sesquicadaver/MTDirector/issues/947)): Seed PLAN-32 next atomic row → OPS-HOST-WINSVC-01 as §3.C NEXT; opened **W7-272 (#951)** implement + **W7-273 (#952)** PLAN-32 COMPLETE follow-up (`ProductTrancheSeedW7271LivingSpecTests`). **§3.C NEXT was W7-272 (#951)** (advanced by W7-272).
 
 - **W7-230** ([#867](https://github.com/sesquicadaver/MTDirector/issues/867)): AUDIT-DEP-03 — VRRP reachability/traffic from live RouterOS observations (`VrrpMemberLiveFactsObserver`, interface counters) (`AuditDep03VrrpLiveFactsW7230LivingSpecTests`). **§3.C NEXT = W7-231 (#868)**.
 

@@ -1917,6 +1917,17 @@ Issue [#947](https://github.com/sesquicadaver/MTDirector/issues/947) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7271"`.
 
+
+## Living Specification — OPS-HOST-WINSVC-01 Controller WinSW unit (W7-272)
+
+Issue [#951](https://github.com/sesquicadaver/MTDirector/issues/951) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| WinSW Windows Service template + docs for framework-dependent Controller | `packaging/windows/mfc-controller.winsw.xml`, HOWTO/installation/packaging, plan-32 | `OpsHostWinsvc01ControllerUnitW7272LivingSpecTests.Ac1WinsvcTemplateMatchesPackageControllerLayoutAndDocs` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~OpsHostWinsvc01ControllerUnitW7272"`.
+
 ## Living Specification — OPS-HOST-SYSTEMD-01 Controller systemd unit (W7-270)
 
 Issue [#946](https://github.com/sesquicadaver/MTDirector/issues/946) AC → module → tests:

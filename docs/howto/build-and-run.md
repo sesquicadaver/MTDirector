@@ -203,6 +203,8 @@ cd "$OUT_DIR/controller"
 
 **Controller (Linux, systemd):** шаблон unit — [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service). Типово: скопіювати publish tree у `/opt/mfc/controller`, встановити unit у `/etc/systemd/system/`, заповнити `/etc/mfc/controller.env` (`MFC__…`), потім `systemctl enable --now mfc-controller.service`. Деталі — [`../operations/installation.md`](../operations/installation.md).
 
+**Controller (Windows, WinSW):** шаблон — [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml). Типово: `MFC_RELEASE_RID=win-x64` publish → `C:\mfc\controller\`, скопіювати XML як `mfc-controller.xml` поруч із WinSW `mfc-controller.exe`, виставити `MFC__…`, потім `mfc-controller.exe install/start`. Деталі — [`../operations/installation.md`](../operations/installation.md).
+
 **Desktop (Linux):**
 
 ```bash
@@ -235,7 +237,8 @@ unzip "$OUT_DIR/Mfc.Desktop-linux-x64.zip" -d /opt/mfc
 1. Немає native MSI / AppImage / `.dmg` — лише zip/tar publish ([`../release/known-limitations.md`](../release/known-limitations.md)).
 2. macOS / `linux-arm64` не покриті CI; RID можна спробувати, без гарантії.
 3. Self-contained single-file publish **не** є default у release-скриптах.
-4. Systemd unit template for framework-dependent Controller: [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service) (OPS-HOST-SYSTEMD-01). Windows Service template still outstanding (**OPS-HOST-WINSVC-01**).
+4. Systemd unit template for framework-dependent Controller: [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service) (OPS-HOST-SYSTEMD-01).
+5. Windows Service (WinSW) template for framework-dependent Controller: [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml) (OPS-HOST-WINSVC-01).
 5. CHR lab images не в Git — окремо [`../development/chr-lab.md`](../development/chr-lab.md).
 
 ---

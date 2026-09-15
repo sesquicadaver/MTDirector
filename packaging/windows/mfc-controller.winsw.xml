@@ -1,0 +1,43 @@
+<!-- MTDirector Controller — Windows Service template (OPS-HOST-WINSVC-01 / W7-272)
+     WinSW-style service configuration (rename/copy beside WinSW executable per WinSW docs).
+
+     Matches framework-dependent publish layout from scripts/release/package-controller.sh:
+       OUT_DIR/controller/Mfc.Controller.exe
+       OUT_DIR/controller/Mfc.Controller.runtimeconfig.json  (net10.0 + Microsoft.AspNetCore.App)
+     Default Windows RID: win-x64 (MFC_RELEASE_RID=win-x64); --self-contained false
+     (host must provide ASP.NET Core / .NET runtime).
+
+     Install sketch (operator-owned paths; adjust BASE / env as needed):
+       1. Publish: MFC_RELEASE_RID=win-x64 OUT_DIR=... ./scripts/release/package-controller.sh
+       2. Copy publish tree to C:\mfc\controller\
+       3. Obtain WinSW (winsw.exe), copy as C:\mfc\controller\mfc-controller.exe
+       4. Copy this template as C:\mfc\controller\mfc-controller.xml
+          (WinSW requires XML basename == executable basename)
+       5. Set MFC__* via machine environment or <env> elements below
+          (sibling of systemd EnvironmentFile=-/etc/mfc/controller.env)
+       6. mfc-controller.exe install && mfc-controller.exe start
+
+     Do not invent MSI/AppImage here (W7-22 lock). Linux systemd is OPS-HOST-SYSTEMD-01
+     (packaging/systemd/mfc-controller.service) — do not regress that template.
+-->
+<service>
+  <id>mfc-controller</id>
+  <name>MTDirector MikroTik Firewall Controller (Mfc.Controller)</name>
+  <description>MTDirector Controller gRPC host. Framework-dependent win-x64 publish from package-controller.sh (--self-contained false).</description>
+  <executable>%BASE%\Mfc.Controller.exe</executable>
+  <workingdirectory>%BASE%</workingdirectory>
+  <startmode>Automatic</startmode>
+  <delayedAutoStart>true</delayedAutoStart>
+  <stoptimeout>60 sec</stoptimeout>
+  <onfailure action="restart" delay="5 sec"/>
+  <onfailure action="restart" delay="10 sec"/>
+  <resetfailure>1 hour</resetfailure>
+  <log mode="roll-by-size">
+    <sizeThreshold>10240</sizeThreshold>
+    <keepFiles>8</keepFiles>
+  </log>
+  <!-- Operator: set MFC__Database__ConnectionString, TLS, RouterOs flags via Windows
+       machine environment and/or uncomment:
+  <env name="MFC__Database__ConnectionString" value="Host=...;Database=mfc;Username=...;Password=..." />
+  -->
+</service>
