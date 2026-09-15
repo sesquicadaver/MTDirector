@@ -1757,6 +1757,16 @@ Issue [#895](https://github.com/sesquicadaver/MTDirector/issues/895) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan28DesktopResidualFieldControlAutomationW7244"`.
 
+## Living Specification — Product tranche seed after DESK-A11Y-CTRL-01 / PLAN-28 COMPLETE (W7-249)
+
+Issue [#904](https://github.com/sesquicadaver/MTDirector/issues/904) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-28 COMPLETE + queue seed PLAN-29 inventory as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-28, plan-29 | `ProductTrancheSeedW7249LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan29AfterPlan28Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7249"`.
+
 ## Living Specification — Product tranche seed after DESK-A11Y-PANEL-01 / PLAN-27 COMPLETE (W7-243)
 
 Issue [#892](https://github.com/sesquicadaver/MTDirector/issues/892) AC → module → tests:

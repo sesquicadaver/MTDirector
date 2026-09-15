@@ -52,4 +52,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** **PLAN-27 COMPLETE.** PLAN-28 inventory **DONE** (W7-244); seed **W7-245 DONE**; W7-246 FIELD-01 DONE; seed **W7-247 DONE**. **§3.C NEXT = W7-249 (#904)** — DESK-A11Y-CTRL-01.
+**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** **PLAN-27 COMPLETE.** **PLAN-28 COMPLETE.** Successor **PLAN-29** inventory **OPEN** (W7-250); seed **W7-251 OPEN**. **§3.C NEXT = W7-250 (#907)** — PLAN-29 Inventory Desktop connection health / reconnect after Controller stop.

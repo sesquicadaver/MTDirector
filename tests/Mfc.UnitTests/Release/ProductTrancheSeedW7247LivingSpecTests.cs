@@ -4,7 +4,7 @@ namespace Mfc.UnitTests.Release;
 
 /// <summary>
 /// W7-247: seed locked DESK-A11Y-CTRL-01 (W7-248); historical NEXT was W7-248;
-/// W7-248 advanced §3.C NEXT to W7-249 PLAN-28 COMPLETE seed.
+/// W7-248 advanced §3.C NEXT to W7-249; W7-249 advanced NEXT to W7-250 PLAN-29 inventory.
 /// </summary>
 public sealed class ProductTrancheSeedW7247LivingSpecTests
 {
@@ -33,23 +33,23 @@ public sealed class ProductTrancheSeedW7247LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-249 | [#904](https://github.com/sesquicadaver/MTDirector/issues/904) | Seed next after DESK-A11Y-CTRL-01 (PLAN-28 COMPLETE) | **OPEN**",
+            "W7-249 | [#904](https://github.com/sesquicadaver/MTDirector/issues/904) | Seed next after DESK-A11Y-CTRL-01 (PLAN-28 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-249 (#904)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-250 (#907)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-247 DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-248 DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-248", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-CTRL-01", plan, StringComparison.Ordinal);
         Assert.Contains("W7-249", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-249 (#904)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-250 (#907)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-247 (#899) DONE", plan28, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-CTRL-01", plan28, StringComparison.Ordinal);
         Assert.Contains("W7-248 (#903) DONE", plan28, StringComparison.Ordinal);
         Assert.Contains("W7-249 (#904)", plan28, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-249 (#904)", plan28, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-250 (#907)", plan28, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()
