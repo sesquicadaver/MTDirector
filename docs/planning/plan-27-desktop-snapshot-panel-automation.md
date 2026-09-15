@@ -1,7 +1,7 @@
 # PLAN-27 — Desktop Snapshot / Node / Drift / Audit AutomationProperties residual tranche
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-238); next seed **W7-239 (#884)** → **DESK-A11Y-SNAP-01** (**W7-240 (#886)**); follow-up seed **W7-241 (#887)** → **DESK-A11Y-PANEL-01**  
+**Status:** Inventory **DONE** (W7-238); seed **W7-239 (#884) DONE**; **§3.C NEXT = W7-240 (#886)** **DESK-A11Y-SNAP-01**; follow-up seed **W7-241 (#887)** → **DESK-A11Y-PANEL-01**  
 **PLAN issue / queue:** [W7-238 / PLAN-27 #883](https://github.com/sesquicadaver/MTDirector/issues/883) **DONE**  
 **Predecessor:** PLAN-26 code-audit remediation (`11cb746`) **COMPLETE**; deferred residuals from PLAN-25  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -40,10 +40,10 @@ Absorb PLAN-25 deferred Snapshot / Node / Drift / Audit button `AutomationProper
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-A11Y-SNAP-01** | Snapshot Capture/Reload/Compare/Copy Names | Snapshots tabs (`Reload`, `Capture`, `Copy sanitized`, `Compare`, `Reload captures`) | **W7-240 (#886)**; seed **W7-239 (#884)** after inventory |
+| 1 | **DESK-A11Y-SNAP-01** | Snapshot Capture/Reload/Compare/Copy Names | Snapshots tabs (`Reload`, `Capture`, `Copy sanitized`, `Compare`, `Reload captures`) | **W7-240 (#886)** (**§3.C NEXT**); seed **W7-239 (#884) DONE** |
 | 2 | **DESK-A11Y-PANEL-01** | Node VRRP validate + Drift/Audit Refresh Names | Node (`Refresh`, VRRP validate pair), RoutingAssurance `Refresh`, Drift/Audit `Refresh` | seed **W7-241 (#887)** after SNAP-01 |
 
-Inventory (**W7-238 DONE**) locked ranking and opened implement + follow-up seed issues. Seed **W7-239** advances §3.C NEXT to **W7-240** (first implement).
+Inventory (**W7-238 DONE**) locked ranking and opened implement + follow-up seed issues. Seed **W7-239 DONE** advanced §3.C NEXT to **W7-240** (first implement).
 
 ## Dual track
 
@@ -57,9 +57,9 @@ PLAN-26 ranks 1…14 (**AUDIT-RULE-01** … **AUDIT-INT-01**) are **DONE**. Disc
 
 1. **PLAN-26 COMPLETE** (W7-236 AUDIT-INT-01; seed **W7-237 DONE**).  
 2. **W7-238 DONE** — PLAN-27 inventory; opened **W7-240** / **W7-241**.  
-3. **W7-239 OPEN** — seed advances NEXT to **DESK-A11Y-SNAP-01** (**W7-240**).  
+3. **W7-239 DONE** — seed advanced NEXT to **DESK-A11Y-SNAP-01** (**W7-240**).  
 4. Execute ranked SNAP/PANEL rows atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-239 (#884)** — Seed first PLAN-27 atomic row after inventory → DESK-A11Y-SNAP-01 (**W7-240 (#886)**).
+**§3.C NEXT = W7-240 (#886)** — DESK-A11Y-SNAP-01 — Snapshot Capture/Reload/Compare/Copy AutomationProperties.Name.
