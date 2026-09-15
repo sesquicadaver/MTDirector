@@ -1840,7 +1840,7 @@ Issue [#927](https://github.com/sesquicadaver/MTDirector/issues/927) AC → modu
 | Bounded channels + disconnect-on-full + history cap constants | Capture/Deployment/Onboarding ProgressHub | `WatchBp01HubBackpressureW7260LivingSpecTests.Ac1HubsUseBoundedChannelsDisconnectOnFullAndHistoryCap` |
 | Live `_history` cap while retained | ProgressHubs | `WatchBp01HubBackpressureW7260LivingSpecTests.Ac2LiveHistoryCapAppliesWhileOperationRetained` |
 | Slow-subscriber full does not block Publish | CaptureProgressHub | `WatchBp01HubBackpressureW7260LivingSpecTests.Ac3SlowSubscriberDisconnectOnFullDoesNotBlockPublish` |
-| Docs advance past BP-01 (historical seed W7-261 DONE; NEXT now W7-262) | ROADMAP / plan-30 / known-limitations | `WatchBp01HubBackpressureW7260LivingSpecTests.Ac4DocsAdvanceNextToPlan30CompleteSeed` |
+| Docs advance past BP-01 (historical seed W7-261 DONE; NEXT now W7-263) | ROADMAP / plan-30 / known-limitations | `WatchBp01HubBackpressureW7260LivingSpecTests.Ac4DocsAdvanceNextToPlan30CompleteSeed` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~WatchBp01HubBackpressureW7260"`.
 
@@ -1864,13 +1864,23 @@ Issue [#920](https://github.com/sesquicadaver/MTDirector/issues/920) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7257"`.
 
+## Living Specification — PLAN-31 Desktop residual ListBox / Drift–Audit read-only a11y inventory (W7-262)
+
+Issue [#931](https://github.com/sesquicadaver/MTDirector/issues/931) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ranked DESK-A11Y-LIST/RO + seed DESK-A11Y-LIST-01 | plan-31 + queue docs + MainWindow.axaml ListBox/RO evidence | `Plan31DesktopResidualListboxReadonlyA11yW7262LivingSpecTests.Ac1Plan31InventoryDocumentsRankedRowsAndSeedsDeskA11yList01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan31DesktopResidualListboxReadonlyA11yW7262"`.
+
 ## Living Specification — Product tranche seed after WATCH-BP-01 / PLAN-30 COMPLETE (W7-261)
 
 Issue [#928](https://github.com/sesquicadaver/MTDirector/issues/928) AC → module → tests:
 
 | AC / вимога | Модуль | Тест |
 |-------------|--------|------|
-| PLAN-30 COMPLETE + queue seed PLAN-31 inventory as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-30, plan-31 | `ProductTrancheSeedW7261LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan31AfterPlan30Complete` |
+| PLAN-30 COMPLETE + queue seed PLAN-31 inventory (historical NEXT W7-262; now inventory DONE / NEXT W7-263) | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-30, plan-31 | `ProductTrancheSeedW7261LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan31AfterPlan30Complete` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7261"`.
 

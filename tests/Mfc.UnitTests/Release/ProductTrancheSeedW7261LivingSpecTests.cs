@@ -5,6 +5,7 @@ namespace Mfc.UnitTests.Release;
 /// <summary>
 /// W7-261: PLAN-30 COMPLETE; known-limitations / queue seed locked PLAN-31 inventory (W7-262)
 /// and follow-up seed W7-263 after WATCH-BP-01.
+/// Historical: inventory DONE; LIST/RO opened; seed W7-263 refined → DESK-A11Y-LIST-01; NEXT advanced to W7-263.
 /// </summary>
 public sealed class ProductTrancheSeedW7261LivingSpecTests
 {
@@ -33,28 +34,28 @@ public sealed class ProductTrancheSeedW7261LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-262 | [#931](https://github.com/sesquicadaver/MTDirector/issues/931) | PLAN-31 — Inventory Desktop residual ListBox / Drift–Audit read-only a11y (PLAN-28 deferred) | **OPEN**",
+            "W7-262 | [#931](https://github.com/sesquicadaver/MTDirector/issues/931) | PLAN-31 — Inventory Desktop residual ListBox / Drift–Audit read-only a11y (PLAN-28 deferred) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-263 | [#932](https://github.com/sesquicadaver/MTDirector/issues/932) | Seed first PLAN-31 atomic row after inventory → DESK-A11Y-LIST-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-262 (#931)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-263 (#932)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-30 COMPLETE", plan30, StringComparison.Ordinal);
         Assert.Contains("W7-261 DONE", plan30, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-262 (#931)", plan30, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-263 (#932)", plan30, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-31", plan, StringComparison.Ordinal);
         Assert.Contains("W7-262", plan, StringComparison.Ordinal);
         Assert.Contains("W7-261 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-262 (#931)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-263 (#932)", plan, StringComparison.Ordinal);
 
         Assert.Contains("DESK-A11Y-LIST-01", plan31, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-RO-01", plan31, StringComparison.Ordinal);
-        Assert.Contains("Inventory **OPEN**", plan31, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-262 (#931)", plan31, StringComparison.Ordinal);
+        Assert.Contains("Inventory **DONE**", plan31, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-263 (#932)", plan31, StringComparison.Ordinal);
         Assert.Contains("Drift.SemanticDiffText", plan31, StringComparison.Ordinal);
         Assert.Contains("Audit.SelectedEvent.PayloadJson", plan31, StringComparison.Ordinal);
         Assert.Contains("ItemsSource=\"{Binding Drift.Events}\"", mainWindow, StringComparison.Ordinal);
