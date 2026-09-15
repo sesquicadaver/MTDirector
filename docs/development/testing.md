@@ -2036,6 +2036,16 @@ Issue [#976](https://github.com/sesquicadaver/MTDirector/issues/976) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7285"`.
 
+## Living Specification — PLAN-36 Controller host-template publish bundling inventory (W7-288)
+
+Issue [#983](https://github.com/sesquicadaver/MTDirector/issues/983) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-36 inventory ranks sole OPS-HOST-BUNDLE-01 + seeds | plan-36, package-controller.sh, packaging.md, ROADMAP, known-limitations | `Plan36ControllerHostTemplatePublishBundlingW7288LivingSpecTests.Ac1Plan36InventoryDocumentsSoleBundleRankAndSeedsOpsHostBundle01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan36ControllerHostTemplatePublishBundlingW7288"`.
+
 ## Living Specification — PLAN-35 Desktop launch-template publish bundling inventory (W7-284)
 
 Issue [#975](https://github.com/sesquicadaver/MTDirector/issues/975) AC → module → tests:
