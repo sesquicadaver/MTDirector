@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-249** ([#904](https://github.com/sesquicadaver/MTDirector/issues/904)): Seed PLAN-28 COMPLETE → PLAN-29 Desktop connection health / reconnect tranche (`ProductTrancheSeedW7249LivingSpecTests`). **§3.C NEXT = W7-250 (#907)**.
+- **W7-250** ([#907](https://github.com/sesquicadaver/MTDirector/issues/907)): PLAN-29 inventory DONE — ranked **DESK-CONN-HEALTH-01** / **DESK-CONN-RECONNECT-01**; opened **W7-252 (#910)** / **W7-253 (#911)** (`Plan29DesktopConnectionHealthReconnectW7250LivingSpecTests`). **§3.C NEXT = W7-251 (#908)**.
+
+- **W7-249** ([#904](https://github.com/sesquicadaver/MTDirector/issues/904)): Seed PLAN-28 COMPLETE → PLAN-29 Desktop connection health / reconnect tranche (`ProductTrancheSeedW7249LivingSpecTests`). **§3.C NEXT was W7-250 (#907)** (advanced by W7-250).
 
 - **W7-248** ([#903](https://github.com/sesquicadaver/MTDirector/issues/903)): DESK-A11Y-CTRL-01 — Snapshot/Diff ComboBox & CheckBox + TabItem (+ Zones/Policies selectors) `AutomationProperties.Name` (`DesktopSnapshotDiffControlAutomationLivingSpecTests`). **§3.C NEXT was W7-249 (#904)** (advanced by W7-249).
 - **W7-247** ([#899](https://github.com/sesquicadaver/MTDirector/issues/899)): Seed PLAN-28 next atomic row → DESK-A11Y-CTRL-01 as §3.C NEXT; opened **W7-248 (#903)** implement + **W7-249 (#904)** PLAN-28 COMPLETE follow-up (`ProductTrancheSeedW7247LivingSpecTests`). **§3.C NEXT was W7-248 (#903)** (advanced by W7-248).
