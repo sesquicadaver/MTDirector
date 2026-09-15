@@ -27,7 +27,7 @@ public sealed class Plan27DesktopSnapshotPanelAutomationW7238LivingSpecTests
         Assert.Contains("Copy sanitized", plan27, StringComparison.Ordinal);
         Assert.Contains("Validate (last captures)", plan27, StringComparison.Ordinal);
         Assert.Contains("MainWindow.axaml", plan27, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-275 (#956)", plan27, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-276 (#958)", plan27, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-238 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-SNAP-01", limitations, StringComparison.Ordinal);
@@ -39,7 +39,7 @@ public sealed class Plan27DesktopSnapshotPanelAutomationW7238LivingSpecTests
             "W7-238 | [#883](https://github.com/sesquicadaver/MTDirector/issues/883) | PLAN-27 — Inventory Desktop Snapshot/Node/Drift/Audit AutomationProperties residual tranche after PLAN-26 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-275 (#956)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-276 (#958)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-239", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-240", continuous, StringComparison.Ordinal);
