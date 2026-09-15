@@ -13,6 +13,12 @@ public interface IDeploymentServiceClient
         IReadOnlyList<DeploymentDevicePlanInput> devices,
         CancellationToken cancellationToken = default);
 
+    Task<CreateDeploymentPlanFromSealedArtifactsResponse> CreatePlanFromSealedArtifactsAsync(
+        Guid nodeId,
+        Guid analysisRunId,
+        IReadOnlyList<SealedArtifactDeviceRef> devices,
+        CancellationToken cancellationToken = default);
+
     Task<DeploymentOperationSummary> StartAsync(
         Guid planId,
         Sha256 planHash,

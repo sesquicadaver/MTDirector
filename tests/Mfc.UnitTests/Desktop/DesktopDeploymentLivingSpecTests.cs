@@ -13,6 +13,7 @@ public sealed class DesktopDeploymentLivingSpecTests
     private static readonly string[] ExpectedWireMethods =
     [
         "CreatePlan",
+        "CreatePlanFromSealedArtifacts",
         "GetRecoveryStatus",
         "Rollback",
         "Start",
@@ -27,6 +28,7 @@ public sealed class DesktopDeploymentLivingSpecTests
 
         Type client = typeof(IDeploymentServiceClient);
         Assert.NotNull(client.GetMethod(nameof(IDeploymentServiceClient.CreatePlanAsync)));
+        Assert.NotNull(client.GetMethod(nameof(IDeploymentServiceClient.CreatePlanFromSealedArtifactsAsync)));
         Assert.NotNull(client.GetMethod(nameof(IDeploymentServiceClient.StartAsync)));
         Assert.NotNull(client.GetMethod(nameof(IDeploymentServiceClient.WatchAsync)));
         Assert.NotNull(client.GetMethod(nameof(IDeploymentServiceClient.RollbackAsync)));
@@ -89,7 +91,7 @@ public sealed class DesktopDeploymentLivingSpecTests
         await vm.CreatePlanCommand.ExecuteAsync(null);
 
         Assert.Null(vm.ErrorText);
-        Assert.Equal(1, client.CreatePlanCalls);
+        Assert.Equal(1, client.CreatePlanFromSealedArtifactsCalls);
         Assert.Equal(planId, vm.PlanId);
         Assert.Equal("filter/forward", Assert.Single(vm.SemanticDiffRows).PathText);
         Assert.Contains("Plan", vm.StatusText, StringComparison.Ordinal);
@@ -106,7 +108,7 @@ public sealed class DesktopDeploymentLivingSpecTests
 
         await vm.CreatePlanCommand.ExecuteAsync(null);
 
-        Assert.Equal(0, client.CreatePlanCalls);
+        Assert.Equal(0, client.CreatePlanFromSealedArtifactsCalls);
         Assert.Contains("Select a Node", vm.ErrorText, StringComparison.Ordinal);
         Assert.False(vm.HasForceApply);
         Assert.False(vm.HasRawRouterOsCommands);
@@ -177,7 +179,28 @@ public sealed class DesktopDeploymentLivingSpecTests
             inventory.SelectedNode = site.Children[0];
         }
 
-        return new DeploymentViewModel(client, connection, inventory);
+        SealedCompileDeployHandoffStore handoff = new();
+        DeploymentViewModel vm = new(client, connection, inventory, handoff);
+        if (selectNode)
+        {
+            handoff.Replace(new SealedCompileDeployHandoff
+            {
+                NodeId = resolvedNodeId,
+                AnalysisRunId = Guid.Parse("eeeeeeee-ffff-aaaa-bbbb-cccccccccccc"),
+                LogicalEffectivePolicyHash = Hash(2),
+                Artifacts =
+                [
+                    new SealedCompileArtifactRef
+                    {
+                        DeviceId = deviceId,
+                        ResourceHash = Hash(3),
+                        ArtifactId = $"sealed-{deviceId:D}",
+                    },
+                ],
+            });
+        }
+
+        return vm;
     }
 
     private static Sha256 Hash(byte fill)
@@ -206,7 +229,7 @@ public sealed class DesktopDeploymentLivingSpecTests
     {
         public DeploymentPlanSummary Plan { get; init; } = new();
 
-        public int CreatePlanCalls { get; private set; }
+        public int CreatePlanFromSealedArtifactsCalls { get; private set; }
 
         public Task<DeploymentPlanSummary> CreatePlanAsync(
             Guid nodeId,
@@ -215,9 +238,19 @@ public sealed class DesktopDeploymentLivingSpecTests
             Sha256 topologyHash,
             IReadOnlyList<DeploymentDevicePlanInput> devices,
             CancellationToken cancellationToken = default)
+            => throw new NotSupportedException("CreatePlanAsync is legacy; Living Spec uses CreatePlanFromSealedArtifactsAsync.");
+
+        public Task<CreateDeploymentPlanFromSealedArtifactsResponse> CreatePlanFromSealedArtifactsAsync(
+            Guid nodeId,
+            Guid analysisRunId,
+            IReadOnlyList<SealedArtifactDeviceRef> devices,
+            CancellationToken cancellationToken = default)
         {
-            CreatePlanCalls++;
-            return Task.FromResult(Plan);
+            CreatePlanFromSealedArtifactsCalls++;
+            return Task.FromResult(new CreateDeploymentPlanFromSealedArtifactsResponse
+            {
+                Plan = Plan,
+            });
         }
 
         public Task<DeploymentOperationSummary> StartAsync(

@@ -410,9 +410,11 @@ public sealed class PolicyDesktopServiceTests
 
         Assert.Equal(nodeId, compiled.NodeId);
         Assert.Equal(Convert.ToHexString(Enumerable.Repeat((byte)3, 32).ToArray()).ToLowerInvariant(), compiled.LogicalEffectiveHashHex);
-        Assert.Equal(
-            $"device={deviceId:D} artifact=art-1 rules=2 new=True",
-            Assert.Single(compiled.ArtifactLines));
+        Assert.Contains($"device={deviceId:D} artifact=art-1", Assert.Single(compiled.ArtifactLines), StringComparison.Ordinal);
+        Assert.Contains("resource=", compiled.ArtifactLines[0], StringComparison.Ordinal);
+        Assert.Contains("rules=2 new=True", compiled.ArtifactLines[0], StringComparison.Ordinal);
+        Assert.Single(compiled.Artifacts);
+        Assert.Equal(deviceId, compiled.Artifacts[0].DeviceId);
         Assert.Equal(nodeId, client.LastCompileNodeId);
         Assert.Equal(runId, client.LastCompileRunId);
         Assert.DoesNotContain("/ip/firewall", compiled.ArtifactLines[0], StringComparison.OrdinalIgnoreCase);

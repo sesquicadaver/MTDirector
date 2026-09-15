@@ -11,6 +11,8 @@ import "mfc/v1/common.proto";
 // Mutation RPCs require idempotency_key. No ForceApply, no raw RouterOS command surface.
 service DeploymentService {
   rpc CreatePlan(CreateDeploymentPlanRequest) returns (DeploymentPlanSummary);
+  // AUDIT-GUI-01: Controller builds device plans from sealed compile artifacts (no Desktop fabrications).
+  rpc CreatePlanFromSealedArtifacts(CreateDeploymentPlanFromSealedArtifactsRequest) returns (CreateDeploymentPlanFromSealedArtifactsResponse);
   rpc Start(StartDeploymentRequest) returns (DeploymentOperationSummary);
   rpc Watch(WatchDeploymentRequest) returns (stream DeploymentProgress);
   rpc Rollback(RollbackDeploymentRequest) returns (DeploymentOperationSummary);
@@ -108,6 +110,23 @@ message CreateDeploymentPlanRequest {
   Sha256 analysis_bundle_hash = 4;
   Sha256 topology_projection_hash = 5;
   repeated DeploymentDevicePlanInput devices = 6;
+}
+
+message SealedArtifactDeviceRef {
+  Uuid device_id = 1;
+  Sha256 new_artifact_resource_hash = 2;
+}
+
+message CreateDeploymentPlanFromSealedArtifactsRequest {
+  Uuid idempotency_key = 1;
+  Uuid node_id = 2;
+  Uuid analysis_run_id = 3;
+  repeated SealedArtifactDeviceRef devices = 4;
+}
+
+message CreateDeploymentPlanFromSealedArtifactsResponse {
+  DeploymentPlanSummary plan = 1;
+  repeated DeploymentPacketPathPairFact capture_packet_path_pairs = 2;
 }
 
 message DeploymentProbeView {

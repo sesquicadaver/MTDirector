@@ -226,8 +226,11 @@ public sealed class OnboardingViewModelTests
 
         Assert.Null(vm.ErrorText);
         Assert.Equal(nodeId, client.LastNodeId);
-        Assert.Equal([deviceA, deviceB], client.LastDeviceIds);
-        Assert.Equal("Prerequisites passed.", vm.StatusText);
+        Assert.Empty(client.LastDeviceIds);
+        Assert.Contains("blockers", vm.StatusText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(vm.Findings, f => f.Code.Contains("ONBOARDING", StringComparison.OrdinalIgnoreCase)
+            || f.Code.Contains("FACTS", StringComparison.OrdinalIgnoreCase)
+            || !string.IsNullOrWhiteSpace(f.Message));
     }
 
     [Fact]
@@ -237,21 +240,18 @@ public sealed class OnboardingViewModelTests
         Guid nodeB = Guid.Parse("cccccccc-dddd-eeee-ffff-000000000000");
         Guid deviceA = Guid.Parse("11111111-2222-3333-4444-555555555555");
         Guid deviceB = Guid.Parse("22222222-3333-4444-5555-666666666666");
+        Guid planId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
         FakeConnection connection = new();
         InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
         InventoryNodeViewModel site = BuildTwoNodeSite(nodeA, deviceA, nodeB, deviceB);
         inventory.Roots.Add(site);
         inventory.SelectedNode = site.Children[0];
-        FakeOnboardingClient client = new()
-        {
-            CreatePlanResponse = new OnboardingPlanSummary
-            {
-                PlanId = DesktopProtoUuid.FromGuid(Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")),
-                PlanHash = Hash("plan"),
-            },
-        };
+        FakeOnboardingClient client = new();
         using OnboardingViewModel vm = new(client, connection, inventory);
-        await vm.CreatePlanCommand.ExecuteAsync(null);
+        inventory.SelectedNode = null;
+        inventory.SelectedNode = site.Children[0];
+        vm.PlanId = planId;
+        vm.PlanHash = Hash("plan");
         Assert.NotNull(vm.PlanId);
 
         inventory.SelectedNode = site.Children[1];
@@ -280,16 +280,12 @@ public sealed class OnboardingViewModelTests
         InventoryNodeViewModel site = BuildTwoNodeSite(nodeA, deviceA, nodeB, deviceB);
         inventory.Roots.Add(site);
         inventory.SelectedNode = site.Children[0];
-        FakeOnboardingClient client = new()
-        {
-            CreatePlanResponse = new OnboardingPlanSummary
-            {
-                PlanId = DesktopProtoUuid.FromGuid(planId),
-                PlanHash = Hash("plan"),
-            },
-        };
+        FakeOnboardingClient client = new();
         using OnboardingViewModel vm = new(client, connection, inventory);
-        await vm.CreatePlanCommand.ExecuteAsync(null);
+        inventory.SelectedNode = null;
+        inventory.SelectedNode = site.Children[0];
+        vm.PlanId = planId;
+        vm.PlanHash = Hash("plan");
 
         inventory.SelectedNode = site.Children[0].Children[0];
 
@@ -409,7 +405,9 @@ public sealed class OnboardingViewModelTests
         {
             LastNodeId = nodeId;
             LastDeviceIds = devices.Select(d => DesktopProtoUuid.ToGuid(d.DeviceId)).ToList();
-            return Task.FromResult(new OnboardingPrerequisiteReport { Passed = true });
+            // AUDIT-GUI-01: empty client facts are fail-closed (Controller no longer receives fabrications).
+            bool passed = devices.Count > 0;
+            return Task.FromResult(new OnboardingPrerequisiteReport { Passed = passed });
         }
 
         public Task<OnboardingPlanSummary> CreatePlanAsync(

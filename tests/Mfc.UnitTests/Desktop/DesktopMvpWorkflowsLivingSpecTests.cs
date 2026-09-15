@@ -860,7 +860,8 @@ public sealed class DesktopMvpWorkflowsLivingSpecTests
         string deployment = ReadSource("src/Mfc.Desktop/ViewModels/DeploymentViewModel.cs");
         string selection = ReadSource("src/Mfc.Desktop/ViewModels/InventoryOpsSelection.cs");
         Assert.Contains("InventoryOpsSelection.RequireDeviceIds", onboarding, StringComparison.Ordinal);
-        Assert.Contains("InventoryOpsSelection.RequireDeviceIds", deployment, StringComparison.Ordinal);
+        Assert.Contains("CreatePlanFromSealedArtifactsAsync", deployment, StringComparison.Ordinal);
+        Assert.Contains("ISealedCompileDeployHandoffStore", deployment, StringComparison.Ordinal);
         Assert.Contains("RequireDeviceIds", selection, StringComparison.Ordinal);
         Assert.DoesNotContain("FirstOrDefault", onboarding, StringComparison.Ordinal);
         Assert.DoesNotContain("FirstOrDefault", deployment, StringComparison.Ordinal);

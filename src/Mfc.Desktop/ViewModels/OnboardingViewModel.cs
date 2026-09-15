@@ -1,10 +1,7 @@
 using System.Collections.ObjectModel;
-using System.Security.Cryptography;
-using System.Text;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Google.Protobuf;
 using Grpc.Core;
 using Mfc.Contracts.Mfc.V1;
 using Mfc.Desktop.Services;
@@ -100,12 +97,23 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
             InventoryNodeViewModel node = InventoryOpsSelection.RequireNode(
                 _inventory.SelectedNode,
                 _inventory.Roots);
-            IReadOnlyList<Guid> deviceIds = InventoryOpsSelection.RequireDeviceIds(node);
+            _ = InventoryOpsSelection.RequireDeviceIds(node);
             OnboardingPrerequisiteReport report = await _client.ValidatePrerequisitesAsync(
                 node.Id,
-                deviceIds.Select(DefaultFacts).ToList(),
+                [],
                 CancellationToken.None).ConfigureAwait(true);
             Findings.Clear();
+            if (report.Findings.Count == 0 && !report.Passed)
+            {
+                Findings.Add(new OnboardingFindingListItem
+                {
+                    Code = "ONBOARDING_FACTS_REQUIRED",
+                    Severity = "BLOCKER",
+                    Message =
+                        "Controller must supply capture-derived prerequisite facts; Desktop no longer fabricates DefaultFacts (AUDIT-GUI-01).",
+                });
+            }
+
             foreach (OnboardingFinding finding in report.Findings)
             {
                 Findings.Add(new OnboardingFindingListItem
@@ -117,6 +125,10 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
             }
 
             StatusText = report.Passed ? "Prerequisites passed." : "Prerequisites have blockers.";
+            if (!report.Passed && Findings.Count == 0)
+            {
+                StatusText = "Prerequisites blocked: empty facts are fail-closed (AUDIT-GUI-01).";
+            }
         }).ConfigureAwait(true);
     }
 
@@ -128,29 +140,9 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
             InventoryNodeViewModel node = InventoryOpsSelection.RequireNode(
                 _inventory.SelectedNode,
                 _inventory.Roots);
-            Sha256 hash = Utf8Sha256("onboarding-desktop");
-            OnboardingPlanSummary plan = await _client.CreatePlanAsync(
-                node.Id,
-                hash,
-                hash,
-                InventoryOpsSelection.RequireDeviceIds(node).Select(DefaultDevicePlan).ToList(),
-                CancellationToken.None).ConfigureAwait(true);
-            PlanId = DesktopProtoUuid.ToGuid(plan.PlanId);
-            PlanHash = plan.PlanHash;
-            _mutationOwnerNodeId = node.Id;
-            Placements.Clear();
-            foreach (OnboardingAnchorPlacementView placement in plan.Placements)
-            {
-                Placements.Add(new OnboardingPlacementListItem
-                {
-                    Marker = placement.Marker,
-                    Mode = placement.Mode.ToString(),
-                    BeforeLabel = placement.BeforeLabel,
-                    AfterLabel = placement.AfterLabel,
-                });
-            }
-
-            StatusText = $"Plan {PlanId:D} created.";
+            _ = InventoryOpsSelection.RequireDeviceIds(node);
+            throw new InvalidOperationException(
+                "Onboarding Create plan requires Controller-built device plans from last capture; Desktop no longer fabricates hashes (AUDIT-GUI-01).");
         }).ConfigureAwait(true);
     }
 
@@ -383,65 +375,6 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
         TargetHint = InventoryOpsSelection.FormatTargetHint(_inventory.SelectedNode, _inventory.Roots);
         HasVrrpPairTarget = InventoryOpsSelection.IsVrrpPair(_inventory.SelectedNode, _inventory.Roots);
     }
-
-    private static OnboardingDevicePrerequisiteFacts DefaultFacts(Guid nodeId)
-        => new()
-        {
-            DeviceId = DesktopProtoUuid.FromGuid(nodeId),
-            ExactSupportedBuild = true,
-            VersionMajor = 7,
-            VersionMinor = 16,
-            VersionPatch = 2,
-            VersionChannel = "stable",
-            SupportState = 0,
-            PlainApi = new OnboardingIpServiceFacts { Found = true, Disabled = true, Port = 8728 },
-            ApiSsl = new OnboardingIpServiceFacts
-            {
-                Found = true,
-                Disabled = false,
-                Port = 8729,
-                Certificate = "mfc-api",
-                MaxSessions = 4,
-            },
-            ReadAccount = new OnboardingServiceAccountFacts
-            {
-                Name = "mfc-read",
-                GroupName = "mfc-read-group",
-                Policies = { "api", "read" },
-                AddressPrefixes = { "10.0.0.0/24" },
-            },
-            DeploymentAccount = new OnboardingServiceAccountFacts
-            {
-                Name = "mfc-deploy",
-                GroupName = "mfc-deploy-group",
-                Policies = { "api", "read", "write", "test" },
-                AddressPrefixes = { "10.0.0.0/24" },
-            },
-            DeviceMode = new OnboardingDeviceModeFacts { SchedulerEnabled = true, Flagged = false },
-            ExpectedApiSslPort = 8729,
-        };
-
-    private static OnboardingDevicePlanInput DefaultDevicePlan(Guid deviceOrNodeId)
-    {
-        Sha256 hash = Utf8Sha256(deviceOrNodeId.ToString("D"));
-        return new OnboardingDevicePlanInput
-        {
-            DeviceId = DesktopProtoUuid.FromGuid(deviceOrNodeId),
-            ExpectedRouterosVersion = "7.16.2",
-            ExpectedCapabilityHash = hash,
-            ExpectedConfigurationHash = hash,
-            ExpectedCompatibilityHash = hash,
-            ExpectedApiServiceHash = hash,
-            ExpectedReadAccountHash = hash,
-            ExpectedDeploymentAccountHash = hash,
-            ExpectedDeviceModeHash = hash,
-            ExpectedGuardHash = hash,
-            WatchdogTtlSeconds = 180,
-        };
-    }
-
-    private static Sha256 Utf8Sha256(string value)
-        => new() { Value = ByteString.CopyFrom(SHA256.HashData(Encoding.UTF8.GetBytes(value))) };
 
     private sealed record StartWatchOutcome(
         OnboardingOperationSummary Started,
