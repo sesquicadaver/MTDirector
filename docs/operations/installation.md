@@ -40,7 +40,23 @@ sudo systemctl enable --now mfc-controller.service
 sudo systemctl status mfc-controller.service
 ```
 
-Windows Service host template remains **OPS-HOST-WINSVC-01** (not this row). Native MSI/setup remains out of scope (W7-22).
+### Windows Service / WinSW (OPS-HOST-WINSVC-01)
+
+Framework-dependent Controller (`MFC_RELEASE_RID=win-x64`) can run as a Windows Service using the repo WinSW template [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml) (matches `package-controller.sh` layout: `%BASE%\Mfc.Controller.exe`).
+
+```powershell
+# After package-controller.sh with MFC_RELEASE_RID=win-x64:
+New-Item -ItemType Directory -Force -Path C:\mfc\controller | Out-Null
+Copy-Item -Recurse -Force "$env:OUT_DIR\controller\*" C:\mfc\controller\
+# Place WinSW as mfc-controller.exe beside the publish tree, then:
+Copy-Item packaging\windows\mfc-controller.winsw.xml C:\mfc\controller\mfc-controller.xml
+# Set MFC__* machine env (or edit <env> in the XML), then:
+.\mfc-controller.exe install
+.\mfc-controller.exe start
+.\mfc-controller.exe status
+```
+
+Native MSI/setup remains out of scope (W7-22). Do not regress the Linux systemd unit.
 
 ## Desktop
 

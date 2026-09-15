@@ -39,7 +39,7 @@ ls -la "$OUT_DIR"
 | Template | Path | Notes |
 |----------|------|-------|
 | systemd (Linux) | [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service) | OPS-HOST-SYSTEMD-01 — framework-dependent Controller; `WorkingDirectory`/`ExecStart` → `/opt/mfc/controller/Mfc.Controller` |
-| Windows Service | *(OPS-HOST-WINSVC-01)* | Not yet in tree; do not invent MSI (W7-22) |
+| Windows Service (WinSW) | [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml) | OPS-HOST-WINSVC-01 — framework-dependent Controller; `%BASE%\Mfc.Controller.exe`; do not invent MSI (W7-22) |
 
 ## Desktop installer (MVP)
 

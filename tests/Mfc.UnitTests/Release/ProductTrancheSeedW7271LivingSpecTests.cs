@@ -4,6 +4,7 @@ namespace Mfc.UnitTests.Release;
 
 /// <summary>
 /// W7-271: seed locked OPS-HOST-WINSVC-01 (W7-272); opens PLAN-32 COMPLETE follow-up (W7-273).
+/// Historical: WINSVC-01 DONE; NEXT = W7-273 PLAN-32 COMPLETE seed.
 /// </summary>
 public sealed class ProductTrancheSeedW7271LivingSpecTests
 {
@@ -27,26 +28,26 @@ public sealed class ProductTrancheSeedW7271LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-272 | [#951](https://github.com/sesquicadaver/MTDirector/issues/951) | OPS-HOST-WINSVC-01 — Windows Service host template for framework-dependent Controller | **OPEN**",
+            "W7-272 | [#951](https://github.com/sesquicadaver/MTDirector/issues/951) | OPS-HOST-WINSVC-01 — Windows Service host template for framework-dependent Controller | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-273 | [#952](https://github.com/sesquicadaver/MTDirector/issues/952) | Seed next after OPS-HOST-WINSVC-01 (PLAN-32 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-272 (#951)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-273 (#952)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-271 (#947) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-272", plan, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-WINSVC-01", plan, StringComparison.Ordinal);
         Assert.Contains("W7-273", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-272 (#951)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-273 (#952)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-271 (#947) DONE", plan32, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-WINSVC-01", plan32, StringComparison.Ordinal);
         Assert.Contains("W7-272 (#951)", plan32, StringComparison.Ordinal);
         Assert.Contains("W7-273 (#952)", plan32, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-272 (#951)", plan32, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-273 (#952)", plan32, StringComparison.Ordinal);
         Assert.Contains("packaging/windows/mfc-controller.winsw.xml", plan32, StringComparison.Ordinal);
     }
 
