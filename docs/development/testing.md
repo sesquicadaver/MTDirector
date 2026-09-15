@@ -1809,6 +1809,16 @@ Issue [#907](https://github.com/sesquicadaver/MTDirector/issues/907) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan29DesktopConnectionHealthReconnectW7250"`.
 
+## Living Specification — Product tranche seed after DESK-CONN-RECONNECT-01 / PLAN-29 COMPLETE (W7-255)
+
+Issue [#916](https://github.com/sesquicadaver/MTDirector/issues/916) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-29 COMPLETE + queue seed PLAN-30 inventory as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-29, plan-30 | `ProductTrancheSeedW7255LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan30AfterPlan29Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7255"`.
+
 ## Living Specification — Product tranche seed after DESK-A11Y-CTRL-01 / PLAN-28 COMPLETE (W7-249)
 
 Issue [#904](https://github.com/sesquicadaver/MTDirector/issues/904) AC → module → tests:
