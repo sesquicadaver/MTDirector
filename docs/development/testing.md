@@ -1894,12 +1894,15 @@ Issue [#932](https://github.com/sesquicadaver/MTDirector/issues/932) AC → modu
 | known-limitations + queue seed DESK-A11Y-LIST-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-31 | `ProductTrancheSeedW7263LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskA11yList01AsNext` |
 | known-limitations + queue seed DESK-A11Y-RO-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-31 | `ProductTrancheSeedW7265LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskA11yRo01AsNext` |
 | known-limitations + queue seed PLAN-32 inventory after PLAN-31 COMPLETE | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-31, plan-32 | `ProductTrancheSeedW7267LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan32AfterPlan31Complete` |
+| known-limitations + queue seed OPS-HOST-SYSTEMD-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-32 | `ProductTrancheSeedW7269LivingSpecTests.Ac1KnownLimitationsAndQueueSeedOpsHostSystemd01AsNext` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7263"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7265"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7267"`.
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7269"`.
 
 ## Living Specification — PLAN-32 Controller host-process packaging inventory (W7-268)
 

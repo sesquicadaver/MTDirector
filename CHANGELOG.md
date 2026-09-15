@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-268** ([#943](https://github.com/sesquicadaver/MTDirector/issues/943)): PLAN-32 inventory DONE — ranked **OPS-HOST-SYSTEMD-01** / **OPS-HOST-WINSVC-01**; opened **W7-270 (#946)** / **W7-271 (#947)** (`Plan32ControllerHostProcessPackagingW7268LivingSpecTests`). **§3.C NEXT = W7-269 (#944)**.
+- **W7-269** ([#944](https://github.com/sesquicadaver/MTDirector/issues/944)): Seed PLAN-32 first atomic row → OPS-HOST-SYSTEMD-01 as §3.C NEXT; keep **W7-270 (#946)** implement + **W7-271 (#947)** WINSVC follow-up open (`ProductTrancheSeedW7269LivingSpecTests`). **§3.C NEXT = W7-270 (#946)**.
+
+- **W7-268** ([#943](https://github.com/sesquicadaver/MTDirector/issues/943)): PLAN-32 inventory DONE — ranked **OPS-HOST-SYSTEMD-01** / **OPS-HOST-WINSVC-01**; opened **W7-270 (#946)** / **W7-271 (#947)** (`Plan32ControllerHostProcessPackagingW7268LivingSpecTests`). **§3.C NEXT was W7-269 (#944)** (advanced by W7-269).
 
 - **W7-267** ([#940](https://github.com/sesquicadaver/MTDirector/issues/940)): Seed PLAN-31 COMPLETE → PLAN-32 Controller host-process packaging templates tranche (`ProductTrancheSeedW7267LivingSpecTests`). **§3.C NEXT was W7-268 (#943)** (advanced by W7-268).
 
