@@ -28,7 +28,7 @@ public sealed class Plan28DesktopResidualFieldControlAutomationW7244LivingSpecTe
         Assert.Contains("draft name (CompanyBaseline)", plan28, StringComparison.Ordinal);
         Assert.Contains("Configuration only", plan28, StringComparison.Ordinal);
         Assert.Contains("MainWindow.axaml", plan28, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-246 (#898)", plan28, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-247 (#899)", plan28, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-244 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-FIELD-01", limitations, StringComparison.Ordinal);
@@ -41,14 +41,14 @@ public sealed class Plan28DesktopResidualFieldControlAutomationW7244LivingSpecTe
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-246 | [#898](https://github.com/sesquicadaver/MTDirector/issues/898) | DESK-A11Y-FIELD-01 — Zones / Policies draft TextBox AutomationProperties.Name | **OPEN**",
+            "W7-246 | [#898](https://github.com/sesquicadaver/MTDirector/issues/898) | DESK-A11Y-FIELD-01 — Zones / Policies draft TextBox AutomationProperties.Name | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-247 | [#899](https://github.com/sesquicadaver/MTDirector/issues/899) | Seed next PLAN-28 row after DESK-A11Y-FIELD-01 → DESK-A11Y-CTRL-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-246 (#898)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-247 (#899)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-245", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-246", continuous, StringComparison.Ordinal);

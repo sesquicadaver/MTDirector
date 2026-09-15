@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-245** ([#896](https://github.com/sesquicadaver/MTDirector/issues/896)): Seed PLAN-28 first atomic row → DESK-A11Y-FIELD-01 as §3.C NEXT (`ProductTrancheSeedW7245LivingSpecTests`). **§3.C NEXT = W7-246 (#898)**.
+- **W7-246** ([#898](https://github.com/sesquicadaver/MTDirector/issues/898)): DESK-A11Y-FIELD-01 — Zones / Policies draft TextBox `AutomationProperties.Name` (`DesktopZonesPoliciesFieldAutomationLivingSpecTests`). **§3.C NEXT = W7-247 (#899)**.
+
+- **W7-245** ([#896](https://github.com/sesquicadaver/MTDirector/issues/896)): Seed PLAN-28 first atomic row → DESK-A11Y-FIELD-01 as §3.C NEXT (`ProductTrancheSeedW7245LivingSpecTests`). **§3.C NEXT was W7-246 (#898)** (advanced by W7-246).
 
 - **W7-244** ([#895](https://github.com/sesquicadaver/MTDirector/issues/895)): PLAN-28 inventory DONE — ranked **DESK-A11Y-FIELD-01** / **DESK-A11Y-CTRL-01**; opened **W7-246 (#898)** / **W7-247 (#899)** (`Plan28DesktopResidualFieldControlAutomationW7244LivingSpecTests`). **§3.C NEXT was W7-245 (#896)** (advanced by W7-245).
 

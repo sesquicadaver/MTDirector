@@ -410,16 +410,31 @@
                   <Border Grid.Column="0" Grid.Row="0" Classes="mfc-panel">
                     <StackPanel Spacing="6">
                       <TextBlock Classes="mfc-label" Text="Company zones" />
-                      <TextBox Classes="mfc-field" PlaceholderText="key" Text="{Binding Zones.NewZoneKey}" />
-                      <TextBox Classes="mfc-field" PlaceholderText="name" Text="{Binding Zones.NewZoneName}" />
-                      <TextBox Classes="mfc-field" PlaceholderText="description (optional)" Text="{Binding Zones.NewZoneDescription}" />
+                      <TextBox Classes="mfc-field"
+                               AutomationProperties.Name="key"
+                               PlaceholderText="key"
+                               Text="{Binding Zones.NewZoneKey}" />
+                      <TextBox Classes="mfc-field"
+                               AutomationProperties.Name="name"
+                               PlaceholderText="name"
+                               Text="{Binding Zones.NewZoneName}" />
+                      <TextBox Classes="mfc-field"
+                               AutomationProperties.Name="description (optional)"
+                               PlaceholderText="description (optional)"
+                               Text="{Binding Zones.NewZoneDescription}" />
                       <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                         <Button Classes="mfc-action" Content="Create" AutomationProperties.Name="Create" Command="{Binding Zones.CreateZoneCommand}" MinWidth="90" />
                         <Button Classes="mfc-action" Content="Delete" AutomationProperties.Name="Delete" Command="{Binding Zones.DeleteZoneCommand}" MinWidth="90" />
                       </WrapPanel>
                       <TextBlock Classes="mfc-label" Text="Edit selected zone" />
-                      <TextBox Classes="mfc-field" PlaceholderText="name" Text="{Binding Zones.EditZoneName}" />
-                      <TextBox Classes="mfc-field" PlaceholderText="description (empty clears)" Text="{Binding Zones.EditZoneDescription}" />
+                      <TextBox Classes="mfc-field"
+                               AutomationProperties.Name="name"
+                               PlaceholderText="name"
+                               Text="{Binding Zones.EditZoneName}" />
+                      <TextBox Classes="mfc-field"
+                               AutomationProperties.Name="description (empty clears)"
+                               PlaceholderText="description (empty clears)"
+                               Text="{Binding Zones.EditZoneDescription}" />
                       <Button Classes="mfc-action"
                               Content="Update zone"
                               AutomationProperties.Name="Update zone"
@@ -449,7 +464,10 @@
                       <ComboBox Classes="mfc-field"
                                 ItemsSource="{Binding Zones.BindingKinds}"
                                 SelectedItem="{Binding Zones.SelectedBindingKind, Mode=TwoWay}" />
-                      <TextBox Classes="mfc-field" PlaceholderText="values (comma-separated)" Text="{Binding Zones.BindingValuesText}" />
+                      <TextBox Classes="mfc-field"
+                               AutomationProperties.Name="values (comma-separated)"
+                               PlaceholderText="values (comma-separated)"
+                               Text="{Binding Zones.BindingValuesText}" />
                       <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                         <Button Classes="mfc-action" Content="Upsert binding" AutomationProperties.Name="Upsert binding" Command="{Binding Zones.UpsertBindingCommand}" MinWidth="120" />
                         <Button Classes="mfc-action" Content="Delete binding" AutomationProperties.Name="Delete binding" Command="{Binding Zones.DeleteBindingCommand}" MinWidth="120" />
@@ -1194,6 +1212,7 @@
                 <TextBlock Classes="mfc-label" Text="Revision" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="policy revision (from catalog)"
                            PlaceholderText="policy revision (from catalog)"
                            Text="{Binding Policies.RevisionIdText}"
                            MinWidth="240"
@@ -1202,6 +1221,7 @@
                 </WrapPanel>
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="draft name (CompanyBaseline)"
                            PlaceholderText="draft name (CompanyBaseline)"
                            Text="{Binding Policies.DraftNameText}"
                            MinWidth="240"
@@ -1233,11 +1253,13 @@
                            TextWrapping="Wrap" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="device (from inventory tree)"
                            PlaceholderText="device (from inventory tree)"
                            Text="{Binding Policies.SafetyDeviceIdText}"
                            MinWidth="240"
                            Width="320" />
                   <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="controller source CIDR (required)"
                            PlaceholderText="controller source CIDR (required)"
                            Text="{Binding Policies.ControllerSourcePrefixesText}"
                            MinWidth="220"
@@ -1314,7 +1336,10 @@
                             MinWidth="120"
                             Width="160" />
                 </WrapPanel>
-                <TextBox Classes="mfc-field" PlaceholderText="description" Text="{Binding Policies.RuleDescriptionText}" />
+                <TextBox Classes="mfc-field"
+                         AutomationProperties.Name="description"
+                         PlaceholderText="description"
+                         Text="{Binding Policies.RuleDescriptionText}" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <Button Classes="mfc-action" Content="Add rule" AutomationProperties.Name="Add rule" Command="{Binding Policies.AddRuleCommand}" MinWidth="100" />
                   <Button Classes="mfc-action" Content="Update rule" AutomationProperties.Name="Update rule" Command="{Binding Policies.UpdateRuleCommand}" MinWidth="110" />
@@ -1345,6 +1370,7 @@
                 <TextBlock Classes="mfc-label" Text="Address objects" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="name"
                            PlaceholderText="name"
                            Text="{Binding Policies.AddressNameText}"
                            MinWidth="140"
@@ -1361,6 +1387,7 @@
                           MinWidth="120" />
                 </WrapPanel>
                 <TextBox Classes="mfc-field"
+                         AutomationProperties.Name="host / CIDR / range per line"
                          PlaceholderText="host / CIDR / range per line"
                          Text="{Binding Policies.AddressEntriesText}"
                          AcceptsReturn="True"
@@ -1387,11 +1414,13 @@
                 <TextBlock Classes="mfc-label" Text="Service objects" />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="name"
                            PlaceholderText="name"
                            Text="{Binding Policies.ServiceNameText}"
                            MinWidth="140"
                            Width="180" />
                   <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="TCP port"
                            PlaceholderText="TCP port"
                            Text="{Binding Policies.ServiceTcpPortText}"
                            MinWidth="80"
@@ -1433,6 +1462,7 @@
                             MinWidth="120"
                             Width="140" />
                   <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="DROP / REJECT / RETURN_TO_UNMANAGED"
                            PlaceholderText="DROP / REJECT / RETURN_TO_UNMANAGED"
                            Text="{Binding Policies.ContractDisposition}"
                            MinWidth="180"
@@ -1471,6 +1501,7 @@
                            Text="Compose node UUID defaults from the selected inventory Node (or the parent Node of a Device). Create draft fills the revision id; Load remains optional." />
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="node (from inventory tree)"
                            PlaceholderText="node (from inventory tree)"
                            Text="{Binding Policies.ComposeNodeIdText}"
                            MinWidth="240"
@@ -1490,6 +1521,7 @@
                     </ComboBox.ItemTemplate>
                   </ComboBox>
                   <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="baseline revision UUID"
                            PlaceholderText="baseline revision UUID"
                            Text="{Binding Policies.DiffBaselineRevisionIdText}"
                            MinWidth="240"
@@ -1500,6 +1532,7 @@
                 </WrapPanel>
                 <WrapPanel Classes="mfc-toolbar" ItemSpacing="8">
                   <TextBox Classes="mfc-field"
+                           AutomationProperties.Name="capability hash (64 hex, from Snapshots)"
                            PlaceholderText="capability hash (64 hex, from Snapshots)"
                            Text="{Binding Policies.CompileCapabilityHashText}"
                            MinWidth="240"
