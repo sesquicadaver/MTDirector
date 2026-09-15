@@ -13,6 +13,7 @@ public sealed class DeploymentProtoContractTests
         Assert.Equal(
             [
                 "CreatePlan",
+                "CreatePlanFromSealedArtifacts",
                 "GetRecoveryStatus",
                 "Rollback",
                 "Start",
