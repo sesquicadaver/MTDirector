@@ -1,7 +1,7 @@
 # PLAN-27 — Desktop Snapshot / Node / Drift / Audit AutomationProperties residual tranche
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15; **COMPLETE** 2026-09-15)  
-**Status:** **PLAN-27 COMPLETE** — Inventory **DONE** (W7-238); seed **W7-239 (#884) DONE**; **DESK-A11Y-SNAP-01 W7-240 (#886) DONE**; seed **W7-241 (#887) DONE**; **DESK-A11Y-PANEL-01 W7-242 (#891) DONE**; seed **W7-243 (#892) DONE**; successor **PLAN-28 COMPLETE**; **PLAN-29** inventory **W7-250 (#907) DONE**; seed **W7-251 (#908) OPEN** (**§3.C NEXT**); W7-252/253 OPEN
+**Status:** **PLAN-27 COMPLETE** — Inventory **DONE** (W7-238); seed **W7-239 (#884) DONE**; **DESK-A11Y-SNAP-01 W7-240 (#886) DONE**; seed **W7-241 (#887) DONE**; **DESK-A11Y-PANEL-01 W7-242 (#891) DONE**; seed **W7-243 (#892) DONE**; successor **PLAN-28 COMPLETE**; **PLAN-29** inventory **W7-250 (#907) DONE**; seed **W7-251 (#908) DONE**; implement **W7-252 (#910) OPEN** (**§3.C NEXT**); W7-252/253 OPEN
 **PLAN issue / queue:** [W7-238 / PLAN-27 #883](https://github.com/sesquicadaver/MTDirector/issues/883) **DONE**  
 **Predecessor:** PLAN-26 code-audit remediation (`11cb746`) **COMPLETE**; deferred residuals from PLAN-25  
 **Successor:** [`plan-28-desktop-residual-field-control-automation.md`](plan-28-desktop-residual-field-control-automation.md) **COMPLETE**; next [`plan-29-desktop-connection-health-reconnect.md`](plan-29-desktop-connection-health-reconnect.md)  
@@ -73,4 +73,4 @@ PLAN-26 ranks 1…14 (**AUDIT-RULE-01** … **AUDIT-INT-01**) are **DONE**. Disc
 
 ## §3.C NEXT
 
-**PLAN-27 COMPLETE.** Successor **PLAN-28 COMPLETE**; **PLAN-29** inventory **DONE** (W7-250); seed **W7-251 OPEN** → DESK-CONN-HEALTH-01. **§3.C NEXT = W7-251 (#908)** — Seed first PLAN-29 atomic row after inventory → DESK-CONN-HEALTH-01.
+**PLAN-27 COMPLETE.** Successor **PLAN-28 COMPLETE**; **PLAN-29** inventory **DONE** (W7-250); seed **W7-251 DONE**; implement **W7-252 OPEN** → DESK-CONN-HEALTH-01. **§3.C NEXT = W7-252 (#910)** — DESK-CONN-HEALTH-01 Connected-state periodic gRPC health probe.

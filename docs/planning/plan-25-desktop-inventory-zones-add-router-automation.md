@@ -52,4 +52,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** **PLAN-27 COMPLETE.** **PLAN-28 COMPLETE.** Successor **PLAN-29** inventory **DONE** (W7-250); seed **W7-251 OPEN** → DESK-CONN-HEALTH-01. **§3.C NEXT = W7-251 (#908)** — Seed first PLAN-29 atomic row after inventory → DESK-CONN-HEALTH-01.
+**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** **PLAN-27 COMPLETE.** **PLAN-28 COMPLETE.** Successor **PLAN-29** inventory **DONE** (W7-250); seed **W7-251 DONE**; implement **W7-252 OPEN** → DESK-CONN-HEALTH-01. **§3.C NEXT = W7-252 (#910)** — DESK-CONN-HEALTH-01 Connected-state periodic gRPC health probe.

@@ -1,7 +1,7 @@
 # PLAN-26 — Code-audit remediation tranche (`11cb746`)
 
 **Date:** 2026-09-11 (inventory **DONE** 2026-09-11; **COMPLETE** 2026-09-15)  
-**Status:** **PLAN-26 COMPLETE** — seed **W7-205 DONE**; Inventory **DONE** (W7-206); ranks 1…14 **DONE** (AUDIT-RULE-01…AUDIT-INT-01); seed **W7-237 DONE**; successor **PLAN-27 COMPLETE**; **PLAN-28 COMPLETE**; successor **PLAN-29** inventory **W7-250 DONE**; seed **W7-251 OPEN**; W7-252/253 OPEN
+**Status:** **PLAN-26 COMPLETE** — seed **W7-205 DONE**; Inventory **DONE** (W7-206); ranks 1…14 **DONE** (AUDIT-RULE-01…AUDIT-INT-01); seed **W7-237 DONE**; successor **PLAN-27 COMPLETE**; **PLAN-28 COMPLETE**; successor **PLAN-29** inventory **W7-250 DONE**; seed **W7-251 DONE**; implement **W7-252 OPEN**; W7-253 OPEN
 **Audit SHA:** `11cb746de60191e6eb83e52013f7f544306d5c9d`  
 **Normative audit:** [`docs/audits/MTDirector-audit-11cb746-20260911.md`](../audits/MTDirector-audit-11cb746-20260911.md)  
 **Predecessor:** PLAN-25 Desktop Inventory/Zones/Add-router AutomationProperties **COMPLETE**  
@@ -95,4 +95,4 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/c
 
 ## §3.C NEXT
 
-**PLAN-26 COMPLETE.** **PLAN-27 COMPLETE.** **PLAN-28 COMPLETE.** Successor **PLAN-29** inventory **DONE** (W7-250); seed **W7-251 OPEN** → DESK-CONN-HEALTH-01. **§3.C NEXT = W7-251 (#908)** — Seed first PLAN-29 atomic row after inventory → DESK-CONN-HEALTH-01.
+**PLAN-26 COMPLETE.** **PLAN-27 COMPLETE.** **PLAN-28 COMPLETE.** Successor **PLAN-29** inventory **DONE** (W7-250); seed **W7-251 DONE**; implement **W7-252 OPEN** → DESK-CONN-HEALTH-01. **§3.C NEXT = W7-252 (#910)** — DESK-CONN-HEALTH-01 Connected-state periodic gRPC health probe.

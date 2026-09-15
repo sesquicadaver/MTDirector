@@ -1757,6 +1757,16 @@ Issue [#895](https://github.com/sesquicadaver/MTDirector/issues/895) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan28DesktopResidualFieldControlAutomationW7244"`.
 
+## Living Specification — Product tranche seed DESK-CONN-HEALTH-01 (W7-251)
+
+Issue [#908](https://github.com/sesquicadaver/MTDirector/issues/908) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-CONN-HEALTH-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-29 | `ProductTrancheSeedW7251LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskConnHealth01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7251"`.
+
 ## Living Specification — PLAN-29 Desktop connection health / reconnect inventory (W7-250)
 
 Issue [#907](https://github.com/sesquicadaver/MTDirector/issues/907) AC → module → tests:
