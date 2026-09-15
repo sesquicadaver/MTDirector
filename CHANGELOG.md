@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-276** ([#958](https://github.com/sesquicadaver/MTDirector/issues/958)): DESK-A11Y-TREE-01 — Inventory TreeView exposes `AutomationProperties.Name="Inventory"` (`DesktopInventoryTreeViewAutomationLivingSpecTests`). **§3.C NEXT = W7-277 (#959)**.
+- **W7-277** ([#959](https://github.com/sesquicadaver/MTDirector/issues/959)): Seed PLAN-33 COMPLETE → PLAN-34 Desktop operator launch packaging templates tranche (`ProductTrancheSeedW7277LivingSpecTests`). **§3.C NEXT = W7-278 (#963)**.
+
+- **W7-276** ([#958](https://github.com/sesquicadaver/MTDirector/issues/958)): DESK-A11Y-TREE-01 — Inventory TreeView exposes `AutomationProperties.Name="Inventory"` (`DesktopInventoryTreeViewAutomationLivingSpecTests`). **§3.C NEXT was W7-277 (#959)** (advanced by W7-277).
 
 - **W7-275** ([#956](https://github.com/sesquicadaver/MTDirector/issues/956)): Seed PLAN-33 first atomic row → DESK-A11Y-TREE-01 as §3.C NEXT; keep **W7-276 (#958)** implement + **W7-277 (#959)** COMPLETE follow-up open (`ProductTrancheSeedW7275LivingSpecTests`). **§3.C NEXT was W7-276 (#958)** (advanced by W7-276).
 
