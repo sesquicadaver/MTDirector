@@ -1951,6 +1951,16 @@ Issue [#946](https://github.com/sesquicadaver/MTDirector/issues/946) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~OpsHostSystemd01ControllerUnitW7270"`.
 
+## Living Specification — PLAN-33 Desktop Inventory TreeView a11y inventory (W7-274)
+
+Issue [#955](https://github.com/sesquicadaver/MTDirector/issues/955) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ranked sole DESK-A11Y-TREE-01; TAB-01 dropped; seed TREE-01 | plan-33 + queue docs + MainWindow.axaml TreeView evidence | `Plan33DesktopInventoryTreeviewA11yW7274LivingSpecTests.Ac1Plan33InventoryDocumentsRankedTree01AndDropsTab01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan33DesktopInventoryTreeviewA11yW7274"`.
+
 ## Living Specification — PLAN-32 Controller host-process packaging inventory (W7-268)
 
 Issue [#943](https://github.com/sesquicadaver/MTDirector/issues/943) AC → module → tests:

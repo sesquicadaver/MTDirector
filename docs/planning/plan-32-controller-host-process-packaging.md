@@ -1,7 +1,7 @@
 # PLAN-32 — Controller host-process packaging templates (systemd / Windows Service)
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** **PLAN-32 COMPLETE** — Inventory **DONE** (W7-268); seed **W7-269 (#944) DONE**; implement **W7-270 (#946) DONE**; seed **W7-271 (#947) DONE**; implement **W7-272 (#951) DONE**; seed **W7-273 (#952) DONE**; successor **PLAN-33** inventory **W7-274 (#955) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-32 COMPLETE** — Inventory **DONE** (W7-268); seed **W7-269 (#944) DONE**; implement **W7-270 (#946) DONE**; seed **W7-271 (#947) DONE**; implement **W7-272 (#951) DONE**; seed **W7-273 (#952) DONE**; successor **PLAN-33** inventory **W7-274 (#955) DONE**; seed **W7-275 (#956) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-268 / PLAN-32 #943](https://github.com/sesquicadaver/MTDirector/issues/943) **DONE**  
 **Predecessor:** PLAN-31 Desktop residual ListBox / Drift–Audit read-only a11y **COMPLETE**  
 **Successor:** [`plan-33-desktop-inventory-treeview-a11y.md`](plan-33-desktop-inventory-treeview-a11y.md) (Desktop Inventory TreeView / residual TabControl a11y)  
@@ -89,4 +89,4 @@ PLAN-31 ranks 1…2 (**DESK-A11Y-LIST-01**, **DESK-A11Y-RO-01**) are **DONE**. N
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-274 (#955)** — PLAN-33 Inventory Desktop Inventory TreeView / residual TabControl a11y after PLAN-32.
+**§3.C NEXT = W7-275 (#956)** — Seed first PLAN-33 atomic row after inventory → DESK-A11Y-TREE-01.
