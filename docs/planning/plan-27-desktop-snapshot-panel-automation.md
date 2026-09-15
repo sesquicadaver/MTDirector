@@ -1,7 +1,7 @@
 # PLAN-27 — Desktop Snapshot / Node / Drift / Audit AutomationProperties residual tranche
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-238); seed **W7-239 (#884) DONE**; **DESK-A11Y-SNAP-01 W7-240 (#886) DONE**; **§3.C NEXT = W7-241 (#887)** seed → **DESK-A11Y-PANEL-01**  
+**Status:** Inventory **DONE** (W7-238); seed **W7-239 (#884) DONE**; **DESK-A11Y-SNAP-01 W7-240 (#886) DONE**; seed **W7-241 (#887) DONE**; **§3.C NEXT = W7-242 (#891)** → **DESK-A11Y-PANEL-01**; follow-up seed **W7-243 (#892)** → PLAN-27 COMPLETE  
 **PLAN issue / queue:** [W7-238 / PLAN-27 #883](https://github.com/sesquicadaver/MTDirector/issues/883) **DONE**  
 **Predecessor:** PLAN-26 code-audit remediation (`11cb746`) **COMPLETE**; deferred residuals from PLAN-25  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -41,9 +41,9 @@ Absorb PLAN-25 deferred Snapshot / Node / Drift / Audit button `AutomationProper
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **DESK-A11Y-SNAP-01** | Snapshot Capture/Reload/Compare/Copy Names | Snapshots tabs (`Reload`, `Capture`, `Copy sanitized`, `Compare`, `Reload captures`) | **W7-240 (#886) DONE**; seed **W7-239 (#884) DONE** |
-| 2 | **DESK-A11Y-PANEL-01** | Node VRRP validate + Drift/Audit Refresh Names | Node (`Refresh`, VRRP validate pair), RoutingAssurance `Refresh`, Drift/Audit `Refresh` | seed **W7-241 (#887)** (**§3.C NEXT**) after SNAP-01 |
+| 2 | **DESK-A11Y-PANEL-01** | Node VRRP validate + Drift/Audit Refresh Names | Node (`Refresh`, VRRP validate pair), RoutingAssurance `Refresh`, Drift/Audit `Refresh` | **W7-242 (#891)** (**§3.C NEXT**); seed **W7-241 (#887) DONE**; follow-up **W7-243 (#892)** → PLAN-27 COMPLETE |
 
-Inventory (**W7-238 DONE**) locked ranking and opened implement + follow-up seed issues. Seed **W7-239 DONE** advanced §3.C NEXT to **W7-240**. **W7-240 DONE** advances §3.C NEXT to seed **W7-241**.
+Inventory (**W7-238 DONE**) locked ranking and opened SNAP implement + PANEL seed. Seed **W7-239 DONE** advanced §3.C NEXT to **W7-240**. **W7-240 DONE** + seed **W7-241 DONE** open **W7-242** PANEL-01 implement and **W7-243** COMPLETE seed.
 
 ## Dual track
 
@@ -59,8 +59,9 @@ PLAN-26 ranks 1…14 (**AUDIT-RULE-01** … **AUDIT-INT-01**) are **DONE**. Disc
 2. **W7-238 DONE** — PLAN-27 inventory; opened **W7-240** / **W7-241**.  
 3. **W7-239 DONE** — seed advanced NEXT to **DESK-A11Y-SNAP-01** (**W7-240**).  
 4. **W7-240 DONE** — DESK-A11Y-SNAP-01 Names locked (`DesktopSnapshotAutomationLivingSpecTests`).  
-5. Execute seed **W7-241** then PANEL-01 atomically.
+5. **W7-241 DONE** — seed opened **W7-242** PANEL-01 + **W7-243** PLAN-27 COMPLETE follow-up.  
+6. Execute **W7-242** DESK-A11Y-PANEL-01, then seed **W7-243**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-241 (#887)** — Seed next PLAN-27 row after DESK-A11Y-SNAP-01 → DESK-A11Y-PANEL-01.
+**§3.C NEXT = W7-242 (#891)** — DESK-A11Y-PANEL-01 — Node Refresh / Validate / Drift / Audit Refresh AutomationProperties.Name.
