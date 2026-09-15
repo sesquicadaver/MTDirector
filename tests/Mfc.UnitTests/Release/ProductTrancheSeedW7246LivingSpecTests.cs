@@ -3,7 +3,8 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-246: DESK-A11Y-FIELD-01 DONE; §3.C NEXT advanced to W7-247 (#899) seed DESK-A11Y-CTRL-01.
+/// W7-246: DESK-A11Y-FIELD-01 DONE; historical NEXT was W7-247 CTRL-01 seed;
+/// W7-247 advanced §3.C NEXT to W7-248 DESK-A11Y-CTRL-01.
 /// </summary>
 public sealed class ProductTrancheSeedW7246LivingSpecTests
 {
@@ -27,20 +28,20 @@ public sealed class ProductTrancheSeedW7246LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-247 | [#899](https://github.com/sesquicadaver/MTDirector/issues/899) | Seed next PLAN-28 row after DESK-A11Y-FIELD-01 → DESK-A11Y-CTRL-01 | **OPEN**",
+            "W7-247 | [#899](https://github.com/sesquicadaver/MTDirector/issues/899) | Seed next PLAN-28 row after DESK-A11Y-FIELD-01 → DESK-A11Y-CTRL-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-247 (#899)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-248 (#903)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-246 DONE", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-FIELD-01", plan, StringComparison.Ordinal);
-        Assert.Contains("W7-247", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-247 (#899)", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-247 DONE", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-248 (#903)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-246 DONE", plan28, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-FIELD-01", plan28, StringComparison.Ordinal);
-        Assert.Contains("W7-247", plan28, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-247 (#899)", plan28, StringComparison.Ordinal);
+        Assert.Contains("W7-247 (#899) DONE", plan28, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-248 (#903)", plan28, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

@@ -1,7 +1,7 @@
 # PLAN-28 — Desktop residual field / control AutomationProperties tranche
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-244); seed **W7-245 (#896) DONE**; **DESK-A11Y-FIELD-01 W7-246 (#898) DONE**; **§3.C NEXT = W7-247 (#899)** seed → **DESK-A11Y-CTRL-01**  
+**Status:** Inventory **DONE** (W7-244); seed **W7-245 (#896) DONE**; **DESK-A11Y-FIELD-01 W7-246 (#898) DONE**; seed **W7-247 (#899) DONE**; **DESK-A11Y-CTRL-01 W7-248 (#903) OPEN** (**§3.C NEXT**); follow-up seed **W7-249 (#904) OPEN** (PLAN-28 COMPLETE)  
 **PLAN issue / queue:** [W7-244 / PLAN-28 #895](https://github.com/sesquicadaver/MTDirector/issues/895) **DONE**  
 **Predecessor:** PLAN-27 Desktop Snapshot/Node/Drift/Audit button AutomationProperties residual **COMPLETE**; button-name waves PLAN-16…27  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -46,9 +46,9 @@ Absorb residual non-button Desktop `AutomationProperties.Name` gaps after all ~6
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
 | 1 | **DESK-A11Y-FIELD-01** | Zones / Policies draft TextBox Names | Zones New/Edit/Binding values TextBoxes; Policies revision/draft/safety/rule/object/compose/compile TextBoxes | **W7-246 (#898) DONE**; seed **W7-245 (#896) DONE** |
-| 2 | **DESK-A11Y-CTRL-01** | Snapshot/Diff ComboBox & CheckBox + TabItem (+ Zones/Policies selector ComboBoxes) | Snapshot `Technical` + Captures; Diff Base/Target + config/obs-only CheckBoxes; panel TabItem Headers; Zones BindingKinds; Policies Families/Chains/Stages/Effects/catalog selectors | seed **W7-247 (#899) OPEN** (**§3.C NEXT**; opens CTRL implement) |
+| 2 | **DESK-A11Y-CTRL-01** | Snapshot/Diff ComboBox & CheckBox + TabItem (+ Zones/Policies selector ComboBoxes) | Snapshot `Technical` + Captures; Diff Base/Target + config/obs-only CheckBoxes; panel TabItem Headers; Zones BindingKinds; Policies Families/Chains/Stages/Effects/catalog selectors | seed **W7-247 (#899) DONE**; implement **W7-248 (#903) OPEN** (**§3.C NEXT**); follow-up **W7-249 (#904) OPEN** |
 
-Inventory (**W7-244 DONE**) locked ranking and opened FIELD implement (**W7-246**) + CTRL seed (**W7-247**). Seed **W7-245 DONE** advanced §3.C NEXT to **W7-246**. **W7-246 DONE** advanced NEXT to **W7-247**.
+Inventory (**W7-244 DONE**) locked ranking and opened FIELD implement (**W7-246**) + CTRL seed (**W7-247**). Seed **W7-245 DONE** advanced §3.C NEXT to **W7-246**. **W7-246 DONE** advanced NEXT to **W7-247**. Seed **W7-247 DONE** advanced NEXT to **W7-248** and opened **W7-249**.
 
 ## Dual track
 
@@ -64,8 +64,9 @@ PLAN-27 ranks 1…2 (**DESK-A11Y-SNAP-01**, **DESK-A11Y-PANEL-01**) are **DONE**
 2. **W7-244 DONE** — PLAN-28 inventory; opened **W7-246** / **W7-247**.  
 3. **W7-245 DONE** — seed advanced NEXT to **DESK-A11Y-FIELD-01** (**W7-246**).  
 4. **W7-246 DONE** — DESK-A11Y-FIELD-01 Names locked (`DesktopZonesPoliciesFieldAutomationLivingSpecTests`).  
-5. Execute ranked CTRL row atomically after seed **W7-247**.
+5. **W7-247 DONE** — seed advanced NEXT to **DESK-A11Y-CTRL-01** (**W7-248**); follow-up **W7-249** (PLAN-28 COMPLETE).  
+6. Execute ranked CTRL row atomically (**W7-248**).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-247 (#899)** — Seed next PLAN-28 row after DESK-A11Y-FIELD-01 → DESK-A11Y-CTRL-01.
+**§3.C NEXT = W7-248 (#903)** — DESK-A11Y-CTRL-01 — Snapshot/Diff ComboBox & CheckBox + TabItem AutomationProperties.Name.
