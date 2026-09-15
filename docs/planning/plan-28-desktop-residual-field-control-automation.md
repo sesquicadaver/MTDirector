@@ -1,7 +1,7 @@
 # PLAN-28 — Desktop residual field / control AutomationProperties tranche
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15; **COMPLETE** 2026-09-15)  
-**Status:** **PLAN-28 COMPLETE** — Inventory **DONE** (W7-244); seed **W7-245 (#896) DONE**; **DESK-A11Y-FIELD-01 W7-246 (#898) DONE**; seed **W7-247 (#899) DONE**; **DESK-A11Y-CTRL-01 W7-248 (#903) DONE**; seed **W7-249 (#904) DONE**; successor **PLAN-29 COMPLETE**; successor **PLAN-30** inventory **W7-256 (#919) DONE**; **§3.C NEXT = W7-261 (#928)**  
+**Status:** **PLAN-28 COMPLETE** — Inventory **DONE** (W7-244); seed **W7-245 (#896) DONE**; **DESK-A11Y-FIELD-01 W7-246 (#898) DONE**; seed **W7-247 (#899) DONE**; **DESK-A11Y-CTRL-01 W7-248 (#903) DONE**; seed **W7-249 (#904) DONE**; successor **PLAN-29 COMPLETE**; successor **PLAN-30 COMPLETE**; successor **PLAN-31** inventory **W7-262 (#931) OPEN**; **§3.C NEXT = W7-262 (#931)**  
 **PLAN issue / queue:** [W7-244 / PLAN-28 #895](https://github.com/sesquicadaver/MTDirector/issues/895) **DONE**  
 **Predecessor:** PLAN-27 Desktop Snapshot/Node/Drift/Audit button AutomationProperties residual **COMPLETE**; button-name waves PLAN-16…27  
 **Successor:** [`plan-29-desktop-connection-health-reconnect.md`](plan-29-desktop-connection-health-reconnect.md) (Desktop connection health / reconnect after Controller stop; AUDIT §18 residual)  
@@ -62,8 +62,8 @@ PLAN-27 ranks 1…2 (**DESK-A11Y-SNAP-01**, **DESK-A11Y-PANEL-01**) are **DONE**
 ## Residual notes (COMPLETE)
 
 - All ranked FIELD/CTRL remediations 1…2 closed on `main`.  
-- Deferred ListBox hosts and Drift/Audit read-only JSON TextBoxes remain intentional a11y residuals (not §3 stop-gates).  
-- No further PLAN-28 product rows — **PLAN-29 COMPLETE**; continuous queue advances to **PLAN-30** (Watch operation-owner ACL / hub backpressure; AUDIT §19 residual).  
+- Deferred ListBox hosts and Drift/Audit read-only JSON TextBoxes are seeded as **PLAN-31** (`plan-31-desktop-residual-listbox-readonly-a11y.md`).  
+- No further PLAN-28 product rows — **PLAN-29 COMPLETE**; **PLAN-30 COMPLETE**; continuous queue advances to **PLAN-31** (Desktop residual ListBox / Drift–Audit read-only a11y).  
 - Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates.
 
 ## §3.C ordering
@@ -78,4 +78,4 @@ PLAN-27 ranks 1…2 (**DESK-A11Y-SNAP-01**, **DESK-A11Y-PANEL-01**) are **DONE**
 
 ## §3.C NEXT
 
-**PLAN-28 COMPLETE.** Successor **PLAN-29 COMPLETE**; successor **PLAN-30** inventory **DONE** (W7-256). **§3.C NEXT = W7-261 (#928)** — WATCH-BP-01.
+**PLAN-28 COMPLETE.** Successor **PLAN-29 COMPLETE**; successor **PLAN-30 COMPLETE**; successor **PLAN-31** inventory **OPEN** (W7-262). **§3.C NEXT = W7-262 (#931)** — PLAN-31 inventory.
