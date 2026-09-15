@@ -2,7 +2,7 @@ using Xunit;
 
 namespace Mfc.UnitTests.Release;
 
-/// <summary>W7-262: PLAN-31 inventory documents ranked DESK-A11Y-LIST/RO rows; historical: LIST-01 DONE; RO seed DONE; NEXT advanced to W7-266.</summary>
+/// <summary>W7-262: PLAN-31 inventory documents ranked DESK-A11Y-LIST/RO rows; historical: LIST-01 + RO-01 DONE; NEXT advanced to W7-267.</summary>
 public sealed class Plan31DesktopResidualListboxReadonlyA11yW7262LivingSpecTests
 {
     [Fact]
@@ -28,7 +28,7 @@ public sealed class Plan31DesktopResidualListboxReadonlyA11yW7262LivingSpecTests
         Assert.Contains("**43** hosts", plan31, StringComparison.Ordinal);
         Assert.Contains("Drift.SemanticDiffText", plan31, StringComparison.Ordinal);
         Assert.Contains("Audit.SelectedEvent.PayloadJson", plan31, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-266 (#939)", plan31, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-267 (#940)", plan31, StringComparison.Ordinal);
         Assert.Contains("W7-263 (#932) DONE", plan31, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-262 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -54,14 +54,14 @@ public sealed class Plan31DesktopResidualListboxReadonlyA11yW7262LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-266 | [#939](https://github.com/sesquicadaver/MTDirector/issues/939) | DESK-A11Y-RO-01 — Drift SemanticDiff + Audit PayloadJson read-only TextBox AutomationProperties.Name | **OPEN**",
+            "W7-266 | [#939](https://github.com/sesquicadaver/MTDirector/issues/939) | DESK-A11Y-RO-01 — Drift SemanticDiff + Audit PayloadJson read-only TextBox AutomationProperties.Name | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-267 | [#940](https://github.com/sesquicadaver/MTDirector/issues/940) | Seed next after DESK-A11Y-RO-01 (PLAN-31 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-266 (#939)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-267 (#940)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-263", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-264", continuous, StringComparison.Ordinal);
@@ -78,8 +78,8 @@ public sealed class Plan31DesktopResidualListboxReadonlyA11yW7262LivingSpecTests
         Assert.Contains("Drift.SemanticDiffText", mainWindow, StringComparison.Ordinal);
         Assert.Contains("Audit.SelectedEvent.PayloadJson", mainWindow, StringComparison.Ordinal);
         Assert.Contains("AutomationProperties.Name=\"Modules\"", ExtractListBoxHostAttrs(mainWindow, "ItemsSource=\"{Binding Modules}\""), StringComparison.Ordinal);
-        Assert.DoesNotContain("AutomationProperties.Name", ExtractReadOnlyTextBoxAttrs(mainWindow, "Drift.SemanticDiffText"), StringComparison.Ordinal);
-        Assert.DoesNotContain("AutomationProperties.Name", ExtractReadOnlyTextBoxAttrs(mainWindow, "Audit.SelectedEvent.PayloadJson"), StringComparison.Ordinal);
+        Assert.Contains("AutomationProperties.Name=\"Semantic diff\"", ExtractReadOnlyTextBoxAttrs(mainWindow, "Drift.SemanticDiffText"), StringComparison.Ordinal);
+        Assert.Contains("AutomationProperties.Name=\"Payload (JSON)\"", ExtractReadOnlyTextBoxAttrs(mainWindow, "Audit.SelectedEvent.PayloadJson"), StringComparison.Ordinal);
     }
 
     private static string ExtractListBoxHostAttrs(string axaml, string itemsSourceFragment)

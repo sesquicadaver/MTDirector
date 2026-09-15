@@ -2067,6 +2067,7 @@
                 <TextBlock Classes="mfc-label" Text="Semantic diff" Margin="0,8,0,0" />
               </StackPanel>
               <TextBox Text="{Binding Drift.SemanticDiffText}"
+                       AutomationProperties.Name="Semantic diff"
                        IsReadOnly="True"
                        AcceptsReturn="True"
                        TextWrapping="Wrap"
@@ -2127,6 +2128,7 @@
             <DockPanel LastChildFill="True">
               <TextBlock DockPanel.Dock="Top" Classes="mfc-label" Text="Payload (JSON)" Margin="0,0,0,6" />
               <TextBox Text="{Binding Audit.SelectedEvent.PayloadJson}"
+                       AutomationProperties.Name="Payload (JSON)"
                        IsReadOnly="True"
                        AcceptsReturn="True"
                        TextWrapping="Wrap"

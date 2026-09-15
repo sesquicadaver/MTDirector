@@ -66,15 +66,15 @@ public sealed class DesktopListBoxHostAutomationLivingSpecTests
     }
 
     [Fact]
-    public void Ac2DriftAuditReadOnlyTextBoxesRemainOutOfScope()
+    public void Ac2DriftAuditReadOnlyTextBoxesNamedByRo01()
     {
         string main = ReadSource("src/Mfc.Desktop/MainWindow.axaml");
-        Assert.DoesNotContain(
-            "AutomationProperties.Name",
+        Assert.Contains(
+            "AutomationProperties.Name=\"Semantic diff\"",
             ExtractReadOnlyTextBoxAttrs(main, "Drift.SemanticDiffText"),
             StringComparison.Ordinal);
-        Assert.DoesNotContain(
-            "AutomationProperties.Name",
+        Assert.Contains(
+            "AutomationProperties.Name=\"Payload (JSON)\"",
             ExtractReadOnlyTextBoxAttrs(main, "Audit.SelectedEvent.PayloadJson"),
             StringComparison.Ordinal);
     }
