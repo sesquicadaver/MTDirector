@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Publish Desktop Avalonia app into OUT_DIR/desktop (zip publish = MVP installer substitute).
 # Full MSI/setup.exe is a post-MVP residual; see docs/release/packaging.md.
+# DESK-HOST-BUNDLE-01: also copies PLAN-34 launch templates into OUT_DIR/desktop/
+# (mfc-desktop.desktop + mfc-desktop-start-menu.ps1) so zip/tar archives carry them.
 # Usage: OUT_DIR=/tmp/mfc-rel ./scripts/release/package-desktop.sh
 # Dry-run: MFC_RELEASE_DRY_RUN=1 OUT_DIR=... ./scripts/release/package-desktop.sh
 set -euo pipefail
@@ -15,12 +17,22 @@ CONFIG="${MFC_RELEASE_CONFIG:-Release}"
 DEST="$OUT_DIR/desktop"
 ZIP_NAME="Mfc.Desktop-${RID}.zip"
 
+# Copy PLAN-34 Desktop launch templates into the publish tree (DESK-HOST-BUNDLE-01).
+# Sources remain canonical under packaging/; copies travel with the zip/tar artifact.
+mfc_desktop_bundle_launch_templates() {
+  local dest="$1"
+  mkdir -p "$dest"
+  cp -f "$REPO_ROOT/packaging/linux/mfc-desktop.desktop" "$dest/mfc-desktop.desktop"
+  cp -f "$REPO_ROOT/packaging/windows/mfc-desktop-start-menu.ps1" "$dest/mfc-desktop-start-menu.ps1"
+}
+
 mkdir -p "$DEST"
 
 if mfc_release_is_dry_run; then
   printf 'MFC Desktop dry-run package (%s)\n' "$RID" >"$DEST/Mfc.Desktop"
   chmod +x "$DEST/Mfc.Desktop"
   printf '{"dryRun":true,"rid":"%s"}\n' "$RID" >"$DEST/appsettings.json"
+  mfc_desktop_bundle_launch_templates "$DEST"
   (
     cd "$OUT_DIR"
     rm -f "$ZIP_NAME"
@@ -44,6 +56,8 @@ dotnet publish "$REPO_ROOT/src/Mfc.Desktop/Mfc.Desktop.csproj" \
   --self-contained false \
   -o "$DEST" \
   --nologo
+
+mfc_desktop_bundle_launch_templates "$DEST"
 
 (
   cd "$OUT_DIR"
