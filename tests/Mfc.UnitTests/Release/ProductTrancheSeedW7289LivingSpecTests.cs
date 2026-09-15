@@ -28,27 +28,27 @@ public sealed class ProductTrancheSeedW7289LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-290 | [#986](https://github.com/sesquicadaver/MTDirector/issues/986) | OPS-HOST-BUNDLE-01 — package-controller copies systemd/WinSW into OUT_DIR/controller | **OPEN**",
+            "W7-290 | [#986](https://github.com/sesquicadaver/MTDirector/issues/986) | OPS-HOST-BUNDLE-01 — package-controller copies systemd/WinSW into OUT_DIR/controller | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-291 | [#987](https://github.com/sesquicadaver/MTDirector/issues/987) | Seed next after OPS-HOST-BUNDLE-01 (PLAN-36 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-290 (#986)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-291 (#987)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-289 (#984) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-290", plan, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-BUNDLE-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-290 (#986)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-291 (#987)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-289 (#984) DONE", plan36, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-BUNDLE-01", plan36, StringComparison.Ordinal);
         Assert.Contains("W7-290", plan36, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-290 (#986)", plan36, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-291 (#987)", plan36, StringComparison.Ordinal);
 
         Assert.Contains("DEST=\"$OUT_DIR/controller\"", packageController, StringComparison.Ordinal);
-        Assert.DoesNotContain("mfc-controller.service", packageController, StringComparison.Ordinal);
+        Assert.Contains("mfc-controller.service", packageController, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

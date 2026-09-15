@@ -28,7 +28,7 @@ ls -la "$OUT_DIR"
 
 | Script | Output |
 |--------|--------|
-| `package-controller.sh` | `OUT_DIR/controller/` + `controller.artifact-path.txt` |
+| `package-controller.sh` | `OUT_DIR/controller/` (includes bundled `mfc-controller.service` + `mfc-controller.winsw.xml`, OPS-HOST-BUNDLE-01) + `controller.artifact-path.txt` |
 | `package-desktop.sh` | `OUT_DIR/desktop/` (includes bundled `mfc-desktop.desktop` + `mfc-desktop-start-menu.ps1`, DESK-HOST-BUNDLE-01) + `Mfc.Desktop-<rid>.zip` (or `.tar.gz`) + `desktop.artifact-path.txt` |
 | `create-migration-bundle.sh` | `OUT_DIR/migrations/mfc-ef-migrations` |
 | `run-dependency-scan.sh` | `OUT_DIR/dependency-scan.txt` |
@@ -38,8 +38,8 @@ ls -la "$OUT_DIR"
 
 | Template | Path | Notes |
 |----------|------|-------|
-| systemd (Linux) | [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service) | OPS-HOST-SYSTEMD-01 — framework-dependent Controller; `WorkingDirectory`/`ExecStart` → `/opt/mfc/controller/Mfc.Controller` |
-| Windows Service (WinSW) | [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml) | OPS-HOST-WINSVC-01 — framework-dependent Controller; `%BASE%\Mfc.Controller.exe`; do not invent MSI (W7-22) |
+| systemd (Linux) | [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service) | OPS-HOST-SYSTEMD-01 — framework-dependent Controller; `WorkingDirectory`/`ExecStart` → `/opt/mfc/controller/Mfc.Controller`; also copied into `$OUT_DIR/controller/` by `package-controller.sh` (OPS-HOST-BUNDLE-01) |
+| Windows Service (WinSW) | [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml) | OPS-HOST-WINSVC-01 — framework-dependent Controller; `%BASE%\Mfc.Controller.exe`; also copied into `$OUT_DIR/controller/` by `package-controller.sh` (OPS-HOST-BUNDLE-01); do not invent MSI (W7-22) |
 
 ## Desktop launch templates
 

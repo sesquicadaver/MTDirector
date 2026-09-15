@@ -29,7 +29,7 @@ public sealed class Plan36ControllerHostTemplatePublishBundlingW7288LivingSpecTe
         Assert.Contains("W7-289", plan36, StringComparison.Ordinal);
         Assert.Contains("sole rank", plan36, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("OUT_DIR/controller", plan36, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-290 (#986)", plan36, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-291 (#987)", plan36, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", plan36, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-288 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -46,14 +46,14 @@ public sealed class Plan36ControllerHostTemplatePublishBundlingW7288LivingSpecTe
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-290 | [#986](https://github.com/sesquicadaver/MTDirector/issues/986) | OPS-HOST-BUNDLE-01 — package-controller copies systemd/WinSW into OUT_DIR/controller | **OPEN**",
+            "W7-290 | [#986](https://github.com/sesquicadaver/MTDirector/issues/986) | OPS-HOST-BUNDLE-01 — package-controller copies systemd/WinSW into OUT_DIR/controller | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-291 | [#987](https://github.com/sesquicadaver/MTDirector/issues/987) | Seed next after OPS-HOST-BUNDLE-01 (PLAN-36 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-290 (#986)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-291 (#987)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-289", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-290", continuous, StringComparison.Ordinal);
@@ -63,8 +63,8 @@ public sealed class Plan36ControllerHostTemplatePublishBundlingW7288LivingSpecTe
         Assert.Contains("Plan36ControllerHostTemplatePublishBundlingW7288", testing, StringComparison.Ordinal);
 
         Assert.Contains("DEST=\"$OUT_DIR/controller\"", packageController, StringComparison.Ordinal);
-        Assert.DoesNotContain("mfc-controller.service", packageController, StringComparison.Ordinal);
-        Assert.DoesNotContain("mfc-controller.winsw.xml", packageController, StringComparison.Ordinal);
+        Assert.Contains("mfc-controller.service", packageController, StringComparison.Ordinal);
+        Assert.Contains("mfc-controller.winsw.xml", packageController, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", packaging, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/controller/", packaging, StringComparison.Ordinal);
         Assert.True(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.service")));

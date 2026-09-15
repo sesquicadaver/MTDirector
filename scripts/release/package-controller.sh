@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # Publish Controller self-contained / framework-dependent package into OUT_DIR/controller.
+# OPS-HOST-BUNDLE-01: also copies PLAN-32 host-process templates into OUT_DIR/controller/
+# (mfc-controller.service + mfc-controller.winsw.xml) so release trees carry them.
 # Usage: OUT_DIR=/tmp/mfc-rel ./scripts/release/package-controller.sh
 # Dry-run (Living Spec): MFC_RELEASE_DRY_RUN=1 OUT_DIR=... ./scripts/release/package-controller.sh
 set -euo pipefail
@@ -13,6 +15,15 @@ RID="${MFC_RELEASE_RID:-linux-x64}"
 CONFIG="${MFC_RELEASE_CONFIG:-Release}"
 DEST="$OUT_DIR/controller"
 
+# Copy PLAN-32 Controller host-process templates into the publish tree (OPS-HOST-BUNDLE-01).
+# Sources remain canonical under packaging/; copies travel with the release artifact.
+mfc_controller_bundle_host_templates() {
+  local dest="$1"
+  mkdir -p "$dest"
+  cp -f "$REPO_ROOT/packaging/systemd/mfc-controller.service" "$dest/mfc-controller.service"
+  cp -f "$REPO_ROOT/packaging/windows/mfc-controller.winsw.xml" "$dest/mfc-controller.winsw.xml"
+}
+
 mkdir -p "$DEST"
 
 if mfc_release_is_dry_run; then
@@ -21,6 +32,7 @@ if mfc_release_is_dry_run; then
 EOF
   printf 'MFC Controller dry-run package (%s)\n' "$RID" >"$DEST/Mfc.Controller"
   chmod +x "$DEST/Mfc.Controller"
+  mfc_controller_bundle_host_templates "$DEST"
   printf '%s\n' "$DEST" >"$OUT_DIR/controller.artifact-path.txt"
   echo "dry-run: controller package written to $DEST"
   exit 0
@@ -33,6 +45,8 @@ dotnet publish "$REPO_ROOT/src/Mfc.Controller/Mfc.Controller.csproj" \
   --self-contained false \
   -o "$DEST" \
   --nologo
+
+mfc_controller_bundle_host_templates "$DEST"
 
 printf '%s\n' "$DEST" >"$OUT_DIR/controller.artifact-path.txt"
 echo "controller package: $DEST"
