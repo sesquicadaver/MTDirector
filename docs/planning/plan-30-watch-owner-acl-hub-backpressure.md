@@ -1,7 +1,7 @@
 # PLAN-30 — Watch operation-owner ACL / hub slow-subscriber backpressure
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** **PLAN-30 COMPLETE** — Inventory **DONE** (W7-256); seed **W7-257 (#920) DONE**; implement **W7-258 (#922) DONE**; seed **W7-259 (#923) DONE**; implement **W7-260 (#927) DONE**; seed **W7-261 (#928) DONE**; successor **PLAN-31** inventory **W7-262 (#931) DONE**; seed **W7-263 (#932) DONE**; implement **W7-264 (#934) DONE**; seed **W7-265 (#935) DONE**; implement **W7-266 (#939) DONE**; COMPLETE seed **W7-267 (#940) DONE**; **PLAN-31 COMPLETE**; successor **PLAN-32** inventory **W7-268 (#943) OPEN** (**§3.C NEXT**)
+**Status:** **PLAN-30 COMPLETE** — Inventory **DONE** (W7-256); seed **W7-257 (#920) DONE**; implement **W7-258 (#922) DONE**; seed **W7-259 (#923) DONE**; implement **W7-260 (#927) DONE**; seed **W7-261 (#928) DONE**; successor **PLAN-31** inventory **W7-262 (#931) DONE**; seed **W7-263 (#932) DONE**; implement **W7-264 (#934) DONE**; seed **W7-265 (#935) DONE**; implement **W7-266 (#939) DONE**; COMPLETE seed **W7-267 (#940) DONE**; **PLAN-31 COMPLETE**; successor **PLAN-32** inventory **W7-268 (#943) DONE**; seed **W7-269 (#944) OPEN** (**§3.C NEXT**)
 **PLAN issue / queue:** [W7-256 / PLAN-30 #919](https://github.com/sesquicadaver/MTDirector/issues/919) **DONE**  
 **Predecessor:** PLAN-29 Desktop connection health / reconnect **COMPLETE**; AUDIT-INT-01 deferred Watch ownership / hub backpressure from audit `11cb746` §19  
 **Successor:** [`plan-31-desktop-residual-listbox-readonly-a11y.md`](plan-31-desktop-residual-listbox-readonly-a11y.md) (Desktop residual ListBox / Drift–Audit read-only a11y; PLAN-28 deferred)  
@@ -73,4 +73,4 @@ PLAN-29 ranks 1…2 (**DESK-CONN-HEALTH-01**, **DESK-CONN-RECONNECT-01**) are **
 
 ## §3.C NEXT
 
-**PLAN-30 COMPLETE.** Successor **PLAN-31** inventory **DONE** (W7-262). **§3.C NEXT = W7-268 (#943)** — Seed next PLAN-31 row after DESK-A11Y-LIST-01 → DESK-A11Y-RO-01.
+**PLAN-30 COMPLETE.** Successor **PLAN-31** inventory **DONE** (W7-262). **§3.C NEXT = W7-269 (#944)** — Seed next PLAN-31 row after DESK-A11Y-LIST-01 → DESK-A11Y-RO-01.
