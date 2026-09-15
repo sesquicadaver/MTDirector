@@ -205,11 +205,12 @@ cd "$OUT_DIR/controller"
 
 **Controller (Windows, WinSW):** шаблон — [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml). Типово: `MFC_RELEASE_RID=win-x64` publish → `C:\mfc\controller\`, скопіювати XML як `mfc-controller.xml` поруч із WinSW `mfc-controller.exe`, виставити `MFC__…`, потім `mfc-controller.exe install/start`. Деталі — [`../operations/installation.md`](../operations/installation.md).
 
-**Desktop (Linux):**
+**Desktop (Linux):** шаблон freedesktop desktop-entry — [`../../packaging/linux/mfc-desktop.desktop`](../../packaging/linux/mfc-desktop.desktop) (DESK-HOST-LINUX-01). Типово: розпакувати publish zip у `/opt/mfc`, встановити `.desktop` у `/usr/share/applications/` або `~/.local/share/applications/`, потім запускати з меню або `/opt/mfc/desktop/Mfc.Desktop`.
 
 ```bash
 unzip "$OUT_DIR/Mfc.Desktop-linux-x64.zip" -d /opt/mfc
 # відредагувати desktop/appsettings.json → ControllerEndpoint
+sudo install -m 0644 packaging/linux/mfc-desktop.desktop /usr/share/applications/mfc-desktop.desktop
 /opt/mfc/desktop/Mfc.Desktop
 ```
 

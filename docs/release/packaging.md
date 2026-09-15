@@ -41,6 +41,13 @@ ls -la "$OUT_DIR"
 | systemd (Linux) | [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service) | OPS-HOST-SYSTEMD-01 — framework-dependent Controller; `WorkingDirectory`/`ExecStart` → `/opt/mfc/controller/Mfc.Controller` |
 | Windows Service (WinSW) | [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml) | OPS-HOST-WINSVC-01 — framework-dependent Controller; `%BASE%\Mfc.Controller.exe`; do not invent MSI (W7-22) |
 
+## Desktop launch templates
+
+| Template | Path | Notes |
+|----------|------|-------|
+| freedesktop `.desktop` (Linux) | [`../../packaging/linux/mfc-desktop.desktop`](../../packaging/linux/mfc-desktop.desktop) | DESK-HOST-LINUX-01 — framework-dependent Desktop; `Exec`/`Path` → `/opt/mfc/desktop/Mfc.Desktop` |
+| Windows Start Menu sketch | *(DESK-HOST-WIN-01)* | Planned `packaging/windows/mfc-desktop-start-menu.ps1`; do not invent MSI/AppImage (W7-22) |
+
 ## Desktop installer (MVP)
 
 Avalonia Desktop is packaged as a **framework-dependent publish directory archived as zip/tar**. That archive is the MVP **installer substitute** (not MSI/setup.exe). A native MSI/AppImage/setup.exe is a documented residual (see [`known-limitations.md`](known-limitations.md)).
