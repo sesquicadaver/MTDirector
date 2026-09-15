@@ -52,4 +52,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** **PLAN-27 COMPLETE.** **PLAN-28 COMPLETE.** Successor **PLAN-29** inventory **DONE** (W7-250); seed **W7-251 DONE**; **DESK-CONN-HEALTH-01 W7-252 DONE**. **§3.C NEXT = W7-253 (#911)** — seed → DESK-CONN-RECONNECT-01.
+**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** **PLAN-27 COMPLETE.** **PLAN-28 COMPLETE.** Successor **PLAN-29** inventory **DONE** (W7-250); seed **W7-251 DONE**; **DESK-CONN-HEALTH-01 W7-252 DONE**. **§3.C NEXT = W7-254 (#915)** — seed → DESK-CONN-RECONNECT-01.
