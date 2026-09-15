@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-250** ([#907](https://github.com/sesquicadaver/MTDirector/issues/907)): PLAN-29 inventory DONE — ranked **DESK-CONN-HEALTH-01** / **DESK-CONN-RECONNECT-01**; opened **W7-252 (#910)** / **W7-253 (#911)** (`Plan29DesktopConnectionHealthReconnectW7250LivingSpecTests`). **§3.C NEXT = W7-251 (#908)**.
+- **W7-251** ([#908](https://github.com/sesquicadaver/MTDirector/issues/908)): Seed PLAN-29 first atomic row → DESK-CONN-HEALTH-01 as §3.C NEXT (`ProductTrancheSeedW7251LivingSpecTests`). **§3.C NEXT = W7-252 (#910)**.
+
+- **W7-250** ([#907](https://github.com/sesquicadaver/MTDirector/issues/907)): PLAN-29 inventory DONE — ranked **DESK-CONN-HEALTH-01** / **DESK-CONN-RECONNECT-01**; opened **W7-252 (#910)** / **W7-253 (#911)** (`Plan29DesktopConnectionHealthReconnectW7250LivingSpecTests`). **§3.C NEXT was W7-251 (#908)** (advanced by W7-251).
 
 - **W7-249** ([#904](https://github.com/sesquicadaver/MTDirector/issues/904)): Seed PLAN-28 COMPLETE → PLAN-29 Desktop connection health / reconnect tranche (`ProductTrancheSeedW7249LivingSpecTests`). **§3.C NEXT was W7-250 (#907)** (advanced by W7-250).
 

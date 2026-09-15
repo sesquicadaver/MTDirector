@@ -1,7 +1,7 @@
 # PLAN-29 — Desktop connection health / reconnect after Controller stop
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-250); seed **W7-251 (#908) OPEN** → **DESK-CONN-HEALTH-01**; implement **W7-252 (#910) OPEN**; seed **W7-253 (#911) OPEN** → **DESK-CONN-RECONNECT-01**  
+**Status:** Inventory **DONE** (W7-250); seed **W7-251 (#908) DONE**; implement **W7-252 (#910) OPEN** (**§3.C NEXT**); seed **W7-253 (#911) OPEN** → **DESK-CONN-RECONNECT-01**  
 **PLAN issue / queue:** [W7-250 / PLAN-29 #907](https://github.com/sesquicadaver/MTDirector/issues/907) **DONE**  
 **Predecessor:** PLAN-28 Desktop residual field/control AutomationProperties **COMPLETE**; AUDIT-INT-01 deferred connection-health residual from audit `11cb746` §18  
 **Normative files:** [`ControllerConnectionService.cs`](../../src/Mfc.Desktop/Services/ControllerConnectionService.cs), [`ShellViewModel.cs`](../../src/Mfc.Desktop/ViewModels/ShellViewModel.cs), [`DesktopOptions.cs`](../../src/Mfc.Desktop/Configuration/DesktopOptions.cs), [`DesktopConnectionStatusText.cs`](../../src/Mfc.Desktop/Services/DesktopConnectionStatusText.cs)  
@@ -41,7 +41,7 @@ Absorb the **product-critical** Desktop connection residual left after AUDIT-INT
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-CONN-HEALTH-01** | Connected-state periodic health probe; leave Connected when Controller stops | `RunReconnectLoopAsync` Connected idle branch (~165–168); audit §18; options probe interval | implement **W7-252 (#910)**; seed **W7-251 (#908) OPEN** |
+| 1 | **DESK-CONN-HEALTH-01** | Connected-state periodic health probe; leave Connected when Controller stops | `RunReconnectLoopAsync` Connected idle branch (~165–168); audit §18; options probe interval | implement **W7-252 (#910) OPEN** (**§3.C NEXT**); seed **W7-251 (#908) DONE** |
 | 2 | **DESK-CONN-RECONNECT-01** | Bounded reconnect + shell StatusText/LastError after health-fail drop | Reconnect attempts (~176–195); `ShellViewModel` / `DesktopConnectionStatusText` | seed **W7-253 (#911) OPEN** (opens RECONNECT implement after HEALTH) |
 
 Inventory (**W7-250 DONE**) locked ranking and opened HEALTH implement (**W7-252**) + RECONNECT seed (**W7-253**). Seed **W7-251** advances §3.C NEXT to the first implement after inventory DONE. No third vanity rank — PLAN-09 connection/TLS/auth locks remain the regression corpus.
@@ -65,9 +65,9 @@ These stay documented for a later continuous tranche — inventory did **not** e
 
 1. **PLAN-28 COMPLETE** (W7-248 DESK-A11Y-CTRL-01; seed **W7-249 DONE**).  
 2. **W7-250 DONE** — PLAN-29 inventory; opened **W7-252** / **W7-253**.  
-3. **W7-251 OPEN** — seed advances NEXT to **DESK-CONN-HEALTH-01** (**W7-252**).  
+3. **W7-251 DONE** — seed advanced NEXT to **DESK-CONN-HEALTH-01** (**W7-252**).  
 4. Execute ranked HEALTH/RECONNECT rows atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-251 (#908)** — Seed first PLAN-29 atomic row after inventory → DESK-CONN-HEALTH-01.
+**§3.C NEXT = W7-252 (#910)** — DESK-CONN-HEALTH-01 — Connected-state periodic gRPC health probe after Controller stop.
