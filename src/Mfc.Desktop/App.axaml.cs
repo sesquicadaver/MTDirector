@@ -37,11 +37,12 @@ public sealed class App : Application, IAsyncDisposable
         ZonesViewModel zonesVm = new(zonePanel, connection, inventoryVm);
         GrpcPolicyServiceClient policyClient = new(connection, options);
         PolicyPanelService policyPanel = new(policyClient);
-        PoliciesViewModel policiesVm = new(policyPanel, connection, inventoryVm);
+        SealedCompileDeployHandoffStore sealedHandoff = new();
+        PoliciesViewModel policiesVm = new(policyPanel, connection, inventoryVm, sealedHandoff);
         GrpcOnboardingServiceClient onboardingClient = new(connection, options);
         OnboardingViewModel onboardingVm = new(onboardingClient, connection, inventoryVm);
         GrpcDeploymentServiceClient deploymentClient = new(connection, options);
-        DeploymentViewModel deploymentVm = new(deploymentClient, connection, inventoryVm);
+        DeploymentViewModel deploymentVm = new(deploymentClient, connection, inventoryVm, sealedHandoff);
         NodeDetailViewModel nodeVm = new(inventoryVm, zonesVm, onboardingVm, inventoryClient, snapshotClient, connection);
         GrpcDriftServiceClient driftClient = new(connection, options);
         DriftViewModel driftVm = new(driftClient, connection, inventoryVm);

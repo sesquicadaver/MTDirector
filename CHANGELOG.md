@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **W7-232** ([#871](https://github.com/sesquicadaver/MTDirector/issues/871)): AUDIT-GUI-01 — sealed `CreatePlanFromSealedArtifacts` + Compile handoff; Policies Deploy stays fail-closed; Onboarding facts fail-closed without fabrication (`DesktopAuditGui01LivingSpecTests`, `ProductTrancheAuditGui01W7232LivingSpecTests`). **§3.C NEXT = W7-233 (#872)**.
+
 - **W7-230** ([#867](https://github.com/sesquicadaver/MTDirector/issues/867)): AUDIT-DEP-03 — VRRP reachability/traffic from live RouterOS observations (`VrrpMemberLiveFactsObserver`, interface counters) (`AuditDep03VrrpLiveFactsW7230LivingSpecTests`). **§3.C NEXT = W7-231 (#868)**.
 
 - **W7-228** ([#863](https://github.com/sesquicadaver/MTDirector/issues/863)): AUDIT-DEP-02 — watchdog deadline uses RouterOS clock (`ReadRouterClockAsync` / `RouterOsClockParser`), monotonic remaining TTL (`WatchdogTimeBudget`), router-local start-date/time; recovery/rollback fail closed on cleanup (`WATCHDOG_CLEANUP_INCOMPLETE`) (`AuditDep02WatchdogClockTtlW7228LivingSpecTests`). **§3.C NEXT = W7-229 (#864)**.

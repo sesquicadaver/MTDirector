@@ -235,7 +235,11 @@ public sealed class PolicyCompilePanelResult
 
     public required string LogicalEffectiveHashHex { get; init; }
 
+    public required Sha256 LogicalEffectivePolicyHash { get; init; }
+
     public required IReadOnlyList<string> ArtifactLines { get; init; }
+
+    public required IReadOnlyList<SealedCompileArtifactRef> Artifacts { get; init; }
 }
 
 /// <summary>Controller-produced ManagementPath / FastTrack facts for Desktop bind (W5-02).</summary>
@@ -981,9 +985,16 @@ public sealed class PolicyPanelService : IPolicyPanelService
         {
             NodeId = DesktopProtoUuid.ToGuid(response.NodeId),
             LogicalEffectiveHashHex = FormatHash(ToHashBytes(response.LogicalEffectivePolicyHash)),
+            LogicalEffectivePolicyHash = response.LogicalEffectivePolicyHash,
             ArtifactLines = response.Artifacts.Select(a =>
                 $"device={DesktopProtoUuid.ToGuid(a.DeviceId):D} artifact={a.ArtifactId} " +
-                $"rules={a.RuleCount} new={a.StoredAsNew}").ToArray(),
+                $"resource={FormatHash(ToHashBytes(a.ResourceHash))} rules={a.RuleCount} new={a.StoredAsNew}").ToArray(),
+            Artifacts = response.Artifacts.Select(a => new SealedCompileArtifactRef
+            {
+                DeviceId = DesktopProtoUuid.ToGuid(a.DeviceId),
+                ResourceHash = a.ResourceHash,
+                ArtifactId = a.ArtifactId,
+            }).ToArray(),
         };
     }
 

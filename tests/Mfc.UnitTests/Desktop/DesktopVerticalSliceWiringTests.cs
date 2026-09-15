@@ -107,6 +107,7 @@ public sealed class DesktopVerticalSliceWiringTests
 
         Type deployment = typeof(IDeploymentServiceClient);
         Assert.NotNull(deployment.GetMethod(nameof(IDeploymentServiceClient.CreatePlanAsync)));
+        Assert.NotNull(deployment.GetMethod(nameof(IDeploymentServiceClient.CreatePlanFromSealedArtifactsAsync)));
         Assert.NotNull(deployment.GetMethod(nameof(IDeploymentServiceClient.StartAsync)));
         Assert.NotNull(deployment.GetMethod(nameof(IDeploymentServiceClient.WatchAsync)));
         Assert.NotNull(deployment.GetMethod(nameof(IDeploymentServiceClient.RollbackAsync)));

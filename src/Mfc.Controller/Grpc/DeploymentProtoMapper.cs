@@ -243,6 +243,28 @@ public static class DeploymentProtoMapper
             fact.HasVlanId ? fact.VlanId : null);
     }
 
+    public static DeploymentPacketPathPairFact ToProto(PacketPathPairFact fact)
+    {
+        ArgumentNullException.ThrowIfNull(fact);
+        DeploymentPacketPathPairFact message = new()
+        {
+            IngressInterface = fact.IngressInterface,
+            EgressInterface = fact.EgressInterface,
+            PathClass = ToProto(fact.PathClass),
+        };
+        if (!string.IsNullOrWhiteSpace(fact.Bridge))
+        {
+            message.Bridge = fact.Bridge;
+        }
+
+        if (!string.IsNullOrWhiteSpace(fact.VlanId))
+        {
+            message.VlanId = fact.VlanId;
+        }
+
+        return message;
+    }
+
     public static IReadOnlyDictionary<string, string> ToLiveJumps(IEnumerable<DeploymentLiveJumpFact> facts)
     {
         Dictionary<string, string> jumps = new(StringComparer.Ordinal);
@@ -300,6 +322,16 @@ public static class DeploymentProtoMapper
             ProtoPathKind.Mixed => DomainPathKind.MixedPath,
             ProtoPathKind.Indeterminate => DomainPathKind.Indeterminate,
             _ => throw new DomainInvariantException($"Unsupported packet-path class '{kind}'."),
+        };
+
+    private static ProtoPathKind ToProto(DomainPathKind kind)
+        => kind switch
+        {
+            DomainPathKind.CpuFirewallPath => ProtoPathKind.CpuFirewall,
+            DomainPathKind.HardwareOffloadedPath => ProtoPathKind.HardwareOffloaded,
+            DomainPathKind.MixedPath => ProtoPathKind.Mixed,
+            DomainPathKind.Indeterminate => ProtoPathKind.Indeterminate,
+            _ => ProtoPathKind.Unspecified,
         };
 
     private static AnchorTarget ToAnchorTarget(DeploymentAnchorTargetInput input)

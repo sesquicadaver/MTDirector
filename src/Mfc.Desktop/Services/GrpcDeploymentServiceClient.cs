@@ -39,6 +39,25 @@ public sealed class GrpcDeploymentServiceClient : IDeploymentServiceClient
             .ConfigureAwait(false);
     }
 
+    public async Task<CreateDeploymentPlanFromSealedArtifactsResponse> CreatePlanFromSealedArtifactsAsync(
+        Guid nodeId,
+        Guid analysisRunId,
+        IReadOnlyList<SealedArtifactDeviceRef> devices,
+        CancellationToken cancellationToken = default)
+    {
+        DeploymentService.DeploymentServiceClient client = CreateClient();
+        CreateDeploymentPlanFromSealedArtifactsRequest request = new()
+        {
+            IdempotencyKey = DesktopProtoUuid.FromGuid(Guid.NewGuid()),
+            NodeId = DesktopProtoUuid.FromGuid(nodeId),
+            AnalysisRunId = DesktopProtoUuid.FromGuid(analysisRunId),
+        };
+        request.Devices.AddRange(devices);
+        return await client
+            .CreatePlanFromSealedArtifactsAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     public async Task<DeploymentOperationSummary> StartAsync(
         Guid planId,
         Sha256 planHash,

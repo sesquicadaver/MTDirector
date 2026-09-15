@@ -12,11 +12,12 @@ namespace Mfc.Desktop.ViewModels;
 public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
 {
     private const string DeployResidual =
-        "Deploy from Policies stays blocked (no Save and Deploy). Use the Deploy tab for safe deployment workflow (M4-12).";
+        "Deploy from Policies stays blocked (no Save and Deploy). Compile stores a sealed artifact handoff; use Operations → Deploy → Create plan (AUDIT-GUI-01).";
 
     private readonly IPolicyPanelService _policies;
     private readonly IControllerConnectionService _connection;
     private readonly InventoryTreeViewModel _inventory;
+    private readonly ISealedCompileDeployHandoffStore _sealedHandoff;
     private bool _disposed;
     private bool _suppressCatalogSelection;
     private byte[]? _contentHash;
@@ -28,11 +29,13 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
     public PoliciesViewModel(
         IPolicyPanelService policies,
         IControllerConnectionService connection,
-        InventoryTreeViewModel inventory)
+        InventoryTreeViewModel inventory,
+        ISealedCompileDeployHandoffStore? sealedHandoff = null)
     {
         _policies = policies ?? throw new ArgumentNullException(nameof(policies));
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
+        _sealedHandoff = sealedHandoff ?? new SealedCompileDeployHandoffStore();
         _connection.StateChanged += OnConnectionStateChanged;
         _inventory.PropertyChanged += OnInventoryPropertyChanged;
         SyncComposeNodeFromInventory();
@@ -839,6 +842,22 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
             {
                 CompileArtifactLines.Add(line);
             }
+
+            if (compiled.Artifacts.Count == 0)
+            {
+                _sealedHandoff.Clear();
+                ErrorText = "Compile produced no sealed artifacts; Deploy Create plan stays blocked.";
+                return;
+            }
+
+            _sealedHandoff.Replace(new SealedCompileDeployHandoff
+            {
+                NodeId = compiled.NodeId,
+                AnalysisRunId = analysisRunId,
+                LogicalEffectivePolicyHash = compiled.LogicalEffectivePolicyHash,
+                Artifacts = compiled.Artifacts,
+            });
+            CompileArtifactLines.Add("sealed_handoff=ready (Operations → Deploy → Create plan)");
         }).ConfigureAwait(true);
     }
 
@@ -1295,6 +1314,8 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
 
         SyncComposeNodeFromInventory();
         SyncSafetyDeviceFromInventory();
+        Guid? nodeId = TryGetComposeNodeId();
+        _sealedHandoff.InvalidateUnlessNode(nodeId);
     }
 
     /// <summary>

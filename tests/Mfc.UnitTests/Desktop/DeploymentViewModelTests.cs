@@ -6,18 +6,27 @@ using Xunit;
 
 namespace Mfc.UnitTests.Desktop;
 
-/// <summary>W3.3 Watch + W4.2 VRRP pair Create plan + CONT-01 Rollback Watch.</summary>
+/// <summary>W3.3 Watch + W4.2 VRRP pair Create plan + CONT-01 Rollback Watch + AUDIT-GUI-01 sealed handoff.</summary>
 public sealed class DeploymentViewModelTests
 {
     [Fact]
     public async Task StartWatchesProgressAndPrefersStreamOverStartTimeline()
     {
+        Guid nodeId = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff");
+        Guid deviceId = Guid.Parse("11111111-2222-3333-4444-555555555555");
         Guid planId = Guid.Parse("cccccccc-dddd-eeee-ffff-000000000000");
         Guid operationId = Guid.Parse("33333333-4444-5555-6666-777777777777");
         FakeConnection connection = new();
         InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        InventoryNodeViewModel site = BuildSiteWithSingleDevice(nodeId, deviceId);
+        inventory.Roots.Add(site);
+        inventory.SelectedNode = site.Children[0];
         FakeDeploymentClient client = new()
         {
+            CreatePlanOverride = SealedPlanResponse(
+                planId,
+                Hash("plan"),
+                withCapturePairs: true),
             StartResponse = new DeploymentOperationSummary
             {
                 OperationId = DesktopProtoUuid.FromGuid(operationId),
@@ -41,13 +50,12 @@ public sealed class DeploymentViewModelTests
                 },
             ],
         };
+        SealedCompileDeployHandoffStore handoff = new();
+        using DeploymentViewModel vm = new(client, connection, inventory, handoff);
+        SeedHandoff(handoff, nodeId, deviceId);
 
-        using DeploymentViewModel vm = new(client, connection, inventory)
-        {
-            PlanId = planId,
-            PlanHash = Hash("plan"),
-        };
-
+        await vm.CreatePlanCommand.ExecuteAsync(null);
+        Assert.Null(vm.ErrorText);
         await vm.StartCommand.ExecuteAsync(null);
 
         Assert.Null(vm.ErrorText);
@@ -186,7 +194,9 @@ public sealed class DeploymentViewModelTests
         inventory.Roots.Add(site);
         inventory.SelectedNode = site.Children[0];
         FakeDeploymentClient client = new();
-        using DeploymentViewModel vm = new(client, connection, inventory);
+        SealedCompileDeployHandoffStore handoff = new();
+        using DeploymentViewModel vm = new(client, connection, inventory, handoff);
+        SeedHandoff(handoff, nodeId, deviceA, deviceB);
 
         Assert.True(vm.HasVrrpPairTarget);
         Assert.Equal(InventoryOpsSelection.VrrpPairHint, vm.TargetHint);
@@ -210,54 +220,36 @@ public sealed class DeploymentViewModelTests
         string hashDelta = $"device:{deviceId:D}:artifact {before[..12]}… → {after[..12]}…";
         FakeConnection connection = new();
         InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
-        InventoryNodeViewModel site = new(new InventoryTreeItem
-        {
-            Kind = InventoryTreeKind.Site,
-            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
-            DisplayName = "LAB",
-            Children =
-            [
-                new InventoryTreeItem
-                {
-                    Kind = InventoryTreeKind.Node,
-                    Id = nodeId,
-                    DisplayName = "edge",
-                    Children =
-                    [
-                        new InventoryTreeItem
-                        {
-                            Kind = InventoryTreeKind.Device,
-                            Id = deviceId,
-                            DisplayName = "r1",
-                        },
-                    ],
-                },
-            ],
-        });
+        InventoryNodeViewModel site = BuildSiteWithSingleDevice(nodeId, deviceId);
         inventory.Roots.Add(site);
         inventory.SelectedNode = site.Children[0];
         FakeDeploymentClient client = new()
         {
-            CreatePlanOverride = new DeploymentPlanSummary
+            CreatePlanOverride = new CreateDeploymentPlanFromSealedArtifactsResponse
             {
-                PlanId = DesktopProtoUuid.FromGuid(Guid.Parse("dddddddd-eeee-ffff-aaaa-111111111111")),
-                PlanHash = Hash("plan"),
-                SemanticDiff =
+                Plan = new DeploymentPlanSummary
                 {
-                    new DeploymentSemanticDiffEntry
+                    PlanId = DesktopProtoUuid.FromGuid(Guid.Parse("dddddddd-eeee-ffff-aaaa-111111111111")),
+                    PlanHash = Hash("plan"),
+                    SemanticDiff =
                     {
-                        Kind = DeploymentSemanticDiffKind.ArtifactChanged,
-                        Path = $"device/{deviceId:D}/artifact",
-                        DeviceId = DesktopProtoUuid.FromGuid(deviceId),
-                        Before = before,
-                        After = after,
-                        HashDelta = hashDelta,
+                        new DeploymentSemanticDiffEntry
+                        {
+                            Kind = DeploymentSemanticDiffKind.ArtifactChanged,
+                            Path = $"device/{deviceId:D}/artifact",
+                            DeviceId = DesktopProtoUuid.FromGuid(deviceId),
+                            Before = before,
+                            After = after,
+                            HashDelta = hashDelta,
+                        },
                     },
+                    SemanticDiffEntries = { hashDelta },
                 },
-                SemanticDiffEntries = { hashDelta },
             },
         };
-        using DeploymentViewModel vm = new(client, connection, inventory);
+        SealedCompileDeployHandoffStore handoff = new();
+        using DeploymentViewModel vm = new(client, connection, inventory, handoff);
+        SeedHandoff(handoff, nodeId, deviceId);
 
         await vm.CreatePlanCommand.ExecuteAsync(null);
 
@@ -313,7 +305,9 @@ public sealed class DeploymentViewModelTests
         inventory.Roots.Add(site);
         inventory.SelectedNode = site.Children[0].Children[1];
         FakeDeploymentClient client = new();
-        using DeploymentViewModel vm = new(client, connection, inventory);
+        SealedCompileDeployHandoffStore handoff = new();
+        using DeploymentViewModel vm = new(client, connection, inventory, handoff);
+        SeedHandoff(handoff, nodeId, deviceA, deviceB);
 
         await vm.CreatePlanCommand.ExecuteAsync(null);
 
@@ -375,13 +369,11 @@ public sealed class DeploymentViewModelTests
         inventory.SelectedNode = site.Children[0];
         FakeDeploymentClient client = new()
         {
-            CreatePlanOverride = new DeploymentPlanSummary
-            {
-                PlanId = DesktopProtoUuid.FromGuid(planId),
-                PlanHash = Hash("plan"),
-            },
+            CreatePlanOverride = SealedPlanResponse(planId, Hash("plan"), withCapturePairs: true),
         };
-        using DeploymentViewModel vm = new(client, connection, inventory);
+        SealedCompileDeployHandoffStore handoff = new();
+        using DeploymentViewModel vm = new(client, connection, inventory, handoff);
+        SeedHandoff(handoff, nodeA, deviceA);
         await vm.CreatePlanCommand.ExecuteAsync(null);
         Assert.Equal(planId, vm.PlanId);
 
@@ -452,19 +444,88 @@ public sealed class DeploymentViewModelTests
         inventory.SelectedNode = site.Children[0];
         FakeDeploymentClient client = new()
         {
-            CreatePlanOverride = new DeploymentPlanSummary
-            {
-                PlanId = DesktopProtoUuid.FromGuid(planId),
-                PlanHash = Hash("plan"),
-            },
+            CreatePlanOverride = SealedPlanResponse(planId, Hash("plan"), withCapturePairs: false),
         };
-        using DeploymentViewModel vm = new(client, connection, inventory);
+        SealedCompileDeployHandoffStore handoff = new();
+        using DeploymentViewModel vm = new(client, connection, inventory, handoff);
+        SeedHandoff(handoff, nodeA, deviceA);
         await vm.CreatePlanCommand.ExecuteAsync(null);
 
         inventory.SelectedNode = site.Children[0].Children[0];
 
         Assert.Equal(planId, vm.PlanId);
         Assert.NotNull(vm.PlanHash);
+    }
+
+    private static InventoryNodeViewModel BuildSiteWithSingleDevice(Guid nodeId, Guid deviceId)
+        => new(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Site,
+            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            DisplayName = "LAB",
+            Children =
+            [
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeId,
+                    DisplayName = "edge",
+                    Children =
+                    [
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceId,
+                            DisplayName = "r1",
+                        },
+                    ],
+                },
+            ],
+        });
+
+    private static void SeedHandoff(
+        SealedCompileDeployHandoffStore store,
+        Guid nodeId,
+        params Guid[] deviceIds)
+    {
+        store.Replace(new SealedCompileDeployHandoff
+        {
+            NodeId = nodeId,
+            AnalysisRunId = Guid.Parse("eeeeeeee-ffff-aaaa-bbbb-cccccccccccc"),
+            LogicalEffectivePolicyHash = Hash("logical-policy"),
+            Artifacts = deviceIds.Select(static id => new SealedCompileArtifactRef
+            {
+                DeviceId = id,
+                ResourceHash = Hash($"artifact-{id:D}"),
+                ArtifactId = $"sealed-{id:D}",
+            }).ToList(),
+        });
+    }
+
+    private static CreateDeploymentPlanFromSealedArtifactsResponse SealedPlanResponse(
+        Guid planId,
+        Sha256 planHash,
+        bool withCapturePairs)
+    {
+        CreateDeploymentPlanFromSealedArtifactsResponse response = new()
+        {
+            Plan = new DeploymentPlanSummary
+            {
+                PlanId = DesktopProtoUuid.FromGuid(planId),
+                PlanHash = planHash,
+            },
+        };
+        if (withCapturePairs)
+        {
+            response.CapturePacketPathPairs.Add(new DeploymentPacketPathPairFact
+            {
+                IngressInterface = "capture-in",
+                EgressInterface = "capture-out",
+                PathClass = DeploymentPacketPathKind.CpuFirewall,
+            });
+        }
+
+        return response;
     }
 
     private static Sha256 Hash(string seed)
@@ -525,7 +586,7 @@ public sealed class DeploymentViewModelTests
 
         public List<Guid> LastDeviceIds { get; private set; } = [];
 
-        public DeploymentPlanSummary? CreatePlanOverride { get; init; }
+        public CreateDeploymentPlanFromSealedArtifactsResponse? CreatePlanOverride { get; init; }
 
         public Task<DeploymentPlanSummary> CreatePlanAsync(
             Guid nodeId,
@@ -533,6 +594,13 @@ public sealed class DeploymentViewModelTests
             Sha256 analysisBundleHash,
             Sha256 topologyHash,
             IReadOnlyList<DeploymentDevicePlanInput> devices,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException("CreatePlanAsync is legacy; tests use CreatePlanFromSealedArtifactsAsync.");
+
+        public Task<CreateDeploymentPlanFromSealedArtifactsResponse> CreatePlanFromSealedArtifactsAsync(
+            Guid nodeId,
+            Guid analysisRunId,
+            IReadOnlyList<SealedArtifactDeviceRef> devices,
             CancellationToken cancellationToken = default)
         {
             LastNodeId = nodeId;
@@ -542,11 +610,21 @@ public sealed class DeploymentViewModelTests
                 return Task.FromResult(CreatePlanOverride);
             }
 
-            return Task.FromResult(new DeploymentPlanSummary
+            CreateDeploymentPlanFromSealedArtifactsResponse response = new()
             {
-                PlanId = DesktopProtoUuid.FromGuid(Guid.Parse("dddddddd-eeee-ffff-aaaa-111111111111")),
-                PlanHash = logicalPolicyHash,
+                Plan = new DeploymentPlanSummary
+                {
+                    PlanId = DesktopProtoUuid.FromGuid(Guid.Parse("dddddddd-eeee-ffff-aaaa-111111111111")),
+                    PlanHash = Hash("plan"),
+                },
+            };
+            response.CapturePacketPathPairs.Add(new DeploymentPacketPathPairFact
+            {
+                IngressInterface = "capture-in",
+                EgressInterface = "capture-out",
+                PathClass = DeploymentPacketPathKind.CpuFirewall,
             });
+            return Task.FromResult(response);
         }
 
         public Task<DeploymentOperationSummary> StartAsync(

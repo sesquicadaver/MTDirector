@@ -1,10 +1,7 @@
 using System.Collections.ObjectModel;
-using System.Security.Cryptography;
-using System.Text;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Google.Protobuf;
 using Grpc.Core;
 using Mfc.Contracts.Mfc.V1;
 using Mfc.Desktop.Services;
@@ -20,19 +17,25 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
     private readonly IDeploymentServiceClient _client;
     private readonly IControllerConnectionService _connection;
     private readonly InventoryTreeViewModel _inventory;
+    private readonly ISealedCompileDeployHandoffStore _sealedHandoff;
     private bool _disposed;
 
     /// <summary>Resolved owner NodeId for PlanId/OperationId; cleared on cross-node selection.</summary>
     private Guid? _mutationOwnerNodeId;
 
+    /// <summary>Capture-derived packet-path pairs from last sealed CreatePlan; cleared on node switch.</summary>
+    private DeploymentPacketPathPairFact[] _capturePacketPathPairs = [];
+
     public DeploymentViewModel(
         IDeploymentServiceClient client,
         IControllerConnectionService connection,
-        InventoryTreeViewModel inventory)
+        InventoryTreeViewModel inventory,
+        ISealedCompileDeployHandoffStore? sealedHandoff = null)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
+        _sealedHandoff = sealedHandoff ?? new SealedCompileDeployHandoffStore();
         _connection.StateChanged += OnConnectionStateChanged;
         _inventory.PropertyChanged += OnInventoryPropertyChanged;
         RefreshTargetHint();
@@ -107,18 +110,32 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
                 _inventory.SelectedNode,
                 _inventory.Roots);
             Guid nodeId = node.Id;
-            IReadOnlyList<Guid> deviceIds = InventoryOpsSelection.RequireDeviceIds(node);
-            Sha256 hash = Utf8Sha256("deployment-desktop");
-            DeploymentPlanSummary plan = await _client.CreatePlanAsync(
-                nodeId,
-                hash,
-                hash,
-                hash,
-                deviceIds.Select(DefaultDevicePlan).ToList(),
-                CancellationToken.None).ConfigureAwait(true);
+            SealedCompileDeployHandoff handoff = _sealedHandoff.Current
+                ?? throw new InvalidOperationException(
+                    "Compile sealed artifacts on the Policies panel for this Node before Create plan.");
+            if (handoff.NodeId != nodeId)
+            {
+                throw new InvalidOperationException(
+                    "Sealed compile handoff belongs to another Node; re-compile for the selected Node.");
+            }
+
+            CreateDeploymentPlanFromSealedArtifactsResponse response = await _client
+                .CreatePlanFromSealedArtifactsAsync(
+                    nodeId,
+                    handoff.AnalysisRunId,
+                    handoff.Artifacts.Select(a => new SealedArtifactDeviceRef
+                    {
+                        DeviceId = DesktopProtoUuid.FromGuid(a.DeviceId),
+                        NewArtifactResourceHash = a.ResourceHash,
+                    }).ToList(),
+                    CancellationToken.None)
+                .ConfigureAwait(true);
+            DeploymentPlanSummary plan = response.Plan
+                ?? throw new InvalidOperationException("Controller returned an empty sealed deployment plan.");
             PlanId = DesktopProtoUuid.ToGuid(plan.PlanId);
             PlanHash = plan.PlanHash;
             _mutationOwnerNodeId = nodeId;
+            _capturePacketPathPairs = response.CapturePacketPathPairs.ToArray();
             SemanticDiffRows.Clear();
             SemanticDiffLines.Clear();
             foreach (DeploymentSemanticDiffEntry entry in plan.SemanticDiff)
@@ -165,7 +182,13 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
                 OrderLines.Add($"plan_rollback_device={DesktopProtoUuid.ToGuid(deviceOrderId):D}");
             }
 
-            StatusText = $"Plan {PlanId:D} created.";
+            foreach (DeploymentPacketPathPairFact pair in _capturePacketPathPairs)
+            {
+                ProbeAndWatchdogLines.Add(
+                    $"packet_path:{pair.IngressInterface}->{pair.EgressInterface}:{pair.PathClass}");
+            }
+
+            StatusText = $"Plan {PlanId:D} created from sealed compile artifacts.";
         }).ConfigureAwait(true);
     }
 
@@ -268,14 +291,7 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
         DeploymentOperationSummary started = await _client.StartAsync(
                 planId,
                 planHash,
-                [
-                    new DeploymentPacketPathPairFact
-                    {
-                        IngressInterface = "ether1",
-                        EgressInterface = "wan1",
-                        PathClass = DeploymentPacketPathKind.CpuFirewall,
-                    },
-                ],
+                RequireCapturePacketPathPairs(),
                 cancellationToken)
             .ConfigureAwait(false);
         List<string> watchLines = [];
@@ -405,67 +421,30 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
         ProbeAndWatchdogLines.Clear();
         ProgressLines.Clear();
         RecoveryFactsText = string.Empty;
+        _capturePacketPathPairs = [];
     }
 
     private void RefreshTargetHint()
     {
         TargetHint = InventoryOpsSelection.FormatTargetHint(_inventory.SelectedNode, _inventory.Roots);
         HasVrrpPairTarget = InventoryOpsSelection.IsVrrpPair(_inventory.SelectedNode, _inventory.Roots);
+        Guid? nodeId = InventoryOpsSelection.TryResolveNode(_inventory.SelectedNode, _inventory.Roots)?.Id;
+        _sealedHandoff.InvalidateUnlessNode(nodeId);
     }
 
-    private static DeploymentDevicePlanInput DefaultDevicePlan(Guid deviceId)
+    private DeploymentPacketPathPairFact[] RequireCapturePacketPathPairs()
     {
-        // Desktop demo payload: operator normally receives a sealed plan from Controller compile path.
-        // Placeholder hashes keep the panel Contracts-only until binder UI lands with M4-13 acceptance.
-        Sha256 hash = Utf8Sha256(deviceId.ToString("D"));
-        DeploymentDevicePlanInput input = new()
+        if (_capturePacketPathPairs.Length == 0)
         {
-            DeviceId = DesktopProtoUuid.FromGuid(deviceId),
-            ExpectedRouterosVersion = "7.16.2",
-            ExpectedCapabilityHash = hash,
-            ExpectedConfigurationHash = hash,
-            ExpectedCompatibilityHash = hash,
-            ExpectedGuardContextHash = hash,
-            ExpectedAnchorContextHash = hash,
-            OldArtifactHash = Utf8Sha256("old-art"),
-            NewArtifactHash = Utf8Sha256("new-art"),
-            RollbackTtlSeconds = 180,
-        };
-        string[] markers = ["mfc:anchor:v1:4:f", "mfc:anchor:v1:4:o", "mfc:anchor:v1:4:i"];
-        input.AnchorActivationOrderMarkers.AddRange(markers);
-        foreach (string marker in markers)
-        {
-            input.OldAnchorTargets.Add(new DeploymentAnchorTargetInput
-            {
-                Marker = marker,
-                JumpTarget = marker.Contains(":4:i", StringComparison.Ordinal) ? "mfc4.in"
-                    : marker.Contains(":4:o", StringComparison.Ordinal) ? "mfc4.out" : "mfc4.fwd",
-            });
-            input.NewAnchorTargets.Add(new DeploymentAnchorTargetInput
-            {
-                Marker = marker,
-                JumpTarget = marker.Contains(":4:i", StringComparison.Ordinal) ? "mfc4.in.r.0123456789abcdef"
-                    : marker.Contains(":4:o", StringComparison.Ordinal) ? "mfc4.out.r.0123456789abcdef"
-                    : "mfc4.fwd.r.0123456789abcdef",
-            });
-            input.TransitionStateHashes.Add(Utf8Sha256($"transition-{marker}"));
+            throw new InvalidOperationException(
+                "Start requires capture-derived packet-path pairs from sealed Create plan (no fabricated interfaces).");
         }
 
-        input.TransitionStateHashes.Add(Utf8Sha256("transition-final"));
-        input.Probes.Add(new DeploymentProbeInput
-        {
-            Kind = DeploymentProbeKind.RouterPing,
-            Destination = "192.0.2.1",
-            TimeoutMilliseconds = 500,
-        });
-        return input;
+        return _capturePacketPathPairs;
     }
 
     private static string ToHex(Sha256 hash)
         => Convert.ToHexString(hash.Value.Span)[..12] + "…";
-
-    private static Sha256 Utf8Sha256(string value)
-        => new() { Value = ByteString.CopyFrom(SHA256.HashData(Encoding.UTF8.GetBytes(value))) };
 
     private sealed record StartWatchOutcome(
         DeploymentOperationSummary Started,

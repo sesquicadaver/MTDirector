@@ -1174,9 +1174,25 @@ public sealed class PoliciesViewModelTests
             {
                 NodeId = nodeId,
                 LogicalEffectiveHashHex = new string('c', 64),
+                LogicalEffectivePolicyHash = new Sha256
+                {
+                    Value = Google.Protobuf.ByteString.CopyFrom(Enumerable.Repeat((byte)0xcc, 32).ToArray()),
+                },
                 ArtifactLines =
                 [
                     $"device={CompileDeviceId:D} artifact=art-1 rules=2 new=True",
+                ],
+                Artifacts =
+                [
+                    new SealedCompileArtifactRef
+                    {
+                        DeviceId = CompileDeviceId,
+                        ResourceHash = new Sha256
+                        {
+                            Value = Google.Protobuf.ByteString.CopyFrom(Enumerable.Repeat((byte)0xad, 32).ToArray()),
+                        },
+                        ArtifactId = "art-1",
+                    },
                 ],
             });
         }

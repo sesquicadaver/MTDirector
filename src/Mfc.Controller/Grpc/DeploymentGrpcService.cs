@@ -4,6 +4,7 @@ using Mfc.Application.Deployment;
 using Mfc.Contracts.Mfc.V1;
 using Mfc.Domain;
 using Mfc.Domain.Deployment;
+using Mfc.Domain.Policy;
 
 namespace Mfc.Controller.Grpc;
 
@@ -13,6 +14,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
     public const string ActorMetadataKey = InventoryGrpcService.ActorMetadataKey;
 
     private readonly CreateDeploymentPlanUseCase _createPlan;
+    private readonly CreateDeploymentPlanFromSealedArtifactsUseCase _createPlanFromSealed;
     private readonly StartDeploymentUseCase _start;
     private readonly RollbackDeploymentWorkflowUseCase _rollback;
     private readonly GetDeploymentRecoveryStatusUseCase _recovery;
@@ -22,6 +24,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
 
     public DeploymentGrpcService(
         CreateDeploymentPlanUseCase createPlan,
+        CreateDeploymentPlanFromSealedArtifactsUseCase createPlanFromSealed,
         StartDeploymentUseCase start,
         RollbackDeploymentWorkflowUseCase rollback,
         GetDeploymentRecoveryStatusUseCase recovery,
@@ -30,6 +33,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(createPlan);
+        ArgumentNullException.ThrowIfNull(createPlanFromSealed);
         ArgumentNullException.ThrowIfNull(start);
         ArgumentNullException.ThrowIfNull(rollback);
         ArgumentNullException.ThrowIfNull(recovery);
@@ -37,6 +41,7 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
         ArgumentNullException.ThrowIfNull(actors);
         ArgumentNullException.ThrowIfNull(environment);
         _createPlan = createPlan;
+        _createPlanFromSealed = createPlanFromSealed;
         _start = start;
         _rollback = rollback;
         _recovery = recovery;
@@ -66,6 +71,53 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
                 },
                 context.CancellationToken).ConfigureAwait(false);
             return DeploymentProtoMapper.ToProto(Unwrap(result));
+        }
+        catch (RpcException)
+        {
+            throw;
+        }
+        catch (DomainInvariantException ex)
+        {
+            throw GrpcApplicationErrorMapper.ToRpcException(ApplicationError.Validation(ex.Message));
+        }
+        catch (ArgumentException ex)
+        {
+            throw GrpcApplicationErrorMapper.ToRpcException(ApplicationError.Validation(ex.Message));
+        }
+    }
+
+    public override async Task<CreateDeploymentPlanFromSealedArtifactsResponse> CreatePlanFromSealedArtifacts(
+        CreateDeploymentPlanFromSealedArtifactsRequest request,
+        ServerCallContext context)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        try
+        {
+            ApplicationResult<SealedDeploymentPlanResult> result = await _createPlanFromSealed.ExecuteAsync(
+                new CreateDeploymentPlanFromSealedArtifactsCommand
+                {
+                    Actor = ResolveActor(context),
+                    IdempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey),
+                    NodeId = ProtoUuid.ToGuid(request.NodeId),
+                    AnalysisRunId = ProtoUuid.ToGuid(request.AnalysisRunId),
+                    Devices = request.Devices.Select(static d => new Application.Deployment.SealedArtifactDeviceRef
+                    {
+                        DeviceId = ProtoUuid.ToGuid(d.DeviceId),
+                        NewArtifactResourceHash = DeploymentProtoMapper.ToHashBytes(d.NewArtifactResourceHash),
+                    }).ToList(),
+                },
+                context.CancellationToken).ConfigureAwait(false);
+            SealedDeploymentPlanResult sealedResult = Unwrap(result);
+            CreateDeploymentPlanFromSealedArtifactsResponse response = new()
+            {
+                Plan = DeploymentProtoMapper.ToProto(sealedResult.Plan),
+            };
+            foreach (PacketPathPairFact pair in sealedResult.CapturePacketPathPairs)
+            {
+                response.CapturePacketPathPairs.Add(DeploymentProtoMapper.ToProto(pair));
+            }
+
+            return response;
         }
         catch (RpcException)
         {

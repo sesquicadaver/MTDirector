@@ -373,6 +373,7 @@ public static class Program
     private static void RegisterDeploymentApplication(IServiceCollection services)
     {
         services.AddScoped<CreateDeploymentPlanUseCase>();
+        services.AddScoped<CreateDeploymentPlanFromSealedArtifactsUseCase>();
         services.AddScoped<StartDeploymentUseCase>();
         services.AddScoped<RollbackDeploymentWorkflowUseCase>();
         services.AddScoped<GetDeploymentRecoveryStatusUseCase>();

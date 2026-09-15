@@ -1667,6 +1667,17 @@ Issue [#868](https://github.com/sesquicadaver/MTDirector/issues/868) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7231"`.
 
+
+## Living Specification — AUDIT-GUI-01 sealed compile/deploy handoff (W7-232)
+
+Issue [#871](https://github.com/sesquicadaver/MTDirector/issues/871) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| No Desktop fabrications; sealed CreatePlanFromSealedArtifacts + Compile handoff; Policies Deploy fail-closed | `OnboardingViewModel`, `DeploymentViewModel`, `PoliciesViewModel`, `CreateDeploymentPlanFromSealedArtifactsUseCase`, `SealedCompileDeployHandoffStore` | `DesktopAuditGui01LivingSpecTests`, `ProductTrancheAuditGui01W7232LivingSpecTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopAuditGui01|ProductTrancheAuditGui01W7232"`.
+
 ## Living Specification — AUDIT-GUARD-01 complete guard contract (W7-224)
 
 Issue [#855](https://github.com/sesquicadaver/MTDirector/issues/855) AC → module → tests:
