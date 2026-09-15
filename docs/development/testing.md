@@ -1864,6 +1864,16 @@ Issue [#920](https://github.com/sesquicadaver/MTDirector/issues/920) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7257"`.
 
+## Living Specification — Product tranche seed DESK-A11Y-LIST-01 (W7-263)
+
+Issue [#932](https://github.com/sesquicadaver/MTDirector/issues/932) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed DESK-A11Y-LIST-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-31 | `ProductTrancheSeedW7263LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskA11yList01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7263"`.
+
 ## Living Specification — PLAN-31 Desktop residual ListBox / Drift–Audit read-only a11y inventory (W7-262)
 
 Issue [#931](https://github.com/sesquicadaver/MTDirector/issues/931) AC → module → tests:
@@ -1880,7 +1890,7 @@ Issue [#928](https://github.com/sesquicadaver/MTDirector/issues/928) AC → modu
 
 | AC / вимога | Модуль | Тест |
 |-------------|--------|------|
-| PLAN-30 COMPLETE + queue seed PLAN-31 inventory (historical NEXT W7-262; now inventory DONE / NEXT W7-263) | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-30, plan-31 | `ProductTrancheSeedW7261LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan31AfterPlan30Complete` |
+| PLAN-30 COMPLETE + queue seed PLAN-31 inventory (historical NEXT W7-262; now inventory DONE / seed W7-263 DONE / NEXT W7-264) | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-30, plan-31 | `ProductTrancheSeedW7261LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan31AfterPlan30Complete` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7261"`.
 

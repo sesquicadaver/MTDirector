@@ -1,7 +1,7 @@
 # PLAN-31 — Desktop residual ListBox / Drift–Audit read-only a11y
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-262); seed **W7-263 (#932) OPEN** → **DESK-A11Y-LIST-01**; implement **W7-264 (#934) OPEN**; seed **W7-265 (#935) OPEN** → **DESK-A11Y-RO-01**  
+**Status:** Inventory **DONE** (W7-262); seed **W7-263 (#932) DONE**; implement **W7-264 (#934) OPEN** (**§3.C NEXT**) → **DESK-A11Y-LIST-01**; seed **W7-265 (#935) OPEN** → **DESK-A11Y-RO-01**  
 **PLAN issue / queue:** [W7-262 / PLAN-31 #931](https://github.com/sesquicadaver/MTDirector/issues/931) **DONE**  
 **Predecessor:** PLAN-30 Watch operation-owner ACL / hub backpressure **COMPLETE**; PLAN-28 deferred ListBox hosts / Drift–Audit read-only JSON TextBoxes  
 **Normative files:** [`MainWindow.axaml`](../../src/Mfc.Desktop/MainWindow.axaml)  
@@ -57,7 +57,7 @@ Absorb the highest remaining **product** continuous-queue a11y gap after PLAN-30
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-A11Y-LIST-01** | ListBox host `AutomationProperties.Name` on all 43 `ItemsSource`-bound operator browse/select surfaces | 43 unnamed ItemsSource ListBox hosts in `MainWindow.axaml` @ `184bb85` | implement **W7-264 (#934)**; seed **W7-263 (#932) OPEN** |
+| 1 | **DESK-A11Y-LIST-01** | ListBox host `AutomationProperties.Name` on all 43 `ItemsSource`-bound operator browse/select surfaces | 43 unnamed ItemsSource ListBox hosts in `MainWindow.axaml` @ `184bb85` | implement **W7-264 (#934) OPEN** (**§3.C NEXT**); seed **W7-263 (#932) DONE** |
 | 2 | **DESK-A11Y-RO-01** | Drift SemanticDiff + Audit PayloadJson read-only TextBox Names | 2 `IsReadOnly` TextBoxes without Name (~L2003 / ~L2062) | seed **W7-265 (#935) OPEN** (opens RO implement after LIST) |
 
 Inventory (**W7-262 DONE**) locked ranking and opened LIST implement (**W7-264**) + RO seed (**W7-265**). Seed **W7-263** advances §3.C NEXT to the first implement after inventory DONE. No third vanity rank — nested item-template ListBoxes stay out of scope; FIELD/CTRL / HEALTH/RECONNECT / OWN/BP locks remain the regression corpus. Seed IDs **DESK-A11Y-LIST-01** / **DESK-A11Y-RO-01** are the canonical atomic row names.
@@ -79,9 +79,9 @@ PLAN-30 ranks 1…2 (**WATCH-OWN-01**, **WATCH-BP-01**) are **DONE**. No further
 
 1. **PLAN-30 COMPLETE** (W7-260 WATCH-BP-01; seed **W7-261 DONE**).  
 2. **W7-262 DONE** — PLAN-31 inventory; opened **W7-264** / **W7-265**.  
-3. **W7-263 OPEN** — seed advances NEXT to **DESK-A11Y-LIST-01** (**W7-264**).  
+3. **W7-263 DONE** — seed advanced NEXT to **DESK-A11Y-LIST-01** (**W7-264**).  
 4. Execute ranked DESK-A11Y-LIST / DESK-A11Y-RO rows atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-263 (#932)** — Seed first PLAN-31 atomic row after inventory → DESK-A11Y-LIST-01.
+**§3.C NEXT = W7-264 (#934)** — DESK-A11Y-LIST-01 — ListBox host AutomationProperties.Name across operator browse/select surfaces.

@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-262** ([#931](https://github.com/sesquicadaver/MTDirector/issues/931)): PLAN-31 inventory DONE — ranked **DESK-A11Y-LIST-01** / **DESK-A11Y-RO-01**; opened **W7-264 (#934)** / **W7-265 (#935)** (`Plan31DesktopResidualListboxReadonlyA11yW7262LivingSpecTests`). **§3.C NEXT = W7-263 (#932)**.
+- **W7-263** ([#932](https://github.com/sesquicadaver/MTDirector/issues/932)): Seed PLAN-31 first atomic row → DESK-A11Y-LIST-01 as §3.C NEXT; keep **W7-264 (#934)** implement + **W7-265 (#935)** RO follow-up open (`ProductTrancheSeedW7263LivingSpecTests`). **§3.C NEXT = W7-264 (#934)**.
+
+- **W7-262** ([#931](https://github.com/sesquicadaver/MTDirector/issues/931)): PLAN-31 inventory DONE — ranked **DESK-A11Y-LIST-01** / **DESK-A11Y-RO-01**; opened **W7-264 (#934)** / **W7-265 (#935)** (`Plan31DesktopResidualListboxReadonlyA11yW7262LivingSpecTests`). **§3.C NEXT was W7-263 (#932)** (advanced by W7-263).
 
 - **W7-261** ([#928](https://github.com/sesquicadaver/MTDirector/issues/928)): Seed PLAN-30 COMPLETE → PLAN-31 Desktop residual ListBox / Drift–Audit read-only a11y tranche (`ProductTrancheSeedW7261LivingSpecTests`). **§3.C NEXT was W7-262 (#931)** (advanced by W7-262).
 
