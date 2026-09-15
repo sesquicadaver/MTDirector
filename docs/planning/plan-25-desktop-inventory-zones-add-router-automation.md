@@ -52,4 +52,4 @@ Product §3 never waits on GNS3.
 
 ## §3.C NEXT
 
-**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** **PLAN-27 COMPLETE.** PLAN-28 inventory **OPEN** (W7-244); seed **W7-245 OPEN**. **§3.C NEXT = W7-244 (#895)** — PLAN-28 inventory.
+**PLAN-25 COMPLETE.** **PLAN-26 COMPLETE.** **PLAN-27 COMPLETE.** PLAN-28 inventory **DONE** (W7-244); seed **W7-245 OPEN**. **§3.C NEXT = W7-245 (#896)** — Seed first PLAN-28 atomic row → DESK-A11Y-FIELD-01.

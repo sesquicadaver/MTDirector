@@ -1702,6 +1702,16 @@ Issue [#875](https://github.com/sesquicadaver/MTDirector/issues/875) AC → modu
 Filter: `dotnet test --filter "FullyQualifiedName~AllowListedOperatorAuthorizationBoundary|AuditAuth01AllowlistedOperatorsW7234"`.
 
 
+## Living Specification — PLAN-28 residual field/control a11y inventory (W7-244)
+
+Issue [#895](https://github.com/sesquicadaver/MTDirector/issues/895) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Ranked DESK-A11Y-FIELD/CTRL + seed DESK-A11Y-FIELD-01 | plan-28 + queue docs | `Plan28DesktopResidualFieldControlAutomationW7244LivingSpecTests.Ac1Plan28InventoryDocumentsRankedRowsAndSeedsDeskA11yField01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan28DesktopResidualFieldControlAutomationW7244"`.
+
 ## Living Specification — Product tranche seed after DESK-A11Y-PANEL-01 / PLAN-27 COMPLETE (W7-243)
 
 Issue [#892](https://github.com/sesquicadaver/MTDirector/issues/892) AC → module → tests:
