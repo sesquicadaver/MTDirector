@@ -1,0 +1,30 @@
+# MTDirector Desktop — freedesktop desktop-entry template (DESK-HOST-LINUX-01 / W7-280)
+#
+# Matches framework-dependent publish layout from scripts/release/package-desktop.sh:
+#   OUT_DIR/desktop/Mfc.Desktop
+#   OUT_DIR/desktop/Mfc.Desktop.runtimeconfig.json  (net10.0)
+# Default RID: linux-x64; --self-contained false (host must provide .NET Desktop runtime).
+#
+# Install sketch (operator-owned paths; adjust Path/Exec as needed):
+#   unzip "$OUT_DIR/Mfc.Desktop-linux-x64.zip" -d /opt/mfc
+#   # edit /opt/mfc/desktop/appsettings.json → ControllerEndpoint
+#   sudo install -m 0644 packaging/linux/mfc-desktop.desktop /usr/share/applications/mfc-desktop.desktop
+#   # or: desktop-file-install --dir=$HOME/.local/share/applications packaging/linux/mfc-desktop.desktop
+#   update-desktop-database  # optional for system menus
+#
+# Do not invent AppImage/MSI here (W7-22 lock). Windows Start Menu sketch is DESK-HOST-WIN-01.
+
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=MTDirector Desktop
+GenericName=MikroTik Firewall Controller Desktop
+Comment=Avalonia operator GUI for MTDirector (framework-dependent publish from package-desktop.sh)
+Exec=/opt/mfc/desktop/Mfc.Desktop
+Path=/opt/mfc/desktop
+TryExec=/opt/mfc/desktop/Mfc.Desktop
+Icon=application-x-executable
+Terminal=false
+Categories=Network;System;
+Keywords=MikroTik;RouterOS;Firewall;MTDirector;MFC;
+StartupNotify=true

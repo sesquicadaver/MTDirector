@@ -1951,6 +1951,16 @@ Issue [#946](https://github.com/sesquicadaver/MTDirector/issues/946) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~OpsHostSystemd01ControllerUnitW7270"`.
 
+## Living Specification — DESK-HOST-LINUX-01 freedesktop desktop-entry (W7-280)
+
+Issue [#966](https://github.com/sesquicadaver/MTDirector/issues/966) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| `.desktop` template + docs for framework-dependent Desktop | `packaging/linux/mfc-desktop.desktop`, HOWTO/installation/packaging, plan-34 | `DeskHostLinux01DesktopEntryW7280LivingSpecTests.Ac1DesktopEntryMatchesPackageDesktopLayoutAndDocs` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DeskHostLinux01DesktopEntryW7280"`.
+
 ## Living Specification — Product tranche seed DESK-HOST-LINUX-01 (W7-279)
 
 Issue [#964](https://github.com/sesquicadaver/MTDirector/issues/964) AC → module → tests:

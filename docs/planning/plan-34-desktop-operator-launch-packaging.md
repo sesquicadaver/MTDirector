@@ -1,7 +1,7 @@
 # PLAN-34 — Desktop operator launch packaging templates (.desktop / Windows shortcut)
 
 **Date:** 2026-09-15 (inventory **DONE** @ `3e112bf`; seed W7-279 **DONE**)  
-**Status:** Inventory **DONE** (W7-278); seed **W7-279 (#964) DONE**; implement **W7-280 (#966) OPEN** (**§3.C NEXT**); WIN seed **W7-281 (#967) OPEN**; predecessor **PLAN-33 COMPLETE**  
+**Status:** Inventory **DONE** (W7-278); seed **W7-279 (#964) DONE**; implement **W7-280 (#966) DONE**; WIN seed **W7-281 (#967) OPEN** (**§3.C NEXT**); predecessor **PLAN-33 COMPLETE**  
 **PLAN issue / queue:** [W7-278 / PLAN-34 #963](https://github.com/sesquicadaver/MTDirector/issues/963) **DONE**  
 **Predecessor:** PLAN-33 Desktop Inventory TreeView a11y **COMPLETE** (TREE-01 sole; TAB-01 dropped)  
 **Normative files:** [`package-desktop.sh`](../../scripts/release/package-desktop.sh), [`packaging.md`](../release/packaging.md)  
@@ -64,8 +64,8 @@ PLAN-33 sole ranked row (**DESK-A11Y-TREE-01**) is **DONE**. **DESK-A11Y-TAB-01*
 1. **PLAN-33 COMPLETE** (W7-276 DESK-A11Y-TREE-01; seed **W7-277 DONE**).  
 2. **W7-278 DONE** — PLAN-34 inventory; opened **W7-280 (#966)** LINUX implement + **W7-281 (#967)** WIN seed.  
 3. **W7-279 DONE** — seed first PLAN-34 implement → DESK-HOST-LINUX-01.  
-4. **W7-280 OPEN** (**§3.C NEXT**) — DESK-HOST-LINUX-01 implement; then WIN seed/implement; COMPLETE seed follows WIN DONE.
+4. **W7-280 DONE** — DESK-HOST-LINUX-01 `.desktop` shipped; **W7-281 OPEN** (**§3.C NEXT**) — seed → DESK-HOST-WIN-01; COMPLETE seed follows WIN DONE.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-280 (#966)** — DESK-HOST-LINUX-01 freedesktop `.desktop` template after W7-279 seed.
+**§3.C NEXT = W7-281 (#967)** — Seed DESK-HOST-WIN-01 after DESK-HOST-LINUX-01.

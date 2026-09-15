@@ -9,11 +9,13 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-279** ([#964](https://github.com/sesquicadaver/MTDirector/issues/964)): Seed PLAN-34 first atomic row → DESK-HOST-LINUX-01 as §3.C NEXT; keep **W7-280 (#966)** implement + **W7-281 (#967)** WIN follow-up open (`ProductTrancheSeedW7279LivingSpecTests`). **§3.C NEXT = W7-280 (#966)**.
+- **W7-280** ([#966](https://github.com/sesquicadaver/MTDirector/issues/966)): DESK-HOST-LINUX-01 — freedesktop `.desktop` template `packaging/linux/mfc-desktop.desktop` for framework-dependent Desktop + HOWTO/installation/packaging docs (`DeskHostLinux01DesktopEntryW7280LivingSpecTests`). **§3.C NEXT = W7-281 (#967)**.
 
-- **W7-278** ([#963](https://github.com/sesquicadaver/MTDirector/issues/963)): PLAN-34 inventory DONE — ranked **DESK-HOST-LINUX-01** / **DESK-HOST-WIN-01**; opened **W7-280 (#966)** / **W7-281 (#967)** (`Plan34DesktopOperatorLaunchPackagingW7278LivingSpecTests`). **§3.C NEXT = W7-280 (#966)**.
+- **W7-279** ([#964](https://github.com/sesquicadaver/MTDirector/issues/964)): Seed PLAN-34 first atomic row → DESK-HOST-LINUX-01 as §3.C NEXT; keep **W7-280 (#966)** implement + **W7-281 (#967)** WIN follow-up open (`ProductTrancheSeedW7279LivingSpecTests`). **§3.C NEXT = W7-281 (#967)**.
 
-- **W7-277** ([#959](https://github.com/sesquicadaver/MTDirector/issues/959)): Seed PLAN-33 COMPLETE → PLAN-34 Desktop operator launch packaging templates tranche (`ProductTrancheSeedW7277LivingSpecTests`). **§3.C NEXT = W7-280 (#966)**.
+- **W7-278** ([#963](https://github.com/sesquicadaver/MTDirector/issues/963)): PLAN-34 inventory DONE — ranked **DESK-HOST-LINUX-01** / **DESK-HOST-WIN-01**; opened **W7-280 (#966)** / **W7-281 (#967)** (`Plan34DesktopOperatorLaunchPackagingW7278LivingSpecTests`). **§3.C NEXT = W7-281 (#967)**.
+
+- **W7-277** ([#959](https://github.com/sesquicadaver/MTDirector/issues/959)): Seed PLAN-33 COMPLETE → PLAN-34 Desktop operator launch packaging templates tranche (`ProductTrancheSeedW7277LivingSpecTests`). **§3.C NEXT = W7-281 (#967)**.
 
 - **W7-276** ([#958](https://github.com/sesquicadaver/MTDirector/issues/958)): DESK-A11Y-TREE-01 — Inventory TreeView exposes `AutomationProperties.Name="Inventory"` (`DesktopInventoryTreeViewAutomationLivingSpecTests`). **§3.C NEXT was W7-277 (#959)** (advanced by W7-277).
 

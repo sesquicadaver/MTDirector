@@ -28,24 +28,24 @@ public sealed class ProductTrancheSeedW7279LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-280 | [#966](https://github.com/sesquicadaver/MTDirector/issues/966) | DESK-HOST-LINUX-01 — freedesktop .desktop template for framework-dependent Desktop | **OPEN**",
+            "W7-280 | [#966](https://github.com/sesquicadaver/MTDirector/issues/966) | DESK-HOST-LINUX-01 — freedesktop .desktop template for framework-dependent Desktop | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-281 | [#967](https://github.com/sesquicadaver/MTDirector/issues/967) | Seed next PLAN-34 row after DESK-HOST-LINUX-01 → DESK-HOST-WIN-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-280 (#966)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-281 (#967)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-279 (#964) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-280", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-HOST-LINUX-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-280 (#966)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-281 (#967)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-279 (#964) DONE", plan34, StringComparison.Ordinal);
         Assert.Contains("DESK-HOST-LINUX-01", plan34, StringComparison.Ordinal);
         Assert.Contains("W7-280", plan34, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-280 (#966)", plan34, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-281 (#967)", plan34, StringComparison.Ordinal);
         Assert.Contains("packaging/linux/mfc-desktop.desktop", plan34, StringComparison.Ordinal);
 
         Assert.Contains("DEST=\"$OUT_DIR/desktop\"", packageDesktop, StringComparison.Ordinal);
