@@ -1,7 +1,7 @@
 # PLAN-29 — Desktop connection health / reconnect after Controller stop
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15; **COMPLETE** 2026-09-15)  
-**Status:** **PLAN-29 COMPLETE** — Inventory **DONE** (W7-250); seed **W7-251 (#908) DONE**; **DESK-CONN-HEALTH-01 W7-252 (#910) DONE**; seed **W7-253 (#911) DONE**; **DESK-CONN-RECONNECT-01 W7-254 (#915) DONE**; seed **W7-255 (#916) DONE**; successor **PLAN-30** (inventory **W7-256 (#919) DONE**; seed **W7-257 (#920) DONE**; implement **W7-258 (#922) DONE**; seed **W7-259 (#923) OPEN** (**§3.C NEXT**))  
+**Status:** **PLAN-29 COMPLETE** — Inventory **DONE** (W7-250); seed **W7-251 (#908) DONE**; **DESK-CONN-HEALTH-01 W7-252 (#910) DONE**; seed **W7-253 (#911) DONE**; **DESK-CONN-RECONNECT-01 W7-254 (#915) DONE**; seed **W7-255 (#916) DONE**; successor **PLAN-30** (inventory **W7-256 (#919) DONE**; seed **W7-257 (#920) DONE**; implement **W7-258 (#922) DONE**; seed **W7-259 (#923) DONE**; implement **W7-260 (#927) OPEN** (**§3.C NEXT**); follow-up **W7-261 (#928)**)  
 **PLAN issue / queue:** [W7-250 / PLAN-29 #907](https://github.com/sesquicadaver/MTDirector/issues/907) **DONE**  
 **Predecessor:** PLAN-28 Desktop residual field/control AutomationProperties **COMPLETE**; AUDIT-INT-01 deferred connection-health residual from audit `11cb746` §18  
 **Successor:** [`plan-30-watch-owner-acl-hub-backpressure.md`](plan-30-watch-owner-acl-hub-backpressure.md) (Watch operation-owner ACL / hub slow-subscriber backpressure; AUDIT §19 residual)  
@@ -81,4 +81,4 @@ Evidence at PLAN-29 COMPLETE: `EnsureWatchAuthorizedAsync` still Read-only; Prog
 
 ## §3.C NEXT
 
-**PLAN-29 COMPLETE.** Successor **PLAN-30** inventory **DONE** (W7-256). **§3.C NEXT = W7-259 (#923)** — Seed next PLAN-30 row after WATCH-OWN-01 → WATCH-BP-01.
+**PLAN-29 COMPLETE.** Successor **PLAN-30** inventory **DONE** (W7-256). **§3.C NEXT = W7-260 (#927)** — WATCH-BP-01 bounded ProgressHub channels + live `_history` cap.

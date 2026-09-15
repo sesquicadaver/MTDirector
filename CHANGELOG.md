@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-258** ([#922](https://github.com/sesquicadaver/MTDirector/issues/922)): WATCH-OWN-01 — WatchCapture/WatchDeployment/WatchOnboarding bind to operation owner beyond Read (`OwnerActor` on ProgressHubs; durable `CreatedBy` via `ActorKey`; `WatchOwn01OperationOwnerAclW7258LivingSpecTests`). **§3.C NEXT = W7-259 (#923)**.
+- **W7-259** ([#923](https://github.com/sesquicadaver/MTDirector/issues/923)): Seed PLAN-30 next atomic row → WATCH-BP-01 as §3.C NEXT; opened **W7-260 (#927)** implement + **W7-261 (#928)** PLAN-30 COMPLETE follow-up (`ProductTrancheSeedW7259LivingSpecTests`). **§3.C NEXT = W7-260 (#927)**.
+
+- **W7-258** ([#922](https://github.com/sesquicadaver/MTDirector/issues/922)): WATCH-OWN-01 — WatchCapture/WatchDeployment/WatchOnboarding bind to operation owner beyond Read (`OwnerActor` on ProgressHubs; durable `CreatedBy` via `ActorKey`; `WatchOwn01OperationOwnerAclW7258LivingSpecTests`). **§3.C NEXT was W7-259 (#923)** (advanced by W7-259).
 
 - **W7-257** ([#920](https://github.com/sesquicadaver/MTDirector/issues/920)): Seed PLAN-30 first atomic row → WATCH-OWN-01 as §3.C NEXT (`ProductTrancheSeedW7257LivingSpecTests`). **§3.C NEXT was W7-258 (#922)** (advanced by W7-258).
 

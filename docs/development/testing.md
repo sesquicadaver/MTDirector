@@ -1827,9 +1827,19 @@ Issue [#922](https://github.com/sesquicadaver/MTDirector/issues/922) AC → modu
 |-------------|--------|------|
 | Hubs bind OwnerActor; non-owner mismatch | Capture/Deployment/Onboarding ProgressHub | `WatchOwn01OperationOwnerAclW7258LivingSpecTests.Ac1HubsBindOwnerActorAndFailClosedWithoutMatch` |
 | Watch auth compares owner beyond Read (+ CreatedBy equivalent) | Snapshot/Deployment/Onboarding gRPC | `WatchOwn01OperationOwnerAclW7258LivingSpecTests.Ac2GrpcWatchAuthComparesOwnerBeyondReadPermission` |
-| Docs advance NEXT to W7-259 seed WATCH-BP-01 | ROADMAP / plan-30 / known-limitations | `WatchOwn01OperationOwnerAclW7258LivingSpecTests.Ac3DocsAdvanceNextToWatchBp01Seed` |
+| Docs advance past OWN-01 (historical seed W7-259; NEXT now W7-260) | ROADMAP / plan-30 / known-limitations | `WatchOwn01OperationOwnerAclW7258LivingSpecTests.Ac3DocsAdvanceNextToWatchBp01Seed` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~WatchOwn01OperationOwnerAclW7258"`.
+
+## Living Specification — Product tranche seed WATCH-BP-01 (W7-259)
+
+Issue [#923](https://github.com/sesquicadaver/MTDirector/issues/923) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed WATCH-BP-01 as NEXT; PLAN-30 COMPLETE follow-up opened | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-30 | `ProductTrancheSeedW7259LivingSpecTests.Ac1KnownLimitationsAndQueueSeedWatchBp01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7259"`.
 
 ## Living Specification — Product tranche seed WATCH-OWN-01 (W7-257)
 
