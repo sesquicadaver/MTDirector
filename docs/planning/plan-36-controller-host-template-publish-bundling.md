@@ -1,8 +1,8 @@
 # PLAN-36 — Controller host-template publish bundling (package-controller → OUT_DIR/controller)
 
-**Date:** 2026-09-15 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-288); seed **W7-289 (#984) OPEN**; predecessor **PLAN-35 COMPLETE**  
-**PLAN issue / queue:** [W7-288 / PLAN-36 #983](https://github.com/sesquicadaver/MTDirector/issues/983) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-15 (inventory **DONE** @ `621f13f3`)  
+**Status:** Inventory **DONE** (W7-288); seed **W7-289 (#984) OPEN**; implement **W7-290 (#986) OPEN**; COMPLETE seed **W7-291 (#987) OPEN**; predecessor **PLAN-35 COMPLETE**  
+**PLAN issue / queue:** [W7-288 / PLAN-36 #983](https://github.com/sesquicadaver/MTDirector/issues/983) **DONE**  
 **Predecessor:** PLAN-35 Desktop launch-template publish bundling **COMPLETE** (DESK-HOST-BUNDLE-01)  
 **Normative files:** [`package-controller.sh`](../../scripts/release/package-controller.sh), [`mfc-controller.service`](../../packaging/systemd/mfc-controller.service), [`mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml), [`packaging.md`](../release/packaging.md)  
 **Normative prior locks:** PLAN-32 OPS-HOST-SYSTEMD/WINSVC templates; PLAN-35 Desktop BUNDLE; W7-22 MSI/AppImage — **do not regress**  
@@ -15,7 +15,8 @@ Absorb the highest-value **product** continuous-queue packaging gap after PLAN-3
 1. Release Controller tree should carry the same host-process affordances documented under `packaging/systemd/` and `packaging/windows/`.  
 2. Bundling must preserve framework-dependent layout (`Mfc.Controller` / `Mfc.Controller.exe`) and must not invent AppImage/MSI (W7-22).  
 3. Lab / CHR / `WriteEnabled` are **not** stop-gates.  
-4. Do not invent further PLAN-35 DESK-HOST-BUNDLE product rows — that tranche is **COMPLETE**.
+4. Do not invent further PLAN-35 DESK-HOST-BUNDLE product rows — that tranche is **COMPLETE**.  
+5. Inventory **confirmed** sole rank **OPS-HOST-BUNDLE-01** (no second vanity rank; MSI/AppImage stay locked).
 
 ## Out of scope (do not seed)
 
@@ -24,22 +25,22 @@ Absorb the highest-value **product** continuous-queue packaging gap after PLAN-3
 - Nested ListBox / TabControl a11y vanity  
 - Ops / CRS / physical lab live runners as §3 stop-gates
 
-## Inventory evidence (seed baseline 2026-09-15 `main` @ PLAN-35 COMPLETE / `d84f8269`)
+## Inventory evidence (W7-288 @ `main` `621f13f3`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
 | `package-controller.sh` | `DEST="$OUT_DIR/controller"`; publish (no zip) | Does **not** copy `packaging/systemd/mfc-controller.service` or `packaging/windows/mfc-controller.winsw.xml` into `$DEST` |
-| PLAN-32 templates | Shipped under `packaging/` | Available only with git checkout |
+| PLAN-32 templates | Shipped under `packaging/systemd/` + `packaging/windows/` | Available only with git checkout |
 | Dry-run path | Writes stub `Mfc.Controller` | Same missing host-template copy |
 | PLAN-35 Desktop BUNDLE | `package-desktop.sh` now copies launch templates | Controller parity gap remains |
 
-## Ranked Controller host-template publish-bundling tranche (seed baseline)
+## Ranked Controller host-template publish-bundling tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **OPS-HOST-BUNDLE-01** | `package-controller.sh` copies systemd unit + WinSW xml into `$OUT_DIR/controller/` (dry-run + real publish) + docs/Living Spec | PLAN-32 artifacts; package script omits copy @ `d84f8269` | after inventory **W7-288**; seed **W7-289 (#984)** |
+| 1 | **OPS-HOST-BUNDLE-01** | `package-controller.sh` copies systemd unit + WinSW xml into `$OUT_DIR/controller/` (dry-run + real publish) + docs/Living Spec | PLAN-32 artifacts; package script omits copy @ `621f13f3` | implement **W7-290 (#986)** after seed **W7-289 (#984)** |
 
-Inventory (**W7-288**) may refine ranking and open implement issues; seed **W7-289** advances NEXT to the first implement after inventory DONE.
+Inventory (**W7-288 DONE**) confirmed sole rank (BUNDLE-01 kept; no MSI/AppImage vanity rank). Seed **W7-289** advances NEXT to OPS-HOST-BUNDLE-01 implement; COMPLETE seed **W7-291** opens after BUNDLE-01.
 
 ## Dual track
 
@@ -59,10 +60,10 @@ PLAN-35 sole ranked row (**DESK-HOST-BUNDLE-01**) is **DONE**. No further PLAN-3
 ## §3.C ordering
 
 1. **PLAN-35 COMPLETE** (W7-286 DESK-HOST-BUNDLE-01; seed **W7-287 DONE**).  
-2. **W7-288 OPEN** — PLAN-36 inventory → open first bundling implement + follow-up seeds.  
-3. **W7-289 OPEN** — seed first PLAN-36 implement after inventory.  
-4. Execute ranked OPS-HOST-BUNDLE row(s) atomically.
+2. **W7-288 DONE** — PLAN-36 inventory; opened **W7-290 (#986)** BUNDLE implement + **W7-291 (#987)** COMPLETE seed.  
+3. **W7-289 OPEN** — seed first PLAN-36 implement → OPS-HOST-BUNDLE-01.  
+4. Execute sole OPS-HOST-BUNDLE-01 row atomically; then W7-291 → PLAN-37.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-288 (#983)** — PLAN-36 Inventory Controller host-template publish bundling after PLAN-35.
+**§3.C NEXT = W7-289 (#984)** — Seed first PLAN-36 atomic row after inventory → OPS-HOST-BUNDLE-01.
