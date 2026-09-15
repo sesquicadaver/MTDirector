@@ -1951,6 +1951,16 @@ Issue [#946](https://github.com/sesquicadaver/MTDirector/issues/946) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~OpsHostSystemd01ControllerUnitW7270"`.
 
+## Living Specification — DESK-HOST-WIN-01 Windows Start Menu sketch (W7-282)
+
+Issue [#971](https://github.com/sesquicadaver/MTDirector/issues/971) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Start Menu sketch + docs for framework-dependent Desktop | `packaging/windows/mfc-desktop-start-menu.ps1`, HOWTO/installation/packaging, plan-34 | `DeskHostWin01StartMenuSketchW7282LivingSpecTests.Ac1StartMenuSketchMatchesPackageDesktopLayoutAndDocs` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DeskHostWin01StartMenuSketchW7282"`.
+
 ## Living Specification — Product tranche seed DESK-HOST-WIN-01 (W7-281)
 
 Issue [#967](https://github.com/sesquicadaver/MTDirector/issues/967) AC → module → tests:

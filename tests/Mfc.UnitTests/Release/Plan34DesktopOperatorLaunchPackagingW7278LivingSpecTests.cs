@@ -33,7 +33,7 @@ public sealed class Plan34DesktopOperatorLaunchPackagingW7278LivingSpecTests
         Assert.Contains("W7-279", plan34, StringComparison.Ordinal);
         Assert.Contains("--self-contained false", plan34, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/desktop", plan34, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-282 (#971)", plan34, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-283 (#972)", plan34, StringComparison.Ordinal);
         Assert.Contains("WIN-01 kept", plan34, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-278 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -58,14 +58,14 @@ public sealed class Plan34DesktopOperatorLaunchPackagingW7278LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-282 | [#971](https://github.com/sesquicadaver/MTDirector/issues/971) | DESK-HOST-WIN-01 — Windows Start Menu shortcut sketch for framework-dependent Desktop | **OPEN**",
+            "W7-282 | [#971](https://github.com/sesquicadaver/MTDirector/issues/971) | DESK-HOST-WIN-01 — Windows Start Menu shortcut sketch for framework-dependent Desktop | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-283 | [#972](https://github.com/sesquicadaver/MTDirector/issues/972) | Seed next after DESK-HOST-WIN-01 (PLAN-34 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-282 (#971)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-283 (#972)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-279", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-280", continuous, StringComparison.Ordinal);
@@ -80,7 +80,7 @@ public sealed class Plan34DesktopOperatorLaunchPackagingW7278LivingSpecTests
         Assert.Contains("OUT_DIR/desktop/", packaging, StringComparison.Ordinal);
         Assert.Contains("/opt/mfc/desktop/Mfc.Desktop", howto, StringComparison.Ordinal);
         Assert.True(File.Exists(Path.Combine(root, "packaging/linux/mfc-desktop.desktop")));
-        Assert.False(File.Exists(Path.Combine(root, "packaging/windows/mfc-desktop-start-menu.ps1")));
+        Assert.True(File.Exists(Path.Combine(root, "packaging/windows/mfc-desktop-start-menu.ps1")));
     }
 
     private static string RepoRoot()
