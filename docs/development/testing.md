@@ -1819,6 +1819,16 @@ Issue [#919](https://github.com/sesquicadaver/MTDirector/issues/919) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan30WatchOwnerAclHubBackpressureW7256"`.
 
+## Living Specification — Product tranche seed WATCH-OWN-01 (W7-257)
+
+Issue [#920](https://github.com/sesquicadaver/MTDirector/issues/920) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| known-limitations + queue seed WATCH-OWN-01 as NEXT | `docs/release/known-limitations.md`, `ROADMAP.md`, continuous plan, plan-30 | `ProductTrancheSeedW7257LivingSpecTests.Ac1KnownLimitationsAndQueueSeedWatchOwn01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7257"`.
+
 ## Living Specification — Product tranche seed after DESK-CONN-RECONNECT-01 / PLAN-29 COMPLETE (W7-255)
 
 Issue [#916](https://github.com/sesquicadaver/MTDirector/issues/916) AC → module → tests:

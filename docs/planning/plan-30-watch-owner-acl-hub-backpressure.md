@@ -1,7 +1,7 @@
 # PLAN-30 — Watch operation-owner ACL / hub slow-subscriber backpressure
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15)  
-**Status:** Inventory **DONE** (W7-256); seed **W7-257 (#920) OPEN** → **WATCH-OWN-01**; implement **W7-258 (#922) OPEN**; seed **W7-259 (#923) OPEN** → **WATCH-BP-01**  
+**Status:** Inventory **DONE** (W7-256); seed **W7-257 (#920) DONE**; implement **W7-258 (#922) OPEN** (**§3.C NEXT**); seed **W7-259 (#923) OPEN** → **WATCH-BP-01**  
 **PLAN issue / queue:** [W7-256 / PLAN-30 #919](https://github.com/sesquicadaver/MTDirector/issues/919) **DONE**  
 **Predecessor:** PLAN-29 Desktop connection health / reconnect **COMPLETE**; AUDIT-INT-01 deferred Watch ownership / hub backpressure from audit `11cb746` §19  
 **Normative files:** [`SnapshotGrpcService.cs`](../../src/Mfc.Controller/Grpc/SnapshotGrpcService.cs), [`DeploymentGrpcService.cs`](../../src/Mfc.Controller/Grpc/DeploymentGrpcService.cs), [`OnboardingGrpcService.cs`](../../src/Mfc.Controller/Grpc/OnboardingGrpcService.cs), [`CaptureProgressHub.cs`](../../src/Mfc.Controller/Grpc/CaptureProgressHub.cs), [`DeploymentProgressHub.cs`](../../src/Mfc.Controller/Grpc/DeploymentProgressHub.cs), [`OnboardingProgressHub.cs`](../../src/Mfc.Controller/Grpc/OnboardingProgressHub.cs)  
@@ -41,10 +41,10 @@ Absorb the **product-critical** AUDIT §19 residuals left after AUDIT-INT-01: Wa
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **WATCH-OWN-01** | Bind Watch to operation owner (beyond Read permission) | `EnsureWatchAuthorizedAsync` permission-only; hubs lack owner; audit §19 ownership | implement **W7-258 (#922)**; seed **W7-257 (#920) OPEN** |
+| 1 | **WATCH-OWN-01** | Bind Watch to operation owner (beyond Read permission) | `EnsureWatchAuthorizedAsync` permission-only; hubs lack owner; audit §19 ownership | implement **W7-258 (#922) OPEN** (**§3.C NEXT**); seed **W7-257 (#920) DONE** |
 | 2 | **WATCH-BP-01** | Bounded hub subscriber channels / slow-subscriber backpressure + live `_history` cap | `CreateUnbounded` ×3 ProgressHubs; unbounded `_history` while retained | seed **W7-259 (#923) OPEN** (opens BP implement after OWN) |
 
-Inventory (**W7-256 DONE**) locked ranking and opened OWN implement (**W7-258**) + BP seed (**W7-259**). Seed **W7-257** advances §3.C NEXT to the first implement after inventory DONE. No third vanity rank — history bound stays inside **WATCH-BP-01**; AUDIT-INT-01 Read/prune locks remain the regression corpus. Seed IDs **WATCH-OWN-01** / **WATCH-BP-01** are the canonical atomic row names (owner ACL / hub backpressure).
+Inventory (**W7-256 DONE**) locked ranking and opened OWN implement (**W7-258**) + BP seed (**W7-259**). Seed **W7-257 DONE** advanced §3.C NEXT to the first implement after inventory DONE. No third vanity rank — history bound stays inside **WATCH-BP-01**; AUDIT-INT-01 Read/prune locks remain the regression corpus. Seed IDs **WATCH-OWN-01** / **WATCH-BP-01** are the canonical atomic row names (owner ACL / hub backpressure).
 
 ## Dual track
 
@@ -62,9 +62,9 @@ PLAN-29 ranks 1…2 (**DESK-CONN-HEALTH-01**, **DESK-CONN-RECONNECT-01**) are **
 
 1. **PLAN-29 COMPLETE** (W7-254 DESK-CONN-RECONNECT-01; seed **W7-255 DONE**).  
 2. **W7-256 DONE** — PLAN-30 inventory; opened **W7-258** / **W7-259**.  
-3. **W7-257 OPEN** — seed advances NEXT to **WATCH-OWN-01** (**W7-258**).  
+3. **W7-257 DONE** — seed advanced NEXT to **WATCH-OWN-01** (**W7-258**).  
 4. Execute ranked WATCH-OWN / WATCH-BP rows atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-257 (#920)** — Seed first PLAN-30 atomic row after inventory → WATCH-OWN-01.
+**§3.C NEXT = W7-258 (#922)** — WATCH-OWN-01 — Bind Watch RPCs to operation owner beyond Read permission.
