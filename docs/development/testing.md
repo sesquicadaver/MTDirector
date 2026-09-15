@@ -1768,6 +1768,17 @@ Issue [#910](https://github.com/sesquicadaver/MTDirector/issues/910) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~DeskConnHealth01W7252|FullyQualifiedName~ConnectedHealthProbeLeavesConnected"`.
 
+## Living Specification — DESK-CONN-RECONNECT-01 (W7-254)
+
+Issue [#915](https://github.com/sesquicadaver/MTDirector/issues/915) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Bounded reconnect after health-fail + LastError preserved on Connecting + shell sync | `ControllerConnectionService`, `ShellViewModel`, `DesktopConnectionStatusText` | `DeskConnReconnect01W7254LivingSpecTests.Ac1HealthFailDropResetsAttemptsPreservesLastErrorAndAdvancesQueue` |
+| Integration: health-fail drop enters reconnect Connecting with LastError | `ControllerConnectionServiceTests` | `HealthFailDropEntersBoundedReconnectPreservingLastErrorForShell` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DeskConnReconnect01W7254"`.
+
 ## Living Specification — Product tranche seed DESK-CONN-RECONNECT-01 (W7-253)
 
 Issue [#911](https://github.com/sesquicadaver/MTDirector/issues/911) AC → module → tests:

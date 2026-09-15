@@ -73,9 +73,14 @@ public sealed class ControllerConnectionService : IControllerConnectionService
         _gate.Dispose();
     }
 
-    private async Task ConnectCoreAsync(CancellationToken cancellationToken)
+    /// <param name="preserveLastError">
+    /// When true (reconnect after health-fail drop), keep prior <see cref="LastError"/> while
+    /// entering <see cref="ControllerConnectionState.Connecting"/> so shell ErrorText stays visible.
+    /// </param>
+    private async Task ConnectCoreAsync(CancellationToken cancellationToken, bool preserveLastError = false)
     {
-        SetState(ControllerConnectionState.Connecting, error: null);
+        // DESK-CONN-RECONNECT-01: do not wipe health-fail LastError on reconnect Connecting.
+        SetState(ControllerConnectionState.Connecting, error: preserveLastError ? _lastError : null);
 
         await DisposeChannelAsync().ConfigureAwait(false);
 
@@ -179,6 +184,13 @@ public sealed class ControllerConnectionService : IControllerConnectionService
                         _gate.Release();
                     }
 
+                    // DESK-CONN-RECONNECT-01: after health-fail drop, reset bounded reconnect budget.
+                    if (_state != ControllerConnectionState.Connected
+                        && _state is not (ControllerConnectionState.AuthenticationFailed or ControllerConnectionState.TlsError))
+                    {
+                        attempts = 0;
+                    }
+
                     continue;
                 }
 
@@ -196,14 +208,19 @@ public sealed class ControllerConnectionService : IControllerConnectionService
                         continue;
                     }
 
-                    await ConnectCoreAsync(token).ConfigureAwait(false);
+                    // DESK-CONN-RECONNECT-01: preserve LastError across Connecting for shell sync.
+                    await ConnectCoreAsync(token, preserveLastError: true).ConfigureAwait(false);
                 }
                 finally
                 {
                     _gate.Release();
                 }
 
-                if (_state != ControllerConnectionState.Connected)
+                if (_state == ControllerConnectionState.Connected)
+                {
+                    attempts = 0;
+                }
+                else
                 {
                     await Task.Delay(_options.ReconnectDelayMilliseconds, token).ConfigureAwait(false);
                 }
