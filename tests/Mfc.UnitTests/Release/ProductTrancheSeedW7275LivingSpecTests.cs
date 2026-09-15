@@ -28,35 +28,35 @@ public sealed class ProductTrancheSeedW7275LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-276 | [#958](https://github.com/sesquicadaver/MTDirector/issues/958) | DESK-A11Y-TREE-01 — Inventory TreeView AutomationProperties.Name | **OPEN**",
+            "W7-276 | [#958](https://github.com/sesquicadaver/MTDirector/issues/958) | DESK-A11Y-TREE-01 — Inventory TreeView AutomationProperties.Name | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-277 | [#959](https://github.com/sesquicadaver/MTDirector/issues/959) | Seed next after DESK-A11Y-TREE-01 (PLAN-33 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-276 (#958)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-277 (#959)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-275", plan, StringComparison.Ordinal);
         Assert.Contains("W7-276", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-TREE-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-276 (#958)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-277 (#959)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-275 (#956) DONE", plan33, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-TREE-01", plan33, StringComparison.Ordinal);
         Assert.Contains("W7-276", plan33, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-276 (#958)", plan33, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-277 (#959)", plan33, StringComparison.Ordinal);
 
-        // Seed must not implement TREE-01 itself
+        // Historical seed: TREE-01 later implemented (Name present)
         const string rootsBinding = "ItemsSource=\"{Binding Inventory.Roots}\"";
         Assert.Contains(rootsBinding, axaml, StringComparison.Ordinal);
         int treeIdx = axaml.IndexOf(rootsBinding, StringComparison.Ordinal);
         Assert.True(treeIdx > 0);
         int regionStart = Math.Max(0, treeIdx - 80);
-        int regionLen = Math.Min(200, axaml.Length - regionStart);
+        int regionLen = Math.Min(350, axaml.Length - regionStart);
         string openRegion = axaml.Substring(regionStart, regionLen);
         Assert.Contains("<TreeView", openRegion, StringComparison.Ordinal);
-        Assert.DoesNotContain("AutomationProperties.Name", openRegion, StringComparison.Ordinal);
+        Assert.Contains("AutomationProperties.Name=\"Inventory\"", openRegion, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

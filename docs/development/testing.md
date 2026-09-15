@@ -1951,6 +1951,17 @@ Issue [#946](https://github.com/sesquicadaver/MTDirector/issues/946) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~OpsHostSystemd01ControllerUnitW7270"`.
 
+## Living Specification — DESK-A11Y-TREE-01 Inventory TreeView AutomationProperties (W7-276)
+
+Issue [#958](https://github.com/sesquicadaver/MTDirector/issues/958) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Inventory TreeView Name | `MainWindow.axaml` | `DesktopInventoryTreeViewAutomationLivingSpecTests.Ac1InventoryTreeViewExposesAutomationPropertiesName` |
+| PLAN-33 + docs lock | plan-33 + testing + known-limitations | `DesktopInventoryTreeViewAutomationLivingSpecTests.Ac2Plan33AndTestingDocLockA11yTree01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DesktopInventoryTreeViewAutomationLivingSpecTests"`.
+
 ## Living Specification — Product tranche seed DESK-A11Y-TREE-01 (W7-275)
 
 Issue [#956](https://github.com/sesquicadaver/MTDirector/issues/956) AC → module → tests:

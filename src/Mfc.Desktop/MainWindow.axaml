@@ -84,7 +84,8 @@
               ClipToBounds="True"
               MinWidth="160">
         <TreeView ItemsSource="{Binding Inventory.Roots}"
-                  SelectedItem="{Binding Inventory.SelectedNode, Mode=TwoWay}">
+                  SelectedItem="{Binding Inventory.SelectedNode, Mode=TwoWay}"
+                  AutomationProperties.Name="Inventory">
           <TreeView.ItemTemplate>
             <TreeDataTemplate DataType="vm:InventoryNodeViewModel"
                               ItemsSource="{Binding Children}">

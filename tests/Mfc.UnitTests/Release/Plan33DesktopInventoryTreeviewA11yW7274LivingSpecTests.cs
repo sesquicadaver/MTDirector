@@ -26,7 +26,7 @@ public sealed class Plan33DesktopInventoryTreeviewA11yW7274LivingSpecTests
         Assert.Contains("W7-275", plan33, StringComparison.Ordinal);
         Assert.Contains("50f1ae1", plan33, StringComparison.Ordinal);
         Assert.Contains("Inventory.Roots", plan33, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-276 (#958)", plan33, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-277 (#959)", plan33, StringComparison.Ordinal);
         Assert.Contains("3** unnamed containers", plan33, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-274 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -43,14 +43,14 @@ public sealed class Plan33DesktopInventoryTreeviewA11yW7274LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-276 | [#958](https://github.com/sesquicadaver/MTDirector/issues/958) | DESK-A11Y-TREE-01 — Inventory TreeView AutomationProperties.Name | **OPEN**",
+            "W7-276 | [#958](https://github.com/sesquicadaver/MTDirector/issues/958) | DESK-A11Y-TREE-01 — Inventory TreeView AutomationProperties.Name | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-277 | [#959](https://github.com/sesquicadaver/MTDirector/issues/959) | Seed next after DESK-A11Y-TREE-01 (PLAN-33 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-276 (#958)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-277 (#959)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-275", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-276", continuous, StringComparison.Ordinal);
@@ -59,11 +59,11 @@ public sealed class Plan33DesktopInventoryTreeviewA11yW7274LivingSpecTests
         Assert.Contains("plan-33-desktop-inventory-treeview-a11y.md", docsIndex, StringComparison.Ordinal);
         Assert.Contains("Plan33DesktopInventoryTreeviewA11yW7274", testing, StringComparison.Ordinal);
 
-        // Evidence lock: Inventory TreeView still lacks AutomationProperties.Name (implement is W7-276)
+        // Evidence lock: Inventory TreeView exposes AutomationProperties.Name (TREE-01 DONE)
         const string rootsBinding = "ItemsSource=\"{Binding Inventory.Roots}\"";
         Assert.Contains(rootsBinding, mainWindow, StringComparison.Ordinal);
         string treeAttrs = ExtractTreeViewHostAttrs(mainWindow, rootsBinding);
-        Assert.DoesNotContain("AutomationProperties.Name", treeAttrs, StringComparison.Ordinal);
+        Assert.Contains("AutomationProperties.Name=\"Inventory\"", treeAttrs, StringComparison.Ordinal);
     }
 
     private static string ExtractTreeViewHostAttrs(string axaml, string itemsSourceFragment)
