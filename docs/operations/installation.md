@@ -27,7 +27,7 @@ See also [`prerequisite-checklist.md`](prerequisite-checklist.md) for RouterOS d
 
 ### Linux systemd (OPS-HOST-SYSTEMD-01)
 
-Framework-dependent Controller can run under systemd using the repo template [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service) (matches `package-controller.sh` layout: `/opt/mfc/controller/Mfc.Controller`).
+Framework-dependent Controller can run under systemd using the repo template [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service) (also bundled into publish tree, OPS-HOST-BUNDLE-01) (matches `package-controller.sh` layout: `/opt/mfc/controller/Mfc.Controller`).
 
 ```bash
 sudo install -d -o mfc -g mfc /opt/mfc/controller
@@ -42,7 +42,7 @@ sudo systemctl status mfc-controller.service
 
 ### Windows Service / WinSW (OPS-HOST-WINSVC-01)
 
-Framework-dependent Controller (`MFC_RELEASE_RID=win-x64`) can run as a Windows Service using the repo WinSW template [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml) (matches `package-controller.sh` layout: `%BASE%\Mfc.Controller.exe`).
+Framework-dependent Controller (`MFC_RELEASE_RID=win-x64`) can run as a Windows Service using the repo WinSW template [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml) (also bundled into publish tree, OPS-HOST-BUNDLE-01) (matches `package-controller.sh` layout: `%BASE%\Mfc.Controller.exe`).
 
 ```powershell
 # After package-controller.sh with MFC_RELEASE_RID=win-x64:

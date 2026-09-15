@@ -162,7 +162,7 @@ ls -la "$OUT_DIR"
 
 Артефакти:
 
-- `OUT_DIR/controller/` — `Mfc.Controller`
+- `OUT_DIR/controller/` — `Mfc.Controller` (включно з `mfc-controller.service` + `mfc-controller.winsw.xml`, OPS-HOST-BUNDLE-01)
 - `OUT_DIR/desktop/` (включно з `mfc-desktop.desktop` + `mfc-desktop-start-menu.ps1`, DESK-HOST-BUNDLE-01) + `Mfc.Desktop-linux-x64.zip` (або `.tar.gz`)
 - `OUT_DIR/migrations/mfc-ef-migrations`
 - `OUT_DIR/SHA256SUMS`
@@ -201,9 +201,9 @@ cd "$OUT_DIR/controller"
 # або спочатку: ./mfc-ef-migrations  (шлях до migrations bundle)
 ```
 
-**Controller (Linux, systemd):** шаблон unit — [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service). Типово: скопіювати publish tree у `/opt/mfc/controller`, встановити unit у `/etc/systemd/system/`, заповнити `/etc/mfc/controller.env` (`MFC__…`), потім `systemctl enable --now mfc-controller.service`. Деталі — [`../operations/installation.md`](../operations/installation.md).
+**Controller (Linux, systemd):** шаблон unit — [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service); `package-controller.sh` також кладе копію в `$OUT_DIR/controller/mfc-controller.service` (OPS-HOST-BUNDLE-01). Типово: скопіювати publish tree у `/opt/mfc/controller`, встановити unit у `/etc/systemd/system/`, заповнити `/etc/mfc/controller.env` (`MFC__…`), потім `systemctl enable --now mfc-controller.service`. Деталі — [`../operations/installation.md`](../operations/installation.md).
 
-**Controller (Windows, WinSW):** шаблон — [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml). Типово: `MFC_RELEASE_RID=win-x64` publish → `C:\mfc\controller\`, скопіювати XML як `mfc-controller.xml` поруч із WinSW `mfc-controller.exe`, виставити `MFC__…`, потім `mfc-controller.exe install/start`. Деталі — [`../operations/installation.md`](../operations/installation.md).
+**Controller (Windows, WinSW):** шаблон — [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml); `package-controller.sh` також кладе копію в `$OUT_DIR/controller/mfc-controller.winsw.xml` (OPS-HOST-BUNDLE-01). Типово: `MFC_RELEASE_RID=win-x64` publish → `C:\mfc\controller\`, скопіювати XML як `mfc-controller.xml` поруч із WinSW `mfc-controller.exe`, виставити `MFC__…`, потім `mfc-controller.exe install/start`. Деталі — [`../operations/installation.md`](../operations/installation.md).
 
 **Desktop (Linux):** шаблон freedesktop desktop-entry — [`../../packaging/linux/mfc-desktop.desktop`](../../packaging/linux/mfc-desktop.desktop) (DESK-HOST-LINUX-01); `package-desktop.sh` також кладе копію в `$OUT_DIR/desktop/mfc-desktop.desktop` (DESK-HOST-BUNDLE-01). Типово: розпакувати publish zip у `/opt/mfc`, встановити `.desktop` з артефакту або з `packaging/linux/` у `/usr/share/applications/` або `~/.local/share/applications/`, потім запускати з меню або `/opt/mfc/desktop/Mfc.Desktop`.
 

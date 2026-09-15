@@ -2036,6 +2036,17 @@ Issue [#976](https://github.com/sesquicadaver/MTDirector/issues/976) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7285"`.
 
+## Living Specification — OPS-HOST-BUNDLE-01 package-controller host-template bundling (W7-290)
+
+Issue [#986](https://github.com/sesquicadaver/MTDirector/issues/986) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| package-controller copies templates + docs lock | `scripts/release/package-controller.sh`, packaging/HOWTO/installation, plan-36 | `OpsHostBundle01PackageControllerHostTemplatesW7290LivingSpecTests.Ac1PackageControllerScriptCopiesHostTemplatesAndDocsLock` |
+| dry-run OUT_DIR/controller contains bundled templates | `scripts/release/package-controller.sh` | `OpsHostBundle01PackageControllerHostTemplatesW7290LivingSpecTests.Ac2DryRunPublishTreeContainsBundledHostTemplates` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~OpsHostBundle01PackageControllerHostTemplatesW7290"`.
+
 ## Living Specification — Product tranche seed OPS-HOST-BUNDLE-01 (W7-289)
 
 Issue [#984](https://github.com/sesquicadaver/MTDirector/issues/984) AC → module → tests:
