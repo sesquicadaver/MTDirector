@@ -1,8 +1,8 @@
 # PLAN-45 — Controller log↔trace correlation after OpenTelemetry tracing
 
-**Date:** 2026-09-17 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-324); seed **W7-325 (#1056) OPEN**; predecessor **PLAN-44 COMPLETE**  
-**PLAN issue / queue:** [W7-324 / PLAN-45 #1055](https://github.com/sesquicadaver/MTDirector/issues/1055) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-17 (inventory **DONE** @ `2da9d508`)  
+**Status:** Inventory **DONE** (W7-324); seed **W7-325 (#1056) OPEN** (**§3.C NEXT**); implement **W7-326 (#1058) OPEN**; predecessor **PLAN-44 COMPLETE**  
+**PLAN issue / queue:** [W7-324 / PLAN-45 #1055](https://github.com/sesquicadaver/MTDirector/issues/1055) **DONE**  
 **Predecessor:** PLAN-44 Controller OpenTelemetry tracing **COMPLETE** (CTRL-HTTP-OTEL-TRACE-01)  
 **Normative files:** [`RedactingJsonConsoleLoggerProvider.cs`](../../src/Mfc.Infrastructure/Persistence/Logging/RedactingJsonConsoleLoggerProvider.cs), [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
 **Normative prior locks:** HTTP `/health/live` + `/health/ready`; opt-in `/metrics`; opt-in `WithTracing`; gRPC health; QG-SIGN-01/02; PLAN-32…44 — **do not regress**  
@@ -28,22 +28,31 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - Full logging-backend productization / vanity dashboards  
 - systemd `Type=notify` / `WatchdogSec` packaging polish (explicitly deferred / saturating)
 
-## Inventory evidence (seed baseline 2026-09-17 `main` @ PLAN-44 COMPLETE / `1e47d2f9`)
+## Inventory evidence (W7-324 @ `main` `2da9d508`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
 | `Program.cs` | Opt-in `WithTracing` + OTLP/console exporters | Traces exist without log join keys |
 | `RedactingJsonConsoleLoggerProvider` | JSON payload: timestamp/level/category/eventId/message (+exception) | No `traceId` / `spanId` from `Activity.Current` |
-| Glob / rg | `Activity.Current` / `TraceId` absent under redacting logger @ `1e47d2f9` | Confirmed |
+| Glob / rg | `Activity.Current` / `TraceId` absent under redacting logger @ `2da9d508` | Confirmed |
 | Packaging unit | `Type=simple` + journald + health + metrics + opt-in tracing | Log↔trace residual; Type=notify deferred |
 
-## Ranked Controller log-correlation tranche (seed baseline)
+**Ranking decision:** Prefer **ONE atomic row** (**CTRL-LOG-OTEL-CORRELATE-01**) covering minimal correct Activity-based enrichment:
+
+- When `System.Diagnostics.Activity.Current` is non-null, add JSON fields `traceId` and `spanId` using W3C hex forms (`Activity.TraceId` / `Activity.SpanId`)
+- When no Activity is present, omit those fields (do not invent zero/empty placeholders)
+- Keep secret redaction unchanged; do not change health/metrics/tracing opt-in defaults
+- Docs + Living Spec alongside existing HTTP/gRPC health + metrics + tracing
+
+Splitting console vs JSON enrichment or inventing a second logging backend would be vanity; Type=notify and Desktop a11y remain deferred adjacent residuals.
+
+## Ranked Controller log-correlation tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-LOG-OTEL-CORRELATE-01** | Author minimal correct TraceId/SpanId enrichment on redacted JSON console logs (+ docs/Living Spec) alongside existing health/metrics/tracing; keep MSI/AppImage locked | Logger without Activity fields @ `1e47d2f9` | after inventory **W7-324**; seed **W7-325 (#1056)** |
+| 1 | **CTRL-LOG-OTEL-CORRELATE-01** | Author minimal correct TraceId/SpanId enrichment on redacted JSON console logs (+ docs/Living Spec) alongside existing health/metrics/tracing; keep MSI/AppImage locked | Logger without Activity fields @ `2da9d508` | implement **W7-326 (#1058)** after seed **W7-325 (#1056)** |
 
-Inventory (**W7-324**) may refine ranking and open implement issues; seed **W7-325** advances NEXT to the first implement after inventory DONE.
+Inventory (**W7-324 DONE**) confirmed sole rank. Seed **W7-325** advances NEXT to CTRL-LOG-OTEL-CORRELATE-01 implement; COMPLETE seed opens after CORRELATE-01.
 
 ## Dual track
 
@@ -64,10 +73,10 @@ PLAN-44 sole ranked row (**CTRL-HTTP-OTEL-TRACE-01**) is **DONE**. No further PL
 ## §3.C ordering
 
 1. **PLAN-44 COMPLETE** (W7-322 CTRL-HTTP-OTEL-TRACE-01; seed **W7-323 DONE**).  
-2. **W7-324 OPEN** — PLAN-45 inventory → open first log-correlation implement + follow-up seeds.  
-3. **W7-325 OPEN** — seed first PLAN-45 implement after inventory.  
-4. Execute ranked CTRL-LOG-OTEL-CORRELATE row(s) atomically.
+2. **W7-324 DONE** — PLAN-45 inventory; opened **W7-326 (#1058)** CTRL-LOG-OTEL-CORRELATE-01 implement.  
+3. **W7-325 OPEN** — seed advances NEXT to CTRL-LOG-OTEL-CORRELATE-01; opens COMPLETE follow-up.  
+4. Execute sole CTRL-LOG-OTEL-CORRELATE-01 row atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-324 (#1055)** — PLAN-45 Inventory Controller log↔trace correlation after PLAN-44.
+**§3.C NEXT = W7-325 (#1056)** — Seed first PLAN-45 atomic row after inventory → CTRL-LOG-OTEL-CORRELATE-01.
