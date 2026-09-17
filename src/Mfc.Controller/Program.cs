@@ -177,6 +177,13 @@ public static class Program
             kestrel.Limits.Http2.KeepAlivePingDelay = GrpcHttp2KeepAlive.PingDelay;
             kestrel.Limits.Http2.KeepAlivePingTimeout = GrpcHttp2KeepAlive.PingTimeout;
 
+            // CTRL-KESTREL-MINRATE-01: disable MinRequest/ResponseDataRate (null) so quiet
+            // Capture/Deployment/Onboarding Watch server-streams are not killed by ASP.NET
+            // Core defaults (240 B/s + 5s grace). HTTP/2 PING is framing-layer only and does
+            // not count as response-body bytes — never leave the default rates enabled.
+            kestrel.Limits.MinRequestBodyDataRate = null;
+            kestrel.Limits.MinResponseDataRate = null;
+
             // HTTPS: ALPN negotiates h2 vs HTTP/1.1 (classic curl probes).
             // Cleartext http://: Http2-only — h2c prior-knowledge for gRPC; Http1AndHttp2 on
             // cleartext rejects HTTP/2 with HTTP_1_1_REQUIRED.

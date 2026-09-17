@@ -23,6 +23,8 @@ Kestrel **MaxRequestBodySize** is likewise **not** a config knob: CTRL-KESTREL-B
 
 HTTP/2 keepalive is likewise **not** a config knob: CTRL-GRPC-KEEPALIVE-01 hard-codes Controller `Limits.Http2.KeepAlivePingDelay` / `KeepAlivePingTimeout` and Desktop `SocketsHttpHandler` to shared `GrpcHttp2KeepAlive` (**PingDelay = 60s**, **PingTimeout = 30s**). Finite fail-closed — never `TimeSpan.MaxValue` / `InfiniteTimeSpan` (defaults that leave PING off).
 
+Kestrel min request/response data-rate is likewise **not** a config knob: CTRL-KESTREL-MINRATE-01 hard-codes `Limits.MinRequestBodyDataRate` / `Limits.MinResponseDataRate` to **null** (disabled). Fail-closed for quiet Watch longevity — never leave ASP.NET Core defaults (240 B/s + 5s grace) that kill quiet server-streams; HTTP/2 PING does not satisfy body data-rate.
+
 | Key | Purpose |
 |-----|---------|
 | `Security:RequireTls` | Reject non-TLS production binds |

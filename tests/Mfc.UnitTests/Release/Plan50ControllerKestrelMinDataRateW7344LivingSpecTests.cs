@@ -33,7 +33,7 @@ public sealed class Plan50ControllerKestrelMinDataRateW7344LivingSpecTests
         Assert.Contains("MinResponseDataRate", plan50, StringComparison.Ordinal);
         Assert.Contains("null", plan50, StringComparison.Ordinal);
         Assert.Contains("240 B/s", plan50, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-346 (#1098)", plan50, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-347 (#1099)", plan50, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-344 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-KESTREL-MINRATE-01", limitations, StringComparison.Ordinal);
@@ -51,10 +51,10 @@ public sealed class Plan50ControllerKestrelMinDataRateW7344LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-346 | [#1098](https://github.com/sesquicadaver/MTDirector/issues/1098) | CTRL-KESTREL-MINRATE-01 — Disable Kestrel MinRequest/ResponseDataRate for quiet Watch streams | **OPEN**",
+            "W7-346 | [#1098](https://github.com/sesquicadaver/MTDirector/issues/1098) | CTRL-KESTREL-MINRATE-01 — Disable Kestrel MinRequest/ResponseDataRate for quiet Watch streams | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-346 (#1098)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-347 (#1099)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-345", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-346", continuous, StringComparison.Ordinal);
@@ -63,12 +63,12 @@ public sealed class Plan50ControllerKestrelMinDataRateW7344LivingSpecTests
         Assert.Contains("plan-50-controller-kestrel-min-data-rate.md", docsIndex, StringComparison.Ordinal);
         Assert.Contains("Plan50ControllerKestrelMinDataRateW7344", testing, StringComparison.Ordinal);
 
-        // MINRATE-01 not yet shipped: defaults still in force (no override).
+        // MINRATE-01 shipped: null/disabled min data rates (do not regress BODY/KEEPALIVE).
         Assert.Contains("ConfigureKestrel", program, StringComparison.Ordinal);
         Assert.Contains("MaxRequestBodySize = GrpcTransportLimits.MaxMessageBytes", program, StringComparison.Ordinal);
         Assert.Contains("KeepAlivePingDelay = GrpcHttp2KeepAlive.PingDelay", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("MinResponseDataRate", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("MinRequestBodyDataRate", program, StringComparison.Ordinal);
+        Assert.Contains("MinResponseDataRate = null", program, StringComparison.Ordinal);
+        Assert.Contains("MinRequestBodyDataRate = null", program, StringComparison.Ordinal);
         Assert.True(File.Exists(Path.Combine(root, "src/Mfc.Controller/Program.cs")));
     }
 
