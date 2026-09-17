@@ -80,6 +80,16 @@ OpenTelemetry tracing is **opt-in** (default off). Set `Mfc:Tracing:Enabled=true
 - OTLP: `Mfc:Tracing:OtlpEndpoint` / `MFC__Tracing__OtlpEndpoint` (e.g. `http://127.0.0.1:4317`)
 - Console (local ops): `Mfc:Tracing:ConsoleExporter=true` / `MFC__Tracing__ConsoleExporter=true`
 
+### OpenTelemetry resource identity (CTRL-HTTP-OTEL-RESOURCE-01)
+
+When metrics and/or tracing OTel is enabled, Resource attributes are set for backend filtering:
+
+- `service.name` = `Mfc.Controller`
+- `service.version` = assembly informational/file version
+- `service.instance.id` = hostname (`Environment.MachineName`)
+
+Opt-in fail-closed defaults for metrics/tracing are unchanged.
+
 Both exporters may be enabled together. Enabling tracing without either exporter fails closed at startup. Health probes and optional `/metrics` stay registered independently.
 
 ## Log↔trace correlation (CTRL-LOG-OTEL-CORRELATE-01)

@@ -44,10 +44,10 @@ public sealed class AuditAuth01AllowlistedOperatorsW7234LivingSpecTests
         Assert.Contains("AUDIT-AUTH-01", plan26, StringComparison.Ordinal);
         Assert.Contains("W7-234 (#875) DONE", plan26, StringComparison.Ordinal);
         Assert.Contains("W7-235 DONE", plan26, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-330 (#1066)", plan26, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-331 (#1068)", plan26, StringComparison.Ordinal);
         Assert.Contains("Intentional residual (W7-234 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("AllowListedOperatorAuthorizationBoundary", limitations, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-330 (#1066)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-331 (#1068)", roadmap, StringComparison.Ordinal);
         Assert.Contains(
             "W7-234 | [#875](https://github.com/sesquicadaver/MTDirector/issues/875) | AUDIT-AUTH-01 — Production operator authorization DenyAll | **DONE**",
             roadmap,
