@@ -1,8 +1,8 @@
 # PLAN-50 — Controller Kestrel min request/response data-rate after HTTP/2 keepalive
 
-**Date:** 2026-09-17 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-344); seed **W7-345 (#1096) OPEN**; predecessor **PLAN-49 COMPLETE**  
-**PLAN issue / queue:** [W7-344 / PLAN-50 #1095](https://github.com/sesquicadaver/MTDirector/issues/1095) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-17 (inventory **DONE** @ `be2ac7a8`)  
+**Status:** Inventory **DONE** (W7-344); seed **W7-345 (#1096) OPEN** (**§3.C NEXT**); implement **W7-346 (#1098) OPEN**; COMPLETE follow-up **W7-347 (#1099) OPEN**; predecessor **PLAN-49 COMPLETE**  
+**PLAN issue / queue:** [W7-344 / PLAN-50 #1095](https://github.com/sesquicadaver/MTDirector/issues/1095) **DONE**  
 **Predecessor:** PLAN-49 Controller/Desktop gRPC HTTP/2 keepalive **COMPLETE** (CTRL-GRPC-KEEPALIVE-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs) (`ConfigureKestrel` / `Limits.MinRequestBodyDataRate` / `MinResponseDataRate`), [`installation.md`](../operations/installation.md) / [`controller-configuration.md`](../operations/controller-configuration.md)  
 **Normative prior locks:** HTTP health; opt-in `/metrics`; opt-in tracing; log correlation; OTel resource identity; gRPC MaxReceive/SendMessageSize (256 MiB); Kestrel MaxRequestBodySize (256 MiB); HTTP/2 KeepAlivePing 60s/30s; gRPC health; QG-SIGN-01/02; PLAN-32…49 — **do not regress**  
@@ -28,7 +28,7 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - Full gRPC load-balancing / multi-instance HA productization  
 - systemd `Type=notify` / `WatchdogSec` packaging polish (explicitly deferred / saturating)
 
-## Inventory evidence (seed baseline 2026-09-17 `main` @ PLAN-49 COMPLETE / KEEPALIVE shipped)
+## Inventory evidence (W7-344 @ `main` `be2ac7a8`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
@@ -36,15 +36,24 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 | ASP.NET Core defaults | MinRequestBodyDataRate / MinResponseDataRate = 240 B/s + 5s grace | Quiet Watch can trip after grace |
 | HTTP/2 PING | Framing-layer keepalive | Does not satisfy response-body data-rate |
 | Watch hubs | Long-lived Capture/Deployment/Onboarding streams | Quiet-progress drop risk |
-| Glob / rg | MinResponseDataRate / MinRequestBodyDataRate absent under Controller @ post-KEEPALIVE | Confirmed |
+| Glob / rg | MinResponseDataRate / MinRequestBodyDataRate absent under Controller @ `be2ac7a8` | Confirmed |
 
-## Ranked Controller Kestrel min-rate tranche (seed baseline)
+**Ranking decision:** Prefer **ONE atomic row** (**CTRL-KESTREL-MINRATE-01**) covering minimal correct Kestrel min data-rate policy:
+
+- Set `Limits.MinRequestBodyDataRate = null` and `Limits.MinResponseDataRate = null` (disabled — documented fail-closed choice for quiet Watch longevity; not Watch-safe finite intervals that still risk false kills)
+- Do **not** regress MSGSIZE / BODY / KEEPALIVE / health / metrics / tracing / correlation / resource
+- Keep MSI/AppImage locked; Type=notify remains deferred vanity
+- Docs (`installation.md` / `controller-configuration.md`) + Living Spec locking the null/disabled policy
+
+Splitting request vs response min-rate into two ranks would be vanity; Type=notify and Desktop a11y remain deferred adjacent residuals.
+
+## Ranked Controller Kestrel min-rate tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-KESTREL-MINRATE-01** | Author minimal correct Kestrel MinRequestBodyDataRate / MinResponseDataRate (null/disable or otherwise Watch-safe) + docs/Living Spec; keep MSI/AppImage and Type=notify locked | Default 240 B/s + 5s grace @ PLAN-49 COMPLETE | after inventory **W7-344**; seed **W7-345 (#1096)** |
+| 1 | **CTRL-KESTREL-MINRATE-01** | Author minimal correct Kestrel MinRequestBodyDataRate / MinResponseDataRate (**null**/disabled) + docs/Living Spec; keep MSI/AppImage and Type=notify locked | Default 240 B/s + 5s grace @ `be2ac7a8` | after inventory **W7-344 DONE**; seed **W7-345 (#1096) OPEN**; implement **W7-346 (#1098) OPEN**; COMPLETE **W7-347 (#1099) OPEN** |
 
-Inventory (**W7-344**) may refine ranking and open implement issues; seed **W7-345** advances NEXT to the first implement after inventory DONE.
+Inventory (**W7-344 DONE**) confirmed sole rank. Seed **W7-345** advances NEXT to the MINRATE implement after inventory DONE.
 
 ## Dual track
 
@@ -52,7 +61,7 @@ Product §3 never waits on GNS3.
 
 ## Residual notes (PLAN-49 CLOSED)
 
-PLAN-49 sole ranked row (**CTRL-GRPC-KEEPALIVE-01**) is **DONE**. No further PLAN-49 product rows. Transport size+keepalive tranche (MSGSIZE + BODY + KEEPALIVE) is saturating for those layers.
+PLAN-49 sole ranked row (**CTRL-GRPC-KEEPALIVE-01**) is **DONE**. No further PLAN-49 product rows. Transport size+keepalive tranche (MSGSIZE + BODY + KEEPALIVE) is saturating for those layers; min-rate remains the host-layer quiet-stream gap.
 
 ## Adjacent residuals (not seeded here)
 
@@ -60,15 +69,16 @@ PLAN-49 sole ranked row (**CTRL-GRPC-KEEPALIVE-01**) is **DONE**. No further PLA
 - Nested ListBox item-template hosts — deferred vanity  
 - Native MSI / AppImage / self-contained publish default — W7-22 lock  
 - systemd Type=notify/WatchdogSec — deferred packaging polish  
-- Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates
+- Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates  
+- After MINRATE, transport (size + ping + min-rate) is **saturating** — successor PLAN-51 should pick a non-vanity non-transport gap (evidence: Desktop unary RPCs lack gRPC `Deadline` / CallOptions timeouts except Health `CancelAfter`)
 
 ## §3.C ordering
 
 1. **PLAN-49 COMPLETE** (W7-342 CTRL-GRPC-KEEPALIVE-01; seed **W7-343 DONE**).  
-2. **W7-344 OPEN** — PLAN-50 inventory → open first min-rate implement + follow-up seeds.  
-3. **W7-345 OPEN** — seed first PLAN-50 implement after inventory.  
-4. Execute ranked CTRL-KESTREL-MINRATE row(s) atomically.
+2. **W7-344 DONE** — PLAN-50 inventory; opened **W7-346 (#1098)** CTRL-KESTREL-MINRATE-01 implement + **W7-347 (#1099)** COMPLETE follow-up.  
+3. **W7-345 OPEN** — seed first PLAN-50 implement after inventory (**§3.C NEXT**).  
+4. Execute ranked CTRL-KESTREL-MINRATE-01 atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-344 (#1095)** — PLAN-50 Inventory Controller Kestrel min request/response data-rate after PLAN-49.
+**§3.C NEXT = W7-345 (#1096)** — Seed first PLAN-50 atomic row after inventory → CTRL-KESTREL-MINRATE-01.

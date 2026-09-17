@@ -59,7 +59,7 @@ public sealed class OpsHostEnv01ControllerEnvSampleW7294LivingSpecTests
             "W7-294 | [#994](https://github.com/sesquicadaver/MTDirector/issues/994) | OPS-HOST-ENV-01 — author mfc-controller.env.example + docs + package-controller bundle | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-344 (#1095)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-345 (#1096)", roadmap, StringComparison.Ordinal);
         Assert.Contains("OpsHostEnv01ControllerEnvSampleW7294", testing, StringComparison.Ordinal);
     }
 
