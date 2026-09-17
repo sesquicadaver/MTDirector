@@ -82,4 +82,8 @@ OpenTelemetry tracing is **opt-in** (default off). Set `Mfc:Tracing:Enabled=true
 
 Both exporters may be enabled together. Enabling tracing without either exporter fails closed at startup. Health probes and optional `/metrics` stay registered independently.
 
+## Log↔trace correlation (CTRL-LOG-OTEL-CORRELATE-01)
+
+Controller JSON console logs (journald via `StandardOutput=journal`) include W3C **`traceId`** and **`spanId`** when `System.Diagnostics.Activity.Current` is set (typical during ASP.NET/gRPC request spans with tracing enabled). Fields are omitted when no Activity is present. Operators join journal lines to OTLP/console spans by TraceId. Secret redaction is unchanged; health/metrics/tracing opt-in defaults are unchanged.
+
 

@@ -26,6 +26,7 @@ See also [`prerequisite-checklist.md`](prerequisite-checklist.md) for RouterOS d
 4. Start `Mfc.Controller` and verify health: gRPC health **and** HTTP probes `GET /health/live` (process) + `GET /health/ready` (fail-closed DB) on the same ListenAddress. Production `https://` uses Kestrel `Http1AndHttp2` (classic HTTP/1.1 curl OK); cleartext Development `http://` stays HTTP/2-only for h2c gRPC compatibility.
 5. Optional metrics (CTRL-HTTP-METRICS-01): scrapeable Prometheus text at `GET /metrics` is **opt-in** via `Mfc:Metrics:Enabled=true` (default **false** / fail-closed — no scrape surface). Keep health probes intact regardless of metrics.
 6. Optional tracing (CTRL-HTTP-OTEL-TRACE-01): OpenTelemetry distributed tracing is **opt-in** via `Mfc:Tracing:Enabled=true` (default **false** / fail-closed). When enabled, configure at least one exporter: `Mfc:Tracing:OtlpEndpoint` (OTLP collector URL) and/or `Mfc:Tracing:ConsoleExporter=true` for local ops. ASP.NET Core instrumentation covers inbound HTTP + gRPC on Kestrel. Keep health + metrics intact regardless of tracing.
+7. Log↔trace correlation (CTRL-LOG-OTEL-CORRELATE-01): Controller redacted JSON console / journald lines include W3C **`traceId`** / **`spanId`** when `Activity.Current` is present (e.g. during an instrumented request). Omit those fields when no Activity is active. Join journald lines to OTLP/console spans via the same hex TraceId; health/metrics/tracing opt-in defaults are unchanged.
 
 ### Linux systemd (OPS-HOST-SYSTEMD-01)
 

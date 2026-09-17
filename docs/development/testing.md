@@ -3829,6 +3829,16 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan45ControllerLogTraceCorrel
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7325"`.
 
+## Living Specification — CTRL-LOG-OTEL-CORRELATE-01 Controller log↔trace correlation (W7-326)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Activity TraceId/SpanId on redacted JSON console logs | RedactingJsonConsoleLoggerProvider | `CtrlLogOtelCorrelate01ControllerLogTraceLivingSpecTests.Ac1LoggerEnrichesJsonWithActivityTraceIdAndSpanId` |
+| Operator docs + queue lock | installation.md, packaging doc, known-limitations, ROADMAP | `CtrlLogOtelCorrelate01ControllerLogTraceLivingSpecTests.Ac2DocsDocumentLogTraceCorrelation` |
+| Unit correlate behavior | RedactingJsonConsoleLoggerCorrelateTests | `RedactingJsonConsoleLoggerCorrelateTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~CtrlLogOtelCorrelate01ControllerLogTraceLivingSpecTests|FullyQualifiedName~RedactingJsonConsoleLoggerCorrelateTests"`.
+
 
 
 
