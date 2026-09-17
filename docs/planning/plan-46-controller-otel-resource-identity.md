@@ -1,7 +1,7 @@
 # PLAN-46 — Controller OpenTelemetry resource identity after log↔trace correlation
 
 **Date:** 2026-09-17 (inventory **DONE** @ `894cc4b8`)  
-**Status:** **PLAN-46 COMPLETE** — Inventory **DONE** (W7-328); seed **W7-329 (#1064) DONE**; implement **W7-330 (#1066) DONE**; COMPLETE seed **W7-331 (#1068) DONE**; successor **PLAN-47** inventory **W7-332 (#1071) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-46 COMPLETE** — Inventory **DONE** (W7-328); seed **W7-329 (#1064) DONE**; implement **W7-330 (#1066) DONE**; COMPLETE seed **W7-331 (#1068) DONE**; successor **PLAN-47** inventory **W7-332 (#1071) DONE**; seed **W7-333 (#1072) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-328 / PLAN-46 #1063](https://github.com/sesquicadaver/MTDirector/issues/1063) **DONE**  
 **Predecessor:** PLAN-45 Controller log↔trace correlation **COMPLETE** (CTRL-LOG-OTEL-CORRELATE-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
@@ -84,4 +84,4 @@ PLAN-45 sole ranked row (**CTRL-LOG-OTEL-CORRELATE-01**) is **DONE**. No further
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-332 (#1071)** — PLAN-47 Inventory Controller gRPC message-size / transport limits after PLAN-46.
+**§3.C NEXT = W7-333 (#1072)** — Seed first PLAN-47 atomic row after inventory → CTRL-GRPC-MSGSIZE-01.
