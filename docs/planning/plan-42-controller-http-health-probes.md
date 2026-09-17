@@ -1,7 +1,7 @@
 # PLAN-42 — Controller HTTP liveness/readiness probes (beyond gRPC health)
 
 **Date:** 2026-09-17 (inventory **DONE** @ `ad3718cb`)  
-**Status:** Inventory **DONE** (W7-312); seed **W7-313 (#1032) OPEN** (**§3.C NEXT**); implement **W7-314 (#1034) OPEN**; predecessor **PLAN-41 COMPLETE**  
+**Status:** Inventory **DONE** (W7-312); seed **W7-313 (#1032) DONE**; implement **W7-314 (#1034) OPEN** (**§3.C NEXT**); COMPLETE **W7-315 (#1036) OPEN**; predecessor **PLAN-41 COMPLETE**  
 **PLAN issue / queue:** [W7-312 / PLAN-42 #1031](https://github.com/sesquicadaver/MTDirector/issues/1031) **DONE**  
 **Predecessor:** PLAN-41 Release signing crypto **COMPLETE** (QG-SIGN-02)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
@@ -70,9 +70,9 @@ PLAN-41 sole ranked row (**QG-SIGN-02**) is **DONE**. No further PLAN-41 product
 
 1. **PLAN-41 COMPLETE** (W7-310 QG-SIGN-02; seed **W7-311 DONE**).  
 2. **W7-312 DONE** — PLAN-42 inventory; opened **W7-314 (#1034)** CTRL-HTTP-HEALTH-01 implement.  
-3. **W7-313 OPEN** — seed first PLAN-42 implement → CTRL-HTTP-HEALTH-01 (**§3.C NEXT**).  
-4. Execute sole CTRL-HTTP-HEALTH-01 row atomically; then PLAN-42 COMPLETE seed.
+3. **W7-313 DONE** — seed advanced NEXT to CTRL-HTTP-HEALTH-01; opened COMPLETE **W7-315 (#1036)**.  
+4. **W7-314 OPEN** — sole CTRL-HTTP-HEALTH-01 implement (**§3.C NEXT**).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-313 (#1032)** — Seed first PLAN-42 atomic row after inventory → CTRL-HTTP-HEALTH-01.
+**§3.C NEXT = W7-314 (#1034)** — CTRL-HTTP-HEALTH-01 HTTP liveness/readiness probes.

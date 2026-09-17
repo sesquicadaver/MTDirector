@@ -65,7 +65,7 @@ public sealed class OpsHostSysusers01ControllerSysusersTmpfilesW7298LivingSpecTe
             "W7-298 | [#1002](https://github.com/sesquicadaver/MTDirector/issues/1002) | OPS-HOST-SYSUSERS-01 — author sysusers.d/tmpfiles.d + docs + package-controller bundle | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-313 (#1032)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-314 (#1034)", roadmap, StringComparison.Ordinal);
         Assert.Contains("OpsHostSysusers01ControllerSysusersTmpfilesW7298", testing, StringComparison.Ordinal);
     }
 
