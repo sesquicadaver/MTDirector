@@ -1,6 +1,6 @@
-# Release signing policy (MVP / M6-09)
+# Release signing policy (MVP / M6-09 + QG-SIGN-02)
 
-## MVP attestation model
+## MVP attestation model (QG-SIGN-01 — unchanged)
 
 For MVP production acceptance:
 
@@ -9,11 +9,26 @@ For MVP production acceptance:
    - a **cleartext attestation placeholder** (default), or
    - a real `gpg --detach-sign --armor` signature when `MFC_RELEASE_GPG_KEY_ID` is set and a signing key is available.
 
-Cleartext checksums + this policy document satisfy Issue Set M6-09 AC13 for MVP. Cryptographic signing is a **CI signing gate** for post-acceptance releases.
+Cleartext checksums + this policy document satisfy Issue Set M6-09 AC13 for MVP. Cryptographic signing is **not** enabled by default and is **not** required for MVP.
 
-## CI signing gate (future / production)
+## Opt-in cryptographic signing gate (QG-SIGN-02)
 
-Before publishing a GitHub Release:
+Beyond QG-SIGN-01 cleartext, operators may enable a **documented opt-in crypto path** that does **not** require org secrets on every PR:
+
+| Mode | How | Output |
+|------|-----|--------|
+| Self-test | `MFC_RELEASE_SIGN_SELFTEST=1 OUT_DIR=… ./scripts/release/sign-sha256sums-crypto.sh` | `SHA256SUMS.crypto-gate.json` (`mode=selftest`) — no secrets |
+| GPG | `MFC_RELEASE_GPG_KEY_ID=<id> OUT_DIR=… ./scripts/release/sign-sha256sums-crypto.sh` | Real armored detach-sign `SHA256SUMS.asc` |
+| Sigstore/cosign | `MFC_RELEASE_COSIGN=1` (+ `COSIGN_KEY` or keyless) | `SHA256SUMS.sig` + `SHA256SUMS.cosign-bundle.json` |
+| Idle skip | No crypto env vars | `SHA256SUMS.crypto-gate.json` (`mode=skipped`) — exit 0 |
+
+CI entrypoint: [`.github/workflows/release-signing.yml`](../../.github/workflows/release-signing.yml) — **`workflow_dispatch` only** (not `pull_request`). Self-test always runs on dispatch; GPG/cosign steps run only when the corresponding secrets are present (`if: secrets…`).
+
+Checklist: [`signing-gate.md`](../development/signing-gate.md) (QG-SIGN-02). Living Spec: `QgSign02ReleaseSigningLivingSpecTests`.
+
+## CI signing gate (future / production org key)
+
+Before publishing a GitHub Release with a **mandatory** org release key (still a future ops hardening step — not default PR CI):
 
 1. Run packaging scripts on a trusted runner.
 2. Re-run vulnerability scan; fail on any `Severity:` line.

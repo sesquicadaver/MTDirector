@@ -10,7 +10,9 @@ All packaging helpers live under [`scripts/release/`](../../scripts/release/). A
 | `MFC_RELEASE_DRY_RUN` | `0` | `1` = Living Spec layout without full publish/bundle |
 | `MFC_RELEASE_RID` | `linux-x64` | `dotnet publish` RID |
 | `MFC_RELEASE_CONFIG` | `Release` | Build configuration |
-| `MFC_RELEASE_GPG_KEY_ID` | empty | Optional `gpg --detach-sign` for `SHA256SUMS` |
+| `MFC_RELEASE_GPG_KEY_ID` | empty | Optional `gpg --detach-sign` for `SHA256SUMS` (QG-SIGN-01 helper + QG-SIGN-02 gate) |
+| `MFC_RELEASE_SIGN_SELFTEST` | `0` | `1` = QG-SIGN-02 crypto gate self-test (no secrets) |
+| `MFC_RELEASE_COSIGN` | `0` | `1` = opt-in cosign sign-blob via `sign-sha256sums-crypto.sh` |
 
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
@@ -21,6 +23,7 @@ export OUT_DIR
 ./scripts/release/create-migration-bundle.sh
 ./scripts/release/run-dependency-scan.sh
 ./scripts/release/generate-sbom-and-checksums.sh
+MFC_RELEASE_SIGN_SELFTEST=1 ./scripts/release/sign-sha256sums-crypto.sh
 ls -la "$OUT_DIR"
 ```
 

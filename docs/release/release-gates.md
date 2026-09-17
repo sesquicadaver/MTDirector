@@ -31,6 +31,7 @@ Execute every gate before requesting acceptance review. Checkboxes are the opera
 - [x] Desktop publish archive: `./scripts/release/package-desktop.sh`
 - [x] EF migrations bundle: `./scripts/release/create-migration-bundle.sh`
 - [x] SBOM + `SHA256SUMS`: `./scripts/release/generate-sbom-and-checksums.sh`
+- [x] Opt-in crypto gate script: `./scripts/release/sign-sha256sums-crypto.sh` (QG-SIGN-02)
 - [x] Signing policy reviewed: [`RELEASE_SIGNING.md`](RELEASE_SIGNING.md)
 
 ## Tracker / docs
@@ -59,5 +60,6 @@ Execute every gate before requesting acceptance review. Checkboxes are the opera
 
 - [ ] Live CHR matrix on isolated self-hosted runner (`MFC_CHR_*`)
 - [ ] Live physical CRS lab against `testlab/chr/topologies/crs-switch`
-- [ ] CI cryptographic signing with production GPG/Sigstore key
+- [x] Opt-in crypto signing gate (QG-SIGN-02): `sign-sha256sums-crypto.sh` + `release-signing.yml` (`workflow_dispatch`; secrets optional)
+- [ ] Mandatory org-key CI cryptographic signing on every GitHub Release (future ops)
 - [ ] Native Desktop MSI/AppImage (zip/tar publish remains the installer substitute)

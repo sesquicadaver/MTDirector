@@ -1,0 +1,75 @@
+# Opt-in release cryptographic signing (QG-SIGN-02)
+#
+# Manual / secrets-gated only — does NOT run on pull_request.
+# Default PR CI stays secret-free. QG-SIGN-01 cleartext SHA256SUMS is unchanged.
+name: release-signing
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  opt-in-crypto-sign:
+    name: Opt-in GPG/Sigstore sign SHA256SUMS
+    runs-on: ubuntu-latest
+    # Job is always eligible on workflow_dispatch; steps no-op when secrets are absent.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Package dry-run + cleartext SHA256SUMS (QG-SIGN-01)
+        env:
+          MFC_RELEASE_DRY_RUN: "1"
+        run: |
+          set -euo pipefail
+          export PATH="${HOME}/.dotnet:${PATH}"
+          OUT_DIR="$(mktemp -d)"
+          echo "OUT_DIR=${OUT_DIR}" >> "$GITHUB_ENV"
+          export OUT_DIR
+          ./scripts/release/generate-sbom-and-checksums.sh
+          test -f "${OUT_DIR}/SHA256SUMS"
+
+      - name: Crypto gate self-test (always; no secrets)
+        run: |
+          set -euo pipefail
+          MFC_RELEASE_SIGN_SELFTEST=1 OUT_DIR="${OUT_DIR}" ./scripts/release/sign-sha256sums-crypto.sh
+          test -f "${OUT_DIR}/SHA256SUMS.crypto-gate.json"
+          grep -q '"mode": "selftest"' "${OUT_DIR}/SHA256SUMS.crypto-gate.json"
+
+      - name: Optional GPG detach-sign when secret present
+        if: ${{ secrets.MFC_RELEASE_GPG_KEY_ID != '' }}
+        env:
+          MFC_RELEASE_GPG_KEY_ID: ${{ secrets.MFC_RELEASE_GPG_KEY_ID }}
+          MFC_RELEASE_GPG_PRIVATE_KEY: ${{ secrets.MFC_RELEASE_GPG_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${MFC_RELEASE_GPG_PRIVATE_KEY:-}" ]]; then
+            echo "MFC_RELEASE_GPG_KEY_ID set without MFC_RELEASE_GPG_PRIVATE_KEY — skip GPG"
+            exit 0
+          fi
+          printf '%s\n' "$MFC_RELEASE_GPG_PRIVATE_KEY" | gpg --batch --import
+          OUT_DIR="${OUT_DIR}" ./scripts/release/sign-sha256sums-crypto.sh
+
+      - name: Optional cosign sign-blob when secret present
+        if: ${{ secrets.COSIGN_PRIVATE_KEY != '' }}
+        env:
+          MFC_RELEASE_COSIGN: "1"
+          COSIGN_KEY: cosign.key
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/cosign "https://github.com/sigstore/cosign/releases/download/v2.4.1/cosign-linux-amd64"
+          chmod +x /tmp/cosign
+          sudo mv /tmp/cosign /usr/local/bin/cosign
+          printf '%s\n' "$COSIGN_PRIVATE_KEY" > cosign.key
+          OUT_DIR="${OUT_DIR}" ./scripts/release/sign-sha256sums-crypto.sh
+          rm -f cosign.key
