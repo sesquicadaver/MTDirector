@@ -1,10 +1,10 @@
 # PLAN-41 — Release signing crypto (GPG/Sigstore beyond QG-SIGN-01)
 
-**Date:** 2026-09-17 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-308); seed **W7-309 (#1024) OPEN**; predecessor **PLAN-40 COMPLETE**  
-**PLAN issue / queue:** [W7-308 / PLAN-41 #1023](https://github.com/sesquicadaver/MTDirector/issues/1023) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-17 (inventory **DONE** @ `190980c0`)  
+**Status:** Inventory **DONE** (W7-308); seed **W7-309 (#1024) OPEN** (**§3.C NEXT**); implement **W7-310 (#1026) OPEN**; predecessor **PLAN-40 COMPLETE**  
+**PLAN issue / queue:** [W7-308 / PLAN-41 #1023](https://github.com/sesquicadaver/MTDirector/issues/1023) **DONE**  
 **Predecessor:** PLAN-40 Controller host journald/syslog identity **COMPLETE** (OPS-HOST-LOG-01)  
-**Normative files:** [`RELEASE_SIGNING.md`](../release/RELEASE_SIGNING.md), [`signing-gate.md`](../development/signing-gate.md), [`generate-sbom-and-checksums.sh`](../../scripts/release/generate-sbom-and-checksums.sh)  
+**Normative files:** [`RELEASE_SIGNING.md`](../release/RELEASE_SIGNING.md), [`signing-gate.md`](../development/signing-gate.md), [`generate-sbom-and-checksums.sh`](../../scripts/release/generate-sbom-and-checksums.sh), [`.github/workflows/`](../../.github/workflows/), [`QgSign01ReleaseSigningLivingSpecTests`](../../tests/Mfc.UnitTests/Documentation/QgSign01ReleaseSigningLivingSpecTests.cs)  
 **Normative prior locks:** QG-SIGN-01 cleartext `SHA256SUMS` attestation; W7-22…24 packaging; PLAN-32…40 host packaging — **do not regress**  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
@@ -17,7 +17,8 @@ Absorb the highest-value **non-packaging** continuous-queue gap after PLAN-40 sh
 3. Lab / CHR / `WriteEnabled` are **not** stop-gates.  
 4. Do not invent further PLAN-40 OPS-HOST-LOG / packaging host-unit polish — that wave is **COMPLETE** / saturating.  
 5. Avoid vanity Desktop a11y (nested ListBox / unnamed TabControl).  
-6. Prefer release integrity over another publish-tree packaging vanity row.
+6. Prefer release integrity over another publish-tree packaging vanity row.  
+7. Prefer an **opt-in / documented** crypto path that does **not** require org secrets on every PR. Do not weaken QG-SIGN-01 cleartext `SHA256SUMS`.
 
 ## Out of scope (do not seed)
 
@@ -25,24 +26,29 @@ Absorb the highest-value **non-packaging** continuous-queue gap after PLAN-40 sh
 - Native MSI / AppImage / changing `--self-contained false` (W7-22)  
 - Nested ListBox / TabControl a11y vanity  
 - Ops / CRS / physical lab live runners as §3 stop-gates  
-- Requiring org secrets in every PR CI (inventory may stage optional/opt-in crypto first)
+- Requiring org secrets in every PR CI (opt-in crypto only)  
+- Splitting docs-gate vs CI opt-in cosign into separate vanity ranks when one atomic row covers both
 
-## Inventory evidence (seed baseline 2026-09-17 `main` @ PLAN-40 COMPLETE / `2bf1bca5`)
+## Inventory evidence (W7-308 @ `main` `190980c0`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
-| `generate-sbom-and-checksums.sh` | Always writes cleartext `SHA256SUMS`; GPG only if `MFC_RELEASE_GPG_KEY_ID` + `gpg` present | No default CI crypto / Sigstore path |
-| `RELEASE_SIGNING.md` | Documents CI crypto as **future** | Not Living-Spec-locked as production gate |
-| `signing-gate.md` / QG-SIGN-01 | Explicitly keeps crypto unchecked residual | Confirmed intentional residual |
-| Glob / rg | Sigstore/cosign absent as required CI gate @ `2bf1bca5` | Confirmed |
+| `generate-sbom-and-checksums.sh` | Always writes cleartext `SHA256SUMS`; GPG detach-sign only if `MFC_RELEASE_GPG_KEY_ID` + `gpg` present; else MVP cleartext attestation placeholder in `SHA256SUMS.asc` | No Living-Spec-locked crypto gate; no Sigstore/cosign helper |
+| `RELEASE_SIGNING.md` | MVP = cleartext `SHA256SUMS`; section **“CI signing gate (future / production)”** lists GPG or Sigstore as pre-Release steps | Crypto still “future”, not an authored opt-in gate operators can run/CI can enable |
+| `signing-gate.md` / QG-SIGN-01 | Checklist keeps crypto as unchecked residual; `QgSign01*` asserts “future”, fail-closed against default-enabled production crypto | Confirmed intentional QG-SIGN-01 lock — **do not weaken** |
+| `.github/workflows/` (`ci.yml`, `routeros-integration.yml`) | Build/test Release; **no** `SHA256SUMS` / GPG / cosign / Sigstore jobs; no `if: secrets…` signing path | Confirmed: no CI crypto path (opt-in or otherwise) |
+| Glob / rg | `cosign` / `sigstore` absent under workflows/scripts as a gated path @ `190980c0` | Confirmed |
+| Docs matrix | `release-gates.md` unchecked “CI cryptographic signing…”; `known-limitations` keeps GPG/Sigstore residual; `testing.md` QG-SIGN-01 matrix only | QG-SIGN-02 surface not Living-Spec-locked |
 
-## Ranked release-signing crypto tranche (seed baseline)
+**Ranking decision:** Prefer **ONE atomic row** (**QG-SIGN-02**) covering docs + Living Spec + opt-in script/workflow crypto path. A docs-only gate without an executable opt-in path would leave the same “future residual” hole; a required-secrets CI job would violate the no-org-secrets-on-every-PR constraint. No natural second product rank without vanity split.
+
+## Ranked release-signing crypto tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **QG-SIGN-02** | Author CI/release cryptographic signing gate (GPG and/or Sigstore) + docs/Living Spec beyond QG-SIGN-01 cleartext | Future-gate docs + optional-only GPG @ `2bf1bca5` | after inventory **W7-308**; seed **W7-309 (#1024)** |
+| 1 | **QG-SIGN-02** | Author opt-in CI/release cryptographic signing gate (GPG detach-sign and/or Sigstore/cosign) + docs/Living Spec beyond QG-SIGN-01 cleartext; default PR CI stays secret-free; do not regress `SHA256SUMS`/SBOM | Future-gate docs + optional-only GPG; no cosign/Sigstore CI @ `190980c0` | implement **W7-310 (#1026)** after seed **W7-309 (#1024)** |
 
-Inventory (**W7-308**) may refine ranking and open implement issues; seed **W7-309** advances NEXT to the first implement after inventory DONE.
+Inventory (**W7-308 DONE**) confirmed sole rank. Seed **W7-309** advances NEXT to QG-SIGN-02 implement; COMPLETE seed opens after SIGN-02.
 
 ## Dual track
 
@@ -64,10 +70,10 @@ PLAN-40 sole ranked row (**OPS-HOST-LOG-01**) is **DONE**. No further PLAN-40 pr
 ## §3.C ordering
 
 1. **PLAN-40 COMPLETE** (W7-306 OPS-HOST-LOG-01; seed **W7-307 DONE**).  
-2. **W7-308 OPEN** — PLAN-41 inventory → open first signing-crypto implement + follow-up seeds.  
-3. **W7-309 OPEN** — seed first PLAN-41 implement after inventory.  
-4. Execute ranked QG-SIGN row(s) atomically.
+2. **W7-308 DONE** — PLAN-41 inventory; opened **W7-310 (#1026)** QG-SIGN-02 implement.  
+3. **W7-309 OPEN** — seed first PLAN-41 implement → QG-SIGN-02 (**§3.C NEXT**).  
+4. Execute sole QG-SIGN-02 row atomically; then PLAN-41 COMPLETE seed.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-308 (#1023)** — PLAN-41 Inventory release signing crypto after PLAN-40.
+**§3.C NEXT = W7-309 (#1024)** — Seed first PLAN-41 atomic row after inventory → QG-SIGN-02.
