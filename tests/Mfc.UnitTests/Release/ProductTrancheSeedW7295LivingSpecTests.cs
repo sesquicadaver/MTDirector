@@ -33,34 +33,34 @@ public sealed class ProductTrancheSeedW7295LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-296 | [#999](https://github.com/sesquicadaver/MTDirector/issues/999) | PLAN-38 — Inventory Controller host sysusers/tmpfiles packaging (mfc user + /etc/mfc + /var/lib/mfc) | **OPEN**",
+            "W7-296 | [#999](https://github.com/sesquicadaver/MTDirector/issues/999) | PLAN-38 — Inventory Controller host sysusers/tmpfiles packaging (mfc user + /etc/mfc + /var/lib/mfc) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-297 | [#1000](https://github.com/sesquicadaver/MTDirector/issues/1000) | Seed first PLAN-38 atomic row after inventory → OPS-HOST-SYSUSERS-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-296 (#999)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-297 (#1000)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-37 COMPLETE", plan37, StringComparison.Ordinal);
         Assert.Contains("W7-295 (#996) DONE", plan37, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-296 (#999)", plan37, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-297 (#1000)", plan37, StringComparison.Ordinal);
         Assert.Contains("plan-38-controller-host-sysusers-tmpfiles-packaging.md", plan37, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-38", plan, StringComparison.Ordinal);
         Assert.Contains("W7-296", plan, StringComparison.Ordinal);
         Assert.Contains("W7-295 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-296 (#999)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-297 (#1000)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-38-controller-host-sysusers-tmpfiles-packaging.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("OPS-HOST-SYSUSERS-01", plan38, StringComparison.Ordinal);
-        Assert.Contains("Inventory **OPEN**", plan38, StringComparison.Ordinal);
+        Assert.Contains("Inventory **DONE**", plan38, StringComparison.Ordinal);
         Assert.Contains("W7-296", plan38, StringComparison.Ordinal);
         Assert.Contains("W7-297", plan38, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-296 (#999)", plan38, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-297 (#1000)", plan38, StringComparison.Ordinal);
         Assert.Contains("sysusers", plan38, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("tmpfiles", plan38, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("6b05298f", plan38, StringComparison.Ordinal);
+        Assert.Contains("7da14df5", plan38, StringComparison.Ordinal);
 
         Assert.Contains("User=mfc", unit, StringComparison.Ordinal);
         Assert.Contains("Group=mfc", unit, StringComparison.Ordinal);

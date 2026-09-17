@@ -2036,6 +2036,16 @@ Issue [#976](https://github.com/sesquicadaver/MTDirector/issues/976) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7285"`.
 
+## Living Specification — PLAN-38 Controller host sysusers/tmpfiles packaging inventory (W7-296)
+
+Issue [#999](https://github.com/sesquicadaver/MTDirector/issues/999) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-38 inventory ranks sole OPS-HOST-SYSUSERS-01 + seeds | plan-38, package-controller.sh, packaging.md, ROADMAP, known-limitations | `Plan38ControllerHostSysusersTmpfilesPackagingW7296LivingSpecTests.Ac1Plan38InventoryDocumentsSoleSysusersRankAndSeedsOpsHostSysusers01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan38ControllerHostSysusersTmpfilesPackagingW7296"`.
+
 ## Living Specification — Product tranche seed PLAN-38 after PLAN-37 COMPLETE (W7-295)
 
 Issue [#996](https://github.com/sesquicadaver/MTDirector/issues/996) AC → module → tests:
