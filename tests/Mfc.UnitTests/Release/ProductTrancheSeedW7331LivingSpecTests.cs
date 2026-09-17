@@ -45,20 +45,28 @@ public sealed class ProductTrancheSeedW7331LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-335 | [#1076](https://github.com/sesquicadaver/MTDirector/issues/1076) | Seed next after CTRL-GRPC-MSGSIZE-01 (PLAN-47 COMPLETE) | **OPEN**",
+            "W7-335 | [#1076](https://github.com/sesquicadaver/MTDirector/issues/1076) | Seed next after CTRL-GRPC-MSGSIZE-01 (PLAN-47 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-335 (#1076)", roadmap, StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-336 | [#1079](https://github.com/sesquicadaver/MTDirector/issues/1079) | PLAN-48 — Inventory Controller Kestrel request-body / HTTP2 limits after gRPC message-size | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-337 | [#1080](https://github.com/sesquicadaver/MTDirector/issues/1080) | Seed first PLAN-48 atomic row after inventory → CTRL-KESTREL-BODY-01 | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-336 (#1079)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-46 COMPLETE", plan46, StringComparison.Ordinal);
         Assert.Contains("W7-331 (#1068) DONE", plan46, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-335 (#1076)", plan46, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-336 (#1079)", plan46, StringComparison.Ordinal);
         Assert.Contains("plan-47-controller-grpc-message-size-limits.md", plan46, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-47", plan, StringComparison.Ordinal);
         Assert.Contains("W7-332", plan, StringComparison.Ordinal);
         Assert.Contains("W7-331 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-335 (#1076)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-336 (#1079)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-47-controller-grpc-message-size-limits.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("CTRL-GRPC-MSGSIZE-01", plan47, StringComparison.Ordinal);
@@ -66,7 +74,7 @@ public sealed class ProductTrancheSeedW7331LivingSpecTests
         Assert.Contains("W7-332", plan47, StringComparison.Ordinal);
         Assert.Contains("W7-333", plan47, StringComparison.Ordinal);
         Assert.Contains("W7-334", plan47, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-335 (#1076)", plan47, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-336 (#1079)", plan47, StringComparison.Ordinal);
         Assert.Contains("d107b57d", plan47, StringComparison.Ordinal);
 
         Assert.Contains("ConfigureResource", program, StringComparison.Ordinal);
