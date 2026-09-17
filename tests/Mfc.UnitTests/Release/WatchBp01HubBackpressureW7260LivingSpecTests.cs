@@ -172,12 +172,12 @@ public sealed class WatchBp01HubBackpressureW7260LivingSpecTests
             "W7-260 | [#927](https://github.com/sesquicadaver/MTDirector/issues/927) | WATCH-BP-01 — Bounded ProgressHub subscriber channels / slow-subscriber backpressure + live `_history` cap | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-314 (#1034)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-315 (#1036)", roadmap, StringComparison.Ordinal);
         Assert.Contains("WATCH-BP-01", plan30, StringComparison.Ordinal);
         Assert.Contains("W7-260", plan30, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-314 (#1034)", plan30, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-315 (#1036)", plan30, StringComparison.Ordinal);
         Assert.Contains("W7-260", continuous, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-314 (#1034)", continuous, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-315 (#1036)", continuous, StringComparison.Ordinal);
         Assert.Contains("Intentional residual (W7-260 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("WatchBp01HubBackpressureW7260", testing, StringComparison.Ordinal);
         Assert.Contains("W7-260", changelog, StringComparison.Ordinal);

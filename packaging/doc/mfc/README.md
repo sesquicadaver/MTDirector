@@ -49,3 +49,17 @@ The systemd unit sets `SyslogIdentifier=mfc-controller` with stdout/stderr to th
 journalctl -u mfc-controller.service -e
 journalctl -t mfc-controller -e
 ```
+
+## Health probes (CTRL-HTTP-HEALTH-01)
+
+On the Controller `ListenAddress` (same port as gRPC). Prefer `https://` so classic HTTP/1.1 probes work (`Http1AndHttp2`); cleartext `http://` is HTTP/2-only:
+
+```bash
+# Liveness — process up (HTTP/1.1 OK)
+curl -fsS "$LISTEN/health/live"
+# Readiness — fail-closed when PostgreSQL is unreachable
+curl -fsS "$LISTEN/health/ready"
+```
+
+gRPC health (`grpc.health.v1.Health/Check`) remains available for Desktop/gRPC clients.
+

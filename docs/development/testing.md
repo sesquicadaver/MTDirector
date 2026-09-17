@@ -3727,6 +3727,17 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan42ControllerHttpHealthProb
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7313"`.
 
+## Living Specification — CTRL-HTTP-HEALTH-01 Controller HTTP probes (W7-314)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| HTTP `/health/live` + `/health/ready` alongside gRPC | Program.cs, DatabaseReadyHealthCheck | `CtrlHttpHealth01ControllerHttpProbesLivingSpecTests.Ac1ProgramMapsHttpLiveAndReadyAlongsideGrpcHealth` |
+| Operator docs + queue lock | installation.md, packaging/doc/mfc/README.md, known-limitations, ROADMAP | `CtrlHttpHealth01ControllerHttpProbesLivingSpecTests.Ac2DocsDocumentHttpProbePaths` |
+| Host integration | ControllerHealthHostTests | `ControllerHealthHostTests.HttpLiveAndReadyProbesReturnHealthyAlongsideGrpcHealth` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~CtrlHttpHealth01ControllerHttpProbesLivingSpecTests"`.
+
+
 
 
 ## Living Specification — QG-SIGN-02 opt-in release signing crypto gate (W7-310)

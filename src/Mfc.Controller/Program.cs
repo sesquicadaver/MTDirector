@@ -28,6 +28,7 @@ using Mfc.Infrastructure.Persistence.Logging;
 using Mfc.Infrastructure.RouterOs;
 using Mfc.Infrastructure.Security;
 using Mfc.RouterOs.DependencyInjection;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -161,9 +162,17 @@ public static class Program
 
         builder.WebHost.ConfigureKestrel(kestrel =>
         {
+            // HTTPS: ALPN negotiates h2 vs HTTP/1.1 (classic curl probes).
+            // Cleartext http://: Http2-only — h2c prior-knowledge for gRPC; Http1AndHttp2 on
+            // cleartext rejects HTTP/2 with HTTP_1_1_REQUIRED.
+            Uri listenUri = new(options.Grpc.ListenAddress);
+            bool listenHttps = string.Equals(listenUri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase);
+            HttpProtocols endpointProtocols = listenHttps
+                ? HttpProtocols.Http1AndHttp2
+                : HttpProtocols.Http2;
             kestrel.ConfigureEndpointDefaults(endpoint =>
             {
-                endpoint.Protocols = HttpProtocols.Http2;
+                endpoint.Protocols = endpointProtocols;
             });
 
             ClientCertificateMode clientCertificateMode =
@@ -200,7 +209,8 @@ public static class Program
 
         builder.Services.AddGrpc();
         builder.Services.AddGrpcHealthChecks()
-            .AddCheck("self", () => HealthCheckResult.Healthy("process"), tags: ["live"]);
+            .AddCheck("self", () => HealthCheckResult.Healthy("process"), tags: ["live"])
+            .AddCheck<DatabaseReadyHealthCheck>("database", tags: ["ready"]);
 
         configure?.Invoke(builder);
 
@@ -213,6 +223,14 @@ public static class Program
             app.UseMiddleware<MtlsClientCertificatePrincipalMiddleware>();
         }
 
+        app.MapHealthChecks("/health/live", new HealthCheckOptions
+        {
+            Predicate = registration => registration.Tags.Contains("live"),
+        });
+        app.MapHealthChecks("/health/ready", new HealthCheckOptions
+        {
+            Predicate = registration => registration.Tags.Contains("ready"),
+        });
         app.MapGrpcHealthChecksService();
         app.MapGrpcService<InventoryGrpcService>();
         app.MapGrpcService<SnapshotGrpcService>();

@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Http;
 using Grpc.Health.V1;
 using Grpc.Net.Client;
 using Mfc.Controller;
@@ -65,6 +67,57 @@ public sealed class ControllerHealthHostTests
     }
 
     [Fact]
+    public async Task HttpLiveAndReadyProbesReturnHealthyAlongsideGrpcHealth()
+    {
+        string connectionString = await _postgres.CreateFreshDatabaseAsync();
+        string url = $"http://127.0.0.1:{GetFreeTcpPort()}";
+
+        await using var app = Program.BuildHost(
+            [
+                "--environment", "Development",
+                $"--Mfc:Grpc:ListenAddress={url}",
+                "--Mfc:Grpc:AllowInsecureLoopback=true",
+                "--Mfc:Grpc:ShutdownTimeoutSeconds=5",
+                "--Mfc:Security:RequireTls=true",
+                "--Mfc:Security:MasterKeyProvider=Development",
+                "--Mfc:Authentication:AllowDevelopmentAuthentication=true",
+                "--Mfc:OperationalJobs:Enabled=false",
+                $"--Mfc:Database:ConnectionString={connectionString}",
+            ]);
+
+        await app.Services.MigrateAsync();
+        await app.StartAsync();
+
+        try
+        {
+            await WaitForPortAsync(url, TimeSpan.FromSeconds(10));
+
+            // Cleartext Development listen is Http2-only (h2c); force HTTP/2 for MapHealthChecks.
+            using HttpClient http = CreateHttp2Client(url);
+            using HttpResponseMessage live = await http.GetAsync("/health/live");
+            using HttpResponseMessage ready = await http.GetAsync("/health/ready");
+
+            Assert.Equal(HttpStatusCode.OK, live.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, ready.StatusCode);
+            Assert.Equal("Healthy", (await live.Content.ReadAsStringAsync()).Trim(), StringComparer.Ordinal);
+            Assert.Equal("Healthy", (await ready.Content.ReadAsStringAsync()).Trim(), StringComparer.Ordinal);
+
+            // gRPC health must remain Serving.
+            using GrpcChannel channel = GrpcChannel.ForAddress(url);
+            Health.HealthClient client = new(channel);
+            HealthCheckResponse grpc = await client.CheckAsync(
+                new HealthCheckRequest(),
+                deadline: DateTime.UtcNow.AddSeconds(5));
+            Assert.Equal(HealthCheckResponse.Types.ServingStatus.Serving, grpc.Status);
+        }
+        finally
+        {
+            using CancellationTokenSource stopCts = new(TimeSpan.FromSeconds(5));
+            await app.StopAsync(stopCts.Token);
+        }
+    }
+
+    [Fact]
     public void BuildHostRejectsProductionWithoutTls()
     {
         Assert.ThrowsAny<Exception>(() =>
@@ -79,6 +132,17 @@ public sealed class ControllerHealthHostTests
                     "--Mfc:Database:ConnectionString=Host=127.0.0.1;Database=mfc;Username=mfc;Password=x",
                 ]);
         });
+    }
+
+    private static HttpClient CreateHttp2Client(string baseAddress)
+    {
+        return new HttpClient
+        {
+            BaseAddress = new Uri(baseAddress),
+            Timeout = TimeSpan.FromSeconds(5),
+            DefaultRequestVersion = HttpVersion.Version20,
+            DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact,
+        };
     }
 
     private static int GetFreeTcpPort()
