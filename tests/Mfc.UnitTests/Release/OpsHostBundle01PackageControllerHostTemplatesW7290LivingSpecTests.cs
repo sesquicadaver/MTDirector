@@ -44,7 +44,7 @@ public sealed class OpsHostBundle01PackageControllerHostTemplatesW7290LivingSpec
             "W7-290 | [#986](https://github.com/sesquicadaver/MTDirector/issues/986) | OPS-HOST-BUNDLE-01 — package-controller copies systemd/WinSW into OUT_DIR/controller | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-303 (#1012)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-304 (#1015)", roadmap, StringComparison.Ordinal);
         Assert.Contains("OpsHostBundle01PackageControllerHostTemplatesW7290", testing, StringComparison.Ordinal);
     }
 
