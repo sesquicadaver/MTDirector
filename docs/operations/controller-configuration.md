@@ -78,6 +78,8 @@ When `ClientCertificateMode` is `AllowCertificate` / `RequireCertificate`, Contr
 
 ## Examples
 
+Copyable systemd EnvironmentFile sample (no secrets): [`../../packaging/systemd/mfc-controller.env.example`](../../packaging/systemd/mfc-controller.env.example) (OPS-HOST-ENV-01; also bundled into `$OUT_DIR/controller/` by `package-controller.sh`).
+
 ```bash
 export MFC__Database__ConnectionString='Host=127.0.0.1;Port=5432;Database=mfc;Username=mfc;Password=...'
 export MFC__Security__MasterKeyProvider=Development

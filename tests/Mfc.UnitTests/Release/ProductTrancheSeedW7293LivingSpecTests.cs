@@ -28,30 +28,30 @@ public sealed class ProductTrancheSeedW7293LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-294 | [#994](https://github.com/sesquicadaver/MTDirector/issues/994) | OPS-HOST-ENV-01 — author mfc-controller.env.example + docs + package-controller bundle | **OPEN**",
+            "W7-294 | [#994](https://github.com/sesquicadaver/MTDirector/issues/994) | OPS-HOST-ENV-01 — author mfc-controller.env.example + docs + package-controller bundle | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-295 | [#996](https://github.com/sesquicadaver/MTDirector/issues/996) | Seed next after OPS-HOST-ENV-01 (PLAN-37 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-294 (#994)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-295 (#996)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-293 (#992) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-294", plan, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-ENV-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-294 (#994)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-295 (#996)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-293 (#992) DONE", plan37, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-ENV-01", plan37, StringComparison.Ordinal);
         Assert.Contains("W7-294", plan37, StringComparison.Ordinal);
         Assert.Contains("W7-295", plan37, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-294 (#994)", plan37, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-295 (#996)", plan37, StringComparison.Ordinal);
 
         Assert.Contains("DEST=\"$OUT_DIR/controller\"", packageController, StringComparison.Ordinal);
         Assert.Contains("mfc-controller.service", packageController, StringComparison.Ordinal);
-        Assert.DoesNotContain("mfc-controller.env.example", packageController, StringComparison.Ordinal);
-        Assert.False(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.env.example")));
+        Assert.Contains("mfc-controller.env.example", packageController, StringComparison.Ordinal);
+        Assert.True(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.env.example")));
     }
 
     private static string RepoRoot()

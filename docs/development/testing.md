@@ -2036,6 +2036,17 @@ Issue [#976](https://github.com/sesquicadaver/MTDirector/issues/976) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7285"`.
 
+## Living Specification — OPS-HOST-ENV-01 Controller env sample packaging (W7-294)
+
+Issue [#994](https://github.com/sesquicadaver/MTDirector/issues/994) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| env.example keys + docs + script lock | `packaging/systemd/mfc-controller.env.example`, package-controller, packaging/HOWTO/installation | `OpsHostEnv01ControllerEnvSampleW7294LivingSpecTests.Ac1EnvExampleDocumentsMfcKeysAndDocsLock` |
+| dry-run OUT_DIR/controller contains env.example | `scripts/release/package-controller.sh` | `OpsHostEnv01ControllerEnvSampleW7294LivingSpecTests.Ac2DryRunPublishTreeContainsBundledEnvExample` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~OpsHostEnv01ControllerEnvSampleW7294"`.
+
 ## Living Specification — Product tranche seed OPS-HOST-ENV-01 (W7-293)
 
 Issue [#992](https://github.com/sesquicadaver/MTDirector/issues/992) AC → module → tests:

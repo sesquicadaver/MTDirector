@@ -34,7 +34,9 @@ sudo install -d -o mfc -g mfc /opt/mfc/controller
 sudo rsync -a "$OUT_DIR/controller/" /opt/mfc/controller/
 sudo install -m 0644 packaging/systemd/mfc-controller.service /etc/systemd/system/mfc-controller.service
 sudo install -d /etc/mfc
-# create /etc/mfc/controller.env with MFC__Database__ConnectionString, TLS, etc.
+# copy OPS-HOST-ENV-01 sample (also in $OUT_DIR/controller/ after package-controller):
+sudo cp packaging/systemd/mfc-controller.env.example /etc/mfc/controller.env
+# edit /etc/mfc/controller.env — MFC__Database__ConnectionString, TLS, etc. (no secrets in the example)
 sudo systemctl daemon-reload
 sudo systemctl enable --now mfc-controller.service
 sudo systemctl status mfc-controller.service
