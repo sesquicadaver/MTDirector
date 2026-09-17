@@ -3761,6 +3761,17 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan43ControllerHttpMetricsOte
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7317"`.
 
+## Living Specification — CTRL-HTTP-METRICS-01 Controller metrics (W7-318)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Opt-in Prometheus `/metrics` alongside HTTP/gRPC health | Program.cs, ControllerOptions, packages | `CtrlHttpMetrics01ControllerMetricsLivingSpecTests.Ac1ProgramMapsOptInPrometheusScrapingAlongsideHealth` |
+| Operator docs + queue lock | installation.md, packaging doc, env.example, known-limitations, ROADMAP | `CtrlHttpMetrics01ControllerMetricsLivingSpecTests.Ac2DocsDocumentOptInMetricsPath` |
+| Host integration | ControllerHealthHostTests | `ControllerHealthHostTests.HttpMetricsOptInScrapeReturnsPrometheusTextAndKeepsHealthIntact` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~CtrlHttpMetrics01ControllerMetricsLivingSpecTests"`.
+
+
 
 
 

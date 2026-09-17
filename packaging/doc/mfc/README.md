@@ -63,3 +63,13 @@ curl -fsS "$LISTEN/health/ready"
 
 gRPC health (`grpc.health.v1.Health/Check`) remains available for Desktop/gRPC clients.
 
+## Metrics scrape (CTRL-HTTP-METRICS-01)
+
+Prometheus text exposition is **opt-in** (default off). Set `Mfc:Metrics:Enabled=true` / `MFC__Metrics__Enabled=true`, then scrape:
+
+```bash
+curl -fsS "$LISTEN/metrics"
+```
+
+Optional path override: `Mfc:Metrics:ScrapePath` (default `/metrics`). Health probes stay registered when metrics are disabled.
+

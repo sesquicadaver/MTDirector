@@ -35,7 +35,7 @@ public sealed class Plan43ControllerHttpMetricsOtelW7316LivingSpecTests
         Assert.Contains("MapPrometheusScrapingEndpoint", plan43, StringComparison.Ordinal);
         Assert.Contains("/metrics", plan43, StringComparison.Ordinal);
         Assert.Contains("opt-in", plan43, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("§3.C NEXT = W7-318 (#1042)", plan43, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-319 (#1044)", plan43, StringComparison.Ordinal);
         Assert.Contains("MapHealthChecks", plan43, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-316 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -53,10 +53,10 @@ public sealed class Plan43ControllerHttpMetricsOtelW7316LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-318 | [#1042](https://github.com/sesquicadaver/MTDirector/issues/1042) | CTRL-HTTP-METRICS-01 — Controller scrapeable Prometheus/OTel metrics beyond HTTP health | **OPEN**",
+            "W7-318 | [#1042](https://github.com/sesquicadaver/MTDirector/issues/1042) | CTRL-HTTP-METRICS-01 — Controller scrapeable Prometheus/OTel metrics beyond HTTP health | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-318 (#1042)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-319 (#1044)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-317", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-318", continuous, StringComparison.Ordinal);
@@ -69,9 +69,9 @@ public sealed class Plan43ControllerHttpMetricsOtelW7316LivingSpecTests
         Assert.Contains("/health/live", installation, StringComparison.Ordinal);
         Assert.Contains("MapHealthChecks", program, StringComparison.Ordinal);
         Assert.Contains("/health/live", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("MapPrometheusScrapingEndpoint", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("OpenTelemetry", csproj, StringComparison.Ordinal);
-        Assert.DoesNotContain("OpenTelemetry", packages, StringComparison.Ordinal);
+        Assert.Contains("MapPrometheusScrapingEndpoint", program, StringComparison.Ordinal);
+        Assert.Contains("OpenTelemetry", csproj, StringComparison.Ordinal);
+        Assert.Contains("OpenTelemetry", packages, StringComparison.Ordinal);
         Assert.Contains("/health/live", packagingDoc, StringComparison.Ordinal);
         Assert.True(File.Exists(Path.Combine(root, "src/Mfc.Controller/Program.cs")));
     }
