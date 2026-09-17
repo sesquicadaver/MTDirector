@@ -1,7 +1,7 @@
 # PLAN-38 — Controller host sysusers/tmpfiles packaging (mfc user + host dirs)
 
 **Date:** 2026-09-17 (inventory **DONE** @ `7da14df5`)  
-**Status:** Inventory **DONE** (W7-296); seed **W7-297 (#1000) DONE**; implement **W7-298 (#1002) DONE**; COMPLETE seed **W7-299 (#1004) OPEN** (**§3.C NEXT**); predecessor **PLAN-37 COMPLETE**  
+**Status:** **PLAN-38 COMPLETE** — Inventory **DONE** (W7-296); seed **W7-297 (#1000) DONE**; implement **W7-298 (#1002) DONE**; COMPLETE seed **W7-299 (#1004) DONE**; successor **PLAN-39** inventory **W7-300 (#1007) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-296 / PLAN-38 #999](https://github.com/sesquicadaver/MTDirector/issues/999) **DONE**  
 **Predecessor:** PLAN-37 Controller host env sample packaging **COMPLETE** (OPS-HOST-ENV-01)  
 **Normative files:** [`mfc-controller.service`](../../packaging/systemd/mfc-controller.service), [`mfc-controller.env.example`](../../packaging/systemd/mfc-controller.env.example), [`installation.md`](../operations/installation.md), [`package-controller.sh`](../../scripts/release/package-controller.sh), [`packaging.md`](../release/packaging.md)  
@@ -52,6 +52,10 @@ Product §3 never waits on GNS3.
 
 PLAN-37 sole ranked row (**OPS-HOST-ENV-01**) is **DONE**. No further PLAN-37 product rows.
 
+## Adjacent residuals (seeded as PLAN-38 COMPLETE / PLAN-39)
+
+- Controller host operator doc packaging (`Documentation=/usr/share/doc/mfc`) — **PLAN-39** [`plan-39-controller-host-operator-doc-packaging.md`](plan-39-controller-host-operator-doc-packaging.md)
+
 ## Adjacent residuals (not seeded here)
 
 - Unnamed TabControl containers — deferred vanity  
@@ -59,7 +63,6 @@ PLAN-37 sole ranked row (**OPS-HOST-ENV-01**) is **DONE**. No further PLAN-37 pr
 - Native MSI / AppImage / self-contained publish default — W7-22 lock  
 - WinSW binary redistribution — not §3 (operator-supplied)  
 - Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates  
-- Unit `Documentation=file:///usr/share/doc/mfc/README.md` with no packaging doc artifact — candidate after PLAN-38 COMPLETE (avoid inventing during inventory)
 
 ## §3.C ordering
 
@@ -67,8 +70,8 @@ PLAN-37 sole ranked row (**OPS-HOST-ENV-01**) is **DONE**. No further PLAN-37 pr
 2. **W7-296 DONE** — PLAN-38 inventory; opened **W7-298 (#1002)** SYSUSERS implement.  
 3. **W7-297 DONE** — seed first PLAN-38 implement → OPS-HOST-SYSUSERS-01; opened COMPLETE **W7-299 (#1004)**.  
 4. **W7-298 DONE** — sole OPS-HOST-SYSUSERS-01 shipped (templates + docs + bundle).
-5. **W7-299 OPEN** — PLAN-38 COMPLETE seed → PLAN-39.
+5. **W7-299 DONE** — PLAN-38 COMPLETE; seeded PLAN-39 inventory **W7-300**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-299 (#1004)** — Seed first PLAN-38 atomic row → OPS-HOST-SYSUSERS-01 after inventory.
+**§3.C NEXT = W7-300 (#1007)** — PLAN-39 Inventory Controller host operator doc packaging after PLAN-38.

@@ -2036,6 +2036,16 @@ Issue [#976](https://github.com/sesquicadaver/MTDirector/issues/976) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7285"`.
 
+## Living Specification — Product tranche seed PLAN-39 after PLAN-38 COMPLETE (W7-299)
+
+Issue [#1004](https://github.com/sesquicadaver/MTDirector/issues/1004) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Seed locks PLAN-39 inventory as §3.C NEXT | known-limitations, ROADMAP, plan-38/39, continuous-queue | `ProductTrancheSeedW7299LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan39AfterPlan38Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7299"`.
+
 ## Living Specification — OPS-HOST-SYSUSERS-01 Controller sysusers/tmpfiles packaging (W7-298)
 
 Issue [#1002](https://github.com/sesquicadaver/MTDirector/issues/1002) AC → module → tests:
