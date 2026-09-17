@@ -1,8 +1,8 @@
 # PLAN-43 — Controller metrics / OpenTelemetry beyond HTTP health probes
 
-**Date:** 2026-09-17 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-316); seed **W7-317 (#1040) OPEN**; predecessor **PLAN-42 COMPLETE**  
-**PLAN issue / queue:** [W7-316 / PLAN-43 #1039](https://github.com/sesquicadaver/MTDirector/issues/1039) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-17 (inventory **DONE** @ `94f04744`)  
+**Status:** Inventory **DONE** (W7-316); seed **W7-317 (#1040) OPEN** (**§3.C NEXT**); implement **W7-318 (#1042) OPEN**; predecessor **PLAN-42 COMPLETE**  
+**PLAN issue / queue:** [W7-316 / PLAN-43 #1039](https://github.com/sesquicadaver/MTDirector/issues/1039) **DONE**  
 **Predecessor:** PLAN-42 Controller HTTP health probes **COMPLETE** (CTRL-HTTP-HEALTH-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
 **Normative prior locks:** HTTP `/health/live` + `/health/ready`; gRPC health; QG-SIGN-01/02; PLAN-32…42 — **do not regress**  
@@ -28,22 +28,25 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - Full distributed-tracing productization beyond a bounded metrics first row (inventory may refine)  
 - systemd `Type=notify` / `WatchdogSec` packaging polish (explicitly deferred / saturating)
 
-## Inventory evidence (seed baseline 2026-09-17 `main` @ PLAN-42 COMPLETE / `ba2a0af6`)
+## Inventory evidence (W7-316 @ `main` `94f04744`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
 | `Program.cs` | `MapHealthChecks` `/health/live` + `/health/ready` + gRPC health | No Prometheus `/metrics` / OTel meter export |
 | `installation.md` / packaging doc | HTTP probe guidance | No metrics scrape guidance |
-| Glob / rg | `OpenTelemetry` / `MapPrometheusScrapingEndpoint` / `/metrics` absent under Controller @ `ba2a0af6` | Confirmed |
+| Glob / rg | `OpenTelemetry` / `MapPrometheusScrapingEndpoint` / `/metrics` absent under Controller @ `94f04744` | Confirmed |
 | Packaging unit | `Type=simple` + journald + HTTP probes documented | Metrics residual; Type=notify deferred |
+| `Directory.Packages.props` / Controller csproj | Grpc + EF Core only — no OpenTelemetry / prometheus-net packages | Confirmed |
 
-## Ranked Controller metrics tranche (seed baseline)
+**Ranking decision:** Prefer **ONE atomic row** (**CTRL-HTTP-METRICS-01**) covering a minimal correct scrapeable metrics endpoint (prefer ASP.NET OpenTelemetry Prometheus `/metrics` via `MapPrometheusScrapingEndpoint`, opt-in / fail-closed default-off) + docs/Living Spec alongside existing HTTP/gRPC health. Splitting meters vs scrape path into two ranks would be vanity; full distributed tracing and Type=notify remain deferred adjacent residuals.
+
+## Ranked Controller metrics tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-HTTP-METRICS-01** | Author minimal correct metrics endpoint(s) (+ docs/Living Spec) alongside existing HTTP/gRPC health; keep MSI/AppImage locked | Health probes only @ `ba2a0af6` | after inventory **W7-316**; seed **W7-317 (#1040)** |
+| 1 | **CTRL-HTTP-METRICS-01** | Author minimal correct metrics endpoint(s) (+ docs/Living Spec) alongside existing HTTP/gRPC health; keep MSI/AppImage locked; prefer opt-in scrape surface | Health probes only @ `94f04744` | implement **W7-318 (#1042)** after seed **W7-317 (#1040)** |
 
-Inventory (**W7-316**) may refine ranking and open implement issues; seed **W7-317** advances NEXT to the first implement after inventory DONE.
+Inventory (**W7-316 DONE**) confirmed sole rank. Seed **W7-317** advances NEXT to CTRL-HTTP-METRICS-01 implement; COMPLETE seed opens after METRICS-01.
 
 ## Dual track
 
@@ -59,15 +62,16 @@ PLAN-42 sole ranked row (**CTRL-HTTP-HEALTH-01**) is **DONE**. No further PLAN-4
 - Nested ListBox item-template hosts — deferred vanity  
 - Native MSI / AppImage / self-contained publish default — W7-22 lock  
 - systemd Type=notify/WatchdogSec — deferred packaging polish  
+- Full OpenTelemetry distributed tracing beyond metrics scrape — deferred adjacent (candidate PLAN-44 after METRICS)  
 - Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates
 
 ## §3.C ordering
 
 1. **PLAN-42 COMPLETE** (W7-314 CTRL-HTTP-HEALTH-01; seed **W7-315 DONE**).  
-2. **W7-316 OPEN** — PLAN-43 inventory → open first metrics implement + follow-up seeds.  
-3. **W7-317 OPEN** — seed first PLAN-43 implement after inventory.  
-4. Execute ranked CTRL-HTTP-METRICS row(s) atomically.
+2. **W7-316 DONE** — PLAN-43 inventory; opened **W7-318 (#1042)** CTRL-HTTP-METRICS-01 implement.  
+3. **W7-317 OPEN** — seed first PLAN-43 implement → CTRL-HTTP-METRICS-01 (**§3.C NEXT**).  
+4. Execute sole CTRL-HTTP-METRICS-01 row atomically; then PLAN-43 COMPLETE seed.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-316 (#1039)** — PLAN-43 Inventory Controller metrics/OpenTelemetry after PLAN-42.
+**§3.C NEXT = W7-317 (#1040)** — Seed first PLAN-43 atomic row after inventory → CTRL-HTTP-METRICS-01.

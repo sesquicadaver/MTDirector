@@ -3745,7 +3745,13 @@ Filter: `dotnet test --filter "FullyQualifiedName~CtrlHttpHealth01ControllerHttp
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7315"`.
 
+## Living Specification — PLAN-43 inventory Controller metrics/OTel (W7-316)
 
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-43 inventory ranks sole CTRL-HTTP-METRICS-01 + seeds | plan-43, Program.cs, Directory.Packages.props, ROADMAP, known-limitations | `Plan43ControllerHttpMetricsOtelW7316LivingSpecTests.Ac1Plan43InventoryDocumentsSoleCtrlHttpMetrics01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan43ControllerHttpMetricsOtelW7316"`.
 
 
 

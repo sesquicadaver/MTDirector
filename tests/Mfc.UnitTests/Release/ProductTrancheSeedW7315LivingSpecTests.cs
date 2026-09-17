@@ -33,32 +33,37 @@ public sealed class ProductTrancheSeedW7315LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-316 | [#1039](https://github.com/sesquicadaver/MTDirector/issues/1039) | PLAN-43 — Inventory Controller metrics/OpenTelemetry beyond HTTP health probes | **OPEN**",
+            "W7-316 | [#1039](https://github.com/sesquicadaver/MTDirector/issues/1039) | PLAN-43 — Inventory Controller metrics/OpenTelemetry beyond HTTP health probes | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-317 | [#1040](https://github.com/sesquicadaver/MTDirector/issues/1040) | Seed first PLAN-43 atomic row after inventory → CTRL-HTTP-METRICS-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-316 (#1039)", roadmap, StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-318 | [#1042](https://github.com/sesquicadaver/MTDirector/issues/1042) | CTRL-HTTP-METRICS-01 — Controller scrapeable Prometheus/OTel metrics beyond HTTP health | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-317 (#1040)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-42 COMPLETE", plan42, StringComparison.Ordinal);
         Assert.Contains("W7-315 (#1036) DONE", plan42, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-316 (#1039)", plan42, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-317 (#1040)", plan42, StringComparison.Ordinal);
         Assert.Contains("plan-43-controller-http-metrics-otel.md", plan42, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-43", plan, StringComparison.Ordinal);
         Assert.Contains("W7-316", plan, StringComparison.Ordinal);
         Assert.Contains("W7-315 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-316 (#1039)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-317 (#1040)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-43-controller-http-metrics-otel.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("CTRL-HTTP-METRICS-01", plan43, StringComparison.Ordinal);
-        Assert.Contains("Inventory **OPEN**", plan43, StringComparison.Ordinal);
+        Assert.Contains("Inventory **DONE**", plan43, StringComparison.Ordinal);
         Assert.Contains("W7-316", plan43, StringComparison.Ordinal);
         Assert.Contains("W7-317", plan43, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-316 (#1039)", plan43, StringComparison.Ordinal);
-        Assert.Contains("ba2a0af6", plan43, StringComparison.Ordinal);
+        Assert.Contains("W7-318", plan43, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-317 (#1040)", plan43, StringComparison.Ordinal);
+        Assert.Contains("94f04744", plan43, StringComparison.Ordinal);
 
         Assert.Contains("MapHealthChecks", program, StringComparison.Ordinal);
         Assert.Contains("/health/live", program, StringComparison.Ordinal);
