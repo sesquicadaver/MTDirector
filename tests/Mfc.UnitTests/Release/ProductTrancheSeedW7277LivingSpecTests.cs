@@ -40,24 +40,24 @@ public sealed class ProductTrancheSeedW7277LivingSpecTests
             "W7-279 | [#964](https://github.com/sesquicadaver/MTDirector/issues/964) | Seed first PLAN-34 atomic row after inventory → DESK-HOST-LINUX-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-295 (#996)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-296 (#999)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-33 COMPLETE", plan33, StringComparison.Ordinal);
         Assert.Contains("W7-277 (#959) DONE", plan33, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-295 (#996)", plan33, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-296 (#999)", plan33, StringComparison.Ordinal);
         Assert.Contains("plan-34-desktop-operator-launch-packaging.md", plan33, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-34", plan, StringComparison.Ordinal);
         Assert.Contains("W7-278", plan, StringComparison.Ordinal);
         Assert.Contains("W7-277 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-295 (#996)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-296 (#999)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-34-desktop-operator-launch-packaging.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("DESK-HOST-LINUX-01", plan34, StringComparison.Ordinal);
         Assert.Contains("Inventory **DONE**", plan34, StringComparison.Ordinal);
         Assert.Contains("W7-278", plan34, StringComparison.Ordinal);
         Assert.Contains("W7-279", plan34, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-295 (#996)", plan34, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-296 (#999)", plan34, StringComparison.Ordinal);
         Assert.Contains("3e112bf", plan34, StringComparison.Ordinal);
         Assert.Contains("package-desktop.sh", plan34, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/desktop", plan34, StringComparison.Ordinal);
