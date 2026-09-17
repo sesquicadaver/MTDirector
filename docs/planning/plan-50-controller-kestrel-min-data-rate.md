@@ -1,7 +1,7 @@
 # PLAN-50 — Controller Kestrel min request/response data-rate after HTTP/2 keepalive
 
 **Date:** 2026-09-17 (inventory **DONE** @ `be2ac7a8`)  
-**Status:** Inventory **DONE** (W7-344); seed **W7-345 (#1096) DONE**; implement **W7-346 (#1098) DONE**; COMPLETE follow-up **W7-347 (#1099) OPEN** (**§3.C NEXT**); predecessor **PLAN-49 COMPLETE**  
+**Status:** **PLAN-50 COMPLETE** — Inventory **DONE** (W7-344); seed **W7-345 (#1096) DONE**; implement **W7-346 (#1098) DONE**; COMPLETE seed **W7-347 (#1099) DONE**; successor **PLAN-51** inventory **W7-348 (#1103) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-344 / PLAN-50 #1095](https://github.com/sesquicadaver/MTDirector/issues/1095) **DONE**  
 **Predecessor:** PLAN-49 Controller/Desktop gRPC HTTP/2 keepalive **COMPLETE** (CTRL-GRPC-KEEPALIVE-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs) (`ConfigureKestrel` / `Limits.MinRequestBodyDataRate` / `MinResponseDataRate`), [`installation.md`](../operations/installation.md) / [`controller-configuration.md`](../operations/controller-configuration.md)  
@@ -78,12 +78,16 @@ PLAN-49 sole ranked row (**CTRL-GRPC-KEEPALIVE-01**) is **DONE**. No further PLA
 2. **W7-344 DONE** — PLAN-50 inventory; opened **W7-346 (#1098)** CTRL-KESTREL-MINRATE-01 implement + **W7-347 (#1099)** COMPLETE follow-up.  
 3. **W7-345 DONE** — seed advanced NEXT to CTRL-KESTREL-MINRATE-01; opened COMPLETE **W7-347 (#1099)**.  
 4. **W7-346 DONE** — CTRL-KESTREL-MINRATE-01 null/disabled min data rates.
-5. **W7-347 OPEN** — PLAN-50 COMPLETE seed (**§3.C NEXT**).
+5. **W7-347 DONE** — PLAN-50 COMPLETE; seeded PLAN-51 inventory **W7-348**.
 
 ## Delivery notes (W7-346)
 
 CTRL-KESTREL-MINRATE-01 shipped: `ConfigureKestrel` sets `Limits.MinRequestBodyDataRate = null` and `Limits.MinResponseDataRate = null` (disabled). Documented fail-closed choice for quiet Watch longevity — ASP.NET defaults (240 B/s + 5s grace) would kill quiet Capture/Deployment/Onboarding server-streams; HTTP/2 PING does not count as response-body bytes. MSGSIZE / BODY / KEEPALIVE unchanged.
 
+## Adjacent residual seeded as PLAN-51
+
+- Desktop gRPC unary call deadline / timeout policy — seeded as **PLAN-51** [`plan-51-desktop-grpc-unary-deadline.md`](plan-51-desktop-grpc-unary-deadline.md)
+
 ## §3.C NEXT
 
-**§3.C NEXT = W7-347 (#1099)** — Seed next after CTRL-KESTREL-MINRATE-01 (PLAN-50 COMPLETE).
+**§3.C NEXT = W7-348 (#1103)** — PLAN-51 Inventory Desktop gRPC unary call deadline / timeout after PLAN-50.

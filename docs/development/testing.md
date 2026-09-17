@@ -3948,6 +3948,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7341"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~CtrlGrpcKeepalive01ControllerDesktopHttp2Keepalive"`.
 
+## Living Specification — Seed PLAN-51 after PLAN-50 COMPLETE (W7-347)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks PLAN-51 inventory as §3.C NEXT | known-limitations, ROADMAP, plan-50, plan-51, continuous-queue | `ProductTrancheSeedW7347LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan51AfterPlan50Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7347"`.
+
 ## Living Specification — CTRL-KESTREL-MINRATE-01 (W7-346)
 
 | AC | Normative surface | Living Spec test |

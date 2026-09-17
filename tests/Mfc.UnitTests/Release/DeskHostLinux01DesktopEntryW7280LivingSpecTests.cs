@@ -51,7 +51,7 @@ public sealed class DeskHostLinux01DesktopEntryW7280LivingSpecTests
             "W7-280 | [#966](https://github.com/sesquicadaver/MTDirector/issues/966) | DESK-HOST-LINUX-01 — freedesktop .desktop template for framework-dependent Desktop | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-347 (#1099)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-348 (#1103)", roadmap, StringComparison.Ordinal);
         Assert.Contains("DeskHostLinux01DesktopEntryW7280", testing, StringComparison.Ordinal);
     }
 
