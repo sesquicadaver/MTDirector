@@ -1,0 +1,86 @@
+using Xunit;
+
+namespace Mfc.UnitTests.Release;
+
+/// <summary>
+/// W7-331: PLAN-46 COMPLETE; known-limitations / queue seed locked PLAN-47 inventory (W7-332)
+/// and follow-up seed W7-333 after CTRL-HTTP-OTEL-RESOURCE-01.
+/// </summary>
+public sealed class ProductTrancheSeedW7331LivingSpecTests
+{
+    [Fact]
+    public void Ac1KnownLimitationsAndQueueSeedPlan47AfterPlan46Complete()
+    {
+        string root = RepoRoot();
+        string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
+        string roadmap = File.ReadAllText(Path.Combine(root, "ROADMAP.md"));
+        string plan = File.ReadAllText(Path.Combine(root, "docs/planning/continuous-queue-plan.md"));
+        string plan46 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-46-controller-otel-resource-identity.md"));
+        string plan47 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-47-controller-grpc-message-size-limits.md"));
+        string program = File.ReadAllText(Path.Combine(root, "src/Mfc.Controller/Program.cs"));
+        string desktop = File.ReadAllText(Path.Combine(root, "src/Mfc.Desktop/Services/ControllerConnectionService.cs"));
+
+        Assert.Contains("Intentional residual (W7-331 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("PLAN-46 COMPLETE", limitations, StringComparison.Ordinal);
+        Assert.Contains("PLAN-47", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-332", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-333", limitations, StringComparison.Ordinal);
+        Assert.Contains("CTRL-GRPC-MSGSIZE-01", limitations, StringComparison.Ordinal);
+        Assert.Contains("seeded as **W7-332**", limitations, StringComparison.Ordinal);
+
+        Assert.Contains(
+            "W7-331 | [#1068](https://github.com/sesquicadaver/MTDirector/issues/1068) | Seed next after CTRL-HTTP-OTEL-RESOURCE-01 (PLAN-46 COMPLETE) | **DONE**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-332 | [#1071](https://github.com/sesquicadaver/MTDirector/issues/1071) | PLAN-47 — Inventory Controller gRPC message-size / transport limits after OTel resource identity | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-333 | [#1072](https://github.com/sesquicadaver/MTDirector/issues/1072) | Seed first PLAN-47 atomic row after inventory → CTRL-GRPC-MSGSIZE-01 | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-332 (#1071)", roadmap, StringComparison.Ordinal);
+
+        Assert.Contains("PLAN-46 COMPLETE", plan46, StringComparison.Ordinal);
+        Assert.Contains("W7-331 (#1068) DONE", plan46, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-332 (#1071)", plan46, StringComparison.Ordinal);
+        Assert.Contains("plan-47-controller-grpc-message-size-limits.md", plan46, StringComparison.Ordinal);
+
+        Assert.Contains("PLAN-47", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-332", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-331 DONE", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-332 (#1071)", plan, StringComparison.Ordinal);
+        Assert.Contains("plan-47-controller-grpc-message-size-limits.md", plan, StringComparison.Ordinal);
+
+        Assert.Contains("CTRL-GRPC-MSGSIZE-01", plan47, StringComparison.Ordinal);
+        Assert.Contains("Inventory **OPEN**", plan47, StringComparison.Ordinal);
+        Assert.Contains("W7-332", plan47, StringComparison.Ordinal);
+        Assert.Contains("W7-333", plan47, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-332 (#1071)", plan47, StringComparison.Ordinal);
+        Assert.Contains("0a87280e", plan47, StringComparison.Ordinal);
+
+        Assert.Contains("ConfigureResource", program, StringComparison.Ordinal);
+        Assert.Contains("AddService", program, StringComparison.Ordinal);
+        Assert.Contains("AddGrpc()", program, StringComparison.Ordinal);
+        Assert.DoesNotContain("MaxReceiveMessageSize", program, StringComparison.Ordinal);
+        Assert.Contains("GrpcChannel.ForAddress", desktop, StringComparison.Ordinal);
+        Assert.DoesNotContain("MaxReceiveMessageSize", desktop, StringComparison.Ordinal);
+    }
+
+    private static string RepoRoot()
+    {
+        DirectoryInfo? dir = new(AppContext.BaseDirectory);
+        while (dir is not null)
+        {
+            if (File.Exists(Path.Combine(dir.FullName, "ROADMAP.md")))
+            {
+                return dir.FullName;
+            }
+
+            dir = dir.Parent;
+        }
+
+        throw new InvalidOperationException("Repository root not found.");
+    }
+}

@@ -36,18 +36,18 @@ public sealed class ProductTrancheSeedW7305LivingSpecTests
             "W7-307 | [#1020](https://github.com/sesquicadaver/MTDirector/issues/1020) | Seed next after OPS-HOST-LOG-01 (PLAN-40 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-331 (#1068)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-332 (#1071)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-305", plan, StringComparison.Ordinal);
         Assert.Contains("W7-306", plan, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-LOG-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-331 (#1068)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-332 (#1071)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-305 (#1016) DONE", plan40, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-LOG-01", plan40, StringComparison.Ordinal);
         Assert.Contains("W7-306", plan40, StringComparison.Ordinal);
         Assert.Contains("W7-307", plan40, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-331 (#1068)", plan40, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-332 (#1071)", plan40, StringComparison.Ordinal);
 
         Assert.Contains("DEST=\"$OUT_DIR/controller\"", packageController, StringComparison.Ordinal);
         Assert.Contains("mfc-controller.service", packageController, StringComparison.Ordinal);

@@ -1,7 +1,7 @@
 # PLAN-46 — Controller OpenTelemetry resource identity after log↔trace correlation
 
 **Date:** 2026-09-17 (inventory **DONE** @ `894cc4b8`)  
-**Status:** Inventory **DONE** (W7-328); seed **W7-329 (#1064) DONE**; implement **W7-330 (#1066) DONE**; COMPLETE seed **W7-331 (#1068) OPEN** (**§3.C NEXT**); predecessor **PLAN-45 COMPLETE**  
+**Status:** **PLAN-46 COMPLETE** — Inventory **DONE** (W7-328); seed **W7-329 (#1064) DONE**; implement **W7-330 (#1066) DONE**; COMPLETE seed **W7-331 (#1068) DONE**; successor **PLAN-47** inventory **W7-332 (#1071) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-328 / PLAN-46 #1063](https://github.com/sesquicadaver/MTDirector/issues/1063) **DONE**  
 **Predecessor:** PLAN-45 Controller log↔trace correlation **COMPLETE** (CTRL-LOG-OTEL-CORRELATE-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
@@ -49,7 +49,7 @@ Splitting metrics vs traces resource into two ranks would be vanity; Type=notify
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-HTTP-OTEL-RESOURCE-01** | Author minimal correct OTel Resource (`service.name` + `service.version`) on metrics+traces (+ docs/Living Spec) alongside existing health/metrics/tracing/correlation; keep MSI/AppImage locked | No ResourceBuilder @ `894cc4b8` | implement **W7-330 (#1066) DONE**; COMPLETE **W7-331 (#1068) OPEN** (**§3.C NEXT**) |
+| 1 | **CTRL-HTTP-OTEL-RESOURCE-01** | Author minimal correct OTel Resource (`service.name` + `service.version`) on metrics+traces (+ docs/Living Spec) alongside existing health/metrics/tracing/correlation; keep MSI/AppImage locked | No ResourceBuilder @ `894cc4b8` | implement **W7-330 (#1066) DONE**; COMPLETE **W7-331 (#1068) DONE** |
 
 Inventory (**W7-328 DONE**) confirmed sole rank. Seed **W7-329** advances NEXT to RESOURCE-01 implement after inventory.
 
@@ -67,6 +67,7 @@ PLAN-45 sole ranked row (**CTRL-LOG-OTEL-CORRELATE-01**) is **DONE**. No further
 - Nested ListBox item-template hosts — deferred vanity  
 - Native MSI / AppImage / self-contained publish default — W7-22 lock  
 - systemd Type=notify/WatchdogSec — deferred packaging polish  
+- Controller gRPC message-size / transport limits — seeded as **PLAN-47** [`plan-47-controller-grpc-message-size-limits.md`](plan-47-controller-grpc-message-size-limits.md)
 - Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates
 
 ## §3.C ordering
@@ -75,7 +76,7 @@ PLAN-45 sole ranked row (**CTRL-LOG-OTEL-CORRELATE-01**) is **DONE**. No further
 2. **W7-328 DONE** — PLAN-46 inventory; opened **W7-330 (#1066)** CTRL-HTTP-OTEL-RESOURCE-01 implement.  
 3. **W7-329 DONE** — seed advanced NEXT to CTRL-HTTP-OTEL-RESOURCE-01; opened COMPLETE **W7-331 (#1068)**.  
 4. **W7-330 DONE** — sole CTRL-HTTP-OTEL-RESOURCE-01 shipped.
-5. **W7-331 OPEN** — PLAN-46 COMPLETE seed (**§3.C NEXT**).
+5. **W7-331 DONE** — PLAN-46 COMPLETE; seeded PLAN-47 inventory **W7-332**.
 
 ## Delivery notes (W7-330)
 
@@ -83,4 +84,4 @@ PLAN-45 sole ranked row (**CTRL-LOG-OTEL-CORRELATE-01**) is **DONE**. No further
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-331 (#1068)** — Seed next after CTRL-HTTP-OTEL-RESOURCE-01 (PLAN-46 COMPLETE).
+**§3.C NEXT = W7-332 (#1071)** — PLAN-47 Inventory Controller gRPC message-size / transport limits after PLAN-46.
