@@ -1,7 +1,7 @@
 # PLAN-42 — Controller HTTP liveness/readiness probes (beyond gRPC health)
 
 **Date:** 2026-09-17 (inventory **DONE** @ `ad3718cb`)  
-**Status:** Inventory **DONE** (W7-312); seed **W7-313 (#1032) DONE**; implement **W7-314 (#1034) DONE**; COMPLETE **W7-315 (#1036) OPEN** (**§3.C NEXT**); predecessor **PLAN-41 COMPLETE**  
+**Status:** **PLAN-42 COMPLETE** — Inventory **DONE** (W7-312); seed **W7-313 (#1032) DONE**; implement **W7-314 (#1034) DONE**; COMPLETE seed **W7-315 (#1036) DONE**; successor **PLAN-43** inventory **W7-316 (#1039) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-312 / PLAN-42 #1031](https://github.com/sesquicadaver/MTDirector/issues/1031) **DONE**  
 **Predecessor:** PLAN-41 Release signing crypto **COMPLETE** (QG-SIGN-02)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
@@ -56,6 +56,10 @@ Product §3 never waits on GNS3.
 
 PLAN-41 sole ranked row (**QG-SIGN-02**) is **DONE**. No further PLAN-41 product rows. Packaging host-unit polish remains saturated.
 
+## Adjacent residuals (seeded as PLAN-42 COMPLETE / PLAN-43)
+
+- Controller metrics / OpenTelemetry beyond HTTP health — **PLAN-43** [`plan-43-controller-http-metrics-otel.md`](plan-43-controller-http-metrics-otel.md)
+
 ## Adjacent residuals (not seeded here)
 
 - Unnamed TabControl containers — deferred vanity  
@@ -63,7 +67,6 @@ PLAN-41 sole ranked row (**QG-SIGN-02**) is **DONE**. No further PLAN-41 product
 - Native MSI / AppImage / self-contained publish default — W7-22 lock  
 - Mandatory org-key CI signing on every GitHub Release — future ops (QG-SIGN-02 opt-in already shipped)  
 - systemd Type=notify/WatchdogSec — deferred packaging polish  
-- Full OpenTelemetry/metrics stack — deferred (after probes, not higher than HTTP health)  
 - Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates
 
 ## §3.C ordering
@@ -72,8 +75,8 @@ PLAN-41 sole ranked row (**QG-SIGN-02**) is **DONE**. No further PLAN-41 product
 2. **W7-312 DONE** — PLAN-42 inventory; opened **W7-314 (#1034)** CTRL-HTTP-HEALTH-01 implement.  
 3. **W7-313 DONE** — seed advanced NEXT to CTRL-HTTP-HEALTH-01; opened COMPLETE **W7-315 (#1036)**.  
 4. **W7-314 DONE** — sole CTRL-HTTP-HEALTH-01 shipped (HTTP live/ready + docs/Living Spec).
-5. **W7-315 OPEN** — PLAN-42 COMPLETE seed (**§3.C NEXT**).
+5. **W7-315 DONE** — PLAN-42 COMPLETE; seeded PLAN-43 inventory **W7-316**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-315 (#1036)** — Seed next after CTRL-HTTP-HEALTH-01 (PLAN-42 COMPLETE).
+**§3.C NEXT = W7-316 (#1039)** — PLAN-43 Inventory Controller metrics/OpenTelemetry after PLAN-42.

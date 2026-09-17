@@ -1,5 +1,5 @@
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Mfc.Infrastructure.Persistence;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Mfc.Controller;
 
