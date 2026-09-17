@@ -3805,6 +3805,15 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7321"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~CtrlHttpOtelTrace01ControllerTracingLivingSpecTests"`.
 
+## Living Specification — Product tranche seed PLAN-45 after PLAN-44 COMPLETE (W7-323)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks PLAN-45 inventory as §3.C NEXT | known-limitations, ROADMAP, plan-44/45, continuous-queue | `ProductTrancheSeedW7323LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan45AfterPlan44Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7323"`.
+
+
 
 
 ## Living Specification — QG-SIGN-02 opt-in release signing crypto gate (W7-310)
