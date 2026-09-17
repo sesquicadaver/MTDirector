@@ -28,33 +28,33 @@ public sealed class ProductTrancheSeedW7345LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-346 | [#1098](https://github.com/sesquicadaver/MTDirector/issues/1098) | CTRL-KESTREL-MINRATE-01 — Disable Kestrel MinRequest/ResponseDataRate for quiet Watch streams | **OPEN**",
+            "W7-346 | [#1098](https://github.com/sesquicadaver/MTDirector/issues/1098) | CTRL-KESTREL-MINRATE-01 — Disable Kestrel MinRequest/ResponseDataRate for quiet Watch streams | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-347 | [#1099](https://github.com/sesquicadaver/MTDirector/issues/1099) | Seed next after CTRL-KESTREL-MINRATE-01 (PLAN-50 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-346 (#1098)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-347 (#1099)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-345", plan, StringComparison.Ordinal);
         Assert.Contains("W7-346", plan, StringComparison.Ordinal);
         Assert.Contains("W7-347", plan, StringComparison.Ordinal);
         Assert.Contains("CTRL-KESTREL-MINRATE-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-346 (#1098)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-347 (#1099)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-345 (#1096) DONE", plan50, StringComparison.Ordinal);
         Assert.Contains("CTRL-KESTREL-MINRATE-01", plan50, StringComparison.Ordinal);
         Assert.Contains("W7-346", plan50, StringComparison.Ordinal);
         Assert.Contains("W7-347", plan50, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-346 (#1098)", plan50, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-347 (#1099)", plan50, StringComparison.Ordinal);
 
-        // MINRATE-01 not yet shipped after this seed.
+        // MINRATE-01 shipped after this seed.
         Assert.Contains("ConfigureKestrel", program, StringComparison.Ordinal);
         Assert.Contains("KeepAlivePingDelay = GrpcHttp2KeepAlive.PingDelay", program, StringComparison.Ordinal);
         Assert.Contains("MaxRequestBodySize = GrpcTransportLimits.MaxMessageBytes", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("MinResponseDataRate", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("MinRequestBodyDataRate", program, StringComparison.Ordinal);
+        Assert.Contains("MinResponseDataRate = null", program, StringComparison.Ordinal);
+        Assert.Contains("MinRequestBodyDataRate = null", program, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

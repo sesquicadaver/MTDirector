@@ -3948,6 +3948,15 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7341"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~CtrlGrpcKeepalive01ControllerDesktopHttp2Keepalive"`.
 
+## Living Specification — CTRL-KESTREL-MINRATE-01 (W7-346)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| Kestrel MinRequest/ResponseDataRate = null | Program.cs ConfigureKestrel, installation, controller-configuration | `CtrlKestrelMinrate01ControllerMinDataRateLivingSpecTests.Ac1KestrelMinRequestAndResponseDataRatesDisabled` |
+| Docs + queue lock MINRATE-01 | testing.md, known-limitations, ROADMAP, plan-50 | `CtrlKestrelMinrate01ControllerMinDataRateLivingSpecTests.Ac2DocsAndQueueLockNullMinDataRatePolicy` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~CtrlKestrelMinrate01ControllerMinDataRate"`.
+
 ## Living Specification — Seed CTRL-KESTREL-MINRATE-01 as §3.C NEXT (W7-345)
 
 | Requirement | Artifact | Test |

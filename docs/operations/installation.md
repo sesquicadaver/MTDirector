@@ -32,6 +32,8 @@ See also [`prerequisite-checklist.md`](prerequisite-checklist.md) for RouterOS d
 10. Kestrel request-body limit (CTRL-KESTREL-BODY-01): Controller `ConfigureKestrel` sets **Limits.MaxRequestBodySize** to the same `GrpcTransportLimits.MaxMessageBytes` (**256 MiB** / **268435456**), so the ASP.NET Core default (~30 MiB) cannot reject large snapshot/diff RPCs before gRPC framing. Finite fail-closed — never unlimited / `null`. MSGSIZE/health/metrics/tracing/correlation/resource unchanged.
 11. gRPC HTTP/2 keepalive (CTRL-GRPC-KEEPALIVE-01): Controller Kestrel `Limits.Http2.KeepAlivePingDelay` / `KeepAlivePingTimeout` and Desktop `SocketsHttpHandler` use shared `GrpcHttp2KeepAlive` (**60s** / **30s**). Finite fail-closed — never `TimeSpan.MaxValue` / `InfiniteTimeSpan` (ASP.NET / Sockets defaults that disable PING). Keeps long-lived Capture/Deployment/Onboarding Watch streams alive through idle NAT/LB. MSGSIZE/BODY/health/metrics/tracing/correlation/resource unchanged.
 
+12. Kestrel min data-rate (CTRL-KESTREL-MINRATE-01): Controller `ConfigureKestrel` sets **Limits.MinRequestBodyDataRate** and **Limits.MinResponseDataRate** to **null** (disabled). Quiet Capture/Deployment/Onboarding Watch server-streams are not killed by ASP.NET Core defaults (240 B/s + 5s grace). HTTP/2 PING does not count as response-body bytes. MSGSIZE/BODY/KEEPALIVE/health/metrics/tracing/correlation/resource unchanged.
+
 ### Linux systemd (OPS-HOST-SYSTEMD-01)
 
 Framework-dependent Controller can run under systemd using the repo template [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service) (also bundled into publish tree, OPS-HOST-BUNDLE-01) (matches `package-controller.sh` layout: `/opt/mfc/controller/Mfc.Controller`).

@@ -42,34 +42,34 @@ public sealed class ProductTrancheSeedW7343LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-346 | [#1098](https://github.com/sesquicadaver/MTDirector/issues/1098) | CTRL-KESTREL-MINRATE-01 — Disable Kestrel MinRequest/ResponseDataRate for quiet Watch streams | **OPEN**",
+            "W7-346 | [#1098](https://github.com/sesquicadaver/MTDirector/issues/1098) | CTRL-KESTREL-MINRATE-01 — Disable Kestrel MinRequest/ResponseDataRate for quiet Watch streams | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-346 (#1098)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-347 (#1099)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-49 COMPLETE", plan49, StringComparison.Ordinal);
         Assert.Contains("W7-343 (#1092) DONE", plan49, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-346 (#1098)", plan49, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-347 (#1099)", plan49, StringComparison.Ordinal);
         Assert.Contains("plan-50-controller-kestrel-min-data-rate.md", plan49, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-50", plan, StringComparison.Ordinal);
         Assert.Contains("W7-344", plan, StringComparison.Ordinal);
         Assert.Contains("W7-343 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-346 (#1098)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-347 (#1099)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-50-controller-kestrel-min-data-rate.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("CTRL-KESTREL-MINRATE-01", plan50, StringComparison.Ordinal);
         Assert.Contains("Inventory **DONE**", plan50, StringComparison.Ordinal);
         Assert.Contains("W7-344", plan50, StringComparison.Ordinal);
         Assert.Contains("W7-345", plan50, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-346 (#1098)", plan50, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-347 (#1099)", plan50, StringComparison.Ordinal);
         Assert.Contains("MinResponseDataRate", plan50, StringComparison.Ordinal);
         Assert.Contains("240 B/s", plan50, StringComparison.Ordinal);
 
         Assert.Contains("KeepAlivePingDelay = GrpcHttp2KeepAlive.PingDelay", program, StringComparison.Ordinal);
         Assert.Contains("KeepAlivePingDelay = GrpcHttp2KeepAlive.PingDelay", desktopHandler, StringComparison.Ordinal);
-        Assert.DoesNotContain("MinResponseDataRate", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("MinRequestBodyDataRate", program, StringComparison.Ordinal);
+        Assert.Contains("MinResponseDataRate = null", program, StringComparison.Ordinal);
+        Assert.Contains("MinRequestBodyDataRate = null", program, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

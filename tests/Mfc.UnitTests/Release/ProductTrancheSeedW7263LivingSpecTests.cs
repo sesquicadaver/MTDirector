@@ -35,17 +35,17 @@ public sealed class ProductTrancheSeedW7263LivingSpecTests
             "W7-265 | [#935](https://github.com/sesquicadaver/MTDirector/issues/935) | Seed next PLAN-31 row after DESK-A11Y-LIST-01 → DESK-A11Y-RO-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-346 (#1098)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-347 (#1099)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-263 (#932) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-264", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-LIST-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-346 (#1098)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-347 (#1099)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-263 (#932) DONE", plan31, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-LIST-01", plan31, StringComparison.Ordinal);
         Assert.Contains("W7-264", plan31, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-346 (#1098)", plan31, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-347 (#1099)", plan31, StringComparison.Ordinal);
         Assert.Contains("W7-265", plan31, StringComparison.Ordinal);
     }
 
