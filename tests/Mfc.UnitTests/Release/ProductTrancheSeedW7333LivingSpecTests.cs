@@ -45,26 +45,26 @@ public sealed class ProductTrancheSeedW7333LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-338 | [#1082](https://github.com/sesquicadaver/MTDirector/issues/1082) | CTRL-KESTREL-BODY-01 — Align Kestrel MaxRequestBodySize with GrpcTransportLimits (256 MiB) | **OPEN**",
+            "W7-338 | [#1082](https://github.com/sesquicadaver/MTDirector/issues/1082) | CTRL-KESTREL-BODY-01 — Align Kestrel MaxRequestBodySize with GrpcTransportLimits (256 MiB) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-339 | [#1084](https://github.com/sesquicadaver/MTDirector/issues/1084) | Seed next after CTRL-KESTREL-BODY-01 (PLAN-48 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-338 (#1082)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-339 (#1084)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-333", plan, StringComparison.Ordinal);
         Assert.Contains("W7-334", plan, StringComparison.Ordinal);
         Assert.Contains("W7-335", plan, StringComparison.Ordinal);
         Assert.Contains("CTRL-GRPC-MSGSIZE-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-338 (#1082)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-333 (#1072) DONE", plan47, StringComparison.Ordinal);
         Assert.Contains("CTRL-GRPC-MSGSIZE-01", plan47, StringComparison.Ordinal);
         Assert.Contains("W7-334", plan47, StringComparison.Ordinal);
         Assert.Contains("W7-335", plan47, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-338 (#1082)", plan47, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan47, StringComparison.Ordinal);
 
         // Seed does not implement message-size.
         Assert.Contains("AddGrpc(options =>", program, StringComparison.Ordinal);

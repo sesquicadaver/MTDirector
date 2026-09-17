@@ -35,7 +35,7 @@ public sealed class Plan41ReleaseSigningCryptoGpgSigstoreW7308LivingSpecTests
         Assert.Contains("opt-in", plan41, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("org secrets on every PR", plan41, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("no-org-secrets-on-every-PR", plan41, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-338 (#1082)", plan41, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan41, StringComparison.Ordinal);
         Assert.Contains("generate-sbom-and-checksums.sh", plan41, StringComparison.Ordinal);
         Assert.Contains("QgSign01", plan41, StringComparison.Ordinal);
         Assert.Contains("ci.yml", plan41, StringComparison.Ordinal);
@@ -62,7 +62,7 @@ public sealed class Plan41ReleaseSigningCryptoGpgSigstoreW7308LivingSpecTests
             "W7-311 | [#1028](https://github.com/sesquicadaver/MTDirector/issues/1028) | Seed next after QG-SIGN-02 (PLAN-41 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-338 (#1082)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-339 (#1084)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-309", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-310", continuous, StringComparison.Ordinal);

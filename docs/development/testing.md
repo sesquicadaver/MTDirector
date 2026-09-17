@@ -3906,6 +3906,15 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan48ControllerKestrelRequest
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7337"`.
 
+## Living Specification — CTRL-KESTREL-BODY-01 (W7-338)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| Kestrel MaxRequestBodySize = GrpcTransportLimits.MaxMessageBytes | Program.cs ConfigureKestrel, installation, controller-configuration | `CtrlKestrelBody01ControllerRequestBodySizeLivingSpecTests.Ac1KestrelMaxRequestBodySizeAlignedWithGrpcTransportLimits` |
+| Docs + queue lock BODY-01 | testing.md, known-limitations, ROADMAP, plan-48 | `CtrlKestrelBody01ControllerRequestBodySizeLivingSpecTests.Ac2DocsAndQueueLockKestrelBodyLimit` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~CtrlKestrelBody01ControllerRequestBodySize"`.
+
 ## Living Specification — Product tranche seed CTRL-LOG-OTEL-CORRELATE-01 after PLAN-45 inventory (W7-325)
 
 | Requirement | Artifact | Test |

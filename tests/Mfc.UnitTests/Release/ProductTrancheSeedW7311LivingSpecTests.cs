@@ -40,17 +40,17 @@ public sealed class ProductTrancheSeedW7311LivingSpecTests
             "W7-313 | [#1032](https://github.com/sesquicadaver/MTDirector/issues/1032) | Seed first PLAN-42 atomic row after inventory → CTRL-HTTP-HEALTH-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-338 (#1082)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-339 (#1084)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-41 COMPLETE", plan41, StringComparison.Ordinal);
         Assert.Contains("W7-311 (#1028) DONE", plan41, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-338 (#1082)", plan41, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan41, StringComparison.Ordinal);
         Assert.Contains("plan-42-controller-http-health-probes.md", plan41, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-42", plan, StringComparison.Ordinal);
         Assert.Contains("W7-312", plan, StringComparison.Ordinal);
         Assert.Contains("W7-311 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-338 (#1082)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-42-controller-http-health-probes.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("CTRL-HTTP-HEALTH-01", plan42, StringComparison.Ordinal);
@@ -58,7 +58,7 @@ public sealed class ProductTrancheSeedW7311LivingSpecTests
         Assert.Contains("W7-312", plan42, StringComparison.Ordinal);
         Assert.Contains("W7-313", plan42, StringComparison.Ordinal);
         Assert.Contains("W7-314", plan42, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-338 (#1082)", plan42, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan42, StringComparison.Ordinal);
         Assert.Contains("MapGrpcHealthChecksService", plan42, StringComparison.Ordinal);
         Assert.Contains("ad3718cb", plan42, StringComparison.Ordinal);
 

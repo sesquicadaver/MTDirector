@@ -167,6 +167,11 @@ public static class Program
 
         builder.WebHost.ConfigureKestrel(kestrel =>
         {
+            // CTRL-KESTREL-BODY-01: raise host MaxRequestBodySize to the same finite ceiling as
+            // GrpcTransportLimits.MaxMessageBytes (256 MiB). ASP.NET Core default (~30 MiB) would
+            // reject large snapshot/diff RPCs before gRPC framing — never unlimited / null.
+            kestrel.Limits.MaxRequestBodySize = GrpcTransportLimits.MaxMessageBytes;
+
             // HTTPS: ALPN negotiates h2 vs HTTP/1.1 (classic curl probes).
             // Cleartext http://: Http2-only — h2c prior-knowledge for gRPC; Http1AndHttp2 on
             // cleartext rejects HTTP/2 with HTTP_1_1_REQUIRED.

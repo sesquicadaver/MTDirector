@@ -36,7 +36,7 @@ public sealed class Plan48ControllerKestrelRequestBodyLimitsW7336LivingSpecTests
         Assert.Contains("GrpcTransportLimits.MaxMessageBytes", plan48, StringComparison.Ordinal);
         Assert.Contains("256 MiB", plan48, StringComparison.Ordinal);
         Assert.Contains("268435456", plan48, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-338 (#1082)", plan48, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan48, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-336 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-KESTREL-BODY-01", limitations, StringComparison.Ordinal);
@@ -53,14 +53,14 @@ public sealed class Plan48ControllerKestrelRequestBodyLimitsW7336LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-338 | [#1082](https://github.com/sesquicadaver/MTDirector/issues/1082) | CTRL-KESTREL-BODY-01 — Align Kestrel MaxRequestBodySize with GrpcTransportLimits (256 MiB) | **OPEN**",
+            "W7-338 | [#1082](https://github.com/sesquicadaver/MTDirector/issues/1082) | CTRL-KESTREL-BODY-01 — Align Kestrel MaxRequestBodySize with GrpcTransportLimits (256 MiB) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-339 | [#1084](https://github.com/sesquicadaver/MTDirector/issues/1084) | Seed next after CTRL-KESTREL-BODY-01 (PLAN-48 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-338 (#1082)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-339 (#1084)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-337", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-338", continuous, StringComparison.Ordinal);
@@ -69,9 +69,9 @@ public sealed class Plan48ControllerKestrelRequestBodyLimitsW7336LivingSpecTests
         Assert.Contains("plan-48-controller-kestrel-request-body-limits.md", docsIndex, StringComparison.Ordinal);
         Assert.Contains("Plan48ControllerKestrelRequestBodyLimitsW7336", testing, StringComparison.Ordinal);
 
-        // Evidence surfaces remain present (inventory does not implement MaxRequestBodySize yet).
+        // BODY-01 shipped: MaxRequestBodySize aligned with GrpcTransportLimits.
         Assert.Contains("ConfigureKestrel", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("MaxRequestBodySize", program, StringComparison.Ordinal);
+        Assert.Contains("MaxRequestBodySize = GrpcTransportLimits.MaxMessageBytes", program, StringComparison.Ordinal);
         Assert.Contains("MaxMessageBytes = 256 * 1024 * 1024", contracts, StringComparison.Ordinal);
         Assert.Contains("MaxReceiveMessageSize = GrpcTransportLimits.MaxMessageBytes", program, StringComparison.Ordinal);
         Assert.Contains("controller-configuration.md", installation, StringComparison.Ordinal);
