@@ -3821,6 +3821,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7323"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan45ControllerLogTraceCorrelationW7324"`.
 
+## Living Specification — Product tranche seed CTRL-LOG-OTEL-CORRELATE-01 after PLAN-45 inventory (W7-325)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks CTRL-LOG-OTEL-CORRELATE-01 as §3.C NEXT | known-limitations, ROADMAP, plan-45, continuous-queue | `ProductTrancheSeedW7325LivingSpecTests.Ac1KnownLimitationsAndQueueSeedCtrlLogOtelCorrelate01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7325"`.
+
 
 
 

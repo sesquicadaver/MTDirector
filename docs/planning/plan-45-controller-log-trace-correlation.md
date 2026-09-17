@@ -1,7 +1,7 @@
 # PLAN-45 — Controller log↔trace correlation after OpenTelemetry tracing
 
 **Date:** 2026-09-17 (inventory **DONE** @ `2da9d508`)  
-**Status:** Inventory **DONE** (W7-324); seed **W7-325 (#1056) OPEN** (**§3.C NEXT**); implement **W7-326 (#1058) OPEN**; predecessor **PLAN-44 COMPLETE**  
+**Status:** Inventory **DONE** (W7-324); seed **W7-325 (#1056) DONE**; implement **W7-326 (#1058) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-327 (#1060) OPEN**; predecessor **PLAN-44 COMPLETE**  
 **PLAN issue / queue:** [W7-324 / PLAN-45 #1055](https://github.com/sesquicadaver/MTDirector/issues/1055) **DONE**  
 **Predecessor:** PLAN-44 Controller OpenTelemetry tracing **COMPLETE** (CTRL-HTTP-OTEL-TRACE-01)  
 **Normative files:** [`RedactingJsonConsoleLoggerProvider.cs`](../../src/Mfc.Infrastructure/Persistence/Logging/RedactingJsonConsoleLoggerProvider.cs), [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
@@ -50,9 +50,9 @@ Splitting console vs JSON enrichment or inventing a second logging backend would
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-LOG-OTEL-CORRELATE-01** | Author minimal correct TraceId/SpanId enrichment on redacted JSON console logs (+ docs/Living Spec) alongside existing health/metrics/tracing; keep MSI/AppImage locked | Logger without Activity fields @ `2da9d508` | implement **W7-326 (#1058)** after seed **W7-325 (#1056)** |
+| 1 | **CTRL-LOG-OTEL-CORRELATE-01** | Author minimal correct TraceId/SpanId enrichment on redacted JSON console logs (+ docs/Living Spec) alongside existing health/metrics/tracing; keep MSI/AppImage locked | Logger without Activity fields @ `2da9d508` | implement **W7-326 (#1058)** after seed **W7-325 (#1056) DONE** |
 
-Inventory (**W7-324 DONE**) confirmed sole rank. Seed **W7-325** advances NEXT to CTRL-LOG-OTEL-CORRELATE-01 implement; COMPLETE seed opens after CORRELATE-01.
+Inventory (**W7-324 DONE**) confirmed sole rank. Seed **W7-325 DONE** advances NEXT to CTRL-LOG-OTEL-CORRELATE-01 implement; COMPLETE seed **W7-327** opens after CORRELATE-01.
 
 ## Dual track
 
@@ -74,9 +74,9 @@ PLAN-44 sole ranked row (**CTRL-HTTP-OTEL-TRACE-01**) is **DONE**. No further PL
 
 1. **PLAN-44 COMPLETE** (W7-322 CTRL-HTTP-OTEL-TRACE-01; seed **W7-323 DONE**).  
 2. **W7-324 DONE** — PLAN-45 inventory; opened **W7-326 (#1058)** CTRL-LOG-OTEL-CORRELATE-01 implement.  
-3. **W7-325 OPEN** — seed advances NEXT to CTRL-LOG-OTEL-CORRELATE-01; opens COMPLETE follow-up.  
+3. **W7-325 DONE** — seed advanced NEXT to CTRL-LOG-OTEL-CORRELATE-01; opened COMPLETE **W7-327 (#1060)**.  
 4. Execute sole CTRL-LOG-OTEL-CORRELATE-01 row atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-325 (#1056)** — Seed first PLAN-45 atomic row after inventory → CTRL-LOG-OTEL-CORRELATE-01.
+**§3.C NEXT = W7-326 (#1058)** — CTRL-LOG-OTEL-CORRELATE-01 — Enrich JSON console logs with Activity TraceId/SpanId.
