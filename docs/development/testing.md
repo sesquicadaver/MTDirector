@@ -3948,6 +3948,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7341"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~CtrlGrpcKeepalive01ControllerDesktopHttp2Keepalive"`.
 
+## Living Specification — Seed CTRL-KESTREL-MINRATE-01 as §3.C NEXT (W7-345)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks CTRL-KESTREL-MINRATE-01 as §3.C NEXT | known-limitations, ROADMAP, plan-50, continuous-queue | `ProductTrancheSeedW7345LivingSpecTests.Ac1KnownLimitationsAndQueueSeedCtrlKestrelMinrate01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
+
 ## Living Specification — PLAN-50 inventory Controller Kestrel min data-rate (W7-344)
 
 | AC | Normative surface | Living Spec test |
