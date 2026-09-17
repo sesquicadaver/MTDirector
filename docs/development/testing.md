@@ -2046,6 +2046,16 @@ Issue [#1012](https://github.com/sesquicadaver/MTDirector/issues/1012) AC → mo
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7303"`.
 
+## Living Specification — PLAN-40 Controller host journald/syslog identity inventory (W7-304)
+
+Issue [#1015](https://github.com/sesquicadaver/MTDirector/issues/1015) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-40 inventory ranks sole OPS-HOST-LOG-01 + seeds | plan-40, package-controller.sh, packaging.md, ROADMAP, known-limitations | `Plan40ControllerHostJournaldSyslogIdentityW7304LivingSpecTests.Ac1Plan40InventoryDocumentsSoleLogRankAndSeedsOpsHostLog01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan40ControllerHostJournaldSyslogIdentityW7304"`.
+
 ## Living Specification — OPS-HOST-DOC-01 Controller operator doc packaging (W7-302)
 
 Issue [#1010](https://github.com/sesquicadaver/MTDirector/issues/1010) AC → module → tests:
