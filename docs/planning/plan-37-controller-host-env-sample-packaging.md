@@ -75,4 +75,4 @@ PLAN-36 sole ranked row (**OPS-HOST-BUNDLE-01**) is **DONE**. No further PLAN-36
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-315 (#1036)** — PLAN-38 Inventory Controller host sysusers/tmpfiles packaging after PLAN-37.
+**§3.C NEXT = W7-316 (#1039)** — PLAN-38 Inventory Controller host sysusers/tmpfiles packaging after PLAN-37.

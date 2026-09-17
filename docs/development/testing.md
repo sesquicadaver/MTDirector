@@ -3737,6 +3737,15 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7313"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~CtrlHttpHealth01ControllerHttpProbesLivingSpecTests"`.
 
+## Living Specification — Product tranche seed PLAN-43 after PLAN-42 COMPLETE (W7-315)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks PLAN-43 inventory as §3.C NEXT | known-limitations, ROADMAP, plan-42/43, continuous-queue | `ProductTrancheSeedW7315LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan43AfterPlan42Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7315"`.
+
+
 
 
 
