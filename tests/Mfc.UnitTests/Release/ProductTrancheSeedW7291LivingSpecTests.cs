@@ -41,17 +41,17 @@ public sealed class ProductTrancheSeedW7291LivingSpecTests
             "W7-293 | [#992](https://github.com/sesquicadaver/MTDirector/issues/992) | Seed first PLAN-37 atomic row after inventory → OPS-HOST-ENV-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-339 (#1084)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-340 (#1087)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-36 COMPLETE", plan36, StringComparison.Ordinal);
         Assert.Contains("W7-291 (#987) DONE", plan36, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan36, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-340 (#1087)", plan36, StringComparison.Ordinal);
         Assert.Contains("plan-37-controller-host-env-sample-packaging.md", plan36, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-37", plan, StringComparison.Ordinal);
         Assert.Contains("W7-292", plan, StringComparison.Ordinal);
         Assert.Contains("W7-291 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-340 (#1087)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-37-controller-host-env-sample-packaging.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("OPS-HOST-ENV-01", plan37, StringComparison.Ordinal);
@@ -59,7 +59,7 @@ public sealed class ProductTrancheSeedW7291LivingSpecTests
         Assert.Contains("W7-292", plan37, StringComparison.Ordinal);
         Assert.Contains("W7-293", plan37, StringComparison.Ordinal);
         Assert.Contains("W7-294", plan37, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan37, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-340 (#1087)", plan37, StringComparison.Ordinal);
         Assert.Contains("mfc-controller.env.example", plan37, StringComparison.Ordinal);
         Assert.Contains("EnvironmentFile", plan37, StringComparison.Ordinal);
         Assert.Contains("05212fce", plan37, StringComparison.Ordinal);
