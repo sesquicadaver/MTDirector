@@ -2049,6 +2049,16 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7303"`.
 
 
 
+## Living Specification — Product tranche seed QG-SIGN-02 (W7-309)
+
+Issue [#1024](https://github.com/sesquicadaver/MTDirector/issues/1024) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Seed locks QG-SIGN-02 as §3.C NEXT | known-limitations, ROADMAP, plan-41, continuous-queue | `ProductTrancheSeedW7309LivingSpecTests.Ac1KnownLimitationsAndQueueSeedQgSign02AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7309"`.
+
 ## Living Specification — PLAN-41 release signing crypto inventory (W7-308)
 
 Issue [#1023](https://github.com/sesquicadaver/MTDirector/issues/1023) AC → module → tests:

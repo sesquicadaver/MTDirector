@@ -1,7 +1,7 @@
 # PLAN-41 — Release signing crypto (GPG/Sigstore beyond QG-SIGN-01)
 
 **Date:** 2026-09-17 (inventory **DONE** @ `190980c0`)  
-**Status:** Inventory **DONE** (W7-308); seed **W7-309 (#1024) OPEN** (**§3.C NEXT**); implement **W7-310 (#1026) OPEN**; predecessor **PLAN-40 COMPLETE**  
+**Status:** Inventory **DONE** (W7-308); seed **W7-309 (#1024) DONE**; implement **W7-310 (#1026) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-311 (#1028) OPEN**; predecessor **PLAN-40 COMPLETE**  
 **PLAN issue / queue:** [W7-308 / PLAN-41 #1023](https://github.com/sesquicadaver/MTDirector/issues/1023) **DONE**  
 **Predecessor:** PLAN-40 Controller host journald/syslog identity **COMPLETE** (OPS-HOST-LOG-01)  
 **Normative files:** [`RELEASE_SIGNING.md`](../release/RELEASE_SIGNING.md), [`signing-gate.md`](../development/signing-gate.md), [`generate-sbom-and-checksums.sh`](../../scripts/release/generate-sbom-and-checksums.sh), [`.github/workflows/`](../../.github/workflows/), [`QgSign01ReleaseSigningLivingSpecTests`](../../tests/Mfc.UnitTests/Documentation/QgSign01ReleaseSigningLivingSpecTests.cs)  
@@ -46,9 +46,9 @@ Absorb the highest-value **non-packaging** continuous-queue gap after PLAN-40 sh
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **QG-SIGN-02** | Author opt-in CI/release cryptographic signing gate (GPG detach-sign and/or Sigstore/cosign) + docs/Living Spec beyond QG-SIGN-01 cleartext; default PR CI stays secret-free; do not regress `SHA256SUMS`/SBOM | Future-gate docs + optional-only GPG; no cosign/Sigstore CI @ `190980c0` | implement **W7-310 (#1026)** after seed **W7-309 (#1024)** |
+| 1 | **QG-SIGN-02** | Author opt-in CI/release cryptographic signing gate (GPG detach-sign and/or Sigstore/cosign) + docs/Living Spec beyond QG-SIGN-01 cleartext; default PR CI stays secret-free; do not regress `SHA256SUMS`/SBOM | Future-gate docs + optional-only GPG; no cosign/Sigstore CI @ `190980c0` | implement **W7-310 (#1026)** after seed **W7-309 (#1024) DONE**; COMPLETE **W7-311 (#1028)** |
 
-Inventory (**W7-308 DONE**) confirmed sole rank. Seed **W7-309** advances NEXT to QG-SIGN-02 implement; COMPLETE seed opens after SIGN-02.
+Inventory (**W7-308 DONE**) confirmed sole rank. Seed **W7-309 DONE** advanced NEXT to QG-SIGN-02 implement; COMPLETE seed **W7-311** opens after SIGN-02.
 
 ## Dual track
 
@@ -71,9 +71,9 @@ PLAN-40 sole ranked row (**OPS-HOST-LOG-01**) is **DONE**. No further PLAN-40 pr
 
 1. **PLAN-40 COMPLETE** (W7-306 OPS-HOST-LOG-01; seed **W7-307 DONE**).  
 2. **W7-308 DONE** — PLAN-41 inventory; opened **W7-310 (#1026)** QG-SIGN-02 implement.  
-3. **W7-309 OPEN** — seed first PLAN-41 implement → QG-SIGN-02 (**§3.C NEXT**).  
-4. Execute sole QG-SIGN-02 row atomically; then PLAN-41 COMPLETE seed.
+3. **W7-309 DONE** — seed advanced NEXT to QG-SIGN-02; opened COMPLETE **W7-311 (#1028)**.  
+4. **W7-310 OPEN** — execute sole QG-SIGN-02 row atomically (**§3.C NEXT**); then PLAN-41 COMPLETE seed.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-309 (#1024)** — Seed first PLAN-41 atomic row after inventory → QG-SIGN-02.
+**§3.C NEXT = W7-310 (#1026)** — QG-SIGN-02 opt-in cryptographic signing gate.

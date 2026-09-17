@@ -35,7 +35,7 @@ public sealed class Plan41ReleaseSigningCryptoGpgSigstoreW7308LivingSpecTests
         Assert.Contains("opt-in", plan41, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("org secrets on every PR", plan41, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("no-org-secrets-on-every-PR", plan41, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-309 (#1024)", plan41, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-310 (#1026)", plan41, StringComparison.Ordinal);
         Assert.Contains("generate-sbom-and-checksums.sh", plan41, StringComparison.Ordinal);
         Assert.Contains("QgSign01", plan41, StringComparison.Ordinal);
         Assert.Contains("ci.yml", plan41, StringComparison.Ordinal);
@@ -51,14 +51,18 @@ public sealed class Plan41ReleaseSigningCryptoGpgSigstoreW7308LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-309 | [#1024](https://github.com/sesquicadaver/MTDirector/issues/1024) | Seed first PLAN-41 atomic row after inventory → QG-SIGN-02 | **OPEN**",
+            "W7-309 | [#1024](https://github.com/sesquicadaver/MTDirector/issues/1024) | Seed first PLAN-41 atomic row after inventory → QG-SIGN-02 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-310 | [#1026](https://github.com/sesquicadaver/MTDirector/issues/1026) | QG-SIGN-02 — Opt-in cryptographic signing gate (GPG/Sigstore) beyond QG-SIGN-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-309 (#1024)", roadmap, StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-311 | [#1028](https://github.com/sesquicadaver/MTDirector/issues/1028) | Seed next after QG-SIGN-02 (PLAN-41 COMPLETE) | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-310 (#1026)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-309", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-310", continuous, StringComparison.Ordinal);
