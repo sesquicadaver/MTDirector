@@ -1,7 +1,7 @@
 # PLAN-39 — Controller host operator doc packaging (Documentation=/usr/share/doc/mfc)
 
-**Date:** 2026-09-17 (inventory **DONE** @ `7348ba5e`; implement **DONE**)  
-**Status:** Inventory **DONE** (W7-300); seed **W7-301 (#1008) DONE**; implement **W7-302 (#1010) DONE**; COMPLETE seed **W7-303 (#1012) OPEN** (**§3.C NEXT**); predecessor **PLAN-38 COMPLETE**  
+**Date:** 2026-09-17 (inventory **DONE** @ `7348ba5e`; implement **DONE**; **COMPLETE**)  
+**Status:** **PLAN-39 COMPLETE** — Inventory **DONE** (W7-300); seed **W7-301 (#1008) DONE**; implement **W7-302 (#1010) DONE**; COMPLETE seed **W7-303 (#1012) DONE**; successor **PLAN-40** inventory **W7-304 (#1015) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-300 / PLAN-39 #1007](https://github.com/sesquicadaver/MTDirector/issues/1007) **DONE**  
 **Predecessor:** PLAN-38 Controller host sysusers/tmpfiles packaging **COMPLETE** (OPS-HOST-SYSUSERS-01)  
 **Normative files:** [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md), [`mfc-controller.service`](../../packaging/systemd/mfc-controller.service), [`installation.md`](../operations/installation.md), [`package-controller.sh`](../../scripts/release/package-controller.sh), [`packaging.md`](../release/packaging.md)  
@@ -16,7 +16,7 @@ Absorb the highest-value **product** continuous-queue packaging gap after PLAN-3
 2. Do not invent AppImage/MSI (W7-22).  
 3. Lab / CHR / `WriteEnabled` are **not** stop-gates.  
 4. Do not invent further PLAN-38 OPS-HOST-SYSUSERS product rows — that tranche is **COMPLETE**.  
-5. Inventory **confirmed** sole rank **OPS-HOST-DOC-01** — **DONE** (author packaging doc + docs + bundle into `$OUT_DIR/controller/`).  
+5. Inventory **confirmed** sole rank **OPS-HOST-DOC-01** — **DONE**.  
 6. Avoid vanity Desktop a11y (nested ListBox / unnamed TabControl).
 
 ## Out of scope (do not seed)
@@ -40,9 +40,7 @@ Absorb the highest-value **product** continuous-queue packaging gap after PLAN-3
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **OPS-HOST-DOC-01** | Author `packaging/doc/mfc/README.md` + docs/Living Spec **and** bundle into `$OUT_DIR/controller/README.md` via `package-controller.sh` (install sketch → `/usr/share/doc/mfc/README.md`) | Unit Documentation= + missing packaging doc @ `7348ba5e` | implement **W7-302 (#1010) DONE** |
-
-Inventory (**W7-300 DONE**) confirmed sole rank. Seed **W7-301 DONE**; implement **W7-302 DONE**; COMPLETE seed **W7-303** advances NEXT after DOC-01.
+| 1 | **OPS-HOST-DOC-01** | Author `packaging/doc/mfc/README.md` + docs/Living Spec **and** bundle into `$OUT_DIR/controller/README.md` | Unit Documentation= @ `7348ba5e` | implement **W7-302 (#1010) DONE** |
 
 ## Dual track
 
@@ -52,6 +50,10 @@ Product §3 never waits on GNS3.
 
 PLAN-38 sole ranked row (**OPS-HOST-SYSUSERS-01**) is **DONE**. No further PLAN-38 product rows.
 
+## Adjacent residuals (seeded as PLAN-39 COMPLETE / PLAN-40)
+
+- Controller host journald/syslog identity (`SyslogIdentifier`) — **PLAN-40** [`plan-40-controller-host-journald-syslog-identity.md`](plan-40-controller-host-journald-syslog-identity.md)
+
 ## Adjacent residuals (not seeded here)
 
 - Unnamed TabControl containers — deferred vanity  
@@ -59,7 +61,6 @@ PLAN-38 sole ranked row (**OPS-HOST-SYSUSERS-01**) is **DONE**. No further PLAN-
 - Native MSI / AppImage / self-contained publish default — W7-22 lock  
 - WinSW binary redistribution — not §3 (operator-supplied)  
 - Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates  
-- After PLAN-39 COMPLETE, prefer **non-packaging** product gaps (audit residuals / Desktop / Controller) — packaging tranche saturating
 
 ## §3.C ordering
 
@@ -67,8 +68,8 @@ PLAN-38 sole ranked row (**OPS-HOST-SYSUSERS-01**) is **DONE**. No further PLAN-
 2. **W7-300 DONE** — PLAN-39 inventory; opened **W7-302 (#1010)** DOC implement.  
 3. **W7-301 DONE** — seed first PLAN-39 implement → OPS-HOST-DOC-01; opened COMPLETE **W7-303 (#1012)**.  
 4. **W7-302 DONE** — sole OPS-HOST-DOC-01 shipped (doc artifact + docs + bundle).  
-5. **W7-303 OPEN** — PLAN-39 COMPLETE; seed PLAN-40.
+5. **W7-303 DONE** — PLAN-39 COMPLETE; seeded PLAN-40 inventory **W7-304**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-303 (#1012)** — Seed next after OPS-HOST-DOC-01 (PLAN-39 COMPLETE).
+**§3.C NEXT = W7-304 (#1015)** — PLAN-40 Inventory Controller host journald/syslog identity after PLAN-39.
