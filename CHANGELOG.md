@@ -9,35 +9,37 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-291** ([#987](https://github.com/sesquicadaver/MTDirector/issues/987)): Seed PLAN-36 COMPLETE → PLAN-37 Controller host env sample packaging tranche (`ProductTrancheSeedW7291LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-292** ([#991](https://github.com/sesquicadaver/MTDirector/issues/991)): PLAN-37 inventory DONE — ranked sole **OPS-HOST-ENV-01** (env.example + docs + package-controller bundle); opened **W7-294 (#994)** (`Plan37ControllerHostEnvSamplePackagingW7292LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
-- **W7-290** ([#986](https://github.com/sesquicadaver/MTDirector/issues/986)): OPS-HOST-BUNDLE-01 — `package-controller.sh` copies systemd unit + WinSW xml into `$OUT_DIR/controller/` (dry-run + publish) + packaging/HOWTO/installation docs (`OpsHostBundle01PackageControllerHostTemplatesW7290LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-291** ([#987](https://github.com/sesquicadaver/MTDirector/issues/987)): Seed PLAN-36 COMPLETE → PLAN-37 Controller host env sample packaging tranche (`ProductTrancheSeedW7291LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
-- **W7-289** ([#984](https://github.com/sesquicadaver/MTDirector/issues/984)): Seed PLAN-36 first atomic row → OPS-HOST-BUNDLE-01 as §3.C NEXT; keep **W7-290 (#986)** implement + **W7-291 (#987)** COMPLETE follow-up open (`ProductTrancheSeedW7289LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-290** ([#986](https://github.com/sesquicadaver/MTDirector/issues/986)): OPS-HOST-BUNDLE-01 — `package-controller.sh` copies systemd unit + WinSW xml into `$OUT_DIR/controller/` (dry-run + publish) + packaging/HOWTO/installation docs (`OpsHostBundle01PackageControllerHostTemplatesW7290LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
-- **W7-288** ([#983](https://github.com/sesquicadaver/MTDirector/issues/983)): PLAN-36 inventory DONE — ranked sole **OPS-HOST-BUNDLE-01**; opened **W7-290 (#986)** / **W7-291 (#987)** (`Plan36ControllerHostTemplatePublishBundlingW7288LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-289** ([#984](https://github.com/sesquicadaver/MTDirector/issues/984)): Seed PLAN-36 first atomic row → OPS-HOST-BUNDLE-01 as §3.C NEXT; keep **W7-290 (#986)** implement + **W7-291 (#987)** COMPLETE follow-up open (`ProductTrancheSeedW7289LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
-- **W7-287** ([#979](https://github.com/sesquicadaver/MTDirector/issues/979)): Seed PLAN-35 COMPLETE → PLAN-36 Controller host-template publish bundling tranche (`ProductTrancheSeedW7287LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-288** ([#983](https://github.com/sesquicadaver/MTDirector/issues/983)): PLAN-36 inventory DONE — ranked sole **OPS-HOST-BUNDLE-01**; opened **W7-290 (#986)** / **W7-291 (#987)** (`Plan36ControllerHostTemplatePublishBundlingW7288LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
-- **W7-286** ([#978](https://github.com/sesquicadaver/MTDirector/issues/978)): DESK-HOST-BUNDLE-01 — `package-desktop.sh` copies Linux `.desktop` + Windows Start Menu sketch into `$OUT_DIR/desktop/` (dry-run + publish) + packaging/HOWTO/installation docs (`DeskHostBundle01PackageDesktopLaunchTemplatesW7286LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-287** ([#979](https://github.com/sesquicadaver/MTDirector/issues/979)): Seed PLAN-35 COMPLETE → PLAN-36 Controller host-template publish bundling tranche (`ProductTrancheSeedW7287LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
-- **W7-285** ([#976](https://github.com/sesquicadaver/MTDirector/issues/976)): Seed PLAN-35 first atomic row → DESK-HOST-BUNDLE-01 as §3.C NEXT; keep **W7-286 (#978)** implement + **W7-287 (#979)** COMPLETE follow-up open (`ProductTrancheSeedW7285LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-286** ([#978](https://github.com/sesquicadaver/MTDirector/issues/978)): DESK-HOST-BUNDLE-01 — `package-desktop.sh` copies Linux `.desktop` + Windows Start Menu sketch into `$OUT_DIR/desktop/` (dry-run + publish) + packaging/HOWTO/installation docs (`DeskHostBundle01PackageDesktopLaunchTemplatesW7286LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
-- **W7-284** ([#975](https://github.com/sesquicadaver/MTDirector/issues/975)): PLAN-35 inventory DONE — ranked sole **DESK-HOST-BUNDLE-01**; opened **W7-286 (#978)** / **W7-287 (#979)** (`Plan35DesktopLaunchTemplatePublishBundlingW7284LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-285** ([#976](https://github.com/sesquicadaver/MTDirector/issues/976)): Seed PLAN-35 first atomic row → DESK-HOST-BUNDLE-01 as §3.C NEXT; keep **W7-286 (#978)** implement + **W7-287 (#979)** COMPLETE follow-up open (`ProductTrancheSeedW7285LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
-- **W7-283** ([#972](https://github.com/sesquicadaver/MTDirector/issues/972)): Seed PLAN-34 COMPLETE → PLAN-35 Desktop launch-template publish bundling tranche (`ProductTrancheSeedW7283LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-284** ([#975](https://github.com/sesquicadaver/MTDirector/issues/975)): PLAN-35 inventory DONE — ranked sole **DESK-HOST-BUNDLE-01**; opened **W7-286 (#978)** / **W7-287 (#979)** (`Plan35DesktopLaunchTemplatePublishBundlingW7284LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
-- **W7-282** ([#971](https://github.com/sesquicadaver/MTDirector/issues/971)): DESK-HOST-WIN-01 — Windows Start Menu shortcut sketch `packaging/windows/mfc-desktop-start-menu.ps1` for framework-dependent Desktop + HOWTO/installation/packaging docs (`DeskHostWin01StartMenuSketchW7282LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-283** ([#972](https://github.com/sesquicadaver/MTDirector/issues/972)): Seed PLAN-34 COMPLETE → PLAN-35 Desktop launch-template publish bundling tranche (`ProductTrancheSeedW7283LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
-- **W7-281** ([#967](https://github.com/sesquicadaver/MTDirector/issues/967)): Seed PLAN-34 next atomic row → DESK-HOST-WIN-01 as §3.C NEXT; opened **W7-282 (#971)** implement + **W7-283 (#972)** PLAN-34 COMPLETE follow-up (`ProductTrancheSeedW7281LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-282** ([#971](https://github.com/sesquicadaver/MTDirector/issues/971)): DESK-HOST-WIN-01 — Windows Start Menu shortcut sketch `packaging/windows/mfc-desktop-start-menu.ps1` for framework-dependent Desktop + HOWTO/installation/packaging docs (`DeskHostWin01StartMenuSketchW7282LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
-- **W7-280** ([#966](https://github.com/sesquicadaver/MTDirector/issues/966)): DESK-HOST-LINUX-01 — freedesktop `.desktop` template `packaging/linux/mfc-desktop.desktop` for framework-dependent Desktop + HOWTO/installation/packaging docs (`DeskHostLinux01DesktopEntryW7280LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-281** ([#967](https://github.com/sesquicadaver/MTDirector/issues/967)): Seed PLAN-34 next atomic row → DESK-HOST-WIN-01 as §3.C NEXT; opened **W7-282 (#971)** implement + **W7-283 (#972)** PLAN-34 COMPLETE follow-up (`ProductTrancheSeedW7281LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
-- **W7-279** ([#964](https://github.com/sesquicadaver/MTDirector/issues/964)): Seed PLAN-34 first atomic row → DESK-HOST-LINUX-01 as §3.C NEXT; keep **W7-280 (#966)** implement + **W7-281 (#967)** WIN follow-up open (`ProductTrancheSeedW7279LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-280** ([#966](https://github.com/sesquicadaver/MTDirector/issues/966)): DESK-HOST-LINUX-01 — freedesktop `.desktop` template `packaging/linux/mfc-desktop.desktop` for framework-dependent Desktop + HOWTO/installation/packaging docs (`DeskHostLinux01DesktopEntryW7280LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
-- **W7-278** ([#963](https://github.com/sesquicadaver/MTDirector/issues/963)): PLAN-34 inventory DONE — ranked **DESK-HOST-LINUX-01** / **DESK-HOST-WIN-01**; opened **W7-280 (#966)** / **W7-281 (#967)** (`Plan34DesktopOperatorLaunchPackagingW7278LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-279** ([#964](https://github.com/sesquicadaver/MTDirector/issues/964)): Seed PLAN-34 first atomic row → DESK-HOST-LINUX-01 as §3.C NEXT; keep **W7-280 (#966)** implement + **W7-281 (#967)** WIN follow-up open (`ProductTrancheSeedW7279LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
-- **W7-277** ([#959](https://github.com/sesquicadaver/MTDirector/issues/959)): Seed PLAN-33 COMPLETE → PLAN-34 Desktop operator launch packaging templates tranche (`ProductTrancheSeedW7277LivingSpecTests`). **§3.C NEXT = W7-292 (#991)**.
+- **W7-278** ([#963](https://github.com/sesquicadaver/MTDirector/issues/963)): PLAN-34 inventory DONE — ranked **DESK-HOST-LINUX-01** / **DESK-HOST-WIN-01**; opened **W7-280 (#966)** / **W7-281 (#967)** (`Plan34DesktopOperatorLaunchPackagingW7278LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
+
+- **W7-277** ([#959](https://github.com/sesquicadaver/MTDirector/issues/959)): Seed PLAN-33 COMPLETE → PLAN-34 Desktop operator launch packaging templates tranche (`ProductTrancheSeedW7277LivingSpecTests`). **§3.C NEXT = W7-293 (#992)**.
 
 - **W7-276** ([#958](https://github.com/sesquicadaver/MTDirector/issues/958)): DESK-A11Y-TREE-01 — Inventory TreeView exposes `AutomationProperties.Name="Inventory"` (`DesktopInventoryTreeViewAutomationLivingSpecTests`). **§3.C NEXT was W7-277 (#959)** (advanced by W7-277).
 

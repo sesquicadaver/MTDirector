@@ -2036,6 +2036,16 @@ Issue [#976](https://github.com/sesquicadaver/MTDirector/issues/976) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7285"`.
 
+## Living Specification — PLAN-37 Controller host env sample packaging inventory (W7-292)
+
+Issue [#991](https://github.com/sesquicadaver/MTDirector/issues/991) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-37 inventory ranks sole OPS-HOST-ENV-01 + seeds | plan-37, package-controller.sh, packaging.md, ROADMAP, known-limitations | `Plan37ControllerHostEnvSamplePackagingW7292LivingSpecTests.Ac1Plan37InventoryDocumentsSoleEnvRankAndSeedsOpsHostEnv01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan37ControllerHostEnvSamplePackagingW7292"`.
+
 ## Living Specification — Product tranche seed PLAN-37 after PLAN-36 COMPLETE (W7-291)
 
 Issue [#987](https://github.com/sesquicadaver/MTDirector/issues/987) AC → module → tests:
