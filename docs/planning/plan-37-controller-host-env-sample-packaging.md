@@ -1,7 +1,7 @@
 # PLAN-37 — Controller host env sample packaging (EnvironmentFile / controller.env.example)
 
 **Date:** 2026-09-17 (inventory **DONE** @ `05212fce`)  
-**Status:** Inventory **DONE** (W7-292); seed **W7-293 (#992) DONE**; implement **W7-294 (#994) DONE**; COMPLETE seed **W7-295 (#996) OPEN**; predecessor **PLAN-36 COMPLETE**  
+**Status:** **PLAN-37 COMPLETE** — Inventory **DONE** (W7-292); seed **W7-293 (#992) DONE**; implement **W7-294 (#994) DONE**; COMPLETE seed **W7-295 (#996) DONE**; successor **PLAN-38** inventory **W7-296 (#999) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-292 / PLAN-37 #991](https://github.com/sesquicadaver/MTDirector/issues/991) **DONE**  
 **Predecessor:** PLAN-36 Controller host-template publish bundling **COMPLETE** (OPS-HOST-BUNDLE-01)  
 **Normative files:** [`mfc-controller.service`](../../packaging/systemd/mfc-controller.service), [`installation.md`](../operations/installation.md), [`controller-configuration.md`](../operations/controller-configuration.md), [`package-controller.sh`](../../scripts/release/package-controller.sh), [`packaging.md`](../release/packaging.md)  
@@ -53,6 +53,10 @@ Product §3 never waits on GNS3.
 
 PLAN-36 sole ranked row (**OPS-HOST-BUNDLE-01**) is **DONE**. No further PLAN-36 product rows.
 
+## Adjacent residuals (seeded as PLAN-37 COMPLETE / PLAN-38)
+
+- Controller host sysusers/tmpfiles packaging (`mfc` user + `/etc/mfc` + `/var/lib/mfc`) — **PLAN-38** [`plan-38-controller-host-sysusers-tmpfiles-packaging.md`](plan-38-controller-host-sysusers-tmpfiles-packaging.md)
+
 ## Adjacent residuals (not seeded here)
 
 - Unnamed TabControl containers — deferred vanity  
@@ -66,8 +70,9 @@ PLAN-36 sole ranked row (**OPS-HOST-BUNDLE-01**) is **DONE**. No further PLAN-36
 1. **PLAN-36 COMPLETE** (W7-290 OPS-HOST-BUNDLE-01; seed **W7-291 DONE**).  
 2. **W7-292 DONE** — PLAN-37 inventory; opened **W7-294 (#994)** ENV implement.  
 3. **W7-293 DONE** — seed first PLAN-37 implement → OPS-HOST-ENV-01; opened COMPLETE **W7-295 (#996)**.  
-4. **W7-294 DONE** — sole OPS-HOST-ENV-01 shipped; then W7-295 → PLAN-38.
+4. **W7-294 DONE** — sole OPS-HOST-ENV-01 shipped.
+5. **W7-295 DONE** — PLAN-37 COMPLETE; seeded PLAN-38 inventory **W7-296**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-295 (#996)** — Seed next after OPS-HOST-ENV-01 (PLAN-37 COMPLETE).
+**§3.C NEXT = W7-296 (#999)** — PLAN-38 Inventory Controller host sysusers/tmpfiles packaging after PLAN-37.
