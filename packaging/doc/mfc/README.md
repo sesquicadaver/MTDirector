@@ -40,3 +40,12 @@ See also: `docs/operations/installation.md`, `docs/howto/build-and-run.md`, `doc
 
 - Native MSI / AppImage (W7-22 lock).
 - Secrets — never put production credentials in this README.
+
+## Logs (OPS-HOST-LOG-01)
+
+The systemd unit sets `SyslogIdentifier=mfc-controller` with stdout/stderr to the journal. Filter with:
+
+```bash
+journalctl -u mfc-controller.service -e
+journalctl -t mfc-controller -e
+```

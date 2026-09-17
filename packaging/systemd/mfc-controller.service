@@ -18,6 +18,7 @@
 #   sudo cp packaging/systemd/mfc-controller.env.example /etc/mfc/controller.env   # OPS-HOST-ENV-01
 #   sudoedit /etc/mfc/controller.env   # MFC__Database__ConnectionString, TLS, …
 #   sudo systemctl daemon-reload && sudo systemctl enable --now mfc-controller.service
+#   # OPS-HOST-LOG-01 — filter logs: journalctl -u mfc-controller.service  /  journalctl -t mfc-controller
 #
 # Do not invent MSI/AppImage here (W7-22 lock). Windows Service is OPS-HOST-WINSVC-01.
 
@@ -34,6 +35,10 @@ Group=mfc
 WorkingDirectory=/opt/mfc/controller
 ExecStart=/opt/mfc/controller/Mfc.Controller
 EnvironmentFile=-/etc/mfc/controller.env
+# OPS-HOST-LOG-01 — stable journald/syslog identity for operator filtering.
+SyslogIdentifier=mfc-controller
+StandardOutput=journal
+StandardError=journal
 # KillSignal matches ASP.NET Core graceful shutdown; TimeoutStopSec aligns with Grpc:ShutdownTimeoutSeconds upper bound operators typically use.
 KillSignal=SIGINT
 TimeoutStopSec=60
