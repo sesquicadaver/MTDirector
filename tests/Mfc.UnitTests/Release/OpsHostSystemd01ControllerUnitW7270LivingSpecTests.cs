@@ -53,7 +53,7 @@ public sealed class OpsHostSystemd01ControllerUnitW7270LivingSpecTests
             "W7-270 | [#946](https://github.com/sesquicadaver/MTDirector/issues/946) | OPS-HOST-SYSTEMD-01 — systemd unit template for framework-dependent Controller | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-300 (#1007)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-301 (#1008)", roadmap, StringComparison.Ordinal);
         Assert.Contains("OpsHostSystemd01ControllerUnitW7270", testing, StringComparison.Ordinal);
     }
 
