@@ -1,7 +1,7 @@
 # PLAN-45 — Controller log↔trace correlation after OpenTelemetry tracing
 
-**Date:** 2026-09-17 (inventory **DONE** @ `2da9d508`; CORRELATE-01 **DONE**)  
-**Status:** Inventory **DONE** (W7-324); seed **W7-325 (#1056) DONE**; implement **W7-326 (#1058) DONE**; COMPLETE seed **W7-327 (#1060) OPEN** (**§3.C NEXT**); predecessor **PLAN-44 COMPLETE**  
+**Date:** 2026-09-17 (inventory **DONE** @ `2da9d508`; **PLAN-45 COMPLETE**)  
+**Status:** **PLAN-45 COMPLETE** — Inventory **DONE** (W7-324); seed **W7-325 (#1056) DONE**; implement **W7-326 (#1058) DONE**; COMPLETE seed **W7-327 (#1060) DONE**; successor **PLAN-46** inventory **W7-328 (#1063) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-324 / PLAN-45 #1055](https://github.com/sesquicadaver/MTDirector/issues/1055) **DONE**  
 **Predecessor:** PLAN-44 Controller OpenTelemetry tracing **COMPLETE** (CTRL-HTTP-OTEL-TRACE-01)  
 **Normative files:** [`RedactingJsonConsoleLoggerProvider.cs`](../../src/Mfc.Infrastructure/Persistence/Logging/RedactingJsonConsoleLoggerProvider.cs), [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
@@ -52,7 +52,7 @@ Splitting console vs JSON enrichment or inventing a second logging backend would
 |------|----|-----|----------|-------|
 | 1 | **CTRL-LOG-OTEL-CORRELATE-01** | Author minimal correct TraceId/SpanId enrichment on redacted JSON console logs (+ docs/Living Spec) alongside existing health/metrics/tracing; keep MSI/AppImage locked | Logger without Activity fields @ `2da9d508` | implement **W7-326 (#1058) DONE** |
 
-Inventory (**W7-324 DONE**) confirmed sole rank. Seed **W7-325 DONE**; CORRELATE-01 **W7-326 DONE**; COMPLETE seed **W7-327** advances NEXT after this wave.
+Inventory (**W7-324 DONE**) confirmed sole rank. Seed **W7-325 DONE**; CORRELATE-01 **W7-326 DONE**; COMPLETE **W7-327 DONE**.
 
 ## Dual track
 
@@ -72,6 +72,7 @@ PLAN-44 sole ranked row (**CTRL-HTTP-OTEL-TRACE-01**) is **DONE**. No further PL
 - Nested ListBox item-template hosts — deferred vanity  
 - Native MSI / AppImage / self-contained publish default — W7-22 lock  
 - systemd Type=notify/WatchdogSec — deferred packaging polish  
+- Controller OTel resource identity (`service.name`) — seeded as **PLAN-46** [`plan-46-controller-otel-resource-identity.md`](plan-46-controller-otel-resource-identity.md)
 - Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates
 
 ## §3.C ordering
@@ -80,7 +81,8 @@ PLAN-44 sole ranked row (**CTRL-HTTP-OTEL-TRACE-01**) is **DONE**. No further PL
 2. **W7-324 DONE** — PLAN-45 inventory; opened **W7-326 (#1058)** CTRL-LOG-OTEL-CORRELATE-01 implement.  
 3. **W7-325 DONE** — seed advanced NEXT to CTRL-LOG-OTEL-CORRELATE-01; opened COMPLETE **W7-327 (#1060)**.  
 4. **W7-326 DONE** — sole CTRL-LOG-OTEL-CORRELATE-01 shipped.
+5. **W7-327 DONE** — PLAN-45 COMPLETE; seeded PLAN-46 inventory **W7-328**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-327 (#1060)** — Seed next after CTRL-LOG-OTEL-CORRELATE-01 (PLAN-45 COMPLETE).
+**§3.C NEXT = W7-328 (#1063)** — PLAN-46 Inventory Controller OpenTelemetry resource identity after PLAN-45.

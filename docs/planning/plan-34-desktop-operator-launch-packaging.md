@@ -73,4 +73,4 @@ PLAN-33 sole ranked row (**DESK-A11Y-TREE-01**) is **DONE**. **DESK-A11Y-TAB-01*
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-327 (#1060)** — PLAN-35 Inventory Desktop launch-template publish bundling after PLAN-34.
+**§3.C NEXT = W7-328 (#1063)** — PLAN-35 Inventory Desktop launch-template publish bundling after PLAN-34.
