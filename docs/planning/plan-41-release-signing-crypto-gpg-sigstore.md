@@ -1,7 +1,7 @@
 # PLAN-41 — Release signing crypto (GPG/Sigstore beyond QG-SIGN-01)
 
 **Date:** 2026-09-17 (inventory **DONE** @ `190980c0`)  
-**Status:** Inventory **DONE** (W7-308); seed **W7-309 (#1024) DONE**; implement **W7-310 (#1026) DONE**; COMPLETE seed **W7-311 (#1028) OPEN** (**§3.C NEXT**); predecessor **PLAN-40 COMPLETE**  
+**Status:** **PLAN-41 COMPLETE** — Inventory **DONE** (W7-308); seed **W7-309 (#1024) DONE**; implement **W7-310 (#1026) DONE**; COMPLETE seed **W7-311 (#1028) DONE**; successor **PLAN-42** inventory **W7-312 (#1031) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-308 / PLAN-41 #1023](https://github.com/sesquicadaver/MTDirector/issues/1023) **DONE**  
 **Predecessor:** PLAN-40 Controller host journald/syslog identity **COMPLETE** (OPS-HOST-LOG-01)  
 **Normative files:** [`RELEASE_SIGNING.md`](../release/RELEASE_SIGNING.md), [`signing-gate.md`](../development/signing-gate.md), [`generate-sbom-and-checksums.sh`](../../scripts/release/generate-sbom-and-checksums.sh), [`.github/workflows/`](../../.github/workflows/), [`QgSign01ReleaseSigningLivingSpecTests`](../../tests/Mfc.UnitTests/Documentation/QgSign01ReleaseSigningLivingSpecTests.cs)  
@@ -58,6 +58,10 @@ Product §3 never waits on GNS3.
 
 PLAN-40 sole ranked row (**OPS-HOST-LOG-01**) is **DONE**. No further PLAN-40 product rows. Packaging host-unit polish is saturated (WinSW already has rolled logs).
 
+## Adjacent residuals (seeded as PLAN-41 COMPLETE / PLAN-42)
+
+- Controller HTTP liveness/readiness probes beyond gRPC health — **PLAN-42** [`plan-42-controller-http-health-probes.md`](plan-42-controller-http-health-probes.md)
+
 ## Adjacent residuals (not seeded here)
 
 - Unnamed TabControl containers — deferred vanity  
@@ -73,8 +77,8 @@ PLAN-40 sole ranked row (**OPS-HOST-LOG-01**) is **DONE**. No further PLAN-40 pr
 2. **W7-308 DONE** — PLAN-41 inventory; opened **W7-310 (#1026)** QG-SIGN-02 implement.  
 3. **W7-309 DONE** — seed advanced NEXT to QG-SIGN-02; opened COMPLETE **W7-311 (#1028)**.  
 4. **W7-310 DONE** — sole QG-SIGN-02 shipped (opt-in crypto gate + docs/Living Spec).
-5. **W7-311 OPEN** — PLAN-41 COMPLETE seed (**§3.C NEXT**).
+5. **W7-311 DONE** — PLAN-41 COMPLETE; seeded PLAN-42 inventory **W7-312**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-311 (#1028)** — Seed next after QG-SIGN-02 (PLAN-41 COMPLETE).
+**§3.C NEXT = W7-312 (#1031)** — PLAN-42 Inventory Controller HTTP health probes after PLAN-41.

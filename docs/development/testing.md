@@ -3701,6 +3701,16 @@ Issue [#508](https://github.com/sesquicadaver/MTDirector/issues/508) AC → modu
 Checklist: [`livespec-matrix-gate.md`](livespec-matrix-gate.md).  
 Filter: `dotnet test --filter "FullyQualifiedName~QgLivespecMatrix01"`.
 
+## Living Specification — Product tranche seed PLAN-42 after PLAN-41 COMPLETE (W7-311)
+
+Issue [#1028](https://github.com/sesquicadaver/MTDirector/issues/1028) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Seed locks PLAN-42 inventory as §3.C NEXT | known-limitations, ROADMAP, plan-41/42, continuous-queue | `ProductTrancheSeedW7311LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan42AfterPlan41Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7311"`.
+
 ## Living Specification — QG-SIGN-02 opt-in release signing crypto gate (W7-310)
 
 Issue [#1026](https://github.com/sesquicadaver/MTDirector/issues/1026) AC → module → tests:

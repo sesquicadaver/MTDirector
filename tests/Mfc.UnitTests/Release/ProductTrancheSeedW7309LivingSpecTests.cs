@@ -33,21 +33,21 @@ public sealed class ProductTrancheSeedW7309LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-311 | [#1028](https://github.com/sesquicadaver/MTDirector/issues/1028) | Seed next after QG-SIGN-02 (PLAN-41 COMPLETE) | **OPEN**",
+            "W7-311 | [#1028](https://github.com/sesquicadaver/MTDirector/issues/1028) | Seed next after QG-SIGN-02 (PLAN-41 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-311 (#1028)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-312 (#1031)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-309", plan, StringComparison.Ordinal);
         Assert.Contains("W7-310", plan, StringComparison.Ordinal);
         Assert.Contains("QG-SIGN-02", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-311 (#1028)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-312 (#1031)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-309 (#1024) DONE", plan41, StringComparison.Ordinal);
         Assert.Contains("QG-SIGN-02", plan41, StringComparison.Ordinal);
         Assert.Contains("W7-310", plan41, StringComparison.Ordinal);
         Assert.Contains("W7-311", plan41, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-311 (#1028)", plan41, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-312 (#1031)", plan41, StringComparison.Ordinal);
 
         Assert.Contains("future", signing, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("MFC_RELEASE_GPG_KEY_ID", script, StringComparison.Ordinal);
