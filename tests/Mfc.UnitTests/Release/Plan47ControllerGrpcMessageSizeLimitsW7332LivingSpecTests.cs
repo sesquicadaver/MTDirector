@@ -38,7 +38,7 @@ public sealed class Plan47ControllerGrpcMessageSizeLimitsW7332LivingSpecTests
         Assert.Contains("RawSnapshotLimits.MaxSnapshotBytes", plan47, StringComparison.Ordinal);
         Assert.Contains("256 MiB", plan47, StringComparison.Ordinal);
         Assert.Contains("268435456", plan47, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-333 (#1072)", plan47, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-334 (#1074)", plan47, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-332 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-GRPC-MSGSIZE-01", limitations, StringComparison.Ordinal);
@@ -51,14 +51,18 @@ public sealed class Plan47ControllerGrpcMessageSizeLimitsW7332LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-333 | [#1072](https://github.com/sesquicadaver/MTDirector/issues/1072) | Seed first PLAN-47 atomic row after inventory → CTRL-GRPC-MSGSIZE-01 | **OPEN**",
+            "W7-333 | [#1072](https://github.com/sesquicadaver/MTDirector/issues/1072) | Seed first PLAN-47 atomic row after inventory → CTRL-GRPC-MSGSIZE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-334 | [#1074](https://github.com/sesquicadaver/MTDirector/issues/1074) | CTRL-GRPC-MSGSIZE-01 — Align Controller+Desktop gRPC MaxReceive/SendMessageSize with snapshot bounds | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-333 (#1072)", roadmap, StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-335 | [#1076](https://github.com/sesquicadaver/MTDirector/issues/1076) | Seed next after CTRL-GRPC-MSGSIZE-01 (PLAN-47 COMPLETE) | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-334 (#1074)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-333", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-334", continuous, StringComparison.Ordinal);

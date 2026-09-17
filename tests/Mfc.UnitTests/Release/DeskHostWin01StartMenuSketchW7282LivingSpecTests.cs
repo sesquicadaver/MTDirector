@@ -50,7 +50,7 @@ public sealed class DeskHostWin01StartMenuSketchW7282LivingSpecTests
             "W7-282 | [#971](https://github.com/sesquicadaver/MTDirector/issues/971) | DESK-HOST-WIN-01 — Windows Start Menu shortcut sketch for framework-dependent Desktop | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-333 (#1072)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-334 (#1074)", roadmap, StringComparison.Ordinal);
         Assert.Contains("DeskHostWin01StartMenuSketchW7282", testing, StringComparison.Ordinal);
 
         // Do not regress LINUX template

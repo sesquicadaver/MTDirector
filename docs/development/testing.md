@@ -3862,6 +3862,15 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7331"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan47ControllerGrpcMessageSizeLimitsW7332"`.
 
+## Living Specification — Seed CTRL-GRPC-MSGSIZE-01 as §3.C NEXT (W7-333)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| Seed locks CTRL-GRPC-MSGSIZE-01 as §3.C NEXT | known-limitations, ROADMAP, plan-47, continuous-queue | `ProductTrancheSeedW7333LivingSpecTests.Ac1KnownLimitationsAndQueueSeedCtrlGrpcMsgsize01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7333"`.
+
+
 ## Living Specification — Product tranche seed CTRL-LOG-OTEL-CORRELATE-01 after PLAN-45 inventory (W7-325)
 
 | Requirement | Artifact | Test |
