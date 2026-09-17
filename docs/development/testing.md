@@ -3948,6 +3948,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7341"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~CtrlGrpcKeepalive01ControllerDesktopHttp2Keepalive"`.
 
+## Living Specification — PLAN-50 inventory Controller Kestrel min data-rate (W7-344)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| PLAN-50 inventory ranks sole CTRL-KESTREL-MINRATE-01 + seeds | plan-50, Program.cs, ROADMAP, known-limitations | `Plan50ControllerKestrelMinDataRateW7344LivingSpecTests.Ac1Plan50InventoryDocumentsSoleCtrlKestrelMinrate01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
+
 ## Living Specification — Seed PLAN-50 after PLAN-49 COMPLETE (W7-343)
 
 | Requirement | Artifact | Test |
