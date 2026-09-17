@@ -1,7 +1,7 @@
 # PLAN-45 — Controller log↔trace correlation after OpenTelemetry tracing
 
 **Date:** 2026-09-17 (inventory **DONE** @ `2da9d508`; **PLAN-45 COMPLETE**)  
-**Status:** **PLAN-45 COMPLETE** — Inventory **DONE** (W7-324); seed **W7-325 (#1056) DONE**; implement **W7-326 (#1058) DONE**; COMPLETE seed **W7-327 (#1060) DONE**; successor **PLAN-46** inventory **W7-328 (#1063) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-45 COMPLETE** — Inventory **DONE** (W7-324); seed **W7-325 (#1056) DONE**; implement **W7-326 (#1058) DONE**; COMPLETE seed **W7-327 (#1060) DONE**; successor **PLAN-46** inventory **W7-328 (#1063) DONE**; seed **W7-329 (#1064) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-324 / PLAN-45 #1055](https://github.com/sesquicadaver/MTDirector/issues/1055) **DONE**  
 **Predecessor:** PLAN-44 Controller OpenTelemetry tracing **COMPLETE** (CTRL-HTTP-OTEL-TRACE-01)  
 **Normative files:** [`RedactingJsonConsoleLoggerProvider.cs`](../../src/Mfc.Infrastructure/Persistence/Logging/RedactingJsonConsoleLoggerProvider.cs), [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
@@ -85,4 +85,4 @@ PLAN-44 sole ranked row (**CTRL-HTTP-OTEL-TRACE-01**) is **DONE**. No further PL
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-328 (#1063)** — PLAN-46 Inventory Controller OpenTelemetry resource identity after PLAN-45.
+**§3.C NEXT = W7-329 (#1064)** — Seed first PLAN-46 atomic row after inventory → CTRL-HTTP-OTEL-RESOURCE-01.

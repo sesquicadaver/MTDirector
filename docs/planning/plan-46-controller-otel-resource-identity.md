@@ -1,8 +1,8 @@
 # PLAN-46 — Controller OpenTelemetry resource identity after log↔trace correlation
 
-**Date:** 2026-09-17 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-328); seed **W7-329 (#1064) OPEN**; predecessor **PLAN-45 COMPLETE**  
-**PLAN issue / queue:** [W7-328 / PLAN-46 #1063](https://github.com/sesquicadaver/MTDirector/issues/1063) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-17 (inventory **DONE** @ `894cc4b8`)  
+**Status:** Inventory **DONE** (W7-328); seed **W7-329 (#1064) OPEN** (**§3.C NEXT**); implement **W7-330 (#1066) OPEN**; predecessor **PLAN-45 COMPLETE**  
+**PLAN issue / queue:** [W7-328 / PLAN-46 #1063](https://github.com/sesquicadaver/MTDirector/issues/1063) **DONE**  
 **Predecessor:** PLAN-45 Controller log↔trace correlation **COMPLETE** (CTRL-LOG-OTEL-CORRELATE-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
 **Normative prior locks:** HTTP `/health/live` + `/health/ready`; opt-in `/metrics`; opt-in `WithTracing`; log `traceId`/`spanId`; gRPC health; QG-SIGN-01/02; PLAN-32…45 — **do not regress**  
@@ -28,22 +28,30 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - Full APM productization / vanity dashboards  
 - systemd `Type=notify` / `WatchdogSec` packaging polish (explicitly deferred / saturating)
 
-## Inventory evidence (seed baseline 2026-09-17 `main` @ PLAN-45 COMPLETE / `f5d51d57`)
+## Inventory evidence (W7-328 @ `main` `894cc4b8`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
 | `Program.cs` | Opt-in `AddOpenTelemetry` WithMetrics/WithTracing | No `ConfigureResource` / `ResourceBuilder` / `service.name` |
 | Prometheus `/metrics` + OTLP/console traces | Export without stable service identity | Harder backend filter/join across hosts |
-| Glob / rg | `ResourceBuilder` / `service.name` absent under Controller OTel path @ `f5d51d57` | Confirmed |
+| Glob / rg | `ResourceBuilder` / `service.name` absent under Controller OTel path @ `894cc4b8` | Confirmed |
 | Packaging unit | `Type=simple` + journald + health + metrics + tracing + log correlation | Resource residual; Type=notify deferred |
 
-## Ranked Controller OTel resource tranche (seed baseline)
+**Ranking decision:** Prefer **ONE atomic row** (**CTRL-HTTP-OTEL-RESOURCE-01**) covering minimal correct OTel Resource attributes:
+
+- When metrics and/or tracing OTel is registered, configure Resource with `service.name` + `service.version` (and related stable identity via `ResourceBuilder` / `AddService`)
+- Keep MSI/AppImage locked; do not change health/metrics/tracing/correlation opt-in fail-closed defaults
+- Docs + Living Spec alongside existing HTTP/gRPC health + metrics + tracing + log correlation
+
+Splitting metrics vs traces resource into two ranks would be vanity; Type=notify and Desktop a11y remain deferred adjacent residuals.
+
+## Ranked Controller OTel resource tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-HTTP-OTEL-RESOURCE-01** | Author minimal correct OTel Resource (`service.name` + `service.version`) on metrics+traces (+ docs/Living Spec) alongside existing health/metrics/tracing/correlation; keep MSI/AppImage locked | No ResourceBuilder @ `f5d51d57` | after inventory **W7-328**; seed **W7-329 (#1064)** |
+| 1 | **CTRL-HTTP-OTEL-RESOURCE-01** | Author minimal correct OTel Resource (`service.name` + `service.version`) on metrics+traces (+ docs/Living Spec) alongside existing health/metrics/tracing/correlation; keep MSI/AppImage locked | No ResourceBuilder @ `894cc4b8` | implement **W7-330 (#1066) OPEN**; seed **W7-329 (#1064) OPEN** (**§3.C NEXT**) |
 
-Inventory (**W7-328**) may refine ranking and open implement issues; seed **W7-329** advances NEXT to the first implement after inventory DONE.
+Inventory (**W7-328 DONE**) confirmed sole rank. Seed **W7-329** advances NEXT to RESOURCE-01 implement after inventory.
 
 ## Dual track
 
@@ -64,10 +72,10 @@ PLAN-45 sole ranked row (**CTRL-LOG-OTEL-CORRELATE-01**) is **DONE**. No further
 ## §3.C ordering
 
 1. **PLAN-45 COMPLETE** (W7-326 CTRL-LOG-OTEL-CORRELATE-01; seed **W7-327 DONE**).  
-2. **W7-328 OPEN** — PLAN-46 inventory → open first resource-identity implement + follow-up seeds.  
-3. **W7-329 OPEN** — seed first PLAN-46 implement after inventory.  
-4. Execute ranked CTRL-HTTP-OTEL-RESOURCE row(s) atomically.
+2. **W7-328 DONE** — PLAN-46 inventory; opened **W7-330 (#1066)** CTRL-HTTP-OTEL-RESOURCE-01 implement.  
+3. **W7-329 OPEN** — seed first PLAN-46 implement after inventory (**§3.C NEXT**).  
+4. Execute ranked CTRL-HTTP-OTEL-RESOURCE row atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-328 (#1063)** — PLAN-46 Inventory Controller OpenTelemetry resource identity after PLAN-45.
+**§3.C NEXT = W7-329 (#1064)** — Seed first PLAN-46 atomic row after inventory → CTRL-HTTP-OTEL-RESOURCE-01.
