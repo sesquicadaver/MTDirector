@@ -70,4 +70,4 @@ PLAN-35 sole ranked row (**DESK-HOST-BUNDLE-01**) is **DONE**. No further PLAN-3
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-340 (#1087)** — PLAN-37 Inventory Controller host env sample packaging after PLAN-36.
+**§3.C NEXT = W7-341 (#1088)** — PLAN-37 Inventory Controller host env sample packaging after PLAN-36.

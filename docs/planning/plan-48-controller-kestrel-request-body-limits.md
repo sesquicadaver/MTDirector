@@ -1,7 +1,7 @@
 # PLAN-48 — Controller Kestrel request-body / HTTP2 limits after gRPC message-size
 
 **Date:** 2026-09-17 (inventory **DONE** @ `319d35bd`)  
-**Status:** **PLAN-48 COMPLETE** — Inventory **DONE** (W7-336); seed **W7-337 (#1080) DONE**; implement **W7-338 (#1082) DONE**; COMPLETE seed **W7-339 (#1084) DONE**; successor **PLAN-49** inventory **W7-340 (#1087) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-48 COMPLETE** — Inventory **DONE** (W7-336); seed **W7-337 (#1080) DONE**; implement **W7-338 (#1082) DONE**; COMPLETE seed **W7-339 (#1084) DONE**; successor **PLAN-49** inventory **W7-340 (#1087) DONE**; seed **W7-341 (#1088) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-336 / PLAN-48 #1079](https://github.com/sesquicadaver/MTDirector/issues/1079) **DONE**  
 **Predecessor:** PLAN-47 Controller gRPC message-size / transport limits **COMPLETE** (CTRL-GRPC-MSGSIZE-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs) (`ConfigureKestrel`), [`GrpcTransportLimits.cs`](../../src/Mfc.Contracts/GrpcTransportLimits.cs), [`installation.md`](../operations/installation.md) / [`controller-configuration.md`](../operations/controller-configuration.md)  
@@ -89,4 +89,4 @@ Controller `ConfigureKestrel` sets `Limits.MaxRequestBodySize = GrpcTransportLim
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-340 (#1087)** — PLAN-49 Inventory Controller/Desktop gRPC HTTP/2 keepalive after PLAN-48.
+**§3.C NEXT = W7-341 (#1088)** — Seed first PLAN-49 atomic row after inventory → CTRL-GRPC-KEEPALIVE-01.

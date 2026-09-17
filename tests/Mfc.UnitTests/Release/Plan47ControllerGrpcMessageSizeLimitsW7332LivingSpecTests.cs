@@ -38,7 +38,7 @@ public sealed class Plan47ControllerGrpcMessageSizeLimitsW7332LivingSpecTests
         Assert.Contains("RawSnapshotLimits.MaxSnapshotBytes", plan47, StringComparison.Ordinal);
         Assert.Contains("256 MiB", plan47, StringComparison.Ordinal);
         Assert.Contains("268435456", plan47, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-340 (#1087)", plan47, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-341 (#1088)", plan47, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-332 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-GRPC-MSGSIZE-01", limitations, StringComparison.Ordinal);
@@ -79,14 +79,14 @@ public sealed class Plan47ControllerGrpcMessageSizeLimitsW7332LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-340 | [#1087](https://github.com/sesquicadaver/MTDirector/issues/1087) | PLAN-49 — Inventory Controller/Desktop gRPC HTTP/2 keepalive after Kestrel body limits | **OPEN**",
+            "W7-340 | [#1087](https://github.com/sesquicadaver/MTDirector/issues/1087) | PLAN-49 — Inventory Controller/Desktop gRPC HTTP/2 keepalive after Kestrel body limits | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-341 | [#1088](https://github.com/sesquicadaver/MTDirector/issues/1088) | Seed first PLAN-49 atomic row after inventory → CTRL-GRPC-KEEPALIVE-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-340 (#1087)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-341 (#1088)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-333", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-334", continuous, StringComparison.Ordinal);
