@@ -52,7 +52,7 @@ public sealed class OpsHostDoc01ControllerOperatorDocW7302LivingSpecTests
             "W7-302 | [#1010](https://github.com/sesquicadaver/MTDirector/issues/1010) | OPS-HOST-DOC-01 — author packaging/doc/mfc/README.md + package-controller bundle | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-338 (#1082)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-339 (#1084)", roadmap, StringComparison.Ordinal);
         Assert.Contains("OpsHostDoc01ControllerOperatorDocW7302", testing, StringComparison.Ordinal);
     }
 
