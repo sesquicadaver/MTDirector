@@ -30,10 +30,13 @@ See also [`prerequisite-checklist.md`](prerequisite-checklist.md) for RouterOS d
 Framework-dependent Controller can run under systemd using the repo template [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service) (also bundled into publish tree, OPS-HOST-BUNDLE-01) (matches `package-controller.sh` layout: `/opt/mfc/controller/Mfc.Controller`).
 
 ```bash
-sudo install -d -o mfc -g mfc /opt/mfc/controller
+# OPS-HOST-SYSUSERS-01 — declarative mfc user/group + host dirs (also in $OUT_DIR/controller/):
+sudo install -m 0644 packaging/systemd/mfc-controller.sysusers /usr/lib/sysusers.d/mfc-controller.conf
+sudo install -m 0644 packaging/systemd/mfc-controller.tmpfiles /usr/lib/tmpfiles.d/mfc-controller.conf
+sudo systemd-sysusers mfc-controller.conf
+sudo systemd-tmpfiles --create /usr/lib/tmpfiles.d/mfc-controller.conf
 sudo rsync -a "$OUT_DIR/controller/" /opt/mfc/controller/
 sudo install -m 0644 packaging/systemd/mfc-controller.service /etc/systemd/system/mfc-controller.service
-sudo install -d /etc/mfc
 # copy OPS-HOST-ENV-01 sample (also in $OUT_DIR/controller/ after package-controller):
 sudo cp packaging/systemd/mfc-controller.env.example /etc/mfc/controller.env
 # edit /etc/mfc/controller.env — MFC__Database__ConnectionString, TLS, etc. (no secrets in the example)

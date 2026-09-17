@@ -1,0 +1,22 @@
+# MTDirector Controller — systemd-tmpfiles fragment (OPS-HOST-SYSUSERS-01 / W7-298)
+#
+# Creates host directories matching the unit + EnvironmentFile sample:
+#   /opt/mfc/controller          WorkingDirectory / ExecStart root
+#   /etc/mfc                     EnvironmentFile=-/etc/mfc/controller.env
+#   /var/lib/mfc                 mfc home + state root
+#   /var/lib/mfc/trusted-ca      MFC__Security__TrustedCa__ProfilesDirectory
+#
+# Requires mfc user/group from mfc-controller.sysusers first.
+#
+# Install sketch:
+#   sudo install -m 0644 packaging/systemd/mfc-controller.tmpfiles /usr/lib/tmpfiles.d/mfc-controller.conf
+#   sudo systemd-tmpfiles --create /usr/lib/tmpfiles.d/mfc-controller.conf
+#
+# Also bundled into OUT_DIR/controller/ by scripts/release/package-controller.sh.
+# Do not invent MSI/AppImage (W7-22).
+
+d /opt/mfc                    0755 root root -
+d /opt/mfc/controller         0755 mfc  mfc  -
+d /etc/mfc                    0750 mfc  mfc  -
+d /var/lib/mfc                0750 mfc  mfc  -
+d /var/lib/mfc/trusted-ca     0750 mfc  mfc  -

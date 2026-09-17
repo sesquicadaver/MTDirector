@@ -2036,6 +2036,17 @@ Issue [#976](https://github.com/sesquicadaver/MTDirector/issues/976) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7285"`.
 
+## Living Specification — OPS-HOST-SYSUSERS-01 Controller sysusers/tmpfiles packaging (W7-298)
+
+Issue [#1002](https://github.com/sesquicadaver/MTDirector/issues/1002) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| sysusers/tmpfiles paths + docs + script lock | `packaging/systemd/mfc-controller.sysusers`, `.tmpfiles`, package-controller, packaging/HOWTO/installation | `OpsHostSysusers01ControllerSysusersTmpfilesW7298LivingSpecTests.Ac1SysusersTmpfilesMatchUnitPathsAndDocsLock` |
+| dry-run OUT_DIR/controller contains sysusers+tmpfiles | `scripts/release/package-controller.sh` | `OpsHostSysusers01ControllerSysusersTmpfilesW7298LivingSpecTests.Ac2DryRunPublishTreeContainsBundledSysusersTmpfiles` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~OpsHostSysusers01ControllerSysusersTmpfilesW7298"`.
+
 ## Living Specification — Product tranche seed OPS-HOST-SYSUSERS-01 (W7-297)
 
 Issue [#1000](https://github.com/sesquicadaver/MTDirector/issues/1000) AC → module → tests:

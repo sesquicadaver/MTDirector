@@ -34,7 +34,7 @@ public sealed class Plan38ControllerHostSysusersTmpfilesPackagingW7296LivingSpec
         Assert.Contains("mfc-controller.sysusers", plan38, StringComparison.Ordinal);
         Assert.Contains("mfc-controller.tmpfiles", plan38, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/controller", plan38, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-298 (#1002)", plan38, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-299 (#1004)", plan38, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", plan38, StringComparison.Ordinal);
         Assert.Contains("bundle", plan38, StringComparison.OrdinalIgnoreCase);
 
@@ -52,10 +52,10 @@ public sealed class Plan38ControllerHostSysusersTmpfilesPackagingW7296LivingSpec
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-298 | [#1002](https://github.com/sesquicadaver/MTDirector/issues/1002) | OPS-HOST-SYSUSERS-01 — author sysusers.d/tmpfiles.d + docs + package-controller bundle | **OPEN**",
+            "W7-298 | [#1002](https://github.com/sesquicadaver/MTDirector/issues/1002) | OPS-HOST-SYSUSERS-01 — author sysusers.d/tmpfiles.d + docs + package-controller bundle | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-298 (#1002)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-299 (#1004)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-297", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-298", continuous, StringComparison.Ordinal);
@@ -67,18 +67,19 @@ public sealed class Plan38ControllerHostSysusersTmpfilesPackagingW7296LivingSpec
         Assert.Contains("DEST=\"$OUT_DIR/controller\"", packageController, StringComparison.Ordinal);
         Assert.Contains("mfc-controller.service", packageController, StringComparison.Ordinal);
         Assert.Contains("mfc-controller.env.example", packageController, StringComparison.Ordinal);
-        Assert.DoesNotContain("mfc-controller.sysusers", packageController, StringComparison.Ordinal);
-        Assert.DoesNotContain("mfc-controller.tmpfiles", packageController, StringComparison.Ordinal);
+        Assert.Contains("mfc-controller.sysusers", packageController, StringComparison.Ordinal);
+        Assert.Contains("mfc-controller.tmpfiles", packageController, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", packaging, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/controller/", packaging, StringComparison.Ordinal);
         Assert.Contains("User=mfc", unit, StringComparison.Ordinal);
         Assert.Contains("Group=mfc", unit, StringComparison.Ordinal);
         Assert.Contains("/var/lib/mfc/trusted-ca", envExample, StringComparison.Ordinal);
-        Assert.Contains("install -d", installation, StringComparison.Ordinal);
+        Assert.Contains("systemd-sysusers", installation, StringComparison.Ordinal);
+        Assert.Contains("mfc-controller.sysusers", installation, StringComparison.Ordinal);
         Assert.True(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.service")));
         Assert.True(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.env.example")));
-        Assert.False(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.sysusers")));
-        Assert.False(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.tmpfiles")));
+        Assert.True(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.sysusers")));
+        Assert.True(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.tmpfiles")));
     }
 
     private static string RepoRoot()
