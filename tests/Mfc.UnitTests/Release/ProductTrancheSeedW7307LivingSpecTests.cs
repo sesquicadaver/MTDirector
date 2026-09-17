@@ -33,33 +33,34 @@ public sealed class ProductTrancheSeedW7307LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-308 | [#1023](https://github.com/sesquicadaver/MTDirector/issues/1023) | PLAN-41 — Inventory release signing crypto (GPG/Sigstore beyond QG-SIGN-01) | **OPEN**",
+            "W7-308 | [#1023](https://github.com/sesquicadaver/MTDirector/issues/1023) | PLAN-41 — Inventory release signing crypto (GPG/Sigstore beyond QG-SIGN-01) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-309 | [#1024](https://github.com/sesquicadaver/MTDirector/issues/1024) | Seed first PLAN-41 atomic row after inventory → QG-SIGN-02 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-308 (#1023)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-309 (#1024)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-40 COMPLETE", plan40, StringComparison.Ordinal);
         Assert.Contains("W7-307 (#1020) DONE", plan40, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-308 (#1023)", plan40, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-309 (#1024)", plan40, StringComparison.Ordinal);
         Assert.Contains("plan-41-release-signing-crypto-gpg-sigstore.md", plan40, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-41", plan, StringComparison.Ordinal);
         Assert.Contains("W7-308", plan, StringComparison.Ordinal);
         Assert.Contains("W7-307 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-308 (#1023)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-309 (#1024)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-41-release-signing-crypto-gpg-sigstore.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("QG-SIGN-02", plan41, StringComparison.Ordinal);
-        Assert.Contains("Inventory **OPEN**", plan41, StringComparison.Ordinal);
+        Assert.Contains("Inventory **DONE**", plan41, StringComparison.Ordinal);
         Assert.Contains("W7-308", plan41, StringComparison.Ordinal);
         Assert.Contains("W7-309", plan41, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-308 (#1023)", plan41, StringComparison.Ordinal);
+        Assert.Contains("W7-310", plan41, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-309 (#1024)", plan41, StringComparison.Ordinal);
         Assert.Contains("Sigstore", plan41, StringComparison.Ordinal);
-        Assert.Contains("2bf1bca5", plan41, StringComparison.Ordinal);
+        Assert.Contains("190980c0", plan41, StringComparison.Ordinal);
 
         Assert.Contains("SyslogIdentifier=mfc-controller", unit, StringComparison.Ordinal);
         Assert.Contains("future", signing, StringComparison.OrdinalIgnoreCase);

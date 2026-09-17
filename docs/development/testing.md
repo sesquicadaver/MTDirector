@@ -2049,6 +2049,16 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7303"`.
 
 
 
+## Living Specification — PLAN-41 release signing crypto inventory (W7-308)
+
+Issue [#1023](https://github.com/sesquicadaver/MTDirector/issues/1023) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-41 inventory ranks sole QG-SIGN-02 + seeds | plan-41, RELEASE_SIGNING.md, signing-gate.md, generate-sbom-and-checksums.sh, ci.yml, ROADMAP, known-limitations | `Plan41ReleaseSigningCryptoGpgSigstoreW7308LivingSpecTests.Ac1Plan41InventoryDocumentsSoleQgSign02RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan41ReleaseSigningCryptoGpgSigstoreW7308"`.
+
 ## Living Specification — Product tranche seed PLAN-41 after PLAN-40 COMPLETE (W7-307)
 
 Issue [#1020](https://github.com/sesquicadaver/MTDirector/issues/1020) AC → module → tests:
