@@ -55,9 +55,9 @@ Splitting Controller vs Desktop keepalive into two ranks would be vanity; Type=n
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-GRPC-KEEPALIVE-01** | Author minimal correct HTTP/2 keepalive (Controller + Desktop) for Watch longevity + docs/Living Spec; keep MSI/AppImage and Type=notify locked | No KeepAlivePing @ `be206f6c` (Kestrel MaxValue / Sockets Infinite) | implement **W7-342 (#1090) DONE**; COMPLETE **W7-343 (#1092) OPEN**; seed **W7-341 (#1088) DONE** |
+| 1 | **CTRL-GRPC-KEEPALIVE-01** | Author minimal correct HTTP/2 keepalive (Controller + Desktop) for Watch longevity + docs/Living Spec; keep MSI/AppImage and Type=notify locked | No KeepAlivePing @ `be206f6c` (Kestrel MaxValue / Sockets Infinite) | implement **W7-342 (#1090) DONE**; COMPLETE **W7-343 (#1092) DONE**; seed **W7-341 (#1088) DONE** |
 
-Inventory (**W7-340 DONE**) confirmed sole rank. Seed **W7-341 DONE** advanced NEXT to the KEEPALIVE implement; COMPLETE follow-up **W7-343** open.
+Inventory (**W7-340 DONE**) confirmed sole rank. Seed **W7-341 DONE** advanced NEXT to the KEEPALIVE implement; COMPLETE follow-up **W7-343 DONE**.
 
 ## Dual track
 
