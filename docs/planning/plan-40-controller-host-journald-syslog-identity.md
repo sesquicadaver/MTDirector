@@ -1,7 +1,7 @@
 # PLAN-40 — Controller host journald/syslog identity (SyslogIdentifier)
 
-**Date:** 2026-09-17 (inventory **DONE** @ `30bee1c0`; seed **DONE**; implement **DONE**)  
-**Status:** Inventory **DONE** (W7-304); seed **W7-305 (#1016) DONE**; implement **W7-306 (#1018) DONE**; COMPLETE seed **W7-307 (#1020) OPEN** (**§3.C NEXT**); predecessor **PLAN-39 COMPLETE**  
+**Date:** 2026-09-17 (inventory **DONE** @ `30bee1c0`; implement **DONE**; **COMPLETE**)  
+**Status:** **PLAN-40 COMPLETE** — Inventory **DONE** (W7-304); seed **W7-305 (#1016) DONE**; implement **W7-306 (#1018) DONE**; COMPLETE seed **W7-307 (#1020) DONE**; successor **PLAN-41** inventory **W7-308 (#1023) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-304 / PLAN-40 #1015](https://github.com/sesquicadaver/MTDirector/issues/1015) **DONE**  
 **Predecessor:** PLAN-39 Controller host operator doc packaging **COMPLETE** (OPS-HOST-DOC-01)  
 **Normative files:** [`mfc-controller.service`](../../packaging/systemd/mfc-controller.service), [`installation.md`](../operations/installation.md), [`packaging.md`](../release/packaging.md)  
@@ -54,6 +54,10 @@ Product §3 never waits on GNS3.
 
 PLAN-39 sole ranked row (**OPS-HOST-DOC-01**) is **DONE**. No further PLAN-39 product rows.
 
+## Adjacent residuals (seeded as PLAN-40 COMPLETE / PLAN-41)
+
+- Release signing crypto (GPG/Sigstore beyond QG-SIGN-01) — **PLAN-41** [`plan-41-release-signing-crypto-gpg-sigstore.md`](plan-41-release-signing-crypto-gpg-sigstore.md)
+
 ## Adjacent residuals (not seeded here)
 
 - Unnamed TabControl containers — deferred vanity  
@@ -70,7 +74,8 @@ PLAN-39 sole ranked row (**OPS-HOST-DOC-01**) is **DONE**. No further PLAN-39 pr
 2. **W7-304 DONE** — PLAN-40 inventory; opened **W7-306 (#1018)** LOG implement.  
 3. **W7-305 DONE** — seed first PLAN-40 implement → OPS-HOST-LOG-01; opened COMPLETE **W7-307 (#1020)**.  
 4. **W7-306 DONE** — sole OPS-HOST-LOG-01 shipped (SyslogIdentifier + journal stdout/stderr + docs; bundled unit via package-controller).
+5. **W7-307 DONE** — PLAN-40 COMPLETE; seeded PLAN-41 inventory **W7-308**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-307 (#1020)** — Seed PLAN-40 COMPLETE → next product tranche after OPS-HOST-LOG-01.
+**§3.C NEXT = W7-308 (#1023)** — PLAN-41 Inventory release signing crypto after PLAN-40.

@@ -2048,6 +2048,17 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7303"`.
 
 
 
+
+## Living Specification — Product tranche seed PLAN-41 after PLAN-40 COMPLETE (W7-307)
+
+Issue [#1020](https://github.com/sesquicadaver/MTDirector/issues/1020) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Seed locks PLAN-41 inventory as §3.C NEXT | known-limitations, ROADMAP, plan-40/41, continuous-queue | `ProductTrancheSeedW7307LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan41AfterPlan40Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7307"`.
+
 ## Living Specification — OPS-HOST-LOG-01 Controller journald/syslog identity (W7-306)
 
 Issue [#1018](https://github.com/sesquicadaver/MTDirector/issues/1018) AC → module → tests:
