@@ -1,8 +1,8 @@
 # PLAN-48 — Controller Kestrel request-body / HTTP2 limits after gRPC message-size
 
-**Date:** 2026-09-17 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-336); seed **W7-337 (#1080) OPEN**; predecessor **PLAN-47 COMPLETE**  
-**PLAN issue / queue:** [W7-336 / PLAN-48 #1079](https://github.com/sesquicadaver/MTDirector/issues/1079) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-17 (inventory **DONE** @ `319d35bd`)  
+**Status:** Inventory **DONE** (W7-336); seed **W7-337 (#1080) OPEN** (**§3.C NEXT**); implement **W7-338 (#1082) OPEN**; predecessor **PLAN-47 COMPLETE**  
+**PLAN issue / queue:** [W7-336 / PLAN-48 #1079](https://github.com/sesquicadaver/MTDirector/issues/1079) **DONE**  
 **Predecessor:** PLAN-47 Controller gRPC message-size / transport limits **COMPLETE** (CTRL-GRPC-MSGSIZE-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs) (`ConfigureKestrel`), [`GrpcTransportLimits.cs`](../../src/Mfc.Contracts/GrpcTransportLimits.cs), [`installation.md`](../operations/installation.md) / [`controller-configuration.md`](../operations/controller-configuration.md)  
 **Normative prior locks:** HTTP health; opt-in `/metrics`; opt-in tracing; log correlation; OTel resource identity; gRPC MaxReceive/SendMessageSize (256 MiB); gRPC health; QG-SIGN-01/02; PLAN-32…47 — **do not regress**  
@@ -28,22 +28,32 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - Full gRPC load-balancing / multi-instance HA productization  
 - systemd `Type=notify` / `WatchdogSec` packaging polish (explicitly deferred / saturating)
 
-## Inventory evidence (seed baseline 2026-09-17 `main` @ PLAN-47 COMPLETE / MSGSIZE shipped)
+## Inventory evidence (W7-336 @ `main` `319d35bd`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
 | `Program.cs` `ConfigureKestrel` | Protocols + mTLS only | No `Limits.MaxRequestBodySize` |
-| ASP.NET Core default | MaxRequestBodySize ≈ 30 MiB | Below gRPC 256 MiB ceiling |
+| ASP.NET Core default | MaxRequestBodySize ≈ 30 MiB (30000000) | Below gRPC 256 MiB ceiling |
 | `GrpcTransportLimits` | MaxMessageBytes = 256 MiB on AddGrpc + Desktop | Host body limit may reject earlier |
-| Glob / rg | `MaxRequestBodySize` absent under Controller @ MSGSIZE ship | Confirmed |
+| Glob / rg | `MaxRequestBodySize` absent under Controller @ `319d35bd` | Confirmed |
 
-## Ranked Controller Kestrel body / HTTP2 tranche (seed baseline)
+**Ranking decision:** Prefer **ONE atomic row** (**CTRL-KESTREL-BODY-01**) covering minimal correct Kestrel `Limits.MaxRequestBodySize`:
+
+- Align with `GrpcTransportLimits.MaxMessageBytes` (256 MiB = 268435456) — same fail-closed constant as MSGSIZE
+- Do **not** set unlimited / `null`; keep a finite ceiling
+- Related HTTP/2 frame limits are **not** required for this gap (messages stream across frames; body ceiling is the host reject)
+- Keep MSI/AppImage locked; do not regress MSGSIZE/health/metrics/tracing/correlation/resource
+- Docs (`installation.md` / `controller-configuration.md`) + Living Spec
+
+Splitting MaxRequestBodySize vs HTTP/2 frame polish into two ranks would be vanity; Type=notify and Desktop a11y remain deferred adjacent residuals.
+
+## Ranked Controller Kestrel body / HTTP2 tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-KESTREL-BODY-01** | Author minimal correct Kestrel MaxRequestBodySize (and related HTTP/2 limits if required) aligned with `GrpcTransportLimits.MaxMessageBytes` + docs/Living Spec; keep MSI/AppImage and Type=notify locked | Default ~30 MiB @ PLAN-47 COMPLETE | after inventory **W7-336**; seed **W7-337 (#1080)** |
+| 1 | **CTRL-KESTREL-BODY-01** | Author minimal correct Kestrel MaxRequestBodySize aligned with `GrpcTransportLimits.MaxMessageBytes` + docs/Living Spec; keep MSI/AppImage and Type=notify locked | Default ~30 MiB @ `319d35bd` | implement **W7-338 (#1082) OPEN**; seed **W7-337 (#1080) OPEN** (**§3.C NEXT**) |
 
-Inventory (**W7-336**) may refine ranking and open implement issues; seed **W7-337** advances NEXT to the first implement after inventory DONE.
+Inventory (**W7-336 DONE**) confirmed sole rank. Seed **W7-337** advances NEXT to BODY-01 implement after inventory.
 
 ## Dual track
 
@@ -64,10 +74,10 @@ PLAN-47 sole ranked row (**CTRL-GRPC-MSGSIZE-01**) is **DONE**. No further PLAN-
 ## §3.C ordering
 
 1. **PLAN-47 COMPLETE** (W7-334 CTRL-GRPC-MSGSIZE-01; seed **W7-335 DONE**).  
-2. **W7-336 OPEN** — PLAN-48 inventory → open first Kestrel-body implement + follow-up seeds.  
-3. **W7-337 OPEN** — seed first PLAN-48 implement after inventory.  
-4. Execute ranked CTRL-KESTREL-BODY row(s) atomically.
+2. **W7-336 DONE** — PLAN-48 inventory; opened **W7-338 (#1082)** CTRL-KESTREL-BODY-01 implement.  
+3. **W7-337 OPEN** — seed advances NEXT to CTRL-KESTREL-BODY-01; opens COMPLETE follow-up.  
+4. Execute ranked CTRL-KESTREL-BODY row atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-336 (#1079)** — PLAN-48 Inventory Controller Kestrel request-body / HTTP2 limits after PLAN-47.
+**§3.C NEXT = W7-337 (#1080)** — Seed first PLAN-48 atomic row after inventory → CTRL-KESTREL-BODY-01.

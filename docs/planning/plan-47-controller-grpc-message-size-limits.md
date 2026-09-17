@@ -1,7 +1,7 @@
 # PLAN-47 — Controller gRPC message-size / transport limits after OTel resource identity
 
 **Date:** 2026-09-17 (inventory **DONE** @ `d107b57d`)  
-**Status:** **PLAN-47 COMPLETE** — Inventory **DONE** (W7-332); seed **W7-333 (#1072) DONE**; implement **W7-334 (#1074) DONE**; COMPLETE seed **W7-335 (#1076) DONE**; successor **PLAN-48** inventory **W7-336 (#1079) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-47 COMPLETE** — Inventory **DONE** (W7-332); seed **W7-333 (#1072) DONE**; implement **W7-334 (#1074) DONE**; COMPLETE seed **W7-335 (#1076) DONE**; successor **PLAN-48** inventory **W7-336 (#1079) DONE**; seed **W7-337 (#1080) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-332 / PLAN-47 #1071](https://github.com/sesquicadaver/MTDirector/issues/1071) **DONE**  
 **Predecessor:** PLAN-46 Controller OpenTelemetry resource identity **COMPLETE** (CTRL-HTTP-OTEL-RESOURCE-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`ControllerConnectionService.cs`](../../src/Mfc.Desktop/Services/ControllerConnectionService.cs), [`installation.md`](../operations/installation.md) / [`controller-configuration.md`](../operations/controller-configuration.md)  
@@ -88,4 +88,4 @@ Shared `Mfc.Contracts.GrpcTransportLimits.MaxMessageBytes` = **256 MiB** (268435
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-336 (#1079)** — PLAN-48 Inventory Controller Kestrel request-body / HTTP2 limits after PLAN-47.
+**§3.C NEXT = W7-337 (#1080)** — PLAN-48 Inventory Controller Kestrel request-body / HTTP2 limits after PLAN-47.
