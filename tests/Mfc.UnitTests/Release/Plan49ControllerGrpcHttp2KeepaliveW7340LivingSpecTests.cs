@@ -34,7 +34,7 @@ public sealed class Plan49ControllerGrpcHttp2KeepaliveW7340LivingSpecTests
         Assert.Contains("KeepAlivePingTimeout = 30s", plan49, StringComparison.Ordinal);
         Assert.Contains("TimeSpan.MaxValue", plan49, StringComparison.Ordinal);
         Assert.Contains("InfiniteTimeSpan", plan49, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-341 (#1088)", plan49, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-342 (#1090)", plan49, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-340 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-GRPC-KEEPALIVE-01", limitations, StringComparison.Ordinal);
@@ -49,14 +49,14 @@ public sealed class Plan49ControllerGrpcHttp2KeepaliveW7340LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-341 | [#1088](https://github.com/sesquicadaver/MTDirector/issues/1088) | Seed first PLAN-49 atomic row after inventory → CTRL-GRPC-KEEPALIVE-01 | **OPEN**",
+            "W7-341 | [#1088](https://github.com/sesquicadaver/MTDirector/issues/1088) | Seed first PLAN-49 atomic row after inventory → CTRL-GRPC-KEEPALIVE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-342 | [#1090](https://github.com/sesquicadaver/MTDirector/issues/1090) | CTRL-GRPC-KEEPALIVE-01 — Finite HTTP/2 keepalive for Controller+Desktop Watch streams | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-341 (#1088)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-342 (#1090)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-341", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-342", continuous, StringComparison.Ordinal);

@@ -3931,6 +3931,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7339"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan49ControllerGrpcHttp2KeepaliveW7340"`.
 
+## Living Specification — Seed CTRL-GRPC-KEEPALIVE-01 as §3.C NEXT (W7-341)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks CTRL-GRPC-KEEPALIVE-01 as §3.C NEXT | known-limitations, ROADMAP, plan-49, continuous-queue | `ProductTrancheSeedW7341LivingSpecTests.Ac1KnownLimitationsAndQueueSeedCtrlGrpcKeepalive01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7341"`.
+
 ## Living Specification — Product tranche seed CTRL-LOG-OTEL-CORRELATE-01 after PLAN-45 inventory (W7-325)
 
 | Requirement | Artifact | Test |
