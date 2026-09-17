@@ -35,7 +35,7 @@ public sealed class Plan43ControllerHttpMetricsOtelW7316LivingSpecTests
         Assert.Contains("MapPrometheusScrapingEndpoint", plan43, StringComparison.Ordinal);
         Assert.Contains("/metrics", plan43, StringComparison.Ordinal);
         Assert.Contains("opt-in", plan43, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("§3.C NEXT = W7-317 (#1040)", plan43, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-318 (#1042)", plan43, StringComparison.Ordinal);
         Assert.Contains("MapHealthChecks", plan43, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-316 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -49,14 +49,14 @@ public sealed class Plan43ControllerHttpMetricsOtelW7316LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-317 | [#1040](https://github.com/sesquicadaver/MTDirector/issues/1040) | Seed first PLAN-43 atomic row after inventory → CTRL-HTTP-METRICS-01 | **OPEN**",
+            "W7-317 | [#1040](https://github.com/sesquicadaver/MTDirector/issues/1040) | Seed first PLAN-43 atomic row after inventory → CTRL-HTTP-METRICS-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-318 | [#1042](https://github.com/sesquicadaver/MTDirector/issues/1042) | CTRL-HTTP-METRICS-01 — Controller scrapeable Prometheus/OTel metrics beyond HTTP health | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-317 (#1040)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-318 (#1042)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-317", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-318", continuous, StringComparison.Ordinal);
