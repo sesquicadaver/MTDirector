@@ -24,6 +24,7 @@ See also [`prerequisite-checklist.md`](prerequisite-checklist.md) for RouterOS d
 2. Configure `Mfc` settings / env (`MFC__…`) per [`controller-configuration.md`](controller-configuration.md).
 3. Apply schema with the migrations bundle (`OUT_DIR/migrations/mfc-ef-migrations`) **or** Development `--migrate-only`.
 4. Start `Mfc.Controller` and verify health: gRPC health **and** HTTP probes `GET /health/live` (process) + `GET /health/ready` (fail-closed DB) on the same ListenAddress. Production `https://` uses Kestrel `Http1AndHttp2` (classic HTTP/1.1 curl OK); cleartext Development `http://` stays HTTP/2-only for h2c gRPC compatibility.
+5. Optional metrics (CTRL-HTTP-METRICS-01): scrapeable Prometheus text at `GET /metrics` is **opt-in** via `Mfc:Metrics:Enabled=true` (default **false** / fail-closed — no scrape surface). Keep health probes intact regardless of metrics.
 
 ### Linux systemd (OPS-HOST-SYSTEMD-01)
 

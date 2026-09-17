@@ -118,6 +118,93 @@ public sealed class ControllerHealthHostTests
     }
 
     [Fact]
+    public async Task HttpMetricsOptInScrapeReturnsPrometheusTextAndKeepsHealthIntact()
+    {
+        string connectionString = await _postgres.CreateFreshDatabaseAsync();
+        string url = $"http://127.0.0.1:{GetFreeTcpPort()}";
+
+        await using var app = Program.BuildHost(
+            [
+                "--environment", "Development",
+                $"--Mfc:Grpc:ListenAddress={url}",
+                "--Mfc:Grpc:AllowInsecureLoopback=true",
+                "--Mfc:Grpc:ShutdownTimeoutSeconds=5",
+                "--Mfc:Security:RequireTls=true",
+                "--Mfc:Security:MasterKeyProvider=Development",
+                "--Mfc:Authentication:AllowDevelopmentAuthentication=true",
+                "--Mfc:OperationalJobs:Enabled=false",
+                "--Mfc:Metrics:Enabled=true",
+                $"--Mfc:Database:ConnectionString={connectionString}",
+            ]);
+
+        await app.Services.MigrateAsync();
+        await app.StartAsync();
+
+        try
+        {
+            await WaitForPortAsync(url, TimeSpan.FromSeconds(10));
+
+            using HttpClient http = CreateHttp2Client(url);
+            using HttpResponseMessage metrics = await http.GetAsync("/metrics");
+            using HttpResponseMessage live = await http.GetAsync("/health/live");
+            using HttpResponseMessage ready = await http.GetAsync("/health/ready");
+
+            Assert.Equal(HttpStatusCode.OK, metrics.StatusCode);
+            string body = await metrics.Content.ReadAsStringAsync();
+            Assert.Contains("#", body, StringComparison.Ordinal);
+            Assert.False(string.IsNullOrWhiteSpace(body));
+
+            Assert.Equal(HttpStatusCode.OK, live.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, ready.StatusCode);
+        }
+        finally
+        {
+            using CancellationTokenSource stopCts = new(TimeSpan.FromSeconds(5));
+            await app.StopAsync(stopCts.Token);
+        }
+    }
+
+    [Fact]
+    public async Task HttpMetricsDefaultOffDoesNotExposeScrapeEndpoint()
+    {
+        string connectionString = await _postgres.CreateFreshDatabaseAsync();
+        string url = $"http://127.0.0.1:{GetFreeTcpPort()}";
+
+        await using var app = Program.BuildHost(
+            [
+                "--environment", "Development",
+                $"--Mfc:Grpc:ListenAddress={url}",
+                "--Mfc:Grpc:AllowInsecureLoopback=true",
+                "--Mfc:Grpc:ShutdownTimeoutSeconds=5",
+                "--Mfc:Security:RequireTls=true",
+                "--Mfc:Security:MasterKeyProvider=Development",
+                "--Mfc:Authentication:AllowDevelopmentAuthentication=true",
+                "--Mfc:OperationalJobs:Enabled=false",
+                $"--Mfc:Database:ConnectionString={connectionString}",
+            ]);
+
+        await app.Services.MigrateAsync();
+        await app.StartAsync();
+
+        try
+        {
+            await WaitForPortAsync(url, TimeSpan.FromSeconds(10));
+
+            using HttpClient http = CreateHttp2Client(url);
+            using HttpResponseMessage metrics = await http.GetAsync("/metrics");
+            using HttpResponseMessage live = await http.GetAsync("/health/live");
+
+            Assert.Equal(HttpStatusCode.NotFound, metrics.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, live.StatusCode);
+        }
+        finally
+        {
+            using CancellationTokenSource stopCts = new(TimeSpan.FromSeconds(5));
+            await app.StopAsync(stopCts.Token);
+        }
+    }
+
+    [Fact]
     public void BuildHostRejectsProductionWithoutTls()
     {
         Assert.ThrowsAny<Exception>(() =>

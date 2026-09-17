@@ -25,6 +25,27 @@ public sealed class ControllerOptions
 
     [Required]
     public DatabaseHostOptions Database { get; init; } = new();
+
+    /// <summary>
+    /// Opt-in Prometheus scrape surface (CTRL-HTTP-METRICS-01). Default off — fail-closed (no <c>/metrics</c>).
+    /// </summary>
+    public MetricsHostOptions Metrics { get; init; } = new();
+}
+
+/// <summary>OpenTelemetry Prometheus scrape endpoint options.</summary>
+public sealed class MetricsHostOptions
+{
+    public const string SectionName = "Metrics";
+
+    /// <summary>
+    /// When false (default), OpenTelemetry meters and <c>/metrics</c> are not registered.
+    /// Operators opt in via <c>Mfc:Metrics:Enabled=true</c> / <c>MFC__Metrics__Enabled=true</c>.
+    /// </summary>
+    public bool Enabled { get; init; }
+
+    /// <summary>Prometheus scrape path. Default <c>/metrics</c>.</summary>
+    [MinLength(1)]
+    public string ScrapePath { get; init; } = "/metrics";
 }
 
 public sealed class GrpcHostOptions

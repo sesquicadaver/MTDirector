@@ -33,6 +33,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using OpenTelemetry.Metrics;
 
 namespace Mfc.Controller;
 
@@ -212,6 +213,24 @@ public static class Program
             .AddCheck("self", () => HealthCheckResult.Healthy("process"), tags: ["live"])
             .AddCheck<DatabaseReadyHealthCheck>("database", tags: ["ready"]);
 
+        // CTRL-HTTP-METRICS-01: opt-in Prometheus scrape (default off / fail-closed — no /metrics).
+        MetricsHostOptions metricsOptions = builder.Configuration
+            .GetSection($"{ControllerOptions.SectionName}:{MetricsHostOptions.SectionName}")
+            .Get<MetricsHostOptions>()
+            ?? new MetricsHostOptions();
+        string metricsScrapePath = NormalizeMetricsScrapePath(metricsOptions.ScrapePath);
+        if (metricsOptions.Enabled)
+        {
+            builder.Services.AddOpenTelemetry()
+                .WithMetrics(metrics =>
+                {
+                    metrics
+                        .AddAspNetCoreInstrumentation()
+                        .AddRuntimeInstrumentation()
+                        .AddPrometheusExporter();
+                });
+        }
+
         configure?.Invoke(builder);
 
         WebApplication app = builder.Build();
@@ -231,6 +250,11 @@ public static class Program
         {
             Predicate = registration => registration.Tags.Contains("ready"),
         });
+        if (metricsOptions.Enabled)
+        {
+            app.MapPrometheusScrapingEndpoint(metricsScrapePath);
+        }
+
         app.MapGrpcHealthChecksService();
         app.MapGrpcService<InventoryGrpcService>();
         app.MapGrpcService<SnapshotGrpcService>();
@@ -402,6 +426,20 @@ public static class Program
 
     public static string[] StripMigrateOnly(string[] args)
         => args.Where(a => !string.Equals(a, MigrateOnlyArgument, StringComparison.OrdinalIgnoreCase)).ToArray();
+
+    /// <summary>
+    /// Normalizes scrape path to a rooted absolute path segment (default <c>/metrics</c>).
+    /// </summary>
+    internal static string NormalizeMetricsScrapePath(string? path)
+    {
+        string trimmed = string.IsNullOrWhiteSpace(path) ? "/metrics" : path.Trim();
+        if (!trimmed.StartsWith('/'))
+        {
+            trimmed = "/" + trimmed;
+        }
+
+        return trimmed;
+    }
 
     private static string ResolveEnvironmentName(string[] args)
     {

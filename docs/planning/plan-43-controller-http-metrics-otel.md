@@ -1,7 +1,7 @@
 # PLAN-43 — Controller metrics / OpenTelemetry beyond HTTP health probes
 
 **Date:** 2026-09-17 (inventory **DONE** @ `94f04744`)  
-**Status:** Inventory **DONE** (W7-316); seed **W7-317 (#1040) DONE**; implement **W7-318 (#1042) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-319 (#1044) OPEN**; predecessor **PLAN-42 COMPLETE**  
+**Status:** Inventory **DONE** (W7-316); seed **W7-317 (#1040) DONE**; implement **W7-318 (#1042) DONE**; COMPLETE seed **W7-319 (#1044) OPEN** (**§3.C NEXT**); predecessor **PLAN-42 COMPLETE**  
 **PLAN issue / queue:** [W7-316 / PLAN-43 #1039](https://github.com/sesquicadaver/MTDirector/issues/1039) **DONE**  
 **Predecessor:** PLAN-42 Controller HTTP health probes **COMPLETE** (CTRL-HTTP-HEALTH-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
@@ -70,8 +70,9 @@ PLAN-42 sole ranked row (**CTRL-HTTP-HEALTH-01**) is **DONE**. No further PLAN-4
 1. **PLAN-42 COMPLETE** (W7-314 CTRL-HTTP-HEALTH-01; seed **W7-315 DONE**).  
 2. **W7-316 DONE** — PLAN-43 inventory; opened **W7-318 (#1042)** CTRL-HTTP-METRICS-01 implement.  
 3. **W7-317 DONE** — seed advanced NEXT to CTRL-HTTP-METRICS-01; opened COMPLETE **W7-319 (#1044)**.  
-4. **W7-318 OPEN** — execute sole CTRL-HTTP-METRICS-01 (**§3.C NEXT**); then PLAN-43 COMPLETE seed.
+4. **W7-318 DONE** — sole CTRL-HTTP-METRICS-01 shipped (opt-in `/metrics` + docs/Living Spec).
+5. **W7-319 OPEN** — PLAN-43 COMPLETE seed (**§3.C NEXT**).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-318 (#1042)** — CTRL-HTTP-METRICS-01 — Controller scrapeable Prometheus/OTel metrics beyond HTTP health.
+**§3.C NEXT = W7-319 (#1044)** — Seed next after CTRL-HTTP-METRICS-01 (PLAN-43 COMPLETE).
