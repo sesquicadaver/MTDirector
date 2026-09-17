@@ -28,7 +28,7 @@ ls -la "$OUT_DIR"
 
 | Script | Output |
 |--------|--------|
-| `package-controller.sh` | `OUT_DIR/controller/` (includes bundled `mfc-controller.service` + `mfc-controller.winsw.xml`, OPS-HOST-BUNDLE-01, plus `mfc-controller.env.example`, OPS-HOST-ENV-01, plus `mfc-controller.sysusers` + `mfc-controller.tmpfiles`, OPS-HOST-SYSUSERS-01) + `controller.artifact-path.txt` |
+| `package-controller.sh` | `OUT_DIR/controller/` (includes bundled `mfc-controller.service` + `mfc-controller.winsw.xml`, OPS-HOST-BUNDLE-01, plus `mfc-controller.env.example`, OPS-HOST-ENV-01, plus `mfc-controller.sysusers` + `mfc-controller.tmpfiles`, OPS-HOST-SYSUSERS-01, plus `README.md` from `packaging/doc/mfc/`, OPS-HOST-DOC-01) + `controller.artifact-path.txt` |
 | `package-desktop.sh` | `OUT_DIR/desktop/` (includes bundled `mfc-desktop.desktop` + `mfc-desktop-start-menu.ps1`, DESK-HOST-BUNDLE-01) + `Mfc.Desktop-<rid>.zip` (or `.tar.gz`) + `desktop.artifact-path.txt` |
 | `create-migration-bundle.sh` | `OUT_DIR/migrations/mfc-ef-migrations` |
 | `run-dependency-scan.sh` | `OUT_DIR/dependency-scan.txt` |
@@ -42,6 +42,7 @@ ls -la "$OUT_DIR"
 | EnvironmentFile sample | [`../../packaging/systemd/mfc-controller.env.example`](../../packaging/systemd/mfc-controller.env.example) | OPS-HOST-ENV-01 — documented `MFC__…` keys (no secrets) for `EnvironmentFile=-/etc/mfc/controller.env`; also copied into `$OUT_DIR/controller/` by `package-controller.sh` |
 | sysusers.d / tmpfiles.d | [`../../packaging/systemd/mfc-controller.sysusers`](../../packaging/systemd/mfc-controller.sysusers) · [`../../packaging/systemd/mfc-controller.tmpfiles`](../../packaging/systemd/mfc-controller.tmpfiles) | OPS-HOST-SYSUSERS-01 — `mfc` user/group + `/etc/mfc` + `/var/lib/mfc` (+ trusted-ca) + `/opt/mfc/controller`; also copied into `$OUT_DIR/controller/` by `package-controller.sh` |
 | Windows Service (WinSW) | [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml) | OPS-HOST-WINSVC-01 — framework-dependent Controller; `%BASE%\Mfc.Controller.exe`; also copied into `$OUT_DIR/controller/` by `package-controller.sh` (OPS-HOST-BUNDLE-01); do not invent MSI (W7-22) |
+| Operator README (`Documentation=`) | [`../../packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md) | OPS-HOST-DOC-01 — matches `Documentation=file:///usr/share/doc/mfc/README.md`; copied into `$OUT_DIR/controller/README.md` by `package-controller.sh`; install to `/usr/share/doc/mfc/README.md` |
 
 ## Desktop launch templates
 

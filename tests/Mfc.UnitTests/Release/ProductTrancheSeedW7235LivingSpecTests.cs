@@ -43,8 +43,8 @@ public sealed class ProductTrancheSeedW7235LivingSpecTests
         Assert.Contains("W7-237", plan26, StringComparison.Ordinal);
         Assert.Contains("rank 14", plan26, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("seeded as **W7-236**", limitations, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", roadmap, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", plan26, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", plan26, StringComparison.Ordinal);
         Assert.Contains("W7-237 DONE", plan26, StringComparison.Ordinal);
         Assert.Contains("W7-236 (#879) DONE", plan26, StringComparison.Ordinal);
     }

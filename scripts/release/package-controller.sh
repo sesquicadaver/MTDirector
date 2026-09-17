@@ -6,6 +6,8 @@
 # so operators have a documented EnvironmentFile sample beside the unit.
 # OPS-HOST-SYSUSERS-01: also copies mfc-controller.sysusers + mfc-controller.tmpfiles into
 # OUT_DIR/controller/ so operators can bootstrap User=mfc and /etc/mfc + /var/lib/mfc paths.
+# OPS-HOST-DOC-01: also copies packaging/doc/mfc/README.md → OUT_DIR/controller/README.md
+# so Documentation=file:///usr/share/doc/mfc/README.md has a matching publish artifact.
 # Usage: OUT_DIR=/tmp/mfc-rel ./scripts/release/package-controller.sh
 # Dry-run (Living Spec): MFC_RELEASE_DRY_RUN=1 OUT_DIR=... ./scripts/release/package-controller.sh
 set -euo pipefail
@@ -20,8 +22,8 @@ CONFIG="${MFC_RELEASE_CONFIG:-Release}"
 DEST="$OUT_DIR/controller"
 
 # Copy PLAN-32 Controller host-process templates + PLAN-37 env sample + PLAN-38
-# sysusers/tmpfiles into the publish tree (OPS-HOST-BUNDLE-01 + OPS-HOST-ENV-01 +
-# OPS-HOST-SYSUSERS-01). Sources remain canonical under packaging/.
+# sysusers/tmpfiles + PLAN-39 operator doc into the publish tree (OPS-HOST-BUNDLE-01 +
+# OPS-HOST-ENV-01 + OPS-HOST-SYSUSERS-01 + OPS-HOST-DOC-01). Sources remain under packaging/.
 mfc_controller_bundle_host_templates() {
   local dest="$1"
   mkdir -p "$dest"
@@ -30,6 +32,7 @@ mfc_controller_bundle_host_templates() {
   cp -f "$REPO_ROOT/packaging/systemd/mfc-controller.env.example" "$dest/mfc-controller.env.example"
   cp -f "$REPO_ROOT/packaging/systemd/mfc-controller.sysusers" "$dest/mfc-controller.sysusers"
   cp -f "$REPO_ROOT/packaging/systemd/mfc-controller.tmpfiles" "$dest/mfc-controller.tmpfiles"
+  cp -f "$REPO_ROOT/packaging/doc/mfc/README.md" "$dest/README.md"
 }
 
 mkdir -p "$DEST"

@@ -2036,6 +2036,17 @@ Issue [#976](https://github.com/sesquicadaver/MTDirector/issues/976) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7285"`.
 
+## Living Specification — OPS-HOST-DOC-01 Controller operator doc packaging (W7-302)
+
+Issue [#1010](https://github.com/sesquicadaver/MTDirector/issues/1010) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| README matches Documentation= + docs + script lock | `packaging/doc/mfc/README.md`, package-controller, packaging/HOWTO/installation | `OpsHostDoc01ControllerOperatorDocW7302LivingSpecTests.Ac1OperatorDocMatchesDocumentationPathAndDocsLock` |
+| dry-run OUT_DIR/controller contains README.md | `scripts/release/package-controller.sh` | `OpsHostDoc01ControllerOperatorDocW7302LivingSpecTests.Ac2DryRunPublishTreeContainsBundledOperatorReadme` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~OpsHostDoc01ControllerOperatorDocW7302"`.
+
 ## Living Specification — Product tranche seed OPS-HOST-DOC-01 (W7-301)
 
 Issue [#1008](https://github.com/sesquicadaver/MTDirector/issues/1008) AC → module → tests:

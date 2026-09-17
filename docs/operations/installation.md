@@ -36,6 +36,8 @@ sudo install -m 0644 packaging/systemd/mfc-controller.tmpfiles /usr/lib/tmpfiles
 sudo systemd-sysusers mfc-controller.conf
 sudo systemd-tmpfiles --create /usr/lib/tmpfiles.d/mfc-controller.conf
 sudo rsync -a "$OUT_DIR/controller/" /opt/mfc/controller/
+# OPS-HOST-DOC-01 — install operator README to Documentation= path (also in $OUT_DIR/controller/README.md):
+sudo install -D -m 0644 /opt/mfc/controller/README.md /usr/share/doc/mfc/README.md
 sudo install -m 0644 packaging/systemd/mfc-controller.service /etc/systemd/system/mfc-controller.service
 # copy OPS-HOST-ENV-01 sample (also in $OUT_DIR/controller/ after package-controller):
 sudo cp packaging/systemd/mfc-controller.env.example /etc/mfc/controller.env
