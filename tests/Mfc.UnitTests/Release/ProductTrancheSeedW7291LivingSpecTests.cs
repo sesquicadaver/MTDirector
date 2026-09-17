@@ -5,6 +5,7 @@ namespace Mfc.UnitTests.Release;
 /// <summary>
 /// W7-291: PLAN-36 COMPLETE; known-limitations / queue seed locked PLAN-37 inventory (W7-292)
 /// and follow-up seed W7-293 after OPS-HOST-BUNDLE-01.
+/// Historical: inventory W7-292 now DONE; §3.C NEXT advanced to W7-293.
 /// </summary>
 public sealed class ProductTrancheSeedW7291LivingSpecTests
 {
@@ -33,34 +34,35 @@ public sealed class ProductTrancheSeedW7291LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-292 | [#991](https://github.com/sesquicadaver/MTDirector/issues/991) | PLAN-37 — Inventory Controller host env sample packaging (mfc-controller.env.example for EnvironmentFile) | **OPEN**",
+            "W7-292 | [#991](https://github.com/sesquicadaver/MTDirector/issues/991) | PLAN-37 — Inventory Controller host env sample packaging (mfc-controller.env.example for EnvironmentFile) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-293 | [#992](https://github.com/sesquicadaver/MTDirector/issues/992) | Seed first PLAN-37 atomic row after inventory → OPS-HOST-ENV-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-292 (#991)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-293 (#992)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-36 COMPLETE", plan36, StringComparison.Ordinal);
         Assert.Contains("W7-291 (#987) DONE", plan36, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-292 (#991)", plan36, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-293 (#992)", plan36, StringComparison.Ordinal);
         Assert.Contains("plan-37-controller-host-env-sample-packaging.md", plan36, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-37", plan, StringComparison.Ordinal);
         Assert.Contains("W7-292", plan, StringComparison.Ordinal);
         Assert.Contains("W7-291 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-292 (#991)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-293 (#992)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-37-controller-host-env-sample-packaging.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("OPS-HOST-ENV-01", plan37, StringComparison.Ordinal);
-        Assert.Contains("Inventory **OPEN**", plan37, StringComparison.Ordinal);
+        Assert.Contains("Inventory **DONE**", plan37, StringComparison.Ordinal);
         Assert.Contains("W7-292", plan37, StringComparison.Ordinal);
         Assert.Contains("W7-293", plan37, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-292 (#991)", plan37, StringComparison.Ordinal);
+        Assert.Contains("W7-294", plan37, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-293 (#992)", plan37, StringComparison.Ordinal);
         Assert.Contains("mfc-controller.env.example", plan37, StringComparison.Ordinal);
         Assert.Contains("EnvironmentFile", plan37, StringComparison.Ordinal);
-        Assert.Contains("b866aa91", plan37, StringComparison.Ordinal);
+        Assert.Contains("05212fce", plan37, StringComparison.Ordinal);
 
         Assert.Contains("EnvironmentFile=-/etc/mfc/controller.env", unit, StringComparison.Ordinal);
         Assert.Contains("mfc_controller_bundle_host_templates", packageController, StringComparison.Ordinal);
