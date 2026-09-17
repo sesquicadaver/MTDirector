@@ -38,7 +38,7 @@ public sealed class Plan47ControllerGrpcMessageSizeLimitsW7332LivingSpecTests
         Assert.Contains("RawSnapshotLimits.MaxSnapshotBytes", plan47, StringComparison.Ordinal);
         Assert.Contains("256 MiB", plan47, StringComparison.Ordinal);
         Assert.Contains("268435456", plan47, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-334 (#1074)", plan47, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-335 (#1076)", plan47, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-332 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-GRPC-MSGSIZE-01", limitations, StringComparison.Ordinal);
@@ -55,14 +55,14 @@ public sealed class Plan47ControllerGrpcMessageSizeLimitsW7332LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-334 | [#1074](https://github.com/sesquicadaver/MTDirector/issues/1074) | CTRL-GRPC-MSGSIZE-01 — Align Controller+Desktop gRPC MaxReceive/SendMessageSize with snapshot bounds | **OPEN**",
+            "W7-334 | [#1074](https://github.com/sesquicadaver/MTDirector/issues/1074) | CTRL-GRPC-MSGSIZE-01 — Align Controller+Desktop gRPC MaxReceive/SendMessageSize with snapshot bounds | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-335 | [#1076](https://github.com/sesquicadaver/MTDirector/issues/1076) | Seed next after CTRL-GRPC-MSGSIZE-01 (PLAN-47 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-334 (#1074)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-335 (#1076)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-333", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-334", continuous, StringComparison.Ordinal);
@@ -72,10 +72,10 @@ public sealed class Plan47ControllerGrpcMessageSizeLimitsW7332LivingSpecTests
         Assert.Contains("Plan47ControllerGrpcMessageSizeLimitsW7332", testing, StringComparison.Ordinal);
 
         // Evidence surfaces remain present (inventory does not implement message-size yet).
-        Assert.Contains("AddGrpc()", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("MaxReceiveMessageSize", program, StringComparison.Ordinal);
+        Assert.Contains("AddGrpc(options =>", program, StringComparison.Ordinal);
+        Assert.Contains("MaxReceiveMessageSize = GrpcTransportLimits.MaxMessageBytes", program, StringComparison.Ordinal);
         Assert.Contains("GrpcChannel.ForAddress", desktop, StringComparison.Ordinal);
-        Assert.DoesNotContain("MaxReceiveMessageSize", desktop, StringComparison.Ordinal);
+        Assert.Contains("MaxReceiveMessageSize = GrpcTransportLimits.MaxMessageBytes", desktop, StringComparison.Ordinal);
         Assert.Contains("MaxSnapshotBytes = 256L * 1024L * 1024L", rawLimits, StringComparison.Ordinal);
         Assert.Contains("controller-configuration.md", installation, StringComparison.Ordinal);
         Assert.Contains("Grpc:ListenAddress", controllerConfig, StringComparison.Ordinal);

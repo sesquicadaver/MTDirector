@@ -16,6 +16,11 @@ Configuration sources (highest wins last):
 | `Grpc:ShutdownTimeoutSeconds` | Graceful shutdown budget (1–600) |
 | `Grpc:AllowInsecureLoopback` | Development-only HTTP on loopback |
 | `Grpc:ClientCertificateMode` | W7-03: `NoCertificate` (default), `AllowCertificate`, or `RequireCertificate` (HTTPS only; Kestrel `ConfigureHttpsDefaults`) |
+
+gRPC **MaxReceiveMessageSize** / **MaxSendMessageSize** are **not** config knobs: CTRL-GRPC-MSGSIZE-01 hard-codes both sides to shared `Mfc.Contracts.GrpcTransportLimits.MaxMessageBytes` (**256 MiB** = **268435456**), aligned with domain `RawSnapshotLimits.MaxSnapshotBytes`. Finite fail-closed ceiling — never unlimited / never `null`.
+
+| Key | Purpose |
+|-----|---------|
 | `Security:RequireTls` | Reject non-TLS production binds |
 | `Security:MasterKeyProvider` | Named master-key provider (`Development` or `OsKeyStore`; `Development` forbidden outside Development) |
 | `Security:MasterKeyBase64` (env `MFC__Security__MasterKeyBase64`) | Required for `OsKeyStore`: base64 of a 32-byte master key (never stored in PostgreSQL) |

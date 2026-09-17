@@ -35,7 +35,7 @@ public sealed class Plan45ControllerLogTraceCorrelationW7324LivingSpecTests
         Assert.Contains("traceId", plan45, StringComparison.Ordinal);
         Assert.Contains("spanId", plan45, StringComparison.Ordinal);
         Assert.Contains("opt-in", plan45, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("§3.C NEXT = W7-334 (#1074)", plan45, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-335 (#1076)", plan45, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-324 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-LOG-OTEL-CORRELATE-01", limitations, StringComparison.Ordinal);
@@ -84,14 +84,14 @@ public sealed class Plan45ControllerLogTraceCorrelationW7324LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-334 | [#1074](https://github.com/sesquicadaver/MTDirector/issues/1074) | CTRL-GRPC-MSGSIZE-01 — Align Controller+Desktop gRPC MaxReceive/SendMessageSize with snapshot bounds | **OPEN**",
+            "W7-334 | [#1074](https://github.com/sesquicadaver/MTDirector/issues/1074) | CTRL-GRPC-MSGSIZE-01 — Align Controller+Desktop gRPC MaxReceive/SendMessageSize with snapshot bounds | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-335 | [#1076](https://github.com/sesquicadaver/MTDirector/issues/1076) | Seed next after CTRL-GRPC-MSGSIZE-01 (PLAN-47 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-334 (#1074)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-335 (#1076)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-325", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-326", continuous, StringComparison.Ordinal);

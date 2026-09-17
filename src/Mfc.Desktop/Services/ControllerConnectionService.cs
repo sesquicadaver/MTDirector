@@ -4,6 +4,7 @@ using System.Security.Authentication;
 using Grpc.Core;
 using Grpc.Health.V1;
 using Grpc.Net.Client;
+using Mfc.Contracts;
 using Mfc.Desktop.Configuration;
 
 namespace Mfc.Desktop.Services;
@@ -98,6 +99,9 @@ public sealed class ControllerConnectionService : IControllerConnectionService
             {
                 HttpHandler = httpHandler,
                 DisposeHttpClient = true,
+                // CTRL-GRPC-MSGSIZE-01: match Controller AddGrpc ceilings (shared Contracts constant).
+                MaxReceiveMessageSize = GrpcTransportLimits.MaxMessageBytes,
+                MaxSendMessageSize = GrpcTransportLimits.MaxMessageBytes,
             });
 
             using CancellationTokenSource timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);

@@ -19,6 +19,7 @@ using Mfc.Application.Snapshots;
 using Mfc.Application.Topology;
 using Mfc.Application.Workflow;
 using Mfc.Application.Zones;
+using Mfc.Contracts;
 using Mfc.Controller.Authorization;
 using Mfc.Controller.Configuration;
 using Mfc.Controller.Grpc;
@@ -211,7 +212,12 @@ public static class Program
 
         builder.WebHost.UseUrls(options.Grpc.ListenAddress);
 
-        builder.Services.AddGrpc();
+        // CTRL-GRPC-MSGSIZE-01: finite MaxReceive/Send aligned with RawSnapshotLimits (256 MiB) via shared Contracts constant — never unlimited.
+        builder.Services.AddGrpc(options =>
+        {
+            options.MaxReceiveMessageSize = GrpcTransportLimits.MaxMessageBytes;
+            options.MaxSendMessageSize = GrpcTransportLimits.MaxMessageBytes;
+        });
         builder.Services.AddGrpcHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy("process"), tags: ["live"])
             .AddCheck<DatabaseReadyHealthCheck>("database", tags: ["ready"]);
