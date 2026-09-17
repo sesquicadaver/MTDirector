@@ -1,7 +1,7 @@
 # PLAN-49 — Controller/Desktop gRPC HTTP/2 keepalive after Kestrel body limits
 
 **Date:** 2026-09-17 (inventory **DONE** @ `be206f6c`)  
-**Status:** Inventory **DONE** (W7-340); seed **W7-341 (#1088) DONE**; implement **W7-342 (#1090) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-343 (#1092) OPEN**; predecessor **PLAN-48 COMPLETE**  
+**Status:** Inventory **DONE** (W7-340); seed **W7-341 (#1088) DONE**; implement **W7-342 (#1090) DONE**; COMPLETE seed **W7-343 (#1092) OPEN** (**§3.C NEXT**); predecessor **PLAN-48 COMPLETE**  
 **PLAN issue / queue:** [W7-340 / PLAN-49 #1087](https://github.com/sesquicadaver/MTDirector/issues/1087) **DONE**  
 **Predecessor:** PLAN-48 Controller Kestrel request-body / HTTP2 limits **COMPLETE** (CTRL-KESTREL-BODY-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs) (`ConfigureKestrel`), [`DesktopGrpcHttpHandlerFactory.cs`](../../src/Mfc.Desktop/Services/DesktopGrpcHttpHandlerFactory.cs), [`ControllerConnectionService.cs`](../../src/Mfc.Desktop/Services/ControllerConnectionService.cs), [`installation.md`](../operations/installation.md) / [`controller-configuration.md`](../operations/controller-configuration.md)  
@@ -55,7 +55,7 @@ Splitting Controller vs Desktop keepalive into two ranks would be vanity; Type=n
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-GRPC-KEEPALIVE-01** | Author minimal correct HTTP/2 keepalive (Controller + Desktop) for Watch longevity + docs/Living Spec; keep MSI/AppImage and Type=notify locked | No KeepAlivePing @ `be206f6c` (Kestrel MaxValue / Sockets Infinite) | after inventory **W7-340 DONE**; seed **W7-341 (#1088) DONE**; implement **W7-342 (#1090) OPEN**; COMPLETE **W7-343 (#1092) OPEN** |
+| 1 | **CTRL-GRPC-KEEPALIVE-01** | Author minimal correct HTTP/2 keepalive (Controller + Desktop) for Watch longevity + docs/Living Spec; keep MSI/AppImage and Type=notify locked | No KeepAlivePing @ `be206f6c` (Kestrel MaxValue / Sockets Infinite) | implement **W7-342 (#1090) DONE**; COMPLETE **W7-343 (#1092) OPEN**; seed **W7-341 (#1088) DONE** |
 
 Inventory (**W7-340 DONE**) confirmed sole rank. Seed **W7-341 DONE** advanced NEXT to the KEEPALIVE implement; COMPLETE follow-up **W7-343** open.
 
@@ -80,8 +80,13 @@ PLAN-48 sole ranked row (**CTRL-KESTREL-BODY-01**) is **DONE**. No further PLAN-
 1. **PLAN-48 COMPLETE** (W7-338 CTRL-KESTREL-BODY-01; seed **W7-339 DONE**).  
 2. **W7-340 DONE** — PLAN-49 inventory; opened **W7-342 (#1090)** CTRL-GRPC-KEEPALIVE-01 implement.  
 3. **W7-341 DONE** — seed advanced NEXT to CTRL-GRPC-KEEPALIVE-01; opened COMPLETE **W7-343 (#1092)**.  
-4. **W7-342 OPEN** — execute ranked CTRL-GRPC-KEEPALIVE-01 (**§3.C NEXT**).
+4. **W7-342 DONE** — sole CTRL-GRPC-KEEPALIVE-01 shipped.  
+5. **W7-343 OPEN** — PLAN-49 COMPLETE seed (**§3.C NEXT**).
+
+## Delivery notes (W7-342)
+
+Controller `ConfigureKestrel` sets `Limits.Http2.KeepAlivePingDelay` / `KeepAlivePingTimeout` and Desktop `SocketsHttpHandler` uses shared `GrpcHttp2KeepAlive` (**PingDelay = 60s**, **PingTimeout = 30s**). Finite fail-closed; never MaxValue/Infinite. Docs: `installation.md` §11 + `controller-configuration.md`. MSGSIZE/BODY/health/metrics/tracing/correlation/resource unchanged.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-342 (#1090)** — CTRL-GRPC-KEEPALIVE-01 Finite HTTP/2 keepalive for Controller+Desktop Watch streams.
+**§3.C NEXT = W7-343 (#1092)** — Seed next after CTRL-GRPC-KEEPALIVE-01 (PLAN-49 COMPLETE).

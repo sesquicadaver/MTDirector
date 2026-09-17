@@ -34,7 +34,7 @@ public sealed class Plan49ControllerGrpcHttp2KeepaliveW7340LivingSpecTests
         Assert.Contains("KeepAlivePingTimeout = 30s", plan49, StringComparison.Ordinal);
         Assert.Contains("TimeSpan.MaxValue", plan49, StringComparison.Ordinal);
         Assert.Contains("InfiniteTimeSpan", plan49, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-342 (#1090)", plan49, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-343 (#1092)", plan49, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-340 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-GRPC-KEEPALIVE-01", limitations, StringComparison.Ordinal);
@@ -53,10 +53,10 @@ public sealed class Plan49ControllerGrpcHttp2KeepaliveW7340LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-342 | [#1090](https://github.com/sesquicadaver/MTDirector/issues/1090) | CTRL-GRPC-KEEPALIVE-01 — Finite HTTP/2 keepalive for Controller+Desktop Watch streams | **OPEN**",
+            "W7-342 | [#1090](https://github.com/sesquicadaver/MTDirector/issues/1090) | CTRL-GRPC-KEEPALIVE-01 — Finite HTTP/2 keepalive for Controller+Desktop Watch streams | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-342 (#1090)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-343 (#1092)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-341", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-342", continuous, StringComparison.Ordinal);
@@ -65,13 +65,13 @@ public sealed class Plan49ControllerGrpcHttp2KeepaliveW7340LivingSpecTests
         Assert.Contains("plan-49-controller-grpc-http2-keepalive.md", docsIndex, StringComparison.Ordinal);
         Assert.Contains("Plan49ControllerGrpcHttp2KeepaliveW7340", testing, StringComparison.Ordinal);
 
-        // Pre-implement: keepalive still absent (inventory does not ship code).
+        // KEEPALIVE-01 shipped: KeepAlivePing aligned on Controller + Desktop.
         Assert.Contains("ConfigureKestrel", program, StringComparison.Ordinal);
         Assert.Contains("MaxRequestBodySize = GrpcTransportLimits.MaxMessageBytes", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("KeepAlivePingDelay", program, StringComparison.Ordinal);
+        Assert.Contains("KeepAlivePingDelay = GrpcHttp2KeepAlive.PingDelay", program, StringComparison.Ordinal);
         Assert.Contains("EnableMultipleHttp2Connections", desktopHandler, StringComparison.Ordinal);
-        Assert.DoesNotContain("KeepAlivePingDelay", desktopHandler, StringComparison.Ordinal);
-        Assert.DoesNotContain("KeepAlivePingTimeout", desktopHandler, StringComparison.Ordinal);
+        Assert.Contains("KeepAlivePingDelay = GrpcHttp2KeepAlive.PingDelay", desktopHandler, StringComparison.Ordinal);
+        Assert.Contains("KeepAlivePingTimeout = GrpcHttp2KeepAlive.PingTimeout", desktopHandler, StringComparison.Ordinal);
         Assert.True(File.Exists(Path.Combine(root, "src/Mfc.Controller/Program.cs")));
     }
 

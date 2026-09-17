@@ -3939,6 +3939,15 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan49ControllerGrpcHttp2Keepa
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7341"`.
 
+## Living Specification — CTRL-GRPC-KEEPALIVE-01 (W7-342)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| Shared GrpcHttp2KeepAlive 60s/30s on Controller+Desktop | GrpcHttp2KeepAlive.cs, Program.cs, DesktopGrpcHttpHandlerFactory | `CtrlGrpcKeepalive01ControllerDesktopHttp2KeepaliveLivingSpecTests.Ac1SharedConstantsAndBothSidesConfigureFiniteHttp2Keepalive` |
+| Docs + queue lock keepalive intervals | testing.md, known-limitations, ROADMAP, plan-49 | `CtrlGrpcKeepalive01ControllerDesktopHttp2KeepaliveLivingSpecTests.Ac2DocsAndQueueLockHttp2KeepaliveIntervals` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~CtrlGrpcKeepalive01ControllerDesktopHttp2Keepalive"`.
+
 ## Living Specification — Product tranche seed CTRL-LOG-OTEL-CORRELATE-01 after PLAN-45 inventory (W7-325)
 
 | Requirement | Artifact | Test |
