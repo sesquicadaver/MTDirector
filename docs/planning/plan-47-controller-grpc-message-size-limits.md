@@ -88,4 +88,4 @@ Shared `Mfc.Contracts.GrpcTransportLimits.MaxMessageBytes` = **256 MiB** (268435
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-339 (#1084)** — PLAN-48 Inventory Controller Kestrel request-body / HTTP2 limits after PLAN-47.
+**§3.C NEXT = W7-340 (#1087)** — PLAN-48 Inventory Controller Kestrel request-body / HTTP2 limits after PLAN-47.

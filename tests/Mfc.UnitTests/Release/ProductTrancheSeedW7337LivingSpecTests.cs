@@ -33,22 +33,30 @@ public sealed class ProductTrancheSeedW7337LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-339 | [#1084](https://github.com/sesquicadaver/MTDirector/issues/1084) | Seed next after CTRL-KESTREL-BODY-01 (PLAN-48 COMPLETE) | **OPEN**",
+            "W7-339 | [#1084](https://github.com/sesquicadaver/MTDirector/issues/1084) | Seed next after CTRL-KESTREL-BODY-01 (PLAN-48 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-339 (#1084)", roadmap, StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-340 | [#1087](https://github.com/sesquicadaver/MTDirector/issues/1087) | PLAN-49 — Inventory Controller/Desktop gRPC HTTP/2 keepalive after Kestrel body limits | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-341 | [#1088](https://github.com/sesquicadaver/MTDirector/issues/1088) | Seed first PLAN-49 atomic row after inventory → CTRL-GRPC-KEEPALIVE-01 | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-340 (#1087)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-337", plan, StringComparison.Ordinal);
         Assert.Contains("W7-338", plan, StringComparison.Ordinal);
         Assert.Contains("W7-339", plan, StringComparison.Ordinal);
         Assert.Contains("CTRL-KESTREL-BODY-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-340 (#1087)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-337 (#1080) DONE", plan48, StringComparison.Ordinal);
         Assert.Contains("CTRL-KESTREL-BODY-01", plan48, StringComparison.Ordinal);
         Assert.Contains("W7-338", plan48, StringComparison.Ordinal);
         Assert.Contains("W7-339", plan48, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan48, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-340 (#1087)", plan48, StringComparison.Ordinal);
 
         // BODY-01 shipped after this seed; MaxRequestBodySize now aligned.
         Assert.Contains("ConfigureKestrel", program, StringComparison.Ordinal);

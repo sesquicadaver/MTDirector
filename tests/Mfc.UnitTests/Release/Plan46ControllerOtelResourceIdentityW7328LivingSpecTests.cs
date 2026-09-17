@@ -36,7 +36,7 @@ public sealed class Plan46ControllerOtelResourceIdentityW7328LivingSpecTests
         Assert.Contains("service.name", plan46, StringComparison.Ordinal);
         Assert.Contains("service.version", plan46, StringComparison.Ordinal);
         Assert.Contains("opt-in", plan46, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan46, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-340 (#1087)", plan46, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-328 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-HTTP-OTEL-RESOURCE-01", limitations, StringComparison.Ordinal);
@@ -89,10 +89,18 @@ public sealed class Plan46ControllerOtelResourceIdentityW7328LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-339 | [#1084](https://github.com/sesquicadaver/MTDirector/issues/1084) | Seed next after CTRL-KESTREL-BODY-01 (PLAN-48 COMPLETE) | **OPEN**",
+            "W7-339 | [#1084](https://github.com/sesquicadaver/MTDirector/issues/1084) | Seed next after CTRL-KESTREL-BODY-01 (PLAN-48 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-339 (#1084)", roadmap, StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-340 | [#1087](https://github.com/sesquicadaver/MTDirector/issues/1087) | PLAN-49 — Inventory Controller/Desktop gRPC HTTP/2 keepalive after Kestrel body limits | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-341 | [#1088](https://github.com/sesquicadaver/MTDirector/issues/1088) | Seed first PLAN-49 atomic row after inventory → CTRL-GRPC-KEEPALIVE-01 | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-340 (#1087)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-329", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-330", continuous, StringComparison.Ordinal);

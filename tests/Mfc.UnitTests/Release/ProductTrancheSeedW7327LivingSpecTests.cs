@@ -77,27 +77,35 @@ public sealed class ProductTrancheSeedW7327LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-339 | [#1084](https://github.com/sesquicadaver/MTDirector/issues/1084) | Seed next after CTRL-KESTREL-BODY-01 (PLAN-48 COMPLETE) | **OPEN**",
+            "W7-339 | [#1084](https://github.com/sesquicadaver/MTDirector/issues/1084) | Seed next after CTRL-KESTREL-BODY-01 (PLAN-48 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-339 (#1084)", roadmap, StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-340 | [#1087](https://github.com/sesquicadaver/MTDirector/issues/1087) | PLAN-49 — Inventory Controller/Desktop gRPC HTTP/2 keepalive after Kestrel body limits | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-341 | [#1088](https://github.com/sesquicadaver/MTDirector/issues/1088) | Seed first PLAN-49 atomic row after inventory → CTRL-GRPC-KEEPALIVE-01 | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-340 (#1087)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-45 COMPLETE", plan45, StringComparison.Ordinal);
         Assert.Contains("W7-327 (#1060) DONE", plan45, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan45, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-340 (#1087)", plan45, StringComparison.Ordinal);
         Assert.Contains("plan-46-controller-otel-resource-identity.md", plan45, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-46", plan, StringComparison.Ordinal);
         Assert.Contains("W7-328", plan, StringComparison.Ordinal);
         Assert.Contains("W7-327 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-340 (#1087)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-46-controller-otel-resource-identity.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("CTRL-HTTP-OTEL-RESOURCE-01", plan46, StringComparison.Ordinal);
         Assert.Contains("Inventory **DONE**", plan46, StringComparison.Ordinal);
         Assert.Contains("W7-328", plan46, StringComparison.Ordinal);
         Assert.Contains("W7-329", plan46, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-339 (#1084)", plan46, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-340 (#1087)", plan46, StringComparison.Ordinal);
         Assert.Contains("894cc4b8", plan46, StringComparison.Ordinal);
         Assert.Contains("W7-330", plan46, StringComparison.Ordinal);
 

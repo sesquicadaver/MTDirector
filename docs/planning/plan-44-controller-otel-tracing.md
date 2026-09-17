@@ -83,4 +83,4 @@ PLAN-43 sole ranked row (**CTRL-HTTP-METRICS-01**) is **DONE**. No further PLAN-
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-339 (#1084)** — Seed first PLAN-45 atomic row after inventory → CTRL-LOG-OTEL-CORRELATE-01.
+**§3.C NEXT = W7-340 (#1087)** — Seed first PLAN-45 atomic row after inventory → CTRL-LOG-OTEL-CORRELATE-01.
