@@ -1,7 +1,7 @@
 # PLAN-42 — Controller HTTP liveness/readiness probes (beyond gRPC health)
 
 **Date:** 2026-09-17 (inventory **DONE** @ `ad3718cb`)  
-**Status:** **PLAN-42 COMPLETE** — Inventory **DONE** (W7-312); seed **W7-313 (#1032) DONE**; implement **W7-314 (#1034) DONE**; COMPLETE seed **W7-315 (#1036) DONE**; successor **PLAN-43** inventory **W7-316 (#1039) DONE**; seed **W7-317 (#1040) DONE**; implement **W7-318 (#1042) DONE**; COMPLETE seed **W7-319 (#1044) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-42 COMPLETE** — Inventory **DONE** (W7-312); seed **W7-313 (#1032) DONE**; implement **W7-314 (#1034) DONE**; COMPLETE seed **W7-315 (#1036) DONE**; successor **PLAN-43** inventory **W7-316 (#1039) DONE**; seed **W7-317 (#1040) DONE**; implement **W7-318 (#1042) DONE**; COMPLETE seed **W7-319 (#1044) DONE**; successor **PLAN-44** inventory **W7-320 (#1047) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-312 / PLAN-42 #1031](https://github.com/sesquicadaver/MTDirector/issues/1031) **DONE**  
 **Predecessor:** PLAN-41 Release signing crypto **COMPLETE** (QG-SIGN-02)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
@@ -79,4 +79,4 @@ PLAN-41 sole ranked row (**QG-SIGN-02**) is **DONE**. No further PLAN-41 product
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-319 (#1044)** — Seed next after CTRL-HTTP-METRICS-01 (PLAN-43 COMPLETE).
+**§3.C NEXT = W7-320 (#1047)** — PLAN-44 Inventory Controller OpenTelemetry tracing after PLAN-43.
