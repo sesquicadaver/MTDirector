@@ -1,7 +1,7 @@
 # PLAN-40 — Controller host journald/syslog identity (SyslogIdentifier)
 
 **Date:** 2026-09-17 (inventory **DONE** @ `30bee1c0`; implement **DONE**; **COMPLETE**)  
-**Status:** **PLAN-40 COMPLETE** — Inventory **DONE** (W7-304); seed **W7-305 (#1016) DONE**; implement **W7-306 (#1018) DONE**; COMPLETE seed **W7-307 (#1020) DONE**; successor **PLAN-41** inventory **W7-308 (#1023) DONE**; seed **W7-309 (#1024) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-40 COMPLETE** — Inventory **DONE** (W7-304); seed **W7-305 (#1016) DONE**; implement **W7-306 (#1018) DONE**; COMPLETE seed **W7-307 (#1020) DONE**; successor **PLAN-41** inventory **W7-308 (#1023) DONE**; seed **W7-309 (#1024) DONE**; implement **W7-310 (#1026) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-304 / PLAN-40 #1015](https://github.com/sesquicadaver/MTDirector/issues/1015) **DONE**  
 **Predecessor:** PLAN-39 Controller host operator doc packaging **COMPLETE** (OPS-HOST-DOC-01)  
 **Normative files:** [`mfc-controller.service`](../../packaging/systemd/mfc-controller.service), [`installation.md`](../operations/installation.md), [`packaging.md`](../release/packaging.md)  
@@ -78,4 +78,4 @@ PLAN-39 sole ranked row (**OPS-HOST-DOC-01**) is **DONE**. No further PLAN-39 pr
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-309 (#1024)** — Seed first PLAN-41 atomic row after inventory → QG-SIGN-02.
+**§3.C NEXT = W7-310 (#1026)** — QG-SIGN-02 opt-in cryptographic signing gate.
