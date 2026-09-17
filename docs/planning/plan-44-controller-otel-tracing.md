@@ -1,7 +1,7 @@
 # PLAN-44 — Controller OpenTelemetry tracing beyond metrics scrape
 
 **Date:** 2026-09-17 (inventory **DONE** @ `0929ef8d`)  
-**Status:** Inventory **DONE** (W7-320); seed **W7-321 (#1048) DONE**; implement **W7-322 (#1050) DONE**; COMPLETE seed **W7-323 (#1052) OPEN** (**§3.C NEXT**); predecessor **PLAN-43 COMPLETE**  
+**Status:** **PLAN-44 COMPLETE** — Inventory **DONE** (W7-320); seed **W7-321 (#1048) DONE**; implement **W7-322 (#1050) DONE**; COMPLETE seed **W7-323 (#1052) DONE**; successor **PLAN-45** inventory **W7-324 (#1055) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-320 / PLAN-44 #1047](https://github.com/sesquicadaver/MTDirector/issues/1047) **DONE**  
 **Predecessor:** PLAN-43 Controller metrics / OpenTelemetry scrape **COMPLETE** (CTRL-HTTP-METRICS-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
@@ -70,6 +70,7 @@ PLAN-43 sole ranked row (**CTRL-HTTP-METRICS-01**) is **DONE**. No further PLAN-
 - Nested ListBox item-template hosts — deferred vanity  
 - Native MSI / AppImage / self-contained publish default — W7-22 lock  
 - systemd Type=notify/WatchdogSec — deferred packaging polish  
+- Controller log↔trace correlation (TraceId/SpanId on JSON console logs) — seeded as **PLAN-45** [`plan-45-controller-log-trace-correlation.md`](plan-45-controller-log-trace-correlation.md)
 - Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates
 
 ## §3.C ordering
@@ -78,8 +79,8 @@ PLAN-43 sole ranked row (**CTRL-HTTP-METRICS-01**) is **DONE**. No further PLAN-
 2. **W7-320 DONE** — PLAN-44 inventory; opened **W7-322 (#1050)** CTRL-HTTP-OTEL-TRACE-01 implement.  
 3. **W7-321 DONE** — seed advanced NEXT to CTRL-HTTP-OTEL-TRACE-01; opened COMPLETE **W7-323 (#1052)**.  
 4. **W7-322 DONE** — sole CTRL-HTTP-OTEL-TRACE-01 shipped (opt-in WithTracing + OTLP/console exporters + docs/Living Spec).
-5. **W7-323 OPEN** — PLAN-44 COMPLETE seed → PLAN-45.
+5. **W7-323 DONE** — PLAN-44 COMPLETE; seeded PLAN-45 inventory **W7-324**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-323 (#1052)** — Seed next after CTRL-HTTP-OTEL-TRACE-01 (PLAN-44 COMPLETE).
+**§3.C NEXT = W7-324 (#1055)** — PLAN-45 Inventory Controller log↔trace correlation after PLAN-44.
