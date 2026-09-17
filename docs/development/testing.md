@@ -3890,6 +3890,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7335"`.
 
 
 
+## Living Specification — PLAN-48 inventory Controller Kestrel request-body / HTTP2 limits (W7-336)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| PLAN-48 inventory ranks sole CTRL-KESTREL-BODY-01 + seeds | plan-48, Program.cs, ROADMAP, known-limitations | `Plan48ControllerKestrelRequestBodyLimitsW7336LivingSpecTests.Ac1Plan48InventoryDocumentsSoleCtrlKestrelBody01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan48ControllerKestrelRequestBodyLimitsW7336"`.
+
 ## Living Specification — Product tranche seed CTRL-LOG-OTEL-CORRELATE-01 after PLAN-45 inventory (W7-325)
 
 | Requirement | Artifact | Test |

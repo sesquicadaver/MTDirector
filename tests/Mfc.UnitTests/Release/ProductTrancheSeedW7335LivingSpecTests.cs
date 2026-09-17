@@ -33,31 +33,35 @@ public sealed class ProductTrancheSeedW7335LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-336 | [#1079](https://github.com/sesquicadaver/MTDirector/issues/1079) | PLAN-48 — Inventory Controller Kestrel request-body / HTTP2 limits after gRPC message-size | **OPEN**",
+            "W7-336 | [#1079](https://github.com/sesquicadaver/MTDirector/issues/1079) | PLAN-48 — Inventory Controller Kestrel request-body / HTTP2 limits after gRPC message-size | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-337 | [#1080](https://github.com/sesquicadaver/MTDirector/issues/1080) | Seed first PLAN-48 atomic row after inventory → CTRL-KESTREL-BODY-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-336 (#1079)", roadmap, StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-338 | [#1082](https://github.com/sesquicadaver/MTDirector/issues/1082) | CTRL-KESTREL-BODY-01 — Align Kestrel MaxRequestBodySize with GrpcTransportLimits (256 MiB) | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-337 (#1080)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-47 COMPLETE", plan47, StringComparison.Ordinal);
         Assert.Contains("W7-335 (#1076) DONE", plan47, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-336 (#1079)", plan47, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-337 (#1080)", plan47, StringComparison.Ordinal);
         Assert.Contains("plan-48-controller-kestrel-request-body-limits.md", plan47, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-48", plan, StringComparison.Ordinal);
         Assert.Contains("W7-336", plan, StringComparison.Ordinal);
         Assert.Contains("W7-335 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-336 (#1079)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-337 (#1080)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-48-controller-kestrel-request-body-limits.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("CTRL-KESTREL-BODY-01", plan48, StringComparison.Ordinal);
-        Assert.Contains("Inventory **OPEN**", plan48, StringComparison.Ordinal);
+        Assert.Contains("Inventory **DONE**", plan48, StringComparison.Ordinal);
         Assert.Contains("W7-336", plan48, StringComparison.Ordinal);
         Assert.Contains("W7-337", plan48, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-336 (#1079)", plan48, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-337 (#1080)", plan48, StringComparison.Ordinal);
         Assert.Contains("MaxRequestBodySize", plan48, StringComparison.Ordinal);
 
         Assert.Contains("MaxReceiveMessageSize = GrpcTransportLimits.MaxMessageBytes", program, StringComparison.Ordinal);

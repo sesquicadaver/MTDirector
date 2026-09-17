@@ -30,17 +30,17 @@ public sealed class ProductTrancheSeedW7251LivingSpecTests
             "W7-252 | [#910](https://github.com/sesquicadaver/MTDirector/issues/910) | DESK-CONN-HEALTH-01 — Connected-state periodic gRPC health probe after Controller stop | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-336 (#1079)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-337 (#1080)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-251 DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-252", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-HEALTH-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-336 (#1079)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-337 (#1080)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-251 DONE", plan29, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-HEALTH-01", plan29, StringComparison.Ordinal);
         Assert.Contains("W7-252", plan29, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-336 (#1079)", plan29, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-337 (#1080)", plan29, StringComparison.Ordinal);
         Assert.Contains("seeded as **W7-252**", limitations, StringComparison.Ordinal);
     }
 
