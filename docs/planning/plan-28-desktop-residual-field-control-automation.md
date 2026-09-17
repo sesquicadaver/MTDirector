@@ -1,7 +1,7 @@
 # PLAN-28 — Desktop residual field / control AutomationProperties tranche
 
 **Date:** 2026-09-15 (inventory **DONE** 2026-09-15; **COMPLETE** 2026-09-15)  
-**Status:** **PLAN-28 COMPLETE** — Inventory **DONE** (W7-244); seed **W7-245 (#896) DONE**; **DESK-A11Y-FIELD-01 W7-246 (#898) DONE**; seed **W7-247 (#899) DONE**; **DESK-A11Y-CTRL-01 W7-248 (#903) DONE**; seed **W7-249 (#904) DONE**; successor **PLAN-29 COMPLETE**; successor **PLAN-30 COMPLETE**; successor **PLAN-31** inventory **W7-262 (#931) OPEN**; **§3.C NEXT = W7-326 (#1058)**  
+**Status:** **PLAN-28 COMPLETE** — Inventory **DONE** (W7-244); seed **W7-245 (#896) DONE**; **DESK-A11Y-FIELD-01 W7-246 (#898) DONE**; seed **W7-247 (#899) DONE**; **DESK-A11Y-CTRL-01 W7-248 (#903) DONE**; seed **W7-249 (#904) DONE**; successor **PLAN-29 COMPLETE**; successor **PLAN-30 COMPLETE**; successor **PLAN-31** inventory **W7-262 (#931) OPEN**; **§3.C NEXT = W7-327 (#1060)**  
 **PLAN issue / queue:** [W7-244 / PLAN-28 #895](https://github.com/sesquicadaver/MTDirector/issues/895) **DONE**  
 **Predecessor:** PLAN-27 Desktop Snapshot/Node/Drift/Audit button AutomationProperties residual **COMPLETE**; button-name waves PLAN-16…27  
 **Successor:** [`plan-29-desktop-connection-health-reconnect.md`](plan-29-desktop-connection-health-reconnect.md) (Desktop connection health / reconnect after Controller stop; AUDIT §18 residual)  
@@ -78,4 +78,4 @@ PLAN-27 ranks 1…2 (**DESK-A11Y-SNAP-01**, **DESK-A11Y-PANEL-01**) are **DONE**
 
 ## §3.C NEXT
 
-**PLAN-28 COMPLETE.** Successor **PLAN-29 COMPLETE**; successor **PLAN-30 COMPLETE**; successor **PLAN-31** inventory **OPEN** (W7-262). **§3.C NEXT = W7-326 (#1058)** — PLAN-31 inventory.
+**PLAN-28 COMPLETE.** Successor **PLAN-29 COMPLETE**; successor **PLAN-30 COMPLETE**; successor **PLAN-31** inventory **OPEN** (W7-262). **§3.C NEXT = W7-327 (#1060)** — PLAN-31 inventory.

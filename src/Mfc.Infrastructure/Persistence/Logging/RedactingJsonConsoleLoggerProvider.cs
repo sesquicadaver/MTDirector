@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
@@ -6,6 +7,8 @@ namespace Mfc.Infrastructure.Persistence.Logging;
 
 /// <summary>
 /// JSON console logger that redacts connection-string and credential-shaped secrets from messages and exceptions.
+/// When <see cref="Activity.Current"/> is present, enriches the payload with W3C <c>traceId</c>/<c>spanId</c>
+/// so journald lines can be joined to OpenTelemetry traces (CTRL-LOG-OTEL-CORRELATE-01).
 /// </summary>
 public sealed class RedactingJsonConsoleLoggerProvider : ILoggerProvider
 {
@@ -50,6 +53,14 @@ public sealed class RedactingJsonConsoleLoggerProvider : ILoggerProvider
                 ["eventId"] = eventId.Id,
                 ["message"] = message,
             };
+
+            Activity? activity = Activity.Current;
+            if (activity is not null)
+            {
+                // W3C hex forms — join keys for OTLP/console spans when tracing is active.
+                payload["traceId"] = activity.TraceId.ToString();
+                payload["spanId"] = activity.SpanId.ToString();
+            }
 
             if (exceptionText is not null)
             {

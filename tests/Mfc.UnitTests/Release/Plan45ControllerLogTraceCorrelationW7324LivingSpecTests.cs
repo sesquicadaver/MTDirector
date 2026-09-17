@@ -35,7 +35,7 @@ public sealed class Plan45ControllerLogTraceCorrelationW7324LivingSpecTests
         Assert.Contains("traceId", plan45, StringComparison.Ordinal);
         Assert.Contains("spanId", plan45, StringComparison.Ordinal);
         Assert.Contains("opt-in", plan45, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("§3.C NEXT = W7-326 (#1058)", plan45, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-327 (#1060)", plan45, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-324 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-LOG-OTEL-CORRELATE-01", limitations, StringComparison.Ordinal);
@@ -52,14 +52,14 @@ public sealed class Plan45ControllerLogTraceCorrelationW7324LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-326 | [#1058](https://github.com/sesquicadaver/MTDirector/issues/1058) | CTRL-LOG-OTEL-CORRELATE-01 — Enrich JSON console logs with Activity TraceId/SpanId | **OPEN**",
+            "W7-326 | [#1058](https://github.com/sesquicadaver/MTDirector/issues/1058) | CTRL-LOG-OTEL-CORRELATE-01 — Enrich JSON console logs with Activity TraceId/SpanId | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-327 | [#1060](https://github.com/sesquicadaver/MTDirector/issues/1060) | Seed next after CTRL-LOG-OTEL-CORRELATE-01 (PLAN-45 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-326 (#1058)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-327 (#1060)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-325", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-326", continuous, StringComparison.Ordinal);
@@ -75,8 +75,8 @@ public sealed class Plan45ControllerLogTraceCorrelationW7324LivingSpecTests
         Assert.Contains("/health/live", program, StringComparison.Ordinal);
         Assert.Contains("MapPrometheusScrapingEndpoint", program, StringComparison.Ordinal);
         Assert.Contains("WithTracing", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("Activity.Current", logger, StringComparison.Ordinal);
-        Assert.DoesNotContain("traceId", logger, StringComparison.Ordinal);
+        Assert.Contains("Activity.Current", logger, StringComparison.Ordinal);
+        Assert.Contains("traceId", logger, StringComparison.Ordinal);
         Assert.Contains("/health/live", packagingDoc, StringComparison.Ordinal);
         Assert.True(File.Exists(Path.Combine(root, "src/Mfc.Infrastructure/Persistence/Logging/RedactingJsonConsoleLoggerProvider.cs")));
     }

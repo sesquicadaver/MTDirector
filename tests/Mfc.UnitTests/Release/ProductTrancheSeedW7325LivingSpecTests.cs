@@ -29,32 +29,33 @@ public sealed class ProductTrancheSeedW7325LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-326 | [#1058](https://github.com/sesquicadaver/MTDirector/issues/1058) | CTRL-LOG-OTEL-CORRELATE-01 — Enrich JSON console logs with Activity TraceId/SpanId | **OPEN**",
+            "W7-326 | [#1058](https://github.com/sesquicadaver/MTDirector/issues/1058) | CTRL-LOG-OTEL-CORRELATE-01 — Enrich JSON console logs with Activity TraceId/SpanId | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-327 | [#1060](https://github.com/sesquicadaver/MTDirector/issues/1060) | Seed next after CTRL-LOG-OTEL-CORRELATE-01 (PLAN-45 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-326 (#1058)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-327 (#1060)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-325", plan, StringComparison.Ordinal);
         Assert.Contains("W7-326", plan, StringComparison.Ordinal);
         Assert.Contains("W7-327", plan, StringComparison.Ordinal);
         Assert.Contains("CTRL-LOG-OTEL-CORRELATE-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-326 (#1058)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-327 (#1060)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-325 (#1056) DONE", plan45, StringComparison.Ordinal);
         Assert.Contains("CTRL-LOG-OTEL-CORRELATE-01", plan45, StringComparison.Ordinal);
         Assert.Contains("W7-326", plan45, StringComparison.Ordinal);
         Assert.Contains("W7-327", plan45, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-326 (#1058)", plan45, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-327 (#1060)", plan45, StringComparison.Ordinal);
 
         Assert.Contains("MapHealthChecks", program, StringComparison.Ordinal);
         Assert.Contains("MapPrometheusScrapingEndpoint", program, StringComparison.Ordinal);
         Assert.Contains("WithTracing", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("Activity.Current", logger, StringComparison.Ordinal);
-        Assert.DoesNotContain("traceId", logger, StringComparison.Ordinal);
+        Assert.Contains("Activity.Current", logger, StringComparison.Ordinal);
+        Assert.Contains("traceId", logger, StringComparison.Ordinal);
+        Assert.Contains("spanId", logger, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()
