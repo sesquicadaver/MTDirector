@@ -39,24 +39,24 @@ public sealed class ProductTrancheSeedW7283LivingSpecTests
             "W7-285 | [#976](https://github.com/sesquicadaver/MTDirector/issues/976) | Seed first PLAN-35 atomic row after inventory → DESK-HOST-BUNDLE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-348 (#1103)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-349 (#1104)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-34 COMPLETE", plan34, StringComparison.Ordinal);
         Assert.Contains("W7-283 (#972) DONE", plan34, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-348 (#1103)", plan34, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-349 (#1104)", plan34, StringComparison.Ordinal);
         Assert.Contains("plan-35-desktop-launch-template-publish-bundling.md", plan34, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-35", plan, StringComparison.Ordinal);
         Assert.Contains("W7-284", plan, StringComparison.Ordinal);
         Assert.Contains("W7-283 (#972) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-348 (#1103)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-349 (#1104)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-35-desktop-launch-template-publish-bundling.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("DESK-HOST-BUNDLE-01", plan35, StringComparison.Ordinal);
         Assert.Contains("Inventory **DONE**", plan35, StringComparison.Ordinal);
         Assert.Contains("W7-284", plan35, StringComparison.Ordinal);
         Assert.Contains("W7-285", plan35, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-348 (#1103)", plan35, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-349 (#1104)", plan35, StringComparison.Ordinal);
         Assert.Contains("package-desktop.sh", plan35, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/desktop", plan35, StringComparison.Ordinal);
 

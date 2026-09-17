@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — PLAN-51 inventory (W7-348)
+
+| Criterion | Normative surface | Living Spec |
+|-----------|-------------------|-------------|
+| PLAN-51 inventory ranks sole DESK-GRPC-DEADLINE-01 + seeds | plan-51, ROADMAP, known-limitations, Grpc*Client baseline | `Plan51DesktopGrpcUnaryDeadlineW7348LivingSpecTests.Ac1Plan51InventoryDocumentsSoleDeskGrpcDeadline01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan51DesktopGrpcUnaryDeadlineW7348"`.
+
 ## Living Specification — Seed PLAN-50 after PLAN-49 COMPLETE (W7-343)
 
 | Requirement | Artifact | Test |

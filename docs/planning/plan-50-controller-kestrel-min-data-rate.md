@@ -1,7 +1,7 @@
 # PLAN-50 — Controller Kestrel min request/response data-rate after HTTP/2 keepalive
 
 **Date:** 2026-09-17 (inventory **DONE** @ `be2ac7a8`)  
-**Status:** **PLAN-50 COMPLETE** — Inventory **DONE** (W7-344); seed **W7-345 (#1096) DONE**; implement **W7-346 (#1098) DONE**; COMPLETE seed **W7-347 (#1099) DONE**; successor **PLAN-51** inventory **W7-348 (#1103) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-50 COMPLETE** — Inventory **DONE** (W7-344); seed **W7-345 (#1096) DONE**; implement **W7-346 (#1098) DONE**; COMPLETE seed **W7-347 (#1099) DONE**; successor **PLAN-51** inventory **W7-348 (#1103) DONE**; seed **W7-349 (#1104) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-344 / PLAN-50 #1095](https://github.com/sesquicadaver/MTDirector/issues/1095) **DONE**  
 **Predecessor:** PLAN-49 Controller/Desktop gRPC HTTP/2 keepalive **COMPLETE** (CTRL-GRPC-KEEPALIVE-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs) (`ConfigureKestrel` / `Limits.MinRequestBodyDataRate` / `MinResponseDataRate`), [`installation.md`](../operations/installation.md) / [`controller-configuration.md`](../operations/controller-configuration.md)  
@@ -90,4 +90,4 @@ CTRL-KESTREL-MINRATE-01 shipped: `ConfigureKestrel` sets `Limits.MinRequestBodyD
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-348 (#1103)** — PLAN-51 Inventory Desktop gRPC unary call deadline / timeout after PLAN-50.
+**§3.C NEXT = W7-349 (#1104)** — PLAN-51 Inventory Desktop gRPC unary call deadline / timeout after PLAN-50.

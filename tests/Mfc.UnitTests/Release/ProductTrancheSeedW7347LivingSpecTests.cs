@@ -32,31 +32,31 @@ public sealed class ProductTrancheSeedW7347LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-348 | [#1103](https://github.com/sesquicadaver/MTDirector/issues/1103) | PLAN-51 — Inventory Desktop gRPC unary call deadline / timeout policy | **OPEN**",
+            "W7-348 | [#1103](https://github.com/sesquicadaver/MTDirector/issues/1103) | PLAN-51 — Inventory Desktop gRPC unary call deadline / timeout policy | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-349 | [#1104](https://github.com/sesquicadaver/MTDirector/issues/1104) | Seed first PLAN-51 atomic row after inventory → DESK-GRPC-DEADLINE-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-348 (#1103)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-349 (#1104)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-50 COMPLETE", plan50, StringComparison.Ordinal);
         Assert.Contains("W7-347 (#1099) DONE", plan50, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-348 (#1103)", plan50, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-349 (#1104)", plan50, StringComparison.Ordinal);
         Assert.Contains("plan-51-desktop-grpc-unary-deadline.md", plan50, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-51", plan, StringComparison.Ordinal);
         Assert.Contains("W7-348", plan, StringComparison.Ordinal);
         Assert.Contains("W7-347 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-348 (#1103)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-349 (#1104)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-51-desktop-grpc-unary-deadline.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("DESK-GRPC-DEADLINE-01", plan51, StringComparison.Ordinal);
-        Assert.Contains("Inventory **OPEN**", plan51, StringComparison.Ordinal);
+        Assert.Contains("Inventory **DONE**", plan51, StringComparison.Ordinal);
         Assert.Contains("W7-348", plan51, StringComparison.Ordinal);
         Assert.Contains("W7-349", plan51, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-348 (#1103)", plan51, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-349 (#1104)", plan51, StringComparison.Ordinal);
         Assert.Contains("Deadline", plan51, StringComparison.Ordinal);
 
         Assert.Contains("MinRequestBodyDataRate = null", program, StringComparison.Ordinal);
