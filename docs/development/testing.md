@@ -2036,6 +2036,16 @@ Issue [#976](https://github.com/sesquicadaver/MTDirector/issues/976) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7285"`.
 
+## Living Specification — PLAN-39 Controller host operator doc packaging inventory (W7-300)
+
+Issue [#1007](https://github.com/sesquicadaver/MTDirector/issues/1007) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| PLAN-39 inventory ranks sole OPS-HOST-DOC-01 + seeds | plan-39, package-controller.sh, packaging.md, ROADMAP, known-limitations | `Plan39ControllerHostOperatorDocPackagingW7300LivingSpecTests.Ac1Plan39InventoryDocumentsSoleDocRankAndSeedsOpsHostDoc01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan39ControllerHostOperatorDocPackagingW7300"`.
+
 ## Living Specification — Product tranche seed PLAN-39 after PLAN-38 COMPLETE (W7-299)
 
 Issue [#1004](https://github.com/sesquicadaver/MTDirector/issues/1004) AC → module → tests:

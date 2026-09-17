@@ -33,33 +33,34 @@ public sealed class ProductTrancheSeedW7299LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-300 | [#1007](https://github.com/sesquicadaver/MTDirector/issues/1007) | PLAN-39 — Inventory Controller host operator doc packaging (Documentation=/usr/share/doc/mfc) | **OPEN**",
+            "W7-300 | [#1007](https://github.com/sesquicadaver/MTDirector/issues/1007) | PLAN-39 — Inventory Controller host operator doc packaging (Documentation=/usr/share/doc/mfc) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-301 | [#1008](https://github.com/sesquicadaver/MTDirector/issues/1008) | Seed first PLAN-39 atomic row after inventory → OPS-HOST-DOC-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-300 (#1007)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-301 (#1008)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-38 COMPLETE", plan38, StringComparison.Ordinal);
         Assert.Contains("W7-299 (#1004) DONE", plan38, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-300 (#1007)", plan38, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-301 (#1008)", plan38, StringComparison.Ordinal);
         Assert.Contains("plan-39-controller-host-operator-doc-packaging.md", plan38, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-39", plan, StringComparison.Ordinal);
         Assert.Contains("W7-300", plan, StringComparison.Ordinal);
         Assert.Contains("W7-299 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-300 (#1007)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-301 (#1008)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-39-controller-host-operator-doc-packaging.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("OPS-HOST-DOC-01", plan39, StringComparison.Ordinal);
-        Assert.Contains("Inventory **OPEN**", plan39, StringComparison.Ordinal);
+        Assert.Contains("Inventory **DONE**", plan39, StringComparison.Ordinal);
         Assert.Contains("W7-300", plan39, StringComparison.Ordinal);
         Assert.Contains("W7-301", plan39, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-300 (#1007)", plan39, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-301 (#1008)", plan39, StringComparison.Ordinal);
         Assert.Contains("Documentation=", plan39, StringComparison.Ordinal);
-        Assert.Contains("16f73bd9", plan39, StringComparison.Ordinal);
+        Assert.Contains("7348ba5e", plan39, StringComparison.Ordinal);
+        Assert.Contains("W7-302", plan39, StringComparison.Ordinal);
 
         Assert.Contains("Documentation=file:///usr/share/doc/mfc/README.md", unit, StringComparison.Ordinal);
         Assert.Contains("u mfc", sysusers, StringComparison.Ordinal);
