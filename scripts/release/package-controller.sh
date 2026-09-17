@@ -2,6 +2,8 @@
 # Publish Controller self-contained / framework-dependent package into OUT_DIR/controller.
 # OPS-HOST-BUNDLE-01: also copies PLAN-32 host-process templates into OUT_DIR/controller/
 # (mfc-controller.service + mfc-controller.winsw.xml) so release trees carry them.
+# OPS-HOST-ENV-01: also copies packaging/systemd/mfc-controller.env.example into OUT_DIR/controller/
+# so operators have a documented EnvironmentFile sample beside the unit.
 # Usage: OUT_DIR=/tmp/mfc-rel ./scripts/release/package-controller.sh
 # Dry-run (Living Spec): MFC_RELEASE_DRY_RUN=1 OUT_DIR=... ./scripts/release/package-controller.sh
 set -euo pipefail
@@ -15,13 +17,14 @@ RID="${MFC_RELEASE_RID:-linux-x64}"
 CONFIG="${MFC_RELEASE_CONFIG:-Release}"
 DEST="$OUT_DIR/controller"
 
-# Copy PLAN-32 Controller host-process templates into the publish tree (OPS-HOST-BUNDLE-01).
-# Sources remain canonical under packaging/; copies travel with the release artifact.
+# Copy PLAN-32 Controller host-process templates + PLAN-37 env sample into the publish tree
+# (OPS-HOST-BUNDLE-01 + OPS-HOST-ENV-01). Sources remain canonical under packaging/.
 mfc_controller_bundle_host_templates() {
   local dest="$1"
   mkdir -p "$dest"
   cp -f "$REPO_ROOT/packaging/systemd/mfc-controller.service" "$dest/mfc-controller.service"
   cp -f "$REPO_ROOT/packaging/windows/mfc-controller.winsw.xml" "$dest/mfc-controller.winsw.xml"
+  cp -f "$REPO_ROOT/packaging/systemd/mfc-controller.env.example" "$dest/mfc-controller.env.example"
 }
 
 mkdir -p "$DEST"
