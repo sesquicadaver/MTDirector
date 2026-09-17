@@ -2036,6 +2036,16 @@ Issue [#976](https://github.com/sesquicadaver/MTDirector/issues/976) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7285"`.
 
+## Living Specification — Product tranche seed OPS-HOST-ENV-01 (W7-293)
+
+Issue [#992](https://github.com/sesquicadaver/MTDirector/issues/992) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Seed locks OPS-HOST-ENV-01 as §3.C NEXT | known-limitations, ROADMAP, plan-37, continuous-queue | `ProductTrancheSeedW7293LivingSpecTests.Ac1KnownLimitationsAndQueueSeedOpsHostEnv01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7293"`.
+
 ## Living Specification — PLAN-37 Controller host env sample packaging inventory (W7-292)
 
 Issue [#991](https://github.com/sesquicadaver/MTDirector/issues/991) AC → module → tests:
