@@ -1,0 +1,14 @@
+# MTDirector Controller — systemd-sysusers fragment (OPS-HOST-SYSUSERS-01 / W7-298)
+#
+# Creates the `mfc` system user/group referenced by:
+#   packaging/systemd/mfc-controller.service  (User=mfc / Group=mfc)
+#
+# Install sketch:
+#   sudo install -m 0644 packaging/systemd/mfc-controller.sysusers /usr/lib/sysusers.d/mfc-controller.conf
+#   sudo systemd-sysusers mfc-controller.conf
+#   # or: sudo systemctl restart systemd-sysusers.service
+#
+# Also bundled into OUT_DIR/controller/ by scripts/release/package-controller.sh.
+# Do not invent MSI/AppImage (W7-22).
+
+u mfc - "MTDirector MikroTik Firewall Controller" /var/lib/mfc /usr/sbin/nologin

@@ -162,7 +162,7 @@ ls -la "$OUT_DIR"
 
 Артефакти:
 
-- `OUT_DIR/controller/` — `Mfc.Controller` (включно з `mfc-controller.service` + `mfc-controller.winsw.xml`, OPS-HOST-BUNDLE-01, + `mfc-controller.env.example`, OPS-HOST-ENV-01)
+- `OUT_DIR/controller/` — `Mfc.Controller` (включно з `mfc-controller.service` + `mfc-controller.winsw.xml`, OPS-HOST-BUNDLE-01, + `mfc-controller.env.example`, OPS-HOST-ENV-01, + `mfc-controller.sysusers` + `mfc-controller.tmpfiles`, OPS-HOST-SYSUSERS-01)
 - `OUT_DIR/desktop/` (включно з `mfc-desktop.desktop` + `mfc-desktop-start-menu.ps1`, DESK-HOST-BUNDLE-01) + `Mfc.Desktop-linux-x64.zip` (або `.tar.gz`)
 - `OUT_DIR/migrations/mfc-ef-migrations`
 - `OUT_DIR/SHA256SUMS`
@@ -201,7 +201,7 @@ cd "$OUT_DIR/controller"
 # або спочатку: ./mfc-ef-migrations  (шлях до migrations bundle)
 ```
 
-**Controller (Linux, systemd):** шаблон unit — [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service); `package-controller.sh` також кладе копію в `$OUT_DIR/controller/mfc-controller.service` (OPS-HOST-BUNDLE-01). Приклад EnvironmentFile — [`../../packaging/systemd/mfc-controller.env.example`](../../packaging/systemd/mfc-controller.env.example) (також у `$OUT_DIR/controller/`, OPS-HOST-ENV-01). Типово: скопіювати publish tree у `/opt/mfc/controller`, встановити unit у `/etc/systemd/system/`, скопіювати env.example → `/etc/mfc/controller.env` і заповнити `MFC__…`, потім `systemctl enable --now mfc-controller.service`. Деталі — [`../operations/installation.md`](../operations/installation.md).
+**Controller (Linux, systemd):** шаблон unit — [`../../packaging/systemd/mfc-controller.service`](../../packaging/systemd/mfc-controller.service); `package-controller.sh` також кладе копію в `$OUT_DIR/controller/mfc-controller.service` (OPS-HOST-BUNDLE-01). Приклад EnvironmentFile — [`../../packaging/systemd/mfc-controller.env.example`](../../packaging/systemd/mfc-controller.env.example) (також у `$OUT_DIR/controller/`, OPS-HOST-ENV-01). Sysusers/tmpfiles — [`../../packaging/systemd/mfc-controller.sysusers`](../../packaging/systemd/mfc-controller.sysusers) + [`../../packaging/systemd/mfc-controller.tmpfiles`](../../packaging/systemd/mfc-controller.tmpfiles) (також у `$OUT_DIR/controller/`, OPS-HOST-SYSUSERS-01). Типово: `systemd-sysusers` + `systemd-tmpfiles --create`, скопіювати publish tree у `/opt/mfc/controller`, встановити unit у `/etc/systemd/system/`, скопіювати env.example → `/etc/mfc/controller.env` і заповнити `MFC__…`, потім `systemctl enable --now mfc-controller.service`. Деталі — [`../operations/installation.md`](../operations/installation.md).
 
 **Controller (Windows, WinSW):** шаблон — [`../../packaging/windows/mfc-controller.winsw.xml`](../../packaging/windows/mfc-controller.winsw.xml); `package-controller.sh` також кладе копію в `$OUT_DIR/controller/mfc-controller.winsw.xml` (OPS-HOST-BUNDLE-01). Типово: `MFC_RELEASE_RID=win-x64` publish → `C:\mfc\controller\`, скопіювати XML як `mfc-controller.xml` поруч із WinSW `mfc-controller.exe`, виставити `MFC__…`, потім `mfc-controller.exe install/start`. Деталі — [`../operations/installation.md`](../operations/installation.md).
 
