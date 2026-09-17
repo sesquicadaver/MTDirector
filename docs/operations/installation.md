@@ -45,6 +45,9 @@ sudo cp packaging/systemd/mfc-controller.env.example /etc/mfc/controller.env
 sudo systemctl daemon-reload
 sudo systemctl enable --now mfc-controller.service
 sudo systemctl status mfc-controller.service
+# OPS-HOST-LOG-01 — unit sets SyslogIdentifier=mfc-controller + StandardOutput/Error=journal:
+sudo journalctl -u mfc-controller.service -e
+sudo journalctl -t mfc-controller -e
 ```
 
 ### Windows Service / WinSW (OPS-HOST-WINSVC-01)

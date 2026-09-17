@@ -2047,6 +2047,18 @@ Issue [#1012](https://github.com/sesquicadaver/MTDirector/issues/1012) AC → mo
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7303"`.
 
 
+
+## Living Specification — OPS-HOST-LOG-01 Controller journald/syslog identity (W7-306)
+
+Issue [#1018](https://github.com/sesquicadaver/MTDirector/issues/1018) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Unit SyslogIdentifier + journal stdout/stderr + docs lock | `mfc-controller.service`, packaging/HOWTO/installation | `OpsHostLog01ControllerJournaldIdentityW7306LivingSpecTests.Ac1UnitHasSyslogIdentifierAndJournalStdoutDocsLock` |
+| dry-run bundled unit carries identity | `scripts/release/package-controller.sh` | `OpsHostLog01ControllerJournaldIdentityW7306LivingSpecTests.Ac2DryRunPublishTreeBundledUnitCarriesSyslogIdentifier` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~OpsHostLog01ControllerJournaldIdentityW7306"`.
+
 ## Living Specification — Product tranche seed OPS-HOST-LOG-01 (W7-305)
 
 Issue [#1016](https://github.com/sesquicadaver/MTDirector/issues/1016) AC → module → tests:

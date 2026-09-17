@@ -29,29 +29,29 @@ public sealed class ProductTrancheSeedW7305LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-306 | [#1018](https://github.com/sesquicadaver/MTDirector/issues/1018) | OPS-HOST-LOG-01 — SyslogIdentifier + journal stdout/stderr on mfc-controller.service | **OPEN**",
+            "W7-306 | [#1018](https://github.com/sesquicadaver/MTDirector/issues/1018) | OPS-HOST-LOG-01 — SyslogIdentifier + journal stdout/stderr on mfc-controller.service | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-307 | [#1020](https://github.com/sesquicadaver/MTDirector/issues/1020) | Seed next after OPS-HOST-LOG-01 (PLAN-40 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-306 (#1018)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-307 (#1020)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-305", plan, StringComparison.Ordinal);
         Assert.Contains("W7-306", plan, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-LOG-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-306 (#1018)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-307 (#1020)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-305 (#1016) DONE", plan40, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-LOG-01", plan40, StringComparison.Ordinal);
         Assert.Contains("W7-306", plan40, StringComparison.Ordinal);
         Assert.Contains("W7-307", plan40, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-306 (#1018)", plan40, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-307 (#1020)", plan40, StringComparison.Ordinal);
 
         Assert.Contains("DEST=\"$OUT_DIR/controller\"", packageController, StringComparison.Ordinal);
         Assert.Contains("mfc-controller.service", packageController, StringComparison.Ordinal);
-        Assert.DoesNotContain("SyslogIdentifier=", unit, StringComparison.Ordinal);
+        Assert.Contains("SyslogIdentifier=mfc-controller", unit, StringComparison.Ordinal);
         Assert.True(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.service")));
     }
 
