@@ -1,8 +1,8 @@
 # PLAN-42 — Controller HTTP liveness/readiness probes (beyond gRPC health)
 
-**Date:** 2026-09-17 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-312); seed **W7-313 (#1032) OPEN**; predecessor **PLAN-41 COMPLETE**  
-**PLAN issue / queue:** [W7-312 / PLAN-42 #1031](https://github.com/sesquicadaver/MTDirector/issues/1031) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-17 (inventory **DONE** @ `ad3718cb`)  
+**Status:** Inventory **DONE** (W7-312); seed **W7-313 (#1032) OPEN** (**§3.C NEXT**); implement **W7-314 (#1034) OPEN**; predecessor **PLAN-41 COMPLETE**  
+**PLAN issue / queue:** [W7-312 / PLAN-42 #1031](https://github.com/sesquicadaver/MTDirector/issues/1031) **DONE**  
 **Predecessor:** PLAN-41 Release signing crypto **COMPLETE** (QG-SIGN-02)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
 **Normative prior locks:** gRPC health (`MapGrpcHealthChecksService`); QG-SIGN-01/02; PLAN-32…41 packaging/signing — **do not regress**  
@@ -28,22 +28,25 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - Full OpenTelemetry/metrics stack (inventory may defer)  
 - systemd `Type=notify` / `WatchdogSec` packaging polish (explicitly deferred / saturating)
 
-## Inventory evidence (seed baseline 2026-09-17 `main` @ PLAN-41 COMPLETE / `1e0c475c`)
+## Inventory evidence (W7-312 @ `main` `ad3718cb`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
-| `Program.cs` | `AddGrpcHealthChecks` + `MapGrpcHealthChecksService` only | No ASP.NET `MapHealthChecks` / HTTP `/health` (live/ready) |
+| `Program.cs` | `AddGrpcHealthChecks` + `MapGrpcHealthChecksService` only; Kestrel `HttpProtocols.Http2` | No ASP.NET `MapHealthChecks` / HTTP `/health/live` + `/health/ready`; classic HTTP/1.1 probes cannot speak Http2-only |
 | `installation.md` | “verify gRPC health” | No HTTP probe guidance for operators/LBs |
-| Glob / rg | HTTP `/health` / `MapHealthChecks` absent under Controller @ `1e0c475c` | Confirmed |
+| `packaging/doc/mfc/README.md` | journald identity docs; no HTTP probes | Operators lack curl/LB probe paths |
+| Glob / rg | HTTP `/health` / `MapHealthChecks` absent under Controller @ `ad3718cb` | Confirmed |
 | Packaging unit | `Type=simple` + journald identity | No HTTP probe docs; Type=notify deferred |
 
-## Ranked Controller HTTP health tranche (seed baseline)
+**Ranking decision:** Prefer **ONE atomic row** (**CTRL-HTTP-HEALTH-01**) covering `/health/live` + `/health/ready` (+ Http1AndHttp2 as needed) + docs/Living Spec alongside existing gRPC health. Splitting live vs ready into two ranks would be vanity; metrics/OTel and Type=notify remain deferred adjacent residuals.
+
+## Ranked Controller HTTP health tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-HTTP-HEALTH-01** | Author HTTP liveness/readiness endpoints (+ docs/Living Spec) alongside existing gRPC health; keep MSI/AppImage locked | gRPC-only health @ `1e0c475c` | after inventory **W7-312**; seed **W7-313 (#1032)** |
+| 1 | **CTRL-HTTP-HEALTH-01** | Author HTTP liveness/readiness endpoints (+ docs/Living Spec) alongside existing gRPC health; keep MSI/AppImage locked; fail-closed readiness when required deps unavailable | gRPC-only health + Http2-only Kestrel @ `ad3718cb` | implement **W7-314 (#1034)** after seed **W7-313 (#1032)** |
 
-Inventory (**W7-312**) may refine ranking and open implement issues; seed **W7-313** advances NEXT to the first implement after inventory DONE.
+Inventory (**W7-312 DONE**) confirmed sole rank. Seed **W7-313** advances NEXT to CTRL-HTTP-HEALTH-01 implement; COMPLETE seed opens after HEALTH-01.
 
 ## Dual track
 
@@ -60,15 +63,16 @@ PLAN-41 sole ranked row (**QG-SIGN-02**) is **DONE**. No further PLAN-41 product
 - Native MSI / AppImage / self-contained publish default — W7-22 lock  
 - Mandatory org-key CI signing on every GitHub Release — future ops (QG-SIGN-02 opt-in already shipped)  
 - systemd Type=notify/WatchdogSec — deferred packaging polish  
+- Full OpenTelemetry/metrics stack — deferred (after probes, not higher than HTTP health)  
 - Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates
 
 ## §3.C ordering
 
 1. **PLAN-41 COMPLETE** (W7-310 QG-SIGN-02; seed **W7-311 DONE**).  
-2. **W7-312 OPEN** — PLAN-42 inventory → open first HTTP-health implement + follow-up seeds.  
-3. **W7-313 OPEN** — seed first PLAN-42 implement after inventory.  
-4. Execute ranked CTRL-HTTP-HEALTH row(s) atomically.
+2. **W7-312 DONE** — PLAN-42 inventory; opened **W7-314 (#1034)** CTRL-HTTP-HEALTH-01 implement.  
+3. **W7-313 OPEN** — seed first PLAN-42 implement → CTRL-HTTP-HEALTH-01 (**§3.C NEXT**).  
+4. Execute sole CTRL-HTTP-HEALTH-01 row atomically; then PLAN-42 COMPLETE seed.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-312 (#1031)** — PLAN-42 Inventory Controller HTTP health probes after PLAN-41.
+**§3.C NEXT = W7-313 (#1032)** — Seed first PLAN-42 atomic row after inventory → CTRL-HTTP-HEALTH-01.

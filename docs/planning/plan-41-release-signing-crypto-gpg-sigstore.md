@@ -1,7 +1,7 @@
 # PLAN-41 — Release signing crypto (GPG/Sigstore beyond QG-SIGN-01)
 
 **Date:** 2026-09-17 (inventory **DONE** @ `190980c0`)  
-**Status:** **PLAN-41 COMPLETE** — Inventory **DONE** (W7-308); seed **W7-309 (#1024) DONE**; implement **W7-310 (#1026) DONE**; COMPLETE seed **W7-311 (#1028) DONE**; successor **PLAN-42** inventory **W7-312 (#1031) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-41 COMPLETE** — Inventory **DONE** (W7-308); seed **W7-309 (#1024) DONE**; implement **W7-310 (#1026) DONE**; COMPLETE seed **W7-311 (#1028) DONE**; successor **PLAN-42** inventory **W7-312 (#1031) DONE**; seed **W7-313 (#1032) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-308 / PLAN-41 #1023](https://github.com/sesquicadaver/MTDirector/issues/1023) **DONE**  
 **Predecessor:** PLAN-40 Controller host journald/syslog identity **COMPLETE** (OPS-HOST-LOG-01)  
 **Normative files:** [`RELEASE_SIGNING.md`](../release/RELEASE_SIGNING.md), [`signing-gate.md`](../development/signing-gate.md), [`generate-sbom-and-checksums.sh`](../../scripts/release/generate-sbom-and-checksums.sh), [`.github/workflows/`](../../.github/workflows/), [`QgSign01ReleaseSigningLivingSpecTests`](../../tests/Mfc.UnitTests/Documentation/QgSign01ReleaseSigningLivingSpecTests.cs)  
@@ -81,4 +81,4 @@ PLAN-40 sole ranked row (**OPS-HOST-LOG-01**) is **DONE**. No further PLAN-40 pr
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-312 (#1031)** — PLAN-42 Inventory Controller HTTP health probes after PLAN-41.
+**§3.C NEXT = W7-313 (#1032)** — PLAN-42 Inventory Controller HTTP health probes after PLAN-41.

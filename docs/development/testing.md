@@ -3711,6 +3711,15 @@ Issue [#1028](https://github.com/sesquicadaver/MTDirector/issues/1028) AC → mo
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7311"`.
 
+## Living Specification — PLAN-42 inventory Controller HTTP health (W7-312)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-42 inventory ranks sole CTRL-HTTP-HEALTH-01 + seeds | plan-42, Program.cs, installation.md, packaging doc, ROADMAP, known-limitations | `Plan42ControllerHttpHealthProbesW7312LivingSpecTests.Ac1Plan42InventoryDocumentsSoleCtrlHttpHealth01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan42ControllerHttpHealthProbesW7312"`.
+
+
 ## Living Specification — QG-SIGN-02 opt-in release signing crypto gate (W7-310)
 
 Issue [#1026](https://github.com/sesquicadaver/MTDirector/issues/1026) AC → module → tests:
