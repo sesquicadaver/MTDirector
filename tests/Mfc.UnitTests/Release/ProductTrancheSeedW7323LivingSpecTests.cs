@@ -33,32 +33,37 @@ public sealed class ProductTrancheSeedW7323LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-324 | [#1055](https://github.com/sesquicadaver/MTDirector/issues/1055) | PLAN-45 — Inventory Controller log↔trace correlation after OTel tracing | **OPEN**",
+            "W7-324 | [#1055](https://github.com/sesquicadaver/MTDirector/issues/1055) | PLAN-45 — Inventory Controller log↔trace correlation after OTel tracing | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-325 | [#1056](https://github.com/sesquicadaver/MTDirector/issues/1056) | Seed first PLAN-45 atomic row after inventory → CTRL-LOG-OTEL-CORRELATE-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-324 (#1055)", roadmap, StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-326 | [#1058](https://github.com/sesquicadaver/MTDirector/issues/1058) | CTRL-LOG-OTEL-CORRELATE-01 — Enrich JSON console logs with Activity TraceId/SpanId | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-325 (#1056)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-44 COMPLETE", plan44, StringComparison.Ordinal);
         Assert.Contains("W7-323 (#1052) DONE", plan44, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-324 (#1055)", plan44, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-325 (#1056)", plan44, StringComparison.Ordinal);
         Assert.Contains("plan-45-controller-log-trace-correlation.md", plan44, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-45", plan, StringComparison.Ordinal);
         Assert.Contains("W7-324", plan, StringComparison.Ordinal);
         Assert.Contains("W7-323 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-324 (#1055)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-325 (#1056)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-45-controller-log-trace-correlation.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("CTRL-LOG-OTEL-CORRELATE-01", plan45, StringComparison.Ordinal);
-        Assert.Contains("Inventory **OPEN**", plan45, StringComparison.Ordinal);
+        Assert.Contains("Inventory **DONE**", plan45, StringComparison.Ordinal);
         Assert.Contains("W7-324", plan45, StringComparison.Ordinal);
         Assert.Contains("W7-325", plan45, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-324 (#1055)", plan45, StringComparison.Ordinal);
-        Assert.Contains("1e47d2f9", plan45, StringComparison.Ordinal);
+        Assert.Contains("W7-326", plan45, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-325 (#1056)", plan45, StringComparison.Ordinal);
+        Assert.Contains("2da9d508", plan45, StringComparison.Ordinal);
 
         Assert.Contains("WithTracing", program, StringComparison.Ordinal);
         Assert.Contains("MapPrometheusScrapingEndpoint", program, StringComparison.Ordinal);

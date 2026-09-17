@@ -1,7 +1,7 @@
 # PLAN-44 — Controller OpenTelemetry tracing beyond metrics scrape
 
 **Date:** 2026-09-17 (inventory **DONE** @ `0929ef8d`)  
-**Status:** **PLAN-44 COMPLETE** — Inventory **DONE** (W7-320); seed **W7-321 (#1048) DONE**; implement **W7-322 (#1050) DONE**; COMPLETE seed **W7-323 (#1052) DONE**; successor **PLAN-45** inventory **W7-324 (#1055) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-44 COMPLETE** — Inventory **DONE** (W7-320); seed **W7-321 (#1048) DONE**; implement **W7-322 (#1050) DONE**; COMPLETE seed **W7-323 (#1052) DONE**; successor **PLAN-45** inventory **W7-324 (#1055) DONE**; seed **W7-325 (#1056) OPEN** (**§3.C NEXT**); implement **W7-326 (#1058) OPEN**  
 **PLAN issue / queue:** [W7-320 / PLAN-44 #1047](https://github.com/sesquicadaver/MTDirector/issues/1047) **DONE**  
 **Predecessor:** PLAN-43 Controller metrics / OpenTelemetry scrape **COMPLETE** (CTRL-HTTP-METRICS-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
@@ -83,4 +83,4 @@ PLAN-43 sole ranked row (**CTRL-HTTP-METRICS-01**) is **DONE**. No further PLAN-
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-324 (#1055)** — PLAN-45 Inventory Controller log↔trace correlation after PLAN-44.
+**§3.C NEXT = W7-325 (#1056)** — Seed first PLAN-45 atomic row after inventory → CTRL-LOG-OTEL-CORRELATE-01.

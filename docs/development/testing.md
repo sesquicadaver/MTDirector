@@ -3813,6 +3813,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~CtrlHttpOtelTrace01ControllerT
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7323"`.
 
+## Living Specification — PLAN-45 inventory Controller log↔trace correlation (W7-324)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-45 inventory ranks sole CTRL-LOG-OTEL-CORRELATE-01 + seeds | plan-45, RedactingJsonConsoleLoggerProvider, ROADMAP, known-limitations | `Plan45ControllerLogTraceCorrelationW7324LivingSpecTests.Ac1Plan45InventoryDocumentsSoleCtrlLogOtelCorrelate01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan45ControllerLogTraceCorrelationW7324"`.
+
 
 
 
