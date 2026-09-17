@@ -1,7 +1,7 @@
 # PLAN-39 — Controller host operator doc packaging (Documentation=/usr/share/doc/mfc)
 
 **Date:** 2026-09-17 (inventory **DONE** @ `7348ba5e`)  
-**Status:** Inventory **DONE** (W7-300); seed **W7-301 (#1008) OPEN** (**§3.C NEXT**); implement **W7-302 (#1010) OPEN**; predecessor **PLAN-38 COMPLETE**  
+**Status:** Inventory **DONE** (W7-300); seed **W7-301 (#1008) DONE**; implement **W7-302 (#1010) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-303 (#1012) OPEN**; predecessor **PLAN-38 COMPLETE**  
 **PLAN issue / queue:** [W7-300 / PLAN-39 #1007](https://github.com/sesquicadaver/MTDirector/issues/1007) **DONE**  
 **Predecessor:** PLAN-38 Controller host sysusers/tmpfiles packaging **COMPLETE** (OPS-HOST-SYSUSERS-01)  
 **Normative files:** [`mfc-controller.service`](../../packaging/systemd/mfc-controller.service), [`installation.md`](../operations/installation.md), [`package-controller.sh`](../../scripts/release/package-controller.sh), [`packaging.md`](../release/packaging.md)  
@@ -40,9 +40,9 @@ Absorb the highest-value **product** continuous-queue packaging gap after PLAN-3
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **OPS-HOST-DOC-01** | Author `packaging/doc/mfc/README.md` (operator README/INSTALL matching `Documentation=`) + docs/Living Spec **and** bundle into `$OUT_DIR/controller/` via `package-controller.sh` (with install sketch to `/usr/share/doc/mfc/README.md`) | Unit Documentation= + missing packaging doc @ `7348ba5e`; package script omits copy | implement **W7-302 (#1010)** after seed **W7-301 (#1008)** |
+| 1 | **OPS-HOST-DOC-01** | Author `packaging/doc/mfc/README.md` (operator README/INSTALL matching `Documentation=`) + docs/Living Spec **and** bundle into `$OUT_DIR/controller/` via `package-controller.sh` (with install sketch to `/usr/share/doc/mfc/README.md`) | Unit Documentation= + missing packaging doc @ `7348ba5e`; package script omits copy | implement **W7-302 (#1010)** after seed **W7-301 (#1008) DONE** |
 
-Inventory (**W7-300 DONE**) confirmed sole rank (DOC-01 kept with required publish bundling; no MSI/AppImage vanity rank). Seed **W7-301** advances NEXT to OPS-HOST-DOC-01 implement; COMPLETE seed opens after DOC-01.
+Inventory (**W7-300 DONE**) confirmed sole rank (DOC-01 kept with required publish bundling; no MSI/AppImage vanity rank). Seed **W7-301 DONE** advances NEXT to OPS-HOST-DOC-01 implement; COMPLETE seed **W7-303** opens after DOC-01.
 
 ## Dual track
 
@@ -65,9 +65,9 @@ PLAN-38 sole ranked row (**OPS-HOST-SYSUSERS-01**) is **DONE**. No further PLAN-
 
 1. **PLAN-38 COMPLETE** (W7-298 OPS-HOST-SYSUSERS-01; seed **W7-299 DONE**).  
 2. **W7-300 DONE** — PLAN-39 inventory; opened **W7-302 (#1010)** DOC implement.  
-3. **W7-301 OPEN** — seed first PLAN-39 implement → OPS-HOST-DOC-01.  
+3. **W7-301 DONE** — seed first PLAN-39 implement → OPS-HOST-DOC-01; opened COMPLETE **W7-303 (#1012)**.  
 4. Execute ranked OPS-HOST-DOC-01 atomically (doc artifact + docs + bundle).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-301 (#1008)** — Seed first PLAN-39 atomic row → OPS-HOST-DOC-01 after inventory.
+**§3.C NEXT = W7-302 (#1010)** — OPS-HOST-DOC-01 author packaging/doc/mfc/README.md + package-controller bundle.

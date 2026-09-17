@@ -32,7 +32,7 @@ public sealed class Plan39ControllerHostOperatorDocPackagingW7300LivingSpecTests
         Assert.Contains("sole rank", plan39, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("packaging/doc/mfc/README.md", plan39, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/controller", plan39, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-301 (#1008)", plan39, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-302 (#1010)", plan39, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", plan39, StringComparison.Ordinal);
         Assert.Contains("bundle", plan39, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Documentation=", plan39, StringComparison.Ordinal);
@@ -47,14 +47,14 @@ public sealed class Plan39ControllerHostOperatorDocPackagingW7300LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-301 | [#1008](https://github.com/sesquicadaver/MTDirector/issues/1008) | Seed first PLAN-39 atomic row after inventory → OPS-HOST-DOC-01 | **OPEN**",
+            "W7-301 | [#1008](https://github.com/sesquicadaver/MTDirector/issues/1008) | Seed first PLAN-39 atomic row after inventory → OPS-HOST-DOC-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-302 | [#1010](https://github.com/sesquicadaver/MTDirector/issues/1010) | OPS-HOST-DOC-01 — author packaging/doc/mfc/README.md + package-controller bundle | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-301 (#1008)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-302 (#1010)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-301", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-302", continuous, StringComparison.Ordinal);

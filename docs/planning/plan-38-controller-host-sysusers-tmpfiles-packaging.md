@@ -1,7 +1,7 @@
 # PLAN-38 — Controller host sysusers/tmpfiles packaging (mfc user + host dirs)
 
 **Date:** 2026-09-17 (inventory **DONE** @ `7da14df5`)  
-**Status:** **PLAN-38 COMPLETE** — Inventory **DONE** (W7-296); seed **W7-297 (#1000) DONE**; implement **W7-298 (#1002) DONE**; COMPLETE seed **W7-299 (#1004) DONE**; successor **PLAN-39** inventory **W7-300 (#1007) DONE**; seed **W7-301 (#1008) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-38 COMPLETE** — Inventory **DONE** (W7-296); seed **W7-297 (#1000) DONE**; implement **W7-298 (#1002) DONE**; COMPLETE seed **W7-299 (#1004) DONE**; successor **PLAN-39** inventory **W7-300 (#1007) DONE**; seed **W7-301 (#1008) DONE**; implement **W7-302 (#1010) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-296 / PLAN-38 #999](https://github.com/sesquicadaver/MTDirector/issues/999) **DONE**  
 **Predecessor:** PLAN-37 Controller host env sample packaging **COMPLETE** (OPS-HOST-ENV-01)  
 **Normative files:** [`mfc-controller.service`](../../packaging/systemd/mfc-controller.service), [`mfc-controller.env.example`](../../packaging/systemd/mfc-controller.env.example), [`installation.md`](../operations/installation.md), [`package-controller.sh`](../../scripts/release/package-controller.sh), [`packaging.md`](../release/packaging.md)  
@@ -74,4 +74,4 @@ PLAN-37 sole ranked row (**OPS-HOST-ENV-01**) is **DONE**. No further PLAN-37 pr
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-301 (#1008)** — Seed first PLAN-39 atomic row → OPS-HOST-DOC-01 after inventory.
+**§3.C NEXT = W7-302 (#1010)** — OPS-HOST-DOC-01 after PLAN-39 seed.
