@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using Mfc.Application.Abstractions.Authorization;
 using Mfc.Application.Abstractions.Jobs;
@@ -34,6 +35,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 namespace Mfc.Controller;
@@ -237,7 +239,15 @@ public static class Program
 
         if (metricsOptions.Enabled || tracingOptions.Enabled)
         {
-            var otel = builder.Services.AddOpenTelemetry();
+            // CTRL-HTTP-OTEL-RESOURCE-01: stable service identity via ResourceBuilder/ConfigureResource/AddService when OTel is opted in.
+            var otel = builder.Services.AddOpenTelemetry()
+                .ConfigureResource(resource =>
+                {
+                    resource.AddService(
+                        serviceName: "Mfc.Controller",
+                        serviceVersion: ResolveControllerServiceVersion(),
+                        serviceInstanceId: Environment.MachineName);
+                });
             if (metricsOptions.Enabled)
             {
                 otel.WithMetrics(metrics =>
@@ -478,6 +488,33 @@ public static class Program
         }
 
         return trimmed;
+    }
+
+    /// <summary>
+    /// Resolves OTel <c>service.version</c> from assembly informational/file version (CTRL-HTTP-OTEL-RESOURCE-01).
+    /// </summary>
+    internal static string ResolveControllerServiceVersion()
+    {
+        Assembly assembly = typeof(Program).Assembly;
+        string? informational = assembly
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            ?.InformationalVersion;
+        if (!string.IsNullOrWhiteSpace(informational))
+        {
+            // Strip optional SourceRevisionId suffix ("1.2.3+abcdef").
+            int plus = informational.IndexOf('+');
+            return plus >= 0 ? informational[..plus] : informational;
+        }
+
+        string? fileVersion = assembly
+            .GetCustomAttribute<AssemblyFileVersionAttribute>()
+            ?.Version;
+        if (!string.IsNullOrWhiteSpace(fileVersion))
+        {
+            return fileVersion;
+        }
+
+        return assembly.GetName().Version?.ToString() ?? "0.0.0";
     }
 
     private static string ResolveEnvironmentName(string[] args)

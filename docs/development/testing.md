@@ -3837,6 +3837,15 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan46ControllerOtelResourceId
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7329"`.
 
+## Living Specification — CTRL-HTTP-OTEL-RESOURCE-01 (W7-330)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| Opt-in ResourceBuilder service.name/version/instance.id alongside health/metrics/tracing/correlation | Program.cs | `CtrlHttpOtelResource01ControllerResourceLivingSpecTests.Ac1ProgramConfiguresOtelResourceIdentityAlongsideOptInSignals` |
+| Operator docs + queue lock | installation.md, packaging doc, known-limitations, ROADMAP | `CtrlHttpOtelResource01ControllerResourceLivingSpecTests.Ac2DocsDocumentOtelResourceIdentity` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~CtrlHttpOtelResource01ControllerResourceLivingSpecTests"`.
+
 ## Living Specification — Product tranche seed CTRL-LOG-OTEL-CORRELATE-01 after PLAN-45 inventory (W7-325)
 
 | Requirement | Artifact | Test |
