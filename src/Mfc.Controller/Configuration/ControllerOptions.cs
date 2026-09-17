@@ -30,6 +30,11 @@ public sealed class ControllerOptions
     /// Opt-in Prometheus scrape surface (CTRL-HTTP-METRICS-01). Default off — fail-closed (no <c>/metrics</c>).
     /// </summary>
     public MetricsHostOptions Metrics { get; init; } = new();
+
+    /// <summary>
+    /// Opt-in OpenTelemetry tracing export (CTRL-HTTP-OTEL-TRACE-01). Default off — fail-closed (no exporters).
+    /// </summary>
+    public TracingHostOptions Tracing { get; init; } = new();
 }
 
 /// <summary>OpenTelemetry Prometheus scrape endpoint options.</summary>
@@ -46,6 +51,28 @@ public sealed class MetricsHostOptions
     /// <summary>Prometheus scrape path. Default <c>/metrics</c>.</summary>
     [MinLength(1)]
     public string ScrapePath { get; init; } = "/metrics";
+}
+
+/// <summary>OpenTelemetry distributed tracing export options.</summary>
+public sealed class TracingHostOptions
+{
+    public const string SectionName = "Tracing";
+
+    /// <summary>
+    /// When false (default), OpenTelemetry tracing is not registered.
+    /// Operators opt in via <c>Mfc:Tracing:Enabled=true</c> / <c>MFC__Tracing__Enabled=true</c>.
+    /// </summary>
+    public bool Enabled { get; init; }
+
+    /// <summary>
+    /// OTLP collector endpoint (e.g. <c>http://127.0.0.1:4317</c>). Empty skips OTLP exporter.
+    /// </summary>
+    public string? OtlpEndpoint { get; init; }
+
+    /// <summary>
+    /// When true, registers the console span exporter for local ops. Default false.
+    /// </summary>
+    public bool ConsoleExporter { get; init; }
 }
 
 public sealed class GrpcHostOptions

@@ -73,3 +73,13 @@ curl -fsS "$LISTEN/metrics"
 
 Optional path override: `Mfc:Metrics:ScrapePath` (default `/metrics`). Health probes stay registered when metrics are disabled.
 
+## Tracing export (CTRL-HTTP-OTEL-TRACE-01)
+
+OpenTelemetry tracing is **opt-in** (default off). Set `Mfc:Tracing:Enabled=true` / `MFC__Tracing__Enabled=true`, then configure exporters:
+
+- OTLP: `Mfc:Tracing:OtlpEndpoint` / `MFC__Tracing__OtlpEndpoint` (e.g. `http://127.0.0.1:4317`)
+- Console (local ops): `Mfc:Tracing:ConsoleExporter=true` / `MFC__Tracing__ConsoleExporter=true`
+
+Both exporters may be enabled together. Enabling tracing without either exporter fails closed at startup. Health probes and optional `/metrics` stay registered independently.
+
+

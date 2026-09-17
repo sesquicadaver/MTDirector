@@ -3795,6 +3795,17 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan44ControllerOtelTracingW73
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7321"`.
 
+## Living Specification — CTRL-HTTP-OTEL-TRACE-01 Controller tracing (W7-322)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Opt-in WithTracing + OTLP/console exporters alongside health/metrics | Program.cs, ControllerOptions, packages | `CtrlHttpOtelTrace01ControllerTracingLivingSpecTests.Ac1ProgramRegistersOptInWithTracingAlongsideHealthAndMetrics` |
+| Operator docs + queue lock | installation.md, packaging doc, env.example, known-limitations, ROADMAP | `CtrlHttpOtelTrace01ControllerTracingLivingSpecTests.Ac2DocsDocumentOptInTracingExporters` |
+| Host integration | ControllerHealthHostTests | `ControllerHealthHostTests.HttpTracingOptInConsoleKeepsHealthAndMetricsIntact` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~CtrlHttpOtelTrace01ControllerTracingLivingSpecTests"`.
+
+
 
 ## Living Specification — QG-SIGN-02 opt-in release signing crypto gate (W7-310)
 
