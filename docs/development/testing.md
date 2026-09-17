@@ -3923,6 +3923,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~CtrlKestrelBody01ControllerReq
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7339"`.
 
+## Living Specification — PLAN-49 inventory Controller/Desktop gRPC HTTP/2 keepalive (W7-340)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| PLAN-49 inventory ranks sole CTRL-GRPC-KEEPALIVE-01 + seeds | plan-49, Program.cs, DesktopGrpcHttpHandlerFactory, ROADMAP, known-limitations | `Plan49ControllerGrpcHttp2KeepaliveW7340LivingSpecTests.Ac1Plan49InventoryDocumentsSoleCtrlGrpcKeepalive01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan49ControllerGrpcHttp2KeepaliveW7340"`.
+
 ## Living Specification — Product tranche seed CTRL-LOG-OTEL-CORRELATE-01 after PLAN-45 inventory (W7-325)
 
 | Requirement | Artifact | Test |
