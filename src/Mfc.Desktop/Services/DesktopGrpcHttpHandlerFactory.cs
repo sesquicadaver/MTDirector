@@ -1,5 +1,6 @@
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using Mfc.Contracts;
 using Mfc.Desktop.Configuration;
 
 namespace Mfc.Desktop.Services;
@@ -19,6 +20,9 @@ public static class DesktopGrpcHttpHandlerFactory
         {
             EnableMultipleHttp2Connections = true,
             ConnectTimeout = TimeSpan.FromSeconds(Math.Max(1, options.HealthCheckTimeoutSeconds)),
+            // CTRL-GRPC-KEEPALIVE-01: finite HTTP/2 PING so idle Watch streams survive NAT/LB.
+            KeepAlivePingDelay = GrpcHttp2KeepAlive.PingDelay,
+            KeepAlivePingTimeout = GrpcHttp2KeepAlive.PingTimeout,
         };
 
         X509Certificate2? clientCert = TryLoadClientCertificate(options);

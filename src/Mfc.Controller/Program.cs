@@ -172,6 +172,11 @@ public static class Program
             // reject large snapshot/diff RPCs before gRPC framing — never unlimited / null.
             kestrel.Limits.MaxRequestBodySize = GrpcTransportLimits.MaxMessageBytes;
 
+            // CTRL-GRPC-KEEPALIVE-01: finite HTTP/2 PING (shared with Desktop) so idle Watch
+            // streams survive NAT/LB — never TimeSpan.MaxValue / InfiniteTimeSpan defaults.
+            kestrel.Limits.Http2.KeepAlivePingDelay = GrpcHttp2KeepAlive.PingDelay;
+            kestrel.Limits.Http2.KeepAlivePingTimeout = GrpcHttp2KeepAlive.PingTimeout;
+
             // HTTPS: ALPN negotiates h2 vs HTTP/1.1 (classic curl probes).
             // Cleartext http://: Http2-only — h2c prior-knowledge for gRPC; Http1AndHttp2 on
             // cleartext rejects HTTP/2 with HTTP_1_1_REQUIRED.

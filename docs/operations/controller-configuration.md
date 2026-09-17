@@ -21,6 +21,8 @@ gRPC **MaxReceiveMessageSize** / **MaxSendMessageSize** are **not** config knobs
 
 Kestrel **MaxRequestBodySize** is likewise **not** a config knob: CTRL-KESTREL-BODY-01 hard-codes `ConfigureKestrel` `Limits.MaxRequestBodySize` to the same `GrpcTransportLimits.MaxMessageBytes` (**256 MiB** = **268435456**). Finite fail-closed — never unlimited / never `null` (avoids ASP.NET Core default ~30 MiB host reject ahead of gRPC).
 
+HTTP/2 keepalive is likewise **not** a config knob: CTRL-GRPC-KEEPALIVE-01 hard-codes Controller `Limits.Http2.KeepAlivePingDelay` / `KeepAlivePingTimeout` and Desktop `SocketsHttpHandler` to shared `GrpcHttp2KeepAlive` (**PingDelay = 60s**, **PingTimeout = 30s**). Finite fail-closed — never `TimeSpan.MaxValue` / `InfiniteTimeSpan` (defaults that leave PING off).
+
 | Key | Purpose |
 |-----|---------|
 | `Security:RequireTls` | Reject non-TLS production binds |

@@ -29,32 +29,32 @@ public sealed class ProductTrancheSeedW7341LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-342 | [#1090](https://github.com/sesquicadaver/MTDirector/issues/1090) | CTRL-GRPC-KEEPALIVE-01 — Finite HTTP/2 keepalive for Controller+Desktop Watch streams | **OPEN**",
+            "W7-342 | [#1090](https://github.com/sesquicadaver/MTDirector/issues/1090) | CTRL-GRPC-KEEPALIVE-01 — Finite HTTP/2 keepalive for Controller+Desktop Watch streams | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-343 | [#1092](https://github.com/sesquicadaver/MTDirector/issues/1092) | Seed next after CTRL-GRPC-KEEPALIVE-01 (PLAN-49 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-342 (#1090)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-343 (#1092)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-341", plan, StringComparison.Ordinal);
         Assert.Contains("W7-342", plan, StringComparison.Ordinal);
         Assert.Contains("W7-343", plan, StringComparison.Ordinal);
         Assert.Contains("CTRL-GRPC-KEEPALIVE-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-342 (#1090)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-343 (#1092)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-341 (#1088) DONE", plan49, StringComparison.Ordinal);
         Assert.Contains("CTRL-GRPC-KEEPALIVE-01", plan49, StringComparison.Ordinal);
         Assert.Contains("W7-342", plan49, StringComparison.Ordinal);
         Assert.Contains("W7-343", plan49, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-342 (#1090)", plan49, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-343 (#1092)", plan49, StringComparison.Ordinal);
 
-        // Seed does not implement keepalive yet.
+        // KEEPALIVE-01 shipped after this seed.
         Assert.Contains("ConfigureKestrel", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("KeepAlivePingDelay", program, StringComparison.Ordinal);
+        Assert.Contains("KeepAlivePingDelay = GrpcHttp2KeepAlive.PingDelay", program, StringComparison.Ordinal);
         Assert.Contains("EnableMultipleHttp2Connections", desktopHandler, StringComparison.Ordinal);
-        Assert.DoesNotContain("KeepAlivePingDelay", desktopHandler, StringComparison.Ordinal);
+        Assert.Contains("KeepAlivePingDelay = GrpcHttp2KeepAlive.PingDelay", desktopHandler, StringComparison.Ordinal);
         Assert.Contains("MaxRequestBodySize = GrpcTransportLimits.MaxMessageBytes", program, StringComparison.Ordinal);
     }
 
