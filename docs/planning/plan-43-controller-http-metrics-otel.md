@@ -1,7 +1,7 @@
 # PLAN-43 — Controller metrics / OpenTelemetry beyond HTTP health probes
 
 **Date:** 2026-09-17 (inventory **DONE** @ `94f04744`)  
-**Status:** Inventory **DONE** (W7-316); seed **W7-317 (#1040) DONE**; implement **W7-318 (#1042) DONE**; COMPLETE seed **W7-319 (#1044) OPEN** (**§3.C NEXT**); predecessor **PLAN-42 COMPLETE**  
+**Status:** **PLAN-43 COMPLETE** — Inventory **DONE** (W7-316); seed **W7-317 (#1040) DONE**; implement **W7-318 (#1042) DONE**; COMPLETE seed **W7-319 (#1044) DONE**; successor **PLAN-44** inventory **W7-320 (#1047) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-316 / PLAN-43 #1039](https://github.com/sesquicadaver/MTDirector/issues/1039) **DONE**  
 **Predecessor:** PLAN-42 Controller HTTP health probes **COMPLETE** (CTRL-HTTP-HEALTH-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
@@ -62,7 +62,7 @@ PLAN-42 sole ranked row (**CTRL-HTTP-HEALTH-01**) is **DONE**. No further PLAN-4
 - Nested ListBox item-template hosts — deferred vanity  
 - Native MSI / AppImage / self-contained publish default — W7-22 lock  
 - systemd Type=notify/WatchdogSec — deferred packaging polish  
-- Full OpenTelemetry distributed tracing beyond metrics scrape — deferred adjacent (candidate PLAN-44 after METRICS)  
+- Full OpenTelemetry distributed tracing beyond metrics scrape — seeded as **PLAN-44** [`plan-44-controller-otel-tracing.md`](plan-44-controller-otel-tracing.md)  
 - Ops residuals (CRS / physical lab / live CHR) remain parallel, not §3 stop-gates
 
 ## §3.C ordering
@@ -71,8 +71,8 @@ PLAN-42 sole ranked row (**CTRL-HTTP-HEALTH-01**) is **DONE**. No further PLAN-4
 2. **W7-316 DONE** — PLAN-43 inventory; opened **W7-318 (#1042)** CTRL-HTTP-METRICS-01 implement.  
 3. **W7-317 DONE** — seed advanced NEXT to CTRL-HTTP-METRICS-01; opened COMPLETE **W7-319 (#1044)**.  
 4. **W7-318 DONE** — sole CTRL-HTTP-METRICS-01 shipped (opt-in `/metrics` + docs/Living Spec).
-5. **W7-319 OPEN** — PLAN-43 COMPLETE seed (**§3.C NEXT**).
+5. **W7-319 DONE** — PLAN-43 COMPLETE; seeded PLAN-44 inventory **W7-320**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-319 (#1044)** — Seed next after CTRL-HTTP-METRICS-01 (PLAN-43 COMPLETE).
+**§3.C NEXT = W7-320 (#1047)** — PLAN-44 Inventory Controller OpenTelemetry tracing after PLAN-43.
