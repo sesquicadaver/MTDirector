@@ -40,24 +40,24 @@ public sealed class ProductTrancheSeedW7295LivingSpecTests
             "W7-297 | [#1000](https://github.com/sesquicadaver/MTDirector/issues/1000) | Seed first PLAN-38 atomic row after inventory → OPS-HOST-SYSUSERS-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-37 COMPLETE", plan37, StringComparison.Ordinal);
         Assert.Contains("W7-295 (#996) DONE", plan37, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", plan37, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", plan37, StringComparison.Ordinal);
         Assert.Contains("plan-38-controller-host-sysusers-tmpfiles-packaging.md", plan37, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-38", plan, StringComparison.Ordinal);
         Assert.Contains("W7-296", plan, StringComparison.Ordinal);
         Assert.Contains("W7-295 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-38-controller-host-sysusers-tmpfiles-packaging.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("OPS-HOST-SYSUSERS-01", plan38, StringComparison.Ordinal);
         Assert.Contains("Inventory **DONE**", plan38, StringComparison.Ordinal);
         Assert.Contains("W7-296", plan38, StringComparison.Ordinal);
         Assert.Contains("W7-297", plan38, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", plan38, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", plan38, StringComparison.Ordinal);
         Assert.Contains("sysusers", plan38, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("tmpfiles", plan38, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("7da14df5", plan38, StringComparison.Ordinal);

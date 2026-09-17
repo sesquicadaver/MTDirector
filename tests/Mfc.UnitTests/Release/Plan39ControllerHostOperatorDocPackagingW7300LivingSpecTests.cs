@@ -32,7 +32,7 @@ public sealed class Plan39ControllerHostOperatorDocPackagingW7300LivingSpecTests
         Assert.Contains("sole rank", plan39, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("packaging/doc/mfc/README.md", plan39, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/controller", plan39, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", plan39, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", plan39, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", plan39, StringComparison.Ordinal);
         Assert.Contains("bundle", plan39, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Documentation=", plan39, StringComparison.Ordinal);
@@ -51,10 +51,10 @@ public sealed class Plan39ControllerHostOperatorDocPackagingW7300LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-302 | [#1010](https://github.com/sesquicadaver/MTDirector/issues/1010) | OPS-HOST-DOC-01 — author packaging/doc/mfc/README.md + package-controller bundle | **OPEN**",
+            "W7-302 | [#1010](https://github.com/sesquicadaver/MTDirector/issues/1010) | OPS-HOST-DOC-01 — author packaging/doc/mfc/README.md + package-controller bundle | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-301", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-302", continuous, StringComparison.Ordinal);
@@ -73,7 +73,7 @@ public sealed class Plan39ControllerHostOperatorDocPackagingW7300LivingSpecTests
         Assert.Contains("OPS-HOST-SYSUSERS-01", installation, StringComparison.Ordinal);
         Assert.True(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.service")));
         Assert.True(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.sysusers")));
-        Assert.False(File.Exists(Path.Combine(root, "packaging/doc/mfc/README.md")));
+        Assert.True(File.Exists(Path.Combine(root, "packaging/doc/mfc/README.md")));
     }
 
     private static string RepoRoot()

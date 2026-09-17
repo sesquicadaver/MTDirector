@@ -29,30 +29,30 @@ public sealed class ProductTrancheSeedW7301LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-302 | [#1010](https://github.com/sesquicadaver/MTDirector/issues/1010) | OPS-HOST-DOC-01 — author packaging/doc/mfc/README.md + package-controller bundle | **OPEN**",
+            "W7-302 | [#1010](https://github.com/sesquicadaver/MTDirector/issues/1010) | OPS-HOST-DOC-01 — author packaging/doc/mfc/README.md + package-controller bundle | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-303 | [#1012](https://github.com/sesquicadaver/MTDirector/issues/1012) | Seed next after OPS-HOST-DOC-01 (PLAN-39 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-301", plan, StringComparison.Ordinal);
         Assert.Contains("W7-302", plan, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-DOC-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-301 (#1008) DONE", plan39, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-DOC-01", plan39, StringComparison.Ordinal);
         Assert.Contains("W7-302", plan39, StringComparison.Ordinal);
         Assert.Contains("W7-303", plan39, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", plan39, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", plan39, StringComparison.Ordinal);
 
         Assert.Contains("DEST=\"$OUT_DIR/controller\"", packageController, StringComparison.Ordinal);
         Assert.Contains("mfc-controller.service", packageController, StringComparison.Ordinal);
         Assert.Contains("Documentation=file:///usr/share/doc/mfc/README.md", unit, StringComparison.Ordinal);
-        Assert.False(File.Exists(Path.Combine(root, "packaging/doc/mfc/README.md")));
+        Assert.True(File.Exists(Path.Combine(root, "packaging/doc/mfc/README.md")));
     }
 
     private static string RepoRoot()

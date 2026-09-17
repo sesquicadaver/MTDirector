@@ -40,24 +40,24 @@ public sealed class ProductTrancheSeedW7299LivingSpecTests
             "W7-301 | [#1008](https://github.com/sesquicadaver/MTDirector/issues/1008) | Seed first PLAN-39 atomic row after inventory → OPS-HOST-DOC-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-38 COMPLETE", plan38, StringComparison.Ordinal);
         Assert.Contains("W7-299 (#1004) DONE", plan38, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", plan38, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", plan38, StringComparison.Ordinal);
         Assert.Contains("plan-39-controller-host-operator-doc-packaging.md", plan38, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-39", plan, StringComparison.Ordinal);
         Assert.Contains("W7-300", plan, StringComparison.Ordinal);
         Assert.Contains("W7-299 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-39-controller-host-operator-doc-packaging.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("OPS-HOST-DOC-01", plan39, StringComparison.Ordinal);
         Assert.Contains("Inventory **DONE**", plan39, StringComparison.Ordinal);
         Assert.Contains("W7-300", plan39, StringComparison.Ordinal);
         Assert.Contains("W7-301", plan39, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-302 (#1010)", plan39, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-303 (#1012)", plan39, StringComparison.Ordinal);
         Assert.Contains("Documentation=", plan39, StringComparison.Ordinal);
         Assert.Contains("7348ba5e", plan39, StringComparison.Ordinal);
         Assert.Contains("W7-302", plan39, StringComparison.Ordinal);
@@ -66,7 +66,7 @@ public sealed class ProductTrancheSeedW7299LivingSpecTests
         Assert.Contains("u mfc", sysusers, StringComparison.Ordinal);
         Assert.True(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.sysusers")));
         Assert.True(File.Exists(Path.Combine(root, "packaging/systemd/mfc-controller.tmpfiles")));
-        Assert.False(File.Exists(Path.Combine(root, "packaging/doc/mfc/README.md")));
+        Assert.True(File.Exists(Path.Combine(root, "packaging/doc/mfc/README.md")));
     }
 
     private static string RepoRoot()
