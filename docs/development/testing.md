@@ -3821,6 +3821,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7323"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan45ControllerLogTraceCorrelationW7324"`.
 
+## Living Specification — PLAN-46 inventory Controller OpenTelemetry resource identity (W7-328)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| PLAN-46 inventory ranks sole CTRL-HTTP-OTEL-RESOURCE-01 + seeds | plan-46, Program.cs, ROADMAP, known-limitations | `Plan46ControllerOtelResourceIdentityW7328LivingSpecTests.Ac1Plan46InventoryDocumentsSoleCtrlHttpOtelResource01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan46ControllerOtelResourceIdentityW7328"`.
+
 ## Living Specification — Product tranche seed CTRL-LOG-OTEL-CORRELATE-01 after PLAN-45 inventory (W7-325)
 
 | Requirement | Artifact | Test |
