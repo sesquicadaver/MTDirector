@@ -29,32 +29,32 @@ public sealed class ProductTrancheSeedW7333LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-334 | [#1074](https://github.com/sesquicadaver/MTDirector/issues/1074) | CTRL-GRPC-MSGSIZE-01 — Align Controller+Desktop gRPC MaxReceive/SendMessageSize with snapshot bounds | **OPEN**",
+            "W7-334 | [#1074](https://github.com/sesquicadaver/MTDirector/issues/1074) | CTRL-GRPC-MSGSIZE-01 — Align Controller+Desktop gRPC MaxReceive/SendMessageSize with snapshot bounds | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-335 | [#1076](https://github.com/sesquicadaver/MTDirector/issues/1076) | Seed next after CTRL-GRPC-MSGSIZE-01 (PLAN-47 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-334 (#1074)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-335 (#1076)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-333", plan, StringComparison.Ordinal);
         Assert.Contains("W7-334", plan, StringComparison.Ordinal);
         Assert.Contains("W7-335", plan, StringComparison.Ordinal);
         Assert.Contains("CTRL-GRPC-MSGSIZE-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-334 (#1074)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-335 (#1076)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-333 (#1072) DONE", plan47, StringComparison.Ordinal);
         Assert.Contains("CTRL-GRPC-MSGSIZE-01", plan47, StringComparison.Ordinal);
         Assert.Contains("W7-334", plan47, StringComparison.Ordinal);
         Assert.Contains("W7-335", plan47, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-334 (#1074)", plan47, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-335 (#1076)", plan47, StringComparison.Ordinal);
 
         // Seed does not implement message-size.
-        Assert.Contains("AddGrpc()", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("MaxReceiveMessageSize", program, StringComparison.Ordinal);
+        Assert.Contains("AddGrpc(options =>", program, StringComparison.Ordinal);
+        Assert.Contains("MaxReceiveMessageSize = GrpcTransportLimits.MaxMessageBytes", program, StringComparison.Ordinal);
         Assert.Contains("GrpcChannel.ForAddress", desktop, StringComparison.Ordinal);
-        Assert.DoesNotContain("MaxReceiveMessageSize", desktop, StringComparison.Ordinal);
+        Assert.Contains("MaxReceiveMessageSize = GrpcTransportLimits.MaxMessageBytes", desktop, StringComparison.Ordinal);
         Assert.Contains("ConfigureResource", program, StringComparison.Ordinal);
         Assert.Contains("MapHealthChecks", program, StringComparison.Ordinal);
     }

@@ -3870,6 +3870,16 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan47ControllerGrpcMessageSiz
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7333"`.
 
+## Living Specification — CTRL-GRPC-MSGSIZE-01 (W7-334)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| Shared constant + Controller/Desktop MaxReceive/SendMessageSize | GrpcTransportLimits, Program.cs, ControllerConnectionService | `CtrlGrpcMsgsize01ControllerDesktopMessageSizeLivingSpecTests.Ac1SharedConstantAndBothSidesConfigureFiniteMessageSize` |
+| Operator docs + queue lock | installation.md, controller-configuration.md, known-limitations, ROADMAP | `CtrlGrpcMsgsize01ControllerDesktopMessageSizeLivingSpecTests.Ac2DocsAndQueueLockMessageSizeLimits` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~CtrlGrpcMsgsize01ControllerDesktopMessageSizeLivingSpecTests"`.
+
+
 
 ## Living Specification — Product tranche seed CTRL-LOG-OTEL-CORRELATE-01 after PLAN-45 inventory (W7-325)
 

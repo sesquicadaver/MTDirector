@@ -45,26 +45,26 @@ public sealed class ProductTrancheSeedW7329LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-334 | [#1074](https://github.com/sesquicadaver/MTDirector/issues/1074) | CTRL-GRPC-MSGSIZE-01 — Align Controller+Desktop gRPC MaxReceive/SendMessageSize with snapshot bounds | **OPEN**",
+            "W7-334 | [#1074](https://github.com/sesquicadaver/MTDirector/issues/1074) | CTRL-GRPC-MSGSIZE-01 — Align Controller+Desktop gRPC MaxReceive/SendMessageSize with snapshot bounds | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-335 | [#1076](https://github.com/sesquicadaver/MTDirector/issues/1076) | Seed next after CTRL-GRPC-MSGSIZE-01 (PLAN-47 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-334 (#1074)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-335 (#1076)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-329", plan, StringComparison.Ordinal);
         Assert.Contains("W7-330", plan, StringComparison.Ordinal);
         Assert.Contains("W7-331", plan, StringComparison.Ordinal);
         Assert.Contains("CTRL-HTTP-OTEL-RESOURCE-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-334 (#1074)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-335 (#1076)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-329 (#1064) DONE", plan46, StringComparison.Ordinal);
         Assert.Contains("CTRL-HTTP-OTEL-RESOURCE-01", plan46, StringComparison.Ordinal);
         Assert.Contains("W7-330", plan46, StringComparison.Ordinal);
         Assert.Contains("W7-331", plan46, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-334 (#1074)", plan46, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-335 (#1076)", plan46, StringComparison.Ordinal);
 
         Assert.Contains("MapHealthChecks", program, StringComparison.Ordinal);
         Assert.Contains("MapPrometheusScrapingEndpoint", program, StringComparison.Ordinal);
