@@ -3719,6 +3719,15 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7311"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan42ControllerHttpHealthProbesW7312"`.
 
+## Living Specification — Product tranche seed CTRL-HTTP-HEALTH-01 after PLAN-42 inventory (W7-313)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks CTRL-HTTP-HEALTH-01 as §3.C NEXT | known-limitations, ROADMAP, plan-42, continuous-queue | `ProductTrancheSeedW7313LivingSpecTests.Ac1KnownLimitationsAndQueueSeedCtrlHttpHealth01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7313"`.
+
+
 
 ## Living Specification — QG-SIGN-02 opt-in release signing crypto gate (W7-310)
 
