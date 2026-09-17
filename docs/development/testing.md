@@ -3829,6 +3829,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan45ControllerLogTraceCorrel
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan46ControllerOtelResourceIdentityW7328"`.
 
+## Living Specification — Seed CTRL-HTTP-OTEL-RESOURCE-01 as §3.C NEXT (W7-329)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| Seed locks CTRL-HTTP-OTEL-RESOURCE-01 as §3.C NEXT | known-limitations, ROADMAP, plan-46, continuous-queue | `ProductTrancheSeedW7329LivingSpecTests.Ac1KnownLimitationsAndQueueSeedCtrlHttpOtelResource01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7329"`.
+
 ## Living Specification — Product tranche seed CTRL-LOG-OTEL-CORRELATE-01 after PLAN-45 inventory (W7-325)
 
 | Requirement | Artifact | Test |
