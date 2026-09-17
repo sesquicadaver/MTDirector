@@ -3779,9 +3779,13 @@ Filter: `dotnet test --filter "FullyQualifiedName~CtrlHttpMetrics01ControllerMet
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7319"`.
 
+## Living Specification — PLAN-44 inventory Controller OpenTelemetry tracing (W7-320)
 
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-44 inventory ranks sole CTRL-HTTP-OTEL-TRACE-01 + seeds | plan-44, Program.cs, Directory.Packages.props, ROADMAP, known-limitations | `Plan44ControllerOtelTracingW7320LivingSpecTests.Ac1Plan44InventoryDocumentsSoleCtrlHttpOtelTrace01RankAndSeedsImplement` |
 
-
+Filter: `dotnet test --filter "FullyQualifiedName~Plan44ControllerOtelTracingW7320"`.
 
 
 ## Living Specification — QG-SIGN-02 opt-in release signing crypto gate (W7-310)
