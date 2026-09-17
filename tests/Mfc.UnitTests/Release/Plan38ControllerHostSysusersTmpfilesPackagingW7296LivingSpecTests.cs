@@ -34,7 +34,7 @@ public sealed class Plan38ControllerHostSysusersTmpfilesPackagingW7296LivingSpec
         Assert.Contains("mfc-controller.sysusers", plan38, StringComparison.Ordinal);
         Assert.Contains("mfc-controller.tmpfiles", plan38, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/controller", plan38, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-297 (#1000)", plan38, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-298 (#1002)", plan38, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", plan38, StringComparison.Ordinal);
         Assert.Contains("bundle", plan38, StringComparison.OrdinalIgnoreCase);
 
@@ -48,14 +48,14 @@ public sealed class Plan38ControllerHostSysusersTmpfilesPackagingW7296LivingSpec
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-297 | [#1000](https://github.com/sesquicadaver/MTDirector/issues/1000) | Seed first PLAN-38 atomic row after inventory → OPS-HOST-SYSUSERS-01 | **OPEN**",
+            "W7-297 | [#1000](https://github.com/sesquicadaver/MTDirector/issues/1000) | Seed first PLAN-38 atomic row after inventory → OPS-HOST-SYSUSERS-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-298 | [#1002](https://github.com/sesquicadaver/MTDirector/issues/1002) | OPS-HOST-SYSUSERS-01 — author sysusers.d/tmpfiles.d + docs + package-controller bundle | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-297 (#1000)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-298 (#1002)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-297", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-298", continuous, StringComparison.Ordinal);

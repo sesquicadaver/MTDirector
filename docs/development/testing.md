@@ -2036,6 +2036,16 @@ Issue [#976](https://github.com/sesquicadaver/MTDirector/issues/976) AC → modu
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7285"`.
 
+## Living Specification — Product tranche seed OPS-HOST-SYSUSERS-01 (W7-297)
+
+Issue [#1000](https://github.com/sesquicadaver/MTDirector/issues/1000) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Seed locks OPS-HOST-SYSUSERS-01 as §3.C NEXT | known-limitations, ROADMAP, plan-38, continuous-queue | `ProductTrancheSeedW7297LivingSpecTests.Ac1KnownLimitationsAndQueueSeedOpsHostSysusers01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7297"`.
+
 ## Living Specification — PLAN-38 Controller host sysusers/tmpfiles packaging inventory (W7-296)
 
 Issue [#999](https://github.com/sesquicadaver/MTDirector/issues/999) AC → module → tests:

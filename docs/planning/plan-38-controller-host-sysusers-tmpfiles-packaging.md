@@ -1,7 +1,7 @@
 # PLAN-38 — Controller host sysusers/tmpfiles packaging (mfc user + host dirs)
 
 **Date:** 2026-09-17 (inventory **DONE** @ `7da14df5`)  
-**Status:** Inventory **DONE** (W7-296); seed **W7-297 (#1000) OPEN** (**§3.C NEXT**); implement **W7-298 (#1002) OPEN**; predecessor **PLAN-37 COMPLETE**  
+**Status:** Inventory **DONE** (W7-296); seed **W7-297 (#1000) DONE**; implement **W7-298 (#1002) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-299 (#1004) OPEN**; predecessor **PLAN-37 COMPLETE**  
 **PLAN issue / queue:** [W7-296 / PLAN-38 #999](https://github.com/sesquicadaver/MTDirector/issues/999) **DONE**  
 **Predecessor:** PLAN-37 Controller host env sample packaging **COMPLETE** (OPS-HOST-ENV-01)  
 **Normative files:** [`mfc-controller.service`](../../packaging/systemd/mfc-controller.service), [`mfc-controller.env.example`](../../packaging/systemd/mfc-controller.env.example), [`installation.md`](../operations/installation.md), [`package-controller.sh`](../../scripts/release/package-controller.sh), [`packaging.md`](../release/packaging.md)  
@@ -65,9 +65,9 @@ PLAN-37 sole ranked row (**OPS-HOST-ENV-01**) is **DONE**. No further PLAN-37 pr
 
 1. **PLAN-37 COMPLETE** (W7-294 OPS-HOST-ENV-01; seed **W7-295 DONE**).  
 2. **W7-296 DONE** — PLAN-38 inventory; opened **W7-298 (#1002)** SYSUSERS implement.  
-3. **W7-297 OPEN** — seed first PLAN-38 implement → OPS-HOST-SYSUSERS-01.  
-4. Execute ranked OPS-HOST-SYSUSERS-01 atomically (templates + docs + bundle).
+3. **W7-297 DONE** — seed first PLAN-38 implement → OPS-HOST-SYSUSERS-01; opened COMPLETE **W7-299 (#1004)**.  
+4. **W7-298 OPEN** — execute ranked OPS-HOST-SYSUSERS-01 atomically (templates + docs + bundle).
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-297 (#1000)** — Seed first PLAN-38 atomic row → OPS-HOST-SYSUSERS-01 after inventory.
+**§3.C NEXT = W7-298 (#1002)** — Seed first PLAN-38 atomic row → OPS-HOST-SYSUSERS-01 after inventory.
