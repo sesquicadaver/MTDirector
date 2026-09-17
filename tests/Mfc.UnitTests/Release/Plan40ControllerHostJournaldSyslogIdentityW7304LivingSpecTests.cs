@@ -34,7 +34,7 @@ public sealed class Plan40ControllerHostJournaldSyslogIdentityW7304LivingSpecTes
         Assert.Contains("SyslogIdentifier=mfc-controller", plan40, StringComparison.Ordinal);
         Assert.Contains("StandardOutput=journal", plan40, StringComparison.Ordinal);
         Assert.Contains("StandardError=journal", plan40, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-305 (#1016)", plan40, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-306 (#1018)", plan40, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", plan40, StringComparison.Ordinal);
         Assert.Contains("journalctl", plan40, StringComparison.Ordinal);
 
@@ -48,14 +48,18 @@ public sealed class Plan40ControllerHostJournaldSyslogIdentityW7304LivingSpecTes
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-305 | [#1016](https://github.com/sesquicadaver/MTDirector/issues/1016) | Seed first PLAN-40 atomic row after inventory → OPS-HOST-LOG-01 | **OPEN**",
+            "W7-305 | [#1016](https://github.com/sesquicadaver/MTDirector/issues/1016) | Seed first PLAN-40 atomic row after inventory → OPS-HOST-LOG-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-306 | [#1018](https://github.com/sesquicadaver/MTDirector/issues/1018) | OPS-HOST-LOG-01 — SyslogIdentifier + journal stdout/stderr on mfc-controller.service | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-305 (#1016)", roadmap, StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-307 | [#1020](https://github.com/sesquicadaver/MTDirector/issues/1020) | Seed next after OPS-HOST-LOG-01 (PLAN-40 COMPLETE) | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-306 (#1018)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-305", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-306", continuous, StringComparison.Ordinal);

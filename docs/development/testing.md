@@ -2046,6 +2046,17 @@ Issue [#1012](https://github.com/sesquicadaver/MTDirector/issues/1012) AC → mo
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7303"`.
 
+
+## Living Specification — Product tranche seed OPS-HOST-LOG-01 (W7-305)
+
+Issue [#1016](https://github.com/sesquicadaver/MTDirector/issues/1016) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| Seed locks OPS-HOST-LOG-01 as §3.C NEXT | known-limitations, ROADMAP, plan-40, continuous-queue | `ProductTrancheSeedW7305LivingSpecTests.Ac1KnownLimitationsAndQueueSeedOpsHostLog01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7305"`.
+
 ## Living Specification — PLAN-40 Controller host journald/syslog identity inventory (W7-304)
 
 Issue [#1015](https://github.com/sesquicadaver/MTDirector/issues/1015) AC → module → tests:
