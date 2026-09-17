@@ -32,7 +32,7 @@ public sealed class Plan37ControllerHostEnvSamplePackagingW7292LivingSpecTests
         Assert.Contains("sole rank", plan37, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("mfc-controller.env.example", plan37, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/controller", plan37, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-305 (#1016)", plan37, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-306 (#1018)", plan37, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", plan37, StringComparison.Ordinal);
         Assert.Contains("bundle", plan37, StringComparison.OrdinalIgnoreCase);
 
@@ -53,7 +53,7 @@ public sealed class Plan37ControllerHostEnvSamplePackagingW7292LivingSpecTests
             "W7-294 | [#994](https://github.com/sesquicadaver/MTDirector/issues/994) | OPS-HOST-ENV-01 — author mfc-controller.env.example + docs + package-controller bundle | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-305 (#1016)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-306 (#1018)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-293", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-294", continuous, StringComparison.Ordinal);

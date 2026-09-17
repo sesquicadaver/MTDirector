@@ -37,20 +37,20 @@ public sealed class ProductTrancheSeedW7303LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-305 | [#1016](https://github.com/sesquicadaver/MTDirector/issues/1016) | Seed first PLAN-40 atomic row after inventory → OPS-HOST-LOG-01 | **OPEN**",
+            "W7-305 | [#1016](https://github.com/sesquicadaver/MTDirector/issues/1016) | Seed first PLAN-40 atomic row after inventory → OPS-HOST-LOG-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-305 (#1016)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-306 (#1018)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-39 COMPLETE", plan39, StringComparison.Ordinal);
         Assert.Contains("W7-303 (#1012) DONE", plan39, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-305 (#1016)", plan39, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-306 (#1018)", plan39, StringComparison.Ordinal);
         Assert.Contains("plan-40-controller-host-journald-syslog-identity.md", plan39, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-40", plan, StringComparison.Ordinal);
         Assert.Contains("W7-304", plan, StringComparison.Ordinal);
         Assert.Contains("W7-303 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-305 (#1016)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-306 (#1018)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-40-controller-host-journald-syslog-identity.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("OPS-HOST-LOG-01", plan40, StringComparison.Ordinal);
@@ -58,7 +58,7 @@ public sealed class ProductTrancheSeedW7303LivingSpecTests
         Assert.Contains("W7-304", plan40, StringComparison.Ordinal);
         Assert.Contains("W7-305", plan40, StringComparison.Ordinal);
         Assert.Contains("W7-306", plan40, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-305 (#1016)", plan40, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-306 (#1018)", plan40, StringComparison.Ordinal);
         Assert.Contains("SyslogIdentifier", plan40, StringComparison.Ordinal);
         Assert.Contains("30bee1c0", plan40, StringComparison.Ordinal);
 
