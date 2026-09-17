@@ -1,8 +1,8 @@
 # PLAN-44 — Controller OpenTelemetry tracing beyond metrics scrape
 
-**Date:** 2026-09-17 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-320); seed **W7-321 (#1048) OPEN**; predecessor **PLAN-43 COMPLETE**  
-**PLAN issue / queue:** [W7-320 / PLAN-44 #1047](https://github.com/sesquicadaver/MTDirector/issues/1047) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-17 (inventory **DONE** @ `0929ef8d`)  
+**Status:** Inventory **DONE** (W7-320); seed **W7-321 (#1048) OPEN** (**§3.C NEXT**); implement **W7-322 (#1050) OPEN**; predecessor **PLAN-43 COMPLETE**  
+**PLAN issue / queue:** [W7-320 / PLAN-44 #1047](https://github.com/sesquicadaver/MTDirector/issues/1047) **DONE**  
 **Predecessor:** PLAN-43 Controller metrics / OpenTelemetry scrape **COMPLETE** (CTRL-HTTP-METRICS-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
 **Normative prior locks:** HTTP `/health/live` + `/health/ready`; opt-in `/metrics`; gRPC health; QG-SIGN-01/02; PLAN-32…43 — **do not regress**  
@@ -28,22 +28,33 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - Full APM productization / vanity dashboards  
 - systemd `Type=notify` / `WatchdogSec` packaging polish (explicitly deferred / saturating)
 
-## Inventory evidence (seed baseline 2026-09-17 `main` @ PLAN-43 COMPLETE / `6596cae1`)
+## Inventory evidence (W7-320 @ `main` `0929ef8d`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
-| `Program.cs` | Opt-in `AddOpenTelemetry().WithMetrics` + `MapPrometheusScrapingEndpoint` `/metrics` | No `WithTracing` / OTLP exporter / ASP.NET+gRPC activity sources |
+| `Program.cs` | Opt-in `AddOpenTelemetry().WithMetrics` + `MapPrometheusScrapingEndpoint` `/metrics` | No `WithTracing` / OTLP exporter / ASP.NET activity sources for traces |
+| `ControllerOptions` | `MetricsHostOptions` (`Mfc:Metrics:Enabled` default false) | No `TracingHostOptions` |
 | `installation.md` / packaging doc | Health + metrics scrape guidance | No tracing exporter guidance |
-| Glob / rg | `WithTracing` / `AddOtlpExporter` / `ActivitySource` absent under Controller metrics path @ `6596cae1` | Confirmed |
+| Glob / rg | `WithTracing` / `AddOtlpExporter` / `ActivitySource` absent under Controller tracing path @ `0929ef8d` | Confirmed |
+| Packages | `OpenTelemetry.Extensions.Hosting` + Prometheus + AspNetCore/Runtime **metrics** instrumentation | No `OpenTelemetry.Exporter.OpenTelemetryProtocol` / Console exporter / GrpcNetClient instrumentation |
 | Packaging unit | `Type=simple` + journald + health + opt-in metrics | Tracing residual; Type=notify deferred |
 
-## Ranked Controller tracing tranche (seed baseline)
+**Ranking decision:** Prefer **ONE atomic row** (**CTRL-HTTP-OTEL-TRACE-01**) covering minimal correct opt-in tracing:
+
+- `AddOpenTelemetry().WithTracing` + ASP.NET Core instrumentation (covers inbound HTTP + gRPC on Kestrel); add `OpenTelemetry.Instrumentation.GrpcNetClient` when package available for outbound gRPC/HTTP client spans
+- Exporters (inventory lock): **OTLP** when `Mfc:Tracing:OtlpEndpoint` (or equivalent) is non-empty **and/or** **console** exporter when `Mfc:Tracing:ConsoleExporter=true` for local ops — both may coexist
+- Default **fail-closed / disabled** like Metrics: `Mfc:Tracing:Enabled=false` — no scrape/export surface and no org secrets required for default PR CI
+- Docs + Living Spec alongside existing HTTP/gRPC health + metrics
+
+Splitting OTLP vs console into two ranks would be vanity; Type=notify and Desktop a11y remain deferred adjacent residuals.
+
+## Ranked Controller tracing tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-HTTP-OTEL-TRACE-01** | Author minimal correct opt-in tracing export (+ docs/Living Spec) alongside existing HTTP/gRPC health + metrics; keep MSI/AppImage locked | Metrics-only OTel @ `6596cae1` | after inventory **W7-320**; seed **W7-321 (#1048)** |
+| 1 | **CTRL-HTTP-OTEL-TRACE-01** | Author minimal correct opt-in tracing export (+ docs/Living Spec) alongside existing HTTP/gRPC health + metrics; keep MSI/AppImage locked | Metrics-only OTel @ `0929ef8d` | implement **W7-322 (#1050)** after seed **W7-321 (#1048)** |
 
-Inventory (**W7-320**) may refine ranking and open implement issues; seed **W7-321** advances NEXT to the first implement after inventory DONE.
+Inventory (**W7-320 DONE**) confirmed sole rank. Seed **W7-321** advances NEXT to CTRL-HTTP-OTEL-TRACE-01 implement; COMPLETE seed opens after TRACE-01.
 
 ## Dual track
 
@@ -64,10 +75,10 @@ PLAN-43 sole ranked row (**CTRL-HTTP-METRICS-01**) is **DONE**. No further PLAN-
 ## §3.C ordering
 
 1. **PLAN-43 COMPLETE** (W7-318 CTRL-HTTP-METRICS-01; seed **W7-319 DONE**).  
-2. **W7-320 OPEN** — PLAN-44 inventory → open first tracing implement + follow-up seeds.  
-3. **W7-321 OPEN** — seed first PLAN-44 implement after inventory.  
-4. Execute ranked CTRL-HTTP-OTEL-TRACE row(s) atomically.
+2. **W7-320 DONE** — PLAN-44 inventory; opened **W7-322 (#1050)** CTRL-HTTP-OTEL-TRACE-01 implement.  
+3. **W7-321 OPEN** — seed advances NEXT to CTRL-HTTP-OTEL-TRACE-01; opens COMPLETE follow-up.  
+4. Execute sole CTRL-HTTP-OTEL-TRACE-01 row atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-320 (#1047)** — PLAN-44 Inventory Controller OpenTelemetry tracing after PLAN-43.
+**§3.C NEXT = W7-321 (#1048)** — Seed first PLAN-44 atomic row after inventory → CTRL-HTTP-OTEL-TRACE-01.

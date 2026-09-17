@@ -1,7 +1,7 @@
 # PLAN-43 — Controller metrics / OpenTelemetry beyond HTTP health probes
 
 **Date:** 2026-09-17 (inventory **DONE** @ `94f04744`)  
-**Status:** **PLAN-43 COMPLETE** — Inventory **DONE** (W7-316); seed **W7-317 (#1040) DONE**; implement **W7-318 (#1042) DONE**; COMPLETE seed **W7-319 (#1044) DONE**; successor **PLAN-44** inventory **W7-320 (#1047) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-43 COMPLETE** — Inventory **DONE** (W7-316); seed **W7-317 (#1040) DONE**; implement **W7-318 (#1042) DONE**; COMPLETE seed **W7-319 (#1044) DONE**; successor **PLAN-44** inventory **W7-320 (#1047) DONE**; seed **W7-321 (#1048) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-316 / PLAN-43 #1039](https://github.com/sesquicadaver/MTDirector/issues/1039) **DONE**  
 **Predecessor:** PLAN-42 Controller HTTP health probes **COMPLETE** (CTRL-HTTP-HEALTH-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
@@ -75,4 +75,4 @@ PLAN-42 sole ranked row (**CTRL-HTTP-HEALTH-01**) is **DONE**. No further PLAN-4
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-320 (#1047)** — PLAN-44 Inventory Controller OpenTelemetry tracing after PLAN-43.
+**§3.C NEXT = W7-321 (#1048)** — PLAN-44 Inventory Controller OpenTelemetry tracing after PLAN-43.

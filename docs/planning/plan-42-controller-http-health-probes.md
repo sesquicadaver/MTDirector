@@ -79,4 +79,4 @@ PLAN-41 sole ranked row (**QG-SIGN-02**) is **DONE**. No further PLAN-41 product
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-320 (#1047)** — PLAN-44 Inventory Controller OpenTelemetry tracing after PLAN-43.
+**§3.C NEXT = W7-321 (#1048)** — PLAN-44 Inventory Controller OpenTelemetry tracing after PLAN-43.
