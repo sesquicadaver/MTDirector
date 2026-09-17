@@ -62,7 +62,7 @@ public sealed class CtrlHttpMetrics01ControllerMetricsLivingSpecTests
             "W7-318 | [#1042](https://github.com/sesquicadaver/MTDirector/issues/1042) | CTRL-HTTP-METRICS-01 — Controller scrapeable Prometheus/OTel metrics beyond HTTP health | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-325 (#1056)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-326 (#1058)", roadmap, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

@@ -1,0 +1,75 @@
+using Xunit;
+
+namespace Mfc.UnitTests.Release;
+
+/// <summary>
+/// W7-325: known-limitations / queue seed locked CTRL-LOG-OTEL-CORRELATE-01 (W7-326) after PLAN-45 inventory.
+/// </summary>
+public sealed class ProductTrancheSeedW7325LivingSpecTests
+{
+    [Fact]
+    public void Ac1KnownLimitationsAndQueueSeedCtrlLogOtelCorrelate01AsNext()
+    {
+        string root = RepoRoot();
+        string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
+        string roadmap = File.ReadAllText(Path.Combine(root, "ROADMAP.md"));
+        string plan = File.ReadAllText(Path.Combine(root, "docs/planning/continuous-queue-plan.md"));
+        string plan45 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-45-controller-log-trace-correlation.md"));
+        string program = File.ReadAllText(Path.Combine(root, "src/Mfc.Controller/Program.cs"));
+        string logger = File.ReadAllText(Path.Combine(root, "src/Mfc.Infrastructure/Persistence/Logging/RedactingJsonConsoleLoggerProvider.cs"));
+
+        Assert.Contains("Intentional residual (W7-325 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("CTRL-LOG-OTEL-CORRELATE-01", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-326", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-327", limitations, StringComparison.Ordinal);
+        Assert.Contains("seeded as **W7-326**", limitations, StringComparison.Ordinal);
+
+        Assert.Contains(
+            "W7-325 | [#1056](https://github.com/sesquicadaver/MTDirector/issues/1056) | Seed first PLAN-45 atomic row after inventory → CTRL-LOG-OTEL-CORRELATE-01 | **DONE**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-326 | [#1058](https://github.com/sesquicadaver/MTDirector/issues/1058) | CTRL-LOG-OTEL-CORRELATE-01 — Enrich JSON console logs with Activity TraceId/SpanId | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-327 | [#1060](https://github.com/sesquicadaver/MTDirector/issues/1060) | Seed next after CTRL-LOG-OTEL-CORRELATE-01 (PLAN-45 COMPLETE) | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-326 (#1058)", roadmap, StringComparison.Ordinal);
+
+        Assert.Contains("W7-325", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-326", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-327", plan, StringComparison.Ordinal);
+        Assert.Contains("CTRL-LOG-OTEL-CORRELATE-01", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-326 (#1058)", plan, StringComparison.Ordinal);
+
+        Assert.Contains("W7-325 (#1056) DONE", plan45, StringComparison.Ordinal);
+        Assert.Contains("CTRL-LOG-OTEL-CORRELATE-01", plan45, StringComparison.Ordinal);
+        Assert.Contains("W7-326", plan45, StringComparison.Ordinal);
+        Assert.Contains("W7-327", plan45, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-326 (#1058)", plan45, StringComparison.Ordinal);
+
+        Assert.Contains("MapHealthChecks", program, StringComparison.Ordinal);
+        Assert.Contains("MapPrometheusScrapingEndpoint", program, StringComparison.Ordinal);
+        Assert.Contains("WithTracing", program, StringComparison.Ordinal);
+        Assert.DoesNotContain("Activity.Current", logger, StringComparison.Ordinal);
+        Assert.DoesNotContain("traceId", logger, StringComparison.Ordinal);
+    }
+
+    private static string RepoRoot()
+    {
+        DirectoryInfo? dir = new(AppContext.BaseDirectory);
+        while (dir is not null)
+        {
+            if (File.Exists(Path.Combine(dir.FullName, "ROADMAP.md")))
+            {
+                return dir.FullName;
+            }
+
+            dir = dir.Parent;
+        }
+
+        throw new InvalidOperationException("Repository root not found.");
+    }
+}
