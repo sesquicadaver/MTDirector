@@ -30,17 +30,17 @@ public sealed class ProductTrancheSeedW7245LivingSpecTests
             "W7-246 | [#898](https://github.com/sesquicadaver/MTDirector/issues/898) | DESK-A11Y-FIELD-01 — Zones / Policies draft TextBox AutomationProperties.Name | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-332 (#1071)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-333 (#1072)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-245 DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-246", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-FIELD-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-332 (#1071)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-333 (#1072)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-245 DONE", plan28, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-FIELD-01", plan28, StringComparison.Ordinal);
         Assert.Contains("W7-246", plan28, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-332 (#1071)", plan28, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-333 (#1072)", plan28, StringComparison.Ordinal);
         Assert.Contains("seeded as **W7-246**", limitations, StringComparison.Ordinal);
     }
 

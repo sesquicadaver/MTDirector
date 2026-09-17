@@ -3854,6 +3854,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~CtrlHttpOtelResource01Controll
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7331"`.
 
+## Living Specification — PLAN-47 inventory Controller gRPC message-size / transport limits (W7-332)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| PLAN-47 inventory ranks sole CTRL-GRPC-MSGSIZE-01 + seeds | plan-47, Program.cs, Desktop, ROADMAP, known-limitations | `Plan47ControllerGrpcMessageSizeLimitsW7332LivingSpecTests.Ac1Plan47InventoryDocumentsSoleCtrlGrpcMsgsize01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan47ControllerGrpcMessageSizeLimitsW7332"`.
+
 ## Living Specification — Product tranche seed CTRL-LOG-OTEL-CORRELATE-01 after PLAN-45 inventory (W7-325)
 
 | Requirement | Artifact | Test |

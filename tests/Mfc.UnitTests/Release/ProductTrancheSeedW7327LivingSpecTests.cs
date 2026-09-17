@@ -56,24 +56,24 @@ public sealed class ProductTrancheSeedW7327LivingSpecTests
             "W7-333 | [#1072](https://github.com/sesquicadaver/MTDirector/issues/1072) | Seed first PLAN-47 atomic row after inventory → CTRL-GRPC-MSGSIZE-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-332 (#1071)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-333 (#1072)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-45 COMPLETE", plan45, StringComparison.Ordinal);
         Assert.Contains("W7-327 (#1060) DONE", plan45, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-332 (#1071)", plan45, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-333 (#1072)", plan45, StringComparison.Ordinal);
         Assert.Contains("plan-46-controller-otel-resource-identity.md", plan45, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-46", plan, StringComparison.Ordinal);
         Assert.Contains("W7-328", plan, StringComparison.Ordinal);
         Assert.Contains("W7-327 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-332 (#1071)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-333 (#1072)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-46-controller-otel-resource-identity.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("CTRL-HTTP-OTEL-RESOURCE-01", plan46, StringComparison.Ordinal);
         Assert.Contains("Inventory **DONE**", plan46, StringComparison.Ordinal);
         Assert.Contains("W7-328", plan46, StringComparison.Ordinal);
         Assert.Contains("W7-329", plan46, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-332 (#1071)", plan46, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-333 (#1072)", plan46, StringComparison.Ordinal);
         Assert.Contains("894cc4b8", plan46, StringComparison.Ordinal);
         Assert.Contains("W7-330", plan46, StringComparison.Ordinal);
 
