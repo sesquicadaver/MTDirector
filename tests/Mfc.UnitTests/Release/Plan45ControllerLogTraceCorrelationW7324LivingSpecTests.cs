@@ -76,11 +76,15 @@ public sealed class Plan45ControllerLogTraceCorrelationW7324LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-332 | [#1071](https://github.com/sesquicadaver/MTDirector/issues/1071) | PLAN-47 — Inventory Controller gRPC message-size / transport limits after OTel resource identity | **OPEN**",
+            "W7-332 | [#1071](https://github.com/sesquicadaver/MTDirector/issues/1071) | PLAN-47 — Inventory Controller gRPC message-size / transport limits after OTel resource identity | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-333 | [#1072](https://github.com/sesquicadaver/MTDirector/issues/1072) | Seed first PLAN-47 atomic row after inventory → CTRL-GRPC-MSGSIZE-01 | **OPEN**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-334 | [#1074](https://github.com/sesquicadaver/MTDirector/issues/1074) | CTRL-GRPC-MSGSIZE-01 — Align Controller+Desktop gRPC MaxReceive/SendMessageSize with snapshot bounds | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-333 (#1072)", roadmap, StringComparison.Ordinal);
