@@ -72,4 +72,4 @@ PLAN-38 sole ranked row (**OPS-HOST-SYSUSERS-01**) is **DONE**. No further PLAN-
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-335 (#1076)** — PLAN-40 Inventory Controller host journald/syslog identity after PLAN-39.
+**§3.C NEXT = W7-336 (#1079)** — PLAN-40 Inventory Controller host journald/syslog identity after PLAN-39.

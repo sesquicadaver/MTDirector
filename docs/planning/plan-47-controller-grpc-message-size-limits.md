@@ -1,7 +1,7 @@
 # PLAN-47 — Controller gRPC message-size / transport limits after OTel resource identity
 
 **Date:** 2026-09-17 (inventory **DONE** @ `d107b57d`)  
-**Status:** Inventory **DONE** (W7-332); seed **W7-333 (#1072) DONE**; implement **W7-334 (#1074) DONE**; COMPLETE seed **W7-335 (#1076) OPEN** (**§3.C NEXT**); predecessor **PLAN-46 COMPLETE**  
+**Status:** **PLAN-47 COMPLETE** — Inventory **DONE** (W7-332); seed **W7-333 (#1072) DONE**; implement **W7-334 (#1074) DONE**; COMPLETE seed **W7-335 (#1076) DONE**; successor **PLAN-48** inventory **W7-336 (#1079) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-332 / PLAN-47 #1071](https://github.com/sesquicadaver/MTDirector/issues/1071) **DONE**  
 **Predecessor:** PLAN-46 Controller OpenTelemetry resource identity **COMPLETE** (CTRL-HTTP-OTEL-RESOURCE-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`ControllerConnectionService.cs`](../../src/Mfc.Desktop/Services/ControllerConnectionService.cs), [`installation.md`](../operations/installation.md) / [`controller-configuration.md`](../operations/controller-configuration.md)  
@@ -50,7 +50,7 @@ Splitting server vs client into two ranks would be vanity (both must match to be
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-GRPC-MSGSIZE-01** | Author minimal correct MaxReceive/SendMessageSize (Controller + Desktop) aligned with product bounds + shared constant + docs/Living Spec; keep MSI/AppImage and Type=notify locked | Default 4 MiB @ `d107b57d` | implement **W7-334 (#1074) DONE**; COMPLETE **W7-335 (#1076) OPEN** (**§3.C NEXT**); seed **W7-333 (#1072) DONE** |
+| 1 | **CTRL-GRPC-MSGSIZE-01** | Author minimal correct MaxReceive/SendMessageSize (Controller + Desktop) aligned with product bounds + shared constant + docs/Living Spec; keep MSI/AppImage and Type=notify locked | Default 4 MiB @ `d107b57d` | implement **W7-334 (#1074) DONE**; COMPLETE **W7-335 (#1076) DONE**; seed **W7-333 (#1072) DONE** |
 
 Inventory (**W7-332 DONE**) confirmed sole rank. Seed **W7-333** advances NEXT to MSGSIZE-01 implement after inventory.
 
@@ -76,12 +76,16 @@ PLAN-46 sole ranked row (**CTRL-HTTP-OTEL-RESOURCE-01**) is **DONE**. No further
 2. **W7-332 DONE** — PLAN-47 inventory; opened **W7-334 (#1074)** CTRL-GRPC-MSGSIZE-01 implement.  
 3. **W7-333 DONE** — seed advanced NEXT to CTRL-GRPC-MSGSIZE-01; opened COMPLETE **W7-335 (#1076)**.  
 4. **W7-334 DONE** — sole CTRL-GRPC-MSGSIZE-01 shipped.
-5. **W7-335 OPEN** — PLAN-47 COMPLETE → seed PLAN-48.
+5. **W7-335 DONE** — PLAN-47 COMPLETE; seeded PLAN-48 inventory **W7-336**.
 
 ## Delivery notes (W7-334)
 
 Shared `Mfc.Contracts.GrpcTransportLimits.MaxMessageBytes` = **256 MiB** (268435456), aligned with `RawSnapshotLimits.MaxSnapshotBytes`. Controller `AddGrpc` and Desktop `GrpcChannelOptions` both set MaxReceive/SendMessageSize to that constant (finite fail-closed; never unlimited). Docs: `installation.md` §9 + `controller-configuration.md`. Health/metrics/tracing/correlation/resource unchanged.
 
+## Adjacent residual seeded as PLAN-48
+
+- Controller Kestrel MaxRequestBodySize / HTTP2 host limits — seeded as **PLAN-48** [`plan-48-controller-kestrel-request-body-limits.md`](plan-48-controller-kestrel-request-body-limits.md)
+
 ## §3.C NEXT
 
-**§3.C NEXT = W7-335 (#1076)** — Seed next after CTRL-GRPC-MSGSIZE-01 (PLAN-47 COMPLETE).
+**§3.C NEXT = W7-336 (#1079)** — PLAN-48 Inventory Controller Kestrel request-body / HTTP2 limits after PLAN-47.
