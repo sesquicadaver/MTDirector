@@ -3701,6 +3701,20 @@ Issue [#508](https://github.com/sesquicadaver/MTDirector/issues/508) AC → modu
 Checklist: [`livespec-matrix-gate.md`](livespec-matrix-gate.md).  
 Filter: `dotnet test --filter "FullyQualifiedName~QgLivespecMatrix01"`.
 
+## Living Specification — QG-SIGN-02 opt-in release signing crypto gate (W7-310)
+
+Issue [#1026](https://github.com/sesquicadaver/MTDirector/issues/1026) AC → module → tests:
+
+| AC / вимога | Модуль | Тест |
+|-------------|--------|------|
+| RELEASE_SIGNING documents opt-in crypto gate | `RELEASE_SIGNING.md` | `QgSign02ReleaseSigningLivingSpecTests.Ac1ReleaseSigningDocumentsOptInCryptoGateBeyondCleartext` |
+| signing-gate checklist documents QG-SIGN-02 | `signing-gate.md` | `QgSign02ReleaseSigningLivingSpecTests.Ac2SigningGateChecklistDocumentsQgSign02` |
+| release-signing workflow is dispatch-only | `.github/workflows/release-signing.yml` | `QgSign02ReleaseSigningLivingSpecTests.Ac3ReleaseSigningWorkflowIsDispatchOnlyNotPullRequest` |
+| self-test produces crypto-gate status without secrets | `sign-sha256sums-crypto.sh` | `QgSign02ReleaseSigningLivingSpecTests.Ac4CryptoGateScriptSelfTestProducesStatusWithoutSecrets` |
+| Docs matrix / queue lock | testing.md, packaging, known-limitations, ROADMAP | `QgSign02ReleaseSigningLivingSpecTests.Ac5DocsMatrixDocumentsQgSign02` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~QgSign02"`.
+
 ## Living Specification — QG-SIGN-01 release signing residual gate (W7-56)
 
 Issue [#510](https://github.com/sesquicadaver/MTDirector/issues/510) AC → module → tests:
