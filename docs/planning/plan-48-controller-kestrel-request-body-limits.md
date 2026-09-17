@@ -1,7 +1,7 @@
 # PLAN-48 — Controller Kestrel request-body / HTTP2 limits after gRPC message-size
 
 **Date:** 2026-09-17 (inventory **DONE** @ `319d35bd`)  
-**Status:** Inventory **DONE** (W7-336); seed **W7-337 (#1080) OPEN** (**§3.C NEXT**); implement **W7-338 (#1082) OPEN**; predecessor **PLAN-47 COMPLETE**  
+**Status:** Inventory **DONE** (W7-336); seed **W7-337 (#1080) DONE**; implement **W7-338 (#1082) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-339 (#1084) OPEN**; predecessor **PLAN-47 COMPLETE**  
 **PLAN issue / queue:** [W7-336 / PLAN-48 #1079](https://github.com/sesquicadaver/MTDirector/issues/1079) **DONE**  
 **Predecessor:** PLAN-47 Controller gRPC message-size / transport limits **COMPLETE** (CTRL-GRPC-MSGSIZE-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs) (`ConfigureKestrel`), [`GrpcTransportLimits.cs`](../../src/Mfc.Contracts/GrpcTransportLimits.cs), [`installation.md`](../operations/installation.md) / [`controller-configuration.md`](../operations/controller-configuration.md)  
@@ -51,7 +51,7 @@ Splitting MaxRequestBodySize vs HTTP/2 frame polish into two ranks would be vani
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-KESTREL-BODY-01** | Author minimal correct Kestrel MaxRequestBodySize aligned with `GrpcTransportLimits.MaxMessageBytes` + docs/Living Spec; keep MSI/AppImage and Type=notify locked | Default ~30 MiB @ `319d35bd` | implement **W7-338 (#1082) OPEN**; seed **W7-337 (#1080) OPEN** (**§3.C NEXT**) |
+| 1 | **CTRL-KESTREL-BODY-01** | Author minimal correct Kestrel MaxRequestBodySize aligned with `GrpcTransportLimits.MaxMessageBytes` + docs/Living Spec; keep MSI/AppImage and Type=notify locked | Default ~30 MiB @ `319d35bd` | implement **W7-338 (#1082) OPEN** (**§3.C NEXT**); COMPLETE **W7-339 (#1084) OPEN**; seed **W7-337 (#1080) DONE** |
 
 Inventory (**W7-336 DONE**) confirmed sole rank. Seed **W7-337** advances NEXT to BODY-01 implement after inventory.
 
@@ -75,9 +75,9 @@ PLAN-47 sole ranked row (**CTRL-GRPC-MSGSIZE-01**) is **DONE**. No further PLAN-
 
 1. **PLAN-47 COMPLETE** (W7-334 CTRL-GRPC-MSGSIZE-01; seed **W7-335 DONE**).  
 2. **W7-336 DONE** — PLAN-48 inventory; opened **W7-338 (#1082)** CTRL-KESTREL-BODY-01 implement.  
-3. **W7-337 OPEN** — seed advances NEXT to CTRL-KESTREL-BODY-01; opens COMPLETE follow-up.  
+3. **W7-337 DONE** — seed advanced NEXT to CTRL-KESTREL-BODY-01; opened COMPLETE **W7-339 (#1084)**.  
 4. Execute ranked CTRL-KESTREL-BODY row atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-337 (#1080)** — Seed first PLAN-48 atomic row after inventory → CTRL-KESTREL-BODY-01.
+**§3.C NEXT = W7-338 (#1082)** — CTRL-KESTREL-BODY-01 — Align Kestrel MaxRequestBodySize with GrpcTransportLimits (256 MiB).

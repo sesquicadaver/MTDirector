@@ -98,12 +98,12 @@ public sealed class WatchOwn01OperationOwnerAclW7258LivingSpecTests
             "W7-258 | [#922](https://github.com/sesquicadaver/MTDirector/issues/922) | WATCH-OWN-01 — Bind Watch RPCs to operation owner beyond Read permission | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-337 (#1080)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-338 (#1082)", roadmap, StringComparison.Ordinal);
         Assert.Contains("WATCH-OWN-01", plan30, StringComparison.Ordinal);
         Assert.Contains("W7-258", plan30, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-337 (#1080)", plan30, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-338 (#1082)", plan30, StringComparison.Ordinal);
         Assert.Contains("W7-258", continuous, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-337 (#1080)", continuous, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-338 (#1082)", continuous, StringComparison.Ordinal);
         Assert.Contains("Intentional residual (W7-258 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("WatchOwn01OperationOwnerAclW7258", testing, StringComparison.Ordinal);
         Assert.Contains("W7-258", changelog, StringComparison.Ordinal);
