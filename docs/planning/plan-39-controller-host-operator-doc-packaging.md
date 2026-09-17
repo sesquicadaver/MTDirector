@@ -1,7 +1,7 @@
 # PLAN-39 — Controller host operator doc packaging (Documentation=/usr/share/doc/mfc)
 
 **Date:** 2026-09-17 (inventory **DONE** @ `7348ba5e`; implement **DONE**; **COMPLETE**)  
-**Status:** **PLAN-39 COMPLETE** — Inventory **DONE** (W7-300); seed **W7-301 (#1008) DONE**; implement **W7-302 (#1010) DONE**; COMPLETE seed **W7-303 (#1012) DONE**; successor **PLAN-40** inventory **W7-304 (#1015) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-39 COMPLETE** — Inventory **DONE** (W7-300); seed **W7-301 (#1008) DONE**; implement **W7-302 (#1010) DONE**; COMPLETE seed **W7-303 (#1012) DONE**; successor **PLAN-40** inventory **W7-304 (#1015) DONE**; seed **W7-305 (#1016) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-300 / PLAN-39 #1007](https://github.com/sesquicadaver/MTDirector/issues/1007) **DONE**  
 **Predecessor:** PLAN-38 Controller host sysusers/tmpfiles packaging **COMPLETE** (OPS-HOST-SYSUSERS-01)  
 **Normative files:** [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md), [`mfc-controller.service`](../../packaging/systemd/mfc-controller.service), [`installation.md`](../operations/installation.md), [`package-controller.sh`](../../scripts/release/package-controller.sh), [`packaging.md`](../release/packaging.md)  
@@ -72,4 +72,4 @@ PLAN-38 sole ranked row (**OPS-HOST-SYSUSERS-01**) is **DONE**. No further PLAN-
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-304 (#1015)** — PLAN-40 Inventory Controller host journald/syslog identity after PLAN-39.
+**§3.C NEXT = W7-305 (#1016)** — PLAN-40 Inventory Controller host journald/syslog identity after PLAN-39.

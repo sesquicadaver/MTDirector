@@ -32,7 +32,7 @@ public sealed class Plan39ControllerHostOperatorDocPackagingW7300LivingSpecTests
         Assert.Contains("sole rank", plan39, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("packaging/doc/mfc/README.md", plan39, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/controller", plan39, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-304 (#1015)", plan39, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-305 (#1016)", plan39, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", plan39, StringComparison.Ordinal);
         Assert.Contains("bundle", plan39, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Documentation=", plan39, StringComparison.Ordinal);
@@ -54,7 +54,11 @@ public sealed class Plan39ControllerHostOperatorDocPackagingW7300LivingSpecTests
             "W7-302 | [#1010](https://github.com/sesquicadaver/MTDirector/issues/1010) | OPS-HOST-DOC-01 — author packaging/doc/mfc/README.md + package-controller bundle | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-304 (#1015)", roadmap, StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-304 | [#1015](https://github.com/sesquicadaver/MTDirector/issues/1015) | PLAN-40 — Inventory Controller host journald/syslog identity (SyslogIdentifier) | **DONE**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-305 (#1016)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-301", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-302", continuous, StringComparison.Ordinal);
