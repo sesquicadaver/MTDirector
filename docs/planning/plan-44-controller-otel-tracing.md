@@ -1,7 +1,7 @@
 # PLAN-44 — Controller OpenTelemetry tracing beyond metrics scrape
 
 **Date:** 2026-09-17 (inventory **DONE** @ `0929ef8d`)  
-**Status:** Inventory **DONE** (W7-320); seed **W7-321 (#1048) DONE**; implement **W7-322 (#1050) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-323 (#1052) OPEN**; predecessor **PLAN-43 COMPLETE**  
+**Status:** Inventory **DONE** (W7-320); seed **W7-321 (#1048) DONE**; implement **W7-322 (#1050) DONE**; COMPLETE seed **W7-323 (#1052) OPEN** (**§3.C NEXT**); predecessor **PLAN-43 COMPLETE**  
 **PLAN issue / queue:** [W7-320 / PLAN-44 #1047](https://github.com/sesquicadaver/MTDirector/issues/1047) **DONE**  
 **Predecessor:** PLAN-43 Controller metrics / OpenTelemetry scrape **COMPLETE** (CTRL-HTTP-METRICS-01)  
 **Normative files:** [`Program.cs`](../../src/Mfc.Controller/Program.cs), [`installation.md`](../operations/installation.md), [`packaging/doc/mfc/README.md`](../../packaging/doc/mfc/README.md)  
@@ -77,8 +77,9 @@ PLAN-43 sole ranked row (**CTRL-HTTP-METRICS-01**) is **DONE**. No further PLAN-
 1. **PLAN-43 COMPLETE** (W7-318 CTRL-HTTP-METRICS-01; seed **W7-319 DONE**).  
 2. **W7-320 DONE** — PLAN-44 inventory; opened **W7-322 (#1050)** CTRL-HTTP-OTEL-TRACE-01 implement.  
 3. **W7-321 DONE** — seed advanced NEXT to CTRL-HTTP-OTEL-TRACE-01; opened COMPLETE **W7-323 (#1052)**.  
-4. **W7-322 OPEN** — execute sole CTRL-HTTP-OTEL-TRACE-01 row atomically.
+4. **W7-322 DONE** — sole CTRL-HTTP-OTEL-TRACE-01 shipped (opt-in WithTracing + OTLP/console exporters + docs/Living Spec).
+5. **W7-323 OPEN** — PLAN-44 COMPLETE seed → PLAN-45.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-322 (#1050)** — CTRL-HTTP-OTEL-TRACE-01 — Controller opt-in OpenTelemetry tracing beyond metrics scrape.
+**§3.C NEXT = W7-323 (#1052)** — Seed next after CTRL-HTTP-OTEL-TRACE-01 (PLAN-44 COMPLETE).

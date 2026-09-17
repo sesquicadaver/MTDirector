@@ -205,6 +205,78 @@ public sealed class ControllerHealthHostTests
     }
 
     [Fact]
+    public async Task HttpTracingOptInConsoleKeepsHealthAndMetricsIntact()
+    {
+        string connectionString = await _postgres.CreateFreshDatabaseAsync();
+        string url = $"http://127.0.0.1:{GetFreeTcpPort()}";
+
+        await using var app = Program.BuildHost(
+            [
+                "--environment", "Development",
+                $"--Mfc:Grpc:ListenAddress={url}",
+                "--Mfc:Grpc:AllowInsecureLoopback=true",
+                "--Mfc:Grpc:ShutdownTimeoutSeconds=5",
+                "--Mfc:Security:RequireTls=true",
+                "--Mfc:Security:MasterKeyProvider=Development",
+                "--Mfc:Authentication:AllowDevelopmentAuthentication=true",
+                "--Mfc:OperationalJobs:Enabled=false",
+                "--Mfc:Metrics:Enabled=true",
+                "--Mfc:Tracing:Enabled=true",
+                "--Mfc:Tracing:ConsoleExporter=true",
+                $"--Mfc:Database:ConnectionString={connectionString}",
+            ]);
+
+        await app.Services.MigrateAsync();
+        await app.StartAsync();
+
+        try
+        {
+            await WaitForPortAsync(url, TimeSpan.FromSeconds(10));
+
+            using HttpClient http = CreateHttp2Client(url);
+            using HttpResponseMessage live = await http.GetAsync("/health/live");
+            using HttpResponseMessage ready = await http.GetAsync("/health/ready");
+            using HttpResponseMessage metrics = await http.GetAsync("/metrics");
+
+            Assert.Equal(HttpStatusCode.OK, live.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, ready.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, metrics.StatusCode);
+
+            using GrpcChannel channel = GrpcChannel.ForAddress(url);
+            Health.HealthClient client = new(channel);
+            HealthCheckResponse grpc = await client.CheckAsync(
+                new HealthCheckRequest(),
+                deadline: DateTime.UtcNow.AddSeconds(5));
+            Assert.Equal(HealthCheckResponse.Types.ServingStatus.Serving, grpc.Status);
+        }
+        finally
+        {
+            using CancellationTokenSource stopCts = new(TimeSpan.FromSeconds(5));
+            await app.StopAsync(stopCts.Token);
+        }
+    }
+
+    [Fact]
+    public void BuildHostRejectsTracingEnabledWithoutExporter()
+    {
+        Assert.ThrowsAny<Exception>(() =>
+        {
+            _ = Program.BuildHost(
+                [
+                    "--environment", "Development",
+                    "--Mfc:Grpc:ListenAddress=http://127.0.0.1:5101",
+                    "--Mfc:Grpc:AllowInsecureLoopback=true",
+                    "--Mfc:Security:RequireTls=true",
+                    "--Mfc:Security:MasterKeyProvider=Development",
+                    "--Mfc:Authentication:AllowDevelopmentAuthentication=true",
+                    "--Mfc:OperationalJobs:Enabled=false",
+                    "--Mfc:Tracing:Enabled=true",
+                    "--Mfc:Database:ConnectionString=Host=127.0.0.1;Database=mfc;Username=mfc;Password=x",
+                ]);
+        });
+    }
+
+    [Fact]
     public void BuildHostRejectsProductionWithoutTls()
     {
         Assert.ThrowsAny<Exception>(() =>

@@ -34,6 +34,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 
 namespace Mfc.Controller;
 
@@ -219,16 +220,54 @@ public static class Program
             .Get<MetricsHostOptions>()
             ?? new MetricsHostOptions();
         string metricsScrapePath = NormalizeMetricsScrapePath(metricsOptions.ScrapePath);
-        if (metricsOptions.Enabled)
+
+        // CTRL-HTTP-OTEL-TRACE-01: opt-in tracing (default off / fail-closed — no exporters).
+        TracingHostOptions tracingOptions = builder.Configuration
+            .GetSection($"{ControllerOptions.SectionName}:{TracingHostOptions.SectionName}")
+            .Get<TracingHostOptions>()
+            ?? new TracingHostOptions();
+        string? tracingOtlpEndpoint = string.IsNullOrWhiteSpace(tracingOptions.OtlpEndpoint)
+            ? null
+            : tracingOptions.OtlpEndpoint.Trim();
+        if (tracingOptions.Enabled && tracingOtlpEndpoint is null && !tracingOptions.ConsoleExporter)
         {
-            builder.Services.AddOpenTelemetry()
-                .WithMetrics(metrics =>
+            throw new InvalidOperationException(
+                "Mfc:Tracing:Enabled=true requires Mfc:Tracing:OtlpEndpoint and/or Mfc:Tracing:ConsoleExporter=true (fail-closed).");
+        }
+
+        if (metricsOptions.Enabled || tracingOptions.Enabled)
+        {
+            var otel = builder.Services.AddOpenTelemetry();
+            if (metricsOptions.Enabled)
+            {
+                otel.WithMetrics(metrics =>
                 {
                     metrics
                         .AddAspNetCoreInstrumentation()
                         .AddRuntimeInstrumentation()
                         .AddPrometheusExporter();
                 });
+            }
+
+            if (tracingOptions.Enabled)
+            {
+                otel.WithTracing(tracing =>
+                {
+                    tracing.AddAspNetCoreInstrumentation();
+                    if (tracingOtlpEndpoint is not null)
+                    {
+                        tracing.AddOtlpExporter(exporter =>
+                        {
+                            exporter.Endpoint = new Uri(tracingOtlpEndpoint);
+                        });
+                    }
+
+                    if (tracingOptions.ConsoleExporter)
+                    {
+                        tracing.AddConsoleExporter();
+                    }
+                });
+            }
         }
 
         configure?.Invoke(builder);
