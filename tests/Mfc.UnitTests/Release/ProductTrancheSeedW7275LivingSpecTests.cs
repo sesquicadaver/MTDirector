@@ -35,17 +35,17 @@ public sealed class ProductTrancheSeedW7275LivingSpecTests
             "W7-277 | [#959](https://github.com/sesquicadaver/MTDirector/issues/959) | Seed next after DESK-A11Y-TREE-01 (PLAN-33 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-357 (#1120)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-358 (#1122)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-275", plan, StringComparison.Ordinal);
         Assert.Contains("W7-276", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-TREE-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-357 (#1120)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-358 (#1122)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-275 (#956) DONE", plan33, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-TREE-01", plan33, StringComparison.Ordinal);
         Assert.Contains("W7-276", plan33, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-357 (#1120)", plan33, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-358 (#1122)", plan33, StringComparison.Ordinal);
 
         // Historical seed: TREE-01 later implemented (Name present)
         const string rootsBinding = "ItemsSource=\"{Binding Inventory.Roots}\"";

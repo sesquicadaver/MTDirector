@@ -1,7 +1,7 @@
 # PLAN-53 — Controller fault-correlation logging after Desktop ErrorDetail mapping
 
 **Date:** 2026-09-19 (inventory **DONE** @ `dbbe0733`)  
-**Status:** Inventory **DONE** (W7-356); seed **W7-357 (#1120) OPEN** (**§3.C NEXT**); implement **W7-358 (#1122) OPEN**; COMPLETE seed **W7-359 (#1123) OPEN**  
+**Status:** Inventory **DONE** (W7-356); seed **W7-357 (#1120) DONE**; implement **W7-358 (#1122) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-359 (#1123) OPEN**  
 **PLAN issue / queue:** [W7-356 / PLAN-53 #1119](https://github.com/sesquicadaver/MTDirector/issues/1119) **DONE**  
 **Predecessor:** PLAN-52 Desktop gRPC ErrorDetail operator mapping **COMPLETE** (DESK-RPC-FAULT-01)  
 **Normative files:** `GrpcApplicationErrorMapper`, Controller JSON logging, operator docs  
@@ -70,7 +70,7 @@ Splitting per-service ranks would be vanity. Passing a caller-supplied correlati
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-ERRDETAIL-LOG-01** | Structured log of fault code, gRPC status, correlation id, and retryable at the mapper + Living Spec | **43** callers omit `correlationId`; **0** `ILogger` @ `dbbe0733` | after inventory **W7-356 DONE**; seed **W7-357 (#1120) OPEN**; implement **W7-358 (#1122) OPEN**; COMPLETE **W7-359 (#1123) OPEN** |
+| 1 | **CTRL-ERRDETAIL-LOG-01** | Structured log of fault code, gRPC status, correlation id, and retryable at the mapper + Living Spec | **43** callers omit `correlationId`; **0** `ILogger` @ `dbbe0733` | after inventory **W7-356 DONE**; seed **W7-357 (#1120) DONE**; implement **W7-358 (#1122) OPEN** (**§3.C NEXT**); COMPLETE **W7-359 (#1123) OPEN** |
 
 Inventory (**W7-356 DONE**) confirmed sole rank. Seed **W7-357** advances NEXT to the LOG implement after inventory DONE.
 
@@ -93,9 +93,10 @@ PLAN-52 sole ranked row (**DESK-RPC-FAULT-01**) is **DONE**. No further PLAN-52 
 
 1. **PLAN-52 COMPLETE** (W7-354 DESK-RPC-FAULT-01; seed **W7-355 DONE**).  
 2. **W7-356 DONE** — PLAN-53 inventory; opened **W7-358 (#1122)** CTRL-ERRDETAIL-LOG-01 implement + **W7-359 (#1123)** COMPLETE follow-up.  
-3. **W7-357 OPEN** — seed first PLAN-53 implement after inventory.  
-4. Execute ranked CTRL-ERRDETAIL-LOG-01 atomically.
+3. **W7-357 (#1120) DONE** — seed advanced NEXT to CTRL-ERRDETAIL-LOG-01; keep COMPLETE **W7-359** open.  
+4. **W7-358 OPEN** — execute ranked CTRL-ERRDETAIL-LOG-01 atomically (**§3.C NEXT**).  
+5. **W7-359** — PLAN-53 COMPLETE → seed PLAN-54.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-357 (#1120)** — Seed first PLAN-53 atomic row after inventory → CTRL-ERRDETAIL-LOG-01.
+**§3.C NEXT = W7-358 (#1122)** — CTRL-ERRDETAIL-LOG-01 — Log fault code, status, correlation id, and retryable.
