@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — PLAN-59 inventory Snapshot failed-stage ErrorText correlation (W7-380)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-59 inventory ranks sole SNAP-ERRTEXT-CORR-01 + seeds | plan-59, ROADMAP, known-limitations, SnapshotViewerViewModel baseline | `Plan59SnapshotFailedErrorTextCorrelationW7380LivingSpecTests.Ac1Plan59InventoryDocumentsSoleSnapErrtextCorr01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan59SnapshotFailedErrorTextCorrelationW7380"`.
+
 ## Living Specification — Seed PLAN-59 after PLAN-58 COMPLETE (W7-379)
 
 | Requirement | Artifact | Test |

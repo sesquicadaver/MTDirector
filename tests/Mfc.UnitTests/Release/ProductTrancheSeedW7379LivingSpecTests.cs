@@ -36,30 +36,30 @@ public sealed class ProductTrancheSeedW7379LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-380 | [#1167](https://github.com/sesquicadaver/MTDirector/issues/1167) | PLAN-59 — Inventory Snapshot failed-stage ErrorText correlation | **OPEN**",
+            "W7-380 | [#1167](https://github.com/sesquicadaver/MTDirector/issues/1167) | PLAN-59 — Inventory Snapshot failed-stage ErrorText correlation | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-381 | [#1168](https://github.com/sesquicadaver/MTDirector/issues/1168) | Seed first PLAN-59 atomic row after inventory → SNAP-ERRTEXT-CORR-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-380 (#1167)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-381 (#1168)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-58 COMPLETE", plan58, StringComparison.Ordinal);
         Assert.Contains("W7-379 (#1163) DONE", plan58, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-380 (#1167)", plan58, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-381 (#1168)", plan58, StringComparison.Ordinal);
         Assert.Contains("plan-59-snapshot-failed-errortext-correlation.md", plan, StringComparison.Ordinal);
         Assert.Contains("plan-59-snapshot-failed-errortext-correlation.md", docsIndex, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-59", plan, StringComparison.Ordinal);
         Assert.Contains("W7-380", plan, StringComparison.Ordinal);
         Assert.Contains("W7-379 (#1163) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-380 (#1167)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-381 (#1168)", plan, StringComparison.Ordinal);
         Assert.Contains("SNAP-ERRTEXT-CORR-01", plan59, StringComparison.Ordinal);
         Assert.Contains("SanitizedDetail", plan59, StringComparison.Ordinal);
         Assert.Contains("6b0b3f95", plan59, StringComparison.Ordinal);
         Assert.Contains("W7-380", plan59, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-380 (#1167)", plan59, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-381 (#1168)", plan59, StringComparison.Ordinal);
 
         Assert.Contains(
             "ErrorText = outcome.LastProgress.Error?.SanitizedDetail ?? \"Capture failed.\"",
