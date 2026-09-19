@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed PLAN-60 after PLAN-59 COMPLETE (W7-383)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks PLAN-60 inventory as §3.C NEXT | known-limitations, ROADMAP, plan-59, plan-60, continuous-queue | `ProductTrancheSeedW7383LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan60AfterPlan59Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7383"`.
+
 ## Living Specification — SNAP-ERRTEXT-CORR-01 Failed-stage ErrorText correlation (W7-382)
 
 | Requirement | Artifact | Test |

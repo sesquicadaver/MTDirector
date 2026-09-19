@@ -34,7 +34,7 @@ public sealed class Plan40ControllerHostJournaldSyslogIdentityW7304LivingSpecTes
         Assert.Contains("SyslogIdentifier=mfc-controller", plan40, StringComparison.Ordinal);
         Assert.Contains("StandardOutput=journal", plan40, StringComparison.Ordinal);
         Assert.Contains("StandardError=journal", plan40, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-383 (#1171)", plan40, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-384 (#1175)", plan40, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", plan40, StringComparison.Ordinal);
         Assert.Contains("journalctl", plan40, StringComparison.Ordinal);
 
@@ -59,7 +59,7 @@ public sealed class Plan40ControllerHostJournaldSyslogIdentityW7304LivingSpecTes
             "W7-307 | [#1020](https://github.com/sesquicadaver/MTDirector/issues/1020) | Seed next after OPS-HOST-LOG-01 (PLAN-40 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-383 (#1171)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-384 (#1175)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-305", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-306", continuous, StringComparison.Ordinal);

@@ -1,0 +1,78 @@
+# PLAN-60 — Desktop service RPC fault text after snapshot ErrorText correlation
+
+**Date:** 2026-09-19 (seeded; inventory **OPEN**)  
+**Status:** Inventory **OPEN** (W7-384); seed **W7-385 (#1176) OPEN**; predecessor **PLAN-59 COMPLETE**  
+**PLAN issue / queue:** [W7-384 / PLAN-60 #1175](https://github.com/sesquicadaver/MTDirector/issues/1175) **OPEN** (**§3.C NEXT**)  
+**Predecessor:** PLAN-59 Snapshot failed-stage ErrorText correlation **COMPLETE** (SNAP-ERRTEXT-CORR-01)  
+**Normative files:** `SnapshotViewerService`, `SnapshotDiffService`, `InventoryTreeService`, operator docs  
+**Normative prior locks:** SNAP-ERRTEXT-CORR-01; DESK-PANEL-FAULT-01; DESK-VRRP-PROG-01; DESK-VRRP-FAULT-01; SNAP-FAULT-CORR-01; DESK-CONN-FAULT-01; CTRL-ERRDETAIL-LOG-01 (event 5301); DESK-RPC-FAULT-01 — **do not regress**  
+**Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
+
+Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap after PLAN-59 put `FormatCaptureProgress` on Failed-stage Snapshot `ErrorText`: Desktop services that load snapshots, compare snapshots, and refresh inventory still store `Error = ex.Message`. An `RpcException` therefore reaches shell `ErrorText` as `RpcException.Message`, which does not include the `mfc-error-detail-bin` correlation id. ViewModel `RpcException` catches already use `DesktopRpcFaultText.Format`. Operators reading those service-fed errors cannot join journald event **5301**. Type=notify and Desktop a11y remain deferred vanity.
+
+## Principles
+
+1. When a service catch is an `RpcException`, the `Error` string operators read should be `DesktopRpcFaultText.Format` (code + correlation id). Non-RPC exceptions keep `ex.Message`.  
+2. Do not invent AppImage/MSI (W7-22).  
+3. Lab / CHR / `WriteEnabled` are **not** stop-gates.  
+4. Do not re-open SNAP-ERRTEXT-CORR-01, DESK-PANEL-FAULT-01, DESK-VRRP-PROG-01, DESK-VRRP-FAULT-01, SNAP-FAULT-CORR-01, DESK-CONN-FAULT-01, CTRL-ERRDETAIL-LOG-01, or DESK-RPC-FAULT-01.  
+5. Avoid vanity Desktop a11y and systemd Type=notify.
+
+## Out of scope (do not seed)
+
+- Re-opening SNAP-ERRTEXT-CORR-01 / DESK-PANEL-FAULT-01 / DESK-VRRP-PROG-01 / DESK-VRRP-FAULT-01 / SNAP-FAULT-CORR-01 / DESK-CONN-FAULT-01 / CTRL-ERRDETAIL-LOG-01 / DESK-RPC-FAULT-01  
+- Native MSI / AppImage (W7-22)  
+- Nested ListBox / TabControl a11y vanity  
+- systemd `Type=notify` / `WatchdogSec`  
+- Ops / CRS / physical lab live runners as §3 stop-gates  
+- Changing the `mfc-error-detail-bin` trailer contract or the event 5301 log line  
+- Onboarding / Deployment progress (`ErrorCode` only; proto has no `ErrorDetail`)  
+- Health-timeout and TLS connection text  
+- ViewModel `RpcException` catches that already call `DesktopRpcFaultText.Format`  
+
+## Inventory evidence (seed baseline @ `10adc5ba`)
+
+| Surface | Current behavior | Gap |
+|---------|------------------|-----|
+| `SnapshotViewerService` | **3** `Error = ex.Message` (device load, capture load, section load) | `RpcException` drops the correlation id |
+| `SnapshotDiffService` | **2** `Error = ex.Message` (capture list, compare) | `RpcException` drops the correlation id |
+| `InventoryTreeService` | **1** `Error = ex.Message` (refresh) | `RpcException` drops the correlation id |
+| ViewModel `RpcException` | `DesktopRpcFaultText.Format` | DESK-RPC-FAULT-01 / DESK-PANEL-FAULT-01 already joined |
+| Failed-stage Snapshot `ErrorText` | `FormatCaptureProgress` | SNAP-ERRTEXT-CORR-01 already joined |
+
+**6** service `Error = ex.Message` assignments still swallow `RpcException` @ `10adc5ba`.
+
+## Ranked tranche (seed baseline)
+
+| Rank | ID | Gap | Evidence | Queue |
+|------|----|-----|----------|-------|
+| 1 | **DESK-SVC-FAULT-01** | Store `DesktopRpcFaultText.Format` when those service catches are `RpcException`; keep `ex.Message` otherwise + Living Spec | **6** `Error = ex.Message` assignments @ `10adc5ba` | after inventory **W7-384**; seed **W7-385 (#1176)** |
+
+Inventory (**W7-384**) may refine ranking and open the implement issue; seed **W7-385** advances NEXT to that implement after inventory DONE.
+
+## Dual track
+
+Product §3 never waits on GNS3.
+
+## Residual notes (PLAN-59 CLOSED)
+
+PLAN-59 sole ranked row (**SNAP-ERRTEXT-CORR-01**) is **DONE**. No further PLAN-59 product rows.
+
+## Adjacent residuals (not seeded here)
+
+- Unnamed TabControl / nested ListBox a11y — deferred vanity  
+- Native MSI / AppImage — W7-22 lock  
+- systemd Type=notify — deferred packaging polish  
+- Onboarding / Deployment progress is an `ErrorCode` string, not an `ErrorDetail`  
+- Health-timeout and TLS connection text are not `ErrorDetail` trailers  
+
+## §3.C ordering
+
+1. **PLAN-59 COMPLETE** (W7-382 SNAP-ERRTEXT-CORR-01; seed **W7-383 DONE**).  
+2. **W7-384 OPEN** — PLAN-60 inventory (**§3.C NEXT**).  
+3. **W7-385 OPEN** — seed first PLAN-60 implement after inventory.  
+4. Execute ranked DESK-SVC-FAULT-01 atomically.
+
+## §3.C NEXT
+
+**§3.C NEXT = W7-384 (#1175)** — PLAN-60 Inventory Desktop service RPC fault text.
