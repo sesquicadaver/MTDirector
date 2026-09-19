@@ -39,30 +39,30 @@ public sealed class ProductTrancheSeedW7383LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-384 | [#1175](https://github.com/sesquicadaver/MTDirector/issues/1175) | PLAN-60 — Inventory Desktop service RPC fault text | **OPEN**",
+            "W7-384 | [#1175](https://github.com/sesquicadaver/MTDirector/issues/1175) | PLAN-60 — Inventory Desktop service RPC fault text | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-385 | [#1176](https://github.com/sesquicadaver/MTDirector/issues/1176) | Seed first PLAN-60 atomic row after inventory → DESK-SVC-FAULT-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-384 (#1175)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-385 (#1176)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-59 COMPLETE", plan59, StringComparison.Ordinal);
         Assert.Contains("W7-383 (#1171) DONE", plan59, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-384 (#1175)", plan59, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-385 (#1176)", plan59, StringComparison.Ordinal);
         Assert.Contains("plan-60-desktop-service-rpc-fault-text.md", plan, StringComparison.Ordinal);
         Assert.Contains("plan-60-desktop-service-rpc-fault-text.md", docsIndex, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-60", plan, StringComparison.Ordinal);
         Assert.Contains("W7-384", plan, StringComparison.Ordinal);
         Assert.Contains("W7-383 (#1171) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-384 (#1175)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-385 (#1176)", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-SVC-FAULT-01", plan60, StringComparison.Ordinal);
         Assert.Contains("ex.Message", plan60, StringComparison.Ordinal);
         Assert.Contains("10adc5ba", plan60, StringComparison.Ordinal);
         Assert.Contains("W7-384", plan60, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-384 (#1175)", plan60, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-385 (#1176)", plan60, StringComparison.Ordinal);
 
         Assert.Equal(
             6,

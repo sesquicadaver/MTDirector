@@ -89,4 +89,4 @@ Controller `ConfigureKestrel` sets `Limits.MaxRequestBodySize = GrpcTransportLim
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-384 (#1175)** — PLAN-50 Inventory Controller Kestrel min request/response data-rate after PLAN-49.
+**§3.C NEXT = W7-385 (#1176)** — PLAN-50 Inventory Controller Kestrel min request/response data-rate after PLAN-49.
