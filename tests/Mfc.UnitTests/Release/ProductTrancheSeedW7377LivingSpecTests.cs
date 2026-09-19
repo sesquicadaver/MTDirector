@@ -34,22 +34,22 @@ public sealed class ProductTrancheSeedW7377LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-379 | [#1163](https://github.com/sesquicadaver/MTDirector/issues/1163) | Seed next after DESK-PANEL-FAULT-01 (PLAN-58 COMPLETE) | **OPEN**",
+            "W7-379 | [#1163](https://github.com/sesquicadaver/MTDirector/issues/1163) | Seed next after DESK-PANEL-FAULT-01 (PLAN-58 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-379 (#1163)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-380 (#1167)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-377", plan, StringComparison.Ordinal);
         Assert.Contains("W7-378", plan, StringComparison.Ordinal);
         Assert.Contains("W7-379", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-PANEL-FAULT-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-379 (#1163)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-380 (#1167)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-377 (#1160) DONE", plan58, StringComparison.Ordinal);
         Assert.Contains("DESK-PANEL-FAULT-01", plan58, StringComparison.Ordinal);
         Assert.Contains("W7-378", plan58, StringComparison.Ordinal);
         Assert.Contains("W7-379", plan58, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-379 (#1163)", plan58, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-380 (#1167)", plan58, StringComparison.Ordinal);
 
         Assert.Contains("StatusText = \"Drift load failed.\"", drift, StringComparison.Ordinal);
         Assert.Contains("DeploymentReadinessText = \"GetNodeWorkflow failed.\"", node, StringComparison.Ordinal);

@@ -75,4 +75,4 @@ PLAN-42 sole ranked row (**CTRL-HTTP-HEALTH-01**) is **DONE**. No further PLAN-4
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-379 (#1163)** — PLAN-44 Inventory Controller OpenTelemetry tracing after PLAN-43.
+**§3.C NEXT = W7-380 (#1167)** — PLAN-44 Inventory Controller OpenTelemetry tracing after PLAN-43.

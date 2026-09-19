@@ -33,7 +33,7 @@ public sealed class Plan50ControllerKestrelMinDataRateW7344LivingSpecTests
         Assert.Contains("MinResponseDataRate", plan50, StringComparison.Ordinal);
         Assert.Contains("null", plan50, StringComparison.Ordinal);
         Assert.Contains("240 B/s", plan50, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-379 (#1163)", plan50, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-380 (#1167)", plan50, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-344 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-KESTREL-MINRATE-01", limitations, StringComparison.Ordinal);
@@ -54,7 +54,7 @@ public sealed class Plan50ControllerKestrelMinDataRateW7344LivingSpecTests
             "W7-346 | [#1098](https://github.com/sesquicadaver/MTDirector/issues/1098) | CTRL-KESTREL-MINRATE-01 — Disable Kestrel MinRequest/ResponseDataRate for quiet Watch streams | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-379 (#1163)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-380 (#1167)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-345", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-346", continuous, StringComparison.Ordinal);
