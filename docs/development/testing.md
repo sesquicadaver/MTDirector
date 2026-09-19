@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — PLAN-52 inventory Desktop gRPC ErrorDetail (W7-352)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-52 inventory ranks sole DESK-RPC-FAULT-01 + seeds | plan-52, ROADMAP, known-limitations, ViewModel ErrorText baseline | `Plan52DesktopGrpcErrorDetailW7352LivingSpecTests.Ac1Plan52InventoryDocumentsSoleDeskRpcFault01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan52DesktopGrpcErrorDetailW7352"`.
+
 ## Living Specification — Seed PLAN-52 after PLAN-51 COMPLETE (W7-351)
 
 | Requirement | Artifact | Test |
