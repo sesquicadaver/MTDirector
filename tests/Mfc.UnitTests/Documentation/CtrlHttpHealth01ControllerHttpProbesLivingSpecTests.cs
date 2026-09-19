@@ -53,7 +53,7 @@ public sealed class CtrlHttpHealth01ControllerHttpProbesLivingSpecTests
             "W7-314 | [#1034](https://github.com/sesquicadaver/MTDirector/issues/1034) | CTRL-HTTP-HEALTH-01 — HTTP liveness/readiness probes beyond gRPC health | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-351 (#1107)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-352 (#1111)", roadmap, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

@@ -39,17 +39,17 @@ public sealed class ProductTrancheSeedW7257LivingSpecTests
             "W7-260 | [#927](https://github.com/sesquicadaver/MTDirector/issues/927) | WATCH-BP-01 — Bounded ProgressHub subscriber channels / slow-subscriber backpressure + live `_history` cap | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-351 (#1107)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-352 (#1111)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-257 DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-258", plan, StringComparison.Ordinal);
         Assert.Contains("WATCH-OWN-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-351 (#1107)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-352 (#1111)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-257 (#920) DONE", plan30, StringComparison.Ordinal);
         Assert.Contains("WATCH-OWN-01", plan30, StringComparison.Ordinal);
         Assert.Contains("W7-258", plan30, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-351 (#1107)", plan30, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-352 (#1111)", plan30, StringComparison.Ordinal);
         Assert.Contains("W7-259", plan30, StringComparison.Ordinal);
     }
 
