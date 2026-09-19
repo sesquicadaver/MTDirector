@@ -1,7 +1,7 @@
 # PLAN-60 — Desktop service RPC fault text after snapshot ErrorText correlation
 
-**Date:** 2026-09-19 (seed **DONE**)  
-**Status:** Inventory **DONE** (W7-384); seed **W7-385 (#1176) DONE**; implement **W7-386 (#1178) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-387 (#1179) OPEN**; predecessor **PLAN-59 COMPLETE**  
+**Date:** 2026-09-19 (implement **DONE**)  
+**Status:** Inventory **DONE** (W7-384); seed **W7-385 (#1176) DONE**; implement **W7-386 (#1178) DONE**; COMPLETE seed **W7-387 (#1179) OPEN** (**§3.C NEXT**); predecessor **PLAN-59 COMPLETE**  
 **PLAN issue / queue:** [W7-384 / PLAN-60 #1175](https://github.com/sesquicadaver/MTDirector/issues/1175) **DONE**  
 **Predecessor:** PLAN-59 Snapshot failed-stage ErrorText correlation **COMPLETE** (SNAP-ERRTEXT-CORR-01)  
 **Normative files:** `SnapshotViewerService`, `SnapshotDiffService`, `InventoryTreeService`, operator docs  
@@ -59,7 +59,7 @@ Splitting the three services into separate rows would be vanity: the same `Error
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-SVC-FAULT-01** | Store `DesktopRpcFaultText.Format` when those service catches are `RpcException`; keep `ex.Message` otherwise + Living Spec | **6** `Error = ex.Message` assignments @ `68302273` (seed baseline `10adc5ba`) | after inventory **W7-384 DONE**; seed **W7-385 (#1176) DONE**; implement **W7-386 (#1178) OPEN**; COMPLETE **W7-387 (#1179) OPEN** |
+| 1 | **DESK-SVC-FAULT-01** | Store `DesktopRpcFaultText.Format` when those service catches are `RpcException`; keep `ex.Message` otherwise + Living Spec | **6** `Error = ex.Message` assignments @ `68302273` (seed baseline `10adc5ba`) | after inventory **W7-384 DONE**; seed **W7-385 (#1176) DONE**; implement **W7-386 (#1178) DONE**; COMPLETE **W7-387 (#1179) OPEN** |
 
 Inventory (**W7-384 DONE**) confirmed sole rank. Seed **W7-385** advances NEXT to DESK-SVC-FAULT-01 after inventory DONE.
 
@@ -84,8 +84,12 @@ PLAN-59 sole ranked row (**SNAP-ERRTEXT-CORR-01**) is **DONE**. No further PLAN-
 1. **PLAN-59 COMPLETE** (W7-382 SNAP-ERRTEXT-CORR-01; seed **W7-383 DONE**).  
 2. **W7-384 DONE** — PLAN-60 inventory; opened **W7-386 (#1178)** DESK-SVC-FAULT-01 implement + **W7-387 (#1179)** COMPLETE follow-up.  
 3. **W7-385 (#1176) DONE** — seed advanced NEXT to DESK-SVC-FAULT-01; keep COMPLETE **W7-387** open.  
-4. Execute ranked DESK-SVC-FAULT-01 atomically.
+4. **W7-386 (#1178) DONE** — DESK-SVC-FAULT-01 sets service `Error` from `DesktopRpcFaultText.Format` on `RpcException`.
+
+## Delivery notes (W7-386)
+
+`SnapshotViewerService` (device load, capture load, section load), `SnapshotDiffService` (capture list, compare), and `InventoryTreeService` (refresh) set `Error` from `DesktopRpcFaultText.Format`. When the caught exception is an `RpcException`, that text includes the code and correlation id from `mfc-error-detail-bin`. Non-RPC exceptions keep `Exception.Message`. ViewModel `RpcException` paths, Failed-stage Snapshot `ErrorText` (`FormatCaptureProgress`), panel status, VRRP pair status, capture progress, connection `AuthenticationFailed`, the trailer contract, and event 5301 are unchanged.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-386 (#1178)** — DESK-SVC-FAULT-01 — Store DesktopRpcFaultText.Format on service Error for RpcException.
+**§3.C NEXT = W7-387 (#1179)** — Seed next after DESK-SVC-FAULT-01 (PLAN-60 COMPLETE).

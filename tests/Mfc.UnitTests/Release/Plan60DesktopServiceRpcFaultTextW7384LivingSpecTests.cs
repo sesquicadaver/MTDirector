@@ -39,7 +39,7 @@ public sealed class Plan60DesktopServiceRpcFaultTextW7384LivingSpecTests
         Assert.Contains("W7-385", plan60, StringComparison.Ordinal);
         Assert.Contains("W7-386", plan60, StringComparison.Ordinal);
         Assert.Contains("W7-387", plan60, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-386 (#1178)", plan60, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-387 (#1179)", plan60, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-384 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-SVC-FAULT-01", limitations, StringComparison.Ordinal);
@@ -56,14 +56,14 @@ public sealed class Plan60DesktopServiceRpcFaultTextW7384LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-386 | [#1178](https://github.com/sesquicadaver/MTDirector/issues/1178) | DESK-SVC-FAULT-01 — Store DesktopRpcFaultText.Format on service Error for RpcException | **OPEN**",
+            "W7-386 | [#1178](https://github.com/sesquicadaver/MTDirector/issues/1178) | DESK-SVC-FAULT-01 — Store DesktopRpcFaultText.Format on service Error for RpcException | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-387 | [#1179](https://github.com/sesquicadaver/MTDirector/issues/1179) | Seed next after DESK-SVC-FAULT-01 (PLAN-60 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-386 (#1178)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-387 (#1179)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-385", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-386", continuous, StringComparison.Ordinal);
@@ -72,12 +72,12 @@ public sealed class Plan60DesktopServiceRpcFaultTextW7384LivingSpecTests
         Assert.Contains("plan-60-desktop-service-rpc-fault-text.md", docsIndex, StringComparison.Ordinal);
         Assert.Contains("Plan60DesktopServiceRpcFaultTextW7384", testing, StringComparison.Ordinal);
 
-        Assert.Equal(3, Count(viewerService, "Error = ex.Message"));
-        Assert.Equal(2, Count(diff, "Error = ex.Message"));
-        Assert.Equal(1, Count(inventory, "Error = ex.Message"));
-        Assert.Equal(0, Count(viewerService, "DesktopRpcFaultText"));
-        Assert.Equal(0, Count(diff, "DesktopRpcFaultText"));
-        Assert.Equal(0, Count(inventory, "DesktopRpcFaultText"));
+        Assert.Equal(3, Count(viewerService, "Error = DesktopRpcFaultText.Format(ex)"));
+        Assert.Equal(2, Count(diff, "Error = DesktopRpcFaultText.Format(ex)"));
+        Assert.Equal(1, Count(inventory, "Error = DesktopRpcFaultText.Format(ex)"));
+        Assert.Equal(0, Count(viewerService, "Error = ex.Message"));
+        Assert.Equal(0, Count(diff, "Error = ex.Message"));
+        Assert.Equal(0, Count(inventory, "Error = ex.Message"));
         Assert.Contains("ErrorText = FormatCaptureProgress(failed)", viewer, StringComparison.Ordinal);
         Assert.Contains("string fault = DesktopRpcFaultText.Format(ex);", viewer, StringComparison.Ordinal);
         Assert.Contains("StatusText = $\"Drift load failed. {fault}\"", drift, StringComparison.Ordinal);

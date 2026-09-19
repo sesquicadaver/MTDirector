@@ -34,29 +34,34 @@ public sealed class ProductTrancheSeedW7385LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-386 | [#1178](https://github.com/sesquicadaver/MTDirector/issues/1178) | DESK-SVC-FAULT-01 — Store DesktopRpcFaultText.Format on service Error for RpcException | **OPEN**",
+            "W7-386 | [#1178](https://github.com/sesquicadaver/MTDirector/issues/1178) | DESK-SVC-FAULT-01 — Store DesktopRpcFaultText.Format on service Error for RpcException | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-387 | [#1179](https://github.com/sesquicadaver/MTDirector/issues/1179) | Seed next after DESK-SVC-FAULT-01 (PLAN-60 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-386 (#1178)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-387 (#1179)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-385", plan, StringComparison.Ordinal);
         Assert.Contains("W7-386", plan, StringComparison.Ordinal);
         Assert.Contains("W7-387", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-SVC-FAULT-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-386 (#1178)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-387 (#1179)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-385 (#1176) DONE", plan60, StringComparison.Ordinal);
         Assert.Contains("DESK-SVC-FAULT-01", plan60, StringComparison.Ordinal);
         Assert.Contains("W7-386", plan60, StringComparison.Ordinal);
         Assert.Contains("W7-387", plan60, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-386 (#1178)", plan60, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-387 (#1179)", plan60, StringComparison.Ordinal);
 
         Assert.Equal(
             6,
+            Count(viewerService, "Error = DesktopRpcFaultText.Format(ex)")
+            + Count(diff, "Error = DesktopRpcFaultText.Format(ex)")
+            + Count(inventory, "Error = DesktopRpcFaultText.Format(ex)"));
+        Assert.Equal(
+            0,
             Count(viewerService, "Error = ex.Message")
             + Count(diff, "Error = ex.Message")
             + Count(inventory, "Error = ex.Message"));

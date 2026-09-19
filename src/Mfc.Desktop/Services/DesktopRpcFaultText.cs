@@ -44,6 +44,22 @@ public static class DesktopRpcFaultText
             : $"{code}: {narrative}";
     }
 
+    /// <summary>
+    /// Service <c>Error</c> text (DESK-SVC-FAULT-01).
+    /// An <see cref="RpcException"/> uses <see cref="Format(RpcException)"/> so the correlation id is kept.
+    /// Other exceptions keep <see cref="Exception.Message"/>.
+    /// </summary>
+    public static string Format(Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+        if (exception is RpcException rpc)
+        {
+            return Format(rpc);
+        }
+
+        return exception.Message;
+    }
+
     private static bool TryReadDetail(RpcException exception, out ErrorDetail? detail)
     {
         detail = null;

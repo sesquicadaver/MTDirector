@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — DESK-SVC-FAULT-01 service RPC fault text (W7-386)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Service Error uses DesktopRpcFaultText.Format on RpcException; prior locks held | SnapshotViewerService, SnapshotDiffService, InventoryTreeService, DesktopRpcFaultText, snapshots-and-diff, connection-profiles | `DeskSvcFault01DesktopServiceErrorLivingSpecTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DeskSvcFault01"`.
+
 ## Living Specification — Seed DESK-SVC-FAULT-01 as §3.C NEXT (W7-385)
 
 | Requirement | Artifact | Test |
