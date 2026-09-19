@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed PLAN-59 after PLAN-58 COMPLETE (W7-379)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks PLAN-59 inventory as §3.C NEXT | known-limitations, ROADMAP, plan-58, plan-59, continuous-queue | `ProductTrancheSeedW7379LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan59AfterPlan58Complete` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7379"`.
+
 ## Living Specification — DESK-PANEL-FAULT-01 panel status fault text (W7-378)
 
 | Requirement | Artifact | Test |

@@ -1,7 +1,7 @@
 # PLAN-58 — Desktop panel status fault text after VRRP capture-progress fault text
 
-**Date:** 2026-09-19 (inventory **DONE**)  
-**Status:** Inventory **DONE** (W7-376); seed **W7-377 (#1160) DONE**; implement **W7-378 (#1162) DONE**; COMPLETE seed **W7-379 (#1163) OPEN** (**§3.C NEXT**); predecessor **PLAN-57 COMPLETE**  
+**Date:** 2026-09-19 (**PLAN-58 COMPLETE**)  
+**Status:** **PLAN-58 COMPLETE** — Inventory **DONE** (W7-376); seed **W7-377 (#1160) DONE**; implement **W7-378 (#1162) DONE**; COMPLETE seed **W7-379 (#1163) DONE**; successor **PLAN-59** inventory **W7-380 (#1167) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-376 / PLAN-58 #1159](https://github.com/sesquicadaver/MTDirector/issues/1159) **DONE**  
 **Predecessor:** PLAN-57 VRRP capture-progress fault text **COMPLETE** (DESK-VRRP-PROG-01)  
 **Normative files:** `DriftViewModel`, `AuditViewModel`, `IncidentViewModel`, `RoutingAssuranceViewModel`, `NodeDetailViewModel`, operator docs  
@@ -60,7 +60,7 @@ Splitting Drift from Audit / Incident / Routing / GetNodeWorkflow would be vanit
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-PANEL-FAULT-01** | Show `DesktopRpcFaultText.Format` on the panel status line for those `RpcException` catches + Living Spec | **7** static status sentences @ `c665a34c` (seed baseline `55765d52`) | after inventory **W7-376 DONE**; seed **W7-377 (#1160) DONE**; implement **W7-378 (#1162) DONE**; COMPLETE **W7-379 (#1163) OPEN** |
+| 1 | **DESK-PANEL-FAULT-01** | Show `DesktopRpcFaultText.Format` on the panel status line for those `RpcException` catches + Living Spec | **7** static status sentences @ `c665a34c` (seed baseline `55765d52`) | after inventory **W7-376 DONE**; seed **W7-377 (#1160) DONE**; implement **W7-378 (#1162) DONE**; COMPLETE **W7-379 (#1163) DONE** |
 
 Inventory (**W7-376 DONE**) confirmed sole rank. Seed **W7-377** advances NEXT to DESK-PANEL-FAULT-01 after inventory DONE.
 
@@ -86,7 +86,8 @@ PLAN-57 sole ranked row (**DESK-VRRP-PROG-01**) is **DONE**. No further PLAN-57 
 1. **PLAN-57 COMPLETE** (W7-374 DESK-VRRP-PROG-01; seed **W7-375 DONE**).  
 2. **W7-376 DONE** — PLAN-58 inventory; opened **W7-378 (#1162)** DESK-PANEL-FAULT-01 implement + **W7-379 (#1163)** COMPLETE follow-up.  
 3. **W7-377 (#1160) DONE** — seed advanced NEXT to DESK-PANEL-FAULT-01; keep COMPLETE **W7-379** open.  
-4. **W7-378 (#1162) DONE** — DESK-PANEL-FAULT-01 copies `DesktopRpcFaultText.Format` onto the seven panel status / readiness lines.
+4. **W7-378 (#1162) DONE** — DESK-PANEL-FAULT-01 copies `DesktopRpcFaultText.Format` onto the seven panel status / readiness lines.  
+5. **W7-379 (#1163) DONE** — PLAN-58 COMPLETE; successor **PLAN-59** inventory **W7-380 (#1167)**.
 
 ## Delivery notes (W7-378)
 
@@ -94,4 +95,4 @@ PLAN-57 sole ranked row (**DESK-VRRP-PROG-01**) is **DONE**. No further PLAN-57 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-379 (#1163)** — Seed next after DESK-PANEL-FAULT-01 (PLAN-58 COMPLETE).
+**§3.C NEXT = W7-380 (#1167)** — PLAN-59 Inventory Snapshot failed-stage ErrorText correlation.
