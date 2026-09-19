@@ -35,30 +35,30 @@ public sealed class ProductTrancheSeedW7371LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-372 | [#1151](https://github.com/sesquicadaver/MTDirector/issues/1151) | PLAN-57 — Inventory VRRP capture-progress fault text | **OPEN**",
+            "W7-372 | [#1151](https://github.com/sesquicadaver/MTDirector/issues/1151) | PLAN-57 — Inventory VRRP capture-progress fault text | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-373 | [#1152](https://github.com/sesquicadaver/MTDirector/issues/1152) | Seed first PLAN-57 atomic row after inventory → DESK-VRRP-PROG-01 | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-372 (#1151)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-373 (#1152)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-56 COMPLETE", plan56, StringComparison.Ordinal);
         Assert.Contains("W7-371 (#1147) DONE", plan56, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-372 (#1151)", plan56, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-373 (#1152)", plan56, StringComparison.Ordinal);
         Assert.Contains("plan-57-vrrp-capture-progress-fault-text.md", plan, StringComparison.Ordinal);
         Assert.Contains("plan-57-vrrp-capture-progress-fault-text.md", docsIndex, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-57", plan, StringComparison.Ordinal);
         Assert.Contains("W7-372", plan, StringComparison.Ordinal);
         Assert.Contains("W7-371 (#1147) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-372 (#1151)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-373 (#1152)", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-VRRP-PROG-01", plan57, StringComparison.Ordinal);
         Assert.Contains("progress.Stage", plan57, StringComparison.Ordinal);
         Assert.Contains("218cdba7", plan57, StringComparison.Ordinal);
         Assert.Contains("W7-372", plan57, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-372 (#1151)", plan57, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-373 (#1152)", plan57, StringComparison.Ordinal);
 
         Assert.Contains("VrrpPairStatusText = $\"{memberName}: {progress.Stage}\"", node, StringComparison.Ordinal);
         Assert.Contains("throw new InvalidOperationException(", node, StringComparison.Ordinal);

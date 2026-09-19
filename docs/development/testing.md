@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — PLAN-57 inventory VRRP capture-progress fault text (W7-372)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-57 inventory ranks sole DESK-VRRP-PROG-01 + seeds | plan-57, ROADMAP, known-limitations, NodeDetailViewModel baseline | `Plan57VrrpCaptureProgressFaultTextW7372LivingSpecTests.Ac1Plan57InventoryDocumentsSoleDeskVrrpProg01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan57VrrpCaptureProgressFaultTextW7372"`.
+
 ## Living Specification — Seed PLAN-57 after PLAN-56 COMPLETE (W7-371)
 
 | Requirement | Artifact | Test |
