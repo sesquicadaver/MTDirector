@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed DESK-CONN-DISC-01 after PLAN-61 inventory (W7-389)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks DESK-CONN-DISC-01 as §3.C NEXT | known-limitations, ROADMAP, plan-61, continuous-queue, ControllerConnectionService baseline | `ProductTrancheSeedW7389LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskConnDisc01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7389"`.
+
 ## Living Specification — PLAN-61 inventory Desktop connection Disconnected RPC fault text (W7-388)
 
 | Requirement | Artifact | Test |

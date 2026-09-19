@@ -81,7 +81,7 @@ public sealed class DeskGrpcDeadline01DesktopUnaryCallLivingSpecTests
             "W7-350 | [#1106](https://github.com/sesquicadaver/MTDirector/issues/1106) | DESK-GRPC-DEADLINE-01 — Desktop unary gRPC CallOptions deadline policy | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-389 (#1184)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-390 (#1186)", roadmap, StringComparison.Ordinal);
         Assert.Contains("Delivery notes (W7-350)", plan51, StringComparison.Ordinal);
         Assert.Contains("UnaryCallTimeoutSeconds", plan51, StringComparison.Ordinal);
     }
