@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — PLAN-54 inventory Desktop connection-status fault text (W7-360)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-54 inventory ranks sole DESK-CONN-FAULT-01 + seeds | plan-54, ROADMAP, known-limitations, connection baseline | `Plan54DesktopConnectionStatusFaultTextW7360LivingSpecTests.Ac1Plan54InventoryDocumentsSoleDeskConnFault01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan54DesktopConnectionStatusFaultTextW7360"`.
+
 ## Living Specification — Seed PLAN-54 after PLAN-53 COMPLETE (W7-359)
 
 | Requirement | Artifact | Test |

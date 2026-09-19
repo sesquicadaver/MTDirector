@@ -1,10 +1,10 @@
 # PLAN-54 — Desktop connection-status fault text after Controller fault-correlation logging
 
-**Date:** 2026-09-19 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-360); seed **W7-361 (#1128) OPEN**; predecessor **PLAN-53 COMPLETE**  
-**PLAN issue / queue:** [W7-360 / PLAN-54 #1127](https://github.com/sesquicadaver/MTDirector/issues/1127) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-19 (inventory **DONE** @ `e51073f6`)  
+**Status:** Inventory **DONE** (W7-360); seed **W7-361 (#1128) OPEN** (**§3.C NEXT**); implement **W7-362 (#1130) OPEN**; COMPLETE seed **W7-363 (#1131) OPEN**  
+**PLAN issue / queue:** [W7-360 / PLAN-54 #1127](https://github.com/sesquicadaver/MTDirector/issues/1127) **DONE**  
 **Predecessor:** PLAN-53 Controller fault-correlation logging **COMPLETE** (CTRL-ERRDETAIL-LOG-01)  
-**Normative files:** `ControllerConnectionService`, `DesktopRpcFaultText`, operator docs  
+**Normative files:** `ControllerConnectionService`, `DesktopRpcFaultText`, `ShellViewModel`, operator docs  
 **Normative prior locks:** CTRL-ERRDETAIL-LOG-01 (event 5301); DESK-RPC-FAULT-01; unary deadline; Watch streams unbounded; MSGSIZE / BODY / KEEPALIVE / MINRATE; HTTP health; metrics; tracing; log↔trace correlation — **do not regress**  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
@@ -25,24 +25,45 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - Nested ListBox / TabControl a11y vanity  
 - systemd `Type=notify` / `WatchdogSec`  
 - Ops / CRS / physical lab live runners as §3 stop-gates  
-- Changing the `mfc-error-detail-bin` trailer contract or the event 5301 log line
+- Changing the `mfc-error-detail-bin` trailer contract or the event 5301 log line  
+- Health-timeout and TLS connection text (not `ErrorDetail` trailers)
 
-## Inventory evidence (seed baseline @ `470696e9`)
+## Inventory evidence (W7-360 @ `main` `e51073f6`; seed baseline @ `470696e9`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
-| `ControllerConnectionService` | **2** `SetState(AuthenticationFailed, ex.Status.Detail)` (connect + reconnect) | Correlation id dropped |
+| `ControllerConnectionService` | **2** `SetState(AuthenticationFailed, ex.Status.Detail)` (connect + reconnect/health probe) | Correlation id dropped |
 | Same file | **0** `DesktopRpcFaultText` references | Helper not used |
+| `ShellViewModel` | `ErrorText = _connection.LastError` | Shell shows the dropped detail |
 | ViewModels | **14** `DesktopRpcFaultText.Format` | Operator panels already joined |
 | Controller log | Event **5301** `correlation_id` | Journald has the id; shell status does not |
 
-## Ranked tranche (seed baseline)
+### `AuthenticationFailed` sites (2)
+
+| Method | Behavior |
+|--------|----------|
+| `ConnectCoreAsync` | Unauthenticated / PermissionDenied → `SetState(..., ex.Status.Detail)` |
+| `ProbeConnectedHealthOrLeaveAsync` | Same assignment on the reconnect/health path |
+
+`DesktopRpcFaultText.Format` already reads `mfc-error-detail-bin` and falls back to a non-empty status code when `Status.Detail` is empty. Connection status does not call it, so an empty detail becomes an empty `LastError`.
+
+**Ranking decision:** Prefer **ONE atomic row** (**DESK-CONN-FAULT-01**):
+
+- Route both `AuthenticationFailed` `RpcException`s through `DesktopRpcFaultText.Format` (or equivalent) so `LastError` includes the correlation id when the trailer is present
+- Never leave `LastError` empty when `Status.Detail` is empty
+- Do **not** change the `mfc-error-detail-bin` trailer contract or event 5301
+- Do **not** regress CTRL-ERRDETAIL-LOG-01, DESK-RPC-FAULT-01, unary deadlines, MSGSIZE / BODY / KEEPALIVE / MINRATE, health, metrics, or tracing
+- Living Spec + operator docs
+
+Splitting connect vs reconnect would be vanity: both sites are the same assignment. Health-timeout and TLS text are not `ErrorDetail` trailers and stay smaller than these two auth sites.
+
+## Ranked tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-CONN-FAULT-01** | Map connection `AuthenticationFailed` `RpcException`s through `DesktopRpcFaultText` + Living Spec | **2** `Status.Detail` sites; **0** helper uses @ `470696e9` | after inventory **W7-360**; seed **W7-361 (#1128)** |
+| 1 | **DESK-CONN-FAULT-01** | Map connection `AuthenticationFailed` `RpcException`s through `DesktopRpcFaultText` + Living Spec | **2** `Status.Detail` sites; **0** helper uses @ `e51073f6` | after inventory **W7-360 DONE**; seed **W7-361 (#1128) OPEN**; implement **W7-362 (#1130) OPEN**; COMPLETE **W7-363 (#1131) OPEN** |
 
-Inventory (**W7-360**) may refine ranking and open the implement issue; seed **W7-361** advances NEXT to that implement after inventory DONE.
+Inventory (**W7-360 DONE**) confirmed sole rank. Seed **W7-361** advances NEXT to the connection-status implement after inventory DONE.
 
 ## Dual track
 
@@ -62,10 +83,10 @@ PLAN-53 sole ranked row (**CTRL-ERRDETAIL-LOG-01**) is **DONE**. No further PLAN
 ## §3.C ordering
 
 1. **PLAN-53 COMPLETE** (W7-358 CTRL-ERRDETAIL-LOG-01; seed **W7-359 DONE**).  
-2. **W7-360 OPEN** — PLAN-54 inventory (**§3.C NEXT**).  
+2. **W7-360 DONE** — PLAN-54 inventory; opened **W7-362 (#1130)** DESK-CONN-FAULT-01 implement + **W7-363 (#1131)** COMPLETE follow-up.  
 3. **W7-361 OPEN** — seed first PLAN-54 implement after inventory.  
 4. Execute ranked DESK-CONN-FAULT-01 atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-360 (#1127)** — PLAN-54 Inventory Desktop connection-status fault text.
+**§3.C NEXT = W7-361 (#1128)** — Seed first PLAN-54 atomic row after inventory → DESK-CONN-FAULT-01.
