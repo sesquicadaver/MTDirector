@@ -29,17 +29,17 @@ public sealed class ProductTrancheSeedW7239LivingSpecTests
             "W7-240 | [#886](https://github.com/sesquicadaver/MTDirector/issues/886) | DESK-A11Y-SNAP-01 — Snapshot Capture/Reload/Compare/Copy AutomationProperties.Name | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-349 (#1104)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-350 (#1106)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-239 DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-240", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-SNAP-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-349 (#1104)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-350 (#1106)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-239 DONE", plan27, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-SNAP-01", plan27, StringComparison.Ordinal);
         Assert.Contains("W7-240", plan27, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-349 (#1104)", plan27, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-350 (#1106)", plan27, StringComparison.Ordinal);
         Assert.Contains("seeded as **W7-240**", limitations, StringComparison.Ordinal);
     }
 
