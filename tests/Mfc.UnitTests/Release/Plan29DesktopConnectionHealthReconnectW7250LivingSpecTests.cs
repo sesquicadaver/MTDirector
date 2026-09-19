@@ -30,7 +30,7 @@ public sealed class Plan29DesktopConnectionHealthReconnectW7250LivingSpecTests
         Assert.Contains("Health.Check", plan29, StringComparison.Ordinal);
         Assert.Contains("ConnectedHealthProbeIntervalMilliseconds", plan29, StringComparison.Ordinal);
         Assert.Contains("ControllerConnectionService.cs", plan29, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-367 (#1139)", plan29, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-368 (#1143)", plan29, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-250 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-HEALTH-01", limitations, StringComparison.Ordinal);
@@ -54,7 +54,7 @@ public sealed class Plan29DesktopConnectionHealthReconnectW7250LivingSpecTests
             "W7-254 | [#915](https://github.com/sesquicadaver/MTDirector/issues/915) | DESK-CONN-RECONNECT-01 — Bounded reconnect after health-fail drop + shell StatusText/LastError sync | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-367 (#1139)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-368 (#1143)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-251", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-252", continuous, StringComparison.Ordinal);
