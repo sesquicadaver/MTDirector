@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — PLAN-61 COMPLETE freeze (W7-391)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-61 COMPLETE; wave PLAN-52…61 CLOSED; freeze is §3.C NEXT; no plan-62 | plan-61, ROADMAP, known-limitations, continuous-queue | `ProductTrancheSeedW7391LivingSpecTests.Ac1Plan61CompleteFreezesCorrelationWave` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7391"`.
+
 ## Living Specification — DESK-CONN-DISC-01 connection Disconnected RPC fault text (W7-390)
 
 | Requirement | Artifact | Test |
