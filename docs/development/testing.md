@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed DESK-VRRP-PROG-01 as §3.C NEXT (W7-373)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks DESK-VRRP-PROG-01 as §3.C NEXT | known-limitations, ROADMAP, plan-57, continuous-queue | `ProductTrancheSeedW7373LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskVrrpProg01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7373"`.
+
 ## Living Specification — PLAN-57 inventory VRRP capture-progress fault text (W7-372)
 
 | Requirement | Artifact | Test |
