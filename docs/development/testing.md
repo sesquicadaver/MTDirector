@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — DESK-VRRP-PROG-01 VRRP capture-progress correlation (W7-374)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Pair status reuses FormatCaptureProgress correlation suffix, including incomplete capture; prior locks held | NodeDetailViewModel, SnapshotViewerViewModel, connection-profiles | `DeskVrrpProg01DesktopPairStatusLivingSpecTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DeskVrrpProg01"`.
+
 ## Living Specification — Seed DESK-VRRP-PROG-01 as §3.C NEXT (W7-373)
 
 | Requirement | Artifact | Test |

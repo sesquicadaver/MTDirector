@@ -1,7 +1,7 @@
 # PLAN-57 — VRRP capture-progress fault text after pair-status fault text
 
 **Date:** 2026-09-19 (inventory **DONE**)  
-**Status:** Inventory **DONE** (W7-372); seed **W7-373 (#1152) DONE**; implement **W7-374 (#1154) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-375 (#1155) OPEN**; predecessor **PLAN-56 COMPLETE**  
+**Status:** Inventory **DONE** (W7-372); seed **W7-373 (#1152) DONE**; implement **W7-374 (#1154) DONE**; COMPLETE seed **W7-375 (#1155) OPEN** (**§3.C NEXT**); predecessor **PLAN-56 COMPLETE**  
 **PLAN issue / queue:** [W7-372 / PLAN-57 #1151](https://github.com/sesquicadaver/MTDirector/issues/1151) **DONE**  
 **Predecessor:** PLAN-56 VRRP pair status fault text **COMPLETE** (DESK-VRRP-FAULT-01)  
 **Normative files:** `NodeDetailViewModel`, `SnapshotViewerViewModel`, operator docs  
@@ -84,8 +84,12 @@ PLAN-56 sole ranked row (**DESK-VRRP-FAULT-01**) is **DONE**. No further PLAN-56
 1. **PLAN-56 COMPLETE** (W7-370 DESK-VRRP-FAULT-01; seed **W7-371 DONE**).  
 2. **W7-372 DONE** — PLAN-57 inventory; opened **W7-374 (#1154)** DESK-VRRP-PROG-01 implement + **W7-375 (#1155)** COMPLETE follow-up.  
 3. **W7-373 (#1152) DONE** — seed advanced NEXT to DESK-VRRP-PROG-01; keep COMPLETE **W7-375** open.  
-4. Execute ranked DESK-VRRP-PROG-01 atomically.
+4. **W7-374 (#1154) DONE** — DESK-VRRP-PROG-01 reuses `FormatCaptureProgress` on the VRRP pair status line, including incomplete capture.
+
+## Delivery notes (W7-374)
+
+`ValidateVrrpPairInternalAsync` sets the Watch pair status to `{member}: {SnapshotViewerViewModel.FormatCaptureProgress(progress)}`. That is the same line Snapshots already render, so a 16-byte progress `ErrorDetail` correlation id appears as `(correlation {id})` and can be joined to journald event **5301**. An incomplete capture throws `InvalidOperationException` whose message includes `FormatCaptureProgress(last)` when a progress frame arrived; the `Exception` catch copies that message onto `VrrpPairStatusText` and `ErrorText`. Other non-RPC failures still use the static sentence. The `RpcException` path remains `DesktopRpcFaultText.Format` (DESK-VRRP-FAULT-01). Trailer contract, event 5301 template, and SNAP-FAULT-CORR-01 / DESK-CONN-FAULT-01 / CTRL-ERRDETAIL-LOG-01 / DESK-RPC-FAULT-01 locks are unchanged.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-374 (#1154)** — DESK-VRRP-PROG-01 show the capture-progress correlation id on the VRRP pair status line.
+**§3.C NEXT = W7-375 (#1155)** — Seed next after DESK-VRRP-PROG-01 (PLAN-57 COMPLETE).

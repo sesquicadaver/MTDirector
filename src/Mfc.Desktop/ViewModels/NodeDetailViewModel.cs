@@ -414,13 +414,18 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
                     Guid progressDevice = DesktopProtoUuid.ToGuid(progress.DeviceId);
                     string memberName = VrrpMembers.FirstOrDefault(m => m.DeviceId == progressDevice)?.DisplayName
                         ?? (progressDevice == Guid.Empty ? "node" : progressDevice.ToString("D"));
-                    VrrpPairStatusText = $"{memberName}: {progress.Stage}";
+                    VrrpPairStatusText = $"{memberName}: {SnapshotViewerViewModel.FormatCaptureProgress(progress)}";
                 }
 
                 if (last is null || last.Stage != CaptureStage.Completed)
                 {
-                    throw new InvalidOperationException(
-                        "Node capture did not complete successfully for all VRRP members.");
+                    string incomplete = "Node capture did not complete successfully for all VRRP members.";
+                    if (last is not null)
+                    {
+                        incomplete = $"{incomplete} {SnapshotViewerViewModel.FormatCaptureProgress(last)}";
+                    }
+
+                    throw new InvalidOperationException(incomplete);
                 }
             }
 
@@ -454,7 +459,16 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         catch (Exception ex)
         {
             ErrorText = ex.Message;
-            VrrpPairStatusText = "VRRP pair consistency failed.";
+            if (ex.Message.StartsWith(
+                    "Node capture did not complete successfully for all VRRP members.",
+                    StringComparison.Ordinal))
+            {
+                VrrpPairStatusText = ex.Message;
+            }
+            else
+            {
+                VrrpPairStatusText = "VRRP pair consistency failed.";
+            }
         }
         finally
         {
