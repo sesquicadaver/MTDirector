@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Queue exhaustion: a non-empty NEXT only means the current planned §3 row is open. If the next NEXT is empty, `/autopilot` stops and reports exhaustion. PLAN-02 self-seed is revoked (`.cursor/rules/slash-autopilot.mdc`, `CONTRIBUTING.md`, `docs/planning/continuous-queue-plan.md`; `QueueExhaustionNextStopLivingSpecTests`). **§3.C NEXT = W7-392 (#1191)** remains the only open row.
+
 - **W7-391** ([#1187](https://github.com/sesquicadaver/MTDirector/issues/1187)): PLAN-61 COMPLETE; operator fault-correlation wave PLAN-52…61 **CLOSED**; freeze **W7-392 (#1191)** — no further correlation-id / fault-text plans without a pre-existing TOR (`ProductTrancheSeedW7391LivingSpecTests`). **§3.C NEXT = W7-392 (#1191)**.
 
 - **W7-390** ([#1186](https://github.com/sesquicadaver/MTDirector/issues/1186)): DESK-CONN-DISC-01 — connect and reconnect `Disconnected` catches store `DesktopRpcFaultText.Format` when the exception is `RpcException`, so shell status includes the code and correlation id (`DeskConnDisc01DesktopDisconnectedFaultLivingSpecTests`). **§3.C NEXT = W7-392 (#1191)**.
