@@ -35,7 +35,7 @@ public sealed class GrpcDeploymentServiceClient : IDeploymentServiceClient
             TopologyProjectionHash = topologyHash,
         };
         request.Devices.AddRange(devices);
-        return await client.CreatePlanAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+        return await client.CreatePlanAsync(request, DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -54,7 +54,7 @@ public sealed class GrpcDeploymentServiceClient : IDeploymentServiceClient
         };
         request.Devices.AddRange(devices);
         return await client
-            .CreatePlanFromSealedArtifactsAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+            .CreatePlanFromSealedArtifactsAsync(request, DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -72,7 +72,7 @@ public sealed class GrpcDeploymentServiceClient : IDeploymentServiceClient
             PlanHash = planHash,
         };
         request.PacketPathPairs.AddRange(packetPathPairs);
-        return await client.StartAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+        return await client.StartAsync(request, DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -103,8 +103,7 @@ public sealed class GrpcDeploymentServiceClient : IDeploymentServiceClient
                     IdempotencyKey = DesktopProtoUuid.FromGuid(Guid.NewGuid()),
                     OperationId = DesktopProtoUuid.FromGuid(operationId),
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -123,7 +122,7 @@ public sealed class GrpcDeploymentServiceClient : IDeploymentServiceClient
             request.OperationId = DesktopProtoUuid.FromGuid(id);
         }
 
-        return await client.GetRecoveryStatusAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+        return await client.GetRecoveryStatusAsync(request, DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 

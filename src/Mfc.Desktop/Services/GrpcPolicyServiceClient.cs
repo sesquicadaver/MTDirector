@@ -38,7 +38,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
             request.OwnerId = DesktopProtoUuid.FromGuid(id);
         }
 
-        return await client.CreateDraftPolicyAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+        return await client.CreateDraftPolicyAsync(request, DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -49,8 +49,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
         PolicyService.PolicyServiceClient client = CreateClient();
         return await client.ListPoliciesAsync(
                 new ListPoliciesRequest { Kind = kind },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -61,8 +60,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
         PolicyService.PolicyServiceClient client = CreateClient();
         return await client.GetPolicyRevisionAsync(
                 new GetPolicyRevisionRequest { RevisionId = DesktopProtoUuid.FromGuid(revisionId) },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -78,8 +76,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
                     RevisionId = DesktopProtoUuid.FromGuid(revisionId),
                     ActiveOnly = activeOnly,
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -117,7 +114,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
             request.Predicate = predicate;
         }
 
-        return await client.AddRuleAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+        return await client.AddRuleAsync(request, DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -159,7 +156,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
             request.Predicate = predicate;
         }
 
-        return await client.UpdateRuleAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+        return await client.UpdateRuleAsync(request, DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -178,8 +175,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
                     RuleId = DesktopProtoUuid.FromGuid(ruleId),
                     ExpectedContentHash = ToSha256(expectedContentHash),
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -203,7 +199,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
             Stage = stage,
         };
         request.OrderedRuleIds.AddRange(orderedRuleIds.Select(DesktopProtoUuid.FromGuid));
-        return await client.ReorderRulesAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+        return await client.ReorderRulesAsync(request, DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -220,8 +216,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
                     RevisionId = DesktopProtoUuid.FromGuid(revisionId),
                     ExpectedContentHash = ToSha256(expectedContentHash),
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -255,7 +250,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
             request.Description = description;
         }
 
-        return await client.UpsertAddressObjectAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+        return await client.UpsertAddressObjectAsync(request, DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -287,7 +282,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
             request.Description = description;
         }
 
-        return await client.UpsertServiceObjectAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+        return await client.UpsertServiceObjectAsync(request, DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -305,7 +300,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
             ExpectedContentHash = ToSha256(expectedContentHash),
         };
         request.Contracts.AddRange(contracts);
-        return await client.ReplaceChainContractsAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+        return await client.ReplaceChainContractsAsync(request, DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -327,7 +322,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
             request.TestsJson = testsJson;
         }
 
-        return await client.ReplacePolicyTestsAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+        return await client.ReplacePolicyTestsAsync(request, DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -343,8 +338,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
                     BeforeRevisionId = DesktopProtoUuid.FromGuid(beforeRevisionId),
                     AfterRevisionId = DesktopProtoUuid.FromGuid(afterRevisionId),
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -355,8 +349,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
         PolicyService.PolicyServiceClient client = CreateClient();
         return await client.ComposeEffectivePolicyAsync(
                 new ComposeEffectivePolicyRequest { NodeId = DesktopProtoUuid.FromGuid(nodeId) },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -373,8 +366,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
                     RevisionId = DesktopProtoUuid.FromGuid(revisionId),
                     ExpectedContentHash = ToSha256(expectedContentHash),
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -432,7 +424,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
             request.NodeId = DesktopProtoUuid.FromGuid(concreteNodeId);
         }
 
-        return await client.RecordAnalysisRunAsync(request, ActorHeaders(), cancellationToken: cancellationToken)
+        return await client.RecordAnalysisRunAsync(request, DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -449,8 +441,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
                     AnalysisRunId = DesktopProtoUuid.FromGuid(analysisRunId),
                     WarningHash = ToSha256(warningHash),
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -473,8 +464,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
                     ExpectedBundleHash = ToSha256(expectedBundleHash),
                     CurrentDependencyFingerprint = ToSha256(currentDependencyFingerprint),
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -495,8 +485,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
                     ExpectedContentHash = ToSha256(expectedContentHash),
                     CurrentDependencyFingerprint = ToSha256(currentDependencyFingerprint),
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -516,8 +505,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
                     CurrentDependencyFingerprint = ToSha256(currentDependencyFingerprint),
                     CurrentCapabilityHash = ToSha256(currentCapabilityHash),
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -544,8 +532,7 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
 
         return await client.GetDevicePolicySafetyAnalysisAsync(
                 request,
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 

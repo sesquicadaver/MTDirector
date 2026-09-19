@@ -33,8 +33,7 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
                     {
                         Page = new PageRequest { PageSize = DefaultPageSize, PageToken = pageToken },
                     },
-                    headers,
-                    cancellationToken: cancellationToken)
+                    DesktopGrpcUnaryCall.For(_options, headers, cancellationToken))
                 .ConfigureAwait(false);
             all.AddRange(response.Sites);
             pageToken = response.Page?.NextPageToken ?? string.Empty;
@@ -60,8 +59,7 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
                         SiteId = DesktopProtoUuid.FromGuid(siteId),
                         Page = new PageRequest { PageSize = DefaultPageSize, PageToken = pageToken },
                     },
-                    headers,
-                    cancellationToken: cancellationToken)
+                    DesktopGrpcUnaryCall.For(_options, headers, cancellationToken))
                 .ConfigureAwait(false);
             all.AddRange(response.Nodes);
             pageToken = response.Page?.NextPageToken ?? string.Empty;
@@ -76,8 +74,7 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
         InventoryService.InventoryServiceClient client = CreateClient();
         return await client.GetNodeAsync(
                 new GetNodeRequest { NodeId = DesktopProtoUuid.FromGuid(nodeId) },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -88,8 +85,7 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
         InventoryService.InventoryServiceClient client = CreateClient();
         return await client.GetNodeWorkflowAsync(
                 new GetNodeWorkflowRequest { NodeId = DesktopProtoUuid.FromGuid(nodeId) },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -106,8 +102,7 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
                     Code = code,
                     Name = name,
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -128,8 +123,7 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
                     DeclaredKind = declaredKind,
                     DeclaredUplinkMode = declaredUplinkMode,
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -152,8 +146,7 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
                     ManagementPort = managementPort,
                     Role = role,
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -193,8 +186,7 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
 
         return await client.UpdateDeviceConnectionAsync(
                 request,
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -205,8 +197,7 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
         InventoryService.InventoryServiceClient client = CreateClient();
         return await client.ValidateDeviceConnectionAsync(
                 new ValidateDeviceConnectionRequest { DeviceId = DesktopProtoUuid.FromGuid(deviceId) },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -220,8 +211,7 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
                 {
                     SeedDeviceId = DesktopProtoUuid.FromGuid(seedDeviceId),
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -232,8 +222,7 @@ public sealed class GrpcInventoryTreeClient : IInventoryTreeClient
         InventoryService.InventoryServiceClient client = CreateClient();
         return await client.ValidateVrrpPairConsistencyAsync(
                 new ValidateVrrpPairConsistencyRequest { NodeId = DesktopProtoUuid.FromGuid(nodeId) },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 

@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — DESK-GRPC-DEADLINE-01 unary gRPC deadline (W7-350)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Unary CallOptions deadline; Watch excluded; transport not regressed | DesktopOptions, DesktopGrpcUnaryCall, Grpc*Client, connection/installation/development docs | `DeskGrpcDeadline01DesktopUnaryCallLivingSpecTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DeskGrpcDeadline01DesktopUnaryCall"`.
+
 ## Living Specification — Seed DESK-GRPC-DEADLINE-01 as §3.C NEXT (W7-349)
 
 | Requirement | Artifact | Test |

@@ -24,8 +24,7 @@ public sealed class GrpcDriftServiceClient : IDriftServiceClient
         DriftService.DriftServiceClient client = CreateClient();
         ListDeviceDriftEventsResponse response = await client.ListDeviceDriftEventsAsync(
                 new ListDeviceDriftEventsRequest { DeviceId = DesktopProtoUuid.FromGuid(deviceId) },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
         return response.Events.ToArray();
     }
@@ -37,8 +36,7 @@ public sealed class GrpcDriftServiceClient : IDriftServiceClient
         DriftService.DriftServiceClient client = CreateClient();
         return await client.GetDriftEventAsync(
                 new GetDriftEventRequest { DriftEventId = DesktopProtoUuid.FromGuid(driftEventId) },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 

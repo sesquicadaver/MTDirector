@@ -27,8 +27,7 @@ public sealed class GrpcRoutingAssuranceServiceClient : IRoutingAssuranceService
                 {
                     DeviceId = DesktopProtoUuid.FromGuid(deviceId),
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 

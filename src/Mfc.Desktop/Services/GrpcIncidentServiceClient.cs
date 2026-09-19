@@ -25,8 +25,7 @@ public sealed class GrpcIncidentServiceClient : IIncidentServiceClient
         IncidentService.IncidentServiceClient client = CreateClient();
         return await client.IngestIncidentSignalAsync(
                 request,
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -38,8 +37,7 @@ public sealed class GrpcIncidentServiceClient : IIncidentServiceClient
         IncidentService.IncidentServiceClient client = CreateClient();
         return await client.BindIncidentResponseAssessmentAsync(
                 request,
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
