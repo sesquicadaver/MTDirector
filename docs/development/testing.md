@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — PLAN-56 inventory VRRP pair status fault text (W7-368)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-56 inventory ranks sole DESK-VRRP-FAULT-01 + seeds | plan-56, ROADMAP, known-limitations, NodeDetailViewModel baseline | `Plan56VrrpPairStatusFaultTextW7368LivingSpecTests.Ac1Plan56InventoryDocumentsSoleDeskVrrpFault01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan56VrrpPairStatusFaultTextW7368"`.
+
 ## Living Specification — Seed PLAN-56 after PLAN-55 COMPLETE (W7-367)
 
 | Requirement | Artifact | Test |

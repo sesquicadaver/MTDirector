@@ -61,7 +61,7 @@ public sealed class OpsHostWinsvc01ControllerUnitW7272LivingSpecTests
             "W7-272 | [#951](https://github.com/sesquicadaver/MTDirector/issues/951) | OPS-HOST-WINSVC-01 — Windows Service host template for framework-dependent Controller | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-368 (#1143)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-369 (#1144)", roadmap, StringComparison.Ordinal);
         Assert.Contains("OpsHostWinsvc01ControllerUnitW7272", testing, StringComparison.Ordinal);
     }
 

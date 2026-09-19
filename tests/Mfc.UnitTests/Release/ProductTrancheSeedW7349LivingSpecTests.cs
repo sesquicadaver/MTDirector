@@ -36,19 +36,19 @@ public sealed class ProductTrancheSeedW7349LivingSpecTests
             "W7-351 | [#1107](https://github.com/sesquicadaver/MTDirector/issues/1107) | Seed next after DESK-GRPC-DEADLINE-01 (PLAN-51 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-368 (#1143)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-369 (#1144)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-349", plan, StringComparison.Ordinal);
         Assert.Contains("W7-350", plan, StringComparison.Ordinal);
         Assert.Contains("W7-351", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-GRPC-DEADLINE-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-368 (#1143)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-369 (#1144)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-349 (#1104) DONE", plan51, StringComparison.Ordinal);
         Assert.Contains("DESK-GRPC-DEADLINE-01", plan51, StringComparison.Ordinal);
         Assert.Contains("W7-350", plan51, StringComparison.Ordinal);
         Assert.Contains("W7-351", plan51, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-368 (#1143)", plan51, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-369 (#1144)", plan51, StringComparison.Ordinal);
 
         // DEADLINE-01 shipped after this seed.
         Assert.Contains("UnaryCallTimeoutSeconds", desktopOptions, StringComparison.Ordinal);

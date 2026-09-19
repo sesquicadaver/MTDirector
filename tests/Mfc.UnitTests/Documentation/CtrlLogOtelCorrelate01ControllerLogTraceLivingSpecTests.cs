@@ -58,7 +58,7 @@ public sealed class CtrlLogOtelCorrelate01ControllerLogTraceLivingSpecTests
             "W7-326 | [#1058](https://github.com/sesquicadaver/MTDirector/issues/1058) | CTRL-LOG-OTEL-CORRELATE-01 — Enrich JSON console logs with Activity TraceId/SpanId | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-368 (#1143)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-369 (#1144)", roadmap, StringComparison.Ordinal);
         Assert.Contains("CTRL-LOG-OTEL-CORRELATE-01", plan45, StringComparison.Ordinal);
     }
 
