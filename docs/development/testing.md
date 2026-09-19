@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — DESK-CONN-DISC-01 connection Disconnected RPC fault text (W7-390)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Disconnected catches use DesktopRpcFaultText.Format on RpcException; prior locks held | ControllerConnectionService, DesktopRpcFaultText, connection-profiles | `DeskConnDisc01DesktopDisconnectedFaultLivingSpecTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DeskConnDisc01DesktopDisconnectedFault"`.
+
 ## Living Specification — Seed DESK-CONN-DISC-01 after PLAN-61 inventory (W7-389)
 
 | Requirement | Artifact | Test |

@@ -139,7 +139,8 @@ public sealed class ControllerConnectionService : IControllerConnectionService
         }
         catch (Exception ex)
         {
-            SetState(ControllerConnectionState.Disconnected, ex.Message);
+            // DESK-CONN-DISC-01: RpcException keeps code + correlation id; other exceptions keep Message.
+            SetState(ControllerConnectionState.Disconnected, DesktopRpcFaultText.Format(ex));
             await DisposeChannelAsync().ConfigureAwait(false);
         }
     }
@@ -285,7 +286,8 @@ public sealed class ControllerConnectionService : IControllerConnectionService
         }
         catch (Exception ex)
         {
-            SetState(ControllerConnectionState.Disconnected, ex.Message);
+            // DESK-CONN-DISC-01: RpcException keeps code + correlation id; other exceptions keep Message.
+            SetState(ControllerConnectionState.Disconnected, DesktopRpcFaultText.Format(ex));
             await DisposeChannelAsync().ConfigureAwait(false);
         }
     }

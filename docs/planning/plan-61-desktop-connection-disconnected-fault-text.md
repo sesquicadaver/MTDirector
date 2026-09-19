@@ -1,7 +1,7 @@
 # PLAN-61 — Desktop connection Disconnected RPC fault text after service Error correlation
 
-**Date:** 2026-09-19 (seed **DONE**)  
-**Status:** Inventory **DONE** (W7-388); seed **W7-389 (#1184) DONE**; implement **W7-390 (#1186) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-391 (#1187) OPEN**; predecessor **PLAN-60 COMPLETE**  
+**Date:** 2026-09-19 (implement **DONE**)  
+**Status:** Inventory **DONE** (W7-388); seed **W7-389 (#1184) DONE**; implement **W7-390 (#1186) DONE**; COMPLETE seed **W7-391 (#1187) OPEN** (**§3.C NEXT**); predecessor **PLAN-60 COMPLETE**  
 **PLAN issue / queue:** [W7-388 / PLAN-61 #1183](https://github.com/sesquicadaver/MTDirector/issues/1183) **DONE**  
 **Predecessor:** PLAN-60 Desktop service RPC fault text **COMPLETE** (DESK-SVC-FAULT-01)  
 **Normative files:** `ControllerConnectionService`, operator docs  
@@ -61,7 +61,7 @@ Splitting connect and reconnect into separate rows would be vanity: the same `Se
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-CONN-DISC-01** | Store `DesktopRpcFaultText.Format` when those `Disconnected` catches are `RpcException`; keep `ex.Message` otherwise + Living Spec | **2** `Disconnected` `ex.Message` assignments @ `994863c1` (seed baseline `33682bb6`) | after inventory **W7-388 DONE**; seed **W7-389 (#1184) DONE**; implement **W7-390 (#1186) OPEN**; COMPLETE **W7-391 (#1187) OPEN** |
+| 1 | **DESK-CONN-DISC-01** | Store `DesktopRpcFaultText.Format` when those `Disconnected` catches are `RpcException`; keep `ex.Message` otherwise + Living Spec | **2** `Disconnected` `ex.Message` assignments @ `994863c1` (seed baseline `33682bb6`); **DONE** — both catches call `DesktopRpcFaultText.Format` | after inventory **W7-388 DONE**; seed **W7-389 (#1184) DONE**; implement **W7-390 (#1186) DONE**; COMPLETE **W7-391 (#1187) OPEN** |
 
 Inventory (**W7-388 DONE**) confirmed sole rank. Seed **W7-389** advances NEXT to DESK-CONN-DISC-01 after inventory DONE.
 
@@ -86,8 +86,8 @@ PLAN-60 sole ranked row (**DESK-SVC-FAULT-01**) is **DONE**. No further PLAN-60 
 1. **PLAN-60 COMPLETE** (W7-386 DESK-SVC-FAULT-01; seed **W7-387 DONE**).  
 2. **W7-388 DONE** — PLAN-61 inventory; opened **W7-390 (#1186)** DESK-CONN-DISC-01 implement + **W7-391 (#1187)** COMPLETE follow-up.  
 3. **W7-389 (#1184) DONE** — seed advanced NEXT to DESK-CONN-DISC-01; keep COMPLETE **W7-391** open.  
-4. Execute ranked DESK-CONN-DISC-01 atomically.
+4. **W7-390 (#1186) DONE** — DESK-CONN-DISC-01 stores `DesktopRpcFaultText.Format` on those `Disconnected` catches.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-390 (#1186)** — DESK-CONN-DISC-01 — Store DesktopRpcFaultText.Format when Disconnected catches are RpcException.
+**§3.C NEXT = W7-391 (#1187)** — Seed next after DESK-CONN-DISC-01 (PLAN-61 COMPLETE).

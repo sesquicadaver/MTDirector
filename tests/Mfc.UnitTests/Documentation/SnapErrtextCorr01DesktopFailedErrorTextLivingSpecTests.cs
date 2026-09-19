@@ -57,7 +57,7 @@ public sealed class SnapErrtextCorr01DesktopFailedErrorTextLivingSpecTests
         Assert.Contains("StatusText = $\"Drift load failed. {fault}\"", drift, StringComparison.Ordinal);
         Assert.Contains("VrrpPairStatusText = $\"VRRP pair consistency failed. {fault}\"", node, StringComparison.Ordinal);
         Assert.Contains("SnapshotViewerViewModel.FormatCaptureProgress(progress)", node, StringComparison.Ordinal);
-        Assert.Equal(2, Count(connection, "DesktopRpcFaultText.Format(ex)"));
+        Assert.Equal(4, Count(connection, "DesktopRpcFaultText.Format(ex)"));
         Assert.Contains(
             "gRPC application fault code={Code} status={Status} correlation_id={CorrelationId} retryable={Retryable}",
             mapper,
@@ -71,7 +71,7 @@ public sealed class SnapErrtextCorr01DesktopFailedErrorTextLivingSpecTests
         Assert.Contains("Intentional residual (W7-382 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("SNAP-ERRTEXT-CORR-01 DONE", limitations, StringComparison.Ordinal);
         Assert.Contains("W7-382 (#1170) DONE", plan59, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", plan59, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", plan59, StringComparison.Ordinal);
         Assert.Contains(
             "W7-382 | [#1170](https://github.com/sesquicadaver/MTDirector/issues/1170) | SNAP-ERRTEXT-CORR-01 — Show capture-progress correlation id on Snapshot Failed-stage ErrorText | **DONE**",
             roadmap,
@@ -80,7 +80,7 @@ public sealed class SnapErrtextCorr01DesktopFailedErrorTextLivingSpecTests
             "W7-383 | [#1171](https://github.com/sesquicadaver/MTDirector/issues/1171) | Seed next after SNAP-ERRTEXT-CORR-01 (PLAN-59 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", roadmap, StringComparison.Ordinal);
     }
 
     private static int Count(string text, string value)

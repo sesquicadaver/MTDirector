@@ -45,7 +45,8 @@ public static class DesktopRpcFaultText
     }
 
     /// <summary>
-    /// Service <c>Error</c> text (DESK-SVC-FAULT-01).
+    /// Operator text for a caught exception (DESK-SVC-FAULT-01 service <c>Error</c>;
+    /// DESK-CONN-DISC-01 connect/reconnect <c>Disconnected</c>).
     /// An <see cref="RpcException"/> uses <see cref="Format(RpcException)"/> so the correlation id is kept.
     /// Other exceptions keep <see cref="Exception.Message"/>.
     /// </summary>

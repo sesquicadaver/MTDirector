@@ -72,7 +72,7 @@ public sealed class DeskVrrpProg01DesktopPairStatusLivingSpecTests
         Assert.Contains("(correlation {correlation})", viewer, StringComparison.Ordinal);
         Assert.Contains("public static string FormatCaptureProgress(CaptureProgress progress)", viewer, StringComparison.Ordinal);
         Assert.Contains("public static string Format(RpcException exception)", fault, StringComparison.Ordinal);
-        Assert.Equal(2, Count(connection, "DesktopRpcFaultText.Format(ex)"));
+        Assert.Equal(4, Count(connection, "DesktopRpcFaultText.Format(ex)"));
         Assert.Contains(
             "gRPC application fault code={Code} status={Status} correlation_id={CorrelationId} retryable={Retryable}",
             mapper,
@@ -86,7 +86,7 @@ public sealed class DeskVrrpProg01DesktopPairStatusLivingSpecTests
         Assert.Contains("DESK-VRRP-PROG-01 DONE", limitations, StringComparison.Ordinal);
         Assert.Contains("Delivery notes (W7-374)", plan57, StringComparison.Ordinal);
         Assert.Contains("W7-374 (#1154) DONE", plan57, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", plan57, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", plan57, StringComparison.Ordinal);
         Assert.Contains(
             "W7-374 | [#1154](https://github.com/sesquicadaver/MTDirector/issues/1154) | DESK-VRRP-PROG-01 — Show capture-progress correlation id on VRRP pair status | **DONE**",
             roadmap,
@@ -95,7 +95,7 @@ public sealed class DeskVrrpProg01DesktopPairStatusLivingSpecTests
             "W7-375 | [#1155](https://github.com/sesquicadaver/MTDirector/issues/1155) | Seed next after DESK-VRRP-PROG-01 (PLAN-57 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", roadmap, StringComparison.Ordinal);
     }
 
     private static int Count(string text, string value)

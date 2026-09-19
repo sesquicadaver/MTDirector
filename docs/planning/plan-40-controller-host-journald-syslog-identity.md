@@ -78,4 +78,4 @@ PLAN-39 sole ranked row (**OPS-HOST-DOC-01**) is **DONE**. No further PLAN-39 pr
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-390 (#1186)** — QG-SIGN-02 opt-in cryptographic signing gate.
+**§3.C NEXT = W7-391 (#1187)** — QG-SIGN-02 opt-in cryptographic signing gate.
