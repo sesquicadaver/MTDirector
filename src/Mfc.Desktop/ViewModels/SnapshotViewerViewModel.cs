@@ -269,7 +269,12 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
         return new CaptureRunOutcome(last, lines);
     }
 
-    private static string FormatCaptureProgress(CaptureProgress progress)
+    /// <summary>
+    /// Operator capture-progress line. When <see cref="CaptureProgress.Error"/> carries a 16-byte
+    /// correlation id, appends the same <c>(correlation {id})</c> suffix journald event 5301 uses
+    /// (SNAP-FAULT-CORR-01). VRRP pair status reuses this method (DESK-VRRP-PROG-01).
+    /// </summary>
+    public static string FormatCaptureProgress(CaptureProgress progress)
     {
         ArgumentNullException.ThrowIfNull(progress);
         string stage = progress.Stage.ToString();

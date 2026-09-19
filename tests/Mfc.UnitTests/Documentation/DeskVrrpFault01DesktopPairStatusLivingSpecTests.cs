@@ -57,7 +57,7 @@ public sealed class DeskVrrpFault01DesktopPairStatusLivingSpecTests
         Assert.Contains("ErrorText = fault;", node, StringComparison.Ordinal);
         Assert.Contains("VrrpPairStatusText = $\"VRRP pair consistency failed. {fault}\";", node, StringComparison.Ordinal);
         Assert.Equal(1, Count(node, "VrrpPairStatusText = \"VRRP pair consistency failed.\""));
-        Assert.Contains("VrrpPairStatusText = $\"{memberName}: {progress.Stage}\"", node, StringComparison.Ordinal);
+        Assert.Contains("VrrpPairStatusText = $\"{memberName}: {SnapshotViewerViewModel.FormatCaptureProgress(progress)}\"", node, StringComparison.Ordinal);
         Assert.Contains("public static string Format(RpcException exception)", fault, StringComparison.Ordinal);
 
         int sites = 0;
@@ -83,7 +83,7 @@ public sealed class DeskVrrpFault01DesktopPairStatusLivingSpecTests
         Assert.Contains("DESK-VRRP-FAULT-01 DONE", limitations, StringComparison.Ordinal);
         Assert.Contains("Delivery notes (W7-370)", plan56, StringComparison.Ordinal);
         Assert.Contains("W7-370 (#1146) DONE", plan56, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-374 (#1154)", plan56, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-375 (#1155)", plan56, StringComparison.Ordinal);
         Assert.Contains(
             "W7-370 | [#1146](https://github.com/sesquicadaver/MTDirector/issues/1146) | DESK-VRRP-FAULT-01 — Show RPC fault text on VRRP pair status | **DONE**",
             roadmap,
@@ -92,7 +92,7 @@ public sealed class DeskVrrpFault01DesktopPairStatusLivingSpecTests
             "W7-371 | [#1147](https://github.com/sesquicadaver/MTDirector/issues/1147) | Seed next after DESK-VRRP-FAULT-01 (PLAN-56 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-374 (#1154)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-375 (#1155)", roadmap, StringComparison.Ordinal);
     }
 
     private static int Count(string text, string value)

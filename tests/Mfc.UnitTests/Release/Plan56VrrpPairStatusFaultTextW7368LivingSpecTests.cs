@@ -37,7 +37,7 @@ public sealed class Plan56VrrpPairStatusFaultTextW7368LivingSpecTests
         Assert.Contains("W7-369", plan56, StringComparison.Ordinal);
         Assert.Contains("W7-368", plan56, StringComparison.Ordinal);
         Assert.Contains("DesktopRpcFaultText.Format", plan56, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-374 (#1154)", plan56, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-375 (#1155)", plan56, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-368 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-VRRP-FAULT-01", limitations, StringComparison.Ordinal);
@@ -61,7 +61,7 @@ public sealed class Plan56VrrpPairStatusFaultTextW7368LivingSpecTests
             "W7-371 | [#1147](https://github.com/sesquicadaver/MTDirector/issues/1147) | Seed next after DESK-VRRP-FAULT-01 (PLAN-56 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-374 (#1154)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-375 (#1155)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-369", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-370", continuous, StringComparison.Ordinal);
@@ -73,7 +73,7 @@ public sealed class Plan56VrrpPairStatusFaultTextW7368LivingSpecTests
         Assert.Equal(1, Count(node, "VrrpPairStatusText = \"VRRP pair consistency failed.\""));
         Assert.Contains("VrrpPairStatusText = $\"VRRP pair consistency failed. {fault}\"", node, StringComparison.Ordinal);
         Assert.Contains("ErrorText = DesktopRpcFaultText.Format(ex)", node, StringComparison.Ordinal);
-        Assert.Contains("VrrpPairStatusText = $\"{memberName}: {progress.Stage}\"", node, StringComparison.Ordinal);
+        Assert.Contains("VrrpPairStatusText = $\"{memberName}: {SnapshotViewerViewModel.FormatCaptureProgress(progress)}\"", node, StringComparison.Ordinal);
         Assert.DoesNotContain("correlation", node, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("public static string Format(RpcException exception)", fault, StringComparison.Ordinal);
         Assert.Equal(2, Count(connection, "DesktopRpcFaultText.Format(ex)"));

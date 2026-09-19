@@ -30,28 +30,28 @@ public sealed class ProductTrancheSeedW7373LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-374 | [#1154](https://github.com/sesquicadaver/MTDirector/issues/1154) | DESK-VRRP-PROG-01 — Show capture-progress correlation id on VRRP pair status | **OPEN**",
+            "W7-374 | [#1154](https://github.com/sesquicadaver/MTDirector/issues/1154) | DESK-VRRP-PROG-01 — Show capture-progress correlation id on VRRP pair status | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-375 | [#1155](https://github.com/sesquicadaver/MTDirector/issues/1155) | Seed next after DESK-VRRP-PROG-01 (PLAN-57 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-374 (#1154)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-375 (#1155)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-373", plan, StringComparison.Ordinal);
         Assert.Contains("W7-374", plan, StringComparison.Ordinal);
         Assert.Contains("W7-375", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-VRRP-PROG-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-374 (#1154)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-375 (#1155)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-373 (#1152) DONE", plan57, StringComparison.Ordinal);
         Assert.Contains("DESK-VRRP-PROG-01", plan57, StringComparison.Ordinal);
         Assert.Contains("W7-374", plan57, StringComparison.Ordinal);
         Assert.Contains("W7-375", plan57, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-374 (#1154)", plan57, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-375 (#1155)", plan57, StringComparison.Ordinal);
 
-        Assert.Contains("VrrpPairStatusText = $\"{memberName}: {progress.Stage}\"", node, StringComparison.Ordinal);
+        Assert.Contains("VrrpPairStatusText = $\"{memberName}: {SnapshotViewerViewModel.FormatCaptureProgress(progress)}\"", node, StringComparison.Ordinal);
         Assert.DoesNotContain("progress.Error", node, StringComparison.Ordinal);
         Assert.Contains("VrrpPairStatusText = $\"VRRP pair consistency failed. {fault}\"", node, StringComparison.Ordinal);
         Assert.Contains("(correlation {correlation})", viewer, StringComparison.Ordinal);
