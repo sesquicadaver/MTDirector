@@ -104,4 +104,4 @@ export ASPNETCORE_ENVIRONMENT=Development
 
 Layout example: `/var/lib/mfc/trusted-ca/lab-ca/root.pem`. INTERNAL_CA profiles without files fail closed. Private CAs must publish CRL/OCSP for `Online`/`Offline`, or use `SPKI_PIN` / explicit `NoCheck` only in controlled labs.
 
-Never commit production connection strings or master keys. Connection strings are redacted in Controller JSON logs.
+Never commit production connection strings or master keys. Connection strings are redacted in Controller JSON logs. Application faults also emit event **5301** (`gRPC application fault code=… status=… correlation_id=… retryable=…`) on that same logger (CTRL-ERRDETAIL-LOG-01). `correlation_id` matches Desktop `ErrorText`; Activity `traceId`/`spanId` remain a separate join key.

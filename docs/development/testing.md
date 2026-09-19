@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — CTRL-ERRDETAIL-LOG-01 fault correlation log (W7-358)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Log code, gRPC status, correlation id, retryable on existing JSON logger; trailer unchanged | GrpcApplicationErrorMapper, Program.cs, installation, controller-configuration | `CtrlErrdetailLog01ControllerFaultCorrelationLivingSpecTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~CtrlErrdetailLog01"`.
+
 ## Living Specification — Seed CTRL-ERRDETAIL-LOG-01 as §3.C NEXT (W7-357)
 
 | Requirement | Artifact | Test |

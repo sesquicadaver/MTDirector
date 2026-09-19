@@ -35,19 +35,19 @@ public sealed class ProductTrancheSeedW7317LivingSpecTests
             "W7-319 | [#1044](https://github.com/sesquicadaver/MTDirector/issues/1044) | Seed next after CTRL-HTTP-METRICS-01 (PLAN-43 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-358 (#1122)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-359 (#1123)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-317", plan, StringComparison.Ordinal);
         Assert.Contains("W7-318", plan, StringComparison.Ordinal);
         Assert.Contains("W7-319", plan, StringComparison.Ordinal);
         Assert.Contains("CTRL-HTTP-METRICS-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-358 (#1122)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-359 (#1123)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-317 (#1040) DONE", plan43, StringComparison.Ordinal);
         Assert.Contains("CTRL-HTTP-METRICS-01", plan43, StringComparison.Ordinal);
         Assert.Contains("W7-318", plan43, StringComparison.Ordinal);
         Assert.Contains("W7-319", plan43, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-358 (#1122)", plan43, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-359 (#1123)", plan43, StringComparison.Ordinal);
 
         Assert.Contains("MapHealthChecks", program, StringComparison.Ordinal);
         Assert.Contains("MapPrometheusScrapingEndpoint", program, StringComparison.Ordinal);
