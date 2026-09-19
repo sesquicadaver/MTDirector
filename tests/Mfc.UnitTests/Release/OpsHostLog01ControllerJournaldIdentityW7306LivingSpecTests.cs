@@ -51,7 +51,7 @@ public sealed class OpsHostLog01ControllerJournaldIdentityW7306LivingSpecTests
             "W7-306 | [#1018](https://github.com/sesquicadaver/MTDirector/issues/1018) | OPS-HOST-LOG-01 — SyslogIdentifier + journal stdout/stderr on mfc-controller.service | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-356 (#1119)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-357 (#1120)", roadmap, StringComparison.Ordinal);
         Assert.Contains("OpsHostLog01ControllerJournaldIdentityW7306", testing, StringComparison.Ordinal);
     }
 
