@@ -107,4 +107,4 @@ PLAN-52 sole ranked row (**DESK-RPC-FAULT-01**) is **DONE**. No further PLAN-52 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-387 (#1179)** — PLAN-54 Inventory Desktop connection-status fault text.
+**§3.C NEXT = W7-388 (#1183)** — PLAN-54 Inventory Desktop connection-status fault text.

@@ -1,7 +1,7 @@
 # PLAN-60 — Desktop service RPC fault text after snapshot ErrorText correlation
 
-**Date:** 2026-09-19 (implement **DONE**)  
-**Status:** Inventory **DONE** (W7-384); seed **W7-385 (#1176) DONE**; implement **W7-386 (#1178) DONE**; COMPLETE seed **W7-387 (#1179) OPEN** (**§3.C NEXT**); predecessor **PLAN-59 COMPLETE**  
+**Date:** 2026-09-19 (**PLAN-60 COMPLETE**)  
+**Status:** **PLAN-60 COMPLETE** — Inventory **DONE** (W7-384); seed **W7-385 (#1176) DONE**; implement **W7-386 (#1178) DONE**; COMPLETE seed **W7-387 (#1179) DONE**; successor **PLAN-61** inventory **W7-388 (#1183) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-384 / PLAN-60 #1175](https://github.com/sesquicadaver/MTDirector/issues/1175) **DONE**  
 **Predecessor:** PLAN-59 Snapshot failed-stage ErrorText correlation **COMPLETE** (SNAP-ERRTEXT-CORR-01)  
 **Normative files:** `SnapshotViewerService`, `SnapshotDiffService`, `InventoryTreeService`, operator docs  
@@ -84,7 +84,8 @@ PLAN-59 sole ranked row (**SNAP-ERRTEXT-CORR-01**) is **DONE**. No further PLAN-
 1. **PLAN-59 COMPLETE** (W7-382 SNAP-ERRTEXT-CORR-01; seed **W7-383 DONE**).  
 2. **W7-384 DONE** — PLAN-60 inventory; opened **W7-386 (#1178)** DESK-SVC-FAULT-01 implement + **W7-387 (#1179)** COMPLETE follow-up.  
 3. **W7-385 (#1176) DONE** — seed advanced NEXT to DESK-SVC-FAULT-01; keep COMPLETE **W7-387** open.  
-4. **W7-386 (#1178) DONE** — DESK-SVC-FAULT-01 sets service `Error` from `DesktopRpcFaultText.Format` on `RpcException`.
+4. **W7-386 (#1178) DONE** — DESK-SVC-FAULT-01 sets service `Error` from `DesktopRpcFaultText.Format` on `RpcException`.  
+5. **W7-387 (#1179) DONE** — PLAN-60 COMPLETE; successor **PLAN-61** inventory **W7-388 (#1183)**.
 
 ## Delivery notes (W7-386)
 
@@ -92,4 +93,4 @@ PLAN-59 sole ranked row (**SNAP-ERRTEXT-CORR-01**) is **DONE**. No further PLAN-
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-387 (#1179)** — Seed next after DESK-SVC-FAULT-01 (PLAN-60 COMPLETE).
+**§3.C NEXT = W7-388 (#1183)** — PLAN-61 Inventory Desktop connection Disconnected RPC fault text.

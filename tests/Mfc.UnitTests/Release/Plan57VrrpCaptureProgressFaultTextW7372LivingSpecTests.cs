@@ -36,7 +36,7 @@ public sealed class Plan57VrrpCaptureProgressFaultTextW7372LivingSpecTests
         Assert.Contains("W7-374", plan57, StringComparison.Ordinal);
         Assert.Contains("W7-375", plan57, StringComparison.Ordinal);
         Assert.Contains("FormatCaptureProgress", plan57, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-387 (#1179)", plan57, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-388 (#1183)", plan57, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-372 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-VRRP-PROG-01", limitations, StringComparison.Ordinal);
@@ -60,7 +60,7 @@ public sealed class Plan57VrrpCaptureProgressFaultTextW7372LivingSpecTests
             "W7-375 | [#1155](https://github.com/sesquicadaver/MTDirector/issues/1155) | Seed next after DESK-VRRP-PROG-01 (PLAN-57 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-387 (#1179)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-388 (#1183)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-373", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-374", continuous, StringComparison.Ordinal);

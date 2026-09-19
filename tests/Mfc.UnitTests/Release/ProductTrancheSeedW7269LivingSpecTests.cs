@@ -35,17 +35,17 @@ public sealed class ProductTrancheSeedW7269LivingSpecTests
             "W7-271 | [#947](https://github.com/sesquicadaver/MTDirector/issues/947) | Seed next PLAN-32 row after OPS-HOST-SYSTEMD-01 → OPS-HOST-WINSVC-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-387 (#1179)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-388 (#1183)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-269 (#944) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-270", plan, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-SYSTEMD-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-387 (#1179)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-388 (#1183)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-269 (#944) DONE", plan32, StringComparison.Ordinal);
         Assert.Contains("OPS-HOST-SYSTEMD-01", plan32, StringComparison.Ordinal);
         Assert.Contains("W7-270", plan32, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-387 (#1179)", plan32, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-388 (#1183)", plan32, StringComparison.Ordinal);
         Assert.Contains("W7-271", plan32, StringComparison.Ordinal);
         Assert.Contains("packaging/systemd/mfc-controller.service", plan32, StringComparison.Ordinal);
     }
