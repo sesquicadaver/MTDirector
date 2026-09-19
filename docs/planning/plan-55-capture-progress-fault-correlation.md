@@ -1,8 +1,8 @@
 # PLAN-55 — Capture progress fault correlation after connection-status fault text
 
-**Date:** 2026-09-19 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-364); seed **W7-365 (#1136) OPEN**; predecessor **PLAN-54 COMPLETE**  
-**PLAN issue / queue:** [W7-364 / PLAN-55 #1135](https://github.com/sesquicadaver/MTDirector/issues/1135) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-19 (inventory **DONE** @ `ded885b8`; seed baseline @ `d848a58c`)  
+**Status:** Inventory **DONE** (W7-364); seed **W7-365 (#1136) OPEN** (**§3.C NEXT**); implement **W7-366 (#1138) OPEN**; COMPLETE seed **W7-367 (#1139) OPEN**  
+**PLAN issue / queue:** [W7-364 / PLAN-55 #1135](https://github.com/sesquicadaver/MTDirector/issues/1135) **DONE**  
 **Predecessor:** PLAN-54 Desktop connection-status fault text **COMPLETE** (DESK-CONN-FAULT-01)  
 **Normative files:** `SnapshotGrpcService`, `SnapshotViewerViewModel`, `GrpcApplicationErrorMapper`, operator docs  
 **Normative prior locks:** DESK-CONN-FAULT-01; CTRL-ERRDETAIL-LOG-01 (event 5301); DESK-RPC-FAULT-01; unary deadline; Watch streams unbounded; MSGSIZE / BODY / KEEPALIVE / MINRATE; HTTP health; metrics; tracing; log↔trace correlation — **do not regress**  
@@ -27,25 +27,48 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - Ops / CRS / physical lab live runners as §3 stop-gates  
 - Changing the `mfc-error-detail-bin` trailer contract or the event 5301 log line  
 - Onboarding / Deployment progress (`ErrorCode` only; no `ErrorDetail` correlation)  
-- Health-timeout and TLS connection text
+- Health-timeout and TLS connection text  
+- Generic `catch` rethrows that do not call `ToRpcException` (no event 5301)
 
-## Inventory evidence (seed baseline @ `d848a58c`)
+## Inventory evidence (W7-364 @ `main` `ded885b8`; seed baseline @ `d848a58c`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
 | `SnapshotGrpcService` | **4** `CorrelationId = ProtoUuid.FromGuid(Guid.NewGuid())` on progress `ErrorDetail` | Progress id is new |
-| Same file | **2** `ToRpcException(result.Error!)` after those publishes | Mapper mints a second id |
-| Same file | **2** generic `catch` publishes an id then `throw` | Progress id never reaches the trailer |
+| Same file | **2** `ToRpcException(result.Error!)` after those publishes (device + node capture) | Mapper mints a second id |
+| Same file | **2** generic `catch` publishes an id then bare `throw` | No trailer / event 5301 to join |
+| `Unwrap` | **1** `ToRpcException(result.Error!)` with no progress publish | Not a capture-progress site |
 | `FormatCaptureProgress` | `stage: {SanitizedDetail}` | Correlation id not shown |
 | Controller log | Event **5301** uses the mapper id | Journald cannot join progress |
 
-## Ranked tranche (seed baseline)
+### Capture-progress sites (4)
+
+| Method | Behavior |
+|--------|----------|
+| `StartDeviceCaptureAsync` failure | Publishes a new id, then `ToRpcException(result.Error!)` without it |
+| `StartDeviceCaptureAsync` `catch` | Publishes a new id, then rethrows the original exception |
+| `StartNodeCaptureAsync` failure | Same split as the device failure path |
+| `StartNodeCaptureAsync` `catch` | Same bare rethrow as the device catch |
+
+`GrpcApplicationErrorMapper.ToRpcException(ApplicationError, Guid? correlationId = null)` already accepts an optional id (`correlationId ?? Guid.NewGuid()`) and logs event **5301** with that id. Neither capture throw passes it. `FormatCaptureProgress` returns `stage: {SanitizedDetail}` and never reads `CorrelationId`. `Unwrap` also omits an id, but it does not publish capture progress.
+
+**Ranking decision:** Prefer **ONE atomic row** (**SNAP-FAULT-CORR-01**):
+
+- Mint one `Guid` per capture failure and pass it into both the progress `ErrorDetail` and `ToRpcException` on the two result-failure throws
+- Show that correlation id on the Desktop capture progress line when `ErrorDetail.CorrelationId` is present
+- Do **not** change the `mfc-error-detail-bin` trailer contract or the event 5301 log template
+- Do **not** regress DESK-CONN-FAULT-01, CTRL-ERRDETAIL-LOG-01, DESK-RPC-FAULT-01, unary deadlines, MSGSIZE / BODY / KEEPALIVE / MINRATE, health, metrics, or tracing
+- Living Spec + operator docs
+
+Splitting device vs node would be vanity: both failure throws are the same assignment. The two generic `catch` rethrows do not call `ToRpcException`, so there is no event 5301 to join; wrapping them would change the RPC status and stays out of this row. Onboarding / Deployment progress is an `ErrorCode` string, not an `ErrorDetail` correlation. Health-timeout and TLS text are not capture-progress trailers.
+
+## Ranked tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **SNAP-FAULT-CORR-01** | Share one correlation id between capture progress `ErrorDetail` and `ToRpcException`, and show it on the progress line + Living Spec | **4** `Guid.NewGuid()` progress ids; **0** passed into `ToRpcException` @ `d848a58c` | after inventory **W7-364**; seed **W7-365 (#1136)** |
+| 1 | **SNAP-FAULT-CORR-01** | Share one correlation id between capture progress `ErrorDetail` and `ToRpcException`, and show it on the progress line + Living Spec | **4** `Guid.NewGuid()` progress ids; **0** passed into `ToRpcException` @ `ded885b8` | after inventory **W7-364 DONE**; seed **W7-365 (#1136) OPEN**; implement **W7-366 (#1138) OPEN**; COMPLETE **W7-367 (#1139) OPEN** |
 
-Inventory (**W7-364**) may refine ranking and open the implement issue; seed **W7-365** advances NEXT to that implement after inventory DONE.
+Inventory (**W7-364 DONE**) confirmed sole rank. Seed **W7-365** advances NEXT to the capture-correlation implement after inventory DONE.
 
 ## Dual track
 
@@ -61,15 +84,17 @@ PLAN-54 sole ranked row (**DESK-CONN-FAULT-01**) is **DONE**. No further PLAN-54
 - Native MSI / AppImage — W7-22 lock  
 - systemd Type=notify — deferred packaging polish  
 - Onboarding / Deployment progress is an `ErrorCode` string, not an `ErrorDetail` correlation — smaller than the capture split  
-- Health-timeout and TLS connection text are not `ErrorDetail` trailers
+- Health-timeout and TLS connection text are not `ErrorDetail` trailers  
+- Generic capture `catch` rethrows — no `ToRpcException`, so no event 5301  
+- `Unwrap` mints its own id — no capture-progress publish
 
 ## §3.C ordering
 
 1. **PLAN-54 COMPLETE** (W7-362 DESK-CONN-FAULT-01; seed **W7-363 DONE**).  
-2. **W7-364 OPEN** — PLAN-55 inventory (**§3.C NEXT**).  
+2. **W7-364 DONE** — PLAN-55 inventory; opened **W7-366 (#1138)** SNAP-FAULT-CORR-01 implement + **W7-367 (#1139)** COMPLETE follow-up.  
 3. **W7-365 OPEN** — seed first PLAN-55 implement after inventory.  
 4. Execute ranked SNAP-FAULT-CORR-01 atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-364 (#1135)** — PLAN-55 Inventory capture progress fault correlation.
+**§3.C NEXT = W7-365 (#1136)** — Seed first PLAN-55 atomic row after inventory → SNAP-FAULT-CORR-01.

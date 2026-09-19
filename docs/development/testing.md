@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — PLAN-55 inventory capture progress fault correlation (W7-364)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-55 inventory ranks sole SNAP-FAULT-CORR-01 + seeds | plan-55, ROADMAP, known-limitations, snapshot baseline | `Plan55CaptureProgressFaultCorrelationW7364LivingSpecTests.Ac1Plan55InventoryDocumentsSoleSnapFaultCorr01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan55CaptureProgressFaultCorrelationW7364"`.
+
 ## Living Specification — Seed PLAN-55 after PLAN-54 COMPLETE (W7-363)
 
 | Requirement | Artifact | Test |

@@ -44,7 +44,7 @@ public sealed class DeskHostBundle01PackageDesktopLaunchTemplatesW7286LivingSpec
             "W7-286 | [#978](https://github.com/sesquicadaver/MTDirector/issues/978) | DESK-HOST-BUNDLE-01 — package-desktop copies launch templates into OUT_DIR/desktop | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-364 (#1135)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-365 (#1136)", roadmap, StringComparison.Ordinal);
         Assert.Contains("DeskHostBundle01PackageDesktopLaunchTemplatesW7286", testing, StringComparison.Ordinal);
     }
 

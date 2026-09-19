@@ -1,7 +1,7 @@
 # PLAN-54 — Desktop connection-status fault text after Controller fault-correlation logging
 
 **Date:** 2026-09-19 (**PLAN-54 COMPLETE**)  
-**Status:** **PLAN-54 COMPLETE** — Inventory **DONE** (W7-360); seed **W7-361 (#1128) DONE**; implement **W7-362 (#1130) DONE**; COMPLETE seed **W7-363 (#1131) DONE**; successor **PLAN-55** inventory **W7-364 (#1135) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-54 COMPLETE** — Inventory **DONE** (W7-360); seed **W7-361 (#1128) DONE**; implement **W7-362 (#1130) DONE**; COMPLETE seed **W7-363 (#1131) DONE**; successor **PLAN-55** inventory **W7-364 (#1135) DONE**; seed **W7-365 (#1136)** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-360 / PLAN-54 #1127](https://github.com/sesquicadaver/MTDirector/issues/1127) **DONE**  
 **Predecessor:** PLAN-53 Controller fault-correlation logging **COMPLETE** (CTRL-ERRDETAIL-LOG-01)  
 **Normative files:** `ControllerConnectionService`, `DesktopRpcFaultText`, `ShellViewModel`, operator docs  
@@ -94,4 +94,4 @@ PLAN-53 sole ranked row (**CTRL-ERRDETAIL-LOG-01**) is **DONE**. No further PLAN
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-364 (#1135)** — PLAN-55 Inventory capture progress fault correlation.
+**§3.C NEXT = W7-365 (#1136)** — PLAN-55 Inventory capture progress fault correlation.
