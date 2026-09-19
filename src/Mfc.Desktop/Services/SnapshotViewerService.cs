@@ -94,7 +94,7 @@ public sealed class SnapshotViewerService : ISnapshotViewerService
             {
                 Succeeded = false,
                 DeviceId = deviceId,
-                Error = ex.Message,
+                Error = DesktopRpcFaultText.Format(ex),
                 Captures = _current.Captures,
                 Sections = _current.Sections,
             };
@@ -176,7 +176,7 @@ public sealed class SnapshotViewerService : ISnapshotViewerService
                 Succeeded = false,
                 DeviceId = baseline.DeviceId,
                 CaptureId = captureId,
-                Error = ex.Message,
+                Error = DesktopRpcFaultText.Format(ex),
                 StatusText = baseline.StatusText,
                 SchemaVersion = baseline.SchemaVersion,
                 ConfigurationHashHex = baseline.ConfigurationHashHex,
@@ -279,7 +279,7 @@ public sealed class SnapshotViewerService : ISnapshotViewerService
                 Succeeded = false,
                 DeviceId = deviceId ?? _current.DeviceId,
                 CaptureId = captureId,
-                Error = ex.Message,
+                Error = DesktopRpcFaultText.Format(ex),
                 Captures = captures ?? _current.Captures,
             };
             return _current;

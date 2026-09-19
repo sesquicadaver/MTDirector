@@ -93,7 +93,7 @@ public sealed class SnapshotDiffService : ISnapshotDiffService
             _current = new SnapshotDiffLoadResult
             {
                 Succeeded = false,
-                Error = ex.Message,
+                Error = DesktopRpcFaultText.Format(ex),
                 Captures = _current.Captures,
             };
             return _current;
@@ -179,7 +179,7 @@ public sealed class SnapshotDiffService : ISnapshotDiffService
                 Succeeded = false,
                 LeftCaptureId = leftCaptureId,
                 RightCaptureId = rightCaptureId,
-                Error = ex.Message,
+                Error = DesktopRpcFaultText.Format(ex),
                 Captures = captures,
             };
             return _current;

@@ -141,7 +141,7 @@ public sealed class InventoryTreeService : IInventoryTreeService
             {
                 Roots = _lastSuccessfulRoots,
                 Succeeded = false,
-                Error = ex.Message,
+                Error = DesktopRpcFaultText.Format(ex),
                 IsCached = _hasSuccessfulLoad,
                 IsRefreshing = false,
             };
