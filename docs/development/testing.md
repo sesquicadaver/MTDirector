@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed SNAP-FAULT-CORR-01 as §3.C NEXT (W7-365)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks SNAP-FAULT-CORR-01 as §3.C NEXT | known-limitations, ROADMAP, plan-55, continuous-queue | `ProductTrancheSeedW7365LivingSpecTests.Ac1KnownLimitationsAndQueueSeedSnapFaultCorr01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7365"`.
+
 ## Living Specification — PLAN-55 inventory capture progress fault correlation (W7-364)
 
 | Requirement | Artifact | Test |
