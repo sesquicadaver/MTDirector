@@ -68,7 +68,7 @@
 **PLAN-40 (Controller host journald/syslog identity):** [`plan-40-controller-host-journald-syslog-identity.md`](plan-40-controller-host-journald-syslog-identity.md) inventory **W7-304 (#1015) DONE**; seed **W7-305 (#1016) DONE**; implement **W7-306 (#1018) DONE**; COMPLETE seed **W7-307 (#1020) DONE**; successor **PLAN-41** inventory **W7-308 DONE**; seeded by **W7-303 DONE** after **PLAN-39 COMPLETE**
 **PLAN-39 (Controller host operator doc packaging):** [`plan-39-controller-host-operator-doc-packaging.md`](plan-39-controller-host-operator-doc-packaging.md) inventory **W7-300 (#1007) DONE**; seed **W7-301 (#1008) DONE**; implement **W7-302 (#1010) DONE**; COMPLETE seed **W7-303 (#1012) DONE**; successor **PLAN-40** inventory **W7-304 DONE**; seeded by **W7-299 DONE** after **PLAN-38 COMPLETE**
 
-This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle state **NEXT = none**.
+This is the in-repo plan (`.omx/plans/` is gitignored). Historical PLAN-02 replaced an idle **NEXT = none** by requiring a seed. That self-seed is **revoked**: a non-empty NEXT only means the current planned row is open.
 
 ## Why the previous queue stopped work
 
@@ -79,7 +79,7 @@ This is the in-repo plan (`.omx/plans/` is gitignored). It replaces the idle sta
 | Lab phase gates (GNS3 / CHR / `WriteEnabled`) | `~/gns3-lab` (outside git); [`known-limitations.md`](../release/known-limitations.md) live CHR **OFF** | Operators treat phase N as a product stop — **not a MUST in this repo** |
 | ROADMAP §6 “no skip predecessors” | Correct **inside** the product line | Misread as “wait for lab phase close” |
 
-**Rule (PLAN-02):** closing a delivery wave without seeding the next §3 row in the same cycle is forbidden. Lab/CHR/`WriteEnabled` run **in parallel** and are **never** predecessors of Desktop/Contracts PRs.
+**Rule (queue exhaustion; supersedes PLAN-02 self-seed):** a non-empty NEXT only means the current planned §3 row is still open. After that row closes, if the next NEXT is empty, `/autopilot` **stops** and reports that the queue is exhausted. Inventing the next tranche, PLAN, or TOR to keep NEXT non-empty is forbidden. Lab/CHR/`WriteEnabled` run **in parallel** and are **never** predecessors of Desktop/Contracts PRs.
 
 ## Readiness (evidence vs inference)
 
