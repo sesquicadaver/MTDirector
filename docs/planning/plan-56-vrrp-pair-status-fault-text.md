@@ -1,7 +1,7 @@
 # PLAN-56 — VRRP pair status fault text after capture progress fault correlation
 
-**Date:** 2026-09-19 (implement **DONE**)  
-**Status:** Inventory **DONE** (W7-368); seed **W7-369 (#1144) DONE**; implement **W7-370 (#1146) DONE**; COMPLETE seed **W7-371 (#1147) OPEN** (**§3.C NEXT**); predecessor **PLAN-55 COMPLETE**  
+**Date:** 2026-09-19 (**PLAN-56 COMPLETE**)  
+**Status:** **PLAN-56 COMPLETE** — Inventory **DONE** (W7-368); seed **W7-369 (#1144) DONE**; implement **W7-370 (#1146) DONE**; COMPLETE seed **W7-371 (#1147) DONE**; successor **PLAN-57** inventory **W7-372 (#1151) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-368 / PLAN-56 #1143](https://github.com/sesquicadaver/MTDirector/issues/1143) **DONE**  
 **Predecessor:** PLAN-55 Capture progress fault correlation **COMPLETE** (SNAP-FAULT-CORR-01)  
 **Normative files:** `NodeDetailViewModel`, `DesktopRpcFaultText`, operator docs  
@@ -56,7 +56,7 @@ Splitting the two catch blocks would be vanity: only the `RpcException` path has
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-VRRP-FAULT-01** | Show the RPC fault code and correlation id on the VRRP pair status line + Living Spec | **2** static `VRRP pair consistency failed.` assignments; **0** `correlation` mentions in `NodeDetailViewModel` @ `dcde8dca` | after inventory **W7-368 DONE**; seed **W7-369 (#1144) DONE**; implement **W7-370 (#1146) DONE**; COMPLETE **W7-371 (#1147) OPEN** |
+| 1 | **DESK-VRRP-FAULT-01** | Show the RPC fault code and correlation id on the VRRP pair status line + Living Spec | **2** static `VRRP pair consistency failed.` assignments; **0** `correlation` mentions in `NodeDetailViewModel` @ `dcde8dca` | after inventory **W7-368 DONE**; seed **W7-369 (#1144) DONE**; implement **W7-370 (#1146) DONE**; COMPLETE **W7-371 (#1147) DONE** |
 
 Inventory (**W7-368 DONE**) confirmed sole rank. Seed **W7-369** advances NEXT to DESK-VRRP-FAULT-01 after inventory DONE.
 
@@ -86,7 +86,7 @@ PLAN-55 sole ranked row (**SNAP-FAULT-CORR-01**) is **DONE**. No further PLAN-55
 2. **W7-368 DONE** — PLAN-56 inventory; opened **W7-370 (#1146)** DESK-VRRP-FAULT-01 implement + **W7-371 (#1147)** COMPLETE follow-up.  
 3. **W7-369 (#1144) DONE** — seed advanced NEXT to DESK-VRRP-FAULT-01; keep COMPLETE **W7-371** open.  
 4. **W7-370 (#1146) DONE** — DESK-VRRP-FAULT-01 copies `DesktopRpcFaultText.Format` onto the VRRP pair status line.  
-5. **W7-371 OPEN** — seed PLAN-56 COMPLETE.
+5. **W7-371 (#1147) DONE** — PLAN-56 COMPLETE; successor **PLAN-57** inventory **W7-372 (#1151)**.
 
 ## Delivery notes (W7-370)
 
@@ -94,4 +94,4 @@ PLAN-55 sole ranked row (**SNAP-FAULT-CORR-01**) is **DONE**. No further PLAN-55
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-371 (#1147)** — Seed next after DESK-VRRP-FAULT-01 (PLAN-56 COMPLETE).
+**§3.C NEXT = W7-372 (#1151)** — PLAN-57 Inventory VRRP capture-progress fault text.
