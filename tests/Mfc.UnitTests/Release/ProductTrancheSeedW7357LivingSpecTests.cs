@@ -29,30 +29,30 @@ public sealed class ProductTrancheSeedW7357LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-358 | [#1122](https://github.com/sesquicadaver/MTDirector/issues/1122) | CTRL-ERRDETAIL-LOG-01 — Log fault code, status, correlation id, and retryable | **OPEN**",
+            "W7-358 | [#1122](https://github.com/sesquicadaver/MTDirector/issues/1122) | CTRL-ERRDETAIL-LOG-01 — Log fault code, status, correlation id, and retryable | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-359 | [#1123](https://github.com/sesquicadaver/MTDirector/issues/1123) | Seed next after CTRL-ERRDETAIL-LOG-01 (PLAN-53 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-358 (#1122)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-359 (#1123)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-357", plan, StringComparison.Ordinal);
         Assert.Contains("W7-358", plan, StringComparison.Ordinal);
         Assert.Contains("W7-359", plan, StringComparison.Ordinal);
         Assert.Contains("CTRL-ERRDETAIL-LOG-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-358 (#1122)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-359 (#1123)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-357 (#1120) DONE", plan53, StringComparison.Ordinal);
         Assert.Contains("CTRL-ERRDETAIL-LOG-01", plan53, StringComparison.Ordinal);
         Assert.Contains("W7-358", plan53, StringComparison.Ordinal);
         Assert.Contains("W7-359", plan53, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-358 (#1122)", plan53, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-359 (#1123)", plan53, StringComparison.Ordinal);
 
         Assert.Contains("correlationId ?? Guid.NewGuid()", mapper, StringComparison.Ordinal);
         Assert.Contains("mfc-error-detail-bin", mapper, StringComparison.Ordinal);
-        Assert.DoesNotContain("ILogger", mapper, StringComparison.Ordinal);
+        Assert.Contains("gRPC application fault code={Code}", mapper, StringComparison.Ordinal);
         Assert.Contains("correlation", fault, StringComparison.Ordinal);
 
         int calls = 0;

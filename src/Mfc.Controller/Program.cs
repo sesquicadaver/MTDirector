@@ -145,6 +145,7 @@ public static class Program
 
         RegisterAuthorization(builder.Services, options, jobOptions, builder.Environment.EnvironmentName);
         builder.Services.AddSingleton<GrpcRequestActorResolver>();
+        builder.Services.AddSingleton<GrpcApplicationErrorMapper>();
         RegisterInventoryApplication(builder.Services);
         RegisterSnapshotApplication(builder.Services);
         RegisterZoneApplication(builder.Services);
@@ -306,6 +307,7 @@ public static class Program
         configure?.Invoke(builder);
 
         WebApplication app = builder.Build();
+        app.Services.GetRequiredService<GrpcApplicationErrorMapper>().BindForStaticCallSites();
 
         ClientCertificateMode pipelineClientCertMode =
             GrpcClientCertificateModeParser.Parse(options.Grpc.ClientCertificateMode);
