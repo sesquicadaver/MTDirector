@@ -36,7 +36,7 @@ public sealed class Plan59SnapshotFailedErrorTextCorrelationW7380LivingSpecTests
         Assert.Contains("W7-381", plan59, StringComparison.Ordinal);
         Assert.Contains("W7-382", plan59, StringComparison.Ordinal);
         Assert.Contains("W7-383", plan59, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-381 (#1168)", plan59, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-382 (#1170)", plan59, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-380 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("SNAP-ERRTEXT-CORR-01", limitations, StringComparison.Ordinal);
@@ -49,7 +49,7 @@ public sealed class Plan59SnapshotFailedErrorTextCorrelationW7380LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-381 | [#1168](https://github.com/sesquicadaver/MTDirector/issues/1168) | Seed first PLAN-59 atomic row after inventory → SNAP-ERRTEXT-CORR-01 | **OPEN**",
+            "W7-381 | [#1168](https://github.com/sesquicadaver/MTDirector/issues/1168) | Seed first PLAN-59 atomic row after inventory → SNAP-ERRTEXT-CORR-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -60,7 +60,7 @@ public sealed class Plan59SnapshotFailedErrorTextCorrelationW7380LivingSpecTests
             "W7-383 | [#1171](https://github.com/sesquicadaver/MTDirector/issues/1171) | Seed next after SNAP-ERRTEXT-CORR-01 (PLAN-59 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-381 (#1168)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-382 (#1170)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-381", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-382", continuous, StringComparison.Ordinal);

@@ -33,7 +33,7 @@ public sealed class Plan52DesktopGrpcErrorDetailW7352LivingSpecTests
         Assert.Contains("W7-352", plan52, StringComparison.Ordinal);
         Assert.Contains("sole rank", plan52, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("14", plan52, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-381 (#1168)", plan52, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-382 (#1170)", plan52, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-352 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-RPC-FAULT-01", limitations, StringComparison.Ordinal);
@@ -58,7 +58,7 @@ public sealed class Plan52DesktopGrpcErrorDetailW7352LivingSpecTests
             "W7-355 | [#1115](https://github.com/sesquicadaver/MTDirector/issues/1115) | Seed next after DESK-RPC-FAULT-01 (PLAN-52 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-381 (#1168)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-382 (#1170)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-353", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-354", continuous, StringComparison.Ordinal);
