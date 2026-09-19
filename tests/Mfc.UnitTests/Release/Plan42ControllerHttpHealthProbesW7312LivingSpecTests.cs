@@ -33,7 +33,7 @@ public sealed class Plan42ControllerHttpHealthProbesW7312LivingSpecTests
         Assert.Contains("/health/live", plan42, StringComparison.Ordinal);
         Assert.Contains("/health/ready", plan42, StringComparison.Ordinal);
         Assert.Contains("HttpProtocols.Http2", plan42, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-367 (#1139)", plan42, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-368 (#1143)", plan42, StringComparison.Ordinal);
         Assert.Contains("MapGrpcHealthChecksService", plan42, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-312 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -58,7 +58,7 @@ public sealed class Plan42ControllerHttpHealthProbesW7312LivingSpecTests
             "W7-315 | [#1036](https://github.com/sesquicadaver/MTDirector/issues/1036) | Seed next after CTRL-HTTP-HEALTH-01 (PLAN-42 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-367 (#1139)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-368 (#1143)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-313", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-314", continuous, StringComparison.Ordinal);
