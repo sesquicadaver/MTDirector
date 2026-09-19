@@ -93,4 +93,4 @@ Controller `ConfigureKestrel` sets `Limits.Http2.KeepAlivePingDelay` / `KeepAliv
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-349 (#1104)** — PLAN-50 Inventory Controller Kestrel min request/response data-rate after PLAN-49.
+**§3.C NEXT = W7-350 (#1106)** — PLAN-50 Inventory Controller Kestrel min request/response data-rate after PLAN-49.

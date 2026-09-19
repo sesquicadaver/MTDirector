@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed DESK-GRPC-DEADLINE-01 as §3.C NEXT (W7-349)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks DESK-GRPC-DEADLINE-01 as §3.C NEXT | known-limitations, ROADMAP, plan-51, continuous-queue | `ProductTrancheSeedW7349LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskGrpcDeadline01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7349"`.
+
 ## Living Specification — PLAN-51 inventory (W7-348)
 
 | Criterion | Normative surface | Living Spec |

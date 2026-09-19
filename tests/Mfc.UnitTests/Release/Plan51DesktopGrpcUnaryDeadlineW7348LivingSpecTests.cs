@@ -32,7 +32,7 @@ public sealed class Plan51DesktopGrpcUnaryDeadlineW7348LivingSpecTests
         Assert.Contains("sole rank", plan51, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("63", plan51, StringComparison.Ordinal);
         Assert.Contains("WatchCapture", plan51, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-349 (#1104)", plan51, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-350 (#1106)", plan51, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-348 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-GRPC-DEADLINE-01", limitations, StringComparison.Ordinal);
@@ -46,7 +46,7 @@ public sealed class Plan51DesktopGrpcUnaryDeadlineW7348LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-349 | [#1104](https://github.com/sesquicadaver/MTDirector/issues/1104) | Seed first PLAN-51 atomic row after inventory → DESK-GRPC-DEADLINE-01 | **OPEN**",
+            "W7-349 | [#1104](https://github.com/sesquicadaver/MTDirector/issues/1104) | Seed first PLAN-51 atomic row after inventory → DESK-GRPC-DEADLINE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -57,7 +57,7 @@ public sealed class Plan51DesktopGrpcUnaryDeadlineW7348LivingSpecTests
             "W7-351 | [#1107](https://github.com/sesquicadaver/MTDirector/issues/1107) | Seed next after DESK-GRPC-DEADLINE-01 (PLAN-51 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-349 (#1104)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-350 (#1106)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-349", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-350", continuous, StringComparison.Ordinal);
