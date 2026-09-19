@@ -28,7 +28,7 @@ public sealed class Plan31DesktopResidualListboxReadonlyA11yW7262LivingSpecTests
         Assert.Contains("**43** hosts", plan31, StringComparison.Ordinal);
         Assert.Contains("Drift.SemanticDiffText", plan31, StringComparison.Ordinal);
         Assert.Contains("Audit.SelectedEvent.PayloadJson", plan31, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-362 (#1130)", plan31, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-363 (#1131)", plan31, StringComparison.Ordinal);
         Assert.Contains("W7-263 (#932) DONE", plan31, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-262 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -65,7 +65,7 @@ public sealed class Plan31DesktopResidualListboxReadonlyA11yW7262LivingSpecTests
             "W7-268 | [#943](https://github.com/sesquicadaver/MTDirector/issues/943) | PLAN-32 — Inventory Controller host-process packaging templates (systemd / Windows Service) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-362 (#1130)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-363 (#1131)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-263", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-264", continuous, StringComparison.Ordinal);

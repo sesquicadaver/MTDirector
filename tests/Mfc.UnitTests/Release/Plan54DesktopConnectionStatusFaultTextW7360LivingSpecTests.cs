@@ -35,7 +35,7 @@ public sealed class Plan54DesktopConnectionStatusFaultTextW7360LivingSpecTests
         Assert.Contains("W7-361", plan54, StringComparison.Ordinal);
         Assert.Contains("W7-360", plan54, StringComparison.Ordinal);
         Assert.Contains("ShellViewModel", plan54, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-362 (#1130)", plan54, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-363 (#1131)", plan54, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-360 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-FAULT-01", limitations, StringComparison.Ordinal);
@@ -52,14 +52,14 @@ public sealed class Plan54DesktopConnectionStatusFaultTextW7360LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-362 | [#1130](https://github.com/sesquicadaver/MTDirector/issues/1130) | DESK-CONN-FAULT-01 — Route connection AuthenticationFailed status through DesktopRpcFaultText | **OPEN**",
+            "W7-362 | [#1130](https://github.com/sesquicadaver/MTDirector/issues/1130) | DESK-CONN-FAULT-01 — Route connection AuthenticationFailed status through DesktopRpcFaultText | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-363 | [#1131](https://github.com/sesquicadaver/MTDirector/issues/1131) | Seed next after DESK-CONN-FAULT-01 (PLAN-54 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-362 (#1130)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-363 (#1131)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-361", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-362", continuous, StringComparison.Ordinal);
@@ -68,9 +68,8 @@ public sealed class Plan54DesktopConnectionStatusFaultTextW7360LivingSpecTests
         Assert.Contains("plan-54-desktop-connection-status-fault-text.md", docsIndex, StringComparison.Ordinal);
         Assert.Contains("Plan54DesktopConnectionStatusFaultTextW7360", testing, StringComparison.Ordinal);
 
-        Assert.Contains("ex.Status.Detail", connection, StringComparison.Ordinal);
-        Assert.DoesNotContain("DesktopRpcFaultText", connection, StringComparison.Ordinal);
-        Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.AuthenticationFailed, ex.Status.Detail)"));
+        Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.AuthenticationFailed, DesktopRpcFaultText.Format(ex))"));
+        Assert.DoesNotContain("ex.Status.Detail", connection, StringComparison.Ordinal);
         Assert.Contains("ErrorText = _connection.LastError", shell, StringComparison.Ordinal);
         Assert.Contains("mfc-error-detail-bin", fault, StringComparison.Ordinal);
         Assert.Contains("correlation", fault, StringComparison.Ordinal);

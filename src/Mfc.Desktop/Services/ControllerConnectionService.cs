@@ -129,7 +129,7 @@ public sealed class ControllerConnectionService : IControllerConnectionService
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.Unauthenticated || ex.StatusCode == StatusCode.PermissionDenied)
         {
-            SetState(ControllerConnectionState.AuthenticationFailed, ex.Status.Detail);
+            SetState(ControllerConnectionState.AuthenticationFailed, DesktopRpcFaultText.Format(ex));
             await DisposeChannelAsync().ConfigureAwait(false);
         }
         catch (Exception ex) when (IsTlsFailure(ex))
@@ -275,7 +275,7 @@ public sealed class ControllerConnectionService : IControllerConnectionService
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.Unauthenticated || ex.StatusCode == StatusCode.PermissionDenied)
         {
-            SetState(ControllerConnectionState.AuthenticationFailed, ex.Status.Detail);
+            SetState(ControllerConnectionState.AuthenticationFailed, DesktopRpcFaultText.Format(ex));
             await DisposeChannelAsync().ConfigureAwait(false);
         }
         catch (Exception ex) when (IsTlsFailure(ex))

@@ -48,9 +48,9 @@ public sealed class DeskConnHealth01W7252LivingSpecTests
             "W7-252 | [#910](https://github.com/sesquicadaver/MTDirector/issues/910) | DESK-CONN-HEALTH-01 — Connected-state periodic gRPC health probe after Controller stop | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-362 (#1130)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-363 (#1131)", roadmap, StringComparison.Ordinal);
         Assert.Contains("W7-252 DONE", continuous, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-362 (#1130)", continuous, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-363 (#1131)", continuous, StringComparison.Ordinal);
         Assert.Contains("DeskConnHealth01W7252", testing, StringComparison.Ordinal);
     }
 

@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — DESK-CONN-FAULT-01 connection-status fault text (W7-362)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| AuthenticationFailed LastError includes correlation id; empty detail fallback; prior locks held | ControllerConnectionService, DesktopRpcFaultText, connection/installation docs | `DeskConnFault01DesktopConnectionFaultLivingSpecTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DeskConnFault01"`.
+
 ## Living Specification — Seed DESK-CONN-FAULT-01 as §3.C NEXT (W7-361)
 
 | Requirement | Artifact | Test |

@@ -82,7 +82,7 @@ Native MSI/setup remains out of scope (W7-22). Do not regress the Linux systemd 
 1. Obtain `Mfc.Desktop-<rid>.zip` (or `.tar.gz`) from `scripts/release/package-desktop.sh` (`linux-x64` or `win-x64`).
 2. Extract and run `Mfc.Desktop` / `Mfc.Desktop.exe`.
 3. Point `Desktop:ControllerEndpoint` at the Controller URL.
-4. Optional: `Desktop:UnaryCallTimeoutSeconds` (default **30**) bounds unary gRPC calls (DESK-GRPC-DEADLINE-01). Values ≤0 are rejected. Watch streams are not deadline-bounded. Health probes use `Desktop:HealthCheckTimeoutSeconds` (default **5**). Failed calls show Controller `ErrorDetail` (code + correlation id) in `ErrorText` (DESK-RPC-FAULT-01); empty `Status.Detail` falls back to the status code. The same correlation id is logged by Controller as `correlation_id` (CTRL-ERRDETAIL-LOG-01) so journald can be joined to `ErrorText`.
+4. Optional: `Desktop:UnaryCallTimeoutSeconds` (default **30**) bounds unary gRPC calls (DESK-GRPC-DEADLINE-01). Values ≤0 are rejected. Watch streams are not deadline-bounded. Health probes use `Desktop:HealthCheckTimeoutSeconds` (default **5**). Failed calls show Controller `ErrorDetail` (code + correlation id) in `ErrorText` (DESK-RPC-FAULT-01); empty `Status.Detail` falls back to the status code. Connect/reconnect `AuthenticationFailed` uses the same text (DESK-CONN-FAULT-01). The same correlation id is logged by Controller as `correlation_id` (CTRL-ERRDETAIL-LOG-01) so journald can be joined to `ErrorText`.
 5. Connect → Inventory → **Add router** to register Site/Node/Device and connection profile (see [`../development/connection-profiles.md`](../development/connection-profiles.md)).
 
 Native MSI/setup installers are out of MVP scope (zip publish is the installer substitute).

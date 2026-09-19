@@ -32,6 +32,7 @@ Secrets use AES-256-GCM envelopes under `Security:MasterKeyProvider` (`Developme
 - Desktop talks only to Controller Contracts (`mfc.v1`).
 - Unary Controller RPCs use `Desktop:UnaryCallTimeoutSeconds` (default **30**). `DesktopGrpcUnaryCall` rejects a non-positive value (fail-closed) and sets `CallOptions.Deadline`. Long-lived **Watch** streams (Capture, Deployment, Onboarding) are not deadline-bounded. Health probes stay on `HealthCheckTimeoutSeconds` (default **5**).
 - Failed unary calls map Controller `mfc-error-detail-bin` into operator `ErrorText` via `DesktopRpcFaultText` (DESK-RPC-FAULT-01: code, correlation id, retryable when set). If the trailer is missing, `Status.Detail` is shown; an empty detail falls back to the status code (including `DeadlineExceeded`).
+- Connect and reconnect `AuthenticationFailed` shell status (`LastError` → shell `ErrorText`) uses the same `DesktopRpcFaultText.Format` helper (DESK-CONN-FAULT-01). The correlation id is present when `mfc-error-detail-bin` is; an empty detail is never a blank status.
 - No RouterOS host credentials in Desktop settings or logs (ADR 0005).
 - Operator enters credentials once via Inventory **Add router** wizard (`UpdateDeviceConnection`); password is cleared from the form after success and never reloaded from Controller.
 - Prefer selecting an existing Site/Node in the tree so pickers pre-fill.
