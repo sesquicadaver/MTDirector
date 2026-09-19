@@ -36,7 +36,7 @@ public sealed class Plan46ControllerOtelResourceIdentityW7328LivingSpecTests
         Assert.Contains("service.name", plan46, StringComparison.Ordinal);
         Assert.Contains("service.version", plan46, StringComparison.Ordinal);
         Assert.Contains("opt-in", plan46, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("§3.C NEXT = W7-348 (#1103)", plan46, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-349 (#1104)", plan46, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-328 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-HTTP-OTEL-RESOURCE-01", limitations, StringComparison.Ordinal);
@@ -100,7 +100,7 @@ public sealed class Plan46ControllerOtelResourceIdentityW7328LivingSpecTests
             "W7-341 | [#1088](https://github.com/sesquicadaver/MTDirector/issues/1088) | Seed first PLAN-49 atomic row after inventory → CTRL-GRPC-KEEPALIVE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-348 (#1103)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-349 (#1104)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-329", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-330", continuous, StringComparison.Ordinal);

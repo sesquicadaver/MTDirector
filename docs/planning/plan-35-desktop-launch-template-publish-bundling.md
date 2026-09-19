@@ -71,4 +71,4 @@ PLAN-34 ranks 1…2 (**DESK-HOST-LINUX-01**, **DESK-HOST-WIN-01**) are **DONE**.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-348 (#1103)** — PLAN-36 Inventory Controller host-template publish bundling after PLAN-35.
+**§3.C NEXT = W7-349 (#1104)** — PLAN-36 Inventory Controller host-template publish bundling after PLAN-35.

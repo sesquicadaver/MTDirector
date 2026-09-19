@@ -1,14 +1,14 @@
 # PLAN-51 — Desktop gRPC unary call deadline / timeout after transport saturates
 
-**Date:** 2026-09-17 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-348); seed **W7-349 (#1104) OPEN**; predecessor **PLAN-50 COMPLETE**  
-**PLAN issue / queue:** [W7-348 / PLAN-51 #1103](https://github.com/sesquicadaver/MTDirector/issues/1103) **OPEN** (**§3.C NEXT** after W7-347)  
+**Date:** 2026-09-17 (inventory **DONE** @ `9001354c`)  
+**Status:** Inventory **DONE** (W7-348); seed **W7-349 (#1104) OPEN**; implement **W7-350 (#1106) OPEN**; COMPLETE seed **W7-351 (#1107) OPEN**; predecessor **PLAN-50 COMPLETE**  
+**PLAN issue / queue:** [W7-348 / PLAN-51 #1103](https://github.com/sesquicadaver/MTDirector/issues/1103) **DONE**  
 **Predecessor:** PLAN-50 Controller Kestrel min request/response data-rate **COMPLETE** (CTRL-KESTREL-MINRATE-01)  
-**Normative files:** Desktop gRPC call sites (`src/Mfc.Desktop/Services/`, ViewModels / panel services), connection options, operator docs  
+**Normative files:** Desktop gRPC call sites (`src/Mfc.Desktop/Services/Grpc*Client.cs`), `DesktopOptions`, shared unary call helper, connection / installation / development docs  
 **Normative prior locks:** HTTP health; opt-in `/metrics`; opt-in tracing; log correlation; OTel resource identity; gRPC MaxReceive/SendMessageSize (256 MiB); Kestrel MaxRequestBodySize (256 MiB); HTTP/2 KeepAlivePing 60s/30s; Kestrel MinRequest/ResponseDataRate null; gRPC health; QG-SIGN-01/02; PLAN-32…50 — **do not regress**  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
-Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap after PLAN-50 shipped null Kestrel min data-rates: **transport (MSGSIZE + BODY + KEEPALIVE + MINRATE) is saturating**. Desktop unary gRPC calls generally lack `CallOptions.Deadline` / bounded timeouts — only Health uses `CancelAfter(HealthCheckTimeoutSeconds)`. A hung Controller can hang operator UI indefinitely. Type=notify and Desktop a11y remain deferred vanity.
+Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap after PLAN-50 shipped null Kestrel min data-rates: **transport (MSGSIZE + BODY + KEEPALIVE + MINRATE) is saturating**. Desktop unary gRPC calls lack `CallOptions.Deadline` / bounded timeouts — only Health uses `CancelAfter(HealthCheckTimeoutSeconds)`. A hung Controller can hang operator UI indefinitely. Type=notify and Desktop a11y remain deferred vanity.
 
 ## Principles
 
@@ -26,24 +26,63 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - Nested ListBox / TabControl a11y vanity  
 - Ops / CRS / physical lab live runners as §3 stop-gates  
 - Full gRPC load-balancing / multi-instance HA productization  
-- systemd `Type=notify` / `WatchdogSec` packaging polish (explicitly deferred / saturating)
+- systemd `Type=notify` / `WatchdogSec` packaging polish (explicitly deferred / saturating)  
+- Deadlines on long-lived Capture / Deployment / Onboarding **Watch** streams
 
-## Inventory evidence (seed baseline 2026-09-17 `main` @ PLAN-50 COMPLETE / MINRATE shipped)
+## Inventory evidence (W7-348 @ `main` `9001354c`)
+
+### Transport / Health baseline
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
-| Desktop Health | `CancelAfter(HealthCheckTimeoutSeconds)` | Bounded |
-| Desktop unary RPCs | No widespread `CallOptions.Deadline` | Hung Controller hangs UI |
-| Transport stack | MSGSIZE + BODY + KEEPALIVE + MINRATE | Saturating |
-| Glob / rg | `Deadline` / `WithDeadline` absent under Desktop Services (except RosSession elsewhere) | Confirmed at seed |
+| Desktop Health | `CancelAfter(HealthCheckTimeoutSeconds)` (default **5s**) in `ControllerConnectionService` | Bounded (keep / fold consistently) |
+| Transport stack | MSGSIZE + BODY + KEEPALIVE + MINRATE | Saturating — do not re-open |
+| Glob / rg | `Deadline` / `WithDeadline` / `CallOptions` absent under `Grpc*Client.cs` | Confirmed @ `9001354c` |
 
-## Ranked Desktop gRPC deadline tranche (seed baseline)
+### Unary call sites lacking Deadline (63 unique client RPC methods)
+
+All pass `ActorHeaders()` + `cancellationToken` only — **no** `deadline:` / `CallOptions.Deadline`.
+
+| Client | Unary methods without Deadline (count) |
+|--------|----------------------------------------|
+| `GrpcAuditServiceClient` | ListAuditEventsAsync (**1**) |
+| `GrpcDeploymentServiceClient` | CreatePlanAsync, CreatePlanFromSealedArtifactsAsync, StartAsync, RollbackAsync, GetRecoveryStatusAsync (**5**) — **Watch excluded** |
+| `GrpcDriftServiceClient` | ListDeviceDriftEventsAsync, GetDriftEventAsync (**2**) |
+| `GrpcIncidentServiceClient` | IngestIncidentSignalAsync, BindIncidentResponseAssessmentAsync (**2**) |
+| `GrpcInventoryTreeClient` | ListSitesAsync, ListNodesAsync, GetNodeAsync, GetNodeWorkflowAsync, CreateSiteAsync, CreateNodeAsync, RegisterDeviceAsync, UpdateDeviceConnectionAsync, ValidateDeviceConnectionAsync, ListNeighborCandidatesAsync, ValidateVrrpPairConsistencyAsync (**11**) |
+| `GrpcOnboardingServiceClient` | ValidatePrerequisitesAsync, CreatePlanAsync, StartAsync, RollbackAsync, GetRecoveryStatusAsync (**5**) — **Watch excluded** |
+| `GrpcPolicyServiceClient` | CreateDraftPolicyAsync … GetDevicePolicySafetyAnalysisAsync (**22**) |
+| `GrpcRoutingAssuranceServiceClient` | GetDeviceRoutingAssuranceStateAsync (**1**) |
+| `GrpcSnapshotViewerClient` | StartCaptureAsync, ListCapturesAsync, GetSnapshotSummaryAsync, GetSnapshotSectionAsync, CompareSnapshotsAsync (**5**) — **WatchCapture excluded** |
+| `GrpcZoneServiceClient` | ListZoneDefinitionsAsync … ResolveZonesForDeviceAsync (**9**) |
+| **Total** | **63** unary RPCs lack Deadline |
+
+### Streaming Watch sites (must remain without forced unary Deadline)
+
+| Client | Streaming RPC | Policy |
+|--------|---------------|--------|
+| `GrpcDeploymentServiceClient` | `Watch` | Long-lived — **no** unary deadline |
+| `GrpcOnboardingServiceClient` | `Watch` | Long-lived — **no** unary deadline |
+| `GrpcSnapshotViewerClient` | `WatchCapture` | Long-lived — **no** unary deadline |
+
+**Ranking decision:** Prefer **ONE atomic row** (**DESK-GRPC-DEADLINE-01**) covering minimal correct unary deadline policy:
+
+- Add `DesktopOptions.UnaryCallTimeoutSeconds` (finite default; fail-closed when ≤0)
+- Shared helper applying `CallOptions` with `Deadline` on **unary** `Grpc*Client` RPCs only
+- Keep Health `CancelAfter(HealthCheckTimeoutSeconds)` consistent (probe-scoped; distinct knob OK)
+- Do **not** force deadlines on Watch/Capture streaming RPCs
+- Do **not** regress MSGSIZE / BODY / KEEPALIVE / MINRATE
+- Docs (`connection-profiles.md` / installation / development) + Living Spec locking option + helper / call-site coverage
+
+Splitting per-service deadline ranks would be vanity; Type=notify and Desktop a11y remain deferred adjacent residuals.
+
+## Ranked Desktop gRPC deadline tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-GRPC-DEADLINE-01** | Author minimal correct unary deadline/timeout policy + docs/Living Spec; keep MSI/AppImage and Type=notify locked | No Deadline on Desktop unary path @ PLAN-50 COMPLETE | after inventory **W7-348**; seed **W7-349 (#1104)** |
+| 1 | **DESK-GRPC-DEADLINE-01** | Author minimal correct unary deadline/timeout policy + docs/Living Spec; keep MSI/AppImage and Type=notify locked; exclude Watch streams | **63** unary `Grpc*Client` methods lack Deadline @ `9001354c`; Health alone bounded | after inventory **W7-348 DONE**; seed **W7-349 (#1104) OPEN**; implement **W7-350 (#1106) OPEN**; COMPLETE **W7-351 (#1107) OPEN** |
 
-Inventory (**W7-348**) may refine ranking and open implement issues; seed **W7-349** advances NEXT to the first implement after inventory DONE.
+Inventory (**W7-348 DONE**) confirmed sole rank. Seed **W7-349** advances NEXT to the DEADLINE implement after inventory DONE.
 
 ## Dual track
 
@@ -63,11 +102,12 @@ PLAN-50 sole ranked row (**CTRL-KESTREL-MINRATE-01**) is **DONE**. No further PL
 
 ## §3.C ordering
 
-1. **PLAN-50 COMPLETE** (W7-346 CTRL-KESTREL-MINRATE-01; seed **W7-347**).  
-2. **W7-348 OPEN** — PLAN-51 inventory → open first deadline implement + follow-up seeds.  
-3. **W7-349 OPEN** — seed first PLAN-51 implement after inventory.  
-4. Execute ranked DESK-GRPC-DEADLINE row(s) atomically.
+1. **PLAN-50 COMPLETE** (W7-346 CTRL-KESTREL-MINRATE-01; seed **W7-347 DONE**).  
+2. **W7-348 DONE** — PLAN-51 inventory; opened **W7-350 (#1106)** DESK-GRPC-DEADLINE-01 implement + **W7-351 (#1107)** COMPLETE follow-up.  
+3. **W7-349 OPEN** — seed advances NEXT to DESK-GRPC-DEADLINE-01; keep COMPLETE **W7-351** open.  
+4. Execute ranked DESK-GRPC-DEADLINE-01 atomically.  
+5. **W7-351** — PLAN-51 COMPLETE → seed PLAN-52.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-348 (#1103)** — PLAN-51 Inventory Desktop gRPC unary call deadline / timeout after PLAN-50 (set by W7-347 COMPLETE seed).
+**§3.C NEXT = W7-349 (#1104)** — Seed first PLAN-51 atomic row after inventory → DESK-GRPC-DEADLINE-01.
