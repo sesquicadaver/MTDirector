@@ -1,7 +1,7 @@
 # PLAN-52 — Desktop gRPC ErrorDetail operator mapping after unary deadlines
 
 **Date:** 2026-09-19 (inventory **DONE** @ `7ee69220`)  
-**Status:** Inventory **DONE** (W7-352); seed **W7-353 (#1112) DONE**; implement **W7-354 (#1114) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-355 (#1115) OPEN**  
+**Status:** Inventory **DONE** (W7-352); seed **W7-353 (#1112) DONE**; implement **W7-354 (#1114) DONE**; COMPLETE seed **W7-355 (#1115) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-352 / PLAN-52 #1111](https://github.com/sesquicadaver/MTDirector/issues/1111) **DONE**  
 **Predecessor:** PLAN-51 Desktop gRPC unary call deadline **COMPLETE** (DESK-GRPC-DEADLINE-01)  
 **Normative files:** `GrpcApplicationErrorMapper`, Desktop ViewModels that catch `RpcException`, operator docs  
@@ -67,7 +67,7 @@ Splitting per-ViewModel ranks would be vanity.
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-RPC-FAULT-01** | Map `ErrorDetail` trailers into operator `ErrorText` (code, correlation id, non-empty fallback) + Living Spec | **14** ViewModel sites; **0** trailer reads @ `7ee69220` | after inventory **W7-352 DONE**; seed **W7-353 (#1112) DONE**; implement **W7-354 (#1114) OPEN** (**§3.C NEXT**); COMPLETE **W7-355 (#1115) OPEN** |
+| 1 | **DESK-RPC-FAULT-01** | Map `ErrorDetail` trailers into operator `ErrorText` (code, correlation id, non-empty fallback) + Living Spec | **14** ViewModel sites; **0** trailer reads @ `7ee69220` | after inventory **W7-352 DONE**; seed **W7-353 (#1112) DONE**; implement **W7-354 (#1114) DONE**; COMPLETE **W7-355 (#1115) OPEN** (**§3.C NEXT**) |
 
 Inventory (**W7-352 DONE**) confirmed sole rank. Seed **W7-353** advances NEXT to the FAULT implement after inventory DONE.
 
@@ -90,9 +90,13 @@ PLAN-51 sole ranked row (**DESK-GRPC-DEADLINE-01**) is **DONE**. No further PLAN
 1. **PLAN-51 COMPLETE** (W7-350 DESK-GRPC-DEADLINE-01; seed **W7-351 DONE**).  
 2. **W7-352 DONE** — PLAN-52 inventory; opened **W7-354 (#1114)** DESK-RPC-FAULT-01 implement + **W7-355 (#1115)** COMPLETE follow-up.  
 3. **W7-353 (#1112) DONE** — seed advanced NEXT to DESK-RPC-FAULT-01; keep COMPLETE **W7-355** open.  
-4. **W7-354 OPEN** — execute ranked DESK-RPC-FAULT-01 atomically (**§3.C NEXT**).  
-5. **W7-355** — PLAN-52 COMPLETE → seed PLAN-53.
+4. **W7-354 (#1114) DONE** — DESK-RPC-FAULT-01 maps `mfc-error-detail-bin` into operator `ErrorText`.  
+5. **W7-355 OPEN** — PLAN-52 COMPLETE → seed PLAN-53 (**§3.C NEXT**).
+
+## Delivery notes (W7-354)
+
+`DesktopRpcFaultText.Format` reads `mfc-error-detail-bin` and sets ViewModel `ErrorText` to `{code} (correlation {id}): {detail}` (`, retryable` when the trailer says so). Missing or unreadable trailers keep `Status.Detail`. Empty detail falls back to the status code (`DeadlineExceeded`). Unary `DesktopGrpcUnaryCall` deadlines are unchanged. Watch streams stay unbounded.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-354 (#1114)** — DESK-RPC-FAULT-01 — Map Controller ErrorDetail trailer into operator ErrorText.
+**§3.C NEXT = W7-355 (#1115)** — Seed next after DESK-RPC-FAULT-01 (PLAN-52 COMPLETE).

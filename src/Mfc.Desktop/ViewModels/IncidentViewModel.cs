@@ -141,7 +141,7 @@ public sealed partial class IncidentViewModel : ObservableObject, IDisposable
         }
         catch (RpcException ex)
         {
-            ErrorText = ex.Status.Detail;
+            ErrorText = DesktopRpcFaultText.Format(ex);
             StatusText = "Incident ingest failed.";
         }
         catch (Exception ex)
@@ -222,7 +222,7 @@ public sealed partial class IncidentViewModel : ObservableObject, IDisposable
         }
         catch (RpcException ex)
         {
-            ErrorText = ex.Status.Detail;
+            ErrorText = DesktopRpcFaultText.Format(ex);
             StatusText = "Incident assessment bind failed.";
         }
         catch (Exception ex)

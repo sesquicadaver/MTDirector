@@ -130,7 +130,7 @@ public sealed partial class RoutingAssuranceViewModel : ObservableObject, IDispo
         }
         catch (RpcException ex)
         {
-            ErrorText = ex.Status.Detail;
+            ErrorText = DesktopRpcFaultText.Format(ex);
             StatusText = "Routing assurance load failed.";
         }
         catch (Exception ex)

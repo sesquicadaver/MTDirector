@@ -30,33 +30,38 @@ public sealed class ProductTrancheSeedW7353LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-354 | [#1114](https://github.com/sesquicadaver/MTDirector/issues/1114) | DESK-RPC-FAULT-01 — Map Controller ErrorDetail trailer into operator ErrorText | **OPEN**",
+            "W7-354 | [#1114](https://github.com/sesquicadaver/MTDirector/issues/1114) | DESK-RPC-FAULT-01 — Map Controller ErrorDetail trailer into operator ErrorText | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-355 | [#1115](https://github.com/sesquicadaver/MTDirector/issues/1115) | Seed next after DESK-RPC-FAULT-01 (PLAN-52 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-354 (#1114)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-355 (#1115)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-353", plan, StringComparison.Ordinal);
         Assert.Contains("W7-354", plan, StringComparison.Ordinal);
         Assert.Contains("W7-355", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-RPC-FAULT-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-354 (#1114)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-355 (#1115)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-353 (#1112) DONE", plan52, StringComparison.Ordinal);
         Assert.Contains("DESK-RPC-FAULT-01", plan52, StringComparison.Ordinal);
         Assert.Contains("W7-354", plan52, StringComparison.Ordinal);
         Assert.Contains("W7-355", plan52, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-354 (#1114)", plan52, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-355 (#1115)", plan52, StringComparison.Ordinal);
 
         Assert.Contains("mfc-error-detail-bin", mapper, StringComparison.Ordinal);
         Assert.Contains("deadline: DateTime.UtcNow.AddSeconds(seconds)", helper, StringComparison.Ordinal);
+        // FAULT-01 shipped after this seed.
+        Assert.Contains(
+            "mfc-error-detail-bin",
+            File.ReadAllText(Path.Combine(root, "src/Mfc.Desktop/Services/DesktopRpcFaultText.cs")),
+            StringComparison.Ordinal);
         int sites = 0;
         foreach (string path in Directory.EnumerateFiles(viewModels, "*ViewModel.cs"))
         {
-            sites += Count(File.ReadAllText(path), "ErrorText = ex.Status.Detail");
+            sites += Count(File.ReadAllText(path), "DesktopRpcFaultText.Format");
         }
 
         Assert.Equal(14, sites);

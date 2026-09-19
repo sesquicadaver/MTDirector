@@ -206,7 +206,7 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
         catch (RpcException ex)
         {
             CaptureProgressText = "Failed";
-            ErrorText = ex.Status.Detail;
+            ErrorText = DesktopRpcFaultText.Format(ex);
         }
         catch (Exception ex)
         {
