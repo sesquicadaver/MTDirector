@@ -35,19 +35,19 @@ public sealed class ProductTrancheSeedW7345LivingSpecTests
             "W7-347 | [#1099](https://github.com/sesquicadaver/MTDirector/issues/1099) | Seed next after CTRL-KESTREL-MINRATE-01 (PLAN-50 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-359 (#1123)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-360 (#1127)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-345", plan, StringComparison.Ordinal);
         Assert.Contains("W7-346", plan, StringComparison.Ordinal);
         Assert.Contains("W7-347", plan, StringComparison.Ordinal);
         Assert.Contains("CTRL-KESTREL-MINRATE-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-359 (#1123)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-360 (#1127)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-345 (#1096) DONE", plan50, StringComparison.Ordinal);
         Assert.Contains("CTRL-KESTREL-MINRATE-01", plan50, StringComparison.Ordinal);
         Assert.Contains("W7-346", plan50, StringComparison.Ordinal);
         Assert.Contains("W7-347", plan50, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-359 (#1123)", plan50, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-360 (#1127)", plan50, StringComparison.Ordinal);
 
         // MINRATE-01 shipped after this seed.
         Assert.Contains("ConfigureKestrel", program, StringComparison.Ordinal);
