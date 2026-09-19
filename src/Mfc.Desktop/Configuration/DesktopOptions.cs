@@ -17,6 +17,14 @@ public sealed class DesktopOptions
     /// <summary>Per-attempt health check timeout.</summary>
     public int HealthCheckTimeoutSeconds { get; init; } = 5;
 
+    /// <summary>
+    /// Deadline for Desktop unary gRPC calls (DESK-GRPC-DEADLINE-01).
+    /// Fail-closed: values &lt;= 0 are rejected by <c>DesktopGrpcUnaryCall</c>.
+    /// Not applied to long-lived Watch / server-streaming RPCs.
+    /// Distinct from <see cref="HealthCheckTimeoutSeconds"/>.
+    /// </summary>
+    public int UnaryCallTimeoutSeconds { get; init; } = 30;
+
     /// <summary>Maximum automatic reconnect attempts after a drop.</summary>
     public int MaxReconnectAttempts { get; init; } = 3;
 

@@ -1,7 +1,7 @@
 # PLAN-51 — Desktop gRPC unary call deadline / timeout after transport saturates
 
 **Date:** 2026-09-17 (inventory **DONE** @ `9001354c`)  
-**Status:** Inventory **DONE** (W7-348); seed **W7-349 (#1104) DONE**; implement **W7-350 (#1106) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-351 (#1107) OPEN**; predecessor **PLAN-50 COMPLETE**  
+**Status:** Inventory **DONE** (W7-348); seed **W7-349 (#1104) DONE**; implement **W7-350 (#1106) DONE**; COMPLETE seed **W7-351 (#1107) OPEN** (**§3.C NEXT**); predecessor **PLAN-50 COMPLETE**  
 **PLAN issue / queue:** [W7-348 / PLAN-51 #1103](https://github.com/sesquicadaver/MTDirector/issues/1103) **DONE**  
 **Predecessor:** PLAN-50 Controller Kestrel min request/response data-rate **COMPLETE** (CTRL-KESTREL-MINRATE-01)  
 **Normative files:** Desktop gRPC call sites (`src/Mfc.Desktop/Services/Grpc*Client.cs`), `DesktopOptions`, shared unary call helper, connection / installation / development docs  
@@ -80,7 +80,7 @@ Splitting per-service deadline ranks would be vanity; Type=notify and Desktop a1
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-GRPC-DEADLINE-01** | Author minimal correct unary deadline/timeout policy + docs/Living Spec; keep MSI/AppImage and Type=notify locked; exclude Watch streams | **63** unary `Grpc*Client` methods lack Deadline @ `9001354c`; Health alone bounded | after inventory **W7-348 DONE**; seed **W7-349 (#1104) DONE**; implement **W7-350 (#1106) OPEN** (**§3.C NEXT**); COMPLETE **W7-351 (#1107) OPEN** |
+| 1 | **DESK-GRPC-DEADLINE-01** | Author minimal correct unary deadline/timeout policy + docs/Living Spec; keep MSI/AppImage and Type=notify locked; exclude Watch streams | **63** unary `Grpc*Client` methods lack Deadline @ `9001354c`; Health alone bounded | after inventory **W7-348 DONE**; seed **W7-349 (#1104) DONE**; implement **W7-350 (#1106) DONE**; COMPLETE **W7-351 (#1107) OPEN** (**§3.C NEXT**) |
 
 Inventory (**W7-348 DONE**) confirmed sole rank. Seed **W7-349** advances NEXT to the DEADLINE implement after inventory DONE.
 
@@ -105,9 +105,13 @@ PLAN-50 sole ranked row (**CTRL-KESTREL-MINRATE-01**) is **DONE**. No further PL
 1. **PLAN-50 COMPLETE** (W7-346 CTRL-KESTREL-MINRATE-01; seed **W7-347 DONE**).  
 2. **W7-348 DONE** — PLAN-51 inventory; opened **W7-350 (#1106)** DESK-GRPC-DEADLINE-01 implement + **W7-351 (#1107)** COMPLETE follow-up.  
 3. **W7-349 (#1104) DONE** — seed advanced NEXT to DESK-GRPC-DEADLINE-01; keep COMPLETE **W7-351** open.  
-4. **W7-350 OPEN** — execute ranked DESK-GRPC-DEADLINE-01 atomically (**§3.C NEXT**).  
-5. **W7-351** — PLAN-51 COMPLETE → seed PLAN-52.
+4. **W7-350 (#1106) DONE** — DESK-GRPC-DEADLINE-01 unary deadline policy.  
+5. **W7-351 OPEN** — PLAN-51 COMPLETE → seed PLAN-52 (**§3.C NEXT**).
+
+## Delivery notes (W7-350)
+
+`DesktopOptions.UnaryCallTimeoutSeconds` defaults to **30**. `DesktopGrpcUnaryCall.For` builds `CallOptions` with that deadline (fail-closed when ≤0) on unary `Grpc*Client` RPCs. Health stays on `CancelAfter(HealthCheckTimeoutSeconds)`. Watch / WatchCapture are not deadline-bounded. Transport MSGSIZE / BODY / KEEPALIVE / MINRATE are unchanged.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-350 (#1106)** — DESK-GRPC-DEADLINE-01 — Desktop unary gRPC CallOptions deadline policy.
+**§3.C NEXT = W7-351 (#1107)** — Seed next after DESK-GRPC-DEADLINE-01 (PLAN-51 COMPLETE).

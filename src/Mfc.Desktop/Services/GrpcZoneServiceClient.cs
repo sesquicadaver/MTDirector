@@ -36,8 +36,7 @@ public sealed class GrpcZoneServiceClient : IZoneServiceClient
 
         ListZoneDefinitionsResponse response = await client.ListZoneDefinitionsAsync(
                 request,
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
         return response.Zones.ToArray();
     }
@@ -70,8 +69,7 @@ public sealed class GrpcZoneServiceClient : IZoneServiceClient
 
         return await client.CreateZoneDefinitionAsync(
                 request,
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -103,8 +101,7 @@ public sealed class GrpcZoneServiceClient : IZoneServiceClient
 
         return await client.UpdateZoneDefinitionAsync(
                 request,
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -121,8 +118,7 @@ public sealed class GrpcZoneServiceClient : IZoneServiceClient
                     ZoneId = DesktopProtoUuid.FromGuid(zoneId),
                     ExpectedRowVersion = expectedRowVersion,
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -133,8 +129,7 @@ public sealed class GrpcZoneServiceClient : IZoneServiceClient
         ZoneService.ZoneServiceClient client = CreateClient();
         ListNodeZoneBindingsResponse response = await client.ListNodeZoneBindingsAsync(
                 new ListNodeZoneBindingsRequest { NodeId = DesktopProtoUuid.FromGuid(nodeId) },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
         return response.Bindings.ToArray();
     }
@@ -163,8 +158,7 @@ public sealed class GrpcZoneServiceClient : IZoneServiceClient
 
         return await client.UpsertNodeZoneBindingAsync(
                 request,
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -181,8 +175,7 @@ public sealed class GrpcZoneServiceClient : IZoneServiceClient
                     BindingId = DesktopProtoUuid.FromGuid(bindingId),
                     ExpectedRowVersion = expectedRowVersion,
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -193,8 +186,7 @@ public sealed class GrpcZoneServiceClient : IZoneServiceClient
         ZoneService.ZoneServiceClient client = CreateClient();
         return await client.ResolveZonesForNodeAsync(
                 new ResolveZonesForNodeRequest { NodeId = DesktopProtoUuid.FromGuid(nodeId) },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -205,8 +197,7 @@ public sealed class GrpcZoneServiceClient : IZoneServiceClient
         ZoneService.ZoneServiceClient client = CreateClient();
         return await client.ResolveZonesForDeviceAsync(
                 new ResolveZonesForDeviceRequest { DeviceId = DesktopProtoUuid.FromGuid(deviceId) },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 

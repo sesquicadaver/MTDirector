@@ -24,8 +24,7 @@ public sealed class GrpcAuditServiceClient : IAuditServiceClient
         AuditService.AuditServiceClient client = CreateClient();
         ListAuditEventsResponse response = await client.ListAuditEventsAsync(
                 new ListAuditEventsRequest { PageSize = pageSize },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
         return response.Events.ToArray();
     }

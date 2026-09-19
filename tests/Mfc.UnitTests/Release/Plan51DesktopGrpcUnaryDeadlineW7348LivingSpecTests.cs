@@ -32,7 +32,7 @@ public sealed class Plan51DesktopGrpcUnaryDeadlineW7348LivingSpecTests
         Assert.Contains("sole rank", plan51, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("63", plan51, StringComparison.Ordinal);
         Assert.Contains("WatchCapture", plan51, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-350 (#1106)", plan51, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-351 (#1107)", plan51, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-348 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-GRPC-DEADLINE-01", limitations, StringComparison.Ordinal);
@@ -50,14 +50,14 @@ public sealed class Plan51DesktopGrpcUnaryDeadlineW7348LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-350 | [#1106](https://github.com/sesquicadaver/MTDirector/issues/1106) | DESK-GRPC-DEADLINE-01 — Desktop unary gRPC CallOptions deadline policy | **OPEN**",
+            "W7-350 | [#1106](https://github.com/sesquicadaver/MTDirector/issues/1106) | DESK-GRPC-DEADLINE-01 — Desktop unary gRPC CallOptions deadline policy | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-351 | [#1107](https://github.com/sesquicadaver/MTDirector/issues/1107) | Seed next after DESK-GRPC-DEADLINE-01 (PLAN-51 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-350 (#1106)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-351 (#1107)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-349", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-350", continuous, StringComparison.Ordinal);
@@ -66,18 +66,47 @@ public sealed class Plan51DesktopGrpcUnaryDeadlineW7348LivingSpecTests
         Assert.Contains("plan-51-desktop-grpc-unary-deadline.md", docsIndex, StringComparison.Ordinal);
         Assert.Contains("Plan51DesktopGrpcUnaryDeadlineW7348", testing, StringComparison.Ordinal);
 
-        // Inventory baseline: Health bounded; UnaryCallTimeoutSeconds not yet shipped; Grpc*Client lack Deadline.
-        Assert.Contains("HealthCheckTimeoutSeconds", desktopOptions, StringComparison.Ordinal);
-        Assert.DoesNotContain("UnaryCallTimeoutSeconds", desktopOptions, StringComparison.Ordinal);
+        // DEADLINE-01 shipped: unary helper + option; Watch streams stay unbounded.
+        Assert.Contains("UnaryCallTimeoutSeconds", desktopOptions, StringComparison.Ordinal);
+        Assert.Contains("= 30", desktopOptions, StringComparison.Ordinal);
+        string helper = File.ReadAllText(Path.Combine(servicesDir, "DesktopGrpcUnaryCall.cs"));
+        Assert.Contains("deadline: DateTime.UtcNow.AddSeconds(seconds)", helper, StringComparison.Ordinal);
+        Assert.Contains("must be greater than 0", helper, StringComparison.Ordinal);
 
         foreach (string clientPath in Directory.EnumerateFiles(servicesDir, "Grpc*Client.cs"))
         {
             string client = File.ReadAllText(clientPath);
-            Assert.DoesNotContain("Deadline", client, StringComparison.Ordinal);
-            Assert.DoesNotContain("CallOptions", client, StringComparison.Ordinal);
+            Assert.Contains("DesktopGrpcUnaryCall.For", client, StringComparison.Ordinal);
+            AssertWatchStreamsHaveNoUnaryDeadline(client);
         }
 
-        Assert.Contains("CancelAfter", File.ReadAllText(Path.Combine(servicesDir, "ControllerConnectionService.cs")), StringComparison.Ordinal);
+        string connection = File.ReadAllText(Path.Combine(servicesDir, "ControllerConnectionService.cs"));
+        Assert.Contains("CancelAfter", connection, StringComparison.Ordinal);
+        Assert.Contains("HealthCheckTimeoutSeconds", connection, StringComparison.Ordinal);
+        Assert.Contains("MaxReceiveMessageSize = GrpcTransportLimits.MaxMessageBytes", connection, StringComparison.Ordinal);
+    }
+
+    private static void AssertWatchStreamsHaveNoUnaryDeadline(string client)
+    {
+        foreach (string marker in new[] { "client.Watch(", "client.WatchCapture(" })
+        {
+            int index = 0;
+            while (true)
+            {
+                int start = client.IndexOf(marker, index, StringComparison.Ordinal);
+                if (start < 0)
+                {
+                    break;
+                }
+
+                int end = client.IndexOf(';', start);
+                Assert.True(end > start);
+                string call = client[start..end];
+                Assert.Contains("ActorHeaders()", call, StringComparison.Ordinal);
+                Assert.DoesNotContain("DesktopGrpcUnaryCall", call, StringComparison.Ordinal);
+                index = end + 1;
+            }
+        }
     }
 
     private static string RepoRoot()

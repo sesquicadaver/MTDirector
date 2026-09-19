@@ -29,35 +29,33 @@ public sealed class ProductTrancheSeedW7349LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-350 | [#1106](https://github.com/sesquicadaver/MTDirector/issues/1106) | DESK-GRPC-DEADLINE-01 — Desktop unary gRPC CallOptions deadline policy | **OPEN**",
+            "W7-350 | [#1106](https://github.com/sesquicadaver/MTDirector/issues/1106) | DESK-GRPC-DEADLINE-01 — Desktop unary gRPC CallOptions deadline policy | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-351 | [#1107](https://github.com/sesquicadaver/MTDirector/issues/1107) | Seed next after DESK-GRPC-DEADLINE-01 (PLAN-51 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-350 (#1106)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-351 (#1107)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-349", plan, StringComparison.Ordinal);
         Assert.Contains("W7-350", plan, StringComparison.Ordinal);
         Assert.Contains("W7-351", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-GRPC-DEADLINE-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-350 (#1106)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-351 (#1107)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-349 (#1104) DONE", plan51, StringComparison.Ordinal);
         Assert.Contains("DESK-GRPC-DEADLINE-01", plan51, StringComparison.Ordinal);
         Assert.Contains("W7-350", plan51, StringComparison.Ordinal);
         Assert.Contains("W7-351", plan51, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-350 (#1106)", plan51, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-351 (#1107)", plan51, StringComparison.Ordinal);
 
-        // DEADLINE-01 not yet shipped after this seed.
-        Assert.Contains("HealthCheckTimeoutSeconds", desktopOptions, StringComparison.Ordinal);
-        Assert.DoesNotContain("UnaryCallTimeoutSeconds", desktopOptions, StringComparison.Ordinal);
+        // DEADLINE-01 shipped after this seed.
+        Assert.Contains("UnaryCallTimeoutSeconds", desktopOptions, StringComparison.Ordinal);
+        Assert.Contains("DesktopGrpcUnaryCall", File.ReadAllText(Path.Combine(servicesDir, "DesktopGrpcUnaryCall.cs")), StringComparison.Ordinal);
         foreach (string clientPath in Directory.EnumerateFiles(servicesDir, "Grpc*Client.cs"))
         {
-            string client = File.ReadAllText(clientPath);
-            Assert.DoesNotContain("Deadline", client, StringComparison.Ordinal);
-            Assert.DoesNotContain("CallOptions", client, StringComparison.Ordinal);
+            Assert.Contains("DesktopGrpcUnaryCall.For", File.ReadAllText(clientPath), StringComparison.Ordinal);
         }
 
         Assert.Contains(

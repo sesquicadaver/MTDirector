@@ -64,7 +64,7 @@ RouterOS adapters stay fail-closed until you set `Mfc:RouterOs:Enabled` / `Write
 dotnet run --project src/Mfc.Desktop
 ```
 
-Endpoint comes from `src/Mfc.Desktop/appsettings.json` (`Desktop:ControllerEndpoint`).
+Endpoint comes from `src/Mfc.Desktop/appsettings.json` (`Desktop:ControllerEndpoint`). Unary Controller RPCs time out after `Desktop:UnaryCallTimeoutSeconds` (default **30**, fail-closed when ≤0). Watch streams are not deadline-bounded.
 
 1. **Connect** to Controller.
 2. Open **Inventory** → **Add router** to create Site/Node/Device + connection profile ([connection-profiles.md](connection-profiles.md)).

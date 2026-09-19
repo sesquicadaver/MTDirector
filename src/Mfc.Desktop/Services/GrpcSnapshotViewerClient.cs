@@ -31,8 +31,7 @@ public sealed class GrpcSnapshotViewerClient : ISnapshotViewerClient
                     DeviceId = DesktopProtoUuid.FromGuid(deviceId),
                     IdempotencyKey = DesktopProtoUuid.FromGuid(idempotencyKey),
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -48,8 +47,7 @@ public sealed class GrpcSnapshotViewerClient : ISnapshotViewerClient
                     NodeId = DesktopProtoUuid.FromGuid(nodeId),
                     IdempotencyKey = DesktopProtoUuid.FromGuid(idempotencyKey),
                 },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -85,8 +83,7 @@ public sealed class GrpcSnapshotViewerClient : ISnapshotViewerClient
                         DeviceId = DesktopProtoUuid.FromGuid(deviceId),
                         Page = new PageRequest { PageSize = DefaultPageSize, PageToken = pageToken },
                     },
-                    headers,
-                    cancellationToken: cancellationToken)
+                    DesktopGrpcUnaryCall.For(_options, headers, cancellationToken))
                 .ConfigureAwait(false);
             all.AddRange(response.Captures);
             pageToken = response.Page?.NextPageToken ?? string.Empty;
@@ -103,8 +100,7 @@ public sealed class GrpcSnapshotViewerClient : ISnapshotViewerClient
         SnapshotService.SnapshotServiceClient client = CreateClient();
         return await client.GetSnapshotSummaryAsync(
                 new GetSnapshotSummaryRequest { CaptureId = DesktopProtoUuid.FromGuid(captureId) },
-                ActorHeaders(),
-                cancellationToken: cancellationToken)
+                DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
 
@@ -129,8 +125,7 @@ public sealed class GrpcSnapshotViewerClient : ISnapshotViewerClient
                         Domain = domain,
                         Page = new PageRequest { PageSize = DefaultPageSize, PageToken = pageToken },
                     },
-                    headers,
-                    cancellationToken: cancellationToken)
+                    DesktopGrpcUnaryCall.For(_options, headers, cancellationToken))
                 .ConfigureAwait(false);
             all.AddRange(page.Records);
             pageToken = page.NextPageToken ?? string.Empty;
@@ -159,8 +154,7 @@ public sealed class GrpcSnapshotViewerClient : ISnapshotViewerClient
                         RightCaptureId = DesktopProtoUuid.FromGuid(rightCaptureId),
                         Page = new PageRequest { PageSize = DefaultPageSize, PageToken = pageToken },
                     },
-                    headers,
-                    cancellationToken: cancellationToken)
+                    DesktopGrpcUnaryCall.For(_options, headers, cancellationToken))
                 .ConfigureAwait(false);
             if (aggregate.Entries.Count == 0)
             {
