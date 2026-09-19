@@ -43,23 +43,23 @@ public sealed class ProductTrancheSeedW7363LivingSpecTests
             "W7-365 | [#1136](https://github.com/sesquicadaver/MTDirector/issues/1136) | Seed first PLAN-55 atomic row after inventory → SNAP-FAULT-CORR-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-387 (#1179)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-388 (#1183)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-54 COMPLETE", plan54, StringComparison.Ordinal);
         Assert.Contains("W7-363 (#1131) DONE", plan54, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-387 (#1179)", plan54, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-388 (#1183)", plan54, StringComparison.Ordinal);
         Assert.Contains("plan-55-capture-progress-fault-correlation.md", plan, StringComparison.Ordinal);
         Assert.Contains("plan-55-capture-progress-fault-correlation.md", docsIndex, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-55", plan, StringComparison.Ordinal);
         Assert.Contains("W7-364", plan, StringComparison.Ordinal);
         Assert.Contains("W7-363 (#1131) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-387 (#1179)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-388 (#1183)", plan, StringComparison.Ordinal);
         Assert.Contains("SNAP-FAULT-CORR-01", plan55, StringComparison.Ordinal);
         Assert.Contains("Guid.NewGuid", plan55, StringComparison.Ordinal);
         Assert.Contains("d848a58c", plan55, StringComparison.Ordinal);
         Assert.Contains("W7-364", plan55, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-387 (#1179)", plan55, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-388 (#1183)", plan55, StringComparison.Ordinal);
 
         Assert.Equal(0, Count(snapshot, "CorrelationId = ProtoUuid.FromGuid(Guid.NewGuid())"));
         Assert.Contains("ToRpcException(result.Error!, sharedId)", snapshot, StringComparison.Ordinal);
