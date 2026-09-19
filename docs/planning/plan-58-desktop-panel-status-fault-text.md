@@ -1,8 +1,8 @@
 # PLAN-58 — Desktop panel status fault text after VRRP capture-progress fault text
 
-**Date:** 2026-09-19 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-376); seed **W7-377 (#1160) OPEN**; predecessor **PLAN-57 COMPLETE**  
-**PLAN issue / queue:** [W7-376 / PLAN-58 #1159](https://github.com/sesquicadaver/MTDirector/issues/1159) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-19 (inventory **DONE**)  
+**Status:** Inventory **DONE** (W7-376); seed **W7-377 (#1160) OPEN** (**§3.C NEXT**); implement **W7-378 (#1162) OPEN**; COMPLETE seed **W7-379 (#1163) OPEN**; predecessor **PLAN-57 COMPLETE**  
+**PLAN issue / queue:** [W7-376 / PLAN-58 #1159](https://github.com/sesquicadaver/MTDirector/issues/1159) **DONE**  
 **Predecessor:** PLAN-57 VRRP capture-progress fault text **COMPLETE** (DESK-VRRP-PROG-01)  
 **Normative files:** `DriftViewModel`, `AuditViewModel`, `IncidentViewModel`, `RoutingAssuranceViewModel`, `NodeDetailViewModel`, operator docs  
 **Normative prior locks:** DESK-VRRP-PROG-01; DESK-VRRP-FAULT-01; SNAP-FAULT-CORR-01; DESK-CONN-FAULT-01; CTRL-ERRDETAIL-LOG-01 (event 5301); DESK-RPC-FAULT-01 — **do not regress**  
@@ -31,7 +31,7 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - Snapshot Failed-stage `ErrorText` — the progress line already shows `(correlation {id})`  
 - Policies / Zones / Add router / Deployment / Onboarding surfaces that set `ErrorText` only (no second static status sentence)
 
-## Inventory evidence (seed baseline @ `55765d52`)
+## Inventory evidence (W7-376 @ `main` `c665a34c`; seed baseline @ `55765d52`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
@@ -45,13 +45,24 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 
 **7** `RpcException` catches still assign a static panel status / readiness sentence beside `DesktopRpcFaultText.Format` @ `55765d52`.
 
-## Ranked tranche (seed baseline)
+Confirmed on `main` `c665a34c` (seed baseline `55765d52`): **7** `ErrorText = DesktopRpcFaultText.Format(ex)` sites still sit next to a static sentence — Drift load, GetDriftEvent, Audit load, Incident ingest, Incident assessment bind, Routing assurance load, and GetNodeWorkflow. The matching non-RPC `Exception` catches keep the static sentence (no `ErrorDetail`). VRRP pair `RpcException` already copies `DesktopRpcFaultText.Format` onto `VrrpPairStatusText` (DESK-VRRP-FAULT-01). VRRP Watch already uses `FormatCaptureProgress` (DESK-VRRP-PROG-01).
+
+**Ranking decision:** Prefer **ONE atomic row** (**DESK-PANEL-FAULT-01**), sole rank:
+
+- When `RpcException` is caught on those seven sites, set the panel status / readiness line to the same `DesktopRpcFaultText.Format` text already stored in `ErrorText` (code + correlation id), matching DESK-VRRP-FAULT-01, so operators can join journald event **5301**
+- Do **not** change the `mfc-error-detail-bin` trailer contract or the event 5301 log template
+- Do **not** regress DESK-VRRP-PROG-01, DESK-VRRP-FAULT-01, SNAP-FAULT-CORR-01, DESK-CONN-FAULT-01, CTRL-ERRDETAIL-LOG-01, or DESK-RPC-FAULT-01
+- Living Spec + operator docs
+
+Splitting Drift from Audit / Incident / Routing / GetNodeWorkflow would be vanity: each drops the same id that `ErrorText` already has. Onboarding / Deployment progress is an `ErrorCode` string, not an `ErrorDetail`. Snapshot Failed-stage `ErrorText` stays `SanitizedDetail`; the progress line already shows the id.
+
+## Ranked tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-PANEL-FAULT-01** | Show `DesktopRpcFaultText.Format` on the panel status line for those `RpcException` catches + Living Spec | **7** static status sentences @ `55765d52` | after inventory **W7-376**; seed **W7-377 (#1160)** |
+| 1 | **DESK-PANEL-FAULT-01** | Show `DesktopRpcFaultText.Format` on the panel status line for those `RpcException` catches + Living Spec | **7** static status sentences @ `c665a34c` (seed baseline `55765d52`) | after inventory **W7-376 DONE**; seed **W7-377 (#1160) OPEN**; implement **W7-378 (#1162) OPEN**; COMPLETE **W7-379 (#1163) OPEN** |
 
-Inventory (**W7-376**) may refine ranking and open the implement issue; seed **W7-377** advances NEXT to that implement after inventory DONE.
+Inventory (**W7-376 DONE**) confirmed sole rank. Seed **W7-377** advances NEXT to DESK-PANEL-FAULT-01 after inventory DONE.
 
 ## Dual track
 
@@ -73,10 +84,10 @@ PLAN-57 sole ranked row (**DESK-VRRP-PROG-01**) is **DONE**. No further PLAN-57 
 ## §3.C ordering
 
 1. **PLAN-57 COMPLETE** (W7-374 DESK-VRRP-PROG-01; seed **W7-375 DONE**).  
-2. **W7-376 OPEN** — PLAN-58 inventory (**§3.C NEXT**).  
+2. **W7-376 DONE** — PLAN-58 inventory; opened **W7-378 (#1162)** DESK-PANEL-FAULT-01 implement + **W7-379 (#1163)** COMPLETE follow-up.  
 3. **W7-377 OPEN** — seed first PLAN-58 implement after inventory.  
 4. Execute ranked DESK-PANEL-FAULT-01 atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-376 (#1159)** — PLAN-58 Inventory Desktop panel status fault text.
+**§3.C NEXT = W7-377 (#1160)** — Seed first PLAN-58 atomic row after inventory → DESK-PANEL-FAULT-01.

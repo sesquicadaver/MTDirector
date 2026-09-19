@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — PLAN-58 inventory Desktop panel status fault text (W7-376)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-58 inventory ranks sole DESK-PANEL-FAULT-01 + seeds | plan-58, ROADMAP, known-limitations, ViewModel baseline | `Plan58DesktopPanelStatusFaultTextW7376LivingSpecTests.Ac1Plan58InventoryDocumentsSoleDeskPanelFault01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan58DesktopPanelStatusFaultTextW7376"`.
+
 ## Living Specification — Seed PLAN-58 after PLAN-57 COMPLETE (W7-375)
 
 | Requirement | Artifact | Test |

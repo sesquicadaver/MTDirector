@@ -9,203 +9,205 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- **W7-375** ([#1155](https://github.com/sesquicadaver/MTDirector/issues/1155)): Seed PLAN-57 COMPLETE → PLAN-58 Desktop panel status fault text (`ProductTrancheSeedW7375LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-376** ([#1159](https://github.com/sesquicadaver/MTDirector/issues/1159)): PLAN-58 inventory DONE — ranked sole **DESK-PANEL-FAULT-01** (**7** `RpcException` catches still set a static panel status sentence while `ErrorText` already has `DesktopRpcFaultText.Format` @ `c665a34c`); opened **W7-378 (#1162)** (`Plan58DesktopPanelStatusFaultTextW7376LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-374** ([#1154](https://github.com/sesquicadaver/MTDirector/issues/1154)): DESK-VRRP-PROG-01 — VRRP pair status reuses `FormatCaptureProgress`, so a capture-progress correlation id (including incomplete capture) matches Snapshots and journald event 5301 (`DeskVrrpProg01DesktopPairStatusLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-375** ([#1155](https://github.com/sesquicadaver/MTDirector/issues/1155)): Seed PLAN-57 COMPLETE → PLAN-58 Desktop panel status fault text (`ProductTrancheSeedW7375LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-373** ([#1152](https://github.com/sesquicadaver/MTDirector/issues/1152)): Seed PLAN-57 first atomic row → DESK-VRRP-PROG-01 as §3.C NEXT; keep **W7-374 (#1154)** implement + **W7-375 (#1155)** COMPLETE follow-up open (`ProductTrancheSeedW7373LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-374** ([#1154](https://github.com/sesquicadaver/MTDirector/issues/1154)): DESK-VRRP-PROG-01 — VRRP pair status reuses `FormatCaptureProgress`, so a capture-progress correlation id (including incomplete capture) matches Snapshots and journald event 5301 (`DeskVrrpProg01DesktopPairStatusLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-372** ([#1151](https://github.com/sesquicadaver/MTDirector/issues/1151)): PLAN-57 inventory DONE — ranked sole **DESK-VRRP-PROG-01** (**1** stage-only VRRP pair status assignment drops the capture-progress correlation id; **0** `progress.Error` reads @ `7dbfe132`); opened **W7-374 (#1154)** (`Plan57VrrpCaptureProgressFaultTextW7372LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-373** ([#1152](https://github.com/sesquicadaver/MTDirector/issues/1152)): Seed PLAN-57 first atomic row → DESK-VRRP-PROG-01 as §3.C NEXT; keep **W7-374 (#1154)** implement + **W7-375 (#1155)** COMPLETE follow-up open (`ProductTrancheSeedW7373LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-371** ([#1147](https://github.com/sesquicadaver/MTDirector/issues/1147)): Seed PLAN-56 COMPLETE → PLAN-57 VRRP capture-progress fault text (`ProductTrancheSeedW7371LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-372** ([#1151](https://github.com/sesquicadaver/MTDirector/issues/1151)): PLAN-57 inventory DONE — ranked sole **DESK-VRRP-PROG-01** (**1** stage-only VRRP pair status assignment drops the capture-progress correlation id; **0** `progress.Error` reads @ `7dbfe132`); opened **W7-374 (#1154)** (`Plan57VrrpCaptureProgressFaultTextW7372LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-370** ([#1146](https://github.com/sesquicadaver/MTDirector/issues/1146)): DESK-VRRP-FAULT-01 — VRRP pair status repeats `DesktopRpcFaultText.Format` when consistency fails with an RPC fault, so operators can join the status line to `ErrorText` and journald event 5301 (`DeskVrrpFault01DesktopPairStatusLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-371** ([#1147](https://github.com/sesquicadaver/MTDirector/issues/1147)): Seed PLAN-56 COMPLETE → PLAN-57 VRRP capture-progress fault text (`ProductTrancheSeedW7371LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-369** ([#1144](https://github.com/sesquicadaver/MTDirector/issues/1144)): Seed PLAN-56 first atomic row → DESK-VRRP-FAULT-01 as §3.C NEXT; keep **W7-370 (#1146)** implement + **W7-371 (#1147)** COMPLETE follow-up open (`ProductTrancheSeedW7369LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-370** ([#1146](https://github.com/sesquicadaver/MTDirector/issues/1146)): DESK-VRRP-FAULT-01 — VRRP pair status repeats `DesktopRpcFaultText.Format` when consistency fails with an RPC fault, so operators can join the status line to `ErrorText` and journald event 5301 (`DeskVrrpFault01DesktopPairStatusLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-368** ([#1143](https://github.com/sesquicadaver/MTDirector/issues/1143)): PLAN-56 inventory DONE — ranked sole **DESK-VRRP-FAULT-01** (**2** static `VRRP pair consistency failed.` assignments drop the correlation id already on `ErrorText` @ `dcde8dca`); opened **W7-370 (#1146)** (`Plan56VrrpPairStatusFaultTextW7368LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-369** ([#1144](https://github.com/sesquicadaver/MTDirector/issues/1144)): Seed PLAN-56 first atomic row → DESK-VRRP-FAULT-01 as §3.C NEXT; keep **W7-370 (#1146)** implement + **W7-371 (#1147)** COMPLETE follow-up open (`ProductTrancheSeedW7369LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-367** ([#1139](https://github.com/sesquicadaver/MTDirector/issues/1139)): Seed PLAN-55 COMPLETE → PLAN-56 VRRP pair status fault text (`ProductTrancheSeedW7367LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-368** ([#1143](https://github.com/sesquicadaver/MTDirector/issues/1143)): PLAN-56 inventory DONE — ranked sole **DESK-VRRP-FAULT-01** (**2** static `VRRP pair consistency failed.` assignments drop the correlation id already on `ErrorText` @ `dcde8dca`); opened **W7-370 (#1146)** (`Plan56VrrpPairStatusFaultTextW7368LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-366** ([#1138](https://github.com/sesquicadaver/MTDirector/issues/1138)): SNAP-FAULT-CORR-01 — one correlation id is shared by capture-progress `ErrorDetail` and `ToRpcException` (event 5301), and the Desktop capture progress line shows it (`SnapFaultCorr01DesktopCaptureProgressLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-367** ([#1139](https://github.com/sesquicadaver/MTDirector/issues/1139)): Seed PLAN-55 COMPLETE → PLAN-56 VRRP pair status fault text (`ProductTrancheSeedW7367LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-365** ([#1136](https://github.com/sesquicadaver/MTDirector/issues/1136)): Seed PLAN-55 first atomic row → SNAP-FAULT-CORR-01 as §3.C NEXT; keep **W7-366 (#1138)** implement + **W7-367 (#1139)** COMPLETE follow-up open (`ProductTrancheSeedW7365LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-366** ([#1138](https://github.com/sesquicadaver/MTDirector/issues/1138)): SNAP-FAULT-CORR-01 — one correlation id is shared by capture-progress `ErrorDetail` and `ToRpcException` (event 5301), and the Desktop capture progress line shows it (`SnapFaultCorr01DesktopCaptureProgressLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-364** ([#1135](https://github.com/sesquicadaver/MTDirector/issues/1135)): PLAN-55 inventory DONE — ranked sole **SNAP-FAULT-CORR-01** (**4** progress `CorrelationId` values are `Guid.NewGuid()`; **2** `ToRpcException` throws omit that id @ `ded885b8`); opened **W7-366 (#1138)** (`Plan55CaptureProgressFaultCorrelationW7364LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-365** ([#1136](https://github.com/sesquicadaver/MTDirector/issues/1136)): Seed PLAN-55 first atomic row → SNAP-FAULT-CORR-01 as §3.C NEXT; keep **W7-366 (#1138)** implement + **W7-367 (#1139)** COMPLETE follow-up open (`ProductTrancheSeedW7365LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-363** ([#1131](https://github.com/sesquicadaver/MTDirector/issues/1131)): Seed PLAN-54 COMPLETE → PLAN-55 capture progress fault correlation (`ProductTrancheSeedW7363LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-364** ([#1135](https://github.com/sesquicadaver/MTDirector/issues/1135)): PLAN-55 inventory DONE — ranked sole **SNAP-FAULT-CORR-01** (**4** progress `CorrelationId` values are `Guid.NewGuid()`; **2** `ToRpcException` throws omit that id @ `ded885b8`); opened **W7-366 (#1138)** (`Plan55CaptureProgressFaultCorrelationW7364LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-362** ([#1130](https://github.com/sesquicadaver/MTDirector/issues/1130)): DESK-CONN-FAULT-01 — connection `AuthenticationFailed` `LastError` uses `DesktopRpcFaultText.Format` so shell status includes the correlation id and is never empty (`DeskConnFault01DesktopConnectionFaultLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-363** ([#1131](https://github.com/sesquicadaver/MTDirector/issues/1131)): Seed PLAN-54 COMPLETE → PLAN-55 capture progress fault correlation (`ProductTrancheSeedW7363LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-361** ([#1128](https://github.com/sesquicadaver/MTDirector/issues/1128)): Seed PLAN-54 first atomic row → DESK-CONN-FAULT-01 as §3.C NEXT; keep **W7-362 (#1130)** implement + **W7-363 (#1131)** COMPLETE follow-up open (`ProductTrancheSeedW7361LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-362** ([#1130](https://github.com/sesquicadaver/MTDirector/issues/1130)): DESK-CONN-FAULT-01 — connection `AuthenticationFailed` `LastError` uses `DesktopRpcFaultText.Format` so shell status includes the correlation id and is never empty (`DeskConnFault01DesktopConnectionFaultLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-360** ([#1127](https://github.com/sesquicadaver/MTDirector/issues/1127)): PLAN-54 inventory DONE — ranked sole **DESK-CONN-FAULT-01** (**2** `AuthenticationFailed` sites copy `ex.Status.Detail`; **0** `DesktopRpcFaultText` @ `e51073f6`); opened **W7-362 (#1130)** (`Plan54DesktopConnectionStatusFaultTextW7360LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-361** ([#1128](https://github.com/sesquicadaver/MTDirector/issues/1128)): Seed PLAN-54 first atomic row → DESK-CONN-FAULT-01 as §3.C NEXT; keep **W7-362 (#1130)** implement + **W7-363 (#1131)** COMPLETE follow-up open (`ProductTrancheSeedW7361LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-359** ([#1123](https://github.com/sesquicadaver/MTDirector/issues/1123)): Seed PLAN-53 COMPLETE → PLAN-54 Desktop connection-status fault text (`ProductTrancheSeedW7359LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-360** ([#1127](https://github.com/sesquicadaver/MTDirector/issues/1127)): PLAN-54 inventory DONE — ranked sole **DESK-CONN-FAULT-01** (**2** `AuthenticationFailed` sites copy `ex.Status.Detail`; **0** `DesktopRpcFaultText` @ `e51073f6`); opened **W7-362 (#1130)** (`Plan54DesktopConnectionStatusFaultTextW7360LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-358** ([#1122](https://github.com/sesquicadaver/MTDirector/issues/1122)): CTRL-ERRDETAIL-LOG-01 — log application faults (code, gRPC status, correlation id, retryable) on the existing JSON logger so journald joins Desktop `ErrorText` (`CtrlErrdetailLog01ControllerFaultCorrelationLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-359** ([#1123](https://github.com/sesquicadaver/MTDirector/issues/1123)): Seed PLAN-53 COMPLETE → PLAN-54 Desktop connection-status fault text (`ProductTrancheSeedW7359LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-357** ([#1120](https://github.com/sesquicadaver/MTDirector/issues/1120)): Seed PLAN-53 first atomic row → CTRL-ERRDETAIL-LOG-01 as §3.C NEXT; keep **W7-358 (#1122)** implement + **W7-359 (#1123)** COMPLETE follow-up open (`ProductTrancheSeedW7357LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-358** ([#1122](https://github.com/sesquicadaver/MTDirector/issues/1122)): CTRL-ERRDETAIL-LOG-01 — log application faults (code, gRPC status, correlation id, retryable) on the existing JSON logger so journald joins Desktop `ErrorText` (`CtrlErrdetailLog01ControllerFaultCorrelationLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-356** ([#1119](https://github.com/sesquicadaver/MTDirector/issues/1119)): PLAN-53 inventory DONE — ranked sole **CTRL-ERRDETAIL-LOG-01** (**43** `ToRpcException` callers omit `correlationId`; mapper has **0** `ILogger` @ `dbbe0733`); opened **W7-358 (#1122)** (`Plan53ControllerFaultCorrelationLogW7356LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-357** ([#1120](https://github.com/sesquicadaver/MTDirector/issues/1120)): Seed PLAN-53 first atomic row → CTRL-ERRDETAIL-LOG-01 as §3.C NEXT; keep **W7-358 (#1122)** implement + **W7-359 (#1123)** COMPLETE follow-up open (`ProductTrancheSeedW7357LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-355** ([#1115](https://github.com/sesquicadaver/MTDirector/issues/1115)): Seed PLAN-52 COMPLETE → PLAN-53 Controller fault-correlation logging (`ProductTrancheSeedW7355LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-356** ([#1119](https://github.com/sesquicadaver/MTDirector/issues/1119)): PLAN-53 inventory DONE — ranked sole **CTRL-ERRDETAIL-LOG-01** (**43** `ToRpcException` callers omit `correlationId`; mapper has **0** `ILogger` @ `dbbe0733`); opened **W7-358 (#1122)** (`Plan53ControllerFaultCorrelationLogW7356LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-354** ([#1114](https://github.com/sesquicadaver/MTDirector/issues/1114)): DESK-RPC-FAULT-01 — ViewModel `ErrorText` uses `DesktopRpcFaultText` to surface Controller `mfc-error-detail-bin` (code, correlation id, non-empty fallback); unary deadline unchanged (`DeskRpcFault01DesktopErrorDetailLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-355** ([#1115](https://github.com/sesquicadaver/MTDirector/issues/1115)): Seed PLAN-52 COMPLETE → PLAN-53 Controller fault-correlation logging (`ProductTrancheSeedW7355LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-353** ([#1112](https://github.com/sesquicadaver/MTDirector/issues/1112)): Seed PLAN-52 first atomic row → DESK-RPC-FAULT-01 as §3.C NEXT; keep **W7-354 (#1114)** implement + **W7-355 (#1115)** COMPLETE follow-up open (`ProductTrancheSeedW7353LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-354** ([#1114](https://github.com/sesquicadaver/MTDirector/issues/1114)): DESK-RPC-FAULT-01 — ViewModel `ErrorText` uses `DesktopRpcFaultText` to surface Controller `mfc-error-detail-bin` (code, correlation id, non-empty fallback); unary deadline unchanged (`DeskRpcFault01DesktopErrorDetailLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-352** ([#1111](https://github.com/sesquicadaver/MTDirector/issues/1111)): PLAN-52 inventory DONE — ranked sole **DESK-RPC-FAULT-01** (**14** ViewModel `ErrorText = ex.Status.Detail` sites ignore `mfc-error-detail-bin` @ `7ee69220`); opened **W7-354 (#1114)** (`Plan52DesktopGrpcErrorDetailW7352LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-353** ([#1112](https://github.com/sesquicadaver/MTDirector/issues/1112)): Seed PLAN-52 first atomic row → DESK-RPC-FAULT-01 as §3.C NEXT; keep **W7-354 (#1114)** implement + **W7-355 (#1115)** COMPLETE follow-up open (`ProductTrancheSeedW7353LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-351** ([#1107](https://github.com/sesquicadaver/MTDirector/issues/1107)): Seed PLAN-51 COMPLETE → PLAN-52 Desktop gRPC ErrorDetail operator mapping (`ProductTrancheSeedW7351LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-352** ([#1111](https://github.com/sesquicadaver/MTDirector/issues/1111)): PLAN-52 inventory DONE — ranked sole **DESK-RPC-FAULT-01** (**14** ViewModel `ErrorText = ex.Status.Detail` sites ignore `mfc-error-detail-bin` @ `7ee69220`); opened **W7-354 (#1114)** (`Plan52DesktopGrpcErrorDetailW7352LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-350** ([#1106](https://github.com/sesquicadaver/MTDirector/issues/1106)): DESK-GRPC-DEADLINE-01 — Desktop unary gRPC calls use `CallOptions.Deadline` from `Desktop:UnaryCallTimeoutSeconds` (default **30**, fail-closed when ≤0) via `DesktopGrpcUnaryCall`; Watch streams unchanged (`DeskGrpcDeadline01DesktopUnaryCallLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-351** ([#1107](https://github.com/sesquicadaver/MTDirector/issues/1107)): Seed PLAN-51 COMPLETE → PLAN-52 Desktop gRPC ErrorDetail operator mapping (`ProductTrancheSeedW7351LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-349** ([#1104](https://github.com/sesquicadaver/MTDirector/issues/1104)): Seed PLAN-51 first atomic row → DESK-GRPC-DEADLINE-01 as §3.C NEXT; keep **W7-350 (#1106)** implement + **W7-351 (#1107)** COMPLETE follow-up open (`ProductTrancheSeedW7349LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-350** ([#1106](https://github.com/sesquicadaver/MTDirector/issues/1106)): DESK-GRPC-DEADLINE-01 — Desktop unary gRPC calls use `CallOptions.Deadline` from `Desktop:UnaryCallTimeoutSeconds` (default **30**, fail-closed when ≤0) via `DesktopGrpcUnaryCall`; Watch streams unchanged (`DeskGrpcDeadline01DesktopUnaryCallLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-348** ([#1103](https://github.com/sesquicadaver/MTDirector/issues/1103)): PLAN-51 inventory DONE — ranked sole **DESK-GRPC-DEADLINE-01** (**63** unary `Grpc*Client` methods lack Deadline @ `9001354c`; Watch streams excluded); opened **W7-350 (#1106)** (`Plan51DesktopGrpcUnaryDeadlineW7348LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-349** ([#1104](https://github.com/sesquicadaver/MTDirector/issues/1104)): Seed PLAN-51 first atomic row → DESK-GRPC-DEADLINE-01 as §3.C NEXT; keep **W7-350 (#1106)** implement + **W7-351 (#1107)** COMPLETE follow-up open (`ProductTrancheSeedW7349LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-347** ([#1099](https://github.com/sesquicadaver/MTDirector/issues/1099)): Seed PLAN-50 COMPLETE → PLAN-51 Desktop gRPC unary deadline / timeout tranche (`ProductTrancheSeedW7347LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-348** ([#1103](https://github.com/sesquicadaver/MTDirector/issues/1103)): PLAN-51 inventory DONE — ranked sole **DESK-GRPC-DEADLINE-01** (**63** unary `Grpc*Client` methods lack Deadline @ `9001354c`; Watch streams excluded); opened **W7-350 (#1106)** (`Plan51DesktopGrpcUnaryDeadlineW7348LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-346** ([#1098](https://github.com/sesquicadaver/MTDirector/issues/1098)): CTRL-KESTREL-MINRATE-01 — Controller Kestrel MinRequestBodyDataRate / MinResponseDataRate = **null** (disabled) for quiet Watch streams (`CtrlKestrelMinrate01ControllerMinDataRateLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-347** ([#1099](https://github.com/sesquicadaver/MTDirector/issues/1099)): Seed PLAN-50 COMPLETE → PLAN-51 Desktop gRPC unary deadline / timeout tranche (`ProductTrancheSeedW7347LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-345** ([#1096](https://github.com/sesquicadaver/MTDirector/issues/1096)): Seed PLAN-50 first atomic row → CTRL-KESTREL-MINRATE-01 as §3.C NEXT; keep **W7-346 (#1098)** implement + **W7-347 (#1099)** COMPLETE follow-up open (`ProductTrancheSeedW7345LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-346** ([#1098](https://github.com/sesquicadaver/MTDirector/issues/1098)): CTRL-KESTREL-MINRATE-01 — Controller Kestrel MinRequestBodyDataRate / MinResponseDataRate = **null** (disabled) for quiet Watch streams (`CtrlKestrelMinrate01ControllerMinDataRateLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-344** ([#1095](https://github.com/sesquicadaver/MTDirector/issues/1095)): PLAN-50 inventory DONE — ranked sole **CTRL-KESTREL-MINRATE-01** (Kestrel MinRequest/ResponseDataRate → null/disabled; defaults 240 B/s + 5s grace @ `be2ac7a8`); opened **W7-346 (#1098)** (`Plan50ControllerKestrelMinDataRateW7344LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-345** ([#1096](https://github.com/sesquicadaver/MTDirector/issues/1096)): Seed PLAN-50 first atomic row → CTRL-KESTREL-MINRATE-01 as §3.C NEXT; keep **W7-346 (#1098)** implement + **W7-347 (#1099)** COMPLETE follow-up open (`ProductTrancheSeedW7345LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-343** ([#1092](https://github.com/sesquicadaver/MTDirector/issues/1092)): Seed PLAN-49 COMPLETE → PLAN-50 Controller Kestrel min request/response data-rate tranche (`ProductTrancheSeedW7343LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-344** ([#1095](https://github.com/sesquicadaver/MTDirector/issues/1095)): PLAN-50 inventory DONE — ranked sole **CTRL-KESTREL-MINRATE-01** (Kestrel MinRequest/ResponseDataRate → null/disabled; defaults 240 B/s + 5s grace @ `be2ac7a8`); opened **W7-346 (#1098)** (`Plan50ControllerKestrelMinDataRateW7344LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-342** ([#1090](https://github.com/sesquicadaver/MTDirector/issues/1090)): CTRL-GRPC-KEEPALIVE-01 — Controller+Desktop HTTP/2 KeepAlivePingDelay/Timeout = `GrpcHttp2KeepAlive` (60s / 30s) (`CtrlGrpcKeepalive01ControllerDesktopHttp2KeepaliveLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-343** ([#1092](https://github.com/sesquicadaver/MTDirector/issues/1092)): Seed PLAN-49 COMPLETE → PLAN-50 Controller Kestrel min request/response data-rate tranche (`ProductTrancheSeedW7343LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-341** ([#1088](https://github.com/sesquicadaver/MTDirector/issues/1088)): Seed PLAN-49 first atomic row → CTRL-GRPC-KEEPALIVE-01 as §3.C NEXT; keep **W7-342 (#1090)** implement + **W7-343 (#1092)** COMPLETE follow-up open (`ProductTrancheSeedW7341LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-342** ([#1090](https://github.com/sesquicadaver/MTDirector/issues/1090)): CTRL-GRPC-KEEPALIVE-01 — Controller+Desktop HTTP/2 KeepAlivePingDelay/Timeout = `GrpcHttp2KeepAlive` (60s / 30s) (`CtrlGrpcKeepalive01ControllerDesktopHttp2KeepaliveLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-340** ([#1087](https://github.com/sesquicadaver/MTDirector/issues/1087)): PLAN-49 inventory DONE — ranked sole **CTRL-GRPC-KEEPALIVE-01** (Controller+Desktop HTTP/2 KeepAlivePing 60s/30s; defaults MaxValue/Infinite @ `be206f6c`); opened **W7-342 (#1090)** (`Plan49ControllerGrpcHttp2KeepaliveW7340LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-341** ([#1088](https://github.com/sesquicadaver/MTDirector/issues/1088)): Seed PLAN-49 first atomic row → CTRL-GRPC-KEEPALIVE-01 as §3.C NEXT; keep **W7-342 (#1090)** implement + **W7-343 (#1092)** COMPLETE follow-up open (`ProductTrancheSeedW7341LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-339** ([#1084](https://github.com/sesquicadaver/MTDirector/issues/1084)): Seed PLAN-48 COMPLETE → PLAN-49 Controller/Desktop gRPC HTTP/2 keepalive tranche (`ProductTrancheSeedW7339LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-340** ([#1087](https://github.com/sesquicadaver/MTDirector/issues/1087)): PLAN-49 inventory DONE — ranked sole **CTRL-GRPC-KEEPALIVE-01** (Controller+Desktop HTTP/2 KeepAlivePing 60s/30s; defaults MaxValue/Infinite @ `be206f6c`); opened **W7-342 (#1090)** (`Plan49ControllerGrpcHttp2KeepaliveW7340LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-338** ([#1082](https://github.com/sesquicadaver/MTDirector/issues/1082)): CTRL-KESTREL-BODY-01 — Controller Kestrel `Limits.MaxRequestBodySize` = `GrpcTransportLimits.MaxMessageBytes` (256 MiB / 268435456) (`CtrlKestrelBody01ControllerRequestBodySizeLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-339** ([#1084](https://github.com/sesquicadaver/MTDirector/issues/1084)): Seed PLAN-48 COMPLETE → PLAN-49 Controller/Desktop gRPC HTTP/2 keepalive tranche (`ProductTrancheSeedW7339LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-337** ([#1080](https://github.com/sesquicadaver/MTDirector/issues/1080)): Seed PLAN-48 first atomic row → CTRL-KESTREL-BODY-01 as §3.C NEXT; keep **W7-338 (#1082)** implement + **W7-339 (#1084)** COMPLETE follow-up open (`ProductTrancheSeedW7337LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-338** ([#1082](https://github.com/sesquicadaver/MTDirector/issues/1082)): CTRL-KESTREL-BODY-01 — Controller Kestrel `Limits.MaxRequestBodySize` = `GrpcTransportLimits.MaxMessageBytes` (256 MiB / 268435456) (`CtrlKestrelBody01ControllerRequestBodySizeLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-336** ([#1079](https://github.com/sesquicadaver/MTDirector/issues/1079)): PLAN-48 inventory DONE — ranked sole **CTRL-KESTREL-BODY-01** (Kestrel MaxRequestBodySize vs default ~30 MiB @ `319d35bd`); opened **W7-338 (#1082)** (`Plan48ControllerKestrelRequestBodyLimitsW7336LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-337** ([#1080](https://github.com/sesquicadaver/MTDirector/issues/1080)): Seed PLAN-48 first atomic row → CTRL-KESTREL-BODY-01 as §3.C NEXT; keep **W7-338 (#1082)** implement + **W7-339 (#1084)** COMPLETE follow-up open (`ProductTrancheSeedW7337LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-335** ([#1076](https://github.com/sesquicadaver/MTDirector/issues/1076)): Seed PLAN-47 COMPLETE → PLAN-48 Controller Kestrel request-body / HTTP2 limits tranche (`ProductTrancheSeedW7335LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-336** ([#1079](https://github.com/sesquicadaver/MTDirector/issues/1079)): PLAN-48 inventory DONE — ranked sole **CTRL-KESTREL-BODY-01** (Kestrel MaxRequestBodySize vs default ~30 MiB @ `319d35bd`); opened **W7-338 (#1082)** (`Plan48ControllerKestrelRequestBodyLimitsW7336LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-334** ([#1074](https://github.com/sesquicadaver/MTDirector/issues/1074)): CTRL-GRPC-MSGSIZE-01 — Controller+Desktop MaxReceive/SendMessageSize = `GrpcTransportLimits.MaxMessageBytes` (256 MiB / 268435456) (`CtrlGrpcMsgsize01ControllerDesktopMessageSizeLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-335** ([#1076](https://github.com/sesquicadaver/MTDirector/issues/1076)): Seed PLAN-47 COMPLETE → PLAN-48 Controller Kestrel request-body / HTTP2 limits tranche (`ProductTrancheSeedW7335LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-333** ([#1072](https://github.com/sesquicadaver/MTDirector/issues/1072)): Seed PLAN-47 first atomic row → CTRL-GRPC-MSGSIZE-01 as §3.C NEXT; keep **W7-334 (#1074)** implement + **W7-335 (#1076)** COMPLETE follow-up open (`ProductTrancheSeedW7333LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-334** ([#1074](https://github.com/sesquicadaver/MTDirector/issues/1074)): CTRL-GRPC-MSGSIZE-01 — Controller+Desktop MaxReceive/SendMessageSize = `GrpcTransportLimits.MaxMessageBytes` (256 MiB / 268435456) (`CtrlGrpcMsgsize01ControllerDesktopMessageSizeLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-332** ([#1071](https://github.com/sesquicadaver/MTDirector/issues/1071)): PLAN-47 inventory DONE — ranked sole **CTRL-GRPC-MSGSIZE-01** (Controller+Desktop MaxReceive/SendMessageSize vs default ~4 MiB @ `d107b57d`); opened **W7-334 (#1074)** (`Plan47ControllerGrpcMessageSizeLimitsW7332LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-333** ([#1072](https://github.com/sesquicadaver/MTDirector/issues/1072)): Seed PLAN-47 first atomic row → CTRL-GRPC-MSGSIZE-01 as §3.C NEXT; keep **W7-334 (#1074)** implement + **W7-335 (#1076)** COMPLETE follow-up open (`ProductTrancheSeedW7333LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-331** ([#1068](https://github.com/sesquicadaver/MTDirector/issues/1068)): Seed PLAN-46 COMPLETE → PLAN-47 Controller gRPC message-size / transport limits tranche (`ProductTrancheSeedW7331LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-332** ([#1071](https://github.com/sesquicadaver/MTDirector/issues/1071)): PLAN-47 inventory DONE — ranked sole **CTRL-GRPC-MSGSIZE-01** (Controller+Desktop MaxReceive/SendMessageSize vs default ~4 MiB @ `d107b57d`); opened **W7-334 (#1074)** (`Plan47ControllerGrpcMessageSizeLimitsW7332LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-330** ([#1066](https://github.com/sesquicadaver/MTDirector/issues/1066)): CTRL-HTTP-OTEL-RESOURCE-01 — OTel ResourceBuilder `service.name`/`service.version`/`service.instance.id` on metrics+traces when opted in (`CtrlHttpOtelResource01ControllerResourceLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-331** ([#1068](https://github.com/sesquicadaver/MTDirector/issues/1068)): Seed PLAN-46 COMPLETE → PLAN-47 Controller gRPC message-size / transport limits tranche (`ProductTrancheSeedW7331LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-329** ([#1064](https://github.com/sesquicadaver/MTDirector/issues/1064)): Seed PLAN-46 first atomic row → CTRL-HTTP-OTEL-RESOURCE-01 as §3.C NEXT; keep **W7-330 (#1066)** implement + **W7-331 (#1068)** COMPLETE follow-up open (`ProductTrancheSeedW7329LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-330** ([#1066](https://github.com/sesquicadaver/MTDirector/issues/1066)): CTRL-HTTP-OTEL-RESOURCE-01 — OTel ResourceBuilder `service.name`/`service.version`/`service.instance.id` on metrics+traces when opted in (`CtrlHttpOtelResource01ControllerResourceLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-328** ([#1063](https://github.com/sesquicadaver/MTDirector/issues/1063)): PLAN-46 inventory DONE — ranked sole **CTRL-HTTP-OTEL-RESOURCE-01** (OTel ResourceBuilder `service.name`/`service.version` on metrics+traces; no ResourceBuilder @ `894cc4b8`); opened **W7-330 (#1066)** (`Plan46ControllerOtelResourceIdentityW7328LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-329** ([#1064](https://github.com/sesquicadaver/MTDirector/issues/1064)): Seed PLAN-46 first atomic row → CTRL-HTTP-OTEL-RESOURCE-01 as §3.C NEXT; keep **W7-330 (#1066)** implement + **W7-331 (#1068)** COMPLETE follow-up open (`ProductTrancheSeedW7329LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-327** ([#1060](https://github.com/sesquicadaver/MTDirector/issues/1060)): Seed PLAN-45 COMPLETE → PLAN-46 Controller OpenTelemetry resource identity tranche (`ProductTrancheSeedW7327LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-328** ([#1063](https://github.com/sesquicadaver/MTDirector/issues/1063)): PLAN-46 inventory DONE — ranked sole **CTRL-HTTP-OTEL-RESOURCE-01** (OTel ResourceBuilder `service.name`/`service.version` on metrics+traces; no ResourceBuilder @ `894cc4b8`); opened **W7-330 (#1066)** (`Plan46ControllerOtelResourceIdentityW7328LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-326** ([#1058](https://github.com/sesquicadaver/MTDirector/issues/1058)): CTRL-LOG-OTEL-CORRELATE-01 — enrich redacted JSON console logs with Activity `traceId`/`spanId` when tracing Activity present (`CtrlLogOtelCorrelate01ControllerLogTraceLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-327** ([#1060](https://github.com/sesquicadaver/MTDirector/issues/1060)): Seed PLAN-45 COMPLETE → PLAN-46 Controller OpenTelemetry resource identity tranche (`ProductTrancheSeedW7327LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-325** ([#1056](https://github.com/sesquicadaver/MTDirector/issues/1056)): Seed PLAN-45 first atomic row → CTRL-LOG-OTEL-CORRELATE-01 as §3.C NEXT; keep **W7-326 (#1058)** implement + **W7-327 (#1060)** COMPLETE follow-up open (`ProductTrancheSeedW7325LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-326** ([#1058](https://github.com/sesquicadaver/MTDirector/issues/1058)): CTRL-LOG-OTEL-CORRELATE-01 — enrich redacted JSON console logs with Activity `traceId`/`spanId` when tracing Activity present (`CtrlLogOtelCorrelate01ControllerLogTraceLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-324** ([#1055](https://github.com/sesquicadaver/MTDirector/issues/1055)): PLAN-45 inventory DONE — ranked sole **CTRL-LOG-OTEL-CORRELATE-01** (Activity TraceId/SpanId on redacted JSON console logs; logger lacks fields @ `2da9d508`); opened **W7-326 (#1058)** (`Plan45ControllerLogTraceCorrelationW7324LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-325** ([#1056](https://github.com/sesquicadaver/MTDirector/issues/1056)): Seed PLAN-45 first atomic row → CTRL-LOG-OTEL-CORRELATE-01 as §3.C NEXT; keep **W7-326 (#1058)** implement + **W7-327 (#1060)** COMPLETE follow-up open (`ProductTrancheSeedW7325LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-323** ([#1052](https://github.com/sesquicadaver/MTDirector/issues/1052)): Seed PLAN-44 COMPLETE → PLAN-45 Controller log↔trace correlation tranche (`ProductTrancheSeedW7323LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-324** ([#1055](https://github.com/sesquicadaver/MTDirector/issues/1055)): PLAN-45 inventory DONE — ranked sole **CTRL-LOG-OTEL-CORRELATE-01** (Activity TraceId/SpanId on redacted JSON console logs; logger lacks fields @ `2da9d508`); opened **W7-326 (#1058)** (`Plan45ControllerLogTraceCorrelationW7324LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-322** ([#1050](https://github.com/sesquicadaver/MTDirector/issues/1050)): CTRL-HTTP-OTEL-TRACE-01 — opt-in OpenTelemetry tracing (`WithTracing`, ASP.NET Core instrumentation; OTLP and/or console exporters; `Mfc:Tracing:Enabled` default false) alongside HTTP/gRPC health + metrics (`CtrlHttpOtelTrace01ControllerTracingLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-323** ([#1052](https://github.com/sesquicadaver/MTDirector/issues/1052)): Seed PLAN-44 COMPLETE → PLAN-45 Controller log↔trace correlation tranche (`ProductTrancheSeedW7323LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-321** ([#1048](https://github.com/sesquicadaver/MTDirector/issues/1048)): Seed PLAN-44 first atomic row → CTRL-HTTP-OTEL-TRACE-01 as §3.C NEXT; keep **W7-322 (#1050)** implement + **W7-323 (#1052)** COMPLETE follow-up open (`ProductTrancheSeedW7321LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-322** ([#1050](https://github.com/sesquicadaver/MTDirector/issues/1050)): CTRL-HTTP-OTEL-TRACE-01 — opt-in OpenTelemetry tracing (`WithTracing`, ASP.NET Core instrumentation; OTLP and/or console exporters; `Mfc:Tracing:Enabled` default false) alongside HTTP/gRPC health + metrics (`CtrlHttpOtelTrace01ControllerTracingLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-320** ([#1047](https://github.com/sesquicadaver/MTDirector/issues/1047)): PLAN-44 inventory DONE — ranked sole **CTRL-HTTP-OTEL-TRACE-01** (opt-in OTel tracing beyond metrics scrape; OTLP and/or console exporters; `Mfc:Tracing:Enabled` fail-closed; metrics-only @ `0929ef8d`); opened **W7-322 (#1050)** (`Plan44ControllerOtelTracingW7320LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-321** ([#1048](https://github.com/sesquicadaver/MTDirector/issues/1048)): Seed PLAN-44 first atomic row → CTRL-HTTP-OTEL-TRACE-01 as §3.C NEXT; keep **W7-322 (#1050)** implement + **W7-323 (#1052)** COMPLETE follow-up open (`ProductTrancheSeedW7321LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-319** ([#1044](https://github.com/sesquicadaver/MTDirector/issues/1044)): Seed PLAN-43 COMPLETE → PLAN-44 Controller OpenTelemetry tracing tranche (`ProductTrancheSeedW7319LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-320** ([#1047](https://github.com/sesquicadaver/MTDirector/issues/1047)): PLAN-44 inventory DONE — ranked sole **CTRL-HTTP-OTEL-TRACE-01** (opt-in OTel tracing beyond metrics scrape; OTLP and/or console exporters; `Mfc:Tracing:Enabled` fail-closed; metrics-only @ `0929ef8d`); opened **W7-322 (#1050)** (`Plan44ControllerOtelTracingW7320LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-318** ([#1042](https://github.com/sesquicadaver/MTDirector/issues/1042)): CTRL-HTTP-METRICS-01 — opt-in OpenTelemetry Prometheus `/metrics` (`MapPrometheusScrapingEndpoint`, `Mfc:Metrics:Enabled` default false) alongside HTTP/gRPC health (`CtrlHttpMetrics01ControllerMetricsLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-319** ([#1044](https://github.com/sesquicadaver/MTDirector/issues/1044)): Seed PLAN-43 COMPLETE → PLAN-44 Controller OpenTelemetry tracing tranche (`ProductTrancheSeedW7319LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-317** ([#1040](https://github.com/sesquicadaver/MTDirector/issues/1040)): Seed PLAN-43 first atomic row → CTRL-HTTP-METRICS-01 as §3.C NEXT; keep **W7-318 (#1042)** implement + **W7-319 (#1044)** COMPLETE follow-up open (`ProductTrancheSeedW7317LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-318** ([#1042](https://github.com/sesquicadaver/MTDirector/issues/1042)): CTRL-HTTP-METRICS-01 — opt-in OpenTelemetry Prometheus `/metrics` (`MapPrometheusScrapingEndpoint`, `Mfc:Metrics:Enabled` default false) alongside HTTP/gRPC health (`CtrlHttpMetrics01ControllerMetricsLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-316** ([#1039](https://github.com/sesquicadaver/MTDirector/issues/1039)): PLAN-43 inventory DONE — ranked sole **CTRL-HTTP-METRICS-01** (opt-in Prometheus/OTel `/metrics` beyond HTTP health; no OTel packages @ `94f04744`); opened **W7-318 (#1042)** (`Plan43ControllerHttpMetricsOtelW7316LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-317** ([#1040](https://github.com/sesquicadaver/MTDirector/issues/1040)): Seed PLAN-43 first atomic row → CTRL-HTTP-METRICS-01 as §3.C NEXT; keep **W7-318 (#1042)** implement + **W7-319 (#1044)** COMPLETE follow-up open (`ProductTrancheSeedW7317LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-315** ([#1036](https://github.com/sesquicadaver/MTDirector/issues/1036)): Seed PLAN-42 COMPLETE → PLAN-43 Controller metrics/OpenTelemetry tranche (`ProductTrancheSeedW7315LivingSpecTests`); also fix `DatabaseReadyHealthCheck` import order for `dotnet format`. **§3.C NEXT = W7-376 (#1159)**.
+- **W7-316** ([#1039](https://github.com/sesquicadaver/MTDirector/issues/1039)): PLAN-43 inventory DONE — ranked sole **CTRL-HTTP-METRICS-01** (opt-in Prometheus/OTel `/metrics` beyond HTTP health; no OTel packages @ `94f04744`); opened **W7-318 (#1042)** (`Plan43ControllerHttpMetricsOtelW7316LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-314** ([#1034](https://github.com/sesquicadaver/MTDirector/issues/1034)): CTRL-HTTP-HEALTH-01 — HTTP `/health/live` + `/health/ready` (`MapHealthChecks`, `Http1AndHttp2`, fail-closed DB ready) alongside gRPC health (`CtrlHttpHealth01ControllerHttpProbesLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-315** ([#1036](https://github.com/sesquicadaver/MTDirector/issues/1036)): Seed PLAN-42 COMPLETE → PLAN-43 Controller metrics/OpenTelemetry tranche (`ProductTrancheSeedW7315LivingSpecTests`); also fix `DatabaseReadyHealthCheck` import order for `dotnet format`. **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-313** ([#1032](https://github.com/sesquicadaver/MTDirector/issues/1032)): Seed PLAN-42 first atomic row → CTRL-HTTP-HEALTH-01 as §3.C NEXT; keep **W7-314 (#1034)** implement + **W7-315 (#1036)** COMPLETE follow-up open (`ProductTrancheSeedW7313LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-314** ([#1034](https://github.com/sesquicadaver/MTDirector/issues/1034)): CTRL-HTTP-HEALTH-01 — HTTP `/health/live` + `/health/ready` (`MapHealthChecks`, `Http1AndHttp2`, fail-closed DB ready) alongside gRPC health (`CtrlHttpHealth01ControllerHttpProbesLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-312** ([#1031](https://github.com/sesquicadaver/MTDirector/issues/1031)): PLAN-42 inventory DONE — ranked sole **CTRL-HTTP-HEALTH-01** (HTTP `/health/live` + `/health/ready` beyond gRPC; Http2-only Kestrel gap); opened **W7-314 (#1034)** (`Plan42ControllerHttpHealthProbesW7312LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-313** ([#1032](https://github.com/sesquicadaver/MTDirector/issues/1032)): Seed PLAN-42 first atomic row → CTRL-HTTP-HEALTH-01 as §3.C NEXT; keep **W7-314 (#1034)** implement + **W7-315 (#1036)** COMPLETE follow-up open (`ProductTrancheSeedW7313LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-311** ([#1028](https://github.com/sesquicadaver/MTDirector/issues/1028)): Seed PLAN-41 COMPLETE → PLAN-42 Controller HTTP health probes tranche (`ProductTrancheSeedW7311LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-312** ([#1031](https://github.com/sesquicadaver/MTDirector/issues/1031)): PLAN-42 inventory DONE — ranked sole **CTRL-HTTP-HEALTH-01** (HTTP `/health/live` + `/health/ready` beyond gRPC; Http2-only Kestrel gap); opened **W7-314 (#1034)** (`Plan42ControllerHttpHealthProbesW7312LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-310** ([#1026](https://github.com/sesquicadaver/MTDirector/issues/1026)): QG-SIGN-02 — opt-in crypto signing gate (`sign-sha256sums-crypto.sh` + `release-signing.yml` workflow_dispatch; self-test without secrets; GPG/cosign behind secrets); QG-SIGN-01 cleartext unchanged (`QgSign02ReleaseSigningLivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-311** ([#1028](https://github.com/sesquicadaver/MTDirector/issues/1028)): Seed PLAN-41 COMPLETE → PLAN-42 Controller HTTP health probes tranche (`ProductTrancheSeedW7311LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-309** ([#1024](https://github.com/sesquicadaver/MTDirector/issues/1024)): Seed PLAN-41 first atomic row → QG-SIGN-02 as §3.C NEXT; keep **W7-310 (#1026)** implement + **W7-311 (#1028)** COMPLETE follow-up open (`ProductTrancheSeedW7309LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-310** ([#1026](https://github.com/sesquicadaver/MTDirector/issues/1026)): QG-SIGN-02 — opt-in crypto signing gate (`sign-sha256sums-crypto.sh` + `release-signing.yml` workflow_dispatch; self-test without secrets; GPG/cosign behind secrets); QG-SIGN-01 cleartext unchanged (`QgSign02ReleaseSigningLivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-308** ([#1023](https://github.com/sesquicadaver/MTDirector/issues/1023)): PLAN-41 inventory DONE — ranked sole **QG-SIGN-02** (opt-in GPG/Sigstore crypto gate beyond QG-SIGN-01; no org secrets on every PR); opened **W7-310 (#1026)** (`Plan41ReleaseSigningCryptoGpgSigstoreW7308LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-309** ([#1024](https://github.com/sesquicadaver/MTDirector/issues/1024)): Seed PLAN-41 first atomic row → QG-SIGN-02 as §3.C NEXT; keep **W7-310 (#1026)** implement + **W7-311 (#1028)** COMPLETE follow-up open (`ProductTrancheSeedW7309LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-307** ([#1020](https://github.com/sesquicadaver/MTDirector/issues/1020)): Seed PLAN-40 COMPLETE → PLAN-41 release signing crypto tranche (`ProductTrancheSeedW7307LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-308** ([#1023](https://github.com/sesquicadaver/MTDirector/issues/1023)): PLAN-41 inventory DONE — ranked sole **QG-SIGN-02** (opt-in GPG/Sigstore crypto gate beyond QG-SIGN-01; no org secrets on every PR); opened **W7-310 (#1026)** (`Plan41ReleaseSigningCryptoGpgSigstoreW7308LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-306** ([#1018](https://github.com/sesquicadaver/MTDirector/issues/1018)): OPS-HOST-LOG-01 — `SyslogIdentifier=mfc-controller` + `StandardOutput/Error=journal` on `mfc-controller.service` + docs; bundled copy via `package-controller.sh` (`OpsHostLog01ControllerJournaldIdentityW7306LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-307** ([#1020](https://github.com/sesquicadaver/MTDirector/issues/1020)): Seed PLAN-40 COMPLETE → PLAN-41 release signing crypto tranche (`ProductTrancheSeedW7307LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-305** ([#1016](https://github.com/sesquicadaver/MTDirector/issues/1016)): Seed PLAN-40 first atomic row → OPS-HOST-LOG-01 as §3.C NEXT; keep **W7-306 (#1018)** implement + **W7-307 (#1020)** COMPLETE follow-up open (`ProductTrancheSeedW7305LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-306** ([#1018](https://github.com/sesquicadaver/MTDirector/issues/1018)): OPS-HOST-LOG-01 — `SyslogIdentifier=mfc-controller` + `StandardOutput/Error=journal` on `mfc-controller.service` + docs; bundled copy via `package-controller.sh` (`OpsHostLog01ControllerJournaldIdentityW7306LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-304** ([#1015](https://github.com/sesquicadaver/MTDirector/issues/1015)): PLAN-40 inventory DONE — ranked sole **OPS-HOST-LOG-01** (`SyslogIdentifier` + journal stdout/stderr + docs; package-controller inherits unit); opened **W7-306 (#1018)** (`Plan40ControllerHostJournaldSyslogIdentityW7304LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-305** ([#1016](https://github.com/sesquicadaver/MTDirector/issues/1016)): Seed PLAN-40 first atomic row → OPS-HOST-LOG-01 as §3.C NEXT; keep **W7-306 (#1018)** implement + **W7-307 (#1020)** COMPLETE follow-up open (`ProductTrancheSeedW7305LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-303** ([#1012](https://github.com/sesquicadaver/MTDirector/issues/1012)): Seed PLAN-39 COMPLETE → PLAN-40 Controller host journald/syslog identity tranche (`ProductTrancheSeedW7303LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-304** ([#1015](https://github.com/sesquicadaver/MTDirector/issues/1015)): PLAN-40 inventory DONE — ranked sole **OPS-HOST-LOG-01** (`SyslogIdentifier` + journal stdout/stderr + docs; package-controller inherits unit); opened **W7-306 (#1018)** (`Plan40ControllerHostJournaldSyslogIdentityW7304LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-302** ([#1010](https://github.com/sesquicadaver/MTDirector/issues/1010)): OPS-HOST-DOC-01 — author `packaging/doc/mfc/README.md` + docs; `package-controller.sh` bundles into `$OUT_DIR/controller/README.md` (`OpsHostDoc01ControllerOperatorDocW7302LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-303** ([#1012](https://github.com/sesquicadaver/MTDirector/issues/1012)): Seed PLAN-39 COMPLETE → PLAN-40 Controller host journald/syslog identity tranche (`ProductTrancheSeedW7303LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-301** ([#1008](https://github.com/sesquicadaver/MTDirector/issues/1008)): Seed PLAN-39 first atomic row → OPS-HOST-DOC-01 as §3.C NEXT; keep **W7-302 (#1010)** implement + **W7-303 (#1012)** COMPLETE follow-up open (`ProductTrancheSeedW7301LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-302** ([#1010](https://github.com/sesquicadaver/MTDirector/issues/1010)): OPS-HOST-DOC-01 — author `packaging/doc/mfc/README.md` + docs; `package-controller.sh` bundles into `$OUT_DIR/controller/README.md` (`OpsHostDoc01ControllerOperatorDocW7302LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-300** ([#1007](https://github.com/sesquicadaver/MTDirector/issues/1007)): PLAN-39 inventory DONE — ranked sole **OPS-HOST-DOC-01** (Documentation=/usr/share/doc/mfc README + docs + package-controller bundle); opened **W7-302 (#1010)** (`Plan39ControllerHostOperatorDocPackagingW7300LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-301** ([#1008](https://github.com/sesquicadaver/MTDirector/issues/1008)): Seed PLAN-39 first atomic row → OPS-HOST-DOC-01 as §3.C NEXT; keep **W7-302 (#1010)** implement + **W7-303 (#1012)** COMPLETE follow-up open (`ProductTrancheSeedW7301LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-299** ([#1004](https://github.com/sesquicadaver/MTDirector/issues/1004)): Seed PLAN-38 COMPLETE → PLAN-39 Controller host operator doc packaging tranche (`ProductTrancheSeedW7299LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-300** ([#1007](https://github.com/sesquicadaver/MTDirector/issues/1007)): PLAN-39 inventory DONE — ranked sole **OPS-HOST-DOC-01** (Documentation=/usr/share/doc/mfc README + docs + package-controller bundle); opened **W7-302 (#1010)** (`Plan39ControllerHostOperatorDocPackagingW7300LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-298** ([#1002](https://github.com/sesquicadaver/MTDirector/issues/1002)): OPS-HOST-SYSUSERS-01 — author `mfc-controller.sysusers` + `mfc-controller.tmpfiles` + docs; `package-controller.sh` bundles into `$OUT_DIR/controller/` (`OpsHostSysusers01ControllerSysusersTmpfilesW7298LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-299** ([#1004](https://github.com/sesquicadaver/MTDirector/issues/1004)): Seed PLAN-38 COMPLETE → PLAN-39 Controller host operator doc packaging tranche (`ProductTrancheSeedW7299LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-297** ([#1000](https://github.com/sesquicadaver/MTDirector/issues/1000)): Seed PLAN-38 first atomic row → OPS-HOST-SYSUSERS-01 as §3.C NEXT; keep **W7-298 (#1002)** implement + **W7-299 (#1004)** COMPLETE follow-up open (`ProductTrancheSeedW7297LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-298** ([#1002](https://github.com/sesquicadaver/MTDirector/issues/1002)): OPS-HOST-SYSUSERS-01 — author `mfc-controller.sysusers` + `mfc-controller.tmpfiles` + docs; `package-controller.sh` bundles into `$OUT_DIR/controller/` (`OpsHostSysusers01ControllerSysusersTmpfilesW7298LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-296** ([#999](https://github.com/sesquicadaver/MTDirector/issues/999)): PLAN-38 inventory DONE — ranked sole **OPS-HOST-SYSUSERS-01** (sysusers + tmpfiles + docs + package-controller bundle); opened **W7-298 (#1002)** (`Plan38ControllerHostSysusersTmpfilesPackagingW7296LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-297** ([#1000](https://github.com/sesquicadaver/MTDirector/issues/1000)): Seed PLAN-38 first atomic row → OPS-HOST-SYSUSERS-01 as §3.C NEXT; keep **W7-298 (#1002)** implement + **W7-299 (#1004)** COMPLETE follow-up open (`ProductTrancheSeedW7297LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-295** ([#996](https://github.com/sesquicadaver/MTDirector/issues/996)): Seed PLAN-37 COMPLETE → PLAN-38 Controller host sysusers/tmpfiles packaging tranche (`ProductTrancheSeedW7295LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-296** ([#999](https://github.com/sesquicadaver/MTDirector/issues/999)): PLAN-38 inventory DONE — ranked sole **OPS-HOST-SYSUSERS-01** (sysusers + tmpfiles + docs + package-controller bundle); opened **W7-298 (#1002)** (`Plan38ControllerHostSysusersTmpfilesPackagingW7296LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-294** ([#994](https://github.com/sesquicadaver/MTDirector/issues/994)): OPS-HOST-ENV-01 — author `packaging/systemd/mfc-controller.env.example` + docs; `package-controller.sh` bundles into `$OUT_DIR/controller/` (`OpsHostEnv01ControllerEnvSampleW7294LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-295** ([#996](https://github.com/sesquicadaver/MTDirector/issues/996)): Seed PLAN-37 COMPLETE → PLAN-38 Controller host sysusers/tmpfiles packaging tranche (`ProductTrancheSeedW7295LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-293** ([#992](https://github.com/sesquicadaver/MTDirector/issues/992)): Seed PLAN-37 first atomic row → OPS-HOST-ENV-01 as §3.C NEXT; keep **W7-294 (#994)** implement + **W7-295 (#996)** COMPLETE follow-up open (`ProductTrancheSeedW7293LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-294** ([#994](https://github.com/sesquicadaver/MTDirector/issues/994)): OPS-HOST-ENV-01 — author `packaging/systemd/mfc-controller.env.example` + docs; `package-controller.sh` bundles into `$OUT_DIR/controller/` (`OpsHostEnv01ControllerEnvSampleW7294LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-292** ([#991](https://github.com/sesquicadaver/MTDirector/issues/991)): PLAN-37 inventory DONE — ranked sole **OPS-HOST-ENV-01** (env.example + docs + package-controller bundle); opened **W7-294 (#994)** (`Plan37ControllerHostEnvSamplePackagingW7292LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-293** ([#992](https://github.com/sesquicadaver/MTDirector/issues/992)): Seed PLAN-37 first atomic row → OPS-HOST-ENV-01 as §3.C NEXT; keep **W7-294 (#994)** implement + **W7-295 (#996)** COMPLETE follow-up open (`ProductTrancheSeedW7293LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-291** ([#987](https://github.com/sesquicadaver/MTDirector/issues/987)): Seed PLAN-36 COMPLETE → PLAN-37 Controller host env sample packaging tranche (`ProductTrancheSeedW7291LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-292** ([#991](https://github.com/sesquicadaver/MTDirector/issues/991)): PLAN-37 inventory DONE — ranked sole **OPS-HOST-ENV-01** (env.example + docs + package-controller bundle); opened **W7-294 (#994)** (`Plan37ControllerHostEnvSamplePackagingW7292LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-290** ([#986](https://github.com/sesquicadaver/MTDirector/issues/986)): OPS-HOST-BUNDLE-01 — `package-controller.sh` copies systemd unit + WinSW xml into `$OUT_DIR/controller/` (dry-run + publish) + packaging/HOWTO/installation docs (`OpsHostBundle01PackageControllerHostTemplatesW7290LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-291** ([#987](https://github.com/sesquicadaver/MTDirector/issues/987)): Seed PLAN-36 COMPLETE → PLAN-37 Controller host env sample packaging tranche (`ProductTrancheSeedW7291LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-289** ([#984](https://github.com/sesquicadaver/MTDirector/issues/984)): Seed PLAN-36 first atomic row → OPS-HOST-BUNDLE-01 as §3.C NEXT; keep **W7-290 (#986)** implement + **W7-291 (#987)** COMPLETE follow-up open (`ProductTrancheSeedW7289LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-290** ([#986](https://github.com/sesquicadaver/MTDirector/issues/986)): OPS-HOST-BUNDLE-01 — `package-controller.sh` copies systemd unit + WinSW xml into `$OUT_DIR/controller/` (dry-run + publish) + packaging/HOWTO/installation docs (`OpsHostBundle01PackageControllerHostTemplatesW7290LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-288** ([#983](https://github.com/sesquicadaver/MTDirector/issues/983)): PLAN-36 inventory DONE — ranked sole **OPS-HOST-BUNDLE-01**; opened **W7-290 (#986)** / **W7-291 (#987)** (`Plan36ControllerHostTemplatePublishBundlingW7288LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-289** ([#984](https://github.com/sesquicadaver/MTDirector/issues/984)): Seed PLAN-36 first atomic row → OPS-HOST-BUNDLE-01 as §3.C NEXT; keep **W7-290 (#986)** implement + **W7-291 (#987)** COMPLETE follow-up open (`ProductTrancheSeedW7289LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-287** ([#979](https://github.com/sesquicadaver/MTDirector/issues/979)): Seed PLAN-35 COMPLETE → PLAN-36 Controller host-template publish bundling tranche (`ProductTrancheSeedW7287LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-288** ([#983](https://github.com/sesquicadaver/MTDirector/issues/983)): PLAN-36 inventory DONE — ranked sole **OPS-HOST-BUNDLE-01**; opened **W7-290 (#986)** / **W7-291 (#987)** (`Plan36ControllerHostTemplatePublishBundlingW7288LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-286** ([#978](https://github.com/sesquicadaver/MTDirector/issues/978)): DESK-HOST-BUNDLE-01 — `package-desktop.sh` copies Linux `.desktop` + Windows Start Menu sketch into `$OUT_DIR/desktop/` (dry-run + publish) + packaging/HOWTO/installation docs (`DeskHostBundle01PackageDesktopLaunchTemplatesW7286LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-287** ([#979](https://github.com/sesquicadaver/MTDirector/issues/979)): Seed PLAN-35 COMPLETE → PLAN-36 Controller host-template publish bundling tranche (`ProductTrancheSeedW7287LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-285** ([#976](https://github.com/sesquicadaver/MTDirector/issues/976)): Seed PLAN-35 first atomic row → DESK-HOST-BUNDLE-01 as §3.C NEXT; keep **W7-286 (#978)** implement + **W7-287 (#979)** COMPLETE follow-up open (`ProductTrancheSeedW7285LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-286** ([#978](https://github.com/sesquicadaver/MTDirector/issues/978)): DESK-HOST-BUNDLE-01 — `package-desktop.sh` copies Linux `.desktop` + Windows Start Menu sketch into `$OUT_DIR/desktop/` (dry-run + publish) + packaging/HOWTO/installation docs (`DeskHostBundle01PackageDesktopLaunchTemplatesW7286LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-284** ([#975](https://github.com/sesquicadaver/MTDirector/issues/975)): PLAN-35 inventory DONE — ranked sole **DESK-HOST-BUNDLE-01**; opened **W7-286 (#978)** / **W7-287 (#979)** (`Plan35DesktopLaunchTemplatePublishBundlingW7284LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-285** ([#976](https://github.com/sesquicadaver/MTDirector/issues/976)): Seed PLAN-35 first atomic row → DESK-HOST-BUNDLE-01 as §3.C NEXT; keep **W7-286 (#978)** implement + **W7-287 (#979)** COMPLETE follow-up open (`ProductTrancheSeedW7285LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-283** ([#972](https://github.com/sesquicadaver/MTDirector/issues/972)): Seed PLAN-34 COMPLETE → PLAN-35 Desktop launch-template publish bundling tranche (`ProductTrancheSeedW7283LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-284** ([#975](https://github.com/sesquicadaver/MTDirector/issues/975)): PLAN-35 inventory DONE — ranked sole **DESK-HOST-BUNDLE-01**; opened **W7-286 (#978)** / **W7-287 (#979)** (`Plan35DesktopLaunchTemplatePublishBundlingW7284LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-282** ([#971](https://github.com/sesquicadaver/MTDirector/issues/971)): DESK-HOST-WIN-01 — Windows Start Menu shortcut sketch `packaging/windows/mfc-desktop-start-menu.ps1` for framework-dependent Desktop + HOWTO/installation/packaging docs (`DeskHostWin01StartMenuSketchW7282LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-283** ([#972](https://github.com/sesquicadaver/MTDirector/issues/972)): Seed PLAN-34 COMPLETE → PLAN-35 Desktop launch-template publish bundling tranche (`ProductTrancheSeedW7283LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-281** ([#967](https://github.com/sesquicadaver/MTDirector/issues/967)): Seed PLAN-34 next atomic row → DESK-HOST-WIN-01 as §3.C NEXT; opened **W7-282 (#971)** implement + **W7-283 (#972)** PLAN-34 COMPLETE follow-up (`ProductTrancheSeedW7281LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-282** ([#971](https://github.com/sesquicadaver/MTDirector/issues/971)): DESK-HOST-WIN-01 — Windows Start Menu shortcut sketch `packaging/windows/mfc-desktop-start-menu.ps1` for framework-dependent Desktop + HOWTO/installation/packaging docs (`DeskHostWin01StartMenuSketchW7282LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-280** ([#966](https://github.com/sesquicadaver/MTDirector/issues/966)): DESK-HOST-LINUX-01 — freedesktop `.desktop` template `packaging/linux/mfc-desktop.desktop` for framework-dependent Desktop + HOWTO/installation/packaging docs (`DeskHostLinux01DesktopEntryW7280LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-281** ([#967](https://github.com/sesquicadaver/MTDirector/issues/967)): Seed PLAN-34 next atomic row → DESK-HOST-WIN-01 as §3.C NEXT; opened **W7-282 (#971)** implement + **W7-283 (#972)** PLAN-34 COMPLETE follow-up (`ProductTrancheSeedW7281LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-279** ([#964](https://github.com/sesquicadaver/MTDirector/issues/964)): Seed PLAN-34 first atomic row → DESK-HOST-LINUX-01 as §3.C NEXT; keep **W7-280 (#966)** implement + **W7-281 (#967)** WIN follow-up open (`ProductTrancheSeedW7279LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-280** ([#966](https://github.com/sesquicadaver/MTDirector/issues/966)): DESK-HOST-LINUX-01 — freedesktop `.desktop` template `packaging/linux/mfc-desktop.desktop` for framework-dependent Desktop + HOWTO/installation/packaging docs (`DeskHostLinux01DesktopEntryW7280LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-278** ([#963](https://github.com/sesquicadaver/MTDirector/issues/963)): PLAN-34 inventory DONE — ranked **DESK-HOST-LINUX-01** / **DESK-HOST-WIN-01**; opened **W7-280 (#966)** / **W7-281 (#967)** (`Plan34DesktopOperatorLaunchPackagingW7278LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-279** ([#964](https://github.com/sesquicadaver/MTDirector/issues/964)): Seed PLAN-34 first atomic row → DESK-HOST-LINUX-01 as §3.C NEXT; keep **W7-280 (#966)** implement + **W7-281 (#967)** WIN follow-up open (`ProductTrancheSeedW7279LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-277** ([#959](https://github.com/sesquicadaver/MTDirector/issues/959)): Seed PLAN-33 COMPLETE → PLAN-34 Desktop operator launch packaging templates tranche (`ProductTrancheSeedW7277LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-278** ([#963](https://github.com/sesquicadaver/MTDirector/issues/963)): PLAN-34 inventory DONE — ranked **DESK-HOST-LINUX-01** / **DESK-HOST-WIN-01**; opened **W7-280 (#966)** / **W7-281 (#967)** (`Plan34DesktopOperatorLaunchPackagingW7278LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
+
+- **W7-277** ([#959](https://github.com/sesquicadaver/MTDirector/issues/959)): Seed PLAN-33 COMPLETE → PLAN-34 Desktop operator launch packaging templates tranche (`ProductTrancheSeedW7277LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
 - **W7-276** ([#958](https://github.com/sesquicadaver/MTDirector/issues/958)): DESK-A11Y-TREE-01 — Inventory TreeView exposes `AutomationProperties.Name="Inventory"` (`DesktopInventoryTreeViewAutomationLivingSpecTests`). **§3.C NEXT was W7-277 (#959)** (advanced by W7-277).
 
@@ -658,11 +660,11 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Fixed
 
-- **W7-307** ([#1020](https://github.com/sesquicadaver/MTDirector/issues/1020)): Seed PLAN-40 COMPLETE → PLAN-41 release signing crypto tranche (`ProductTrancheSeedW7307LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-307** ([#1020](https://github.com/sesquicadaver/MTDirector/issues/1020)): Seed PLAN-40 COMPLETE → PLAN-41 release signing crypto tranche (`ProductTrancheSeedW7307LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-306** ([#1018](https://github.com/sesquicadaver/MTDirector/issues/1018)): OPS-HOST-LOG-01 — `SyslogIdentifier=mfc-controller` + `StandardOutput/Error=journal` on `mfc-controller.service` + docs; bundled copy via `package-controller.sh` (`OpsHostLog01ControllerJournaldIdentityW7306LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-306** ([#1018](https://github.com/sesquicadaver/MTDirector/issues/1018)): OPS-HOST-LOG-01 — `SyslogIdentifier=mfc-controller` + `StandardOutput/Error=journal` on `mfc-controller.service` + docs; bundled copy via `package-controller.sh` (`OpsHostLog01ControllerJournaldIdentityW7306LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-305** ([#1016](https://github.com/sesquicadaver/MTDirector/issues/1016)): Seed PLAN-40 first atomic row → OPS-HOST-LOG-01 as §3.C NEXT; keep **W7-306 (#1018)** implement + **W7-307 (#1020)** COMPLETE follow-up open (`ProductTrancheSeedW7305LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-305** ([#1016](https://github.com/sesquicadaver/MTDirector/issues/1016)): Seed PLAN-40 first atomic row → OPS-HOST-LOG-01 as §3.C NEXT; keep **W7-306 (#1018)** implement + **W7-307 (#1020)** COMPLETE follow-up open (`ProductTrancheSeedW7305LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
 - **W7-273** ([#952](https://github.com/sesquicadaver/MTDirector/issues/952)): Seed PLAN-32 COMPLETE → PLAN-33 Desktop Inventory TreeView / residual TabControl a11y tranche (`ProductTrancheSeedW7273LivingSpecTests`). **§3.C NEXT was W7-274 (#955)** (advanced by W7-274).
 
@@ -805,11 +807,11 @@ First production acceptance release: **MVP CLOSED** (M0–M6 + N1 weave) and **P
 
 ### Fixed
 
-- **W7-307** ([#1020](https://github.com/sesquicadaver/MTDirector/issues/1020)): Seed PLAN-40 COMPLETE → PLAN-41 release signing crypto tranche (`ProductTrancheSeedW7307LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-307** ([#1020](https://github.com/sesquicadaver/MTDirector/issues/1020)): Seed PLAN-40 COMPLETE → PLAN-41 release signing crypto tranche (`ProductTrancheSeedW7307LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-306** ([#1018](https://github.com/sesquicadaver/MTDirector/issues/1018)): OPS-HOST-LOG-01 — `SyslogIdentifier=mfc-controller` + `StandardOutput/Error=journal` on `mfc-controller.service` + docs; bundled copy via `package-controller.sh` (`OpsHostLog01ControllerJournaldIdentityW7306LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-306** ([#1018](https://github.com/sesquicadaver/MTDirector/issues/1018)): OPS-HOST-LOG-01 — `SyslogIdentifier=mfc-controller` + `StandardOutput/Error=journal` on `mfc-controller.service` + docs; bundled copy via `package-controller.sh` (`OpsHostLog01ControllerJournaldIdentityW7306LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
-- **W7-305** ([#1016](https://github.com/sesquicadaver/MTDirector/issues/1016)): Seed PLAN-40 first atomic row → OPS-HOST-LOG-01 as §3.C NEXT; keep **W7-306 (#1018)** implement + **W7-307 (#1020)** COMPLETE follow-up open (`ProductTrancheSeedW7305LivingSpecTests`). **§3.C NEXT = W7-376 (#1159)**.
+- **W7-305** ([#1016](https://github.com/sesquicadaver/MTDirector/issues/1016)): Seed PLAN-40 first atomic row → OPS-HOST-LOG-01 as §3.C NEXT; keep **W7-306 (#1018)** implement + **W7-307 (#1020)** COMPLETE follow-up open (`ProductTrancheSeedW7305LivingSpecTests`). **§3.C NEXT = W7-377 (#1160)**.
 
 - **W7-273** ([#952](https://github.com/sesquicadaver/MTDirector/issues/952)): Seed PLAN-32 COMPLETE → PLAN-33 Desktop Inventory TreeView / residual TabControl a11y tranche (`ProductTrancheSeedW7273LivingSpecTests`). **§3.C NEXT was W7-274 (#955)** (advanced by W7-274).
 
