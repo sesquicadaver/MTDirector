@@ -43,17 +43,17 @@ public sealed class ProductTrancheSeedW7319LivingSpecTests
             "W7-322 | [#1050](https://github.com/sesquicadaver/MTDirector/issues/1050) | CTRL-HTTP-OTEL-TRACE-01 — Controller opt-in OpenTelemetry tracing beyond metrics scrape | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-363 (#1131)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-364 (#1135)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-43 COMPLETE", plan43, StringComparison.Ordinal);
         Assert.Contains("W7-319 (#1044) DONE", plan43, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-363 (#1131)", plan43, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-364 (#1135)", plan43, StringComparison.Ordinal);
         Assert.Contains("plan-44-controller-otel-tracing.md", plan43, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-44", plan, StringComparison.Ordinal);
         Assert.Contains("W7-320", plan, StringComparison.Ordinal);
         Assert.Contains("W7-319 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-363 (#1131)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-364 (#1135)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-44-controller-otel-tracing.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("CTRL-HTTP-OTEL-TRACE-01", plan44, StringComparison.Ordinal);
@@ -61,7 +61,7 @@ public sealed class ProductTrancheSeedW7319LivingSpecTests
         Assert.Contains("W7-320", plan44, StringComparison.Ordinal);
         Assert.Contains("W7-321", plan44, StringComparison.Ordinal);
         Assert.Contains("W7-322", plan44, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-363 (#1131)", plan44, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-364 (#1135)", plan44, StringComparison.Ordinal);
         Assert.Contains("0929ef8d", plan44, StringComparison.Ordinal);
 
         Assert.Contains("MapPrometheusScrapingEndpoint", program, StringComparison.Ordinal);

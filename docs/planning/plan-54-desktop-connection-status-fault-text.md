@@ -1,7 +1,7 @@
 # PLAN-54 — Desktop connection-status fault text after Controller fault-correlation logging
 
-**Date:** 2026-09-19 (inventory **DONE** @ `e51073f6`)  
-**Status:** Inventory **DONE** (W7-360); seed **W7-361 (#1128) DONE**; implement **W7-362 (#1130) DONE**; COMPLETE seed **W7-363 (#1131) OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-19 (**PLAN-54 COMPLETE**)  
+**Status:** **PLAN-54 COMPLETE** — Inventory **DONE** (W7-360); seed **W7-361 (#1128) DONE**; implement **W7-362 (#1130) DONE**; COMPLETE seed **W7-363 (#1131) DONE**; successor **PLAN-55** inventory **W7-364 (#1135) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-360 / PLAN-54 #1127](https://github.com/sesquicadaver/MTDirector/issues/1127) **DONE**  
 **Predecessor:** PLAN-53 Controller fault-correlation logging **COMPLETE** (CTRL-ERRDETAIL-LOG-01)  
 **Normative files:** `ControllerConnectionService`, `DesktopRpcFaultText`, `ShellViewModel`, operator docs  
@@ -61,7 +61,7 @@ Splitting connect vs reconnect would be vanity: both sites are the same assignme
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-CONN-FAULT-01** | Map connection `AuthenticationFailed` `RpcException`s through `DesktopRpcFaultText` + Living Spec | **2** `Status.Detail` sites; **0** helper uses @ `e51073f6` | after inventory **W7-360 DONE**; seed **W7-361 (#1128) DONE**; implement **W7-362 (#1130) DONE**; COMPLETE **W7-363 (#1131) OPEN** (**§3.C NEXT**) |
+| 1 | **DESK-CONN-FAULT-01** | Map connection `AuthenticationFailed` `RpcException`s through `DesktopRpcFaultText` + Living Spec | **2** `Status.Detail` sites; **0** helper uses @ `e51073f6` | after inventory **W7-360 DONE**; seed **W7-361 (#1128) DONE**; implement **W7-362 (#1130) DONE**; COMPLETE **W7-363 (#1131) DONE** |
 
 Inventory (**W7-360 DONE**) confirmed sole rank. Seed **W7-361** advances NEXT to the connection-status implement after inventory DONE.
 
@@ -86,7 +86,7 @@ PLAN-53 sole ranked row (**CTRL-ERRDETAIL-LOG-01**) is **DONE**. No further PLAN
 2. **W7-360 DONE** — PLAN-54 inventory; opened **W7-362 (#1130)** DESK-CONN-FAULT-01 implement + **W7-363 (#1131)** COMPLETE follow-up.  
 3. **W7-361 (#1128) DONE** — seed advanced NEXT to DESK-CONN-FAULT-01; keep COMPLETE **W7-363** open.  
 4. **W7-362 (#1130) DONE** — DESK-CONN-FAULT-01 routes both `AuthenticationFailed` sites through `DesktopRpcFaultText.Format`.  
-5. **W7-363 OPEN** — PLAN-54 COMPLETE → seed PLAN-55 (**§3.C NEXT**).
+5. **W7-363 (#1131) DONE** — PLAN-54 COMPLETE; successor **PLAN-55** inventory **W7-364 (#1135)**.
 
 ## Delivery notes (W7-362)
 
@@ -94,4 +94,4 @@ PLAN-53 sole ranked row (**CTRL-ERRDETAIL-LOG-01**) is **DONE**. No further PLAN
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-363 (#1131)** — Seed next after DESK-CONN-FAULT-01 (PLAN-54 COMPLETE).
+**§3.C NEXT = W7-364 (#1135)** — PLAN-55 Inventory capture progress fault correlation.
