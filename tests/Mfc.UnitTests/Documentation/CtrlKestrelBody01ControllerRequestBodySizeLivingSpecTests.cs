@@ -65,7 +65,7 @@ public sealed class CtrlKestrelBody01ControllerRequestBodySizeLivingSpecTests
             "W7-338 | [#1082](https://github.com/sesquicadaver/MTDirector/issues/1082) | CTRL-KESTREL-BODY-01 — Align Kestrel MaxRequestBodySize with GrpcTransportLimits (256 MiB) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-359 (#1123)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-360 (#1127)", roadmap, StringComparison.Ordinal);
         Assert.Contains("CTRL-KESTREL-BODY-01", plan48, StringComparison.Ordinal);
         Assert.Contains("Delivery notes (W7-338)", plan48, StringComparison.Ordinal);
     }

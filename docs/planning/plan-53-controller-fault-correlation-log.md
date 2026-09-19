@@ -1,7 +1,7 @@
 # PLAN-53 — Controller fault-correlation logging after Desktop ErrorDetail mapping
 
 **Date:** 2026-09-19 (inventory **DONE** @ `dbbe0733`)  
-**Status:** Inventory **DONE** (W7-356); seed **W7-357 (#1120) DONE**; implement **W7-358 (#1122) DONE**; COMPLETE seed **W7-359 (#1123) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-53 COMPLETE** — Inventory **DONE** (W7-356); seed **W7-357 (#1120) DONE**; implement **W7-358 (#1122) DONE**; COMPLETE seed **W7-359 (#1123) DONE**; successor **PLAN-54** inventory **W7-360 (#1127) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-356 / PLAN-53 #1119](https://github.com/sesquicadaver/MTDirector/issues/1119) **DONE**  
 **Predecessor:** PLAN-52 Desktop gRPC ErrorDetail operator mapping **COMPLETE** (DESK-RPC-FAULT-01)  
 **Normative files:** `GrpcApplicationErrorMapper`, Controller JSON logging, operator docs  
@@ -95,7 +95,7 @@ PLAN-52 sole ranked row (**DESK-RPC-FAULT-01**) is **DONE**. No further PLAN-52 
 2. **W7-356 DONE** — PLAN-53 inventory; opened **W7-358 (#1122)** CTRL-ERRDETAIL-LOG-01 implement + **W7-359 (#1123)** COMPLETE follow-up.  
 3. **W7-357 (#1120) DONE** — seed advanced NEXT to CTRL-ERRDETAIL-LOG-01; keep COMPLETE **W7-359** open.  
 4. **W7-358 (#1122) DONE** — CTRL-ERRDETAIL-LOG-01 logs code, status, correlation id, retryable on the existing JSON logger.  
-5. **W7-359 OPEN** — PLAN-53 COMPLETE → seed PLAN-54 (**§3.C NEXT**).
+5. **W7-359 (#1123) DONE** — PLAN-53 COMPLETE → seed PLAN-54 inventory.
 
 ## Delivery notes (W7-358)
 
@@ -107,4 +107,4 @@ PLAN-52 sole ranked row (**DESK-RPC-FAULT-01**) is **DONE**. No further PLAN-52 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-359 (#1123)** — Seed next after CTRL-ERRDETAIL-LOG-01 (PLAN-53 COMPLETE).
+**§3.C NEXT = W7-360 (#1127)** — PLAN-54 Inventory Desktop connection-status fault text.
