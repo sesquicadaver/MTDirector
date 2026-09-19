@@ -184,9 +184,9 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
                 CaptureProgressText = outcome.ProgressLines[^1];
             }
 
-            if (outcome.LastProgress?.Stage == CaptureStage.Failed)
+            if (outcome.LastProgress is { Stage: CaptureStage.Failed } failed)
             {
-                ErrorText = outcome.LastProgress.Error?.SanitizedDetail ?? "Capture failed.";
+                ErrorText = FormatCaptureProgress(failed);
                 return;
             }
 
@@ -272,7 +272,8 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
     /// <summary>
     /// Operator capture-progress line. When <see cref="CaptureProgress.Error"/> carries a 16-byte
     /// correlation id, appends the same <c>(correlation {id})</c> suffix journald event 5301 uses
-    /// (SNAP-FAULT-CORR-01). VRRP pair status reuses this method (DESK-VRRP-PROG-01).
+    /// (SNAP-FAULT-CORR-01). VRRP pair status reuses this method (DESK-VRRP-PROG-01). Failed-stage
+    /// shell <c>ErrorText</c> reuses it too (SNAP-ERRTEXT-CORR-01).
     /// </summary>
     public static string FormatCaptureProgress(CaptureProgress progress)
     {

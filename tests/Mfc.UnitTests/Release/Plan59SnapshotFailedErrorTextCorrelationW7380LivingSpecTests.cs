@@ -36,7 +36,7 @@ public sealed class Plan59SnapshotFailedErrorTextCorrelationW7380LivingSpecTests
         Assert.Contains("W7-381", plan59, StringComparison.Ordinal);
         Assert.Contains("W7-382", plan59, StringComparison.Ordinal);
         Assert.Contains("W7-383", plan59, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-382 (#1170)", plan59, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-383 (#1171)", plan59, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-380 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("SNAP-ERRTEXT-CORR-01", limitations, StringComparison.Ordinal);
@@ -53,14 +53,14 @@ public sealed class Plan59SnapshotFailedErrorTextCorrelationW7380LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-382 | [#1170](https://github.com/sesquicadaver/MTDirector/issues/1170) | SNAP-ERRTEXT-CORR-01 — Show capture-progress correlation id on Snapshot Failed-stage ErrorText | **OPEN**",
+            "W7-382 | [#1170](https://github.com/sesquicadaver/MTDirector/issues/1170) | SNAP-ERRTEXT-CORR-01 — Show capture-progress correlation id on Snapshot Failed-stage ErrorText | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-383 | [#1171](https://github.com/sesquicadaver/MTDirector/issues/1171) | Seed next after SNAP-ERRTEXT-CORR-01 (PLAN-59 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-382 (#1170)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-383 (#1171)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-381", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-382", continuous, StringComparison.Ordinal);
@@ -69,9 +69,8 @@ public sealed class Plan59SnapshotFailedErrorTextCorrelationW7380LivingSpecTests
         Assert.Contains("plan-59-snapshot-failed-errortext-correlation.md", docsIndex, StringComparison.Ordinal);
         Assert.Contains("Plan59SnapshotFailedErrorTextCorrelationW7380", testing, StringComparison.Ordinal);
 
-        Assert.Equal(
-            1,
-            Count(viewer, "ErrorText = outcome.LastProgress.Error?.SanitizedDetail ?? \"Capture failed.\""));
+        Assert.Equal(0, Count(viewer, "ErrorText = outcome.LastProgress.Error?.SanitizedDetail ?? \"Capture failed.\""));
+        Assert.Contains("ErrorText = FormatCaptureProgress(failed)", viewer, StringComparison.Ordinal);
         Assert.Contains("(correlation {correlation})", viewer, StringComparison.Ordinal);
         Assert.Contains("string fault = DesktopRpcFaultText.Format(ex);", viewer, StringComparison.Ordinal);
         Assert.Contains("ErrorText = fault", viewer, StringComparison.Ordinal);

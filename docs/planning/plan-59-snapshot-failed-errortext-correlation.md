@@ -1,7 +1,7 @@
 # PLAN-59 — Snapshot failed-stage ErrorText correlation after panel status fault text
 
 **Date:** 2026-09-19 (inventory **DONE**)  
-**Status:** Inventory **DONE** (W7-380); seed **W7-381 (#1168) DONE**; implement **W7-382 (#1170) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-383 (#1171) OPEN**; predecessor **PLAN-58 COMPLETE**  
+**Status:** Inventory **DONE** (W7-380); seed **W7-381 (#1168) DONE**; implement **W7-382 (#1170) DONE**; COMPLETE seed **W7-383 (#1171) OPEN** (**§3.C NEXT**); predecessor **PLAN-58 COMPLETE**  
 **PLAN issue / queue:** [W7-380 / PLAN-59 #1167](https://github.com/sesquicadaver/MTDirector/issues/1167) **DONE**  
 **Predecessor:** PLAN-58 Desktop panel status fault text **COMPLETE** (DESK-PANEL-FAULT-01)  
 **Normative files:** `SnapshotViewerViewModel`, operator docs  
@@ -58,7 +58,7 @@ Splitting the suffix from the progress formatter would be vanity: one Failed-sta
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **SNAP-ERRTEXT-CORR-01** | Show the capture-progress correlation id on Snapshot Failed-stage `ErrorText` (reuse `FormatCaptureProgress` or the same suffix) + Living Spec | **1** `SanitizedDetail`-only `ErrorText` assignment @ `fc4fb991` (seed baseline `6b0b3f95`) | after inventory **W7-380 DONE**; seed **W7-381 (#1168) DONE**; implement **W7-382 (#1170) OPEN**; COMPLETE **W7-383 (#1171) OPEN** |
+| 1 | **SNAP-ERRTEXT-CORR-01** | Show the capture-progress correlation id on Snapshot Failed-stage `ErrorText` (reuse `FormatCaptureProgress` or the same suffix) + Living Spec | **1** `SanitizedDetail`-only `ErrorText` assignment @ `fc4fb991` (seed baseline `6b0b3f95`) | after inventory **W7-380 DONE**; seed **W7-381 (#1168) DONE**; implement **W7-382 (#1170) DONE**; COMPLETE **W7-383 (#1171) OPEN** |
 
 Inventory (**W7-380 DONE**) confirmed sole rank. Seed **W7-381** advances NEXT to SNAP-ERRTEXT-CORR-01 after inventory DONE.
 
@@ -83,8 +83,12 @@ PLAN-58 sole ranked row (**DESK-PANEL-FAULT-01**) is **DONE**. No further PLAN-5
 1. **PLAN-58 COMPLETE** (W7-378 DESK-PANEL-FAULT-01; seed **W7-379 DONE**).  
 2. **W7-380 DONE** — PLAN-59 inventory; opened **W7-382 (#1170)** SNAP-ERRTEXT-CORR-01 implement + **W7-383 (#1171)** COMPLETE follow-up.  
 3. **W7-381 (#1168) DONE** — seed advanced NEXT to SNAP-ERRTEXT-CORR-01; keep COMPLETE **W7-383** open.  
-4. Execute ranked SNAP-ERRTEXT-CORR-01 atomically.
+4. **W7-382 (#1170) DONE** — SNAP-ERRTEXT-CORR-01 sets Failed-stage `ErrorText` from `FormatCaptureProgress`.
+
+## Delivery notes (W7-382)
+
+When Watch ends in `CaptureStage.Failed`, shell `ErrorText` is `FormatCaptureProgress` of that progress frame — the same line already stored on `CaptureProgressText`, including `(correlation {id})` when the progress `ErrorDetail` has a 16-byte id. The `RpcException` catch still uses `DesktopRpcFaultText.Format`. Trailer contract, event 5301 template, and DESK-PANEL-FAULT-01 / DESK-VRRP-PROG-01 / DESK-VRRP-FAULT-01 / SNAP-FAULT-CORR-01 / DESK-CONN-FAULT-01 / CTRL-ERRDETAIL-LOG-01 / DESK-RPC-FAULT-01 locks are unchanged.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-382 (#1170)** — SNAP-ERRTEXT-CORR-01 — Show capture-progress correlation id on Snapshot Failed-stage ErrorText.
+**§3.C NEXT = W7-383 (#1171)** — Seed next after SNAP-ERRTEXT-CORR-01 (PLAN-59 COMPLETE).
