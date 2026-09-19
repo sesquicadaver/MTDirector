@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — DESK-VRRP-FAULT-01 VRRP pair status fault text (W7-370)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Pair status repeats DesktopRpcFaultText on RpcException; prior locks held | NodeDetailViewModel, DesktopRpcFaultText, connection-profiles | `DeskVrrpFault01DesktopPairStatusLivingSpecTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DeskVrrpFault01"`.
+
 ## Living Specification — Seed DESK-VRRP-FAULT-01 as §3.C NEXT (W7-369)
 
 | Requirement | Artifact | Test |
