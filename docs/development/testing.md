@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed DESK-CONN-FAULT-01 as §3.C NEXT (W7-361)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks DESK-CONN-FAULT-01 as §3.C NEXT | known-limitations, ROADMAP, plan-54, continuous-queue | `ProductTrancheSeedW7361LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskConnFault01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7361"`.
+
 ## Living Specification — PLAN-54 inventory Desktop connection-status fault text (W7-360)
 
 | Requirement | Artifact | Test |
