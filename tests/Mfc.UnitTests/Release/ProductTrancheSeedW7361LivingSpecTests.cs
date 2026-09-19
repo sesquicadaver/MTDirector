@@ -33,22 +33,22 @@ public sealed class ProductTrancheSeedW7361LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-363 | [#1131](https://github.com/sesquicadaver/MTDirector/issues/1131) | Seed next after DESK-CONN-FAULT-01 (PLAN-54 COMPLETE) | **OPEN**",
+            "W7-363 | [#1131](https://github.com/sesquicadaver/MTDirector/issues/1131) | Seed next after DESK-CONN-FAULT-01 (PLAN-54 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-363 (#1131)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-364 (#1135)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-361", plan, StringComparison.Ordinal);
         Assert.Contains("W7-362", plan, StringComparison.Ordinal);
         Assert.Contains("W7-363", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-FAULT-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-363 (#1131)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-364 (#1135)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-361 (#1128) DONE", plan54, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-FAULT-01", plan54, StringComparison.Ordinal);
         Assert.Contains("W7-362", plan54, StringComparison.Ordinal);
         Assert.Contains("W7-363", plan54, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-363 (#1131)", plan54, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-364 (#1135)", plan54, StringComparison.Ordinal);
 
         Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.AuthenticationFailed, DesktopRpcFaultText.Format(ex))"));
         Assert.DoesNotContain("ex.Status.Detail", connection, StringComparison.Ordinal);
