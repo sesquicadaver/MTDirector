@@ -7,39 +7,46 @@ using Xunit;
 namespace Mfc.UnitTests.Documentation;
 
 /// <summary>
-/// DESK-VRRP-FAULT-01: VRRP pair status repeats DesktopRpcFaultText so operators
-/// can join the status line to ErrorText and journald event 5301.
+/// DESK-PANEL-FAULT-01: panel status lines repeat DesktopRpcFaultText so operators
+/// can join Drift, Audit, Incident, Routing assurance, and GetNodeWorkflow to ErrorText
+/// and journald event 5301.
 /// </summary>
-public sealed class DeskVrrpFault01DesktopPairStatusLivingSpecTests
+public sealed class DeskPanelFault01DesktopPanelStatusLivingSpecTests
 {
     [Fact]
-    public void Ac1PairStatusUsesTheSameFaultTextAsErrorText()
+    public void Ac1PanelStatusUsesTheSameFaultTextAsErrorText()
     {
-        Guid correlation = Guid.Parse("33333333-3333-3333-3333-333333333333");
+        Guid correlation = Guid.Parse("44444444-4444-4444-4444-444444444444");
         ErrorDetail detail = new()
         {
             Code = "failed",
             Retryable = false,
             CorrelationId = DesktopProtoUuid.FromGuid(correlation),
-            SanitizedDetail = "capture failed",
+            SanitizedDetail = "drift failed",
         };
         RpcException exception = new(
-            new Status(StatusCode.FailedPrecondition, "capture failed"),
+            new Status(StatusCode.FailedPrecondition, "drift failed"),
             new Metadata
             {
                 { DesktopRpcFaultText.ErrorDetailMetadataKey, detail.ToByteArray() },
             });
         string fault = DesktopRpcFaultText.Format(exception);
-        string status = $"VRRP pair consistency failed. {fault}";
         Assert.Equal(
-            "VRRP pair consistency failed. failed (correlation 33333333-3333-3333-3333-333333333333): capture failed",
-            status);
+            "Drift load failed. failed (correlation 44444444-4444-4444-4444-444444444444): drift failed",
+            $"Drift load failed. {fault}");
+        Assert.Equal(
+            "GetNodeWorkflow failed. failed (correlation 44444444-4444-4444-4444-444444444444): drift failed",
+            $"GetNodeWorkflow failed. {fault}");
     }
 
     [Fact]
-    public void Ac2RpcCatchCopiesFaultTextAndPriorLocksHold()
+    public void Ac2RpcCatchesCopyFaultTextAndPriorLocksHold()
     {
         string root = RepoRoot();
+        string drift = File.ReadAllText(Path.Combine(root, "src/Mfc.Desktop/ViewModels/DriftViewModel.cs"));
+        string audit = File.ReadAllText(Path.Combine(root, "src/Mfc.Desktop/ViewModels/AuditViewModel.cs"));
+        string incident = File.ReadAllText(Path.Combine(root, "src/Mfc.Desktop/ViewModels/IncidentViewModel.cs"));
+        string routing = File.ReadAllText(Path.Combine(root, "src/Mfc.Desktop/ViewModels/RoutingAssuranceViewModel.cs"));
         string node = File.ReadAllText(Path.Combine(root, "src/Mfc.Desktop/ViewModels/NodeDetailViewModel.cs"));
         string fault = File.ReadAllText(Path.Combine(root, "src/Mfc.Desktop/Services/DesktopRpcFaultText.cs"));
         string connection = File.ReadAllText(Path.Combine(root, "src/Mfc.Desktop/Services/ControllerConnectionService.cs"));
@@ -51,12 +58,18 @@ public sealed class DeskVrrpFault01DesktopPairStatusLivingSpecTests
         string testing = File.ReadAllText(Path.Combine(root, "docs/development/testing.md"));
         string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
         string roadmap = File.ReadAllText(Path.Combine(root, "ROADMAP.md"));
-        string plan56 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-56-vrrp-pair-status-fault-text.md"));
+        string plan58 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-58-desktop-panel-status-fault-text.md"));
 
-        Assert.Contains("string fault = DesktopRpcFaultText.Format(ex);", node, StringComparison.Ordinal);
-        Assert.Contains("ErrorText = fault;", node, StringComparison.Ordinal);
-        Assert.Contains("VrrpPairStatusText = $\"VRRP pair consistency failed. {fault}\";", node, StringComparison.Ordinal);
-        Assert.Equal(1, Count(node, "VrrpPairStatusText = \"VRRP pair consistency failed.\""));
+        Assert.Contains("StatusText = $\"Drift load failed. {fault}\"", drift, StringComparison.Ordinal);
+        Assert.Contains("StatusText = $\"GetDriftEvent failed; showing list payload. {fault}\"", drift, StringComparison.Ordinal);
+        Assert.Contains("StatusText = $\"Audit load failed. {fault}\"", audit, StringComparison.Ordinal);
+        Assert.Contains("StatusText = $\"Incident ingest failed. {fault}\"", incident, StringComparison.Ordinal);
+        Assert.Contains("StatusText = $\"Incident assessment bind failed. {fault}\"", incident, StringComparison.Ordinal);
+        Assert.Contains("StatusText = $\"Routing assurance load failed. {fault}\"", routing, StringComparison.Ordinal);
+        Assert.Contains("DeploymentReadinessText = $\"GetNodeWorkflow failed. {fault}\"", node, StringComparison.Ordinal);
+        Assert.Equal(1, Count(drift, "StatusText = \"Drift load failed.\""));
+        Assert.Equal(1, Count(node, "DeploymentReadinessText = \"GetNodeWorkflow failed.\""));
+        Assert.Contains("VrrpPairStatusText = $\"VRRP pair consistency failed. {fault}\"", node, StringComparison.Ordinal);
         Assert.Contains("VrrpPairStatusText = $\"{memberName}: {SnapshotViewerViewModel.FormatCaptureProgress(progress)}\"", node, StringComparison.Ordinal);
         Assert.Contains("public static string Format(RpcException exception)", fault, StringComparison.Ordinal);
 
@@ -76,20 +89,20 @@ public sealed class DeskVrrpFault01DesktopPairStatusLivingSpecTests
         Assert.Contains("EventId = 5301", mapper, StringComparison.Ordinal);
         Assert.Contains("deadline: DateTime.UtcNow.AddSeconds(seconds)", unary, StringComparison.Ordinal);
 
-        Assert.Contains("DESK-VRRP-FAULT-01", profiles, StringComparison.Ordinal);
-        Assert.Contains("DESK-VRRP-FAULT-01", local, StringComparison.Ordinal);
-        Assert.Contains("DeskVrrpFault01DesktopPairStatusLivingSpecTests", testing, StringComparison.Ordinal);
-        Assert.Contains("Intentional residual (W7-370 Living Spec lock)", limitations, StringComparison.Ordinal);
-        Assert.Contains("DESK-VRRP-FAULT-01 DONE", limitations, StringComparison.Ordinal);
-        Assert.Contains("Delivery notes (W7-370)", plan56, StringComparison.Ordinal);
-        Assert.Contains("W7-370 (#1146) DONE", plan56, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-379 (#1163)", plan56, StringComparison.Ordinal);
+        Assert.Contains("DESK-PANEL-FAULT-01", profiles, StringComparison.Ordinal);
+        Assert.Contains("DESK-PANEL-FAULT-01", local, StringComparison.Ordinal);
+        Assert.Contains("DeskPanelFault01DesktopPanelStatusLivingSpecTests", testing, StringComparison.Ordinal);
+        Assert.Contains("Intentional residual (W7-378 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("DESK-PANEL-FAULT-01 DONE", limitations, StringComparison.Ordinal);
+        Assert.Contains("Delivery notes (W7-378)", plan58, StringComparison.Ordinal);
+        Assert.Contains("W7-378 (#1162) DONE", plan58, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-379 (#1163)", plan58, StringComparison.Ordinal);
         Assert.Contains(
-            "W7-370 | [#1146](https://github.com/sesquicadaver/MTDirector/issues/1146) | DESK-VRRP-FAULT-01 — Show RPC fault text on VRRP pair status | **DONE**",
+            "W7-378 | [#1162](https://github.com/sesquicadaver/MTDirector/issues/1162) | DESK-PANEL-FAULT-01 — Show RPC fault text on panel status lines | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-371 | [#1147](https://github.com/sesquicadaver/MTDirector/issues/1147) | Seed next after DESK-VRRP-FAULT-01 (PLAN-56 COMPLETE) | **DONE**",
+            "W7-379 | [#1163](https://github.com/sesquicadaver/MTDirector/issues/1163) | Seed next after DESK-PANEL-FAULT-01 (PLAN-58 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-379 (#1163)", roadmap, StringComparison.Ordinal);

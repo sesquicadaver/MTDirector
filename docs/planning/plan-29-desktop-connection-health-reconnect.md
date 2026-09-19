@@ -81,4 +81,4 @@ Evidence at PLAN-29 COMPLETE: `EnsureWatchAuthorizedAsync` still Read-only; Prog
 
 ## §3.C NEXT
 
-**PLAN-29 COMPLETE.** Successor **PLAN-30 COMPLETE / PLAN-31** inventory **DONE** (W7-256). **§3.C NEXT = W7-378 (#1162)** — Seed next after WATCH-BP-01 (PLAN-30 COMPLETE / PLAN-31 COMPLETE).
+**PLAN-29 COMPLETE.** Successor **PLAN-30 COMPLETE / PLAN-31** inventory **DONE** (W7-256). **§3.C NEXT = W7-379 (#1163)** — Seed next after WATCH-BP-01 (PLAN-30 COMPLETE / PLAN-31 COMPLETE).

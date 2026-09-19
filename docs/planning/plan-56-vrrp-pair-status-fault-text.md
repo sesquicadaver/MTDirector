@@ -1,7 +1,7 @@
 # PLAN-56 — VRRP pair status fault text after capture progress fault correlation
 
 **Date:** 2026-09-19 (**PLAN-56 COMPLETE**)  
-**Status:** **PLAN-56 COMPLETE** — Inventory **DONE** (W7-368); seed **W7-369 (#1144) DONE**; implement **W7-370 (#1146) DONE**; COMPLETE seed **W7-371 (#1147) DONE**; successor **PLAN-57 COMPLETE**; **PLAN-58** inventory **W7-376 (#1159) DONE**; seed **W7-377 (#1160) DONE**; implement **W7-378 (#1162) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-56 COMPLETE** — Inventory **DONE** (W7-368); seed **W7-369 (#1144) DONE**; implement **W7-370 (#1146) DONE**; COMPLETE seed **W7-371 (#1147) DONE**; successor **PLAN-57 COMPLETE**; **PLAN-58** inventory **W7-376 (#1159) DONE**; seed **W7-377 (#1160) DONE**; implement **W7-378 (#1162) DONE**; COMPLETE seed **W7-379 (#1163) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-368 / PLAN-56 #1143](https://github.com/sesquicadaver/MTDirector/issues/1143) **DONE**  
 **Predecessor:** PLAN-55 Capture progress fault correlation **COMPLETE** (SNAP-FAULT-CORR-01)  
 **Normative files:** `NodeDetailViewModel`, `DesktopRpcFaultText`, operator docs  
@@ -94,4 +94,4 @@ PLAN-55 sole ranked row (**SNAP-FAULT-CORR-01**) is **DONE**. No further PLAN-55
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-378 (#1162)** — PLAN-57 Inventory VRRP capture-progress fault text.
+**§3.C NEXT = W7-379 (#1163)** — PLAN-57 Inventory VRRP capture-progress fault text.

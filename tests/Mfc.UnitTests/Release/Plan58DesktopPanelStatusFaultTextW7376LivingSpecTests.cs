@@ -43,7 +43,7 @@ public sealed class Plan58DesktopPanelStatusFaultTextW7376LivingSpecTests
         Assert.Contains("W7-377", plan58, StringComparison.Ordinal);
         Assert.Contains("W7-378", plan58, StringComparison.Ordinal);
         Assert.Contains("W7-379", plan58, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-378 (#1162)", plan58, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-379 (#1163)", plan58, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-376 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-PANEL-FAULT-01", limitations, StringComparison.Ordinal);
@@ -60,14 +60,14 @@ public sealed class Plan58DesktopPanelStatusFaultTextW7376LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-378 | [#1162](https://github.com/sesquicadaver/MTDirector/issues/1162) | DESK-PANEL-FAULT-01 — Show RPC fault text on panel status lines | **OPEN**",
+            "W7-378 | [#1162](https://github.com/sesquicadaver/MTDirector/issues/1162) | DESK-PANEL-FAULT-01 — Show RPC fault text on panel status lines | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-379 | [#1163](https://github.com/sesquicadaver/MTDirector/issues/1163) | Seed next after DESK-PANEL-FAULT-01 (PLAN-58 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-378 (#1162)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-379 (#1163)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-377", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-378", continuous, StringComparison.Ordinal);
@@ -76,20 +76,27 @@ public sealed class Plan58DesktopPanelStatusFaultTextW7376LivingSpecTests
         Assert.Contains("plan-58-desktop-panel-status-fault-text.md", docsIndex, StringComparison.Ordinal);
         Assert.Contains("Plan58DesktopPanelStatusFaultTextW7376", testing, StringComparison.Ordinal);
 
-        Assert.Equal(2, Count(drift, "StatusText = \"Drift load failed.\""));
-        Assert.Equal(2, Count(drift, "StatusText = \"GetDriftEvent failed; showing list payload.\""));
-        Assert.Equal(2, Count(audit, "StatusText = \"Audit load failed.\""));
-        Assert.Equal(2, Count(incident, "StatusText = \"Incident ingest failed.\""));
-        Assert.Equal(2, Count(incident, "StatusText = \"Incident assessment bind failed.\""));
-        Assert.Equal(2, Count(routing, "StatusText = \"Routing assurance load failed.\""));
-        Assert.Equal(2, Count(node, "DeploymentReadinessText = \"GetNodeWorkflow failed.\""));
+        Assert.Equal(1, Count(drift, "StatusText = \"Drift load failed.\""));
+        Assert.Contains("StatusText = $\"Drift load failed. {fault}\"", drift, StringComparison.Ordinal);
+        Assert.Equal(1, Count(drift, "StatusText = \"GetDriftEvent failed; showing list payload.\""));
+        Assert.Contains("StatusText = $\"GetDriftEvent failed; showing list payload. {fault}\"", drift, StringComparison.Ordinal);
+        Assert.Equal(1, Count(audit, "StatusText = \"Audit load failed.\""));
+        Assert.Contains("StatusText = $\"Audit load failed. {fault}\"", audit, StringComparison.Ordinal);
+        Assert.Equal(1, Count(incident, "StatusText = \"Incident ingest failed.\""));
+        Assert.Contains("StatusText = $\"Incident ingest failed. {fault}\"", incident, StringComparison.Ordinal);
+        Assert.Equal(1, Count(incident, "StatusText = \"Incident assessment bind failed.\""));
+        Assert.Contains("StatusText = $\"Incident assessment bind failed. {fault}\"", incident, StringComparison.Ordinal);
+        Assert.Equal(1, Count(routing, "StatusText = \"Routing assurance load failed.\""));
+        Assert.Contains("StatusText = $\"Routing assurance load failed. {fault}\"", routing, StringComparison.Ordinal);
+        Assert.Equal(1, Count(node, "DeploymentReadinessText = \"GetNodeWorkflow failed.\""));
+        Assert.Contains("DeploymentReadinessText = $\"GetNodeWorkflow failed. {fault}\"", node, StringComparison.Ordinal);
         Assert.Equal(
-            7,
-            Count(drift, "ErrorText = DesktopRpcFaultText.Format(ex);")
-            + Count(audit, "ErrorText = DesktopRpcFaultText.Format(ex);")
-            + Count(incident, "ErrorText = DesktopRpcFaultText.Format(ex);")
-            + Count(routing, "ErrorText = DesktopRpcFaultText.Format(ex);")
-            + Count(node, "ErrorText = DesktopRpcFaultText.Format(ex);"));
+            8,
+            Count(drift, "string fault = DesktopRpcFaultText.Format(ex);")
+            + Count(audit, "string fault = DesktopRpcFaultText.Format(ex);")
+            + Count(incident, "string fault = DesktopRpcFaultText.Format(ex);")
+            + Count(routing, "string fault = DesktopRpcFaultText.Format(ex);")
+            + Count(node, "string fault = DesktopRpcFaultText.Format(ex);"));
         Assert.Contains("VrrpPairStatusText = $\"VRRP pair consistency failed. {fault}\"", node, StringComparison.Ordinal);
         Assert.Contains("SnapshotViewerViewModel.FormatCaptureProgress(progress)", node, StringComparison.Ordinal);
         Assert.Contains(

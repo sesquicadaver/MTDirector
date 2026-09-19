@@ -110,8 +110,9 @@ public sealed partial class AuditViewModel : ObservableObject, IDisposable
         }
         catch (RpcException ex)
         {
-            ErrorText = DesktopRpcFaultText.Format(ex);
-            StatusText = "Audit load failed.";
+            string fault = DesktopRpcFaultText.Format(ex);
+            ErrorText = fault;
+            StatusText = $"Audit load failed. {fault}";
         }
         catch (Exception ex)
         {
