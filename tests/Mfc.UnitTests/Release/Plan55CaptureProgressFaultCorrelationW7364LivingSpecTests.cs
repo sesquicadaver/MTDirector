@@ -36,7 +36,7 @@ public sealed class Plan55CaptureProgressFaultCorrelationW7364LivingSpecTests
         Assert.Contains("W7-365", plan55, StringComparison.Ordinal);
         Assert.Contains("W7-364", plan55, StringComparison.Ordinal);
         Assert.Contains("FormatCaptureProgress", plan55, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-365 (#1136)", plan55, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-366 (#1138)", plan55, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-364 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("SNAP-FAULT-CORR-01", limitations, StringComparison.Ordinal);
@@ -49,7 +49,7 @@ public sealed class Plan55CaptureProgressFaultCorrelationW7364LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-365 | [#1136](https://github.com/sesquicadaver/MTDirector/issues/1136) | Seed first PLAN-55 atomic row after inventory → SNAP-FAULT-CORR-01 | **OPEN**",
+            "W7-365 | [#1136](https://github.com/sesquicadaver/MTDirector/issues/1136) | Seed first PLAN-55 atomic row after inventory → SNAP-FAULT-CORR-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -60,7 +60,7 @@ public sealed class Plan55CaptureProgressFaultCorrelationW7364LivingSpecTests
             "W7-367 | [#1139](https://github.com/sesquicadaver/MTDirector/issues/1139) | Seed next after SNAP-FAULT-CORR-01 (PLAN-55 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-365 (#1136)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-366 (#1138)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-365", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-366", continuous, StringComparison.Ordinal);
