@@ -1,7 +1,7 @@
 # PLAN-57 — VRRP capture-progress fault text after pair-status fault text
 
 **Date:** 2026-09-19 (inventory **DONE**)  
-**Status:** Inventory **DONE** (W7-372); seed **W7-373 (#1152) OPEN** (**§3.C NEXT**); implement **W7-374 (#1154) OPEN**; COMPLETE seed **W7-375 (#1155) OPEN**; predecessor **PLAN-56 COMPLETE**  
+**Status:** Inventory **DONE** (W7-372); seed **W7-373 (#1152) DONE**; implement **W7-374 (#1154) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-375 (#1155) OPEN**; predecessor **PLAN-56 COMPLETE**  
 **PLAN issue / queue:** [W7-372 / PLAN-57 #1151](https://github.com/sesquicadaver/MTDirector/issues/1151) **DONE**  
 **Predecessor:** PLAN-56 VRRP pair status fault text **COMPLETE** (DESK-VRRP-FAULT-01)  
 **Normative files:** `NodeDetailViewModel`, `SnapshotViewerViewModel`, operator docs  
@@ -56,7 +56,7 @@ Splitting the live Watch line from the incomplete-capture throw would be vanity:
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-VRRP-PROG-01** | Show the capture-progress correlation id on the VRRP pair status line when Watch reports `ErrorDetail`, including the incomplete-capture path + Living Spec | **1** stage-only status assignment; **0** `progress.Error` reads; **1** correlation-less `InvalidOperationException` @ `7dbfe132` (seed baseline `218cdba7`) | after inventory **W7-372 DONE**; seed **W7-373 (#1152) OPEN**; implement **W7-374 (#1154) OPEN**; COMPLETE **W7-375 (#1155) OPEN** |
+| 1 | **DESK-VRRP-PROG-01** | Show the capture-progress correlation id on the VRRP pair status line when Watch reports `ErrorDetail`, including the incomplete-capture path + Living Spec | **1** stage-only status assignment; **0** `progress.Error` reads; **1** correlation-less `InvalidOperationException` @ `7dbfe132` (seed baseline `218cdba7`) | after inventory **W7-372 DONE**; seed **W7-373 (#1152) DONE**; implement **W7-374 (#1154) OPEN**; COMPLETE **W7-375 (#1155) OPEN** |
 
 Inventory (**W7-372 DONE**) confirmed sole rank. Seed **W7-373** advances NEXT to DESK-VRRP-PROG-01 after inventory DONE.
 
@@ -83,9 +83,9 @@ PLAN-56 sole ranked row (**DESK-VRRP-FAULT-01**) is **DONE**. No further PLAN-56
 
 1. **PLAN-56 COMPLETE** (W7-370 DESK-VRRP-FAULT-01; seed **W7-371 DONE**).  
 2. **W7-372 DONE** — PLAN-57 inventory; opened **W7-374 (#1154)** DESK-VRRP-PROG-01 implement + **W7-375 (#1155)** COMPLETE follow-up.  
-3. **W7-373 OPEN** — seed first PLAN-57 implement after inventory.  
+3. **W7-373 (#1152) DONE** — seed advanced NEXT to DESK-VRRP-PROG-01; keep COMPLETE **W7-375** open.  
 4. Execute ranked DESK-VRRP-PROG-01 atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-373 (#1152)** — Seed first PLAN-57 atomic row after inventory → DESK-VRRP-PROG-01.
+**§3.C NEXT = W7-374 (#1154)** — DESK-VRRP-PROG-01 show the capture-progress correlation id on the VRRP pair status line.
