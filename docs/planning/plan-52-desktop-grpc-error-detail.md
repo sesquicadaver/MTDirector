@@ -1,8 +1,8 @@
 # PLAN-52 — Desktop gRPC ErrorDetail operator mapping after unary deadlines
 
-**Date:** 2026-09-19 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-352); seed **W7-353 (#1112) OPEN**; predecessor **PLAN-51 COMPLETE**  
-**PLAN issue / queue:** [W7-352 / PLAN-52 #1111](https://github.com/sesquicadaver/MTDirector/issues/1111) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-19 (inventory **DONE** @ `7ee69220`)  
+**Status:** Inventory **DONE** (W7-352); seed **W7-353 (#1112) OPEN** (**§3.C NEXT**); implement **W7-354 (#1114) OPEN**; COMPLETE seed **W7-355 (#1115) OPEN**  
+**PLAN issue / queue:** [W7-352 / PLAN-52 #1111](https://github.com/sesquicadaver/MTDirector/issues/1111) **DONE**  
 **Predecessor:** PLAN-51 Desktop gRPC unary call deadline **COMPLETE** (DESK-GRPC-DEADLINE-01)  
 **Normative files:** `GrpcApplicationErrorMapper`, Desktop ViewModels that catch `RpcException`, operator docs  
 **Normative prior locks:** unary `Desktop:UnaryCallTimeoutSeconds` (30s, fail-closed); Health `CancelAfter`; Watch streams unbounded; MSGSIZE / BODY / KEEPALIVE / MINRATE; HTTP health; metrics; tracing; log correlation; OTel resource — **do not regress**  
@@ -26,22 +26,50 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - systemd `Type=notify` / `WatchdogSec`  
 - Ops / CRS / physical lab live runners as §3 stop-gates  
 
-## Inventory evidence (seed baseline @ `087d1a47`)
+## Inventory evidence (W7-352 @ `main` `7ee69220`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
-| `GrpcApplicationErrorMapper` | Writes `mfc-error-detail-bin` | Structured fault exists |
+| `GrpcApplicationErrorMapper` | Writes `mfc-error-detail-bin` (`ErrorDetail`: code, retryable, correlation_id, sanitized_detail) | Structured fault exists |
 | Desktop ViewModels | **14** `ErrorText = ex.Status.Detail` | Trailers ignored |
 | `src/Mfc.Desktop` | **0** references to `mfc-error-detail` | Confirmed |
 | Unary deadline | `DesktopGrpcUnaryCall` default 30s | Shipped; do not regress |
 
-## Ranked tranche (seed baseline)
+### ViewModel `ErrorText` sites (14)
+
+| ViewModel | Assignments |
+|-----------|-------------|
+| `AddRouterWizardViewModel` | 1 |
+| `AuditViewModel` | 1 |
+| `DeploymentViewModel` | 1 |
+| `DriftViewModel` | 2 |
+| `IncidentViewModel` | 2 |
+| `NodeDetailViewModel` | 2 |
+| `OnboardingViewModel` | 1 |
+| `PoliciesViewModel` | 1 |
+| `RoutingAssuranceViewModel` | 1 |
+| `SnapshotViewerViewModel` | 1 |
+| `ZonesViewModel` | 1 |
+| **Total** | **14** |
+
+`ControllerConnectionService` sets connection state from `Status.Detail` on auth failure (2 sites). Those are not `ErrorText` and stay out of DESK-RPC-FAULT-01.
+
+**Ranking decision:** Prefer **ONE atomic row** (**DESK-RPC-FAULT-01**):
+
+- Shared helper used by ViewModels maps `mfc-error-detail-bin` into operator `ErrorText` (code + correlation id)
+- Non-empty fallback when `Status.Detail` is empty (client `DeadlineExceeded` often has no trailer)
+- Do **not** regress unary deadline / Watch unbounded streams / transport locks
+- Living Spec + operator docs
+
+Splitting per-ViewModel ranks would be vanity.
+
+## Ranked tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-RPC-FAULT-01** | Map `ErrorDetail` trailers into operator `ErrorText` (code, correlation id, non-empty fallback) + Living Spec | 14 ViewModel sites; 0 trailer reads @ `087d1a47` | after inventory **W7-352**; seed **W7-353 (#1112)** |
+| 1 | **DESK-RPC-FAULT-01** | Map `ErrorDetail` trailers into operator `ErrorText` (code, correlation id, non-empty fallback) + Living Spec | **14** ViewModel sites; **0** trailer reads @ `7ee69220` | after inventory **W7-352 DONE**; seed **W7-353 (#1112) OPEN**; implement **W7-354 (#1114) OPEN**; COMPLETE **W7-355 (#1115) OPEN** |
 
-Inventory (**W7-352**) may refine ranking and open the implement issue; seed **W7-353** advances NEXT to that implement after inventory DONE.
+Inventory (**W7-352 DONE**) confirmed sole rank. Seed **W7-353** advances NEXT to the FAULT implement after inventory DONE.
 
 ## Dual track
 
@@ -60,10 +88,10 @@ PLAN-51 sole ranked row (**DESK-GRPC-DEADLINE-01**) is **DONE**. No further PLAN
 ## §3.C ordering
 
 1. **PLAN-51 COMPLETE** (W7-350 DESK-GRPC-DEADLINE-01; seed **W7-351 DONE**).  
-2. **W7-352 OPEN** — PLAN-52 inventory (**§3.C NEXT**).  
+2. **W7-352 DONE** — PLAN-52 inventory; opened **W7-354 (#1114)** DESK-RPC-FAULT-01 implement + **W7-355 (#1115)** COMPLETE follow-up.  
 3. **W7-353 OPEN** — seed first PLAN-52 implement after inventory.  
 4. Execute ranked DESK-RPC-FAULT-01 atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-352 (#1111)** — PLAN-52 Inventory Desktop gRPC ErrorDetail operator mapping.
+**§3.C NEXT = W7-353 (#1112)** — Seed first PLAN-52 atomic row after inventory → DESK-RPC-FAULT-01.
