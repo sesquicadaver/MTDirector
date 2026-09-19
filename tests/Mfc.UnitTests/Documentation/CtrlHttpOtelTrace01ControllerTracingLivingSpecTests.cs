@@ -66,7 +66,7 @@ public sealed class CtrlHttpOtelTrace01ControllerTracingLivingSpecTests
             "W7-322 | [#1050](https://github.com/sesquicadaver/MTDirector/issues/1050) | CTRL-HTTP-OTEL-TRACE-01 — Controller opt-in OpenTelemetry tracing beyond metrics scrape | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-369 (#1144)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-370 (#1146)", roadmap, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()
