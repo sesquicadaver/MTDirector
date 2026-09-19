@@ -1,7 +1,7 @@
 # PLAN-52 — Desktop gRPC ErrorDetail operator mapping after unary deadlines
 
 **Date:** 2026-09-19 (inventory **DONE** @ `7ee69220`)  
-**Status:** Inventory **DONE** (W7-352); seed **W7-353 (#1112) DONE**; implement **W7-354 (#1114) DONE**; COMPLETE seed **W7-355 (#1115) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-52 COMPLETE** — Inventory **DONE** (W7-352); seed **W7-353 (#1112) DONE**; implement **W7-354 (#1114) DONE**; COMPLETE seed **W7-355 (#1115) DONE**; successor **PLAN-53** inventory **W7-356 (#1119) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-352 / PLAN-52 #1111](https://github.com/sesquicadaver/MTDirector/issues/1111) **DONE**  
 **Predecessor:** PLAN-51 Desktop gRPC unary call deadline **COMPLETE** (DESK-GRPC-DEADLINE-01)  
 **Normative files:** `GrpcApplicationErrorMapper`, Desktop ViewModels that catch `RpcException`, operator docs  
@@ -67,7 +67,7 @@ Splitting per-ViewModel ranks would be vanity.
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-RPC-FAULT-01** | Map `ErrorDetail` trailers into operator `ErrorText` (code, correlation id, non-empty fallback) + Living Spec | **14** ViewModel sites; **0** trailer reads @ `7ee69220` | after inventory **W7-352 DONE**; seed **W7-353 (#1112) DONE**; implement **W7-354 (#1114) DONE**; COMPLETE **W7-355 (#1115) OPEN** (**§3.C NEXT**) |
+| 1 | **DESK-RPC-FAULT-01** | Map `ErrorDetail` trailers into operator `ErrorText` (code, correlation id, non-empty fallback) + Living Spec | **14** ViewModel sites; **0** trailer reads @ `7ee69220` | after inventory **W7-352 DONE**; seed **W7-353 (#1112) DONE**; implement **W7-354 (#1114) DONE**; COMPLETE **W7-355 (#1115) DONE** |
 
 Inventory (**W7-352 DONE**) confirmed sole rank. Seed **W7-353** advances NEXT to the FAULT implement after inventory DONE.
 
@@ -91,7 +91,7 @@ PLAN-51 sole ranked row (**DESK-GRPC-DEADLINE-01**) is **DONE**. No further PLAN
 2. **W7-352 DONE** — PLAN-52 inventory; opened **W7-354 (#1114)** DESK-RPC-FAULT-01 implement + **W7-355 (#1115)** COMPLETE follow-up.  
 3. **W7-353 (#1112) DONE** — seed advanced NEXT to DESK-RPC-FAULT-01; keep COMPLETE **W7-355** open.  
 4. **W7-354 (#1114) DONE** — DESK-RPC-FAULT-01 maps `mfc-error-detail-bin` into operator `ErrorText`.  
-5. **W7-355 OPEN** — PLAN-52 COMPLETE → seed PLAN-53 (**§3.C NEXT**).
+5. **W7-355 (#1115) DONE** — PLAN-52 COMPLETE → seed PLAN-53 inventory.
 
 ## Delivery notes (W7-354)
 
@@ -99,4 +99,4 @@ PLAN-51 sole ranked row (**DESK-GRPC-DEADLINE-01**) is **DONE**. No further PLAN
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-355 (#1115)** — Seed next after DESK-RPC-FAULT-01 (PLAN-52 COMPLETE).
+**§3.C NEXT = W7-356 (#1119)** — PLAN-53 Inventory Controller fault-correlation logging.
