@@ -61,7 +61,7 @@ public sealed class CtrlHttpOtelResource01ControllerResourceLivingSpecTests
             "W7-330 | [#1066](https://github.com/sesquicadaver/MTDirector/issues/1066) | CTRL-HTTP-OTEL-RESOURCE-01 — Controller OTel ResourceBuilder service.name/service.version | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-388 (#1183)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-389 (#1184)", roadmap, StringComparison.Ordinal);
         Assert.Contains("CTRL-HTTP-OTEL-RESOURCE-01", plan46, StringComparison.Ordinal);
         Assert.Contains("Delivery notes (W7-330)", plan46, StringComparison.Ordinal);
     }

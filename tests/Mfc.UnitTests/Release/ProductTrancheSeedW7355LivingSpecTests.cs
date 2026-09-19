@@ -40,21 +40,21 @@ public sealed class ProductTrancheSeedW7355LivingSpecTests
             "W7-357 | [#1120](https://github.com/sesquicadaver/MTDirector/issues/1120) | Seed first PLAN-53 atomic row after inventory → CTRL-ERRDETAIL-LOG-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-388 (#1183)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-389 (#1184)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-52 COMPLETE", plan52, StringComparison.Ordinal);
         Assert.Contains("W7-355 (#1115) DONE", plan52, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-388 (#1183)", plan52, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-389 (#1184)", plan52, StringComparison.Ordinal);
         Assert.Contains("plan-53-controller-fault-correlation-log.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-53", plan, StringComparison.Ordinal);
         Assert.Contains("W7-356", plan, StringComparison.Ordinal);
         Assert.Contains("W7-355 (#1115) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-388 (#1183)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-389 (#1184)", plan, StringComparison.Ordinal);
         Assert.Contains("CTRL-ERRDETAIL-LOG-01", plan53, StringComparison.Ordinal);
         Assert.Contains("Guid.NewGuid", plan53, StringComparison.Ordinal);
         Assert.Contains("W7-356", plan53, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-388 (#1183)", plan53, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-389 (#1184)", plan53, StringComparison.Ordinal);
 
         Assert.Contains("mfc-error-detail-bin", fault, StringComparison.Ordinal);
         Assert.Contains("correlationId ?? Guid.NewGuid()", mapper, StringComparison.Ordinal);

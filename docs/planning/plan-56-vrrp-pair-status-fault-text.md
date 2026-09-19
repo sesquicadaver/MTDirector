@@ -94,4 +94,4 @@ PLAN-55 sole ranked row (**SNAP-FAULT-CORR-01**) is **DONE**. No further PLAN-55
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-388 (#1183)** — PLAN-57 Inventory VRRP capture-progress fault text.
+**§3.C NEXT = W7-389 (#1184)** — PLAN-57 Inventory VRRP capture-progress fault text.
