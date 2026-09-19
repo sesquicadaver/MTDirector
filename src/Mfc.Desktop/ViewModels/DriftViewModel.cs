@@ -196,7 +196,7 @@ public sealed partial class DriftViewModel : ObservableObject, IDisposable
         }
         catch (RpcException ex)
         {
-            ErrorText = ex.Status.Detail;
+            ErrorText = DesktopRpcFaultText.Format(ex);
             StatusText = "Drift load failed.";
         }
         catch (Exception ex)
@@ -286,7 +286,7 @@ public sealed partial class DriftViewModel : ObservableObject, IDisposable
                 return;
             }
 
-            ErrorText = ex.Status.Detail;
+            ErrorText = DesktopRpcFaultText.Format(ex);
             StatusText = "GetDriftEvent failed; showing list payload.";
         }
         catch (Exception ex)

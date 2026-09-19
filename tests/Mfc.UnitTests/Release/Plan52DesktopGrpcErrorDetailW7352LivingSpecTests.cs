@@ -33,7 +33,7 @@ public sealed class Plan52DesktopGrpcErrorDetailW7352LivingSpecTests
         Assert.Contains("W7-352", plan52, StringComparison.Ordinal);
         Assert.Contains("sole rank", plan52, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("14", plan52, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-354 (#1114)", plan52, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-355 (#1115)", plan52, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-352 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-RPC-FAULT-01", limitations, StringComparison.Ordinal);
@@ -51,14 +51,14 @@ public sealed class Plan52DesktopGrpcErrorDetailW7352LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-354 | [#1114](https://github.com/sesquicadaver/MTDirector/issues/1114) | DESK-RPC-FAULT-01 — Map Controller ErrorDetail trailer into operator ErrorText | **OPEN**",
+            "W7-354 | [#1114](https://github.com/sesquicadaver/MTDirector/issues/1114) | DESK-RPC-FAULT-01 — Map Controller ErrorDetail trailer into operator ErrorText | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-355 | [#1115](https://github.com/sesquicadaver/MTDirector/issues/1115) | Seed next after DESK-RPC-FAULT-01 (PLAN-52 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-354 (#1114)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-355 (#1115)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-353", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-354", continuous, StringComparison.Ordinal);
@@ -70,18 +70,20 @@ public sealed class Plan52DesktopGrpcErrorDetailW7352LivingSpecTests
         Assert.Contains("mfc-error-detail-bin", mapper, StringComparison.Ordinal);
         Assert.Contains("deadline: DateTime.UtcNow.AddSeconds(seconds)", helper, StringComparison.Ordinal);
 
+        // FAULT-01 shipped: ViewModels use the shared trailer helper; unary deadline stays.
+        string fault = File.ReadAllText(Path.Combine(root, "src/Mfc.Desktop/Services/DesktopRpcFaultText.cs"));
+        Assert.Contains("mfc-error-detail-bin", fault, StringComparison.Ordinal);
+        Assert.Contains("correlation", fault, StringComparison.Ordinal);
         int sites = 0;
         string viewModels = Path.Combine(root, "src/Mfc.Desktop/ViewModels");
         foreach (string path in Directory.EnumerateFiles(viewModels, "*ViewModel.cs"))
         {
-            sites += Count(File.ReadAllText(path), "ErrorText = ex.Status.Detail");
+            string viewModel = File.ReadAllText(path);
+            sites += Count(viewModel, "DesktopRpcFaultText.Format");
+            Assert.DoesNotContain("ErrorText = ex.Status.Detail", viewModel, StringComparison.Ordinal);
         }
 
         Assert.Equal(14, sites);
-        foreach (string path in Directory.EnumerateFiles(Path.Combine(root, "src/Mfc.Desktop"), "*.cs", SearchOption.AllDirectories))
-        {
-            Assert.DoesNotContain("mfc-error-detail", File.ReadAllText(path), StringComparison.Ordinal);
-        }
     }
 
     private static int Count(string text, string value)

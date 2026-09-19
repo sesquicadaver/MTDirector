@@ -357,7 +357,7 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
                 return;
             }
 
-            ErrorText = ex.Status.Detail;
+            ErrorText = DesktopRpcFaultText.Format(ex);
             DeploymentReadinessText = "GetNodeWorkflow failed.";
         }
         catch (Exception ex)
@@ -447,7 +447,7 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         }
         catch (RpcException ex)
         {
-            ErrorText = ex.Status.Detail;
+            ErrorText = DesktopRpcFaultText.Format(ex);
             VrrpPairStatusText = "VRRP pair consistency failed.";
         }
         catch (Exception ex)

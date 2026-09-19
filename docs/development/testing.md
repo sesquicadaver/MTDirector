@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — DESK-RPC-FAULT-01 operator ErrorDetail (W7-354)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Map mfc-error-detail-bin into ErrorText; empty detail fallback; deadline not regressed | DesktopRpcFaultText, ViewModels, connection/installation/development docs | `DeskRpcFault01DesktopErrorDetailLivingSpecTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DeskRpcFault01DesktopErrorDetail"`.
+
 ## Living Specification — Seed DESK-RPC-FAULT-01 as §3.C NEXT (W7-353)
 
 | Requirement | Artifact | Test |
@@ -4999,7 +5007,7 @@ Policy Model §16 / §18 / §9 / §60–§61 + Issue Set M2-18 → Domain writer
 | AC#2 Fixed stages cannot cross-reorder | `PolicyPanelService.ReorderRulesInStageAsync` | `Ac2Ac3ReorderRejectsCrossStageAndAcceptsSameStagePermutation` |
 | AC#3 Contiguous ordinal via ReorderRules | same + family/chain/stage | `Ac2Ac3ReorderRejectsCrossStageAndAcceptsSameStagePermutation` |
 | AC#4 No raw matcher string (proto TrafficPredicate only) | `ParseAddressEntries` + AddRule selectors | `Ac4ParseAddressEntriesRejectsRawMatcherAndAcceptsHostCidrRange` |
-| AC#5 Server validation via RpcException detail | `PoliciesViewModel.RunBusyAsync` | (UI surfaces `RpcException.Status.Detail`; panel uses server RPCs) |
+| AC#5 Server validation via RpcException detail | `PoliciesViewModel.RunBusyAsync` | (UI surfaces `DesktopRpcFaultText.Format`; panel uses server RPCs) |
 | AC#6 Findings + compose / residual NODE_EFFECTIVE | `ComposeAsync` + RecordAnalysisRun | `Ac6Ac7Ac8ComposeDiffAndAnalysisRiskSurfaces` |
 | AC#7 Semantic diff before approval | `DiffAsync` | `Ac6Ac7Ac8ComposeDiffAndAnalysisRiskSurfaces` |
 | AC#8 Risk level from analysis run | `RecordAnalysisRunAsync` | `Ac6Ac7Ac8ComposeDiffAndAnalysisRiskSurfaces` |

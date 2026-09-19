@@ -396,7 +396,7 @@ public sealed partial class ZonesViewModel : ObservableObject, IDisposable
         }
         catch (RpcException ex)
         {
-            ErrorText = ex.Status.Detail;
+            ErrorText = DesktopRpcFaultText.Format(ex);
         }
         catch (Exception ex)
         {
