@@ -39,24 +39,24 @@ public sealed class ProductTrancheSeedW7347LivingSpecTests
             "W7-349 | [#1104](https://github.com/sesquicadaver/MTDirector/issues/1104) | Seed first PLAN-51 atomic row after inventory → DESK-GRPC-DEADLINE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-370 (#1146)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-371 (#1147)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-50 COMPLETE", plan50, StringComparison.Ordinal);
         Assert.Contains("W7-347 (#1099) DONE", plan50, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-370 (#1146)", plan50, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-371 (#1147)", plan50, StringComparison.Ordinal);
         Assert.Contains("plan-51-desktop-grpc-unary-deadline.md", plan50, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-51", plan, StringComparison.Ordinal);
         Assert.Contains("W7-348", plan, StringComparison.Ordinal);
         Assert.Contains("W7-347 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-370 (#1146)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-371 (#1147)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-51-desktop-grpc-unary-deadline.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("DESK-GRPC-DEADLINE-01", plan51, StringComparison.Ordinal);
         Assert.Contains("Inventory **DONE**", plan51, StringComparison.Ordinal);
         Assert.Contains("W7-348", plan51, StringComparison.Ordinal);
         Assert.Contains("W7-349", plan51, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-370 (#1146)", plan51, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-371 (#1147)", plan51, StringComparison.Ordinal);
         Assert.Contains("Deadline", plan51, StringComparison.Ordinal);
 
         Assert.Contains("MinRequestBodyDataRate = null", program, StringComparison.Ordinal);

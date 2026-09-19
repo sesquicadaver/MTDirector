@@ -447,8 +447,9 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
         }
         catch (RpcException ex)
         {
-            ErrorText = DesktopRpcFaultText.Format(ex);
-            VrrpPairStatusText = "VRRP pair consistency failed.";
+            string fault = DesktopRpcFaultText.Format(ex);
+            ErrorText = fault;
+            VrrpPairStatusText = $"VRRP pair consistency failed. {fault}";
         }
         catch (Exception ex)
         {
