@@ -40,22 +40,22 @@ public sealed class ProductTrancheSeedW7359LivingSpecTests
             "W7-361 | [#1128](https://github.com/sesquicadaver/MTDirector/issues/1128) | Seed first PLAN-54 atomic row after inventory → DESK-CONN-FAULT-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-391 (#1187)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-392 (#1191)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-53 COMPLETE", plan53, StringComparison.Ordinal);
         Assert.Contains("W7-359 (#1123) DONE", plan53, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-391 (#1187)", plan53, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-392 (#1191)", plan53, StringComparison.Ordinal);
         Assert.Contains("plan-54-desktop-connection-status-fault-text.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-54", plan, StringComparison.Ordinal);
         Assert.Contains("W7-360", plan, StringComparison.Ordinal);
         Assert.Contains("W7-359 (#1123) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-391 (#1187)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-392 (#1191)", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-FAULT-01", plan54, StringComparison.Ordinal);
         Assert.Contains("Status.Detail", plan54, StringComparison.Ordinal);
         Assert.Contains("470696e9", plan54, StringComparison.Ordinal);
         Assert.Contains("W7-360", plan54, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-391 (#1187)", plan54, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-392 (#1191)", plan54, StringComparison.Ordinal);
 
         Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.AuthenticationFailed, DesktopRpcFaultText.Format(ex))"));
         Assert.DoesNotContain("ex.Status.Detail", connection, StringComparison.Ordinal);

@@ -1,7 +1,7 @@
 # PLAN-61 — Desktop connection Disconnected RPC fault text after service Error correlation
 
-**Date:** 2026-09-19 (implement **DONE**)  
-**Status:** Inventory **DONE** (W7-388); seed **W7-389 (#1184) DONE**; implement **W7-390 (#1186) DONE**; COMPLETE seed **W7-391 (#1187) OPEN** (**§3.C NEXT**); predecessor **PLAN-60 COMPLETE**  
+**Date:** 2026-09-19 (**PLAN-61 COMPLETE**)  
+**Status:** **PLAN-61 COMPLETE** — Inventory **DONE** (W7-388); seed **W7-389 (#1184) DONE**; implement **W7-390 (#1186) DONE**; COMPLETE seed **W7-391 (#1187) DONE**; operator fault-correlation wave **PLAN-52…61 CLOSED**; freeze **W7-392 (#1191) OPEN** (**§3.C NEXT**); predecessor **PLAN-60 COMPLETE**  
 **PLAN issue / queue:** [W7-388 / PLAN-61 #1183](https://github.com/sesquicadaver/MTDirector/issues/1183) **DONE**  
 **Predecessor:** PLAN-60 Desktop service RPC fault text **COMPLETE** (DESK-SVC-FAULT-01)  
 **Normative files:** `ControllerConnectionService`, operator docs  
@@ -61,7 +61,7 @@ Splitting connect and reconnect into separate rows would be vanity: the same `Se
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-CONN-DISC-01** | Store `DesktopRpcFaultText.Format` when those `Disconnected` catches are `RpcException`; keep `ex.Message` otherwise + Living Spec | **2** `Disconnected` `ex.Message` assignments @ `994863c1` (seed baseline `33682bb6`); **DONE** — both catches call `DesktopRpcFaultText.Format` | after inventory **W7-388 DONE**; seed **W7-389 (#1184) DONE**; implement **W7-390 (#1186) DONE**; COMPLETE **W7-391 (#1187) OPEN** |
+| 1 | **DESK-CONN-DISC-01** | Store `DesktopRpcFaultText.Format` when those `Disconnected` catches are `RpcException`; keep `ex.Message` otherwise + Living Spec | **2** `Disconnected` `ex.Message` assignments @ `994863c1` (seed baseline `33682bb6`); **DONE** — both catches call `DesktopRpcFaultText.Format` | after inventory **W7-388 DONE**; seed **W7-389 (#1184) DONE**; implement **W7-390 (#1186) DONE**; COMPLETE **W7-391 (#1187) DONE** |
 
 Inventory (**W7-388 DONE**) confirmed sole rank. Seed **W7-389** advances NEXT to DESK-CONN-DISC-01 after inventory DONE.
 
@@ -86,8 +86,19 @@ PLAN-60 sole ranked row (**DESK-SVC-FAULT-01**) is **DONE**. No further PLAN-60 
 1. **PLAN-60 COMPLETE** (W7-386 DESK-SVC-FAULT-01; seed **W7-387 DONE**).  
 2. **W7-388 DONE** — PLAN-61 inventory; opened **W7-390 (#1186)** DESK-CONN-DISC-01 implement + **W7-391 (#1187)** COMPLETE follow-up.  
 3. **W7-389 (#1184) DONE** — seed advanced NEXT to DESK-CONN-DISC-01; keep COMPLETE **W7-391** open.  
-4. **W7-390 (#1186) DONE** — DESK-CONN-DISC-01 stores `DesktopRpcFaultText.Format` on those `Disconnected` catches.
+4. **W7-390 (#1186) DONE** — DESK-CONN-DISC-01 stores `DesktopRpcFaultText.Format` on those `Disconnected` catches.  
+5. **W7-391 (#1187) DONE** — PLAN-61 COMPLETE; operator fault-correlation wave **PLAN-52…61 CLOSED**; freeze **W7-392 (#1191)**.
+
+## Wave close (no PLAN-62)
+
+**PLAN-61 COMPLETE.** Sole ranked row **DESK-CONN-DISC-01** is **DONE**. The operator fault-correlation wave (**PLAN-52…61**) is **CLOSED**.
+
+`/autopilot` must **not** open PLAN-62+ by grepping for another `ErrorText` / `ex.Message` / correlation-id site. Further product rows require an existing technical specification (TOR / already-open issue that predates freeze **W7-392**), not an agent-invented residual.
+
+**Not seeded:** another DESK-*-FAULT; another SNAP-*-CORR; Onboarding / Deployment `ErrorCode` proto change; Desktop a11y vanity; MSI / AppImage; systemd Type=notify.
+
+There is no `docs/planning/plan-62-*.md`. The next `/autopilot` closes freeze **W7-392** (docs / Living Spec only) and then **stops**. It does not invent a successor plan.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-391 (#1187)** — Seed next after DESK-CONN-DISC-01 (PLAN-61 COMPLETE).
+**§3.C NEXT = W7-392 (#1191)** — Freeze — no further correlation-id / fault-text plans without a pre-existing TOR.

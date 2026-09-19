@@ -67,7 +67,7 @@ public sealed class SnapFaultCorr01DesktopCaptureProgressLivingSpecTests
         Assert.Contains("Intentional residual (W7-366 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("SNAP-FAULT-CORR-01 DONE", limitations, StringComparison.Ordinal);
         Assert.Contains("W7-366 (#1138) DONE", plan55, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-391 (#1187)", plan55, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-392 (#1191)", plan55, StringComparison.Ordinal);
         Assert.Contains(
             "W7-366 | [#1138](https://github.com/sesquicadaver/MTDirector/issues/1138) | SNAP-FAULT-CORR-01 — Share capture progress correlation id with RPC fault | **DONE**",
             roadmap,
@@ -76,7 +76,7 @@ public sealed class SnapFaultCorr01DesktopCaptureProgressLivingSpecTests
             "W7-367 | [#1139](https://github.com/sesquicadaver/MTDirector/issues/1139) | Seed next after SNAP-FAULT-CORR-01 (PLAN-55 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-391 (#1187)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-392 (#1191)", roadmap, StringComparison.Ordinal);
     }
 
     private static int Count(string text, string value)
