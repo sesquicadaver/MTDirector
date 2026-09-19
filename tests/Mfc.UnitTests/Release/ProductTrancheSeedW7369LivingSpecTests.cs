@@ -38,23 +38,23 @@ public sealed class ProductTrancheSeedW7369LivingSpecTests
             "W7-371 | [#1147](https://github.com/sesquicadaver/MTDirector/issues/1147) | Seed next after DESK-VRRP-FAULT-01 (PLAN-56 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-378 (#1162)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-379 (#1163)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-369", plan, StringComparison.Ordinal);
         Assert.Contains("W7-370", plan, StringComparison.Ordinal);
         Assert.Contains("W7-371", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-VRRP-FAULT-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-378 (#1162)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-379 (#1163)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-369 (#1144) DONE", plan56, StringComparison.Ordinal);
         Assert.Contains("DESK-VRRP-FAULT-01", plan56, StringComparison.Ordinal);
         Assert.Contains("W7-370", plan56, StringComparison.Ordinal);
         Assert.Contains("W7-371", plan56, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-378 (#1162)", plan56, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-379 (#1163)", plan56, StringComparison.Ordinal);
 
         Assert.Equal(1, Count(node, "VrrpPairStatusText = \"VRRP pair consistency failed.\""));
         Assert.Contains("VrrpPairStatusText = $\"VRRP pair consistency failed. {fault}\"", node, StringComparison.Ordinal);
-        Assert.Contains("ErrorText = DesktopRpcFaultText.Format(ex)", node, StringComparison.Ordinal);
+        Assert.Contains("string fault = DesktopRpcFaultText.Format(ex)", node, StringComparison.Ordinal);
         Assert.DoesNotContain("correlation", node, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("public static string Format(RpcException exception)", fault, StringComparison.Ordinal);
         Assert.Contains("(correlation {correlation})", viewer, StringComparison.Ordinal);

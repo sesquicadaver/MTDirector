@@ -94,4 +94,4 @@ PLAN-53 sole ranked row (**CTRL-ERRDETAIL-LOG-01**) is **DONE**. No further PLAN
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-378 (#1162)** — PLAN-55 Inventory capture progress fault correlation.
+**§3.C NEXT = W7-379 (#1163)** — PLAN-55 Inventory capture progress fault correlation.

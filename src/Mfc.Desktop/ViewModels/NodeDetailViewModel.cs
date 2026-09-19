@@ -357,8 +357,9 @@ public sealed partial class NodeDetailViewModel : ObservableObject, IDisposable
                 return;
             }
 
-            ErrorText = DesktopRpcFaultText.Format(ex);
-            DeploymentReadinessText = "GetNodeWorkflow failed.";
+            string fault = DesktopRpcFaultText.Format(ex);
+            ErrorText = fault;
+            DeploymentReadinessText = $"GetNodeWorkflow failed. {fault}";
         }
         catch (Exception ex)
         {

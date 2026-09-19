@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — DESK-PANEL-FAULT-01 panel status fault text (W7-378)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Panel status repeats DesktopRpcFaultText on RpcException; prior locks held | Drift/Audit/Incident/Routing/NodeDetail ViewModels, connection-profiles | `DeskPanelFault01DesktopPanelStatusLivingSpecTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~DeskPanelFault01"`.
+
 ## Living Specification — Seed DESK-PANEL-FAULT-01 as §3.C NEXT (W7-377)
 
 | Requirement | Artifact | Test |
