@@ -1,8 +1,8 @@
 # PLAN-53 — Controller fault-correlation logging after Desktop ErrorDetail mapping
 
-**Date:** 2026-09-19 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-356); seed **W7-357 (#1120) OPEN**; predecessor **PLAN-52 COMPLETE**  
-**PLAN issue / queue:** [W7-356 / PLAN-53 #1119](https://github.com/sesquicadaver/MTDirector/issues/1119) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-19 (inventory **DONE** @ `dbbe0733`)  
+**Status:** Inventory **DONE** (W7-356); seed **W7-357 (#1120) OPEN** (**§3.C NEXT**); implement **W7-358 (#1122) OPEN**; COMPLETE seed **W7-359 (#1123) OPEN**  
+**PLAN issue / queue:** [W7-356 / PLAN-53 #1119](https://github.com/sesquicadaver/MTDirector/issues/1119) **DONE**  
 **Predecessor:** PLAN-52 Desktop gRPC ErrorDetail operator mapping **COMPLETE** (DESK-RPC-FAULT-01)  
 **Normative files:** `GrpcApplicationErrorMapper`, Controller JSON logging, operator docs  
 **Normative prior locks:** DESK-RPC-FAULT-01 (`DesktopRpcFaultText`); unary deadline; Watch streams unbounded; MSGSIZE / BODY / KEEPALIVE / MINRATE; HTTP health; metrics; tracing; log↔trace correlation; OTel resource — **do not regress**  
@@ -25,24 +25,54 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - Nested ListBox / TabControl a11y vanity  
 - systemd `Type=notify` / `WatchdogSec`  
 - Ops / CRS / physical lab live runners as §3 stop-gates  
+- Changing the `mfc-error-detail-bin` trailer contract consumed by `DesktopRpcFaultText`
 
-## Inventory evidence (seed baseline @ `59488058`)
+## Inventory evidence (W7-356 @ `main` `dbbe0733`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
-| `GrpcApplicationErrorMapper` | `CorrelationId = ProtoUuid.FromGuid(correlationId ?? Guid.NewGuid())` | Id minted |
+| `GrpcApplicationErrorMapper` | `CorrelationId = ProtoUuid.FromGuid(correlationId ?? Guid.NewGuid())` | Id minted when callers omit it |
 | Mapper logging | **0** `ILogger` references | Id never logged |
 | `ToRpcException` callers | **43** calls; **0** pass `correlationId` | Every fault id is new and unlogged |
-| Desktop `ErrorText` | `DesktopRpcFaultText` shows that id | Operators cannot join journald |
-| PLAN-45 JSON logs | Activity `TraceId` / `SpanId` | Different identifier; do not regress |
+| Desktop `ErrorText` | `DesktopRpcFaultText` shows `correlation {id}` | Operators cannot join journald |
+| PLAN-45 JSON logs | `RedactingJsonConsoleLoggerProvider` emits Activity `traceId` / `spanId` | Different identifier; do not regress |
 
-## Ranked tranche (seed baseline)
+### `ToRpcException` call sites (43)
+
+| File | Calls |
+|------|------:|
+| `DeploymentGrpcService` | 10 |
+| `OnboardingGrpcService` | 9 |
+| `SnapshotGrpcService` | 7 |
+| `IncidentGrpcService` | 6 |
+| `PolicyGrpcService` | 3 |
+| `GrpcRequestActorResolver` | 3 |
+| `AuditGrpcService` | 1 |
+| `DriftGrpcService` | 1 |
+| `InventoryGrpcService` | 1 |
+| `RoutingAssuranceGrpcService` | 1 |
+| `ZoneGrpcService` | 1 |
+| **Total** | **43** |
+
+The mapper is a `static` class. Existing Controller logging is constructor-injected `ILogger<T>` plus `RedactingJsonConsoleLoggerProvider` (JSON console / journald). No second logging stack.
+
+**Ranking decision:** Prefer **ONE atomic row** (**CTRL-ERRDETAIL-LOG-01**):
+
+- One structured log at the mapper: fault **code**, gRPC **status**, **correlation id**, **retryable**
+- Use the existing logger (`ILogger` injection into the mapper, or the same `ILogger<T>` / `LoggerMessage` pattern). Do not invent a new logging stack
+- Do **not** change the `ErrorDetail` trailer contract (`mfc-error-detail-bin`) consumed by `DesktopRpcFaultText`
+- Do **not** regress DESK-RPC-FAULT-01, unary deadlines, MSGSIZE / BODY / KEEPALIVE / MINRATE, health, metrics, or tracing
+- Living Spec + operator docs
+
+Splitting per-service ranks would be vanity. Passing a caller-supplied correlation id is unnecessary while every caller omits it — logging the id the mapper already mints joins journald to Desktop `ErrorText`.
+
+## Ranked tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **CTRL-ERRDETAIL-LOG-01** | Structured log of fault code, gRPC status, correlation id, and retryable at the mapper + Living Spec | mapper has no logger; 43 callers omit correlation id @ `59488058` | after inventory **W7-356**; seed **W7-357 (#1120)** |
+| 1 | **CTRL-ERRDETAIL-LOG-01** | Structured log of fault code, gRPC status, correlation id, and retryable at the mapper + Living Spec | **43** callers omit `correlationId`; **0** `ILogger` @ `dbbe0733` | after inventory **W7-356 DONE**; seed **W7-357 (#1120) OPEN**; implement **W7-358 (#1122) OPEN**; COMPLETE **W7-359 (#1123) OPEN** |
 
-Inventory (**W7-356**) may refine ranking and open the implement issue; seed **W7-357** advances NEXT to that implement after inventory DONE.
+Inventory (**W7-356 DONE**) confirmed sole rank. Seed **W7-357** advances NEXT to the LOG implement after inventory DONE.
 
 ## Dual track
 
@@ -62,10 +92,10 @@ PLAN-52 sole ranked row (**DESK-RPC-FAULT-01**) is **DONE**. No further PLAN-52 
 ## §3.C ordering
 
 1. **PLAN-52 COMPLETE** (W7-354 DESK-RPC-FAULT-01; seed **W7-355 DONE**).  
-2. **W7-356 OPEN** — PLAN-53 inventory (**§3.C NEXT**).  
+2. **W7-356 DONE** — PLAN-53 inventory; opened **W7-358 (#1122)** CTRL-ERRDETAIL-LOG-01 implement + **W7-359 (#1123)** COMPLETE follow-up.  
 3. **W7-357 OPEN** — seed first PLAN-53 implement after inventory.  
 4. Execute ranked CTRL-ERRDETAIL-LOG-01 atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-356 (#1119)** — PLAN-53 Inventory Controller fault-correlation logging.
+**§3.C NEXT = W7-357 (#1120)** — Seed first PLAN-53 atomic row after inventory → CTRL-ERRDETAIL-LOG-01.

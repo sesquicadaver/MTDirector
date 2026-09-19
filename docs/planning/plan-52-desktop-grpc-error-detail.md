@@ -1,7 +1,7 @@
 # PLAN-52 — Desktop gRPC ErrorDetail operator mapping after unary deadlines
 
 **Date:** 2026-09-19 (inventory **DONE** @ `7ee69220`)  
-**Status:** **PLAN-52 COMPLETE** — Inventory **DONE** (W7-352); seed **W7-353 (#1112) DONE**; implement **W7-354 (#1114) DONE**; COMPLETE seed **W7-355 (#1115) DONE**; successor **PLAN-53** inventory **W7-356 (#1119) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-52 COMPLETE** — Inventory **DONE** (W7-352); seed **W7-353 (#1112) DONE**; implement **W7-354 (#1114) DONE**; COMPLETE seed **W7-355 (#1115) DONE**; successor **PLAN-53** inventory **W7-356 (#1119) DONE**; seed **W7-357 (#1120) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-352 / PLAN-52 #1111](https://github.com/sesquicadaver/MTDirector/issues/1111) **DONE**  
 **Predecessor:** PLAN-51 Desktop gRPC unary call deadline **COMPLETE** (DESK-GRPC-DEADLINE-01)  
 **Normative files:** `GrpcApplicationErrorMapper`, Desktop ViewModels that catch `RpcException`, operator docs  
@@ -99,4 +99,4 @@ PLAN-51 sole ranked row (**DESK-GRPC-DEADLINE-01**) is **DONE**. No further PLAN
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-356 (#1119)** — PLAN-53 Inventory Controller fault-correlation logging.
+**§3.C NEXT = W7-357 (#1120)** — Seed first PLAN-53 atomic row after inventory → CTRL-ERRDETAIL-LOG-01.

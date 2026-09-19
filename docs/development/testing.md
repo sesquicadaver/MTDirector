@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — PLAN-53 inventory Controller fault-correlation logging (W7-356)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-53 inventory ranks sole CTRL-ERRDETAIL-LOG-01 + seeds | plan-53, ROADMAP, known-limitations, mapper baseline | `Plan53ControllerFaultCorrelationLogW7356LivingSpecTests.Ac1Plan53InventoryDocumentsSoleCtrlErrdetailLog01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan53ControllerFaultCorrelationLogW7356"`.
+
 ## Living Specification — Seed PLAN-53 after PLAN-52 COMPLETE (W7-355)
 
 | Requirement | Artifact | Test |
