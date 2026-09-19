@@ -84,4 +84,4 @@ PLAN-45 sole ranked row (**CTRL-LOG-OTEL-CORRELATE-01**) is **DONE**. No further
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-364 (#1135)** — PLAN-48 Inventory after PLAN-47 COMPLETE.
+**§3.C NEXT = W7-365 (#1136)** — PLAN-48 Inventory after PLAN-47 COMPLETE.
