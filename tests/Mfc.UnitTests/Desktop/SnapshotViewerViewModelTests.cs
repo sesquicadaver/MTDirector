@@ -132,7 +132,7 @@ public sealed class SnapshotViewerViewModelTests
         Assert.Equal(1, client.WatchCalls);
         Assert.Equal(0, viewer.LoadDeviceCalls);
         Assert.Equal("Failed: device unreachable", vm.CaptureProgressText);
-        Assert.Equal("device unreachable", vm.ErrorText);
+        Assert.Equal("Failed: device unreachable", vm.ErrorText);
         Assert.Empty(vm.Captures);
     }
 
@@ -180,6 +180,7 @@ public sealed class SnapshotViewerViewModelTests
         Assert.Equal(
             "Failed: device unreachable (correlation 22222222-2222-2222-2222-222222222222)",
             vm.CaptureProgressText);
+        Assert.Equal(vm.CaptureProgressText, vm.ErrorText);
     }
 
     [Fact]

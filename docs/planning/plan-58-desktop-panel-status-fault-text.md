@@ -1,7 +1,7 @@
 # PLAN-58 — Desktop panel status fault text after VRRP capture-progress fault text
 
 **Date:** 2026-09-19 (**PLAN-58 COMPLETE**)  
-**Status:** **PLAN-58 COMPLETE** — Inventory **DONE** (W7-376); seed **W7-377 (#1160) DONE**; implement **W7-378 (#1162) DONE**; COMPLETE seed **W7-379 (#1163) DONE**; successor **PLAN-59** inventory **W7-380 (#1167) DONE**; seed **W7-381 (#1168) DONE**; implement **W7-382 (#1170) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-58 COMPLETE** — Inventory **DONE** (W7-376); seed **W7-377 (#1160) DONE**; implement **W7-378 (#1162) DONE**; COMPLETE seed **W7-379 (#1163) DONE**; successor **PLAN-59** inventory **W7-380 (#1167) DONE**; seed **W7-381 (#1168) DONE**; implement **W7-382 (#1170) DONE**; COMPLETE seed **W7-383 (#1171) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-376 / PLAN-58 #1159](https://github.com/sesquicadaver/MTDirector/issues/1159) **DONE**  
 **Predecessor:** PLAN-57 VRRP capture-progress fault text **COMPLETE** (DESK-VRRP-PROG-01)  
 **Normative files:** `DriftViewModel`, `AuditViewModel`, `IncidentViewModel`, `RoutingAssuranceViewModel`, `NodeDetailViewModel`, operator docs  
@@ -95,4 +95,4 @@ PLAN-57 sole ranked row (**DESK-VRRP-PROG-01**) is **DONE**. No further PLAN-57 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-382 (#1170)** — PLAN-59 Inventory Snapshot failed-stage ErrorText correlation.
+**§3.C NEXT = W7-383 (#1171)** — PLAN-59 Inventory Snapshot failed-stage ErrorText correlation.

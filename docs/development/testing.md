@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — SNAP-ERRTEXT-CORR-01 Failed-stage ErrorText correlation (W7-382)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Failed-stage ErrorText reuses FormatCaptureProgress correlation suffix; prior locks held | SnapshotViewerViewModel, snapshots-and-diff, connection-profiles | `SnapErrtextCorr01DesktopFailedErrorTextLivingSpecTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~SnapErrtextCorr01"`.
+
 ## Living Specification — Seed SNAP-ERRTEXT-CORR-01 as §3.C NEXT (W7-381)
 
 | Requirement | Artifact | Test |
