@@ -137,6 +137,52 @@ public sealed class SnapshotViewerViewModelTests
     }
 
     [Fact]
+    public async Task CaptureProgressLineShowsSharedCorrelationId()
+    {
+        Guid deviceId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid operationId = Guid.Parse("99999999-8888-7777-6666-555555555555");
+        Guid correlation = Guid.Parse("22222222-2222-2222-2222-222222222222");
+        FakeConnection connection = new() { State = ControllerConnectionState.Connected };
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        inventory.SelectedNode = new InventoryNodeViewModel(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Device,
+            Id = deviceId,
+            DisplayName = "chr-seed",
+        });
+
+        FakeSnapshotClient client = new()
+        {
+            StartResponse = new StartCaptureResponse
+            {
+                OperationId = DesktopProtoUuid.FromGuid(operationId),
+            },
+            WatchEvents =
+            [
+                new CaptureProgress
+                {
+                    Stage = CaptureStage.Failed,
+                    OperationId = DesktopProtoUuid.FromGuid(operationId),
+                    DeviceId = DesktopProtoUuid.FromGuid(deviceId),
+                    Error = new ErrorDetail
+                    {
+                        Code = "failed",
+                        SanitizedDetail = "device unreachable",
+                        CorrelationId = DesktopProtoUuid.FromGuid(correlation),
+                    },
+                },
+            ],
+        };
+
+        using SnapshotViewerViewModel vm = new(new StubViewer(), client, connection, inventory);
+        await vm.CaptureCommand.ExecuteAsync(null);
+
+        Assert.Equal(
+            "Failed: device unreachable (correlation 22222222-2222-2222-2222-222222222222)",
+            vm.CaptureProgressText);
+    }
+
+    [Fact]
     public void CaptureCommandDisabledWhenDisconnected()
     {
         FakeConnection connection = new() { State = ControllerConnectionState.Disconnected };
