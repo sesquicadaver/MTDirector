@@ -1,7 +1,7 @@
 # PLAN-51 — Desktop gRPC unary call deadline / timeout after transport saturates
 
 **Date:** 2026-09-17 (inventory **DONE** @ `9001354c`)  
-**Status:** **PLAN-51 COMPLETE** — Inventory **DONE** (W7-348); seed **W7-349 (#1104) DONE**; implement **W7-350 (#1106) DONE**; COMPLETE seed **W7-351 (#1107) DONE**; successor **PLAN-52** inventory **W7-352 (#1111) DONE**; seed **W7-353 (#1112) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-51 COMPLETE** — Inventory **DONE** (W7-348); seed **W7-349 (#1104) DONE**; implement **W7-350 (#1106) DONE**; COMPLETE seed **W7-351 (#1107) DONE**; successor **PLAN-52** inventory **W7-352 (#1111) DONE**; seed **W7-353 (#1112) DONE**; implement **W7-354 (#1114) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-348 / PLAN-51 #1103](https://github.com/sesquicadaver/MTDirector/issues/1103) **DONE**  
 **Predecessor:** PLAN-50 Controller Kestrel min request/response data-rate **COMPLETE** (CTRL-KESTREL-MINRATE-01)  
 **Normative files:** Desktop gRPC call sites (`src/Mfc.Desktop/Services/Grpc*Client.cs`), `DesktopOptions`, shared unary call helper, connection / installation / development docs  
@@ -114,4 +114,4 @@ PLAN-50 sole ranked row (**CTRL-KESTREL-MINRATE-01**) is **DONE**. No further PL
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-353 (#1112)** — PLAN-52 Inventory Desktop gRPC ErrorDetail operator mapping after PLAN-51.
+**§3.C NEXT = W7-354 (#1114)** — PLAN-52 Inventory Desktop gRPC ErrorDetail operator mapping after PLAN-51.

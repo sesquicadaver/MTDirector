@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed DESK-RPC-FAULT-01 as §3.C NEXT (W7-353)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks DESK-RPC-FAULT-01 as §3.C NEXT | known-limitations, ROADMAP, plan-52, continuous-queue | `ProductTrancheSeedW7353LivingSpecTests.Ac1KnownLimitationsAndQueueSeedDeskRpcFault01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7353"`.
+
 ## Living Specification — PLAN-52 inventory Desktop gRPC ErrorDetail (W7-352)
 
 | Requirement | Artifact | Test |
