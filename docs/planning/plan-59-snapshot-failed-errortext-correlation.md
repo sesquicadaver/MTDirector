@@ -1,7 +1,7 @@
 # PLAN-59 — Snapshot failed-stage ErrorText correlation after panel status fault text
 
 **Date:** 2026-09-19 (**PLAN-59 COMPLETE**)  
-**Status:** **PLAN-59 COMPLETE** — Inventory **DONE** (W7-380); seed **W7-381 (#1168) DONE**; implement **W7-382 (#1170) DONE**; COMPLETE seed **W7-383 (#1171) DONE**; successor **PLAN-60** inventory **W7-384 (#1175) DONE**; seed **W7-385 (#1176) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-59 COMPLETE** — Inventory **DONE** (W7-380); seed **W7-381 (#1168) DONE**; implement **W7-382 (#1170) DONE**; COMPLETE seed **W7-383 (#1171) DONE**; successor **PLAN-60** inventory **W7-384 (#1175) DONE**; seed **W7-385 (#1176) DONE**; implement **W7-386 (#1178) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-380 / PLAN-59 #1167](https://github.com/sesquicadaver/MTDirector/issues/1167) **DONE**  
 **Predecessor:** PLAN-58 Desktop panel status fault text **COMPLETE** (DESK-PANEL-FAULT-01)  
 **Normative files:** `SnapshotViewerViewModel`, operator docs  
@@ -92,4 +92,4 @@ When Watch ends in `CaptureStage.Failed`, shell `ErrorText` is `FormatCapturePro
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-385 (#1176)** — PLAN-60 Inventory Desktop service RPC fault text.
+**§3.C NEXT = W7-386 (#1178)** — PLAN-60 Inventory Desktop service RPC fault text.
