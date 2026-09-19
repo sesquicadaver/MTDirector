@@ -88,4 +88,4 @@ PLAN-30 ranks 1…2 (**WATCH-OWN-01**, **WATCH-BP-01**) are **DONE**. No further
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-366 (#1138)** — Seed next PLAN-32 row after OPS-HOST-SYSTEMD-01 → OPS-HOST-WINSVC-01.
+**§3.C NEXT = W7-367 (#1139)** — Seed next PLAN-32 row after OPS-HOST-SYSTEMD-01 → OPS-HOST-WINSVC-01.

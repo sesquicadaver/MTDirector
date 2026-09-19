@@ -36,7 +36,7 @@ public sealed class Plan55CaptureProgressFaultCorrelationW7364LivingSpecTests
         Assert.Contains("W7-365", plan55, StringComparison.Ordinal);
         Assert.Contains("W7-364", plan55, StringComparison.Ordinal);
         Assert.Contains("FormatCaptureProgress", plan55, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-366 (#1138)", plan55, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-367 (#1139)", plan55, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-364 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("SNAP-FAULT-CORR-01", limitations, StringComparison.Ordinal);
@@ -53,14 +53,14 @@ public sealed class Plan55CaptureProgressFaultCorrelationW7364LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-366 | [#1138](https://github.com/sesquicadaver/MTDirector/issues/1138) | SNAP-FAULT-CORR-01 — Share capture progress correlation id with RPC fault | **OPEN**",
+            "W7-366 | [#1138](https://github.com/sesquicadaver/MTDirector/issues/1138) | SNAP-FAULT-CORR-01 — Share capture progress correlation id with RPC fault | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-367 | [#1139](https://github.com/sesquicadaver/MTDirector/issues/1139) | Seed next after SNAP-FAULT-CORR-01 (PLAN-55 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-366 (#1138)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-367 (#1139)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-365", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-366", continuous, StringComparison.Ordinal);
@@ -69,11 +69,11 @@ public sealed class Plan55CaptureProgressFaultCorrelationW7364LivingSpecTests
         Assert.Contains("plan-55-capture-progress-fault-correlation.md", docsIndex, StringComparison.Ordinal);
         Assert.Contains("Plan55CaptureProgressFaultCorrelationW7364", testing, StringComparison.Ordinal);
 
-        Assert.Equal(4, Count(snapshot, "CorrelationId = ProtoUuid.FromGuid(Guid.NewGuid())"));
-        Assert.Equal(2, Count(snapshot, "                throw GrpcApplicationErrorMapper.ToRpcException(result.Error!);"));
-        Assert.DoesNotContain("ToRpcException(result.Error!,", snapshot, StringComparison.Ordinal);
-        Assert.Contains("return $\"{stage}: {error.SanitizedDetail}\";", viewer, StringComparison.Ordinal);
-        Assert.DoesNotContain("correlation", viewer, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(0, Count(snapshot, "CorrelationId = ProtoUuid.FromGuid(Guid.NewGuid())"));
+        Assert.Equal(2, Count(snapshot, "ToRpcException(result.Error!, sharedId)"));
+        Assert.Contains("NewCaptureFailureDetail", snapshot, StringComparison.Ordinal);
+        Assert.Contains("(correlation {correlation})", viewer, StringComparison.Ordinal);
+        Assert.Contains("CaptureProgressText = $\"Failed: {fault}\"", viewer, StringComparison.Ordinal);
         Assert.Contains("public static RpcException ToRpcException(ApplicationError error, Guid? correlationId = null)", mapper, StringComparison.Ordinal);
         Assert.Contains("gRPC application fault code={Code} status={Status} correlation_id={CorrelationId} retryable={Retryable}", mapper, StringComparison.Ordinal);
         Assert.Contains("mfc-error-detail-bin", mapper, StringComparison.Ordinal);

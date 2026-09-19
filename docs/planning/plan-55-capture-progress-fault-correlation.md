@@ -1,7 +1,7 @@
 # PLAN-55 — Capture progress fault correlation after connection-status fault text
 
 **Date:** 2026-09-19 (inventory **DONE** @ `ded885b8`; seed baseline @ `d848a58c`)  
-**Status:** Inventory **DONE** (W7-364); seed **W7-365 (#1136) DONE**; implement **W7-366 (#1138) OPEN** (**§3.C NEXT**); COMPLETE seed **W7-367 (#1139) OPEN**  
+**Status:** Inventory **DONE** (W7-364); seed **W7-365 (#1136) DONE**; implement **W7-366 (#1138) DONE**; COMPLETE seed **W7-367 (#1139) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-364 / PLAN-55 #1135](https://github.com/sesquicadaver/MTDirector/issues/1135) **DONE**  
 **Predecessor:** PLAN-54 Desktop connection-status fault text **COMPLETE** (DESK-CONN-FAULT-01)  
 **Normative files:** `SnapshotGrpcService`, `SnapshotViewerViewModel`, `GrpcApplicationErrorMapper`, operator docs  
@@ -66,7 +66,7 @@ Splitting device vs node would be vanity: both failure throws are the same assig
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **SNAP-FAULT-CORR-01** | Share one correlation id between capture progress `ErrorDetail` and `ToRpcException`, and show it on the progress line + Living Spec | **4** `Guid.NewGuid()` progress ids; **0** passed into `ToRpcException` @ `ded885b8` | after inventory **W7-364 DONE**; seed **W7-365 (#1136) DONE**; implement **W7-366 (#1138) OPEN** (**§3.C NEXT**); COMPLETE **W7-367 (#1139) OPEN** |
+| 1 | **SNAP-FAULT-CORR-01** | Share one correlation id between capture progress `ErrorDetail` and `ToRpcException`, and show it on the progress line + Living Spec | **4** `Guid.NewGuid()` progress ids; **0** passed into `ToRpcException` @ `ded885b8` | after inventory **W7-364 DONE**; seed **W7-365 (#1136) DONE**; implement **W7-366 (#1138) DONE**; COMPLETE **W7-367 (#1139) OPEN** (**§3.C NEXT**) |
 
 Inventory (**W7-364 DONE**) confirmed sole rank. Seed **W7-365** advances NEXT to the capture-correlation implement after inventory DONE.
 
@@ -93,9 +93,13 @@ PLAN-54 sole ranked row (**DESK-CONN-FAULT-01**) is **DONE**. No further PLAN-54
 1. **PLAN-54 COMPLETE** (W7-362 DESK-CONN-FAULT-01; seed **W7-363 DONE**).  
 2. **W7-364 DONE** — PLAN-55 inventory; opened **W7-366 (#1138)** SNAP-FAULT-CORR-01 implement + **W7-367 (#1139)** COMPLETE follow-up.  
 3. **W7-365 (#1136) DONE** — seed advanced NEXT to SNAP-FAULT-CORR-01; keep COMPLETE **W7-367** open.  
-4. **W7-366 OPEN** — execute ranked SNAP-FAULT-CORR-01 atomically (**§3.C NEXT**).  
-5. **W7-367** — PLAN-55 COMPLETE → seed PLAN-56.
+4. **W7-366 (#1138) DONE** — SNAP-FAULT-CORR-01 shares one correlation id between capture progress and `ToRpcException`, and shows it on the progress line.  
+5. **W7-367 OPEN** — PLAN-55 COMPLETE → seed PLAN-56 (**§3.C NEXT**).
+
+## Delivery notes (W7-366)
+
+`SnapshotGrpcService.NewCaptureFailureDetail` mints one `Guid` for each capture-progress `ErrorDetail`. The device and node result-failure throws pass that id into `ToRpcException`, so `mfc-error-detail-bin` and event **5301** use the same id as Watch progress. `FormatCaptureProgress` appends `(correlation {id})` when the progress detail carries a 16-byte id. If `StartCapture` throws, the Snapshots progress line uses `DesktopRpcFaultText.Format` so the operator line still shows that id. Generic `catch` rethrows, Onboarding/Deployment progress, health-timeout, TLS text, unary deadlines, and the trailer / 5301 templates are unchanged.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-366 (#1138)** — SNAP-FAULT-CORR-01 — Share capture progress correlation id with RPC fault.
+**§3.C NEXT = W7-367 (#1139)** — Seed next after SNAP-FAULT-CORR-01 (PLAN-55 COMPLETE).

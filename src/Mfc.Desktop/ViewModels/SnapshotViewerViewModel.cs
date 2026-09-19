@@ -205,8 +205,9 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
         }
         catch (RpcException ex)
         {
-            CaptureProgressText = "Failed";
-            ErrorText = DesktopRpcFaultText.Format(ex);
+            string fault = DesktopRpcFaultText.Format(ex);
+            CaptureProgressText = $"Failed: {fault}";
+            ErrorText = fault;
         }
         catch (Exception ex)
         {
@@ -277,12 +278,40 @@ public sealed partial class SnapshotViewerViewModel : ObservableObject, IDisposa
             return $"{stage}: {progress.CurrentSection}";
         }
 
-        if (progress.Error is ErrorDetail error && !string.IsNullOrWhiteSpace(error.SanitizedDetail))
+        if (progress.Error is ErrorDetail error)
         {
-            return $"{stage}: {error.SanitizedDetail}";
+            bool hasDetail = !string.IsNullOrWhiteSpace(error.SanitizedDetail);
+            bool hasCorrelation = TryProgressCorrelation(error, out string correlation);
+            if (hasDetail && hasCorrelation)
+            {
+                return $"{stage}: {error.SanitizedDetail} (correlation {correlation})";
+            }
+
+            if (hasDetail)
+            {
+                return $"{stage}: {error.SanitizedDetail}";
+            }
+
+            if (hasCorrelation)
+            {
+                return $"{stage} (correlation {correlation})";
+            }
         }
 
         return stage;
+    }
+
+    /// <summary>Reads a 16-byte progress <see cref="ErrorDetail.CorrelationId"/> as a canonical GUID string.</summary>
+    private static bool TryProgressCorrelation(ErrorDetail error, out string correlation)
+    {
+        correlation = string.Empty;
+        if (error.CorrelationId is null || error.CorrelationId.Value.Length != 16)
+        {
+            return false;
+        }
+
+        correlation = DesktopProtoUuid.ToGuid(error.CorrelationId).ToString("D");
+        return true;
     }
 
     private void OnInventoryPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

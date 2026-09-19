@@ -98,17 +98,12 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
 
             if (!result.IsSuccess)
             {
-                _progressHub.Publish(
-                    operationId,
-                    CaptureStage.Failed,
-                    error: new ErrorDetail
-                    {
-                        Code = result.Error!.Code,
-                        Retryable = false,
-                        CorrelationId = ProtoUuid.FromGuid(Guid.NewGuid()),
-                        SanitizedDetail = result.Error.Message,
-                    });
-                throw GrpcApplicationErrorMapper.ToRpcException(result.Error!);
+                ErrorDetail failure = NewCaptureFailureDetail(
+                    result.Error!.Code,
+                    result.Error.Message,
+                    out Guid sharedId);
+                _progressHub.Publish(operationId, CaptureStage.Failed, error: failure);
+                throw GrpcApplicationErrorMapper.ToRpcException(result.Error!, sharedId);
             }
 
             SnapshotView snapshot = result.Value!;
@@ -135,13 +130,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
             _progressHub.Publish(
                 operationId,
                 CaptureStage.Failed,
-                error: new ErrorDetail
-                {
-                    Code = "failed",
-                    Retryable = false,
-                    CorrelationId = ProtoUuid.FromGuid(Guid.NewGuid()),
-                    SanitizedDetail = "capture failed",
-                });
+                error: NewCaptureFailureDetail("failed", "capture failed", out _));
             throw;
         }
     }
@@ -180,17 +169,12 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
 
             if (!result.IsSuccess)
             {
-                _progressHub.Publish(
-                    operationId,
-                    CaptureStage.Failed,
-                    error: new ErrorDetail
-                    {
-                        Code = result.Error!.Code,
-                        Retryable = false,
-                        CorrelationId = ProtoUuid.FromGuid(Guid.NewGuid()),
-                        SanitizedDetail = result.Error.Message,
-                    });
-                throw GrpcApplicationErrorMapper.ToRpcException(result.Error!);
+                ErrorDetail failure = NewCaptureFailureDetail(
+                    result.Error!.Code,
+                    result.Error.Message,
+                    out Guid sharedId);
+                _progressHub.Publish(operationId, CaptureStage.Failed, error: failure);
+                throw GrpcApplicationErrorMapper.ToRpcException(result.Error!, sharedId);
             }
 
             CaptureNodeSnapshotsView batch = result.Value!;
@@ -224,13 +208,7 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
             _progressHub.Publish(
                 operationId,
                 CaptureStage.Failed,
-                error: new ErrorDetail
-                {
-                    Code = "failed",
-                    Retryable = false,
-                    CorrelationId = ProtoUuid.FromGuid(Guid.NewGuid()),
-                    SanitizedDetail = "capture failed",
-                });
+                error: NewCaptureFailureDetail("failed", "capture failed", out _));
             throw;
         }
     }
@@ -402,6 +380,23 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
             throw GrpcApplicationErrorMapper.ToRpcException(
                 ApplicationError.Forbidden("Watch requires the operation owner."));
         }
+    }
+
+    /// <summary>
+    /// Mints one id for a capture-progress <see cref="ErrorDetail"/> (SNAP-FAULT-CORR-01).
+    /// Result-failure throws pass <paramref name="sharedId"/> into <c>ToRpcException</c>
+    /// so the trailer and event 5301 match the Watch line.
+    /// </summary>
+    private static ErrorDetail NewCaptureFailureDetail(string code, string sanitizedDetail, out Guid sharedId)
+    {
+        sharedId = Guid.NewGuid();
+        return new ErrorDetail
+        {
+            Code = code,
+            Retryable = false,
+            CorrelationId = ProtoUuid.FromGuid(sharedId),
+            SanitizedDetail = sanitizedDetail,
+        };
     }
 
     private static T Unwrap<T>(ApplicationResult<T> result)

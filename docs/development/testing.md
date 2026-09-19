@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — SNAP-FAULT-CORR-01 capture progress correlation (W7-366)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| One correlation id on progress ErrorDetail, RPC trailer, and the capture progress line | SnapshotGrpcService, SnapshotViewerViewModel, snapshots-and-diff | `SnapFaultCorr01DesktopCaptureProgressLivingSpecTests` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~SnapFaultCorr01"`.
+
 ## Living Specification — Seed SNAP-FAULT-CORR-01 as §3.C NEXT (W7-365)
 
 | Requirement | Artifact | Test |
