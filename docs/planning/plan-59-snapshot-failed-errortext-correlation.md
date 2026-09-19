@@ -1,7 +1,7 @@
 # PLAN-59 — Snapshot failed-stage ErrorText correlation after panel status fault text
 
 **Date:** 2026-09-19 (**PLAN-59 COMPLETE**)  
-**Status:** **PLAN-59 COMPLETE** — Inventory **DONE** (W7-380); seed **W7-381 (#1168) DONE**; implement **W7-382 (#1170) DONE**; COMPLETE seed **W7-383 (#1171) DONE**; successor **PLAN-60** inventory **W7-384 (#1175) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-59 COMPLETE** — Inventory **DONE** (W7-380); seed **W7-381 (#1168) DONE**; implement **W7-382 (#1170) DONE**; COMPLETE seed **W7-383 (#1171) DONE**; successor **PLAN-60** inventory **W7-384 (#1175) DONE**; seed **W7-385 (#1176) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-380 / PLAN-59 #1167](https://github.com/sesquicadaver/MTDirector/issues/1167) **DONE**  
 **Predecessor:** PLAN-58 Desktop panel status fault text **COMPLETE** (DESK-PANEL-FAULT-01)  
 **Normative files:** `SnapshotViewerViewModel`, operator docs  
@@ -84,7 +84,7 @@ PLAN-58 sole ranked row (**DESK-PANEL-FAULT-01**) is **DONE**. No further PLAN-5
 2. **W7-380 DONE** — PLAN-59 inventory; opened **W7-382 (#1170)** SNAP-ERRTEXT-CORR-01 implement + **W7-383 (#1171)** COMPLETE follow-up.  
 3. **W7-381 (#1168) DONE** — seed advanced NEXT to SNAP-ERRTEXT-CORR-01; keep COMPLETE **W7-383** open.  
 4. **W7-382 (#1170) DONE** — SNAP-ERRTEXT-CORR-01 sets Failed-stage `ErrorText` from `FormatCaptureProgress`.  
-5. **W7-383 (#1171) DONE** — PLAN-59 COMPLETE; successor **PLAN-60** inventory **W7-384 (#1175)**.
+5. **W7-383 (#1171) DONE** — PLAN-59 COMPLETE; successor **PLAN-60** inventory **W7-384 (#1175) DONE**; seed **W7-385 (#1176)**.
 
 ## Delivery notes (W7-382)
 
@@ -92,4 +92,4 @@ When Watch ends in `CaptureStage.Failed`, shell `ErrorText` is `FormatCapturePro
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-384 (#1175)** — PLAN-60 Inventory Desktop service RPC fault text.
+**§3.C NEXT = W7-385 (#1176)** — PLAN-60 Inventory Desktop service RPC fault text.

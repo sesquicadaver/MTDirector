@@ -3981,6 +3981,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — PLAN-60 inventory Desktop service RPC fault text (W7-384)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-60 inventory ranks sole DESK-SVC-FAULT-01 + seeds | plan-60, ROADMAP, known-limitations, SnapshotViewerService / SnapshotDiffService / InventoryTreeService baseline | `Plan60DesktopServiceRpcFaultTextW7384LivingSpecTests.Ac1Plan60InventoryDocumentsSoleDeskSvcFault01RankAndSeedsImplement` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan60DesktopServiceRpcFaultTextW7384"`.
+
 ## Living Specification — Seed PLAN-60 after PLAN-59 COMPLETE (W7-383)
 
 | Requirement | Artifact | Test |

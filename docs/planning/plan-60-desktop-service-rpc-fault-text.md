@@ -1,8 +1,8 @@
 # PLAN-60 — Desktop service RPC fault text after snapshot ErrorText correlation
 
-**Date:** 2026-09-19 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-384); seed **W7-385 (#1176) OPEN**; predecessor **PLAN-59 COMPLETE**  
-**PLAN issue / queue:** [W7-384 / PLAN-60 #1175](https://github.com/sesquicadaver/MTDirector/issues/1175) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-19 (inventory **DONE**)  
+**Status:** Inventory **DONE** (W7-384); seed **W7-385 (#1176) OPEN** (**§3.C NEXT**); implement **W7-386 (#1178) OPEN**; COMPLETE seed **W7-387 (#1179) OPEN**; predecessor **PLAN-59 COMPLETE**  
+**PLAN issue / queue:** [W7-384 / PLAN-60 #1175](https://github.com/sesquicadaver/MTDirector/issues/1175) **DONE**  
 **Predecessor:** PLAN-59 Snapshot failed-stage ErrorText correlation **COMPLETE** (SNAP-ERRTEXT-CORR-01)  
 **Normative files:** `SnapshotViewerService`, `SnapshotDiffService`, `InventoryTreeService`, operator docs  
 **Normative prior locks:** SNAP-ERRTEXT-CORR-01; DESK-PANEL-FAULT-01; DESK-VRRP-PROG-01; DESK-VRRP-FAULT-01; SNAP-FAULT-CORR-01; DESK-CONN-FAULT-01; CTRL-ERRDETAIL-LOG-01 (event 5301); DESK-RPC-FAULT-01 — **do not regress**  
@@ -30,7 +30,7 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - Health-timeout and TLS connection text  
 - ViewModel `RpcException` catches that already call `DesktopRpcFaultText.Format`  
 
-## Inventory evidence (seed baseline @ `10adc5ba`)
+## Inventory evidence (W7-384 @ `main` `68302273`; seed baseline @ `10adc5ba`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
@@ -42,13 +42,26 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 
 **6** service `Error = ex.Message` assignments still swallow `RpcException` @ `10adc5ba`.
 
-## Ranked tranche (seed baseline)
+Confirmed on `main` `68302273` (seed baseline `10adc5ba`): **3** assignments in `SnapshotViewerService`, **2** in `SnapshotDiffService`, and **1** in `InventoryTreeService`. None of those services call `DesktopRpcFaultText`. `RpcException.Message` is the gRPC status text and does not include the trailer correlation id that `DesktopRpcFaultText.Format` already renders for ViewModels. Failed-stage Snapshot `ErrorText` already uses `FormatCaptureProgress` (SNAP-ERRTEXT-CORR-01). Panel status lines, VRRP pair status, capture progress, connection `AuthenticationFailed`, and event 5301 stay locked.
+
+**Ranking decision:** Prefer **ONE atomic row** (**DESK-SVC-FAULT-01**), sole rank:
+
+- When those service catches are `RpcException`, set `Error` from `DesktopRpcFaultText.Format` (code + correlation id)
+- Non-RPC exceptions keep `ex.Message`
+- Do **not** change ViewModel `RpcException` paths that already call `DesktopRpcFaultText.Format`
+- Do **not** change the `mfc-error-detail-bin` trailer contract or the event 5301 log template
+- Do **not** regress SNAP-ERRTEXT-CORR-01, DESK-PANEL-FAULT-01, DESK-VRRP-PROG-01, DESK-VRRP-FAULT-01, SNAP-FAULT-CORR-01, DESK-CONN-FAULT-01, CTRL-ERRDETAIL-LOG-01, or DESK-RPC-FAULT-01
+- Living Spec + operator docs
+
+Splitting the three services into separate rows would be vanity: the same `Error = ex.Message` swallow is the whole gap. Onboarding / Deployment progress is an `ErrorCode` string, not an `ErrorDetail`. Health-timeout and TLS connection text are not `ErrorDetail` trailers.
+
+## Ranked tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-SVC-FAULT-01** | Store `DesktopRpcFaultText.Format` when those service catches are `RpcException`; keep `ex.Message` otherwise + Living Spec | **6** `Error = ex.Message` assignments @ `10adc5ba` | after inventory **W7-384**; seed **W7-385 (#1176)** |
+| 1 | **DESK-SVC-FAULT-01** | Store `DesktopRpcFaultText.Format` when those service catches are `RpcException`; keep `ex.Message` otherwise + Living Spec | **6** `Error = ex.Message` assignments @ `68302273` (seed baseline `10adc5ba`) | after inventory **W7-384 DONE**; seed **W7-385 (#1176) OPEN**; implement **W7-386 (#1178) OPEN**; COMPLETE **W7-387 (#1179) OPEN** |
 
-Inventory (**W7-384**) may refine ranking and open the implement issue; seed **W7-385** advances NEXT to that implement after inventory DONE.
+Inventory (**W7-384 DONE**) confirmed sole rank. Seed **W7-385** advances NEXT to DESK-SVC-FAULT-01 after inventory DONE.
 
 ## Dual track
 
@@ -69,10 +82,10 @@ PLAN-59 sole ranked row (**SNAP-ERRTEXT-CORR-01**) is **DONE**. No further PLAN-
 ## §3.C ordering
 
 1. **PLAN-59 COMPLETE** (W7-382 SNAP-ERRTEXT-CORR-01; seed **W7-383 DONE**).  
-2. **W7-384 OPEN** — PLAN-60 inventory (**§3.C NEXT**).  
+2. **W7-384 DONE** — PLAN-60 inventory; opened **W7-386 (#1178)** DESK-SVC-FAULT-01 implement + **W7-387 (#1179)** COMPLETE follow-up.  
 3. **W7-385 OPEN** — seed first PLAN-60 implement after inventory.  
 4. Execute ranked DESK-SVC-FAULT-01 atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-384 (#1175)** — PLAN-60 Inventory Desktop service RPC fault text.
+**§3.C NEXT = W7-385 (#1176)** — Seed first PLAN-60 atomic row after inventory → DESK-SVC-FAULT-01.
