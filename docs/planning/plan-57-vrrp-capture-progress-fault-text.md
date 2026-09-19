@@ -1,7 +1,7 @@
 # PLAN-57 — VRRP capture-progress fault text after pair-status fault text
 
 **Date:** 2026-09-19 (**PLAN-57 COMPLETE**)  
-**Status:** **PLAN-57 COMPLETE** — Inventory **DONE** (W7-372); seed **W7-373 (#1152) DONE**; implement **W7-374 (#1154) DONE**; COMPLETE seed **W7-375 (#1155) DONE**; successor **PLAN-58** inventory **W7-376 (#1159) DONE**; seed **W7-377 (#1160) OPEN** (**§3.C NEXT**)  
+**Status:** **PLAN-57 COMPLETE** — Inventory **DONE** (W7-372); seed **W7-373 (#1152) DONE**; implement **W7-374 (#1154) DONE**; COMPLETE seed **W7-375 (#1155) DONE**; successor **PLAN-58** inventory **W7-376 (#1159) DONE**; seed **W7-377 (#1160) DONE**; implement **W7-378 (#1162) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-372 / PLAN-57 #1151](https://github.com/sesquicadaver/MTDirector/issues/1151) **DONE**  
 **Predecessor:** PLAN-56 VRRP pair status fault text **COMPLETE** (DESK-VRRP-FAULT-01)  
 **Normative files:** `NodeDetailViewModel`, `SnapshotViewerViewModel`, operator docs  
@@ -93,4 +93,4 @@ PLAN-56 sole ranked row (**DESK-VRRP-FAULT-01**) is **DONE**. No further PLAN-56
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-377 (#1160)** — Seed first PLAN-58 atomic row after inventory → DESK-PANEL-FAULT-01.
+**§3.C NEXT = W7-378 (#1162)** — Seed first PLAN-58 atomic row after inventory → DESK-PANEL-FAULT-01.

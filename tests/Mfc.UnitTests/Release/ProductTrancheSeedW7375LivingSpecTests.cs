@@ -40,26 +40,26 @@ public sealed class ProductTrancheSeedW7375LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-377 | [#1160](https://github.com/sesquicadaver/MTDirector/issues/1160) | Seed first PLAN-58 atomic row after inventory → DESK-PANEL-FAULT-01 | **OPEN**",
+            "W7-377 | [#1160](https://github.com/sesquicadaver/MTDirector/issues/1160) | Seed first PLAN-58 atomic row after inventory → DESK-PANEL-FAULT-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-377 (#1160)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-378 (#1162)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-57 COMPLETE", plan57, StringComparison.Ordinal);
         Assert.Contains("W7-375 (#1155) DONE", plan57, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-377 (#1160)", plan57, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-378 (#1162)", plan57, StringComparison.Ordinal);
         Assert.Contains("plan-58-desktop-panel-status-fault-text.md", plan, StringComparison.Ordinal);
         Assert.Contains("plan-58-desktop-panel-status-fault-text.md", docsIndex, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-58", plan, StringComparison.Ordinal);
         Assert.Contains("W7-376", plan, StringComparison.Ordinal);
         Assert.Contains("W7-375 (#1155) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-377 (#1160)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-378 (#1162)", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-PANEL-FAULT-01", plan58, StringComparison.Ordinal);
         Assert.Contains("Drift load failed", plan58, StringComparison.Ordinal);
         Assert.Contains("55765d52", plan58, StringComparison.Ordinal);
         Assert.Contains("W7-376", plan58, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-377 (#1160)", plan58, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-378 (#1162)", plan58, StringComparison.Ordinal);
 
         Assert.Contains("SnapshotViewerViewModel.FormatCaptureProgress(progress)", node, StringComparison.Ordinal);
         Assert.Contains("DeploymentReadinessText = \"GetNodeWorkflow failed.\"", node, StringComparison.Ordinal);
