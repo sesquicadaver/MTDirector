@@ -1,7 +1,7 @@
 # PLAN-57 — VRRP capture-progress fault text after pair-status fault text
 
-**Date:** 2026-09-19 (inventory **DONE**)  
-**Status:** Inventory **DONE** (W7-372); seed **W7-373 (#1152) DONE**; implement **W7-374 (#1154) DONE**; COMPLETE seed **W7-375 (#1155) OPEN** (**§3.C NEXT**); predecessor **PLAN-56 COMPLETE**  
+**Date:** 2026-09-19 (**PLAN-57 COMPLETE**)  
+**Status:** **PLAN-57 COMPLETE** — Inventory **DONE** (W7-372); seed **W7-373 (#1152) DONE**; implement **W7-374 (#1154) DONE**; COMPLETE seed **W7-375 (#1155) DONE**; successor **PLAN-58** inventory **W7-376 (#1159) OPEN** (**§3.C NEXT**)  
 **PLAN issue / queue:** [W7-372 / PLAN-57 #1151](https://github.com/sesquicadaver/MTDirector/issues/1151) **DONE**  
 **Predecessor:** PLAN-56 VRRP pair status fault text **COMPLETE** (DESK-VRRP-FAULT-01)  
 **Normative files:** `NodeDetailViewModel`, `SnapshotViewerViewModel`, operator docs  
@@ -84,7 +84,8 @@ PLAN-56 sole ranked row (**DESK-VRRP-FAULT-01**) is **DONE**. No further PLAN-56
 1. **PLAN-56 COMPLETE** (W7-370 DESK-VRRP-FAULT-01; seed **W7-371 DONE**).  
 2. **W7-372 DONE** — PLAN-57 inventory; opened **W7-374 (#1154)** DESK-VRRP-PROG-01 implement + **W7-375 (#1155)** COMPLETE follow-up.  
 3. **W7-373 (#1152) DONE** — seed advanced NEXT to DESK-VRRP-PROG-01; keep COMPLETE **W7-375** open.  
-4. **W7-374 (#1154) DONE** — DESK-VRRP-PROG-01 reuses `FormatCaptureProgress` on the VRRP pair status line, including incomplete capture.
+4. **W7-374 (#1154) DONE** — DESK-VRRP-PROG-01 reuses `FormatCaptureProgress` on the VRRP pair status line, including incomplete capture.  
+5. **W7-375 (#1155) DONE** — PLAN-57 COMPLETE; successor **PLAN-58** inventory **W7-376 (#1159)**.
 
 ## Delivery notes (W7-374)
 
@@ -92,4 +93,4 @@ PLAN-56 sole ranked row (**DESK-VRRP-FAULT-01**) is **DONE**. No further PLAN-56
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-375 (#1155)** — Seed next after DESK-VRRP-PROG-01 (PLAN-57 COMPLETE).
+**§3.C NEXT = W7-376 (#1159)** — PLAN-58 Inventory Desktop panel status fault text.
