@@ -72,17 +72,17 @@ public sealed class ProductTrancheSeedW7331LivingSpecTests
             "W7-341 | [#1088](https://github.com/sesquicadaver/MTDirector/issues/1088) | Seed first PLAN-49 atomic row after inventory → CTRL-GRPC-KEEPALIVE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-389 (#1184)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-390 (#1186)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-46 COMPLETE", plan46, StringComparison.Ordinal);
         Assert.Contains("W7-331 (#1068) DONE", plan46, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-389 (#1184)", plan46, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-390 (#1186)", plan46, StringComparison.Ordinal);
         Assert.Contains("plan-47-controller-grpc-message-size-limits.md", plan46, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-47", plan, StringComparison.Ordinal);
         Assert.Contains("W7-332", plan, StringComparison.Ordinal);
         Assert.Contains("W7-331 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-389 (#1184)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-390 (#1186)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-47-controller-grpc-message-size-limits.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("CTRL-GRPC-MSGSIZE-01", plan47, StringComparison.Ordinal);
@@ -90,7 +90,7 @@ public sealed class ProductTrancheSeedW7331LivingSpecTests
         Assert.Contains("W7-332", plan47, StringComparison.Ordinal);
         Assert.Contains("W7-333", plan47, StringComparison.Ordinal);
         Assert.Contains("W7-334", plan47, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-389 (#1184)", plan47, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-390 (#1186)", plan47, StringComparison.Ordinal);
         Assert.Contains("d107b57d", plan47, StringComparison.Ordinal);
 
         Assert.Contains("ConfigureResource", program, StringComparison.Ordinal);
