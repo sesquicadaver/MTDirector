@@ -40,24 +40,24 @@ public sealed class ProductTrancheSeedW7339LivingSpecTests
             "W7-341 | [#1088](https://github.com/sesquicadaver/MTDirector/issues/1088) | Seed first PLAN-49 atomic row after inventory → CTRL-GRPC-KEEPALIVE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-362 (#1130)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-363 (#1131)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-48 COMPLETE", plan48, StringComparison.Ordinal);
         Assert.Contains("W7-339 (#1084) DONE", plan48, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-362 (#1130)", plan48, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-363 (#1131)", plan48, StringComparison.Ordinal);
         Assert.Contains("plan-49-controller-grpc-http2-keepalive.md", plan48, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-49", plan, StringComparison.Ordinal);
         Assert.Contains("W7-340", plan, StringComparison.Ordinal);
         Assert.Contains("W7-339 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-362 (#1130)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-363 (#1131)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-49-controller-grpc-http2-keepalive.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("CTRL-GRPC-KEEPALIVE-01", plan49, StringComparison.Ordinal);
         Assert.Contains("Inventory **DONE**", plan49, StringComparison.Ordinal);
         Assert.Contains("W7-340", plan49, StringComparison.Ordinal);
         Assert.Contains("W7-341", plan49, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-362 (#1130)", plan49, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-363 (#1131)", plan49, StringComparison.Ordinal);
         Assert.Contains("KeepAlivePing", plan49, StringComparison.Ordinal);
 
         Assert.Contains("MaxRequestBodySize = GrpcTransportLimits.MaxMessageBytes", program, StringComparison.Ordinal);
