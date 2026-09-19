@@ -43,7 +43,7 @@ public sealed class Plan58DesktopPanelStatusFaultTextW7376LivingSpecTests
         Assert.Contains("W7-377", plan58, StringComparison.Ordinal);
         Assert.Contains("W7-378", plan58, StringComparison.Ordinal);
         Assert.Contains("W7-379", plan58, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-377 (#1160)", plan58, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-378 (#1162)", plan58, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-376 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-PANEL-FAULT-01", limitations, StringComparison.Ordinal);
@@ -56,7 +56,7 @@ public sealed class Plan58DesktopPanelStatusFaultTextW7376LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-377 | [#1160](https://github.com/sesquicadaver/MTDirector/issues/1160) | Seed first PLAN-58 atomic row after inventory → DESK-PANEL-FAULT-01 | **OPEN**",
+            "W7-377 | [#1160](https://github.com/sesquicadaver/MTDirector/issues/1160) | Seed first PLAN-58 atomic row after inventory → DESK-PANEL-FAULT-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -67,7 +67,7 @@ public sealed class Plan58DesktopPanelStatusFaultTextW7376LivingSpecTests
             "W7-379 | [#1163](https://github.com/sesquicadaver/MTDirector/issues/1163) | Seed next after DESK-PANEL-FAULT-01 (PLAN-58 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-377 (#1160)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-378 (#1162)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-377", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-378", continuous, StringComparison.Ordinal);

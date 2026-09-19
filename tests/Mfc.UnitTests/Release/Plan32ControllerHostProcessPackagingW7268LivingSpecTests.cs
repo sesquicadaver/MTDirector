@@ -34,7 +34,7 @@ public sealed class Plan32ControllerHostProcessPackagingW7268LivingSpecTests
         Assert.Contains("packaging/windows/mfc-controller.winsw.xml", plan32, StringComparison.Ordinal);
         Assert.Contains("--self-contained false", plan32, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/controller", plan32, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-377 (#1160)", plan32, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-378 (#1162)", plan32, StringComparison.Ordinal);
         Assert.Contains("W7-269 (#944) DONE", plan32, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-268 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -67,7 +67,7 @@ public sealed class Plan32ControllerHostProcessPackagingW7268LivingSpecTests
             "W7-273 | [#952](https://github.com/sesquicadaver/MTDirector/issues/952) | Seed next after OPS-HOST-WINSVC-01 (PLAN-32 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-377 (#1160)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-378 (#1162)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-269", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-270", continuous, StringComparison.Ordinal);
