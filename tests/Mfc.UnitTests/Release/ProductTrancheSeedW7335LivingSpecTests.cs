@@ -56,24 +56,24 @@ public sealed class ProductTrancheSeedW7335LivingSpecTests
             "W7-341 | [#1088](https://github.com/sesquicadaver/MTDirector/issues/1088) | Seed first PLAN-49 atomic row after inventory → CTRL-GRPC-KEEPALIVE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-369 (#1144)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-370 (#1146)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-47 COMPLETE", plan47, StringComparison.Ordinal);
         Assert.Contains("W7-335 (#1076) DONE", plan47, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-369 (#1144)", plan47, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-370 (#1146)", plan47, StringComparison.Ordinal);
         Assert.Contains("plan-48-controller-kestrel-request-body-limits.md", plan47, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-48", plan, StringComparison.Ordinal);
         Assert.Contains("W7-336", plan, StringComparison.Ordinal);
         Assert.Contains("W7-335 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-369 (#1144)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-370 (#1146)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-48-controller-kestrel-request-body-limits.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("CTRL-KESTREL-BODY-01", plan48, StringComparison.Ordinal);
         Assert.Contains("Inventory **DONE**", plan48, StringComparison.Ordinal);
         Assert.Contains("W7-336", plan48, StringComparison.Ordinal);
         Assert.Contains("W7-337", plan48, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-369 (#1144)", plan48, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-370 (#1146)", plan48, StringComparison.Ordinal);
         Assert.Contains("MaxRequestBodySize", plan48, StringComparison.Ordinal);
 
         Assert.Contains("MaxReceiveMessageSize = GrpcTransportLimits.MaxMessageBytes", program, StringComparison.Ordinal);

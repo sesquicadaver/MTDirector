@@ -90,4 +90,4 @@ CTRL-KESTREL-MINRATE-01 shipped: `ConfigureKestrel` sets `Limits.MinRequestBodyD
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-369 (#1144)** — PLAN-51 Inventory Desktop gRPC unary call deadline / timeout after PLAN-50.
+**§3.C NEXT = W7-370 (#1146)** — PLAN-51 Inventory Desktop gRPC unary call deadline / timeout after PLAN-50.
