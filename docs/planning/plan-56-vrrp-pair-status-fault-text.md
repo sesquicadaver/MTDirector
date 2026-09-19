@@ -1,8 +1,8 @@
 # PLAN-56 — VRRP pair status fault text after capture progress fault correlation
 
-**Date:** 2026-09-19 (seeded; inventory **OPEN**)  
-**Status:** Inventory **OPEN** (W7-368); seed **W7-369 (#1144) OPEN**; predecessor **PLAN-55 COMPLETE**  
-**PLAN issue / queue:** [W7-368 / PLAN-56 #1143](https://github.com/sesquicadaver/MTDirector/issues/1143) **OPEN** (**§3.C NEXT**)  
+**Date:** 2026-09-19 (inventory **DONE**)  
+**Status:** Inventory **DONE** (W7-368); seed **W7-369 (#1144) OPEN** (**§3.C NEXT**); implement **W7-370 (#1146) OPEN**; COMPLETE seed **W7-371 (#1147) OPEN**; predecessor **PLAN-55 COMPLETE**  
+**PLAN issue / queue:** [W7-368 / PLAN-56 #1143](https://github.com/sesquicadaver/MTDirector/issues/1143) **DONE**  
 **Predecessor:** PLAN-55 Capture progress fault correlation **COMPLETE** (SNAP-FAULT-CORR-01)  
 **Normative files:** `NodeDetailViewModel`, `DesktopRpcFaultText`, operator docs  
 **Normative prior locks:** SNAP-FAULT-CORR-01; DESK-CONN-FAULT-01; CTRL-ERRDETAIL-LOG-01 (event 5301); DESK-RPC-FAULT-01; unary deadline; Watch streams unbounded; MSGSIZE / BODY / KEEPALIVE / MINRATE; HTTP health; metrics; tracing; log↔trace correlation — **do not regress**  
@@ -28,25 +28,37 @@ Absorb the highest-value **non-packaging / non-vanity** continuous-queue gap aft
 - Changing the `mfc-error-detail-bin` trailer contract or the event 5301 log line  
 - Onboarding / Deployment progress (`ErrorCode` only; proto has no `ErrorDetail`)  
 - Health-timeout and TLS connection text  
-- Generic capture `catch` rethrows and `Unwrap` (no pair-status line)
+- Generic capture `catch` rethrows and `Unwrap` (no pair-status line)  
+- Other panels' static `StatusText` (`Drift` / `Audit` / `Incident` / `Routing assurance` / `GetNodeWorkflow`) — same class of drop, but not the pair status line this tranche ranked
 
-## Inventory evidence (seed baseline @ `f5560b4c`)
+## Inventory evidence (W7-368 @ `main` `dcde8dca`; seed baseline @ `f5560b4c`)
 
 | Surface | Current behavior | Gap |
 |---------|------------------|-----|
 | `ValidateVrrpPairInternalAsync` `RpcException` | `ErrorText = DesktopRpcFaultText.Format(ex)` | Correlation id is on ErrorText |
 | Same catch | `VrrpPairStatusText = "VRRP pair consistency failed."` | Status line drops code and correlation id |
-| Same method `Exception` catch | Same static status sentence | Non-RPC failures also hide the message |
+| Same method `Exception` catch | Same static status sentence; `ErrorText = ex.Message` | Non-RPC failures have no trailer / event 5301 |
 | Watch loop | `{memberName}: {progress.Stage}` | `ErrorDetail` (shared capture id after SNAP-FAULT-CORR-01) is not shown |
 | `NodeDetailViewModel` | **0** `correlation` mentions | Pair status cannot be joined to journald |
 
-## Ranked tranche (seed baseline)
+Confirmed on `main` `dcde8dca`: **2** assignments of `VrrpPairStatusText = "VRRP pair consistency failed."`; the `RpcException` catch already calls `DesktopRpcFaultText.Format`; a case-insensitive search of `NodeDetailViewModel` finds **0** `correlation` mentions. `GetNodeWorkflow` uses the same helper for `ErrorText` and a separate static `DeploymentReadinessText` — not this row.
+
+**Ranking decision:** Prefer **ONE atomic row** (**DESK-VRRP-FAULT-01**):
+
+- On the `RpcException` catch, set `VrrpPairStatusText` from the same `DesktopRpcFaultText.Format` text already assigned to `ErrorText` (code, correlation id, retryable)
+- Do **not** change the `mfc-error-detail-bin` trailer contract or the event 5301 log template
+- Do **not** regress SNAP-FAULT-CORR-01, DESK-CONN-FAULT-01, CTRL-ERRDETAIL-LOG-01, DESK-RPC-FAULT-01, unary deadlines, MSGSIZE / BODY / KEEPALIVE / MINRATE, health, metrics, or tracing
+- Living Spec + operator docs
+
+Splitting the two catch blocks would be vanity: only the `RpcException` path has a trailer and event 5301. The non-RPC `Exception` catch has no correlation id to show. The Watch loop `{member}: {stage}` drop is real but smaller than the consistency-failure line that already has the id on `ErrorText` in the same method; it stays an adjacent residual.
+
+## Ranked tranche (inventory lock)
 
 | Rank | ID | Gap | Evidence | Queue |
 |------|----|-----|----------|-------|
-| 1 | **DESK-VRRP-FAULT-01** | Show the RPC fault code and correlation id on the VRRP pair status line + Living Spec | **2** static `VRRP pair consistency failed.` assignments; **0** `correlation` mentions in `NodeDetailViewModel` @ `f5560b4c` | after inventory **W7-368**; seed **W7-369 (#1144)** |
+| 1 | **DESK-VRRP-FAULT-01** | Show the RPC fault code and correlation id on the VRRP pair status line + Living Spec | **2** static `VRRP pair consistency failed.` assignments; **0** `correlation` mentions in `NodeDetailViewModel` @ `dcde8dca` | after inventory **W7-368 DONE**; seed **W7-369 (#1144) OPEN**; implement **W7-370 (#1146) OPEN**; COMPLETE **W7-371 (#1147) OPEN** |
 
-Inventory (**W7-368**) may refine ranking and open the implement issue; seed **W7-369** advances NEXT to that implement after inventory DONE.
+Inventory (**W7-368 DONE**) confirmed sole rank. Seed **W7-369** advances NEXT to DESK-VRRP-FAULT-01 after inventory DONE.
 
 ## Dual track
 
@@ -64,15 +76,17 @@ PLAN-55 sole ranked row (**SNAP-FAULT-CORR-01**) is **DONE**. No further PLAN-55
 - Onboarding / Deployment progress is an `ErrorCode` string, not an `ErrorDetail` — adding a correlation id would change the progress proto; smaller than the pair-status drop, which already has the id on `ErrorText`  
 - Health-timeout and TLS connection text are not `ErrorDetail` trailers  
 - Generic capture `catch` rethrows — no `ToRpcException`, so no event 5301  
-- `Unwrap` mints its own id — no capture-progress publish
+- `Unwrap` mints its own id — no capture-progress publish  
+- VRRP Watch loop writes `{member}: {stage}` and the incomplete-capture throw is a correlation-less `InvalidOperationException`  
+- Other Desktop panels set a static `StatusText` / `DeploymentReadinessText` beside `DesktopRpcFaultText.Format` (`Drift`, `Audit`, `Incident`, `Routing assurance`, `GetNodeWorkflow`)
 
 ## §3.C ordering
 
 1. **PLAN-55 COMPLETE** (W7-366 SNAP-FAULT-CORR-01; seed **W7-367 DONE**).  
-2. **W7-368 OPEN** — PLAN-56 inventory (**§3.C NEXT**).  
+2. **W7-368 DONE** — PLAN-56 inventory; opened **W7-370 (#1146)** DESK-VRRP-FAULT-01 implement + **W7-371 (#1147)** COMPLETE follow-up.  
 3. **W7-369 OPEN** — seed first PLAN-56 implement after inventory.  
 4. Execute ranked DESK-VRRP-FAULT-01 atomically.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-368 (#1143)** — PLAN-56 Inventory VRRP pair status fault text.
+**§3.C NEXT = W7-369 (#1144)** — Seed first PLAN-56 atomic row after inventory → DESK-VRRP-FAULT-01.
