@@ -47,30 +47,31 @@ public sealed class ProductTrancheSeedW7387LivingSpecTests
             "W7-389 | [#1184](https://github.com/sesquicadaver/MTDirector/issues/1184) | Seed first PLAN-61 atomic row after inventory → DESK-CONN-DISC-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-60 COMPLETE", plan60, StringComparison.Ordinal);
         Assert.Contains("W7-387 (#1179) DONE", plan60, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", plan60, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", plan60, StringComparison.Ordinal);
         Assert.Contains("plan-61-desktop-connection-disconnected-fault-text.md", plan, StringComparison.Ordinal);
         Assert.Contains("plan-61-desktop-connection-disconnected-fault-text.md", docsIndex, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-61", plan, StringComparison.Ordinal);
         Assert.Contains("W7-388", plan, StringComparison.Ordinal);
         Assert.Contains("W7-387 (#1179) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-DISC-01", plan61, StringComparison.Ordinal);
         Assert.Contains("ex.Message", plan61, StringComparison.Ordinal);
         Assert.Contains("33682bb6", plan61, StringComparison.Ordinal);
         Assert.Contains("W7-388", plan61, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", plan61, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", plan61, StringComparison.Ordinal);
 
         Assert.Equal(
             6,
             Count(viewerService, "Error = DesktopRpcFaultText.Format(ex)")
             + Count(diff, "Error = DesktopRpcFaultText.Format(ex)")
             + Count(inventory, "Error = DesktopRpcFaultText.Format(ex)"));
-        Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.Disconnected, ex.Message)"));
+        Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.Disconnected, DesktopRpcFaultText.Format(ex))"));
+        Assert.Equal(0, Count(connection, "SetState(ControllerConnectionState.Disconnected, ex.Message)"));
         Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.AuthenticationFailed, DesktopRpcFaultText.Format(ex))"));
         Assert.Contains("ErrorText = FormatCaptureProgress(failed)", viewer, StringComparison.Ordinal);
         Assert.Contains("StatusText = $\"Drift load failed. {fault}\"", drift, StringComparison.Ordinal);

@@ -29,7 +29,7 @@ public sealed class Plan36ControllerHostTemplatePublishBundlingW7288LivingSpecTe
         Assert.Contains("W7-289", plan36, StringComparison.Ordinal);
         Assert.Contains("sole rank", plan36, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("OUT_DIR/controller", plan36, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", plan36, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", plan36, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", plan36, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-288 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -53,7 +53,7 @@ public sealed class Plan36ControllerHostTemplatePublishBundlingW7288LivingSpecTe
             "W7-291 | [#987](https://github.com/sesquicadaver/MTDirector/issues/987) | Seed next after OPS-HOST-BUNDLE-01 (PLAN-36 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-289", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-290", continuous, StringComparison.Ordinal);

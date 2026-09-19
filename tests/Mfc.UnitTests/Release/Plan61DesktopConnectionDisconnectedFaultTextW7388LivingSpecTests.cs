@@ -38,7 +38,7 @@ public sealed class Plan61DesktopConnectionDisconnectedFaultTextW7388LivingSpecT
         Assert.Contains("W7-389", plan61, StringComparison.Ordinal);
         Assert.Contains("W7-390", plan61, StringComparison.Ordinal);
         Assert.Contains("W7-391", plan61, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", plan61, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", plan61, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-388 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-DISC-01", limitations, StringComparison.Ordinal);
@@ -55,14 +55,14 @@ public sealed class Plan61DesktopConnectionDisconnectedFaultTextW7388LivingSpecT
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-390 | [#1186](https://github.com/sesquicadaver/MTDirector/issues/1186) | DESK-CONN-DISC-01 — Store DesktopRpcFaultText.Format when Disconnected catches are RpcException | **OPEN**",
+            "W7-390 | [#1186](https://github.com/sesquicadaver/MTDirector/issues/1186) | DESK-CONN-DISC-01 — Store DesktopRpcFaultText.Format when Disconnected catches are RpcException | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-391 | [#1187](https://github.com/sesquicadaver/MTDirector/issues/1187) | Seed next after DESK-CONN-DISC-01 (PLAN-61 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-389", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-390", continuous, StringComparison.Ordinal);
@@ -71,7 +71,8 @@ public sealed class Plan61DesktopConnectionDisconnectedFaultTextW7388LivingSpecT
         Assert.Contains("plan-61-desktop-connection-disconnected-fault-text.md", docsIndex, StringComparison.Ordinal);
         Assert.Contains("Plan61DesktopConnectionDisconnectedFaultTextW7388", testing, StringComparison.Ordinal);
 
-        Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.Disconnected, ex.Message)"));
+        Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.Disconnected, DesktopRpcFaultText.Format(ex))"));
+        Assert.Equal(0, Count(connection, "SetState(ControllerConnectionState.Disconnected, ex.Message)"));
         Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.AuthenticationFailed, DesktopRpcFaultText.Format(ex))"));
         Assert.Equal(
             6,

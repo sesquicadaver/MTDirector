@@ -37,7 +37,7 @@ public sealed class Plan56VrrpPairStatusFaultTextW7368LivingSpecTests
         Assert.Contains("W7-369", plan56, StringComparison.Ordinal);
         Assert.Contains("W7-368", plan56, StringComparison.Ordinal);
         Assert.Contains("DesktopRpcFaultText.Format", plan56, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", plan56, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", plan56, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-368 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-VRRP-FAULT-01", limitations, StringComparison.Ordinal);
@@ -61,7 +61,7 @@ public sealed class Plan56VrrpPairStatusFaultTextW7368LivingSpecTests
             "W7-371 | [#1147](https://github.com/sesquicadaver/MTDirector/issues/1147) | Seed next after DESK-VRRP-FAULT-01 (PLAN-56 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-369", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-370", continuous, StringComparison.Ordinal);
@@ -76,7 +76,7 @@ public sealed class Plan56VrrpPairStatusFaultTextW7368LivingSpecTests
         Assert.Contains("VrrpPairStatusText = $\"{memberName}: {SnapshotViewerViewModel.FormatCaptureProgress(progress)}\"", node, StringComparison.Ordinal);
         Assert.DoesNotContain("correlation", node, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("public static string Format(RpcException exception)", fault, StringComparison.Ordinal);
-        Assert.Equal(2, Count(connection, "DesktopRpcFaultText.Format(ex)"));
+        Assert.Equal(4, Count(connection, "DesktopRpcFaultText.Format(ex)"));
         Assert.Contains("(correlation {correlation})", viewer, StringComparison.Ordinal);
         Assert.Contains("gRPC application fault code={Code} status={Status} correlation_id={CorrelationId} retryable={Retryable}", mapper, StringComparison.Ordinal);
     }

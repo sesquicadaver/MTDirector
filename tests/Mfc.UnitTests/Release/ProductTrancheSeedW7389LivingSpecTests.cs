@@ -33,28 +33,29 @@ public sealed class ProductTrancheSeedW7389LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-390 | [#1186](https://github.com/sesquicadaver/MTDirector/issues/1186) | DESK-CONN-DISC-01 — Store DesktopRpcFaultText.Format when Disconnected catches are RpcException | **OPEN**",
+            "W7-390 | [#1186](https://github.com/sesquicadaver/MTDirector/issues/1186) | DESK-CONN-DISC-01 — Store DesktopRpcFaultText.Format when Disconnected catches are RpcException | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
             "W7-391 | [#1187](https://github.com/sesquicadaver/MTDirector/issues/1187) | Seed next after DESK-CONN-DISC-01 (PLAN-61 COMPLETE) | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-389", plan, StringComparison.Ordinal);
         Assert.Contains("W7-390", plan, StringComparison.Ordinal);
         Assert.Contains("W7-391", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-DISC-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-389 (#1184) DONE", plan61, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-DISC-01", plan61, StringComparison.Ordinal);
         Assert.Contains("W7-390", plan61, StringComparison.Ordinal);
         Assert.Contains("W7-391", plan61, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-390 (#1186)", plan61, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-391 (#1187)", plan61, StringComparison.Ordinal);
 
-        Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.Disconnected, ex.Message)"));
+        Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.Disconnected, DesktopRpcFaultText.Format(ex))"));
+        Assert.Equal(0, Count(connection, "SetState(ControllerConnectionState.Disconnected, ex.Message)"));
         Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.AuthenticationFailed, DesktopRpcFaultText.Format(ex))"));
         Assert.Equal(
             6,
