@@ -9,8 +9,11 @@ namespace Mfc.UnitTests.Documentation;
 /// </summary>
 public sealed class QgDocs01WeeklyDocsSmokeLivingSpecTests
 {
-    private static readonly Regex NextToken =
+    private static readonly Regex OpenNextToken =
         new(@"§3\.C NEXT = (W7-\d+ \(#\d+\))", RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+    private const string ExhaustedNextToken =
+        "§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)";
 
     private static string RepoRoot()
     {
@@ -30,8 +33,14 @@ public sealed class QgDocs01WeeklyDocsSmokeLivingSpecTests
 
     private static string CanonicalNext(string roadmap)
     {
-        Match match = NextToken.Match(roadmap);
-        Assert.True(match.Success, "ROADMAP.md must declare §3.C NEXT = W7-NN (#issue).");
+        const string prefix = "§3.C NEXT = ";
+        if (roadmap.Contains(ExhaustedNextToken, StringComparison.Ordinal))
+        {
+            return ExhaustedNextToken[prefix.Length..];
+        }
+
+        Match match = OpenNextToken.Match(roadmap);
+        Assert.True(match.Success, "ROADMAP.md must declare §3.C NEXT = W7-NN (#issue) or the exhausted-queue token.");
         return match.Groups[1].Value;
     }
 
