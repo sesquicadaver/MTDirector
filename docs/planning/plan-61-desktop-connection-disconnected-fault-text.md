@@ -1,7 +1,7 @@
 # PLAN-61 — Desktop connection Disconnected RPC fault text after service Error correlation
 
 **Date:** 2026-09-19 (**PLAN-61 COMPLETE**)  
-**Status:** **PLAN-61 COMPLETE** — Inventory **DONE** (W7-388); seed **W7-389 (#1184) DONE**; implement **W7-390 (#1186) DONE**; COMPLETE seed **W7-391 (#1187) DONE**; operator fault-correlation wave **PLAN-52…61 CLOSED**; freeze **W7-392 (#1191) OPEN** (**§3.C NEXT**); predecessor **PLAN-60 COMPLETE**  
+**Status:** **PLAN-61 COMPLETE** — Inventory **DONE** (W7-388); seed **W7-389 (#1184) DONE**; implement **W7-390 (#1186) DONE**; COMPLETE seed **W7-391 (#1187) DONE**; operator fault-correlation wave **PLAN-52…61 CLOSED**; freeze **W7-392 (#1191) DONE**; queue exhausted; predecessor **PLAN-60 COMPLETE**  
 **PLAN issue / queue:** [W7-388 / PLAN-61 #1183](https://github.com/sesquicadaver/MTDirector/issues/1183) **DONE**  
 **Predecessor:** PLAN-60 Desktop service RPC fault text **COMPLETE** (DESK-SVC-FAULT-01)  
 **Normative files:** `ControllerConnectionService`, operator docs  
@@ -97,8 +97,8 @@ PLAN-60 sole ranked row (**DESK-SVC-FAULT-01**) is **DONE**. No further PLAN-60 
 
 **Not seeded:** another DESK-*-FAULT; another SNAP-*-CORR; Onboarding / Deployment `ErrorCode` proto change; Desktop a11y vanity; MSI / AppImage; systemd Type=notify.
 
-There is no `docs/planning/plan-62-*.md`. The next `/autopilot` closes freeze **W7-392** (docs / Living Spec only) and then **stops**. It does not invent a successor plan.
+There is no `docs/planning/plan-62-*.md`. The next `/autopilot` closes freeze **W7-392** (docs / Living Spec only) and then **stops**. It does not invent a successor plan. **W7-392 (#1191) DONE.** Queue exhausted. No successor plan.
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-392 (#1191)** — Freeze — no further correlation-id / fault-text plans without a pre-existing TOR.
+**§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)** — Freeze — no further correlation-id / fault-text plans without a pre-existing TOR.
