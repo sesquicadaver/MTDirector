@@ -32,10 +32,10 @@ public sealed class ProductTrancheSeedW7391LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-392 | [#1191](https://github.com/sesquicadaver/MTDirector/issues/1191) | Freeze — no further correlation-id / fault-text plans without a pre-existing TOR | **OPEN**",
+            "W7-392 | [#1191](https://github.com/sesquicadaver/MTDirector/issues/1191) | Freeze — no further correlation-id / fault-text plans without a pre-existing TOR | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-392 (#1191)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-61 COMPLETE", plan61, StringComparison.Ordinal);
         Assert.Contains("PLAN-52…61 CLOSED", plan61, StringComparison.Ordinal);
@@ -50,13 +50,13 @@ public sealed class ProductTrancheSeedW7391LivingSpecTests
         Assert.Contains("Type=notify", plan61, StringComparison.Ordinal);
         Assert.Contains("closes freeze **W7-392**", plan61, StringComparison.Ordinal);
         Assert.Contains("stops", plan61, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-392 (#1191)", plan61, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", plan61, StringComparison.Ordinal);
         Assert.DoesNotContain("PLAN-62 —", plan61, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-52…61 CLOSED", plan, StringComparison.Ordinal);
         Assert.Contains("W7-392", plan, StringComparison.Ordinal);
         Assert.Contains("No `plan-62-*.md`", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-392 (#1191)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", plan, StringComparison.Ordinal);
         Assert.False(File.Exists(Path.Combine(root, "docs/planning/plan-62-desktop-correlation-id.md")));
         Assert.Empty(Directory.GetFiles(Path.Combine(root, "docs/planning"), "plan-62-*.md"));
 

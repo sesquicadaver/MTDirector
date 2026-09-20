@@ -37,19 +37,19 @@ public sealed class ProductTrancheSeedW7365LivingSpecTests
             "W7-367 | [#1139](https://github.com/sesquicadaver/MTDirector/issues/1139) | Seed next after SNAP-FAULT-CORR-01 (PLAN-55 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-392 (#1191)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-365", plan, StringComparison.Ordinal);
         Assert.Contains("W7-366", plan, StringComparison.Ordinal);
         Assert.Contains("W7-367", plan, StringComparison.Ordinal);
         Assert.Contains("SNAP-FAULT-CORR-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-392 (#1191)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-365 (#1136) DONE", plan55, StringComparison.Ordinal);
         Assert.Contains("SNAP-FAULT-CORR-01", plan55, StringComparison.Ordinal);
         Assert.Contains("W7-366", plan55, StringComparison.Ordinal);
         Assert.Contains("W7-367", plan55, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-392 (#1191)", plan55, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", plan55, StringComparison.Ordinal);
 
         Assert.Equal(0, Count(snapshot, "CorrelationId = ProtoUuid.FromGuid(Guid.NewGuid())"));
         Assert.Equal(2, Count(snapshot, "ToRpcException(result.Error!, sharedId)"));
