@@ -4,7 +4,7 @@ namespace Mfc.UnitTests.Release;
 
 /// <summary>
 /// W7-391: PLAN-61 COMPLETE. Operator fault-correlation wave PLAN-52…61 is CLOSED.
-/// §3.C NEXT is a freeze, not a product plan. No plan-62 markdown.
+/// Freeze W7-392 closed that wave; PLAN-62 may follow from audit TOR only.
 /// </summary>
 public sealed class ProductTrancheSeedW7391LivingSpecTests
 {
@@ -22,10 +22,8 @@ public sealed class ProductTrancheSeedW7391LivingSpecTests
         Assert.Contains("PLAN-61 COMPLETE", limitations, StringComparison.Ordinal);
         Assert.Contains("PLAN-52…61 CLOSED", limitations, StringComparison.Ordinal);
         Assert.Contains("W7-392", limitations, StringComparison.Ordinal);
-        Assert.Contains("Not seeded", limitations, StringComparison.Ordinal);
-        Assert.Contains("DESK-*-FAULT", limitations, StringComparison.Ordinal);
-        Assert.Contains("SNAP-*-CORR", limitations, StringComparison.Ordinal);
-        Assert.Contains("stops", limitations, StringComparison.Ordinal);
+        Assert.Contains("PLAN-62", limitations, StringComparison.Ordinal);
+        Assert.Contains("audit/TOR", limitations, StringComparison.Ordinal);
 
         Assert.Contains(
             "W7-391 | [#1187](https://github.com/sesquicadaver/MTDirector/issues/1187) | Seed next after DESK-CONN-DISC-01 (PLAN-61 COMPLETE) | **DONE**",
@@ -35,30 +33,27 @@ public sealed class ProductTrancheSeedW7391LivingSpecTests
             "W7-392 | [#1191](https://github.com/sesquicadaver/MTDirector/issues/1191) | Freeze — no further correlation-id / fault-text plans without a pre-existing TOR | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-395 (#1197)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-61 COMPLETE", plan61, StringComparison.Ordinal);
         Assert.Contains("PLAN-52…61 CLOSED", plan61, StringComparison.Ordinal);
         Assert.Contains("W7-391 (#1187) DONE", plan61, StringComparison.Ordinal);
         Assert.Contains("W7-392", plan61, StringComparison.Ordinal);
-        Assert.Contains("no `docs/planning/plan-62-*.md`", plan61, StringComparison.Ordinal);
         Assert.Contains("Not seeded", plan61, StringComparison.Ordinal);
         Assert.Contains("DESK-*-FAULT", plan61, StringComparison.Ordinal);
         Assert.Contains("SNAP-*-CORR", plan61, StringComparison.Ordinal);
         Assert.Contains("ErrorCode", plan61, StringComparison.Ordinal);
         Assert.Contains("a11y", plan61, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Type=notify", plan61, StringComparison.Ordinal);
-        Assert.Contains("closes freeze **W7-392**", plan61, StringComparison.Ordinal);
-        Assert.Contains("stops", plan61, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", plan61, StringComparison.Ordinal);
-        Assert.DoesNotContain("PLAN-62 —", plan61, StringComparison.Ordinal);
+        Assert.Contains("PLAN-62", plan61, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-395 (#1197)", plan61, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-52…61 CLOSED", plan, StringComparison.Ordinal);
         Assert.Contains("W7-392", plan, StringComparison.Ordinal);
-        Assert.Contains("No `plan-62-*.md`", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", plan, StringComparison.Ordinal);
+        Assert.Contains("PLAN-62", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-395 (#1197)", plan, StringComparison.Ordinal);
         Assert.False(File.Exists(Path.Combine(root, "docs/planning/plan-62-desktop-correlation-id.md")));
-        Assert.Empty(Directory.GetFiles(Path.Combine(root, "docs/planning"), "plan-62-*.md"));
+        Assert.True(File.Exists(Path.Combine(root, "docs/planning/plan-62-audit-remediation-acd0759.md")));
 
         Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.Disconnected, DesktopRpcFaultText.Format(ex))"));
         Assert.Equal(0, Count(connection, "SetState(ControllerConnectionState.Disconnected, ex.Message)"));

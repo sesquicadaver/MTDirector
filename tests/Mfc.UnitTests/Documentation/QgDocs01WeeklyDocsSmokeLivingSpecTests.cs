@@ -13,7 +13,7 @@ public sealed class QgDocs01WeeklyDocsSmokeLivingSpecTests
         new(@"§3\.C NEXT = (W7-\d+ \(#\d+\))", RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
     private const string ExhaustedNextToken =
-        "§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)";
+        "§3.C NEXT = W7-395 (#1197)";
 
     private static string RepoRoot()
     {

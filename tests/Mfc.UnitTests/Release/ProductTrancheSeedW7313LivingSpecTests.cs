@@ -35,19 +35,19 @@ public sealed class ProductTrancheSeedW7313LivingSpecTests
             "W7-315 | [#1036](https://github.com/sesquicadaver/MTDirector/issues/1036) | Seed next after CTRL-HTTP-HEALTH-01 (PLAN-42 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-395 (#1197)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-313", plan, StringComparison.Ordinal);
         Assert.Contains("W7-314", plan, StringComparison.Ordinal);
         Assert.Contains("W7-315", plan, StringComparison.Ordinal);
         Assert.Contains("CTRL-HTTP-HEALTH-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-395 (#1197)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-313 (#1032) DONE", plan42, StringComparison.Ordinal);
         Assert.Contains("CTRL-HTTP-HEALTH-01", plan42, StringComparison.Ordinal);
         Assert.Contains("W7-314", plan42, StringComparison.Ordinal);
         Assert.Contains("W7-315", plan42, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", plan42, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-395 (#1197)", plan42, StringComparison.Ordinal);
 
         Assert.Contains("MapGrpcHealthChecksService", program, StringComparison.Ordinal);
         Assert.Contains("MapHealthChecks", program, StringComparison.Ordinal);
