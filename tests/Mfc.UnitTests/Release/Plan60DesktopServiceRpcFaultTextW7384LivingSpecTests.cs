@@ -39,7 +39,7 @@ public sealed class Plan60DesktopServiceRpcFaultTextW7384LivingSpecTests
         Assert.Contains("W7-385", plan60, StringComparison.Ordinal);
         Assert.Contains("W7-386", plan60, StringComparison.Ordinal);
         Assert.Contains("W7-387", plan60, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", plan60, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-395 (#1197)", plan60, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-384 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-SVC-FAULT-01", limitations, StringComparison.Ordinal);
@@ -63,7 +63,7 @@ public sealed class Plan60DesktopServiceRpcFaultTextW7384LivingSpecTests
             "W7-387 | [#1179](https://github.com/sesquicadaver/MTDirector/issues/1179) | Seed next after DESK-SVC-FAULT-01 (PLAN-60 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-395 (#1197)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-385", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-386", continuous, StringComparison.Ordinal);

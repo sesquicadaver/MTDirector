@@ -3981,13 +3981,37 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed AUDIT-STATUS-01 after PLAN-62 inventory (W7-394)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks AUDIT-STATUS-01 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7394LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditStatus01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7394"`.
+
+## Living Specification — PLAN-62 inventory repository-audit remediation acd0759 (W7-393)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| PLAN-62 inventory ranks AUDIT-* + seeds STATUS-01 | plan-62, audit acd0759, ROADMAP, known-limitations | `Plan62AuditRemediationAcD0759W7393LivingSpecTests.Ac1Plan62InventoryDocumentsRanksAndSeedsAuditStatus01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan62AuditRemediationAcD0759W7393"`.
+
 ## Living Specification — PLAN-61 COMPLETE freeze (W7-391)
 
 | Requirement | Artifact | Test |
 |-------------|----------|------|
-| PLAN-61 COMPLETE; wave PLAN-52…61 CLOSED; freeze is §3.C NEXT; no plan-62 | plan-61, ROADMAP, known-limitations, continuous-queue | `ProductTrancheSeedW7391LivingSpecTests.Ac1Plan61CompleteFreezesCorrelationWave` |
+| PLAN-61 COMPLETE; wave PLAN-52…61 CLOSED; freeze DONE; PLAN-62 only via audit TOR | plan-61, ROADMAP, known-limitations, continuous-queue | `ProductTrancheSeedW7391LivingSpecTests.Ac1Plan61CompleteFreezesCorrelationWave` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7391"`.
+
+## Living Specification — Freeze closed correlation wave (W7-392)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Freeze DONE; PLAN-62 audit remediation allowed; NEXT = AUDIT-STATUS-01 | known-limitations, ROADMAP, plan-61/62, continuous-queue | `ProductTrancheSeedW7392LivingSpecTests.Ac1FreezeClosedCorrelationWaveAndAllowsAuditTorPlan62` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7392"`.
 
 ## Living Specification — DESK-CONN-DISC-01 connection Disconnected RPC fault text (W7-390)
 

@@ -29,7 +29,7 @@ public sealed class Plan35DesktopLaunchTemplatePublishBundlingW7284LivingSpecTes
         Assert.Contains("W7-285", plan35, StringComparison.Ordinal);
         Assert.Contains("sole rank", plan35, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("OUT_DIR/desktop", plan35, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", plan35, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-395 (#1197)", plan35, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", plan35, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-284 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -53,7 +53,7 @@ public sealed class Plan35DesktopLaunchTemplatePublishBundlingW7284LivingSpecTes
             "W7-287 | [#979](https://github.com/sesquicadaver/MTDirector/issues/979) | Seed next after DESK-HOST-BUNDLE-01 (PLAN-35 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = none (queue exhausted; W7-392 #1191 DONE)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-395 (#1197)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-285", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-286", continuous, StringComparison.Ordinal);
