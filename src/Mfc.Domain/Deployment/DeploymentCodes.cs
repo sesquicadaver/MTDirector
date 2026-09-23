@@ -109,6 +109,9 @@ public static class DeploymentCodes
 
     public const string CommitSnapshotMissing = "DEPLOYMENT_COMMIT_SNAPSHOT_MISSING";
 
+    /// <summary>Sealed plan lacks Controller-proven safety evidence (AUDIT-EVID-01 / F02).</summary>
+    public const string SealedEvidenceMissing = "DEPLOYMENT_SEALED_EVIDENCE_MISSING";
+
     public const string MultiWanDependencyDrift = "DEPLOYMENT_MULTIWAN_DEPENDENCY_DRIFT";
 
     public const string MultiWanProbeCoverageMissing = "DEPLOYMENT_MULTIWAN_PROBE_COVERAGE_MISSING";

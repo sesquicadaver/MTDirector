@@ -77,7 +77,8 @@ internal static class DeploymentTestFactory
             activation.Reverse().ToArray(),
             transitions.TransitionStateHashes,
             DeploymentCodes.DefaultRollbackTtl,
-            [new DeploymentProbe(DeploymentProbeKind.RouterPing, "192.0.2.1", 500)]);
+            [new DeploymentProbe(DeploymentProbeKind.ApiSsl, "10.0.0.1", 1000),
+                new DeploymentProbe(DeploymentProbeKind.RouterPing, "192.0.2.1", 500)]);
     }
 
     public static DeploymentPlan PlanFor(

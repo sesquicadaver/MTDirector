@@ -197,6 +197,22 @@ public sealed class CreateDeploymentPlanFromSealedArtifactsUseCase
                         $"Device '{deviceRef.DeviceId:D}' lacks RouterOS version from last completed capture."));
                 }
 
+                if (cfg is null)
+                {
+                    return ApplicationResults.Fail(ApplicationError.Validation(
+                        $"{DeploymentCodes.SealedEvidenceMissing}: Device '{deviceRef.DeviceId:D}' lacks configuration hash from last completed capture."));
+                }
+
+                DeploymentProbe apiSsl;
+                try
+                {
+                    apiSsl = SealedDeploymentPlanBuilder.RequireApiSslProbe(device.ManagementEndpoint);
+                }
+                catch (DomainInvariantException ex)
+                {
+                    return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
+                }
+
                 devicePlans.Add(SealedDeploymentPlanBuilder.Build(
                     device.Id,
                     version,
@@ -204,7 +220,8 @@ public sealed class CreateDeploymentPlanFromSealedArtifactsUseCase
                     newBody,
                     hashState,
                     oldBody,
-                    cfg));
+                    cfg.Value,
+                    [apiSsl]));
                 foreach (PacketPathPairFact pair in pairs)
                 {
                     packetPaths.Add(pair);

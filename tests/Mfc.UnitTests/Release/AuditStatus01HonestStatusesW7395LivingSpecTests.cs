@@ -50,11 +50,11 @@ public sealed class AuditStatus01HonestStatusesW7395LivingSpecTests
             "W7-397 | [#1200](https://github.com/sesquicadaver/MTDirector/issues/1200) | AUDIT-SBOM-01 — SBOM/signing fail-closed (no empty components / missing SDK) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-403 (#1209)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-405 (#1212)", roadmap, StringComparison.Ordinal);
         Assert.Contains("TOR/audit-backed", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("AUDIT-STATUS-01 W7-395 (#1197) DONE", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-403 (#1209)", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-405 (#1212)", plan62, StringComparison.Ordinal);
 
         Assert.Contains("Засів нового траншу", slash, StringComparison.Ordinal);
         Assert.Contains("не вигадує", slash, StringComparison.Ordinal);

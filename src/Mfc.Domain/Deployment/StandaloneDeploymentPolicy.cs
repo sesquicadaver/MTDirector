@@ -50,12 +50,47 @@ public static class StandaloneDeploymentPolicy
         }
     }
 
-    /// <summary>Re-check start preconditions immediately before staging (AC#1).</summary>
+    /// <summary>Re-check start preconditions and sealed evidence immediately before staging (AC#1 / AUDIT-EVID-01).</summary>
     public static void RecheckPreconditions(
         Node node,
         DeploymentPlan plan,
         IReadOnlyList<DeploymentOperation> existingForNode,
         DateTimeOffset nowUtc,
         IReadOnlyList<PacketPathPairFact> packetPathPairs)
-        => DeploymentOperationGate.EnsureCanStart(node, plan, existingForNode, nowUtc, packetPathPairs);
+    {
+        DeploymentOperationGate.EnsureCanStart(node, plan, existingForNode, nowUtc, packetPathPairs);
+        EnsureSealedEvidencePresent(plan);
+    }
+
+    /// <summary>Fail-closed when a sealed plan carries empty synthetic evidence fields.</summary>
+    public static void EnsureSealedEvidencePresent(DeploymentPlan plan)
+    {
+        ArgumentNullException.ThrowIfNull(plan);
+        Hash256 empty = Hash256.Create(new byte[Hash256.Size]);
+        foreach (DeviceDeploymentPlan devicePlan in plan.DevicePlans)
+        {
+            if (devicePlan.Probes.Count == 0
+                || devicePlan.Probes.All(static p => p.Kind != DeploymentProbeKind.ApiSsl))
+            {
+                throw new DomainInvariantException(
+                    $"{DeploymentCodes.SealedEvidenceMissing}: device plan requires an API_SSL probe.");
+            }
+
+            if (devicePlan.ExpectedCompatibilityHash.Equals(empty)
+                || devicePlan.ExpectedConfigurationHash.Equals(empty)
+                || devicePlan.ExpectedCapabilityHash.Equals(empty)
+                || devicePlan.ExpectedGuardContextHash.Equals(empty)
+                || devicePlan.ExpectedAnchorContextHash.Equals(empty))
+            {
+                throw new DomainInvariantException(
+                    $"{DeploymentCodes.SealedEvidenceMissing}: device plan expected hashes must be non-empty.");
+            }
+
+            if (devicePlan.ExpectedGuardContextHash.Equals(devicePlan.ExpectedAnchorContextHash))
+            {
+                throw new DomainInvariantException(
+                    $"{DeploymentCodes.SealedEvidenceMissing}: guard and anchor context hashes must be distinct.");
+            }
+        }
+    }
 }

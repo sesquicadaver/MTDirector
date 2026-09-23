@@ -3981,6 +3981,22 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed AUDIT-RB-01 after AUDIT-EVID-01 (W7-404)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks AUDIT-RB-01 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7404LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditRb01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7404"`.
+
+## Living Specification — AUDIT-EVID-01 real safety evidence (W7-403)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| Sealed evidence proven; synthetic fields rejected; docs + queue lock | SealedDeploymentPlanBuilder, SealedTransitionEvidence, StandaloneDeploymentPolicy, known-limitations, ROADMAP | `AuditEvid01RealSafetyEvidenceW7403LivingSpecTests.Ac1SealedEvidenceIsProvenAndProductionSurfacesRejectSyntheticFields` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditEvid01RealSafetyEvidenceW7403"`.
+
 ## Living Specification — Seed AUDIT-EVID-01 after AUDIT-COMMIT-01 (W7-402)
 
 | Requirement | Artifact | Test |
