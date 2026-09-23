@@ -48,7 +48,7 @@ public sealed class DeploymentFaultSecurityAcceptanceLivingSpecTests
 
         StandaloneDeploymentResult result = await ExecuteStandaloneDeploymentUseCase.ExecuteAsync(
             node, plan, operation, device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, channel),
+            new FakeRuntime(plan.DevicePlans[0], channel),
             existingForNode: [],
             packetPathPairs: DeploymentTestFactory.CpuPairs(),
             addressLists: [],
@@ -80,7 +80,7 @@ public sealed class DeploymentFaultSecurityAcceptanceLivingSpecTests
 
         StandaloneDeploymentResult result = await ExecuteStandaloneDeploymentUseCase.ExecuteAsync(
             node, plan, operation, device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, channel),
+            new FakeRuntime(plan.DevicePlans[0], channel),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],
@@ -287,7 +287,7 @@ public sealed class DeploymentFaultSecurityAcceptanceLivingSpecTests
 
         StandaloneDeploymentResult result = await ExecuteStandaloneDeploymentUseCase.ExecuteAsync(
             node, plan, operation, device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, channel),
+            new FakeRuntime(plan.DevicePlans[0], channel),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],

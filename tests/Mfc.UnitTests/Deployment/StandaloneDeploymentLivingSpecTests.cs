@@ -34,7 +34,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, SeedChannel(plan, toNew: false)),
+            new FakeRuntime(plan.DevicePlans[0], SeedChannel(plan, toNew: false)),
             existingForNode: [],
             packetPathPairs: DeploymentTestFactory.CpuPairs(),
             addressLists: [],
@@ -59,7 +59,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, channel),
+            new FakeRuntime(plan.DevicePlans[0], channel),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],
@@ -110,7 +110,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, channel),
+            new FakeRuntime(plan.DevicePlans[0], channel),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],
@@ -197,7 +197,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, channel),
+            new FakeRuntime(plan.DevicePlans[0], channel),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],
@@ -221,7 +221,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(first.Id, new RecordingChannel()),
+            new FakeRuntime(plan.DevicePlans.Single(p => p.DeviceId == first.Id), new RecordingChannel()),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],
@@ -246,7 +246,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(DeviceId.New(), SeedChannel(plan, toNew: false)),
+            new FakeRuntime(plan.DevicePlans[0], SeedChannel(plan, toNew: false), deviceIdOverride: DeviceId.New()),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],
@@ -270,7 +270,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, SeedChannel(plan, toNew: false)),
+            new FakeRuntime(plan.DevicePlans[0], SeedChannel(plan, toNew: false)),
             [],
             DeploymentTestFactory.HardwareOffloadedPairs(),
             [],
@@ -296,7 +296,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, channel),
+            new FakeRuntime(plan.DevicePlans[0], channel),
             [],
             DeploymentTestFactory.CpuPairs(),
             [list],
@@ -333,7 +333,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, channel),
+            new FakeRuntime(plan.DevicePlans[0], channel),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],
@@ -361,7 +361,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, channel),
+            new FakeRuntime(plan.DevicePlans[0], channel),
             [],
             DeploymentTestFactory.CpuPairs(),
             [list],
@@ -389,7 +389,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             operation,
             device,
             new FakeRuntime(
-                plan.DevicePlans[0].DeviceId,
+                plan.DevicePlans[0],
                 SeedChannel(plan, toNew: false),
                 names: new DeploymentSystemNameFacts
                 {
@@ -421,7 +421,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, SeedChannel(plan, toNew: false), watchdog),
+            new FakeRuntime(plan.DevicePlans[0], SeedChannel(plan, toNew: false), watchdog),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],
@@ -447,7 +447,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, new RecordingChannel()),
+            new FakeRuntime(plan.DevicePlans[0], new RecordingChannel()),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],
@@ -478,7 +478,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, channel),
+            new FakeRuntime(plan.DevicePlans[0], channel),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],
@@ -499,7 +499,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
         DeploymentOperation operation = DeploymentOperation.Create(plan, node, UserId.New(), T0);
         DeviceDeployment device = DeviceDeployment.Create(operation.Id, plan.DevicePlans[0].DeviceId, T0);
         RecordingChannel channel = SeedChannel(plan, toNew: false);
-        FakeRuntime runtime = new(plan.DevicePlans[0].DeviceId, channel);
+        FakeRuntime runtime = new(plan.DevicePlans[0], channel);
         runtime.ReplaceWatchdog(new DisarmFailWatchdog(runtime.Watchdog));
         StandaloneDeploymentResult result = await ExecuteStandaloneDeploymentUseCase.ExecuteAsync(
             node,
@@ -533,7 +533,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, channel),
+            new FakeRuntime(plan.DevicePlans[0], channel),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],
@@ -543,7 +543,8 @@ public sealed class StandaloneDeploymentLivingSpecTests
             T0);
         Assert.False(result.Succeeded);
         Assert.Equal(DeploymentOperationState.RecoveryRequired, result.State);
-        Assert.Contains(result.Timeline, static t => t.StartsWith("rollback-anchor-failed:", StringComparison.Ordinal));
+        Assert.Contains(result.Timeline, static t => t.StartsWith("rollback-anchor-failed:", StringComparison.Ordinal)
+            || t.Contains("recovery-required", StringComparison.Ordinal));
     }
 
     private static async Task<(StandaloneDeploymentResult Result, RecordingChannel Channel, DeploymentPlan Plan)> HappyPathAsync()
@@ -558,7 +559,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, channel),
+            new FakeRuntime(plan.DevicePlans[0], channel),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],
@@ -581,7 +582,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
             plan,
             operation,
             device,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, channel),
+            new FakeRuntime(plan.DevicePlans[0], channel),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],
@@ -755,14 +756,18 @@ public sealed class StandaloneDeploymentLivingSpecTests
         private readonly RecordingChannel _channel;
         private readonly RouterOsDeploymentSession _session;
         private readonly DeploymentSystemNameFacts? _names;
+        private readonly DeviceDeploymentPlan _plan;
 
         public FakeRuntime(
-            DeviceId deviceId,
+            DeviceDeploymentPlan plan,
             RecordingChannel channel,
             IDeploymentWatchdogPort? watchdog = null,
-            DeploymentSystemNameFacts? names = null)
+            DeploymentSystemNameFacts? names = null,
+            DeviceId? deviceIdOverride = null)
         {
-            DeviceId = deviceId;
+            ArgumentNullException.ThrowIfNull(plan);
+            _plan = plan;
+            DeviceId = deviceIdOverride ?? plan.DeviceId;
             _channel = channel;
             _session = new RouterOsDeploymentSession(channel);
             Watchdog = watchdog ?? new DeploymentWatchdogWriter(_session);
@@ -789,6 +794,77 @@ public sealed class StandaloneDeploymentLivingSpecTests
 
         public Task<DateTimeOffset> ReadRouterClockAsync(CancellationToken cancellationToken = default)
             => Task.FromResult(new DateTimeOffset(2026, 9, 13, 15, 0, 0, TimeSpan.Zero));
+
+        public Task<IReadOnlyDictionary<string, string>> ReadAnchorJumpsAsync(
+            CancellationToken cancellationToken = default)
+        {
+            Dictionary<string, string> jumps = new(StringComparer.Ordinal);
+            foreach (AnchorTarget target in _plan.OldAnchorTargets.Concat(_plan.NewAnchorTargets)
+                         .DistinctBy(static t => t.Key.Marker))
+            {
+                Dictionary<string, string>? row = _channel.FindAnchor(target.Key);
+                if (row is not null
+                    && row.TryGetValue("jump-target", out string? jump)
+                    && !string.IsNullOrWhiteSpace(jump))
+                {
+                    jumps[target.Key.Marker] = jump.Trim();
+                }
+            }
+
+            return Task.FromResult((IReadOnlyDictionary<string, string>)jumps);
+        }
+
+        public Task<DeploymentWriteExecutionResult> SetAnchorTargetAsync(
+            AnchorTargetWrite write,
+            CancellationToken cancellationToken = default)
+            => _session.SetAnchorTargetAsync(write, cancellationToken);
+
+        public async Task<Hash256> ReadManagedResourceHashAsync(CancellationToken cancellationToken = default)
+        {
+            IReadOnlyDictionary<string, string> jumps = await ReadAnchorJumpsAsync(cancellationToken)
+                .ConfigureAwait(false);
+            DeploymentAnchorSetState classified = DeploymentRecoveryDecision.ClassifyAnchors(
+                _plan.OldAnchorTargets,
+                _plan.NewAnchorTargets,
+                jumps);
+            return classified switch
+            {
+                DeploymentAnchorSetState.AllOld => _plan.OldArtifactHash,
+                DeploymentAnchorSetState.AllNew => _plan.NewArtifactHash,
+                _ => throw new DomainInvariantException(
+                    $"{DeploymentCodes.RecoveryRequired}: mixed or incomplete anchors block managed hash."),
+            };
+        }
+
+        public Task<IDeploymentFreshSessionFactory> CreateFreshSessionFactoryAsync(
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(FreshSessions);
+
+        public Task<RouterPingResult> ProbeAsync(DeploymentProbe probe, CancellationToken cancellationToken = default)
+            => Task.FromResult(new RouterPingResult
+            {
+                Outcome = RouterPingOutcome.Pass,
+                Sent = 3,
+                Received = 3,
+            });
+
+        public Task<DeploymentWatchdogExecutionResult> DisarmAndCleanupWatchdogAsync(
+            CancellationToken cancellationToken = default)
+            => Watchdog.CleanupWatchdogAsync(
+                DeploymentOperationId.New(),
+                DeviceId,
+                cancellationToken);
+
+        public Task<(IReadOnlyList<string> SchedulerNames, IReadOnlyDictionary<string, bool> SchedulerDisabled)>
+            ReadWatchdogSchedulerFactsAsync(CancellationToken cancellationToken = default)
+        {
+            string[] names = _channel.SchedulerNames().ToArray();
+            IReadOnlyDictionary<string, bool> disabled = names.ToDictionary(
+                static n => n,
+                static _ => false,
+                StringComparer.Ordinal);
+            return Task.FromResult((names as IReadOnlyList<string>, disabled));
+        }
 
         public ValueTask DisposeAsync() => _session.DisposeAsync();
     }

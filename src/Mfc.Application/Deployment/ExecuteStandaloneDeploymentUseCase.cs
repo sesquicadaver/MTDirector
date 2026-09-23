@@ -50,11 +50,9 @@ public sealed class StandaloneDeploymentResult
     public IReadOnlyList<AnchorActivationJournalEntry> ActivationJournal { get; init; } = [];
 }
 
-/// <summary>Per-device runtime ports for standalone deployment (M4-08).</summary>
-public interface IStandaloneDeploymentDeviceRuntime
+/// <summary>Per-device runtime ports for standalone deployment (M4-08 / AUDIT-RB-01).</summary>
+public interface IStandaloneDeploymentDeviceRuntime : IDeploymentRollbackDeviceRuntime
 {
-    DeviceId DeviceId { get; }
-
     IRouterOsDeploymentSession Session { get; }
 
     IDeploymentWatchdogPort Watchdog { get; }
@@ -278,10 +276,10 @@ public static class ExecuteStandaloneDeploymentUseCase
             {
                 timeline.Add("activate:failed");
                 return await RollbackAfterActivationAsync(
+                    plan,
                     operation,
                     deviceState,
                     runtime,
-                    devicePlan,
                     armed,
                     activated.Code ?? DeploymentCodes.AnchorSetFailed,
                     nowUtc,
@@ -289,7 +287,8 @@ public static class ExecuteStandaloneDeploymentUseCase
                     wrote: true,
                     armedBeforeActivation,
                     detachedPreserved: true,
-                    activated.RecoveryRequired).ConfigureAwait(false);
+                    activated.RecoveryRequired,
+                    cancellationToken).ConfigureAwait(false);
             }
 
             timeline.Add("activate:done");
@@ -309,10 +308,10 @@ public static class ExecuteStandaloneDeploymentUseCase
             {
                 timeline.Add("verify:failed");
                 return await RollbackAfterActivationAsync(
+                    plan,
                     operation,
                     deviceState,
                     runtime,
-                    devicePlan,
                     armed,
                     verified.Code ?? DeploymentCodes.DeploymentProbeFailed,
                     nowUtc,
@@ -320,7 +319,8 @@ public static class ExecuteStandaloneDeploymentUseCase
                     wrote: true,
                     armedBeforeActivation,
                     detachedPreserved: true,
-                    recovery: verified.Code == DeploymentCodes.RecoveryRequired)
+                    recovery: verified.Code == DeploymentCodes.RecoveryRequired,
+                    cancellationToken)
                     .ConfigureAwait(false);
             }
 
@@ -336,10 +336,10 @@ public static class ExecuteStandaloneDeploymentUseCase
             {
                 timeline.Add("watchdog:disarm-failed");
                 return await RollbackAfterActivationAsync(
+                    plan,
                     operation,
                     deviceState,
                     runtime,
-                    devicePlan,
                     armed,
                     disarmed.Code,
                     nowUtc,
@@ -347,7 +347,8 @@ public static class ExecuteStandaloneDeploymentUseCase
                     wrote: true,
                     armedBeforeActivation,
                     detachedPreserved: true,
-                    recovery: true).ConfigureAwait(false);
+                    recovery: true,
+                    cancellationToken).ConfigureAwait(false);
             }
 
             disarmedBeforeCommit = true;
@@ -399,11 +400,15 @@ public static class ExecuteStandaloneDeploymentUseCase
         }
     }
 
+    /// <summary>
+    /// Automatic post-activation rollback uses the same strict coordinator as explicit/recovery
+    /// (AUDIT-RB-01 / F04). Third targets and failed disarm/verification cannot become RolledBack.
+    /// </summary>
     private static async Task<StandaloneDeploymentResult> RollbackAfterActivationAsync(
+        DeploymentPlan plan,
         DeploymentOperation operation,
         DeviceDeployment deviceState,
         IStandaloneDeploymentDeviceRuntime runtime,
-        DeviceDeploymentPlan devicePlan,
         DeploymentWatchdogBundle? armed,
         string errorCode,
         DateTimeOffset nowUtc,
@@ -411,7 +416,8 @@ public static class ExecuteStandaloneDeploymentUseCase
         bool wrote,
         bool armedBeforeActivation,
         bool detachedPreserved,
-        bool recovery)
+        bool recovery,
+        CancellationToken cancellationToken)
     {
         Advance(operation, DeploymentOperationState.RollbackPending, nowUtc, errorCode);
         if (recovery)
@@ -441,7 +447,6 @@ public static class ExecuteStandaloneDeploymentUseCase
                 deviceState);
         }
 
-        Advance(operation, DeploymentOperationState.RollingBack, nowUtc, errorCode);
         if (!deviceState.IsTerminal
             && deviceState.State is DeviceDeploymentState.Activating
                 or DeviceDeploymentState.ActiveUnverified
@@ -451,35 +456,38 @@ public static class ExecuteStandaloneDeploymentUseCase
             deviceState.EnsureTransition(DeviceDeploymentState.RollingBack, nowUtc);
         }
 
-        // Restore old jump-targets only — never remove detached staged resources (AC#7 / AC#8).
-        foreach (AnchorKey key in devicePlan.AnchorRollbackOrder)
+        _ = armed; // Disarm is verified inside ExecuteDeploymentRollbackUseCase (fail → RecoveryRequired).
+        DeploymentRollbackResult rolled = await ExecuteDeploymentRollbackUseCase.ExecuteAsync(
+            plan,
+            operation,
+            [runtime],
+            nowUtc,
+            cancellationToken).ConfigureAwait(false);
+        timeline.AddRange(rolled.Timeline);
+        if (!rolled.Succeeded)
         {
-            AnchorTarget old = devicePlan.OldAnchorTargets.Single(t => t.Key.Equals(key));
-            DeploymentWriteExecutionResult restored = await runtime.Session.SetAnchorTargetAsync(
-                new AnchorTargetWrite(old.Key.Family, old.Key.Chain, old.JumpTarget),
-                default).ConfigureAwait(false);
-            timeline.Add(restored.Succeeded
-                ? $"rollback-anchor:{old.Key.Marker}"
-                : $"rollback-anchor-failed:{old.Key.Marker}");
-            if (!restored.Succeeded)
+            if (!deviceState.IsTerminal)
             {
-                Advance(operation, DeploymentOperationState.RecoveryRequired, nowUtc, DeploymentCodes.RecoveryRequired);
-                return FailResult(
-                    operation.State,
-                    DeploymentCodes.RecoveryRequired,
-                    timeline,
-                    wrote,
-                    armedBeforeActivation,
-                    disarmedBeforeCommit: false,
-                    detachedPreserved,
-                    deviceState);
+                try
+                {
+                    deviceState.EnsureTransition(DeviceDeploymentState.RecoveryRequired, nowUtc);
+                }
+                catch (DomainInvariantException)
+                {
+                    // Leave device state when transition is illegal from current node.
+                }
             }
-        }
 
-        if (armed is not null)
-        {
-            _ = await runtime.Watchdog.DisarmWatchdogAsync(armed, cancellationToken: default).ConfigureAwait(false);
-            timeline.Add("watchdog:disarmed-on-rollback");
+            timeline.Add("recovery-required");
+            return FailResult(
+                operation.State,
+                rolled.ErrorCode ?? DeploymentCodes.RecoveryRequired,
+                timeline,
+                wrote,
+                armedBeforeActivation,
+                disarmedBeforeCommit: false,
+                detachedPreserved: rolled.DetachedArtifactPreserved,
+                deviceState);
         }
 
         if (!deviceState.IsTerminal)
@@ -487,7 +495,6 @@ public static class ExecuteStandaloneDeploymentUseCase
             deviceState.EnsureTransition(DeviceDeploymentState.RolledBack, nowUtc);
         }
 
-        Advance(operation, DeploymentOperationState.RolledBack, nowUtc, errorCode);
         timeline.Add("rolled-back");
         return FailResult(
             operation.State,
@@ -496,7 +503,7 @@ public static class ExecuteStandaloneDeploymentUseCase
             wrote,
             armedBeforeActivation,
             disarmedBeforeCommit: false,
-            detachedPreserved,
+            detachedPreserved: rolled.DetachedArtifactPreserved,
             deviceState);
     }
 

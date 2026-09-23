@@ -64,6 +64,7 @@ public sealed class DeploymentRecoveryResult
 /// <summary>
 /// Controller-initiated rollback to old artifact (Safe Deployment Spec §46).
 /// Devices in reverse activation order; anchors in plan rollback order; no detached remove.
+/// Automatic standalone/VRRP paths must use this coordinator (AUDIT-RB-01 / F04).
 /// </summary>
 public static class ExecuteDeploymentRollbackUseCase
 {
@@ -115,116 +116,9 @@ public static class ExecuteDeploymentRollbackUseCase
 
                 DeviceDeploymentPlan devicePlan = plan.DevicePlans.Single(p => p.DeviceId.Equals(deviceId));
                 timeline.Add($"rollback-device:{deviceId.Value:D}");
-
-                IReadOnlyDictionary<string, string> jumps = await runtime.ReadAnchorJumpsAsync(cancellationToken)
+                bool deviceFresh = await RollbackDeviceAsync(devicePlan, runtime, timeline, cancellationToken)
                     .ConfigureAwait(false);
-                DeploymentAnchorSetState classified = DeploymentRecoveryDecision.ClassifyAnchors(
-                    devicePlan.OldAnchorTargets,
-                    devicePlan.NewAnchorTargets,
-                    jumps);
-                if (classified == DeploymentAnchorSetState.ThirdTarget)
-                {
-                    MarkRecovery(operation, nowUtc);
-                    timeline.Add("recovery-required:third-target");
-                    return Fail(operation.State, DeploymentCodes.RecoveryRequired, timeline, usedFresh);
-                }
-
-                foreach (AnchorKey key in devicePlan.AnchorRollbackOrder)
-                {
-                    AnchorTarget old = devicePlan.OldAnchorTargets.Single(t => t.Key.Equals(key));
-                    AnchorTarget neu = devicePlan.NewAnchorTargets.Single(t => t.Key.Equals(key));
-                    if (!jumps.TryGetValue(key.Marker, out string? current) || string.IsNullOrWhiteSpace(current))
-                    {
-                        MarkRecovery(operation, nowUtc);
-                        return Fail(operation.State, DeploymentCodes.AnchorInvalid, timeline, usedFresh);
-                    }
-
-                    string jump = current.Trim();
-                    if (!string.Equals(jump, old.JumpTarget, StringComparison.Ordinal)
-                        && !string.Equals(jump, neu.JumpTarget, StringComparison.Ordinal))
-                    {
-                        MarkRecovery(operation, nowUtc);
-                        timeline.Add($"recovery-required:{key.Marker}");
-                        return Fail(operation.State, DeploymentCodes.RecoveryRequired, timeline, usedFresh);
-                    }
-
-                    if (string.Equals(jump, old.JumpTarget, StringComparison.Ordinal))
-                    {
-                        timeline.Add($"anchor-already-old:{key.Marker}");
-                        continue;
-                    }
-
-                    DeploymentWriteExecutionResult set = await runtime.SetAnchorTargetAsync(
-                        new AnchorTargetWrite(old.Key.Family, old.Key.Chain, old.JumpTarget),
-                        cancellationToken).ConfigureAwait(false);
-                    if (!set.Succeeded)
-                    {
-                        MarkRecovery(operation, nowUtc);
-                        return Fail(operation.State, DeploymentCodes.RecoveryRequired, timeline, usedFresh);
-                    }
-
-                    timeline.Add($"rollback-anchor:{key.Marker}");
-                }
-
-                IReadOnlyDictionary<string, string> after = await runtime.ReadAnchorJumpsAsync(cancellationToken)
-                    .ConfigureAwait(false);
-                if (DeploymentRecoveryDecision.ClassifyAnchors(
-                        devicePlan.OldAnchorTargets,
-                        devicePlan.NewAnchorTargets,
-                        after) != DeploymentAnchorSetState.AllOld)
-                {
-                    MarkRecovery(operation, nowUtc);
-                    return Fail(operation.State, DeploymentCodes.RecoveryRequired, timeline, usedFresh);
-                }
-
-                Hash256 observed = await runtime.ReadManagedResourceHashAsync(cancellationToken).ConfigureAwait(false);
-                if (!observed.Equals(devicePlan.OldArtifactHash))
-                {
-                    timeline.Add("old-artifact-hash:mismatch");
-                    MarkRecovery(operation, nowUtc);
-                    return Fail(operation.State, DeploymentCodes.OldArtifactHashMismatch, timeline, usedFresh);
-                }
-
-                timeline.Add("old-artifact-hash:ok");
-
-                IDeploymentFreshSessionFactory freshFactory = await runtime.CreateFreshSessionFactoryAsync(cancellationToken)
-                    .ConfigureAwait(false);
-                await using IRouterOsDeploymentSession fresh = await freshFactory.OpenFreshAsync(cancellationToken)
-                    .ConfigureAwait(false);
-                usedFresh = true;
-                timeline.Add("fresh-api-ssl:opened");
-
-                foreach (DeploymentProbe probe in devicePlan.Probes.Where(static p => p.Kind == DeploymentProbeKind.RouterPing))
-                {
-                    RouterPingResult ping = await runtime.ProbeAsync(probe, cancellationToken).ConfigureAwait(false);
-                    DeploymentVerificationFinding? finding = PostActivationVerification.ClassifyCriticalProbeOutcome(
-                        probe.Kind,
-                        probe.Destination,
-                        ping.Outcome.ToString());
-                    if (finding is not null)
-                    {
-                        timeline.Add($"old-state-probe:fail:{probe.Destination}");
-                        MarkRecovery(operation, nowUtc);
-                        return Fail(operation.State, finding.Code, timeline, usedFresh);
-                    }
-
-                    timeline.Add($"old-state-probe:ok:{probe.Destination}");
-                }
-
-                // Keep fresh session scoped; I/O already completed via runtime probes.
-                _ = fresh;
-
-                DeploymentWatchdogExecutionResult cleaned = await runtime
-                    .DisarmAndCleanupWatchdogAsync(cancellationToken)
-                    .ConfigureAwait(false);
-                if (!cleaned.Succeeded)
-                {
-                    timeline.Add($"watchdog-cleanup-failed:{deviceId.Value:D}:{cleaned.Code}");
-                    MarkRecovery(operation, nowUtc);
-                    return Fail(operation.State, cleaned.Code, timeline, usedFresh);
-                }
-
-                timeline.Add($"watchdog-cleanup:{deviceId.Value:D}");
+                usedFresh = usedFresh || deviceFresh;
             }
 
             if (!operation.IsTerminal)
@@ -257,6 +151,130 @@ public static class ExecuteDeploymentRollbackUseCase
 
             return Fail(operation.State, code, timeline, usedFresh);
         }
+    }
+
+    /// <summary>
+    /// Strict single-device rollback: third target blocks; old artifact + probes + watchdog cleanup required.
+    /// </summary>
+    /// <returns><see langword="true"/> when a fresh API-SSL session was opened.</returns>
+    public static async Task<bool> RollbackDeviceAsync(
+        DeviceDeploymentPlan devicePlan,
+        IDeploymentRollbackDeviceRuntime runtime,
+        List<string> timeline,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(devicePlan);
+        ArgumentNullException.ThrowIfNull(runtime);
+        ArgumentNullException.ThrowIfNull(timeline);
+
+        IReadOnlyDictionary<string, string> jumps = await runtime.ReadAnchorJumpsAsync(cancellationToken)
+            .ConfigureAwait(false);
+        DeploymentAnchorSetState classified = DeploymentRecoveryDecision.ClassifyAnchors(
+            devicePlan.OldAnchorTargets,
+            devicePlan.NewAnchorTargets,
+            jumps);
+        if (classified == DeploymentAnchorSetState.ThirdTarget)
+        {
+            timeline.Add("recovery-required:third-target");
+            throw new DomainInvariantException(
+                $"{DeploymentCodes.RecoveryRequired}: third/manual anchor target blocks automatic rollback.");
+        }
+
+        foreach (AnchorKey key in devicePlan.AnchorRollbackOrder)
+        {
+            AnchorTarget old = devicePlan.OldAnchorTargets.Single(t => t.Key.Equals(key));
+            AnchorTarget neu = devicePlan.NewAnchorTargets.Single(t => t.Key.Equals(key));
+            if (!jumps.TryGetValue(key.Marker, out string? current) || string.IsNullOrWhiteSpace(current))
+            {
+                throw new DomainInvariantException(
+                    $"{DeploymentCodes.AnchorInvalid}: missing live jump for '{key.Marker}'.");
+            }
+
+            string jump = current.Trim();
+            if (!string.Equals(jump, old.JumpTarget, StringComparison.Ordinal)
+                && !string.Equals(jump, neu.JumpTarget, StringComparison.Ordinal))
+            {
+                timeline.Add($"recovery-required:{key.Marker}");
+                throw new DomainInvariantException(
+                    $"{DeploymentCodes.RecoveryRequired}: unknown jump for '{key.Marker}'.");
+            }
+
+            if (string.Equals(jump, old.JumpTarget, StringComparison.Ordinal))
+            {
+                timeline.Add($"anchor-already-old:{key.Marker}");
+                continue;
+            }
+
+            DeploymentWriteExecutionResult set = await runtime.SetAnchorTargetAsync(
+                new AnchorTargetWrite(old.Key.Family, old.Key.Chain, old.JumpTarget),
+                cancellationToken).ConfigureAwait(false);
+            if (!set.Succeeded)
+            {
+                timeline.Add($"rollback-anchor-failed:{key.Marker}");
+                throw new DomainInvariantException(
+                    $"{DeploymentCodes.RecoveryRequired}: failed to restore old jump for '{key.Marker}'.");
+            }
+
+            timeline.Add($"rollback-anchor:{key.Marker}");
+        }
+
+        IReadOnlyDictionary<string, string> after = await runtime.ReadAnchorJumpsAsync(cancellationToken)
+            .ConfigureAwait(false);
+        if (DeploymentRecoveryDecision.ClassifyAnchors(
+                devicePlan.OldAnchorTargets,
+                devicePlan.NewAnchorTargets,
+                after) != DeploymentAnchorSetState.AllOld)
+        {
+            throw new DomainInvariantException(
+                $"{DeploymentCodes.RecoveryRequired}: post-rollback anchors are not all-old.");
+        }
+
+        Hash256 observed = await runtime.ReadManagedResourceHashAsync(cancellationToken).ConfigureAwait(false);
+        if (!observed.Equals(devicePlan.OldArtifactHash))
+        {
+            timeline.Add("old-artifact-hash:mismatch");
+            throw new DomainInvariantException(
+                $"{DeploymentCodes.OldArtifactHashMismatch}: observed managed hash is not the sealed old artifact.");
+        }
+
+        timeline.Add("old-artifact-hash:ok");
+
+        IDeploymentFreshSessionFactory freshFactory = await runtime.CreateFreshSessionFactoryAsync(cancellationToken)
+            .ConfigureAwait(false);
+        await using IRouterOsDeploymentSession fresh = await freshFactory.OpenFreshAsync(cancellationToken)
+            .ConfigureAwait(false);
+        timeline.Add("fresh-api-ssl:opened");
+
+        foreach (DeploymentProbe probe in devicePlan.Probes.Where(static p => p.Kind == DeploymentProbeKind.RouterPing))
+        {
+            RouterPingResult ping = await runtime.ProbeAsync(probe, cancellationToken).ConfigureAwait(false);
+            DeploymentVerificationFinding? finding = PostActivationVerification.ClassifyCriticalProbeOutcome(
+                probe.Kind,
+                probe.Destination,
+                ping.Outcome.ToString());
+            if (finding is not null)
+            {
+                timeline.Add($"old-state-probe:fail:{probe.Destination}");
+                throw new DomainInvariantException($"{finding.Code}: {finding.Message}");
+            }
+
+            timeline.Add($"old-state-probe:ok:{probe.Destination}");
+        }
+
+        _ = fresh;
+
+        DeploymentWatchdogExecutionResult cleaned = await runtime
+            .DisarmAndCleanupWatchdogAsync(cancellationToken)
+            .ConfigureAwait(false);
+        if (!cleaned.Succeeded)
+        {
+            timeline.Add($"watchdog-cleanup-failed:{runtime.DeviceId.Value:D}:{cleaned.Code}");
+            throw new DomainInvariantException(
+                $"{cleaned.Code}: watchdog disarm/cleanup failed during strict rollback.");
+        }
+
+        timeline.Add($"watchdog-cleanup:{runtime.DeviceId.Value:D}");
+        return true;
     }
 
     private static void MarkRecovery(DeploymentOperation operation, DateTimeOffset nowUtc)
