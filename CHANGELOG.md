@@ -9,7 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- **W7-407** ([#1215](https://github.com/sesquicadaver/MTDirector/issues/1215)) / **W7-408** ([#1217](https://github.com/sesquicadaver/MTDirector/issues/1217)): AUDIT-CLK-01 — onboarding watchdog deadline from per-device RouterOS clock (`ReadRouterClockAsync` / `RouterOsClockParser`), monotonic `WatchdogTimeBudget`, remaining TTL for arm/disarm, clock-skew fail-closed; seed AUDIT-RPC-01 as **§3.C NEXT = W7-410 (#1220)** (`AuditClk01RouterOsClockTtlW7407LivingSpecTests`, `ProductTrancheSeedW7408LivingSpecTests`).
+- **W7-409** ([#1218](https://github.com/sesquicadaver/MTDirector/issues/1218)): AUDIT-RPC-01 — durable Accept + idempotency before RouterOS effects; Fast Start returns `operation_id` immediately; Controller `ChannelDeploymentStartWorkChannel` + `DeploymentStartHostedService` continue off the unary thread with live `IDeploymentPhaseReporter` phases; Desktop reuses Start idempotency key until Accept; seed **W7-410 (#1220)** → AUDIT-CAP-03 (`AuditRpc01FastStartLiveWatchW7409LivingSpecTests`).
+
+- **W7-407** ([#1215](https://github.com/sesquicadaver/MTDirector/issues/1215)) / **W7-408** ([#1217](https://github.com/sesquicadaver/MTDirector/issues/1217)): AUDIT-CLK-01 — onboarding watchdog deadline from per-device RouterOS clock (`ReadRouterClockAsync` / `RouterOsClockParser`), monotonic `WatchdogTimeBudget`, remaining TTL for arm/disarm, clock-skew fail-closed; seeded AUDIT-RPC-01 (`AuditClk01RouterOsClockTtlW7407LivingSpecTests`, `ProductTrancheSeedW7408LivingSpecTests`).
 
 - **W7-405** ([#1212](https://github.com/sesquicadaver/MTDirector/issues/1212)) / **W7-406** ([#1214](https://github.com/sesquicadaver/MTDirector/issues/1214)): AUDIT-RB-01 — automatic standalone/VRRP rollback uses `ExecuteDeploymentRollbackUseCase` / `RollbackDeviceAsync` (third target → RecoveryRequired; failed disarm/old verification cannot become RolledBack); seed AUDIT-CLK-01 (`AuditRb01UnifiedStrictRollbackW7405LivingSpecTests`, `ProductTrancheSeedW7406LivingSpecTests`).
 
