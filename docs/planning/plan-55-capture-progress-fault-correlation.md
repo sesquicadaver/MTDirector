@@ -102,4 +102,4 @@ PLAN-54 sole ranked row (**DESK-CONN-FAULT-01**) is **DONE**. No further PLAN-54
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-409 (#1218)** — PLAN-56 Inventory VRRP pair status fault text.
+**§3.C NEXT = W7-410 (#1220)** — PLAN-56 Inventory VRRP pair status fault text.

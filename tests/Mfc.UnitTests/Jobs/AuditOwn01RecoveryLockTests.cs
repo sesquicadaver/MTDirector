@@ -264,6 +264,7 @@ public sealed class AuditOwn01RecoveryLockTests
             DeploymentOperation operation,
             IReadOnlyList<Mfc.Domain.Policy.PacketPathPairFact> packetPathPairs,
             DateTimeOffset nowUtc,
+            IDeploymentPhaseReporter? phases = null,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 

@@ -26,6 +26,9 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
     /// <summary>Capture-derived packet-path pairs from last sealed CreatePlan; cleared on node switch.</summary>
     private DeploymentPacketPathPairFact[] _capturePacketPathPairs = [];
 
+    /// <summary>Stable Start idempotency key for the current plan attempt (AUDIT-RPC-01).</summary>
+    private Guid? _startIdempotencyKey;
+
     public DeploymentViewModel(
         IDeploymentServiceClient client,
         IControllerConnectionService connection,
@@ -273,12 +276,16 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
         Sha256 planHash,
         CancellationToken cancellationToken)
     {
+        // AUDIT-RPC-01: reuse the same key on Start retry until Accept succeeds.
+        Guid startKey = _startIdempotencyKey ??= Guid.NewGuid();
         DeploymentOperationSummary started = await _client.StartAsync(
                 planId,
                 planHash,
                 RequireCapturePacketPathPairs(),
+                startKey,
                 cancellationToken)
             .ConfigureAwait(true);
+        _startIdempotencyKey = null;
         // AUDIT-INT-01 §18: retain OperationId immediately after Start, before Watch can fail.
         OperationId = DesktopProtoUuid.ToGuid(started.OperationId);
         ProgressLines.Clear();
@@ -420,6 +427,7 @@ public sealed partial class DeploymentViewModel : ObservableObject, IDisposable
         ProgressLines.Clear();
         RecoveryFactsText = string.Empty;
         _capturePacketPathPairs = [];
+        _startIdempotencyKey = null;
     }
 
     private void RefreshTargetHint()

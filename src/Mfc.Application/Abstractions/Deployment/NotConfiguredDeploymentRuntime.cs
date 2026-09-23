@@ -19,12 +19,14 @@ public sealed class NotConfiguredDeploymentRuntime : IDeploymentRuntime
         DeploymentOperation operation,
         IReadOnlyList<PacketPathPairFact> packetPathPairs,
         DateTimeOffset nowUtc,
+        IDeploymentPhaseReporter? phases = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(node);
         ArgumentNullException.ThrowIfNull(plan);
         ArgumentNullException.ThrowIfNull(operation);
         ArgumentNullException.ThrowIfNull(packetPathPairs);
+        _ = phases;
         cancellationToken.ThrowIfCancellationRequested();
         throw new InvalidOperationException(NotConfiguredMessage);
     }

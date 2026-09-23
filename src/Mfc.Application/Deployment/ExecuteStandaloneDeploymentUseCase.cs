@@ -1,3 +1,4 @@
+using Mfc.Application.Abstractions.Deployment;
 using Mfc.Domain;
 using Mfc.Domain.Deployment;
 using Mfc.Domain.Deployment.Primitives;
@@ -86,6 +87,7 @@ public static class ExecuteStandaloneDeploymentUseCase
         DateTimeOffset routerClock,
         TimeSpan? remainingWatchdogTtl = null,
         RouterOsFilterArtifact? observeFromArtifact = null,
+        IDeploymentPhaseReporter? phases = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(node);
@@ -126,12 +128,12 @@ public static class ExecuteStandaloneDeploymentUseCase
                 packetPathPairs);
             timeline.Add("precheck:revalidated");
 
-            Advance(operation, DeploymentOperationState.Prechecking, nowUtc);
+            Advance(operation, DeploymentOperationState.Prechecking, nowUtc, phases: phases);
             deviceState.EnsureTransition(DeviceDeploymentState.Prechecked, nowUtc);
 
             if (StandaloneDeploymentPolicy.IsNoChanges(devicePlan))
             {
-                Advance(operation, DeploymentOperationState.NoChanges, nowUtc);
+                Advance(operation, DeploymentOperationState.NoChanges, nowUtc, phases: phases);
                 timeline.Add("no-changes");
                 return Ok(
                     operation.State,
@@ -146,7 +148,7 @@ public static class ExecuteStandaloneDeploymentUseCase
             }
 
             deviceState.EnsureTransition(DeviceDeploymentState.Staging, nowUtc);
-            Advance(operation, DeploymentOperationState.Staging, nowUtc);
+            Advance(operation, DeploymentOperationState.Staging, nowUtc, phases: phases);
 
             foreach (AddressListArtifactDraft list in addressLists)
             {
@@ -166,7 +168,8 @@ public static class ExecuteStandaloneDeploymentUseCase
                         armedBeforeActivation,
                         disarmedBeforeCommit,
                         detachedPreserved,
-                        recovery: false).ConfigureAwait(false);
+                        recovery: false,
+                phases: phases).ConfigureAwait(false);
                 }
 
                 if (staged.AddedCount > 0)
@@ -196,7 +199,8 @@ public static class ExecuteStandaloneDeploymentUseCase
                         armedBeforeActivation,
                         disarmedBeforeCommit,
                         detachedPreserved,
-                        recovery: false).ConfigureAwait(false);
+                        recovery: false,
+                phases: phases).ConfigureAwait(false);
                 }
 
                 if (stagedChains.TotalAddedCount > 0)
@@ -210,9 +214,9 @@ public static class ExecuteStandaloneDeploymentUseCase
             // Staging must not mutate permanent anchors (AC#3 — no active traffic cut-over yet).
             timeline.Add("stage:detached-only");
             deviceState.EnsureTransition(DeviceDeploymentState.Staged, nowUtc);
-            Advance(operation, DeploymentOperationState.Staged, nowUtc);
+            Advance(operation, DeploymentOperationState.Staged, nowUtc, phases: phases);
 
-            Advance(operation, DeploymentOperationState.ArmingWatchdog, nowUtc);
+            Advance(operation, DeploymentOperationState.ArmingWatchdog, nowUtc, phases: phases);
             DeploymentSystemNameFacts names = await runtime.ReadSystemNamesAsync(cancellationToken).ConfigureAwait(false);
             DeploymentWatchdogPlanResult planned = PlanDeploymentWatchdogUseCase.PlanWatchdog(
                 operation.Id,
@@ -233,7 +237,8 @@ public static class ExecuteStandaloneDeploymentUseCase
                     armedBeforeActivation,
                     disarmedBeforeCommit,
                     detachedPreserved,
-                    recovery: false).ConfigureAwait(false);
+                    recovery: false,
+                phases: phases).ConfigureAwait(false);
             }
 
             DeploymentWatchdogExecutionResult arm = await runtime.Watchdog.ArmWatchdogAsync(
@@ -253,7 +258,8 @@ public static class ExecuteStandaloneDeploymentUseCase
                     armedBeforeActivation,
                     disarmedBeforeCommit,
                     detachedPreserved,
-                    recovery: false).ConfigureAwait(false);
+                    recovery: false,
+                phases: phases).ConfigureAwait(false);
             }
 
             armed = planned.Watchdog;
@@ -261,9 +267,9 @@ public static class ExecuteStandaloneDeploymentUseCase
             armedBeforeActivation = true;
             timeline.Add("watchdog:armed");
             deviceState.EnsureTransition(DeviceDeploymentState.WatchdogArmed, nowUtc);
-            Advance(operation, DeploymentOperationState.WatchdogArmed, nowUtc);
+            Advance(operation, DeploymentOperationState.WatchdogArmed, nowUtc, phases: phases);
 
-            Advance(operation, DeploymentOperationState.Activating, nowUtc);
+            Advance(operation, DeploymentOperationState.Activating, nowUtc, phases: phases);
             deviceState.EnsureTransition(DeviceDeploymentState.Activating, nowUtc);
             WatchdogTimeBudget budget = new(remainingWatchdogTtl ?? devicePlan.RollbackTtl);
             AnchorActivationResult activated = await ActivateAnchorsUseCase.ExecuteAsync(
@@ -288,12 +294,13 @@ public static class ExecuteStandaloneDeploymentUseCase
                     armedBeforeActivation,
                     detachedPreserved: true,
                     activated.RecoveryRequired,
-                    cancellationToken).ConfigureAwait(false);
+                    cancellationToken,
+                phases: phases).ConfigureAwait(false);
             }
 
             timeline.Add("activate:done");
             deviceState.EnsureTransition(DeviceDeploymentState.ActiveUnverified, nowUtc);
-            Advance(operation, DeploymentOperationState.Verifying, nowUtc);
+            Advance(operation, DeploymentOperationState.Verifying, nowUtc, phases: phases);
 
             DeploymentVerificationResult verified = await VerifyDeploymentActivationUseCase.ExecuteAsync(
                 devicePlan,
@@ -320,14 +327,14 @@ public static class ExecuteStandaloneDeploymentUseCase
                     armedBeforeActivation,
                     detachedPreserved: true,
                     recovery: verified.Code == DeploymentCodes.RecoveryRequired,
-                    cancellationToken)
-                    .ConfigureAwait(false);
+                    cancellationToken,
+                    phases).ConfigureAwait(false);
             }
 
             timeline.Add("verify:passed");
             deviceState.EnsureTransition(DeviceDeploymentState.Verified, nowUtc);
 
-            Advance(operation, DeploymentOperationState.DisarmingWatchdog, nowUtc);
+            Advance(operation, DeploymentOperationState.DisarmingWatchdog, nowUtc, phases: phases);
             DeploymentWatchdogExecutionResult disarmed = await runtime.Watchdog.DisarmWatchdogAsync(
                 armed,
                 budget.Remaining,
@@ -348,7 +355,8 @@ public static class ExecuteStandaloneDeploymentUseCase
                     armedBeforeActivation,
                     detachedPreserved: true,
                     recovery: true,
-                    cancellationToken).ConfigureAwait(false);
+                    cancellationToken,
+                phases: phases).ConfigureAwait(false);
             }
 
             disarmedBeforeCommit = true;
@@ -367,7 +375,7 @@ public static class ExecuteStandaloneDeploymentUseCase
             // Old artifact hash retained on the snapshot for rollback history (AC#7).
             timeline.Add($"commit:{snapshot.NewArtifactHash}");
             deviceState.EnsureTransition(DeviceDeploymentState.Committed, nowUtc);
-            Advance(operation, DeploymentOperationState.Committed, nowUtc);
+            Advance(operation, DeploymentOperationState.Committed, nowUtc, phases: phases);
 
             return Ok(
                 operation.State,
@@ -396,7 +404,8 @@ public static class ExecuteStandaloneDeploymentUseCase
                 disarmedBeforeCommit,
                 detachedPreserved,
                 recovery: false,
-                activationJournal).ConfigureAwait(false);
+                activationJournal,
+                phases: phases).ConfigureAwait(false);
         }
     }
 
@@ -417,9 +426,10 @@ public static class ExecuteStandaloneDeploymentUseCase
         bool armedBeforeActivation,
         bool detachedPreserved,
         bool recovery,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        IDeploymentPhaseReporter? phases = null)
     {
-        Advance(operation, DeploymentOperationState.RollbackPending, nowUtc, errorCode);
+        Advance(operation, DeploymentOperationState.RollbackPending, nowUtc, errorCode, phases);
         if (recovery)
         {
             if (!deviceState.IsTerminal)
@@ -434,7 +444,7 @@ public static class ExecuteStandaloneDeploymentUseCase
                 }
             }
 
-            Advance(operation, DeploymentOperationState.RecoveryRequired, nowUtc, errorCode);
+            Advance(operation, DeploymentOperationState.RecoveryRequired, nowUtc, errorCode, phases);
             timeline.Add("recovery-required");
             return FailResult(
                 operation.State,
@@ -518,7 +528,8 @@ public static class ExecuteStandaloneDeploymentUseCase
         bool disarmedBeforeCommit,
         bool detachedPreserved,
         bool recovery,
-        IReadOnlyList<AnchorActivationJournalEntry>? activationJournal = null)
+        IReadOnlyList<AnchorActivationJournalEntry>? activationJournal = null,
+        IDeploymentPhaseReporter? phases = null)
     {
         if (!operation.IsTerminal)
         {
@@ -529,15 +540,15 @@ public static class ExecuteStandaloneDeploymentUseCase
                     : DeploymentOperationState.RollbackPending;
             if (DeploymentOperation.CanTransition(operation.State, next))
             {
-                Advance(operation, next, nowUtc, code);
+                Advance(operation, next, nowUtc, code, phases);
             }
             else if (DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.Failed))
             {
-                Advance(operation, DeploymentOperationState.Failed, nowUtc, code);
+                Advance(operation, DeploymentOperationState.Failed, nowUtc, code, phases);
             }
             else if (DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.RecoveryRequired))
             {
-                Advance(operation, DeploymentOperationState.RecoveryRequired, nowUtc, code);
+                Advance(operation, DeploymentOperationState.RecoveryRequired, nowUtc, code, phases);
             }
         }
 
@@ -558,8 +569,12 @@ public static class ExecuteStandaloneDeploymentUseCase
         DeploymentOperation operation,
         DeploymentOperationState next,
         DateTimeOffset nowUtc,
-        string? errorCode = null)
-        => operation.EnsureTransition(next, nowUtc, errorCode);
+        string? errorCode = null,
+        IDeploymentPhaseReporter? phases = null)
+    {
+        operation.EnsureTransition(next, nowUtc, errorCode);
+        phases?.Report(operation.State, errorCode);
+    }
 
     private static StandaloneDeploymentResult Ok(
         DeploymentOperationState state,

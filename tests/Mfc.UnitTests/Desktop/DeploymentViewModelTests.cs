@@ -674,12 +674,16 @@ public sealed class DeploymentViewModelTests
             Guid planId,
             Sha256 planHash,
             IReadOnlyList<DeploymentPacketPathPairFact> packetPathPairs,
+            Guid? idempotencyKey = null,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            LastStartIdempotencyKey = idempotencyKey;
             StartCalls++;
             return Task.FromResult(StartResponse);
         }
+
+        public Guid? LastStartIdempotencyKey { get; private set; }
 
         public async IAsyncEnumerable<DeploymentProgress> WatchAsync(
             Guid operationId,

@@ -26,16 +26,17 @@ public sealed class ProductTrancheSeedW7408LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-409 | [#1218](https://github.com/sesquicadaver/MTDirector/issues/1218) | AUDIT-RPC-01 — Fast Start + live Watch | **OPEN**",
+            "W7-409 | [#1218](https://github.com/sesquicadaver/MTDirector/issues/1218) | AUDIT-RPC-01 — Fast Start + live Watch | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-409 (#1218)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-410 (#1220)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-408 (#1217) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-409 (#1218)", plan, StringComparison.Ordinal);
         Assert.Contains("AUDIT-RPC-01", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-409 (#1218)", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-409 (#1218)", readme, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-RPC-01 W7-409 (#1218) DONE", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-410 (#1220)", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-410 (#1220)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

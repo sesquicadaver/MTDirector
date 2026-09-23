@@ -222,7 +222,8 @@ public sealed class OperationalJobUseCaseCoverageTests
         public Task<DeploymentWorkflowExecutionResult> ExecuteAsync(
             Node node, DeploymentPlan plan, DeploymentOperation operation,
             IReadOnlyList<Mfc.Domain.Policy.PacketPathPairFact> packetPathPairs,
-            DateTimeOffset nowUtc, CancellationToken cancellationToken = default)
+            DateTimeOffset nowUtc, IDeploymentPhaseReporter? phases = null,
+            CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
         public Task<DeploymentWorkflowRollbackResult> RollbackAsync(

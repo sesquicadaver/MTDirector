@@ -3981,6 +3981,15 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+
+## Living Specification — AUDIT-RPC-01 Fast Start + live Watch (W7-409)
+
+| AC | Module | Test |
+|----|--------|------|
+| Durable Accept + Continue queue; live phases; Desktop stable Start key; docs + queue lock | StartDeploymentUseCase, DeploymentStartHostedService, HubDeploymentProgressSink, DeploymentViewModel, known-limitations, ROADMAP | `AuditRpc01FastStartLiveWatchW7409LivingSpecTests.Ac1FastStartAcceptLivePhasesAndStableDesktopKey` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditRpc01FastStartLiveWatchW7409"`.
+
 ## Living Specification — Seed AUDIT-RPC-01 after AUDIT-CLK-01 (W7-408)
 
 | Requirement | Artifact | Test |

@@ -1,3 +1,4 @@
+using Mfc.Application.Abstractions.Deployment;
 using Mfc.Domain;
 using Mfc.Domain.Deployment;
 using Mfc.Domain.Inventory;
@@ -67,6 +68,7 @@ public static class ExecuteVrrpDeploymentUseCase
         IReadOnlyList<DeploymentOperation> existingForNode,
         IReadOnlyList<PacketPathPairFact> packetPathPairs,
         DateTimeOffset nowUtc,
+        IDeploymentPhaseReporter? phases = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(node);
@@ -99,7 +101,7 @@ public static class ExecuteVrrpDeploymentUseCase
             }
 
             DeploymentOperationGate.EnsureCanStart(node, plan, existingForNode, nowUtc, packetPathPairs);
-            Advance(operation, DeploymentOperationState.Prechecking, nowUtc);
+            Advance(operation, DeploymentOperationState.Prechecking, nowUtc, phases: phases);
             timeline.Add("precheck:start");
 
             foreach (DeviceDeploymentPlan devicePlan in plan.DevicePlans.OrderBy(static p => p.DeviceId.Value))
@@ -113,7 +115,7 @@ public static class ExecuteVrrpDeploymentUseCase
             VrrpDeploymentPolicy.EnsureNoSplitMasterSimplification(precheckVector);
             timeline.Add("precheck:all");
 
-            Advance(operation, DeploymentOperationState.Staging, nowUtc);
+            Advance(operation, DeploymentOperationState.Staging, nowUtc, phases: phases);
             foreach (DeviceDeploymentPlan devicePlan in plan.DevicePlans.OrderBy(static p => p.DeviceId.Value))
             {
                 await byId[devicePlan.DeviceId].StageArtifactAsync(cancellationToken).ConfigureAwait(false);
@@ -121,9 +123,9 @@ public static class ExecuteVrrpDeploymentUseCase
             }
 
             timeline.Add("stage:all");
-            Advance(operation, DeploymentOperationState.Staged, nowUtc);
+            Advance(operation, DeploymentOperationState.Staged, nowUtc, phases: phases);
 
-            Advance(operation, DeploymentOperationState.ArmingWatchdog, nowUtc);
+            Advance(operation, DeploymentOperationState.ArmingWatchdog, nowUtc, phases: phases);
             HashSet<DeviceId> armed = [];
             foreach (DeviceDeploymentPlan devicePlan in plan.DevicePlans.OrderBy(static p => p.DeviceId.Value))
             {
@@ -144,8 +146,8 @@ public static class ExecuteVrrpDeploymentUseCase
             }
 
             timeline.Add("watchdog:all-armed");
-            Advance(operation, DeploymentOperationState.WatchdogArmed, nowUtc);
-            Advance(operation, DeploymentOperationState.Activating, nowUtc);
+            Advance(operation, DeploymentOperationState.WatchdogArmed, nowUtc, phases: phases);
+            Advance(operation, DeploymentOperationState.Activating, nowUtc, phases: phases);
 
             VrrpRoleVector lastVector = await ReadVectorAsync(members, cancellationToken).ConfigureAwait(false);
             VrrpDeploymentPolicy.EnsureAllMembersReachable(lastVector);
@@ -175,7 +177,7 @@ public static class ExecuteVrrpDeploymentUseCase
                         retainedWatchdog,
                         timeline,
                         cancellationToken).ConfigureAwait(false);
-                    FinishRollback(operation, nowUtc, DeploymentCodes.VrrpRoleChangedDuringDeployment);
+                    FinishRollback(operation, nowUtc, DeploymentCodes.VrrpRoleChangedDuringDeployment, phases);
                     return Fail(
                         operation.State,
                         DeploymentCodes.VrrpRoleChangedDuringDeployment,
@@ -215,7 +217,7 @@ public static class ExecuteVrrpDeploymentUseCase
                         retainedWatchdog,
                         timeline,
                         cancellationToken).ConfigureAwait(false);
-                    FinishRollback(operation, nowUtc, DeploymentCodes.VrrpMemberUnreachable);
+                    FinishRollback(operation, nowUtc, DeploymentCodes.VrrpMemberUnreachable, phases);
                     return Fail(
                         operation.State,
                         DeploymentCodes.VrrpMemberUnreachable,
@@ -240,15 +242,15 @@ public static class ExecuteVrrpDeploymentUseCase
                 plan.DevicePlans.Select(static p => p.DeviceId).ToArray(),
                 activated.ToHashSet());
 
-            Advance(operation, DeploymentOperationState.Verifying, nowUtc);
-            Advance(operation, DeploymentOperationState.DisarmingWatchdog, nowUtc);
+            Advance(operation, DeploymentOperationState.Verifying, nowUtc, phases: phases);
+            Advance(operation, DeploymentOperationState.DisarmingWatchdog, nowUtc, phases: phases);
             foreach (DeviceId deviceId in activated.OrderBy(static d => d.Value))
             {
                 await byId[deviceId].DisarmWatchdogAsync(cancellationToken).ConfigureAwait(false);
                 timeline.Add($"watchdog-disarmed:{deviceId.Value:D}");
             }
 
-            Advance(operation, DeploymentOperationState.Committed, nowUtc);
+            Advance(operation, DeploymentOperationState.Committed, nowUtc, phases: phases);
             timeline.Add("commit:all");
             DateTimeOffset committedAt = nowUtc.ToUniversalTime();
             DeploymentCommitSnapshot[] memberSnapshots = plan.DevicePlans
@@ -288,21 +290,21 @@ public static class ExecuteVrrpDeploymentUseCase
                     retainedWatchdog,
                     timeline,
                     cancellationToken).ConfigureAwait(false);
-                FinishRollback(operation, nowUtc, code);
+                FinishRollback(operation, nowUtc, code, phases);
             }
             else if (!operation.IsTerminal)
             {
                 if (DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.Blocked))
                 {
-                    Advance(operation, DeploymentOperationState.Blocked, nowUtc, code);
+                    Advance(operation, DeploymentOperationState.Blocked, nowUtc, code, phases);
                 }
                 else if (DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.Failed))
                 {
-                    Advance(operation, DeploymentOperationState.Failed, nowUtc, code);
+                    Advance(operation, DeploymentOperationState.Failed, nowUtc, code, phases);
                 }
                 else if (DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.RollbackPending))
                 {
-                    FinishRollback(operation, nowUtc, code);
+                    FinishRollback(operation, nowUtc, code, phases);
                 }
             }
 
@@ -319,7 +321,11 @@ public static class ExecuteVrrpDeploymentUseCase
         }
     }
 
-    private static void FinishRollback(DeploymentOperation operation, DateTimeOffset nowUtc, string code)
+    private static void FinishRollback(
+        DeploymentOperation operation,
+        DateTimeOffset nowUtc,
+        string code,
+        IDeploymentPhaseReporter? phases = null)
     {
         if (operation.IsTerminal)
         {
@@ -328,21 +334,21 @@ public static class ExecuteVrrpDeploymentUseCase
 
         if (DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.RollbackPending))
         {
-            Advance(operation, DeploymentOperationState.RollbackPending, nowUtc, code);
+            Advance(operation, DeploymentOperationState.RollbackPending, nowUtc, code, phases);
         }
 
         if (DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.RollingBack))
         {
-            Advance(operation, DeploymentOperationState.RollingBack, nowUtc, code);
+            Advance(operation, DeploymentOperationState.RollingBack, nowUtc, code, phases);
         }
 
         if (DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.RolledBack))
         {
-            Advance(operation, DeploymentOperationState.RolledBack, nowUtc, code);
+            Advance(operation, DeploymentOperationState.RolledBack, nowUtc, code, phases);
         }
         else if (DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.RecoveryRequired))
         {
-            Advance(operation, DeploymentOperationState.RecoveryRequired, nowUtc, code);
+            Advance(operation, DeploymentOperationState.RecoveryRequired, nowUtc, code, phases);
         }
     }
 
@@ -396,8 +402,12 @@ public static class ExecuteVrrpDeploymentUseCase
         DeploymentOperation operation,
         DeploymentOperationState next,
         DateTimeOffset nowUtc,
-        string? errorCode = null)
-        => operation.EnsureTransition(next, nowUtc, errorCode);
+        string? errorCode = null,
+        IDeploymentPhaseReporter? phases = null)
+    {
+        operation.EnsureTransition(next, nowUtc, errorCode);
+        phases?.Report(operation.State, errorCode);
+    }
 
     private static VrrpDeploymentResult Fail(
         DeploymentOperationState state,

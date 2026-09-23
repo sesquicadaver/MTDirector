@@ -12,13 +12,17 @@ public sealed class ScriptedDeploymentRuntime : IDeploymentRuntime
 {
     public bool Commit { get; init; } = true;
 
-    public Task<DeploymentWorkflowExecutionResult> ExecuteAsync(
+    /// <summary>Optional delay after first phase so Watch can observe live progress (AUDIT-RPC-01).</summary>
+    public TimeSpan PhaseDelay { get; init; } = TimeSpan.Zero;
+
+    public async Task<DeploymentWorkflowExecutionResult> ExecuteAsync(
         Node node,
         DeploymentPlan plan,
         DeploymentOperation operation,
         IReadOnlyList<PacketPathPairFact> packetPathPairs,
         DateTimeOffset nowUtc,
-        CancellationToken cancellationToken = default)
+        IDeploymentPhaseReporter? phases = null,
+            CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(node);
         ArgumentNullException.ThrowIfNull(plan);
@@ -26,35 +30,40 @@ public sealed class ScriptedDeploymentRuntime : IDeploymentRuntime
         ArgumentNullException.ThrowIfNull(packetPathPairs);
         cancellationToken.ThrowIfCancellationRequested();
 
-        Advance(operation, DomainState.Prechecking, nowUtc);
-        Advance(operation, DomainState.Staging, nowUtc);
-        Advance(operation, DomainState.Staged, nowUtc);
-        Advance(operation, DomainState.ArmingWatchdog, nowUtc);
-        Advance(operation, DomainState.WatchdogArmed, nowUtc);
-        Advance(operation, DomainState.Activating, nowUtc);
+        Advance(operation, DomainState.Prechecking, nowUtc, phases);
+        if (PhaseDelay > TimeSpan.Zero)
+        {
+            await Task.Delay(PhaseDelay, cancellationToken).ConfigureAwait(false);
+        }
+
+        Advance(operation, DomainState.Staging, nowUtc, phases);
+        Advance(operation, DomainState.Staged, nowUtc, phases);
+        Advance(operation, DomainState.ArmingWatchdog, nowUtc, phases);
+        Advance(operation, DomainState.WatchdogArmed, nowUtc, phases);
+        Advance(operation, DomainState.Activating, nowUtc, phases);
 
         if (Commit)
         {
-            Advance(operation, DomainState.Verifying, nowUtc);
-            Advance(operation, DomainState.DisarmingWatchdog, nowUtc);
-            Advance(operation, DomainState.Committed, nowUtc);
-            return Task.FromResult(new DeploymentWorkflowExecutionResult
+            Advance(operation, DomainState.Verifying, nowUtc, phases);
+            Advance(operation, DomainState.DisarmingWatchdog, nowUtc, phases);
+            Advance(operation, DomainState.Committed, nowUtc, phases);
+            return new DeploymentWorkflowExecutionResult
             {
                 Succeeded = true,
                 State = operation.State,
                 Timeline = ["execute", "committed"],
                 ActivationStarted = true,
-            });
+            };
         }
 
-        Advance(operation, DomainState.RollbackPending, nowUtc);
-        return Task.FromResult(new DeploymentWorkflowExecutionResult
+        Advance(operation, DomainState.RollbackPending, nowUtc, phases);
+        return new DeploymentWorkflowExecutionResult
         {
             Succeeded = false,
             State = operation.State,
             Timeline = ["execute", "rollback-pending"],
             ActivationStarted = true,
-        });
+        };
     }
 
     public Task<DeploymentWorkflowRollbackResult> RollbackAsync(
@@ -118,6 +127,13 @@ public sealed class ScriptedDeploymentRuntime : IDeploymentRuntime
         });
     }
 
-    private static void Advance(DeploymentOperation operation, DomainState next, DateTimeOffset nowUtc)
-        => operation.EnsureTransition(next, nowUtc);
+    private static void Advance(
+        DeploymentOperation operation,
+        DomainState next,
+        DateTimeOffset nowUtc,
+        IDeploymentPhaseReporter? phases = null)
+    {
+        operation.EnsureTransition(next, nowUtc);
+        phases?.Report(operation.State);
+    }
 }
