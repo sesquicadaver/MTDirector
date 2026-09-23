@@ -3981,6 +3981,22 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed AUDIT-COMMIT-01 after AUDIT-OWN-01 (W7-400)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks AUDIT-COMMIT-01 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7400LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditCommit01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7400"`.
+
+## Living Specification — AUDIT-OWN-01 onboarding durable writer lease (W7-399)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Start acquires OnboardingLock; recovery skips live lease; expire after Execute | OnboardingOwnership, RecoverNonterminalOperationsJobUseCase, StartOnboardingUseCase, known-limitations, ROADMAP | `AuditOwn01RecoveryLockW7399LivingSpecTests.Ac1OwnershipGateAndQueueLockAuditOwn01` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditOwn01RecoveryLockW7399"`.
+
 ## Living Specification — Seed AUDIT-OWN-01 after AUDIT-SBOM-01 (W7-398)
 
 | Requirement | Artifact | Test |

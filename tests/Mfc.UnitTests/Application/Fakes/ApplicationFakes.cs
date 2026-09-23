@@ -153,6 +153,7 @@ internal sealed class FakeOnboardingStore : IOnboardingStore
     private readonly Dictionary<Guid, OnboardingPlan> _plans = [];
     private readonly Dictionary<Guid, OnboardingOperation> _operations = [];
     private readonly Dictionary<Guid, OnboardingStep> _steps = [];
+    private readonly Dictionary<Guid, OnboardingLock> _locks = [];
 
     public IReadOnlyCollection<OnboardingOperation> Operations => _operations.Values;
 
@@ -215,6 +216,33 @@ internal sealed class FakeOnboardingStore : IOnboardingStore
         CancellationToken cancellationToken = default)
         => Task.FromResult<IReadOnlyList<OnboardingStep>>(
             _steps.Values.Where(s => s.OperationId == operationId).ToArray());
+
+    public Task AddLockAsync(OnboardingLock onboardingLock, CancellationToken cancellationToken = default)
+    {
+        _locks[onboardingLock.NodeId.Value] = onboardingLock;
+        return Task.CompletedTask;
+    }
+
+    public Task SaveLockAsync(OnboardingLock onboardingLock, CancellationToken cancellationToken = default)
+    {
+        _locks[onboardingLock.NodeId.Value] = onboardingLock;
+        return Task.CompletedTask;
+    }
+
+    public Task ReplaceExpiredLockAsync(OnboardingLock onboardingLock, CancellationToken cancellationToken = default)
+    {
+        if (_locks.TryGetValue(onboardingLock.NodeId.Value, out OnboardingLock? existing)
+            && existing.ExpiresAtUtc > onboardingLock.AcquiredAtUtc)
+        {
+            throw new InvalidOperationException(OnboardingCodes.LockHeld);
+        }
+
+        _locks[onboardingLock.NodeId.Value] = onboardingLock;
+        return Task.CompletedTask;
+    }
+
+    public Task<OnboardingLock?> GetLockByNodeAsync(NodeId nodeId, CancellationToken cancellationToken = default)
+        => Task.FromResult(_locks.TryGetValue(nodeId.Value, out OnboardingLock? value) ? value : null);
 }
 
 internal sealed class FakeDeploymentStore : IDeploymentStore

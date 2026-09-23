@@ -401,6 +401,12 @@ public sealed class StartOnboardingCommand
     public required Guid PlanId { get; init; }
 
     public required byte[] PlanHash { get; init; }
+
+    /// <summary>
+    /// Controller instance that owns the durable Node lock during Execute (AUDIT-OWN-01).
+    /// Defaults to <see cref="OnboardingOwnership.DefaultOwnerInstanceId"/>.
+    /// </summary>
+    public string? OwnerInstanceId { get; init; }
 }
 
 public sealed class StartOnboardingUseCase
@@ -521,44 +527,75 @@ public sealed class StartOnboardingUseCase
             OnboardingOperationGate.EnsureCanStart(node, plan, existing, now);
             OnboardingOperation operation = OnboardingOperation.Create(plan, node, new UserId(ActorKey.FromActor(command.Actor)), now);
             await _onboarding.AddOperationAsync(operation, cancellationToken).ConfigureAwait(false);
+
+            string ownerInstanceId = string.IsNullOrWhiteSpace(command.OwnerInstanceId)
+                ? OnboardingOwnership.DefaultOwnerInstanceId
+                : command.OwnerInstanceId.Trim();
+            OnboardingLock? existingLock = await _onboarding
+                .GetLockByNodeAsync(node.Id, cancellationToken)
+                .ConfigureAwait(false);
+            OnboardingLock acquired = OnboardingOwnership.AcquireForStart(
+                node.Id, operation.Id, ownerInstanceId, now, existingLock);
+            if (existingLock is null)
+            {
+                await _onboarding.AddLockAsync(acquired, cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                await _onboarding.ReplaceExpiredLockAsync(acquired, cancellationToken).ConfigureAwait(false);
+            }
+
             OnboardingExecutionResult executed;
             try
             {
-                executed = await _runtime.ExecuteAsync(node, plan, operation, now, now, cancellationToken)
+                try
+                {
+                    executed = await _runtime.ExecuteAsync(node, plan, operation, now, now, cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    operation.EnsureTransition(OnboardingOperationState.RecoveryRequired, now, "failed");
+                    await _onboarding.SaveOperationAsync(operation, cancellationToken).ConfigureAwait(false);
+                    return ApplicationResults.Fail(ApplicationError.Failed(ex.Message));
+                }
+
+                await _unitOfWork.ExecuteAsync(
+                    async ct =>
+                    {
+                        await _onboarding.SaveOperationAsync(operation, ct).ConfigureAwait(false);
+                        await _nodes.UpdateAsync(node, ct).ConfigureAwait(false);
+                        await _idempotency.SaveAsync(
+                                command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, ct)
+                            .ConfigureAwait(false);
+                        await _audit.AppendAsync(
+                                command.Actor,
+                                Operation,
+                                JsonSerializer.Serialize(new
+                                {
+                                    operation_id = operation.Id.Value,
+                                    plan_id = plan.Id.Value,
+                                    state = operation.State.ToString(),
+                                }),
+                                ct).ConfigureAwait(false);
+                    },
+                    cancellationToken).ConfigureAwait(false);
+                return ApplicationResults.Ok(ToOperationView(operation, executed.Timeline, executed.NodeManaged));
+            }
+            finally
+            {
+                // Crash mid-Execute leaves the lease live until TTL; a completed Start call expires it.
+                await ExpireOwnedLockAsync(node.Id, operation.Id, _clock.UtcNow, CancellationToken.None)
                     .ConfigureAwait(false);
             }
-            catch (InvalidOperationException ex)
-            {
-                operation.EnsureTransition(OnboardingOperationState.RecoveryRequired, now, "failed");
-                await _onboarding.SaveOperationAsync(operation, cancellationToken).ConfigureAwait(false);
-                return ApplicationResults.Fail(ApplicationError.Failed(ex.Message));
-            }
-
-            await _unitOfWork.ExecuteAsync(
-                async ct =>
-                {
-                    await _onboarding.SaveOperationAsync(operation, ct).ConfigureAwait(false);
-                    await _nodes.UpdateAsync(node, ct).ConfigureAwait(false);
-                    await _idempotency.SaveAsync(
-                            command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, ct)
-                        .ConfigureAwait(false);
-                    await _audit.AppendAsync(
-                            command.Actor,
-                            Operation,
-                            JsonSerializer.Serialize(new
-                            {
-                                operation_id = operation.Id.Value,
-                                plan_id = plan.Id.Value,
-                                state = operation.State.ToString(),
-                            }),
-                            ct).ConfigureAwait(false);
-                },
-                cancellationToken).ConfigureAwait(false);
-            return ApplicationResults.Ok(ToOperationView(operation, executed.Timeline, executed.NodeManaged));
         }
         catch (DomainInvariantException ex)
         {
             return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
+        }
+        catch (PersistenceConflictException ex)
+        {
+            return ApplicationResults.Fail(new ApplicationError(ex.Code, ex.Message));
         }
         catch (InvalidOperationException ex)
         {
@@ -568,6 +605,23 @@ public sealed class StartOnboardingUseCase
         {
             return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
         }
+    }
+
+    private async Task ExpireOwnedLockAsync(
+        NodeId nodeId,
+        OnboardingOperationId operationId,
+        DateTimeOffset nowUtc,
+        CancellationToken cancellationToken)
+    {
+        OnboardingLock? held = await _onboarding.GetLockByNodeAsync(nodeId, cancellationToken)
+            .ConfigureAwait(false);
+        if (held is null || held.OperationId.Value != operationId.Value || held.IsExpired(nowUtc))
+        {
+            return;
+        }
+
+        held.Expire(nowUtc);
+        await _onboarding.SaveLockAsync(held, cancellationToken).ConfigureAwait(false);
     }
 
     internal static OnboardingOperationSummaryView ToOperationView(

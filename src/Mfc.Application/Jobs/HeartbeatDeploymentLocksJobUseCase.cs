@@ -13,7 +13,7 @@ public sealed class HeartbeatDeploymentLocksJobResult
 
 /// <summary>
 /// Refreshes deployment locks owned by this controller instance within the lease window.
-/// OnboardingLock persistence is not yet present — deployment locks only (scope cut).
+/// Onboarding locks (AUDIT-OWN-01) are acquired/expired on Start; heartbeat remains deployment-only.
 /// </summary>
 public sealed class HeartbeatDeploymentLocksJobUseCase
 {

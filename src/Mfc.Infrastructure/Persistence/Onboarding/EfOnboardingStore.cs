@@ -160,6 +160,71 @@ public sealed class EfOnboardingStore : IOnboardingStore
         return rows.Select(ToDomain).ToArray();
     }
 
+    public async Task AddLockAsync(OnboardingLock onboardingLock, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onboardingLock);
+        Guid nodeId = onboardingLock.NodeId.Value;
+        bool tracked = _db.ChangeTracker.Entries<OnboardingLockEntity>()
+            .Any(e => e.Entity.NodeId == nodeId);
+        if (tracked
+            || await _db.OnboardingLocks.AsNoTracking()
+                .AnyAsync(l => l.NodeId == nodeId, cancellationToken)
+                .ConfigureAwait(false))
+        {
+            throw new PersistenceConflictException(
+                OnboardingCodes.LockHeld,
+                "Node already has an onboarding lock.");
+        }
+
+        _db.OnboardingLocks.Add(ToEntity(onboardingLock));
+        await SaveChangesMappingConflictsAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task SaveLockAsync(OnboardingLock onboardingLock, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onboardingLock);
+        OnboardingLockEntity entity = await _db.OnboardingLocks
+            .SingleAsync(l => l.NodeId == onboardingLock.NodeId.Value, cancellationToken)
+            .ConfigureAwait(false);
+        entity.HeartbeatAtUtc = onboardingLock.HeartbeatAtUtc;
+        entity.ExpiresAtUtc = onboardingLock.ExpiresAtUtc;
+        await _db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task ReplaceExpiredLockAsync(
+        OnboardingLock onboardingLock,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onboardingLock);
+        OnboardingLockEntity entity = await _db.OnboardingLocks
+            .SingleAsync(l => l.NodeId == onboardingLock.NodeId.Value, cancellationToken)
+            .ConfigureAwait(false);
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        if (now < entity.ExpiresAtUtc)
+        {
+            throw new PersistenceConflictException(
+                OnboardingCodes.LockHeld,
+                "Cannot replace a live onboarding lock.");
+        }
+
+        entity.OperationId = onboardingLock.OperationId.Value;
+        entity.OwnerInstanceId = onboardingLock.OwnerInstanceId;
+        entity.AcquiredAtUtc = onboardingLock.AcquiredAtUtc;
+        entity.HeartbeatAtUtc = onboardingLock.HeartbeatAtUtc;
+        entity.ExpiresAtUtc = onboardingLock.ExpiresAtUtc;
+        await _db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<OnboardingLock?> GetLockByNodeAsync(
+        NodeId nodeId,
+        CancellationToken cancellationToken = default)
+    {
+        OnboardingLockEntity? entity = await _db.OnboardingLocks.AsNoTracking()
+            .SingleOrDefaultAsync(l => l.NodeId == nodeId.Value, cancellationToken)
+            .ConfigureAwait(false);
+        return entity is null ? null : ToDomain(entity);
+    }
+
     private static OnboardingPlan ToDomain(OnboardingPlanEntity entity)
         => OnboardingPlan.Reconstitute(
             new OnboardingPlanId(entity.Id),
@@ -319,6 +384,26 @@ public sealed class EfOnboardingStore : IOnboardingStore
             UpdatedAtUtc = onboardingStep.UpdatedAtUtc,
         };
 
+    private static OnboardingLock ToDomain(OnboardingLockEntity entity)
+        => OnboardingLock.Reconstitute(
+            new NodeId(entity.NodeId),
+            new OnboardingOperationId(entity.OperationId),
+            entity.OwnerInstanceId,
+            entity.AcquiredAtUtc,
+            entity.HeartbeatAtUtc,
+            entity.ExpiresAtUtc);
+
+    private static OnboardingLockEntity ToEntity(OnboardingLock onboardingLock)
+        => new()
+        {
+            NodeId = onboardingLock.NodeId.Value,
+            OperationId = onboardingLock.OperationId.Value,
+            OwnerInstanceId = onboardingLock.OwnerInstanceId,
+            AcquiredAtUtc = onboardingLock.AcquiredAtUtc,
+            HeartbeatAtUtc = onboardingLock.HeartbeatAtUtc,
+            ExpiresAtUtc = onboardingLock.ExpiresAtUtc,
+        };
+
     private async Task SaveChangesMappingConflictsAsync(CancellationToken cancellationToken)
     {
         try
@@ -351,6 +436,16 @@ public sealed class EfOnboardingStore : IOnboardingStore
             return new PersistenceConflictException(
                 OnboardingCodes.NonterminalExists,
                 "Node already has a nonterminal onboarding operation.",
+                ex);
+        }
+
+        if (pg.SqlState == PostgresErrorCodes.UniqueViolation
+            && (constraint.Contains("onboarding_locks", StringComparison.Ordinal)
+                || constraint.Contains("uq_onboarding_locks_node", StringComparison.Ordinal)))
+        {
+            return new PersistenceConflictException(
+                OnboardingCodes.LockHeld,
+                "Node already has an onboarding lock.",
                 ex);
         }
 

@@ -38,19 +38,19 @@ public sealed class ProductTrancheSeedW7369LivingSpecTests
             "W7-371 | [#1147](https://github.com/sesquicadaver/MTDirector/issues/1147) | Seed next after DESK-VRRP-FAULT-01 (PLAN-56 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-399 (#1203)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-401 (#1206)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-369", plan, StringComparison.Ordinal);
         Assert.Contains("W7-370", plan, StringComparison.Ordinal);
         Assert.Contains("W7-371", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-VRRP-FAULT-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-399 (#1203)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-401 (#1206)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-369 (#1144) DONE", plan56, StringComparison.Ordinal);
         Assert.Contains("DESK-VRRP-FAULT-01", plan56, StringComparison.Ordinal);
         Assert.Contains("W7-370", plan56, StringComparison.Ordinal);
         Assert.Contains("W7-371", plan56, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-399 (#1203)", plan56, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-401 (#1206)", plan56, StringComparison.Ordinal);
 
         Assert.Equal(1, Count(node, "VrrpPairStatusText = \"VRRP pair consistency failed.\""));
         Assert.Contains("VrrpPairStatusText = $\"VRRP pair consistency failed. {fault}\"", node, StringComparison.Ordinal);

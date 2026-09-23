@@ -38,19 +38,19 @@ public sealed class ProductTrancheSeedW7381LivingSpecTests
             "W7-383 | [#1171](https://github.com/sesquicadaver/MTDirector/issues/1171) | Seed next after SNAP-ERRTEXT-CORR-01 (PLAN-59 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-399 (#1203)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-401 (#1206)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-381", plan, StringComparison.Ordinal);
         Assert.Contains("W7-382", plan, StringComparison.Ordinal);
         Assert.Contains("W7-383", plan, StringComparison.Ordinal);
         Assert.Contains("SNAP-ERRTEXT-CORR-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-399 (#1203)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-401 (#1206)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-381 (#1168) DONE", plan59, StringComparison.Ordinal);
         Assert.Contains("SNAP-ERRTEXT-CORR-01", plan59, StringComparison.Ordinal);
         Assert.Contains("W7-382", plan59, StringComparison.Ordinal);
         Assert.Contains("W7-383", plan59, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-399 (#1203)", plan59, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-401 (#1206)", plan59, StringComparison.Ordinal);
 
         Assert.Contains(
             "ErrorText = FormatCaptureProgress(failed)",

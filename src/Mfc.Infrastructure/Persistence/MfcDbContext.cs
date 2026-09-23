@@ -91,6 +91,8 @@ public sealed class MfcDbContext : DbContext
 
     public DbSet<DeploymentLockEntity> DeploymentLocks => Set<DeploymentLockEntity>();
 
+    public DbSet<OnboardingLockEntity> OnboardingLocks => Set<OnboardingLockEntity>();
+
     public DbSet<DeploymentStepEntity> DeploymentSteps => Set<DeploymentStepEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

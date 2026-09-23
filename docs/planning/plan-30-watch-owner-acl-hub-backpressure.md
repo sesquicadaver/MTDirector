@@ -73,4 +73,4 @@ PLAN-29 ranks 1…2 (**DESK-CONN-HEALTH-01**, **DESK-CONN-RECONNECT-01**) are **
 
 ## §3.C NEXT
 
-**PLAN-30 COMPLETE.** Successor **PLAN-31** inventory **DONE** (W7-262). **§3.C NEXT = W7-399 (#1203)** — Seed next PLAN-31 row after DESK-A11Y-LIST-01 → DESK-A11Y-RO-01.
+**PLAN-30 COMPLETE.** Successor **PLAN-31** inventory **DONE** (W7-262). **§3.C NEXT = W7-401 (#1206)** — Seed next PLAN-31 row after DESK-A11Y-LIST-01 → DESK-A11Y-RO-01.
