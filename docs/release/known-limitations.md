@@ -110,7 +110,7 @@ These limitations match the normative MVP scope lock (TOR-2 / ROADMAP §1). They
 
 - Intentional residual (W7-22 Living Spec lock): Desktop “installer” for MVP is a **zip/tar publish directory** (Avalonia), not MSI/setup.exe.
 - Intentional residual (W7-23 Living Spec lock): Artifact “signing” for MVP is **cleartext `SHA256SUMS` + documented attestation**; cryptographic GPG/Sigstore is a CI signing gate (see [`RELEASE_SIGNING.md`](RELEASE_SIGNING.md)); QG-SIGN-02 adds opt-in path without weakening cleartext.
-- Intentional residual (W7-24 Living Spec lock): CycloneDX CLI remains optional; when absent the SBOM script falls back to CycloneDX-lite from `dotnet list package`. **AUDIT-SBOM-01 (W7-397):** real mode fail-closed — missing SDK, failed inventory, or empty `components` → exit ≠ 0; dry-run may still emit empty components.
+- Intentional residual (W7-24 Living Spec lock): CycloneDX CLI is optional; when absent the SBOM script falls back to CycloneDX-lite from package inventory (`dotnet list package`). **AUDIT-SBOM-01 (W7-397):** real mode fail-closed — missing SDK, failed inventory, or empty `components` → exit ≠ 0; dry-run may still emit empty components.
 
 ## Product scope lock (out of MVP / M7)
 
