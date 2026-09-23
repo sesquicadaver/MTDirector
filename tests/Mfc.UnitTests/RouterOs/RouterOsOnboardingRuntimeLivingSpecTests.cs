@@ -43,7 +43,7 @@ public sealed class RouterOsOnboardingRuntimeLivingSpecTests
         OnboardingPlan plan = Onboarding.OnboardingTestFactory.PlanFor(node, T0);
         OnboardingOperation operation = OnboardingOperation.Create(plan, Mfc.Domain.Policy.Primitives.UserId.New(), T0);
 
-        OnboardingExecutionResult result = await runtime.ExecuteAsync(node, plan, operation, T0, T0);
+        OnboardingExecutionResult result = await runtime.ExecuteAsync(node, plan, operation, T0);
         Assert.True(result.Succeeded, result.ErrorCode);
         Assert.Equal(OnboardingOperationState.Committed, result.State);
         Assert.True(result.CapturePerformed);
@@ -109,7 +109,8 @@ public sealed class RouterOsOnboardingRuntimeLivingSpecTests
         {
             OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession session =
                 OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(
-                    plan.DevicePlans[0].DeviceId);
+                    plan.DevicePlans[0].DeviceId,
+                    T0);
             return Task.FromResult(new RouterOsOnboardingScopedSessions([session]));
         }
     }

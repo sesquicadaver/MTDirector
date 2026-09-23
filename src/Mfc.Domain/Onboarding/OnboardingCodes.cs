@@ -118,6 +118,9 @@ public static class OnboardingCodes
     /// <summary>Spec §58 / M5-06 — remaining TTL below commit margin.</summary>
     public const string OnboardingWatchdogDeadlineTooClose = "ONBOARDING_WATCHDOG_DEADLINE_TOO_CLOSE";
 
+    /// <summary>Onboarding §§35–36 / AUDIT-CLK-01 — RouterOS clock skew vs Controller exceeds budget.</summary>
+    public const string RouterClockSkew = "ONBOARDING_ROUTER_CLOCK_SKEW";
+
     /// <summary>Spec §58 / M5-06 — watchdog script or scheduler create/verify failed.</summary>
     public const string OnboardingWatchdogArmFailed = "ONBOARDING_WATCHDOG_ARM_FAILED";
 
@@ -140,6 +143,9 @@ public static class OnboardingCodes
     public const string OnboardingCriticalDrift = "ONBOARDING_CRITICAL_DRIFT";
 
     public static readonly TimeSpan MinCommitMargin = TimeSpan.FromSeconds(30);
+
+    /// <summary>AUDIT-CLK-01 — max |RouterOS clock − Controller now| before arming watchdog.</summary>
+    public static readonly TimeSpan MaxRouterClockSkew = TimeSpan.FromMinutes(5);
 
     public static readonly TimeSpan SchedulerProofTimeout = TimeSpan.FromSeconds(15);
 

@@ -15,7 +15,6 @@ public interface IOnboardingRuntime
         OnboardingPlan plan,
         OnboardingOperation operation,
         DateTimeOffset nowUtc,
-        DateTimeOffset routerClock,
         CancellationToken cancellationToken = default);
 
     Task<OnboardingRollbackResult> RollbackAsync(

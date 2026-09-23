@@ -227,6 +227,36 @@ public sealed class OnboardingWatchdogLivingSpecTests
     }
 
     [Fact]
+    public async Task Ac11bDeadlineUsesRemainingTtlNotOriginalBudget()
+    {
+        DeviceOnboardingPlan plan = OnboardingTestFactory.DevicePlan(DeviceId.New(), NodeKind.Router);
+        OnboardingWatchdogBundle bundle = Assert.IsType<OnboardingWatchdogBundle>(
+            PlanOnboardingWatchdogUseCase.PlanWatchdog(OnboardingOperationId.New(), plan, EmptyNames()).Watchdog);
+        (OnboardingWatchdogWriter writer, RecordingChannel channel) = Writer();
+        DateTimeOffset routerClock = new(2026, 8, 19, 12, 0, 0, TimeSpan.Zero);
+        TimeSpan remaining = TimeSpan.FromSeconds(90);
+        OnboardingWatchdogExecutionResult armed = await writer.ArmWatchdogAsync(
+            bundle,
+            routerClock,
+            remainingTtl: remaining);
+        Assert.True(armed.Succeeded, armed.Error);
+        DateTimeOffset expected = routerClock + remaining;
+        (OnboardingWritePath Path, IReadOnlyList<KeyValuePair<string, string>> Attributes)? deadline = channel.Sent
+            .LastOrDefault(static s => s.Path == OnboardingWritePath.SystemSchedulerAdd
+                && s.Attributes.Any(a => a.Key == "start-date"));
+        Assert.NotNull(deadline);
+        Assert.Equal(
+            expected.ToString("MMM/dd/yyyy", CultureInfo.InvariantCulture).ToLowerInvariant(),
+            deadline!.Value.Attributes.Single(static a => a.Key == "start-date").Value);
+        Assert.Equal(
+            expected.ToString("HH:mm:ss", CultureInfo.InvariantCulture),
+            deadline.Value.Attributes.Single(static a => a.Key == "start-time").Value);
+        Assert.NotEqual(
+            (routerClock + bundle.Ttl).ToString("HH:mm:ss", CultureInfo.InvariantCulture),
+            deadline.Value.Attributes.Single(static a => a.Key == "start-time").Value);
+    }
+
+    [Fact]
     public void Ac12CollisionBlocksOperation()
     {
         DeviceOnboardingPlan plan = OnboardingTestFactory.DevicePlan(DeviceId.New(), NodeKind.Router);

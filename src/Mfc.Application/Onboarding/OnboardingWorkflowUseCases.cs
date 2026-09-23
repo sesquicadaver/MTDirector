@@ -550,7 +550,8 @@ public sealed class StartOnboardingUseCase
             {
                 try
                 {
-                    executed = await _runtime.ExecuteAsync(node, plan, operation, now, now, cancellationToken)
+                    // RouterOS clock is read per device inside the runtime (AUDIT-CLK-01); never pass Controller now.
+                    executed = await _runtime.ExecuteAsync(node, plan, operation, now, cancellationToken)
                         .ConfigureAwait(false);
                 }
                 catch (InvalidOperationException ex)

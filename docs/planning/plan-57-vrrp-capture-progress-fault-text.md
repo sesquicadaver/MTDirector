@@ -93,4 +93,4 @@ PLAN-56 sole ranked row (**DESK-VRRP-FAULT-01**) is **DONE**. No further PLAN-56
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-407 (#1215)** — Seed first PLAN-58 atomic row after inventory → DESK-PANEL-FAULT-01.
+**§3.C NEXT = W7-409 (#1218)** — Seed first PLAN-58 atomic row after inventory → DESK-PANEL-FAULT-01.

@@ -41,19 +41,19 @@ public sealed class ProductTrancheSeedW7385LivingSpecTests
             "W7-387 | [#1179](https://github.com/sesquicadaver/MTDirector/issues/1179) | Seed next after DESK-SVC-FAULT-01 (PLAN-60 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-407 (#1215)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-409 (#1218)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-385", plan, StringComparison.Ordinal);
         Assert.Contains("W7-386", plan, StringComparison.Ordinal);
         Assert.Contains("W7-387", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-SVC-FAULT-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-407 (#1215)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-409 (#1218)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-385 (#1176) DONE", plan60, StringComparison.Ordinal);
         Assert.Contains("DESK-SVC-FAULT-01", plan60, StringComparison.Ordinal);
         Assert.Contains("W7-386", plan60, StringComparison.Ordinal);
         Assert.Contains("W7-387", plan60, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-407 (#1215)", plan60, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-409 (#1218)", plan60, StringComparison.Ordinal);
 
         Assert.Equal(
             6,

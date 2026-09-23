@@ -543,7 +543,6 @@ public sealed class OnboardingWorkflowLivingSpecTests
             OnboardingPlan plan,
             OnboardingOperation operation,
             DateTimeOffset nowUtc,
-            DateTimeOffset routerClock,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();

@@ -273,7 +273,6 @@ public sealed class AuditDep01RecoveryLockTests
             OnboardingPlan plan,
             OnboardingOperation operation,
             DateTimeOffset nowUtc,
-            DateTimeOffset routerClock,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 

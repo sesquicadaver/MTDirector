@@ -51,9 +51,9 @@ public sealed class StandaloneDualStackE2ELivingSpecTests
         OnboardingPlan onboardingPlan = OnboardingTestFactory.PlanFor(node, T0, includeIpv6: false);
         OnboardingOperation onboardingOp = OnboardingOperation.Create(onboardingPlan, UserId.New(), T0);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession session =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id, T0);
         OnboardingExecutionResult onboarded = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
-            node, onboardingPlan, onboardingOp, [session], T0, T0);
+            node, onboardingPlan, onboardingOp, [session], T0);
         Assert.True(onboarded.Succeeded, onboarded.ErrorCode);
         Assert.Equal(ManagementState.Managed, node.ManagementState);
         Assert.Equal(ManagementState.Managed, device.ManagementState);
