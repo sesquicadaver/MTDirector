@@ -463,7 +463,7 @@ public sealed class DeploymentWorkflowLivingSpecTests
                         new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore()),
                     new FakeUnitOfWork()),
                 new StartDeploymentUseCase(
-                    auth, nodes, store, new FakeDriftEventStore(), idempotency, audit, clock, runtime, new FakeUnitOfWork()),
+                    auth, nodes, store, new FakeDeviceHashStateStore(), new FakeDriftEventStore(), idempotency, audit, clock, runtime, new FakeUnitOfWork()),
                 new RollbackDeploymentWorkflowUseCase(auth, nodes, store, idempotency, audit, clock, runtime, new FakeUnitOfWork()),
                 new GetDeploymentRecoveryStatusUseCase(auth, nodes, store, audit));
         }
@@ -535,12 +535,32 @@ public sealed class DeploymentWorkflowLivingSpecTests
                 Advance(operation, DomainState.Verifying, nowUtc);
                 Advance(operation, DomainState.DisarmingWatchdog, nowUtc);
                 Advance(operation, DomainState.Committed, nowUtc);
+                DeviceDeploymentPlan devicePlan = plan.DevicePlans[0];
+                DeviceDeployment deviceState = DeviceDeployment.Create(operation.Id, devicePlan.DeviceId, nowUtc);
+                deviceState.EnsureTransition(DeviceDeploymentState.Prechecked, nowUtc);
+                deviceState.EnsureTransition(DeviceDeploymentState.Staging, nowUtc);
+                deviceState.EnsureTransition(DeviceDeploymentState.Staged, nowUtc);
+                deviceState.EnsureTransition(DeviceDeploymentState.WatchdogArmed, nowUtc);
+                deviceState.EnsureTransition(DeviceDeploymentState.Activating, nowUtc);
+                deviceState.EnsureTransition(DeviceDeploymentState.ActiveUnverified, nowUtc);
+                deviceState.EnsureTransition(DeviceDeploymentState.Verified, nowUtc);
+                deviceState.EnsureTransition(DeviceDeploymentState.WatchdogDisarmed, nowUtc);
+                deviceState.EnsureTransition(DeviceDeploymentState.Committed, nowUtc);
                 return Task.FromResult(new DeploymentWorkflowExecutionResult
                 {
                     Succeeded = true,
                     State = operation.State,
                     Timeline = timeline,
                     ActivationStarted = true,
+                    CommitSnapshot = new DeploymentCommitSnapshot
+                    {
+                        OperationId = operation.Id,
+                        PlanHash = plan.PlanHash,
+                        NewArtifactHash = devicePlan.NewArtifactHash,
+                        OldArtifactHash = devicePlan.OldArtifactHash,
+                        CommittedAtUtc = nowUtc.ToUniversalTime(),
+                    },
+                    DeviceState = deviceState,
                 });
             }
 

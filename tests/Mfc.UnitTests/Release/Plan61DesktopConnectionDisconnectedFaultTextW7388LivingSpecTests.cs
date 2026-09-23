@@ -38,7 +38,7 @@ public sealed class Plan61DesktopConnectionDisconnectedFaultTextW7388LivingSpecT
         Assert.Contains("W7-389", plan61, StringComparison.Ordinal);
         Assert.Contains("W7-390", plan61, StringComparison.Ordinal);
         Assert.Contains("W7-391", plan61, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-401 (#1206)", plan61, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-403 (#1209)", plan61, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-388 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-DISC-01", limitations, StringComparison.Ordinal);
@@ -62,7 +62,7 @@ public sealed class Plan61DesktopConnectionDisconnectedFaultTextW7388LivingSpecT
             "W7-391 | [#1187](https://github.com/sesquicadaver/MTDirector/issues/1187) | Seed next after DESK-CONN-DISC-01 (PLAN-61 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-401 (#1206)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-403 (#1209)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-389", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-390", continuous, StringComparison.Ordinal);

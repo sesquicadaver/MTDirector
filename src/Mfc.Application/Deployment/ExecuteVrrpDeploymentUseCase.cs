@@ -48,6 +48,9 @@ public sealed class VrrpDeploymentResult
     public required IReadOnlyList<DeviceId> WatchdogRetainedMembers { get; init; }
 
     public required bool PartialCommitAttempted { get; init; }
+
+    /// <summary>Per-member commit hashes when the pair fully commits (AUDIT-COMMIT-01).</summary>
+    public IReadOnlyList<DeploymentCommitSnapshot> MemberCommitSnapshots { get; init; } = [];
 }
 
 /// <summary>
@@ -247,6 +250,18 @@ public static class ExecuteVrrpDeploymentUseCase
 
             Advance(operation, DeploymentOperationState.Committed, nowUtc);
             timeline.Add("commit:all");
+            DateTimeOffset committedAt = nowUtc.ToUniversalTime();
+            DeploymentCommitSnapshot[] memberSnapshots = plan.DevicePlans
+                .OrderBy(static p => p.DeviceId.Value)
+                .Select(p => new DeploymentCommitSnapshot
+                {
+                    OperationId = operation.Id,
+                    PlanHash = plan.PlanHash,
+                    NewArtifactHash = p.NewArtifactHash,
+                    OldArtifactHash = p.OldArtifactHash,
+                    CommittedAtUtc = committedAt,
+                })
+                .ToArray();
             return new VrrpDeploymentResult
             {
                 Succeeded = true,
@@ -256,6 +271,7 @@ public static class ExecuteVrrpDeploymentUseCase
                 RolledBackMembers = rolledBack,
                 WatchdogRetainedMembers = retainedWatchdog,
                 PartialCommitAttempted = false,
+                MemberCommitSnapshots = memberSnapshots,
             };
         }
         catch (Exception ex) when (ex is DomainInvariantException or InvalidOperationException)

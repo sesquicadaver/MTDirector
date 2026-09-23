@@ -300,7 +300,7 @@ public sealed class IncidentResponseE2ELivingSpecTests
                     new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore()),
                 new FakeUnitOfWork());
             E2EScriptedDeploymentRuntime runtime = new() { Commit = true };
-            StartDeploymentUseCase start = new(auth, fx.Nodes, deployments, drift, idempotency, audit, clock, runtime, new FakeUnitOfWork());
+            StartDeploymentUseCase start = new(auth, fx.Nodes, deployments, new FakeDeviceHashStateStore(), drift, idempotency, audit, clock, runtime, new FakeUnitOfWork());
             DeployIncidentDenyOverlayUseCase deploy = new(
                 auth, fx.Policies, fx.Approvals, audit, fx.UseCase, createPlan, start, feedback);
             ReportIncidentDeploymentOutcomeUseCase reportOutcome = new(feedback);

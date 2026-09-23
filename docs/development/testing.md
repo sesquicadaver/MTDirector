@@ -3981,6 +3981,23 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed AUDIT-EVID-01 after AUDIT-COMMIT-01 (W7-402)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks AUDIT-EVID-01 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7402LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditEvid01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7402"`.
+
+## Living Specification — AUDIT-COMMIT-01 commit snapshot + journal persist (W7-401)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| Persist updates LastCommittedArtifactHash + Commit/ActivateAnchor steps | DeploymentCommitPersistence, DeviceHashState | `AuditCommit01PersistW7401LivingSpecTests.Ac1PersistUpdatesLastCommittedArtifactHashAndCommitStep` |
+| Runtime/Start wire commit evidence; docs + queue lock | RouterOsDeploymentRuntime, StartDeploymentUseCase, known-limitations, ROADMAP | `AuditCommit01PersistW7401LivingSpecTests.Ac2RuntimeAndStartWireCommitEvidenceAndQueueLock` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditCommit01PersistW7401"`.
+
 ## Living Specification — Seed AUDIT-COMMIT-01 after AUDIT-OWN-01 (W7-400)
 
 | Requirement | Artifact | Test |
