@@ -3981,6 +3981,22 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed AUDIT-SBOM-01 after AUDIT-STATUS-01 (W7-396)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks AUDIT-SBOM-01 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7396LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditSbom01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7396"`.
+
+## Living Specification — AUDIT-STATUS-01 honest MVP/M7/write-path status (W7-395)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Issue-queue CLOSED ≠ production-safe write proof; slash-autopilot TOR seed rule | README, mvp-acceptance, slash-autopilot, ROADMAP, plan-62 | `AuditStatus01HonestStatusesW7395LivingSpecTests.Ac1HonestStatusLayersAndQueueRules` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditStatus01HonestStatusesW7395"`.
+
 ## Living Specification — Seed AUDIT-STATUS-01 after PLAN-62 inventory (W7-394)
 
 | Requirement | Artifact | Test |
