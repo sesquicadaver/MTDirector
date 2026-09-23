@@ -35,4 +35,15 @@ public interface IOnboardingStore
     Task<IReadOnlyList<OnboardingStep>> ListStepsAsync(
         OnboardingOperationId operationId,
         CancellationToken cancellationToken = default);
+
+    Task AddLockAsync(OnboardingLock onboardingLock, CancellationToken cancellationToken = default);
+
+    Task SaveLockAsync(OnboardingLock onboardingLock, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Replaces an expired Node lock row with a new ownership lease (AUDIT-OWN-01 Start path).
+    /// </summary>
+    Task ReplaceExpiredLockAsync(OnboardingLock onboardingLock, CancellationToken cancellationToken = default);
+
+    Task<OnboardingLock?> GetLockByNodeAsync(NodeId nodeId, CancellationToken cancellationToken = default);
 }

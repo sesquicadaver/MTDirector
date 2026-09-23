@@ -40,19 +40,19 @@ public sealed class ProductTrancheSeedW7389LivingSpecTests
             "W7-391 | [#1187](https://github.com/sesquicadaver/MTDirector/issues/1187) | Seed next after DESK-CONN-DISC-01 (PLAN-61 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-399 (#1203)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-401 (#1206)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-389", plan, StringComparison.Ordinal);
         Assert.Contains("W7-390", plan, StringComparison.Ordinal);
         Assert.Contains("W7-391", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-DISC-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-399 (#1203)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-401 (#1206)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-389 (#1184) DONE", plan61, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-DISC-01", plan61, StringComparison.Ordinal);
         Assert.Contains("W7-390", plan61, StringComparison.Ordinal);
         Assert.Contains("W7-391", plan61, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-399 (#1203)", plan61, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-401 (#1206)", plan61, StringComparison.Ordinal);
 
         Assert.Equal(2, Count(connection, "SetState(ControllerConnectionState.Disconnected, DesktopRpcFaultText.Format(ex))"));
         Assert.Equal(0, Count(connection, "SetState(ControllerConnectionState.Disconnected, ex.Message)"));

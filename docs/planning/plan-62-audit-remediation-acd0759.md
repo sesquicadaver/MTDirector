@@ -1,7 +1,7 @@
 # PLAN-62 — Repository-audit remediation (`acd0759`)
 
 **Date:** 2026-09-23  
-**Status:** **OPEN** — Inventory **DONE** (W7-393 #1195); seed **W7-394 (#1196) DONE**; **AUDIT-STATUS-01 W7-395 (#1197) DONE**; seed **W7-396 (#1199) DONE**; **AUDIT-SBOM-01 W7-397 (#1200) DONE**; seed **W7-398 (#1202) DONE**; **§3.C NEXT = W7-399 (#1203)** AUDIT-OWN-01
+**Status:** **OPEN** — Inventory **DONE** (W7-393 #1195); seed **W7-394 (#1196) DONE**; **AUDIT-STATUS-01 W7-395 (#1197) DONE**; seed **W7-396 (#1199) DONE**; **AUDIT-SBOM-01 W7-397 (#1200) DONE**; seed **W7-398 (#1202) DONE**; **AUDIT-OWN-01 W7-399 (#1203) DONE**; seed **W7-400 (#1205) DONE**; **§3.C NEXT = W7-401 (#1206)** AUDIT-COMMIT-01
 **Audit SHA:** `acd0759e85414a83460c4cab971db2b0b58b30cd`  
 **Normative audit:** [`docs/audits/MTDirector-audit-acd0759-20260923.md`](../audits/MTDirector-audit-acd0759-20260923.md)  
 **Predecessor:** PLAN-61 COMPLETE; freeze W7-392 (#1191) DONE (correlation-id wave closed)  
@@ -53,8 +53,9 @@ git checkout main && git pull --ff-only
 | seed | — | — | Advance NEXT to AUDIT-SBOM-01 | **W7-396 (#1199) DONE** |
 | 2 | **AUDIT-SBOM-01** | F14 | SBOM/signing fail-closed | **W7-397 (#1200) DONE** |
 | seed | — | — | Advance NEXT to AUDIT-OWN-01 | **W7-398 (#1202) DONE** |
-| 3 | **AUDIT-OWN-01** | F01 | Onboarding durable lease vs recovery | **W7-399 (#1203) OPEN (NEXT)** |
-| 4 | **AUDIT-COMMIT-01** | F03 | Commit snapshot + journal persist | after OWN |
+| 3 | **AUDIT-OWN-01** | F01 | Onboarding durable lease vs recovery | **W7-399 (#1203) DONE** |
+| seed | — | — | Advance NEXT to AUDIT-COMMIT-01 | **W7-400 (#1205) DONE** |
+| 4 | **AUDIT-COMMIT-01** | F03 | Commit snapshot + journal persist | **W7-401 (#1206) OPEN (NEXT)** |
 | 5 | **AUDIT-EVID-01** | F02 | Real safety evidence (no AllSafeEvidence) | after COMMIT |
 | 6 | **AUDIT-RB-01** | F04 | Unified strict rollback | after EVID |
 | 7 | **AUDIT-CLK-01** | F05 | RouterOS clock / TTL budget | after RB |
@@ -79,4 +80,4 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/o
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-399 (#1203)** — AUDIT-OWN-01.
+**§3.C NEXT = W7-401 (#1206)** — AUDIT-COMMIT-01.

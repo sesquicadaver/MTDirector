@@ -187,6 +187,21 @@ public sealed class RecoverNonterminalOperationsJobUseCase
                 };
             }
 
+            OnboardingLock? onboardingLock = await _onboardings
+                .GetLockByNodeAsync(operation.NodeId, cancellationToken)
+                .ConfigureAwait(false);
+            if (!OnboardingOwnership.IsAbandonedForRecovery(onboardingLock, operation.Id, now))
+            {
+                // Live owner still holds the Node lease — do not RecoverAsync / Save (AUDIT-OWN-01).
+                return new OperationRecoveryJobItemResult
+                {
+                    OperationId = operation.Id.Value,
+                    Kind = "onboarding",
+                    Succeeded = true,
+                    ErrorCode = OnboardingOwnership.RecoverySkippedLockHeld,
+                };
+            }
+
             OnboardingRecoveryResult recovered = await _onboardingRuntime
                 .RecoverAsync(node, plan, operation, now, cancellationToken)
                 .ConfigureAwait(false);

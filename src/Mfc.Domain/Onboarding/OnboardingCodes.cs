@@ -7,6 +7,8 @@ public static class OnboardingCodes
 
     public static readonly TimeSpan DefaultPlanLifetime = TimeSpan.FromMinutes(30);
 
+    public static readonly TimeSpan DefaultLockLease = TimeSpan.FromMinutes(2);
+
     public static readonly TimeSpan MinWatchdogTtl = TimeSpan.FromSeconds(60);
 
     public static readonly TimeSpan DefaultWatchdogTtl = TimeSpan.FromSeconds(180);
@@ -20,6 +22,10 @@ public static class OnboardingCodes
     public const string PlanHashMismatch = "ONBOARDING_PLAN_HASH_MISMATCH";
 
     public const string NonterminalExists = "ONBOARDING_NONTERMINAL_EXISTS";
+
+    public const string LockHeld = "ONBOARDING_LOCK_HELD";
+
+    public const string LockOwnerMismatch = "ONBOARDING_LOCK_OWNER_MISMATCH";
 
     public const string NodeNotUnmanaged = "ONBOARDING_NODE_NOT_UNMANAGED";
 
