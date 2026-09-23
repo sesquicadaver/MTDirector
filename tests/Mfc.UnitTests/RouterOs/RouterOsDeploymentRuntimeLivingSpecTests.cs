@@ -120,7 +120,7 @@ public sealed class RouterOsDeploymentRuntimeLivingSpecTests
         {
             DeviceDeploymentPlan devicePlan = plan.DevicePlans[0];
             RecordingChannel channel = DeploymentAcceptanceHarness.SeedChannel(devicePlan, toNew: false);
-            FakeRuntime fake = new(devicePlan.DeviceId, channel);
+            FakeRuntime fake = new(devicePlan, channel);
             FakeDeploymentLiveSession session = new(fake, devicePlan);
             return Task.FromResult(new RouterOsDeploymentScopedSessions([session]));
         }

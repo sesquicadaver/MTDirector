@@ -35,7 +35,7 @@ public sealed class Plan45ControllerLogTraceCorrelationW7324LivingSpecTests
         Assert.Contains("traceId", plan45, StringComparison.Ordinal);
         Assert.Contains("spanId", plan45, StringComparison.Ordinal);
         Assert.Contains("opt-in", plan45, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("§3.C NEXT = W7-405 (#1212)", plan45, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-407 (#1215)", plan45, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-324 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-LOG-OTEL-CORRELATE-01", limitations, StringComparison.Ordinal);
@@ -115,7 +115,7 @@ public sealed class Plan45ControllerLogTraceCorrelationW7324LivingSpecTests
             "W7-341 | [#1088](https://github.com/sesquicadaver/MTDirector/issues/1088) | Seed first PLAN-49 atomic row after inventory → CTRL-GRPC-KEEPALIVE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-405 (#1212)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-407 (#1215)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-325", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-326", continuous, StringComparison.Ordinal);

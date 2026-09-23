@@ -85,4 +85,4 @@ PLAN-44 sole ranked row (**CTRL-HTTP-OTEL-TRACE-01**) is **DONE**. No further PL
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-405 (#1212)** — Seed first PLAN-46 atomic row after inventory → CTRL-HTTP-OTEL-RESOURCE-01.
+**§3.C NEXT = W7-407 (#1215)** — Seed first PLAN-46 atomic row after inventory → CTRL-HTTP-OTEL-RESOURCE-01.

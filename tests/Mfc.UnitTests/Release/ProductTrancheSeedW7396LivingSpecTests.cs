@@ -30,13 +30,13 @@ public sealed class ProductTrancheSeedW7396LivingSpecTests
             "W7-397 | [#1200](https://github.com/sesquicadaver/MTDirector/issues/1200) | AUDIT-SBOM-01 — SBOM/signing fail-closed (no empty components / missing SDK) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-405 (#1212)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-407 (#1215)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-396 (#1199) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-397 (#1200)", plan, StringComparison.Ordinal);
         Assert.Contains("AUDIT-SBOM-01", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-405 (#1212)", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-405 (#1212)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-407 (#1215)", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-407 (#1215)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

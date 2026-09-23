@@ -3981,6 +3981,22 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed AUDIT-CLK-01 after AUDIT-RB-01 (W7-406)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks AUDIT-CLK-01 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7406LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditClk01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7406"`.
+
+## Living Specification — AUDIT-RB-01 unified strict rollback (W7-405)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| Automatic/VRRP use ExecuteDeploymentRollbackUseCase; docs + queue lock | ExecuteStandaloneDeploymentUseCase, RecoverDeploymentUseCase, RouterOsVrrpMemberDeploymentRuntime, known-limitations, ROADMAP | `AuditRb01UnifiedStrictRollbackW7405LivingSpecTests.Ac1AutomaticAndVrrpUseStrictRollbackCoordinator` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditRb01UnifiedStrictRollbackW7405"`.
+
 ## Living Specification — Seed AUDIT-RB-01 after AUDIT-EVID-01 (W7-404)
 
 | Requirement | Artifact | Test |

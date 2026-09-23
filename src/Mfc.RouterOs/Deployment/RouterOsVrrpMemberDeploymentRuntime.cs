@@ -175,23 +175,13 @@ internal sealed class RouterOsVrrpMemberDeploymentRuntime : IVrrpMemberDeploymen
 
     public async Task RollbackActivationAsync(CancellationToken cancellationToken = default)
     {
-        foreach (AnchorKey key in _devicePlan.AnchorRollbackOrder)
-        {
-            AnchorTarget old = _devicePlan.OldAnchorTargets.Single(t => t.Key.Equals(key));
-            DeploymentWriteExecutionResult restored = await _device.Session.SetAnchorTargetAsync(
-                new AnchorTargetWrite(old.Key.Family, old.Key.Chain, old.JumpTarget),
-                cancellationToken).ConfigureAwait(false);
-            if (!restored.Succeeded)
-            {
-                throw new DomainInvariantException(DeploymentCodes.RecoveryRequired);
-            }
-        }
-
-        if (_armed is not null)
-        {
-            _ = await _device.Watchdog.DisarmWatchdogAsync(_armed, cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
-        }
+        // AUDIT-RB-01: same strict single-device path as explicit/automatic coordinator.
+        List<string> timeline = [];
+        _ = await ExecuteDeploymentRollbackUseCase.RollbackDeviceAsync(
+            _devicePlan,
+            _device,
+            timeline,
+            cancellationToken).ConfigureAwait(false);
     }
 
     private WatchdogTimeBudget RequireBudget()

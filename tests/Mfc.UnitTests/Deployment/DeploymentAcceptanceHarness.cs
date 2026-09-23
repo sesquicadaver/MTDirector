@@ -202,7 +202,26 @@ internal sealed class FakeRuntime : IStandaloneDeploymentDeviceRuntime, IAsyncDi
     private readonly RecordingChannel _channel;
     private readonly RouterOsDeploymentSession _session;
     private readonly DeploymentSystemNameFacts? _names;
+    private readonly DeviceDeploymentPlan? _plan;
 
+    public FakeRuntime(
+        DeviceDeploymentPlan plan,
+        RecordingChannel channel,
+        IDeploymentWatchdogPort? watchdog = null,
+        DeploymentSystemNameFacts? names = null,
+        DeviceId? deviceIdOverride = null)
+    {
+        ArgumentNullException.ThrowIfNull(plan);
+        _plan = plan;
+        DeviceId = deviceIdOverride ?? plan.DeviceId;
+        _channel = channel;
+        _session = new RouterOsDeploymentSession(channel);
+        Watchdog = watchdog ?? new DeploymentWatchdogWriter(_session);
+        FreshSessions = new FakeFreshSessionFactory(channel);
+        _names = names;
+    }
+
+    /// <summary>Compat ctor for fixtures that never enter automatic rollback (AUDIT-RB-01).</summary>
     public FakeRuntime(
         DeviceId deviceId,
         RecordingChannel channel,
@@ -210,6 +229,7 @@ internal sealed class FakeRuntime : IStandaloneDeploymentDeviceRuntime, IAsyncDi
         DeploymentSystemNameFacts? names = null)
     {
         DeviceId = deviceId;
+        _plan = null;
         _channel = channel;
         _session = new RouterOsDeploymentSession(channel);
         Watchdog = watchdog ?? new DeploymentWatchdogWriter(_session);
@@ -237,7 +257,84 @@ internal sealed class FakeRuntime : IStandaloneDeploymentDeviceRuntime, IAsyncDi
     public Task<DateTimeOffset> ReadRouterClockAsync(CancellationToken cancellationToken = default)
         => Task.FromResult(new DateTimeOffset(2026, 9, 13, 15, 0, 0, TimeSpan.Zero));
 
+    public Task<IReadOnlyDictionary<string, string>> ReadAnchorJumpsAsync(
+        CancellationToken cancellationToken = default)
+    {
+        DeviceDeploymentPlan plan = RequirePlan();
+        Dictionary<string, string> jumps = new(StringComparer.Ordinal);
+        foreach (AnchorTarget target in plan.OldAnchorTargets.Concat(plan.NewAnchorTargets)
+                     .DistinctBy(static t => t.Key.Marker))
+        {
+            Dictionary<string, string>? row = _channel.FindAnchor(target.Key);
+            if (row is not null
+                && row.TryGetValue("jump-target", out string? jump)
+                && !string.IsNullOrWhiteSpace(jump))
+            {
+                jumps[target.Key.Marker] = jump.Trim();
+            }
+        }
+
+        return Task.FromResult((IReadOnlyDictionary<string, string>)jumps);
+    }
+
+    public Task<DeploymentWriteExecutionResult> SetAnchorTargetAsync(
+        AnchorTargetWrite write,
+        CancellationToken cancellationToken = default)
+        => _session.SetAnchorTargetAsync(write, cancellationToken);
+
+    public async Task<Hash256> ReadManagedResourceHashAsync(CancellationToken cancellationToken = default)
+    {
+        DeviceDeploymentPlan plan = RequirePlan();
+        IReadOnlyDictionary<string, string> jumps = await ReadAnchorJumpsAsync(cancellationToken)
+            .ConfigureAwait(false);
+        DeploymentAnchorSetState classified = DeploymentRecoveryDecision.ClassifyAnchors(
+            plan.OldAnchorTargets,
+            plan.NewAnchorTargets,
+            jumps);
+        return classified switch
+        {
+            DeploymentAnchorSetState.AllOld => plan.OldArtifactHash,
+            DeploymentAnchorSetState.AllNew => plan.NewArtifactHash,
+            _ => throw new DomainInvariantException(
+                $"{DeploymentCodes.RecoveryRequired}: mixed or incomplete anchors block managed hash."),
+        };
+    }
+
+    public Task<IDeploymentFreshSessionFactory> CreateFreshSessionFactoryAsync(
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(FreshSessions);
+
+    public Task<RouterPingResult> ProbeAsync(DeploymentProbe probe, CancellationToken cancellationToken = default)
+        => Task.FromResult(new RouterPingResult
+        {
+            Outcome = RouterPingOutcome.Pass,
+            Sent = 3,
+            Received = 3,
+        });
+
+    public Task<DeploymentWatchdogExecutionResult> DisarmAndCleanupWatchdogAsync(
+        CancellationToken cancellationToken = default)
+        => Watchdog.CleanupWatchdogAsync(
+            DeploymentOperationId.New(),
+            DeviceId,
+            cancellationToken);
+
+    public Task<(IReadOnlyList<string> SchedulerNames, IReadOnlyDictionary<string, bool> SchedulerDisabled)>
+        ReadWatchdogSchedulerFactsAsync(CancellationToken cancellationToken = default)
+    {
+        string[] names = _channel.SchedulerNames().ToArray();
+        IReadOnlyDictionary<string, bool> disabled = names.ToDictionary(
+            static n => n,
+            static _ => false,
+            StringComparer.Ordinal);
+        return Task.FromResult((names as IReadOnlyList<string>, disabled));
+    }
+
     public ValueTask DisposeAsync() => _session.DisposeAsync();
+
+    private DeviceDeploymentPlan RequirePlan()
+        => _plan ?? throw new InvalidOperationException(
+            "FakeRuntime requires DeviceDeploymentPlan for AUDIT-RB-01 strict rollback.");
 }
 
 /// <summary>Returns a fresh <see cref="RouterOsDeploymentSession"/> backed by the same channel.</summary>
