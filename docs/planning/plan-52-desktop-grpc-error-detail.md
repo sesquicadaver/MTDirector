@@ -99,4 +99,4 @@ PLAN-51 sole ranked row (**DESK-GRPC-DEADLINE-01**) is **DONE**. No further PLAN
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-395 (#1197)** — Seed first PLAN-53 atomic row after inventory → CTRL-ERRDETAIL-LOG-01.
+**§3.C NEXT = W7-397 (#1200)** — Seed first PLAN-53 atomic row after inventory → CTRL-ERRDETAIL-LOG-01.

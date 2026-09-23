@@ -1,7 +1,7 @@
 # PLAN-62 — Repository-audit remediation (`acd0759`)
 
 **Date:** 2026-09-23  
-**Status:** **OPEN** — Inventory **DONE** (W7-393 #1195); seed **W7-394 (#1196) DONE**; **§3.C NEXT = W7-395 (#1197)** AUDIT-STATUS-01  
+**Status:** **OPEN** — Inventory **DONE** (W7-393 #1195); seed **W7-394 (#1196) DONE**; **AUDIT-STATUS-01 W7-395 (#1197) DONE**; seed **W7-396 (#1199) DONE**; **§3.C NEXT = W7-397 (#1200)** AUDIT-SBOM-01  
 **Audit SHA:** `acd0759e85414a83460c4cab971db2b0b58b30cd`  
 **Normative audit:** [`docs/audits/MTDirector-audit-acd0759-20260923.md`](../audits/MTDirector-audit-acd0759-20260923.md)  
 **Predecessor:** PLAN-61 COMPLETE; freeze W7-392 (#1191) DONE (correlation-id wave closed)  
@@ -49,8 +49,9 @@ git checkout main && git pull --ff-only
 |------|----|-------|-----|-------|
 | 0 | **PLAN62-INV-01** | — | Seed §3.C + land plan/audit | **W7-393 (#1195) DONE** |
 | seed | — | — | Advance NEXT to first implement | **W7-394 (#1196) DONE** |
-| 1 | **AUDIT-STATUS-01** | F14 | Honest CLOSED / acceptance statuses | **W7-395 (#1197) OPEN (NEXT)** |
-| 2 | **AUDIT-SBOM-01** | F14 | SBOM/signing fail-closed | after STATUS seed |
+| 1 | **AUDIT-STATUS-01** | F14 | Honest CLOSED / acceptance statuses | **W7-395 (#1197) DONE** |
+| seed | — | — | Advance NEXT to AUDIT-SBOM-01 | **W7-396 (#1199) DONE** |
+| 2 | **AUDIT-SBOM-01** | F14 | SBOM/signing fail-closed | **W7-397 (#1200) OPEN (NEXT)** |
 | 3 | **AUDIT-OWN-01** | F01 | Onboarding durable lease vs recovery | after SBOM |
 | 4 | **AUDIT-COMMIT-01** | F03 | Commit snapshot + journal persist | after OWN |
 | 5 | **AUDIT-EVID-01** | F02 | Real safety evidence (no AllSafeEvidence) | after COMMIT |
@@ -77,4 +78,4 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/o
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-395 (#1197)** — AUDIT-STATUS-01.
+**§3.C NEXT = W7-397 (#1200)** — AUDIT-SBOM-01.

@@ -83,7 +83,7 @@ public sealed class DeskSvcFault01DesktopServiceErrorLivingSpecTests
         Assert.Contains("Intentional residual (W7-386 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-SVC-FAULT-01 DONE", limitations, StringComparison.Ordinal);
         Assert.Contains("W7-386 (#1178) DONE", plan60, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-395 (#1197)", plan60, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-397 (#1200)", plan60, StringComparison.Ordinal);
         Assert.Contains(
             "W7-386 | [#1178](https://github.com/sesquicadaver/MTDirector/issues/1178) | DESK-SVC-FAULT-01 — Store DesktopRpcFaultText.Format on service Error for RpcException | **DONE**",
             roadmap,
@@ -92,7 +92,7 @@ public sealed class DeskSvcFault01DesktopServiceErrorLivingSpecTests
             "W7-387 | [#1179](https://github.com/sesquicadaver/MTDirector/issues/1179) | Seed next after DESK-SVC-FAULT-01 (PLAN-60 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-395 (#1197)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-397 (#1200)", roadmap, StringComparison.Ordinal);
     }
 
     private static int Count(string text, string value)
