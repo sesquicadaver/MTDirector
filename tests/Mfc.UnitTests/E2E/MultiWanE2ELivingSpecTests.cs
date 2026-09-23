@@ -445,7 +445,7 @@ public sealed class MultiWanE2ELivingSpecTests
             plan,
             operation,
             deviceState,
-            new FakeRuntime(plan.DevicePlans[0].DeviceId, channel),
+            new FakeRuntime(plan.DevicePlans[0], channel),
             [],
             DeploymentTestFactory.CpuPairs(),
             [],
