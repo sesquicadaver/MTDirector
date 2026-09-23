@@ -175,7 +175,6 @@ public sealed class AuditOwn01RecoveryLockTests
             OnboardingPlan plan,
             OnboardingOperation operation,
             DateTimeOffset nowUtc,
-            DateTimeOffset routerClock,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
@@ -217,7 +216,6 @@ public sealed class AuditOwn01RecoveryLockTests
             OnboardingPlan plan,
             OnboardingOperation operation,
             DateTimeOffset nowUtc,
-            DateTimeOffset routerClock,
             CancellationToken cancellationToken = default)
         {
             operation.EnsureTransition(OnboardingOperationState.Prechecking, nowUtc);

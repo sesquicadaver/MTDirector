@@ -245,7 +245,7 @@ public sealed class OperationalJobUseCaseCoverageTests
     {
         public Task<OnboardingExecutionResult> ExecuteAsync(
             Node node, OnboardingPlan plan, OnboardingOperation operation,
-            DateTimeOffset nowUtc, DateTimeOffset routerClock, CancellationToken cancellationToken = default)
+            DateTimeOffset nowUtc, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
         public Task<OnboardingRollbackResult> RollbackAsync(

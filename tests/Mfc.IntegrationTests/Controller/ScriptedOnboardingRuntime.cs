@@ -16,7 +16,6 @@ public sealed class ScriptedOnboardingRuntime : IOnboardingRuntime
         OnboardingPlan plan,
         OnboardingOperation operation,
         DateTimeOffset nowUtc,
-        DateTimeOffset routerClock,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(node);

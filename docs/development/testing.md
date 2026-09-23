@@ -3981,6 +3981,22 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed AUDIT-RPC-01 after AUDIT-CLK-01 (W7-408)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks AUDIT-RPC-01 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7408LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditRpc01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7408"`.
+
+## Living Specification — AUDIT-CLK-01 RouterOS clock / TTL budget (W7-407)
+
+| AC | Normative surface | Living Spec test |
+|----|-------------------|------------------|
+| Per-device RouterOS clock + remaining TTL; Start never passes Controller now; docs + queue lock | ExecuteOnboardingBootstrapUseCase, RouterOsOnboardingDeviceSession, OnboardingWatchdogWriter, known-limitations, ROADMAP | `AuditClk01RouterOsClockTtlW7407LivingSpecTests.Ac1OnboardingReadsRouterClockAndTracksRemainingTtl` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditClk01RouterOsClockTtlW7407"`.
+
 ## Living Specification — Seed AUDIT-CLK-01 after AUDIT-RB-01 (W7-406)
 
 | Requirement | Artifact | Test |

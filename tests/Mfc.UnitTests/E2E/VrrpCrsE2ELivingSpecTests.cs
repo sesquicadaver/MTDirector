@@ -53,10 +53,9 @@ public sealed class VrrpCrsE2ELivingSpecTests
             onboardingPlan,
             onboardingOp,
             [
-                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(first.Id),
-                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(second.Id),
+                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(first.Id, T0),
+                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(second.Id, T0),
             ],
-            T0,
             T0);
         Assert.True(onboarded.Succeeded, onboarded.ErrorCode);
         Assert.Equal(ManagementState.Managed, node.ManagementState);
@@ -148,10 +147,9 @@ public sealed class VrrpCrsE2ELivingSpecTests
             plan,
             operation,
             [
-                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(first.Id),
-                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(second.Id),
+                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(first.Id, T0),
+                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(second.Id, T0),
             ],
-            T0,
             T0);
 
         Assert.True(result.Succeeded, result.ErrorCode);
@@ -304,9 +302,9 @@ public sealed class VrrpCrsE2ELivingSpecTests
         Assert.False(RequiredAnchorSet.ContainsForward(onboardingPlan.DevicePlans[0].RequiredAnchorSet));
         OnboardingOperation onboardingOp = OnboardingOperation.Create(onboardingPlan, UserId.New(), T0);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession session =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id, T0);
         OnboardingExecutionResult onboarded = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
-            node, onboardingPlan, onboardingOp, [session], T0, T0);
+            node, onboardingPlan, onboardingOp, [session], T0);
         Assert.True(onboarded.Succeeded, onboarded.ErrorCode);
         Assert.Equal(
             ["enable:mfc:anchor:v1:4:o", "enable:mfc:anchor:v1:4:i"],

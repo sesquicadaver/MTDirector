@@ -3,13 +3,12 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-398: after AUDIT-SBOM-01, AUDIT-OWN-01 was seeded (W7-399);
-/// queue may have advanced past that row.
+/// W7-408: after AUDIT-CLK-01, §3.C NEXT is AUDIT-RPC-01 (W7-409).
 /// </summary>
-public sealed class ProductTrancheSeedW7398LivingSpecTests
+public sealed class ProductTrancheSeedW7408LivingSpecTests
 {
     [Fact]
-    public void Ac1KnownLimitationsAndQueueSeedAuditOwn01AsNext()
+    public void Ac1KnownLimitationsAndQueueSeedAuditRpc01AsNext()
     {
         string root = RepoRoot();
         string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
@@ -18,23 +17,23 @@ public sealed class ProductTrancheSeedW7398LivingSpecTests
         string plan62 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-62-audit-remediation-acd0759.md"));
         string readme = File.ReadAllText(Path.Combine(root, "README.md"));
 
-        Assert.Contains("Intentional residual (W7-398 Living Spec lock)", limitations, StringComparison.Ordinal);
-        Assert.Contains("W7-399", limitations, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-OWN-01", limitations, StringComparison.Ordinal);
+        Assert.Contains("Intentional residual (W7-408 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-409", limitations, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-RPC-01", limitations, StringComparison.Ordinal);
 
         Assert.Contains(
-            "W7-398 | [#1202](https://github.com/sesquicadaver/MTDirector/issues/1202) | Seed next after AUDIT-SBOM-01 → AUDIT-OWN-01 | **DONE**",
+            "W7-408 | [#1217](https://github.com/sesquicadaver/MTDirector/issues/1217) | Seed next after AUDIT-CLK-01 → AUDIT-RPC-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-399 | [#1203](https://github.com/sesquicadaver/MTDirector/issues/1203) | AUDIT-OWN-01 — Onboarding durable writer lease vs recovery | **DONE**",
+            "W7-409 | [#1218](https://github.com/sesquicadaver/MTDirector/issues/1218) | AUDIT-RPC-01 — Fast Start + live Watch | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-409 (#1218)", roadmap, StringComparison.Ordinal);
 
-        Assert.Contains("W7-398 (#1202) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("W7-399 (#1203)", plan, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-OWN-01", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-408 (#1217) DONE", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-409 (#1218)", plan, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-RPC-01", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-409 (#1218)", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-409 (#1218)", readme, StringComparison.Ordinal);
     }

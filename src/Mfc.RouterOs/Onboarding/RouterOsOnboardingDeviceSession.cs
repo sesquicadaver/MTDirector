@@ -4,6 +4,7 @@ using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
 using Mfc.Domain.Policy;
+using Mfc.RouterOs.Deployment;
 using Mfc.RouterOs.Discovery;
 using Mfc.RouterOs.Ports;
 using Mfc.RouterOs.Session;
@@ -40,6 +41,14 @@ public sealed class RouterOsOnboardingDeviceSession : IOnboardingDeviceSession, 
     public IOnboardingBootstrapWritePort Bootstrap => new OnboardingBootstrapWriter(EnsureChannel());
 
     public IOnboardingWatchdogPort Watchdog => new OnboardingWatchdogWriter(EnsureChannel());
+
+    public async Task<DateTimeOffset> ReadRouterClockAsync(CancellationToken cancellationToken = default)
+    {
+        SystemServiceDiscoveryResult discovery = await SystemServiceDiscovery
+            .DiscoverAsync(EnsureSession(), cancellationToken)
+            .ConfigureAwait(false);
+        return RouterOsClockParser.Parse(discovery.Clock);
+    }
 
     public async Task<IReadOnlyList<ActualFilterRule>> PrintFilterAsync(CancellationToken cancellationToken = default)
     {

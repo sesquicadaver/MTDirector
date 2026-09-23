@@ -70,4 +70,4 @@ PLAN-32 ranks 1…2 (**OPS-HOST-SYSTEMD-01**, **OPS-HOST-WINSVC-01**) are **DONE
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-407 (#1215)** — PLAN-34 Inventory Desktop operator launch packaging templates after PLAN-33.
+**§3.C NEXT = W7-409 (#1218)** — PLAN-34 Inventory Desktop operator launch packaging templates after PLAN-33.

@@ -58,10 +58,10 @@ public sealed class OnboardingIntegrationAcceptanceLivingSpecTests
         OnboardingPlan plan = OnboardingTestFactory.PlanFor(node, T0);
         OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession session =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id, T0);
         OnboardingAuxiliarySnapshot before = await session.PrintAuxiliaryAsync();
         OnboardingExecutionResult result = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
-            node, plan, operation, [session], T0, T0);
+            node, plan, operation, [session], T0);
         Assert.True(result.Succeeded, result.ErrorCode);
         OnboardingAuxiliarySnapshot after = await session.PrintAuxiliaryAsync();
         Assert.True(before.EqualsSnapshot(after));
@@ -79,10 +79,9 @@ public sealed class OnboardingIntegrationAcceptanceLivingSpecTests
             plan,
             operation,
             [
-                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(first.Id),
-                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(second.Id),
+                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(first.Id, T0),
+                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(second.Id, T0),
             ],
-            T0,
             T0);
         Assert.True(result.Succeeded, result.ErrorCode);
         Assert.Equal(2, result.Timeline.Count(static t => t.StartsWith("arm:", StringComparison.Ordinal)));
@@ -107,10 +106,9 @@ public sealed class OnboardingIntegrationAcceptanceLivingSpecTests
             plan,
             operation,
             [
-                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(first.Id),
-                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(second.Id),
+                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(first.Id, T0),
+                OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(second.Id, T0),
             ],
-            T0,
             T0);
         Assert.True(result.Succeeded, result.ErrorCode);
         Assert.DoesNotContain(
@@ -127,9 +125,9 @@ public sealed class OnboardingIntegrationAcceptanceLivingSpecTests
         Assert.False(RequiredAnchorSet.ContainsForward(plan.DevicePlans[0].RequiredAnchorSet));
         OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession session =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id, T0);
         OnboardingExecutionResult result = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
-            node, plan, operation, [session], T0, T0);
+            node, plan, operation, [session], T0);
         Assert.True(result.Succeeded, result.ErrorCode);
         Assert.Equal(
             ["enable:mfc:anchor:v1:4:o", "enable:mfc:anchor:v1:4:i"],
@@ -148,8 +146,7 @@ public sealed class OnboardingIntegrationAcceptanceLivingSpecTests
             node,
             plan,
             operation,
-            [OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id)],
-            T0,
+            [OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id, T0)],
             T0);
         Assert.True(result.Succeeded, result.ErrorCode);
         Assert.Contains(result.Timeline, static t => t == "enable:mfc:anchor:v1:6:i");
@@ -270,10 +267,10 @@ public sealed class OnboardingIntegrationAcceptanceLivingSpecTests
         OnboardingPlan plan = OnboardingTestFactory.PlanFor(node, T0);
         OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession session =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id, T0);
         session.SeedBootstrapRootCollision();
         OnboardingExecutionResult result = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
-            node, plan, operation, [session], T0, T0);
+            node, plan, operation, [session], T0);
         Assert.False(result.Succeeded);
         Assert.Equal(OnboardingOperationState.Blocked, result.State);
         Assert.Equal(ManagementState.Unmanaged, node.ManagementState);
@@ -287,12 +284,12 @@ public sealed class OnboardingIntegrationAcceptanceLivingSpecTests
         OnboardingPlan plan = OnboardingTestFactory.PlanFor(node, T0);
         OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession a =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(first.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(first.Id, T0);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession b =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(second.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(second.Id, T0);
         b.FailReconnect = true;
         OnboardingExecutionResult result = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
-            node, plan, operation, [a, b], T0, T0);
+            node, plan, operation, [a, b], T0);
         Assert.False(result.Succeeded);
         Assert.Equal(OnboardingCodes.OnboardingManagementReconnectFailed, result.ErrorCode);
         Assert.Equal(OnboardingOperationState.RollbackPending, result.State);
@@ -309,9 +306,9 @@ public sealed class OnboardingIntegrationAcceptanceLivingSpecTests
         OnboardingPlan plan = OnboardingTestFactory.PlanFor(node, T0, includeIpv6: includeIpv6);
         OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession session =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id, T0);
         OnboardingExecutionResult result = await ExecuteOnboardingBootstrapUseCase.ExecuteAsync(
-            node, plan, operation, [session], T0, T0);
+            node, plan, operation, [session], T0);
         return (node, plan, session, result);
     }
 
@@ -327,7 +324,7 @@ public sealed class OnboardingIntegrationAcceptanceLivingSpecTests
         OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
         AdvanceTo(operation, state);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession session =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id, T0);
         DeviceOnboardingPlan devicePlan = plan.DevicePlans.Single(p => p.DeviceId == session.DeviceId);
         bool first = true;
         foreach (AnchorKey key in OnboardingEnableOrder.Sort(devicePlan.RequiredAnchorSet))

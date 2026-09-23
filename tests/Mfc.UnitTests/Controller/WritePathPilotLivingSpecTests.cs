@@ -35,7 +35,7 @@ public sealed class WritePathPilotLivingSpecTests
         OnboardingPlan onboardingPlan = OnboardingTestFactory.PlanFor(node, T0);
         OnboardingOperation onboardingOp = OnboardingOperation.Create(onboardingPlan, UserId.New(), T0);
         InvalidOperationException onboardingEx = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => onboarding.ExecuteAsync(node, onboardingPlan, onboardingOp, T0, T0));
+            () => onboarding.ExecuteAsync(node, onboardingPlan, onboardingOp, T0));
         Assert.Equal(NotConfiguredOnboardingRuntime.NotConfiguredMessage, onboardingEx.Message);
 
         Node deployNode = DeploymentTestFactory.RouterWithDevice(out _);

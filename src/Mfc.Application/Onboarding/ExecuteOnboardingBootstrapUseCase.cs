@@ -1,4 +1,5 @@
 using Mfc.Domain;
+using Mfc.Domain.Deployment;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
@@ -15,6 +16,8 @@ public interface IOnboardingDeviceSession
     IOnboardingBootstrapWritePort Bootstrap { get; }
 
     IOnboardingWatchdogPort Watchdog { get; }
+
+    Task<DateTimeOffset> ReadRouterClockAsync(CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<ActualFilterRule>> PrintFilterAsync(CancellationToken cancellationToken = default);
 
@@ -48,6 +51,7 @@ public sealed class OnboardingExecutionResult
 /// <summary>
 /// Executes staging, watchdog arming, normative enable, verification, disarm, and commit (M5-07).
 /// Indeterminate/failed equivalence records ROLLBACK_PENDING; <see cref="RollbackOnboardingBootstrapUseCase"/> performs resource rollback.
+/// AUDIT-CLK-01: per-device RouterOS clock + monotonic remaining TTL for arm/disarm (never Controller now as router clock).
 /// </summary>
 public static class ExecuteOnboardingBootstrapUseCase
 {
@@ -57,7 +61,6 @@ public static class ExecuteOnboardingBootstrapUseCase
         OnboardingOperation operation,
         IReadOnlyList<IOnboardingDeviceSession> sessions,
         DateTimeOffset nowUtc,
-        DateTimeOffset routerClock,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(node);
@@ -84,6 +87,7 @@ public static class ExecuteOnboardingBootstrapUseCase
             Dictionary<DeviceId, OnboardingAuxiliarySnapshot> auxiliaryBefore = [];
             Dictionary<DeviceId, IReadOnlyList<ActualFilterRule>> filterBefore = [];
             Dictionary<DeviceId, OnboardingWatchdogBundle> watchdogs = [];
+            Dictionary<DeviceId, WatchdogTimeBudget> budgets = [];
             Dictionary<DeviceId, OnboardingBootstrapWritePlan> writePlans = [];
             foreach (DeviceOnboardingPlan devicePlan in devicePlans)
             {
@@ -142,6 +146,16 @@ public static class ExecuteOnboardingBootstrapUseCase
             foreach (DeviceOnboardingPlan devicePlan in devicePlans)
             {
                 IOnboardingDeviceSession session = byDevice[devicePlan.DeviceId];
+                DateTimeOffset routerClock = await session.ReadRouterClockAsync(cancellationToken).ConfigureAwait(false);
+                if (AbsSkew(routerClock, nowUtc) > OnboardingCodes.MaxRouterClockSkew)
+                {
+                    return await RollbackAsync(
+                        operation,
+                        OnboardingCodes.RouterClockSkew,
+                        nowUtc,
+                        timeline).ConfigureAwait(false);
+                }
+
                 OnboardingWatchdogPlanResult planned = PlanOnboardingWatchdogUseCase.PlanWatchdog(
                     operation.Id,
                     devicePlan,
@@ -158,6 +172,7 @@ public static class ExecuteOnboardingBootstrapUseCase
                 OnboardingWatchdogExecutionResult armed = await session.Watchdog.ArmWatchdogAsync(
                     planned.Watchdog,
                     routerClock,
+                    remainingTtl: devicePlan.WatchdogTtl,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
                 if (!armed.Succeeded)
                 {
@@ -165,6 +180,7 @@ public static class ExecuteOnboardingBootstrapUseCase
                 }
 
                 watchdogs[devicePlan.DeviceId] = planned.Watchdog;
+                budgets[devicePlan.DeviceId] = new WatchdogTimeBudget(devicePlan.WatchdogTtl);
                 timeline.Add($"arm:{devicePlan.DeviceId.Value:D}");
             }
 
@@ -172,6 +188,15 @@ public static class ExecuteOnboardingBootstrapUseCase
             foreach (DeviceOnboardingPlan devicePlan in devicePlans)
             {
                 IOnboardingDeviceSession session = byDevice[devicePlan.DeviceId];
+                if (budgets[devicePlan.DeviceId].Remaining < OnboardingCodes.MinCommitMargin)
+                {
+                    return await RollbackAsync(
+                        operation,
+                        OnboardingCodes.OnboardingWatchdogDeadlineTooClose,
+                        nowUtc,
+                        timeline).ConfigureAwait(false);
+                }
+
                 HashSet<string> enabled = new(StringComparer.Ordinal);
                 IpAddressFamily managementFamily = devicePlan.RequiredAnchorSet.Any(static k => k.Family == IpAddressFamily.IPv4)
                     ? IpAddressFamily.IPv4
@@ -218,6 +243,16 @@ public static class ExecuteOnboardingBootstrapUseCase
             foreach (DeviceOnboardingPlan devicePlan in devicePlans)
             {
                 IOnboardingDeviceSession session = byDevice[devicePlan.DeviceId];
+                if (budgets[devicePlan.DeviceId].Remaining < OnboardingCodes.MinCommitMargin)
+                {
+                    return await RollbackAsync(
+                        operation,
+                        OnboardingCodes.OnboardingWatchdogDeadlineTooClose,
+                        nowUtc,
+                        timeline,
+                        captured).ConfigureAwait(false);
+                }
+
                 IReadOnlyList<ActualFilterRule> capturedFilter = await session.CaptureStableAsync(cancellationToken)
                     .ConfigureAwait(false);
                 captured = true;
@@ -254,6 +289,7 @@ public static class ExecuteOnboardingBootstrapUseCase
                 IOnboardingDeviceSession session = byDevice[devicePlan.DeviceId];
                 OnboardingWatchdogExecutionResult disarmed = await session.Watchdog.DisarmWatchdogAsync(
                     watchdogs[devicePlan.DeviceId],
+                    remainingTtl: budgets[devicePlan.DeviceId].Remaining,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
                 if (!disarmed.Succeeded)
                 {
@@ -290,6 +326,12 @@ public static class ExecuteOnboardingBootstrapUseCase
                 capturePerformed: timeline.Any(static t => t.StartsWith("capture:", StringComparison.Ordinal)),
                 error: ex.Message).ConfigureAwait(false);
         }
+    }
+
+    private static TimeSpan AbsSkew(DateTimeOffset routerClock, DateTimeOffset nowUtc)
+    {
+        TimeSpan delta = routerClock.ToUniversalTime() - nowUtc.ToUniversalTime();
+        return delta < TimeSpan.Zero ? -delta : delta;
     }
 
     private static bool IsEnabledFlag(string? raw)

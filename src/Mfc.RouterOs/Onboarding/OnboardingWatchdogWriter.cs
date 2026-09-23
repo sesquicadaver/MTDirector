@@ -150,7 +150,8 @@ public sealed class OnboardingWatchdogWriter : IOnboardingWatchdogPort
             await SendTrackedAsync(OnboardingWritePath.SystemSchedulerAdd, bundle.StartupAttributes, paths, sent, cancellationToken)
                 .ConfigureAwait(false);
 
-            DateTimeOffset deadline = routerClock + bundle.Ttl;
+            // Deadline uses remaining TTL (AUDIT-CLK-01), not the original budget after elapsed work.
+            DateTimeOffset deadline = routerClock + remaining;
             List<KeyValuePair<string, string>> deadlineAttrs =
             [
                 .. bundle.DeadlineAttributes,

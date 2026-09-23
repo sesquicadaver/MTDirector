@@ -24,7 +24,6 @@ public sealed class RouterOsOnboardingRuntime : IOnboardingRuntime
         OnboardingPlan plan,
         OnboardingOperation operation,
         DateTimeOffset nowUtc,
-        DateTimeOffset routerClock,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(node);
@@ -41,7 +40,6 @@ public sealed class RouterOsOnboardingRuntime : IOnboardingRuntime
             operation,
             scope.Sessions,
             nowUtc,
-            routerClock,
             cancellationToken).ConfigureAwait(false);
     }
 

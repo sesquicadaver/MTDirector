@@ -114,7 +114,7 @@ public sealed class OnboardingRollbackLivingSpecTests
         operation.EnsureTransition(OnboardingOperationState.ArmingWatchdogs, T0.AddSeconds(4));
         operation.EnsureTransition(OnboardingOperationState.EnablingAnchors, T0.AddSeconds(5));
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession session =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id, T0);
         session.SeedExactAnchor(
             AnchorKey.Create(IpAddressFamily.IPv4, FilterBuiltInContext.Input),
             disabled: false,
@@ -163,9 +163,9 @@ public sealed class OnboardingRollbackLivingSpecTests
         OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
         AdvanceTo(operation, OnboardingOperationState.EnablingAnchors);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession a =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(first.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(first.Id, T0);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession b =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(second.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(second.Id, T0);
         SeedDevice(plan, operation, a, enabled: true, watchdogActive: true);
         SeedDevice(plan, operation, b, enabled: false, watchdogActive: true);
         OnboardingRollbackResult result = await RollbackOnboardingBootstrapUseCase.ExecuteAsync(
@@ -292,7 +292,7 @@ public sealed class OnboardingRollbackLivingSpecTests
 
         node.SetManagementState(ManagementState.Managed);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession session =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id, T0);
         SeedDevice(plan, operation, session, enabled: true, watchdogActive: false);
         OnboardingRecoveryResult recovered = await RecoverOnboardingUseCase.ExecuteAsync(
             node,
@@ -320,7 +320,7 @@ public sealed class OnboardingRollbackLivingSpecTests
 
         node.SetManagementState(ManagementState.Managed);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession session =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id, T0);
         OnboardingRecoveryResult recovered = await RecoverOnboardingUseCase.ExecuteAsync(
             node,
             plan,
@@ -340,7 +340,7 @@ public sealed class OnboardingRollbackLivingSpecTests
         OnboardingPlan plan = OnboardingTestFactory.PlanFor(node, T0);
         OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession session =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id, T0);
         session.SeedWatchdog(operation.Id, device.Id, disabled: true);
         OnboardingRecoveryResult recovered = await RecoverOnboardingUseCase.ExecuteAsync(
             node,
@@ -405,7 +405,7 @@ public sealed class OnboardingRollbackLivingSpecTests
         OnboardingOperation operation = OnboardingOperation.Create(plan, UserId.New(), T0);
         AdvanceTo(operation, state);
         OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession session =
-            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id);
+            OnboardingExecutionLivingSpecTests.FakeOnboardingDeviceSession.Router(device.Id, T0);
         SeedDevice(plan, operation, session, enabled: true, watchdogActive: true);
         return (node, plan, operation, session);
     }
