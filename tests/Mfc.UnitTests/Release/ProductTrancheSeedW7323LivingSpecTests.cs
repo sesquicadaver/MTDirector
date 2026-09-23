@@ -44,17 +44,17 @@ public sealed class ProductTrancheSeedW7323LivingSpecTests
             "W7-326 | [#1058](https://github.com/sesquicadaver/MTDirector/issues/1058) | CTRL-LOG-OTEL-CORRELATE-01 — Enrich JSON console logs with Activity TraceId/SpanId | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-397 (#1200)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-399 (#1203)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-44 COMPLETE", plan44, StringComparison.Ordinal);
         Assert.Contains("W7-323 (#1052) DONE", plan44, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-397 (#1200)", plan44, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-399 (#1203)", plan44, StringComparison.Ordinal);
         Assert.Contains("plan-45-controller-log-trace-correlation.md", plan44, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-45", plan, StringComparison.Ordinal);
         Assert.Contains("W7-324", plan, StringComparison.Ordinal);
         Assert.Contains("W7-323 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-397 (#1200)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-399 (#1203)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-45-controller-log-trace-correlation.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("CTRL-LOG-OTEL-CORRELATE-01", plan45, StringComparison.Ordinal);
@@ -62,7 +62,7 @@ public sealed class ProductTrancheSeedW7323LivingSpecTests
         Assert.Contains("W7-324", plan45, StringComparison.Ordinal);
         Assert.Contains("W7-325", plan45, StringComparison.Ordinal);
         Assert.Contains("W7-326", plan45, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-397 (#1200)", plan45, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-399 (#1203)", plan45, StringComparison.Ordinal);
         Assert.Contains("2da9d508", plan45, StringComparison.Ordinal);
 
         Assert.Contains("WithTracing", program, StringComparison.Ordinal);

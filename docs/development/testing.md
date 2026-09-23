@@ -3981,6 +3981,22 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
+## Living Specification — Seed AUDIT-OWN-01 after AUDIT-SBOM-01 (W7-398)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Seed locks AUDIT-OWN-01 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7398LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditOwn01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7398"`.
+
+## Living Specification — AUDIT-SBOM-01 fail-closed SBOM/signing (W7-397)
+
+| Requirement | Artifact | Test |
+|-------------|----------|------|
+| Real-mode SBOM requires SDK + non-empty components; GPG without tool fails; cleartext attestation ≠ crypto | generate-sbom-and-checksums.sh, packaging.md, known-limitations, ROADMAP, plan-62 | `AuditSbom01FailClosedW7397LivingSpecTests.Ac1FailClosedSbomScriptAndQueueLock` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditSbom01FailClosedW7397"`.
+
 ## Living Specification — Seed AUDIT-SBOM-01 after AUDIT-STATUS-01 (W7-396)
 
 | Requirement | Artifact | Test |

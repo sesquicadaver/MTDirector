@@ -72,7 +72,7 @@ public sealed class CtrlGrpcMsgsize01ControllerDesktopMessageSizeLivingSpecTests
             "W7-334 | [#1074](https://github.com/sesquicadaver/MTDirector/issues/1074) | CTRL-GRPC-MSGSIZE-01 — Align Controller+Desktop gRPC MaxReceive/SendMessageSize with snapshot bounds | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-397 (#1200)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-399 (#1203)", roadmap, StringComparison.Ordinal);
         Assert.Contains("CTRL-GRPC-MSGSIZE-01", plan47, StringComparison.Ordinal);
         Assert.Contains("Delivery notes (W7-334)", plan47, StringComparison.Ordinal);
     }

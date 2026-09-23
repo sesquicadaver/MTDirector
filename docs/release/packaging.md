@@ -37,6 +37,8 @@ ls -la "$OUT_DIR"
 | `run-dependency-scan.sh` | `OUT_DIR/dependency-scan.txt` |
 | `generate-sbom-and-checksums.sh` | `OUT_DIR/sbom.cdx.json`, `SHA256SUMS`, `SHA256SUMS.asc` |
 
+**AUDIT-SBOM-01:** real mode (`MFC_RELEASE_DRY_RUN≠1`) requires a working `dotnet` SDK and a non-empty SBOM `components` array (CycloneDX or `dotnet list package` fallback). Missing SDK / empty components / `MFC_RELEASE_GPG_KEY_ID` without usable GPG → exit ≠ 0. Dry-run may emit empty components. Cleartext `SHA256SUMS.asc` is an attestation, not a cryptographic signature.
+
 ## Host-process templates
 
 | Template | Path | Notes |
