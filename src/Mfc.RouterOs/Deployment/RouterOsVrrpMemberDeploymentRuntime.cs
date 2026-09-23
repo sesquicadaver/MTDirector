@@ -46,7 +46,18 @@ internal sealed class RouterOsVrrpMemberDeploymentRuntime : IVrrpMemberDeploymen
 
     public async Task PrecheckAsync(CancellationToken cancellationToken = default)
     {
-        _ = await _device.Session.ReadManagedStateAsync(cancellationToken).ConfigureAwait(false);
+        ActualManagedState state = await _device.Session.ReadManagedStateAsync(cancellationToken)
+            .ConfigureAwait(false);
+        Dictionary<string, string> jumps = ManagedResourceHashObservation.ExtractAnchorJumps(state);
+        foreach (AnchorTarget expected in _devicePlan.OldAnchorTargets)
+        {
+            if (!jumps.TryGetValue(expected.Key.Marker, out string? actual)
+                || !string.Equals(actual, expected.JumpTarget, StringComparison.Ordinal))
+            {
+                throw new DomainInvariantException(
+                    $"{DeploymentCodes.AnchorPreconditionFailed}: live old anchor '{expected.Key.Marker}' does not match the sealed plan.");
+            }
+        }
     }
 
     public async Task StageArtifactAsync(CancellationToken cancellationToken = default)

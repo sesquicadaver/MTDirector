@@ -93,4 +93,4 @@ PLAN-59 sole ranked row (**SNAP-ERRTEXT-CORR-01**) is **DONE**. No further PLAN-
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-403 (#1209)** — PLAN-61 Inventory Desktop connection Disconnected RPC fault text.
+**§3.C NEXT = W7-405 (#1212)** — PLAN-61 Inventory Desktop connection Disconnected RPC fault text.

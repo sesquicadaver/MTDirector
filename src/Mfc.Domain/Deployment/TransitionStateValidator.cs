@@ -210,7 +210,7 @@ public static class TransitionStateValidator
         return Hash256.Create(hasher.GetHashAndReset());
     }
 
-    /// <summary>All-safe evidence covering states 0..N for tests and sealed plans with proven analysis.</summary>
+    /// <summary>All-safe evidence covering states 0..N for unit tests only (AUDIT-EVID-01: production must not use this).</summary>
     public static IReadOnlyList<TransitionStateEvidence> AllSafeEvidence(int activationCount)
     {
         if (activationCount < 1)

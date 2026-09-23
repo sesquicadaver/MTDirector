@@ -77,7 +77,7 @@ public sealed class DeskConnDisc01DesktopDisconnectedFaultLivingSpecTests
         Assert.Contains("Intentional residual (W7-390 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-DISC-01 DONE", limitations, StringComparison.Ordinal);
         Assert.Contains("W7-390 (#1186) DONE", plan61, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-403 (#1209)", plan61, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-405 (#1212)", plan61, StringComparison.Ordinal);
         Assert.Contains(
             "W7-390 | [#1186](https://github.com/sesquicadaver/MTDirector/issues/1186) | DESK-CONN-DISC-01 — Store DesktopRpcFaultText.Format when Disconnected catches are RpcException | **DONE**",
             roadmap,
@@ -86,7 +86,7 @@ public sealed class DeskConnDisc01DesktopDisconnectedFaultLivingSpecTests
             "W7-391 | [#1187](https://github.com/sesquicadaver/MTDirector/issues/1187) | Seed next after DESK-CONN-DISC-01 (PLAN-61 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-403 (#1209)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-405 (#1212)", roadmap, StringComparison.Ordinal);
     }
 
     private static int Count(string text, string value)

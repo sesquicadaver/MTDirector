@@ -26,7 +26,7 @@ public sealed class Plan33DesktopInventoryTreeviewA11yW7274LivingSpecTests
         Assert.Contains("W7-275", plan33, StringComparison.Ordinal);
         Assert.Contains("50f1ae1", plan33, StringComparison.Ordinal);
         Assert.Contains("Inventory.Roots", plan33, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-403 (#1209)", plan33, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-405 (#1212)", plan33, StringComparison.Ordinal);
         Assert.Contains("3** unnamed containers", plan33, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-274 Living Spec lock)", limitations, StringComparison.Ordinal);
@@ -50,7 +50,7 @@ public sealed class Plan33DesktopInventoryTreeviewA11yW7274LivingSpecTests
             "W7-277 | [#959](https://github.com/sesquicadaver/MTDirector/issues/959) | Seed next after DESK-A11Y-TREE-01 (PLAN-33 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-403 (#1209)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-405 (#1212)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-275", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-276", continuous, StringComparison.Ordinal);

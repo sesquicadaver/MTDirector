@@ -13,14 +13,14 @@ namespace Mfc.Application.Deployment;
 
 /// <summary>
 /// Builds a <see cref="DeviceDeploymentPlan"/> from sealed filter-artifact store bodies + hash state (AUDIT-GUI-01).
-/// Does not invent artifact hashes, probe destinations, or packet-path interfaces.
+/// Safety evidence is Controller-proven from sealed bodies (AUDIT-EVID-01); never <c>AllSafeEvidence</c>.
 /// </summary>
 public static class SealedDeploymentPlanBuilder
 {
     /// <summary>
     /// Constructs one device plan. Old anchors come from the prior sealed body when present;
-    /// otherwise bootstrap roots. Transition evidence uses <see cref="TransitionStateValidator.AllSafeEvidence"/>
-    /// after compile/approval (sealed plans with proven analysis).
+    /// bootstrap roots only when <see cref="BootstrapArtifact.Hash"/> is the committed base.
+    /// Missing configuration, probes, capability, or committed-old body without bytes blocks sealing.
     /// </summary>
     public static DeviceDeploymentPlan Build(
         DeviceId deviceId,
@@ -29,16 +29,36 @@ public static class SealedDeploymentPlanBuilder
         RouterOsFilterArtifactReader.ParsedBody newBody,
         DeviceHashState? hashState,
         RouterOsFilterArtifactReader.ParsedBody? oldBody,
-        ConfigurationHash? configurationHash)
+        ConfigurationHash configurationHash,
+        IReadOnlyList<DeploymentProbe> probes)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(expectedRouterOsVersion);
         ArgumentNullException.ThrowIfNull(newMeta);
         ArgumentNullException.ThrowIfNull(newBody);
+        ArgumentNullException.ThrowIfNull(probes);
 
         if (!newMeta.DeviceId.Equals(deviceId))
         {
             throw new DomainInvariantException(
                 $"{DeploymentCodes.DevicePlanCardinality}: sealed artifact device_id does not match plan device.");
+        }
+
+        if (IsEmpty(newMeta.CapabilityHash))
+        {
+            throw new DomainInvariantException(
+                $"{DeploymentCodes.SealedEvidenceMissing}: sealed artifact capability hash is required.");
+        }
+
+        if (IsEmpty(configurationHash.Value))
+        {
+            throw new DomainInvariantException(
+                $"{DeploymentCodes.SealedEvidenceMissing}: configuration hash from last capture is required.");
+        }
+
+        if (probes.Count == 0 || probes.All(static p => p.Kind != DeploymentProbeKind.ApiSsl))
+        {
+            throw new DomainInvariantException(
+                $"{DeploymentCodes.SealedEvidenceMissing}: sealed plan requires at least one API_SSL probe.");
         }
 
         List<AnchorTarget> newTargets = ToAnchorTargets(newBody.Anchors, "new");
@@ -49,36 +69,62 @@ public static class SealedDeploymentPlanBuilder
         }
 
         Hash256 oldArtifactHash = hashState?.LastCommittedArtifactHash ?? BootstrapArtifact.Hash;
-        List<AnchorTarget> oldTargets = oldBody is null
+        bool oldIsBootstrap = oldArtifactHash.Equals(BootstrapArtifact.Hash);
+        if (!oldIsBootstrap && oldBody is null)
+        {
+            throw new DomainInvariantException(
+                $"{DeploymentCodes.SealedEvidenceMissing}: committed old artifact body is missing; bootstrap fallback forbidden.");
+        }
+
+        List<AnchorTarget> oldTargets = oldIsBootstrap
             ? BootstrapTargets(newTargets.Select(static t => t.Key).ToArray())
-            : ToAnchorTargets(oldBody.Anchors, "old");
+            : ToAnchorTargets(oldBody!.Anchors, "old");
 
         IReadOnlyList<AnchorKey> activation = PlanTransitionStatesUseCase.PlanActivationOrder(
             newTargets.Select(static t => t.Key));
+        IReadOnlyList<TransitionStateEvidence> evidence = SealedTransitionEvidence.Prove(
+            activation,
+            oldTargets,
+            newTargets,
+            oldBody,
+            newBody,
+            oldIsBootstrap);
         TransitionStateValidationResult transitions = PlanTransitionStatesUseCase.ValidateTransitions(
             activation,
             oldTargets,
             newTargets,
-            TransitionStateValidator.AllSafeEvidence(activation.Count));
+            evidence);
         if (transitions.HasBlockers)
         {
             throw new DomainInvariantException(
                 string.Join(';', transitions.Findings.Select(static f => $"{f.Code}:{f.Message}")));
         }
 
-        Hash256 empty = Hash256.Create(new byte[Hash256.Size]);
-        Hash256 cfg = configurationHash is { } c ? c.Value : empty;
         Hash256 capability = newMeta.CapabilityHash;
-        Hash256 anchorGuard = HashOrdered([cfg, capability]);
+        Hash256 cfg = configurationHash.Value;
+        List<Hash256> compatibilityParts =
+        [
+            Hash256.Create(SHA256.HashData(Encoding.UTF8.GetBytes(expectedRouterOsVersion.Trim()))),
+            capability,
+        ];
+        Hash256 compatibility = HashOrdered("mfc.deployment.expected_compatibility.v1", compatibilityParts);
+        Hash256 guardContext = HashOrdered("mfc.deployment.expected_guard_ctx.v1", [cfg, capability]);
+        List<Hash256> anchorParts = [oldArtifactHash, newMeta.ResourceHash];
+        foreach (AnchorKey key in activation)
+        {
+            anchorParts.Add(Hash256.Create(SHA256.HashData(Encoding.UTF8.GetBytes(key.Marker))));
+        }
+
+        Hash256 anchorContext = HashOrdered("mfc.deployment.expected_anchor_ctx.v1", anchorParts);
 
         return DeviceDeploymentPlan.Create(
             deviceId,
             expectedRouterOsVersion.Trim(),
             capability,
             cfg,
-            empty,
-            anchorGuard,
-            anchorGuard,
+            compatibility,
+            guardContext,
+            anchorContext,
             oldArtifactHash,
             oldTargets,
             newMeta.ResourceHash,
@@ -87,7 +133,23 @@ public static class SealedDeploymentPlanBuilder
             activation.Reverse().ToArray(),
             transitions.TransitionStateHashes,
             DeploymentCodes.DefaultRollbackTtl,
-            probes: []);
+            probes);
+    }
+
+    /// <summary>Builds the required API_SSL probe from a literal management IP (AUDIT-EVID-01).</summary>
+    public static DeploymentProbe RequireApiSslProbe(ManagementEndpoint endpoint)
+    {
+        ArgumentNullException.ThrowIfNull(endpoint);
+        if (endpoint.Host.Address is null)
+        {
+            throw new DomainInvariantException(
+                $"{DeploymentCodes.SealedEvidenceMissing}: management host must be a literal IP for API_SSL probe.");
+        }
+
+        return new DeploymentProbe(
+            DeploymentProbeKind.ApiSsl,
+            endpoint.Host.Value,
+            timeoutMilliseconds: 1000);
     }
 
     private static List<AnchorTarget> ToAnchorTargets(
@@ -120,10 +182,13 @@ public static class SealedDeploymentPlanBuilder
         return targets;
     }
 
-    private static Hash256 HashOrdered(IReadOnlyList<Hash256> digests)
+    private static bool IsEmpty(Hash256 hash)
+        => hash.Bytes.ToArray().All(static b => b == 0);
+
+    private static Hash256 HashOrdered(string label, IReadOnlyList<Hash256> digests)
     {
         using IncrementalHash hasher = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        hasher.AppendData(Encoding.UTF8.GetBytes("mfc.deployment.expected_ctx.v1"));
+        hasher.AppendData(Encoding.UTF8.GetBytes(label));
         hasher.AppendData([(byte)0]);
         foreach (Hash256 digest in digests)
         {

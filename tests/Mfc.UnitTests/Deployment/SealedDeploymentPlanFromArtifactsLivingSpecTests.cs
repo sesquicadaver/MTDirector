@@ -41,7 +41,6 @@ public sealed class SealedDeploymentPlanFromArtifactsLivingSpecTests
         RouterOsFilterArtifact sealedArtifact = CreateArtifact(deviceId);
         RouterOsFilterArtifactReader.ParsedBody newBody =
             RouterOsFilterArtifactReader.Read(sealedArtifact.CanonicalBytes.ToArray());
-        ConfigurationHash cfg = ConfigurationHash.FromDigest(DeploymentTestFactory.H("cfg"));
 
         DeviceDeploymentPlan plan = SealedDeploymentPlanBuilder.Build(
             deviceId,
@@ -50,7 +49,8 @@ public sealed class SealedDeploymentPlanFromArtifactsLivingSpecTests
             newBody,
             hashState: null,
             oldBody: null,
-            cfg);
+            DefaultCfg(),
+            DefaultProbes());
 
         Assert.Equal(BootstrapArtifact.Hash.ToString(), plan.OldArtifactHash.ToString());
         Assert.Equal(sealedArtifact.ResourceHash.ToString(), plan.NewArtifactHash.ToString());
@@ -89,7 +89,8 @@ public sealed class SealedDeploymentPlanFromArtifactsLivingSpecTests
             newBody,
             hashState,
             oldBody,
-            configurationHash: null);
+            DefaultCfg(),
+            DefaultProbes());
 
         Assert.Equal(oldArtifact.ResourceHash.ToString(), plan.OldArtifactHash.ToString());
         Assert.Equal(oldBody.Anchors[0].DesiredJumpTarget, Assert.Single(plan.OldAnchorTargets).JumpTarget);
@@ -118,7 +119,8 @@ public sealed class SealedDeploymentPlanFromArtifactsLivingSpecTests
                 empty,
                 hashState: null,
                 oldBody: null,
-                configurationHash: null));
+                DefaultCfg(),
+                DefaultProbes()));
         Assert.Contains(DeploymentCodes.AnchorInvalid, ex.Message, StringComparison.Ordinal);
     }
 
@@ -139,7 +141,8 @@ public sealed class SealedDeploymentPlanFromArtifactsLivingSpecTests
                 newBody,
                 hashState: null,
                 oldBody: null,
-                configurationHash: null));
+                DefaultCfg(),
+                DefaultProbes()));
         Assert.Contains(DeploymentCodes.DevicePlanCardinality, ex.Message, StringComparison.Ordinal);
     }
 
@@ -153,6 +156,16 @@ public sealed class SealedDeploymentPlanFromArtifactsLivingSpecTests
             RouterOsFilterArtifactReader.Read(newArtifact.CanonicalBytes.ToArray());
         RouterOsFilterArtifactReader.ParsedBody oldBody =
             RouterOsFilterArtifactReader.Read(oldArtifact.CanonicalBytes.ToArray());
+        DeviceHashState hashState = DeviceHashState.Create(
+            deviceId,
+            desiredPolicyHash: null,
+            desiredArtifactHash: null,
+            lastCommittedPolicyHash: null,
+            lastCommittedArtifactHash: oldArtifact.ResourceHash,
+            actualManagedResourceHash: null,
+            actualKnown: false,
+            anchorKnown: false,
+            updatedAtUtc: new DateTimeOffset(2026, 9, 15, 0, 0, 0, TimeSpan.Zero));
 
         DomainInvariantException ex = Assert.Throws<DomainInvariantException>(() =>
             SealedDeploymentPlanBuilder.Build(
@@ -160,10 +173,58 @@ public sealed class SealedDeploymentPlanFromArtifactsLivingSpecTests
                 "7.16.2",
                 ToMeta(newArtifact),
                 newBody,
-                hashState: null,
+                hashState,
                 oldBody,
-                configurationHash: null));
+                DefaultCfg(),
+                DefaultProbes()));
         Assert.Contains(DeploymentCodes.AnchorInvalid, ex.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BuilderFailsWhenApiSslProbeMissing()
+    {
+        DeviceId deviceId = new(Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"));
+        RouterOsFilterArtifact sealedArtifact = CreateArtifact(deviceId);
+        RouterOsFilterArtifactReader.ParsedBody newBody =
+            RouterOsFilterArtifactReader.Read(sealedArtifact.CanonicalBytes.ToArray());
+
+        DomainInvariantException ex = Assert.Throws<DomainInvariantException>(() =>
+            SealedDeploymentPlanBuilder.Build(
+                deviceId,
+                "7.16.2",
+                ToMeta(sealedArtifact),
+                newBody,
+                hashState: null,
+                oldBody: null,
+                DefaultCfg(),
+                probes: []));
+        Assert.Contains(DeploymentCodes.SealedEvidenceMissing, ex.Message, StringComparison.Ordinal);
+        Assert.Contains("API_SSL", ex.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BuilderProducesDistinctGuardAnchorAndCompatibilityHashes()
+    {
+        DeviceId deviceId = new(Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"));
+        RouterOsFilterArtifact sealedArtifact = CreateArtifact(deviceId);
+        RouterOsFilterArtifactReader.ParsedBody newBody =
+            RouterOsFilterArtifactReader.Read(sealedArtifact.CanonicalBytes.ToArray());
+
+        DeviceDeploymentPlan plan = SealedDeploymentPlanBuilder.Build(
+            deviceId,
+            "7.16.2",
+            ToMeta(sealedArtifact),
+            newBody,
+            hashState: null,
+            oldBody: null,
+            DefaultCfg(),
+            DefaultProbes());
+
+        Assert.False(plan.ExpectedGuardContextHash.Equals(plan.ExpectedAnchorContextHash));
+        Assert.False(plan.ExpectedCompatibilityHash.Equals(plan.ExpectedGuardContextHash));
+        Assert.False(plan.ExpectedCompatibilityHash.Equals(plan.ExpectedAnchorContextHash));
+        Assert.Contains(plan.Probes, static p => p.Kind == DeploymentProbeKind.ApiSsl);
+        Assert.Equal(2, plan.TransitionStateHashes.Count);
     }
 
     [Fact]
@@ -358,17 +419,16 @@ public sealed class SealedDeploymentPlanFromArtifactsLivingSpecTests
     }
 
     [Fact]
-    public async Task ExecuteFallsBackToBootstrapWhenOldCanonicalMissing()
+    public async Task ExecuteFailsWhenCommittedOldBodyMissing()
     {
         SealedPlanHarness harness = await SealedPlanHarness.CreateAsync(seedOldArtifact: true);
         harness.Artifacts.CanonicalBytesByHash.Remove(harness.OldArtifact!.ResourceHash.ToString());
 
         ApplicationResult<SealedDeploymentPlanResult> result = await harness.Sut.ExecuteAsync(harness.Command());
-        Assert.True(result.IsSuccess, result.Error?.Message);
-        Assert.Equal(
-            harness.OldArtifact.ResourceHash.ToString(),
-            Convert.ToHexString(result.Value!.Plan.Devices[0].OldArtifactHash),
-            ignoreCase: true);
+        Assert.True(result.IsFailure);
+        Assert.Equal("validation", result.Error!.Code);
+        Assert.Contains(DeploymentCodes.SealedEvidenceMissing, result.Error.Message, StringComparison.Ordinal);
+        Assert.Contains("bootstrap fallback forbidden", result.Error.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     private sealed class SealedPlanHarness
@@ -627,6 +687,13 @@ public sealed class SealedDeploymentPlanFromArtifactsLivingSpecTests
             ],
             UserId.New(),
             DateTimeOffset.UtcNow);
+
+
+    private static ConfigurationHash DefaultCfg()
+        => ConfigurationHash.FromDigest(DeploymentTestFactory.H("cfg"));
+
+    private static IReadOnlyList<DeploymentProbe> DefaultProbes()
+        => [SealedDeploymentPlanBuilder.RequireApiSslProbe(ManagementEndpoint.Create("10.0.0.1"))];
 
     private static RouterOsFilterArtifact CreateArtifact(
         DeviceId device,
