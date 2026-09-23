@@ -176,6 +176,7 @@ public sealed class DeploymentGrpcHostTests
                 deadline: Deadline());
             Assert.Equal(global::Mfc.Contracts.Mfc.V1.DeploymentOperationState.Created, started.State);
 
+            // RollbackPending is non-terminal — Watch must not wait for stream end (AUDIT-RPC-01).
             List<DeploymentProgress> progress = [];
             using AsyncServerStreamingCall<DeploymentProgress> watch = deployment.Watch(
                 new WatchDeploymentRequest { OperationId = started.OperationId },
@@ -184,9 +185,15 @@ public sealed class DeploymentGrpcHostTests
             await foreach (DeploymentProgress item in watch.ResponseStream.ReadAllAsync())
             {
                 progress.Add(item);
+                if (item.State == global::Mfc.Contracts.Mfc.V1.DeploymentOperationState.RollbackPending)
+                {
+                    break;
+                }
             }
 
-            Assert.Equal(global::Mfc.Contracts.Mfc.V1.DeploymentOperationState.RollbackPending, progress[^1].State);
+            Assert.Contains(
+                progress,
+                static p => p.State == global::Mfc.Contracts.Mfc.V1.DeploymentOperationState.RollbackPending);
 
             Guid rollbackKey = Guid.NewGuid();
             RollbackDeploymentRequest rollback = new()
