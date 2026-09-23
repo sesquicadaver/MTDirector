@@ -53,6 +53,7 @@ public static class ActivateAnchorsUseCase
         DeviceDeploymentPlan devicePlan,
         IRouterOsDeploymentSession session,
         Func<TimeSpan> remainingWatchdogTtl,
+        Func<AnchorActivationJournalEntry, CancellationToken, Task>? persistIntentAsync = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(devicePlan);
@@ -127,8 +128,8 @@ public static class ActivateAnchorsUseCase
                 continue;
             }
 
-            // Intent recorded before effect (AC#11).
-            journal.Add(new AnchorActivationJournalEntry
+            // Intent recorded before effect (AC#11 / AUDIT-COMMIT-01).
+            AnchorActivationJournalEntry intent = new()
             {
                 Key = key,
                 State = DeploymentStepState.IntentRecorded,
@@ -137,7 +138,12 @@ public static class ActivateAnchorsUseCase
                 ExpectedBeforeHash = beforeHash,
                 DesiredAfterHash = afterHash,
                 Code = decision.Code,
-            });
+            };
+            journal.Add(intent);
+            if (persistIntentAsync is not null)
+            {
+                await persistIntentAsync(intent, cancellationToken).ConfigureAwait(false);
+            }
 
             DeploymentWriteExecutionResult written = await session.SetAnchorTargetAsync(
                 new AnchorTargetWrite(key.Family, key.Chain, desiredNew),

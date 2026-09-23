@@ -30,6 +30,18 @@ public sealed class DeploymentWorkflowExecutionResult
     public required IReadOnlyList<string> Timeline { get; init; }
 
     public required bool ActivationStarted { get; init; }
+
+    /// <summary>Standalone commit evidence for atomic hash/journal persistence (AUDIT-COMMIT-01).</summary>
+    public DeploymentCommitSnapshot? CommitSnapshot { get; init; }
+
+    /// <summary>Per-device state after Execute (AUDIT-COMMIT-01).</summary>
+    public DeviceDeployment? DeviceState { get; init; }
+
+    /// <summary>Activation write-ahead journal for durable step persistence (AUDIT-COMMIT-01).</summary>
+    public IReadOnlyList<AnchorActivationJournalEntry> ActivationJournal { get; init; } = [];
+
+    /// <summary>VRRP member commit hashes when the whole pair commits (AUDIT-COMMIT-01).</summary>
+    public IReadOnlyList<DeploymentCommitSnapshot> MemberCommitSnapshots { get; init; } = [];
 }
 
 /// <summary>Workflow rollback outcome returned by <see cref="IDeploymentRuntime"/> (M4-12).</summary>
@@ -402,6 +414,7 @@ public sealed class StartDeploymentUseCase
     private readonly IAuthorizationBoundary _auth;
     private readonly INodeStore _nodes;
     private readonly IDeploymentStore _deployments;
+    private readonly IDeviceHashStateStore _hashStates;
     private readonly IDriftEventStore _driftEvents;
     private readonly IIdempotencyStore _idempotency;
     private readonly IAuditEventWriter _audit;
@@ -413,6 +426,7 @@ public sealed class StartDeploymentUseCase
         IAuthorizationBoundary auth,
         INodeStore nodes,
         IDeploymentStore deployments,
+        IDeviceHashStateStore hashStates,
         IDriftEventStore driftEvents,
         IIdempotencyStore idempotency,
         IAuditEventWriter audit,
@@ -423,6 +437,7 @@ public sealed class StartDeploymentUseCase
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
         ArgumentNullException.ThrowIfNull(deployments);
+        ArgumentNullException.ThrowIfNull(hashStates);
         ArgumentNullException.ThrowIfNull(driftEvents);
         ArgumentNullException.ThrowIfNull(idempotency);
         ArgumentNullException.ThrowIfNull(audit);
@@ -432,6 +447,7 @@ public sealed class StartDeploymentUseCase
         _auth = auth;
         _nodes = nodes;
         _deployments = deployments;
+        _hashStates = hashStates;
         _driftEvents = driftEvents;
         _idempotency = idempotency;
         _audit = audit;
@@ -623,6 +639,9 @@ public sealed class StartDeploymentUseCase
                 await _unitOfWork.ExecuteAsync(
                     async ct =>
                     {
+                        await DeploymentCommitPersistence.PersistAsync(
+                                _deployments, _hashStates, plan, executed, _clock.UtcNow, ct)
+                            .ConfigureAwait(false);
                         await _deployments.SaveOperationAsync(operation, ct).ConfigureAwait(false);
                         await _idempotency.SaveAsync(
                                 command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, ct)

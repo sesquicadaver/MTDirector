@@ -124,6 +124,7 @@ public sealed class AuditDep01RecoveryLockTests
             auth,
             nodes,
             deployments,
+            new FakeDeviceHashStateStore(),
             new FakeDriftEventStore(),
             idempotency,
             audit,

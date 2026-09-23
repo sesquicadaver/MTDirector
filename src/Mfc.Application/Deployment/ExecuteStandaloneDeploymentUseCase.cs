@@ -42,6 +42,12 @@ public sealed class StandaloneDeploymentResult
     public required bool DetachedArtifactPreservedOnFailure { get; init; }
 
     public DeploymentCommitSnapshot? CommitSnapshot { get; init; }
+
+    /// <summary>Final per-device state machine after Execute (AUDIT-COMMIT-01).</summary>
+    public DeviceDeployment? DeviceState { get; init; }
+
+    /// <summary>Write-ahead activation journal returned for durable persistence (AUDIT-COMMIT-01).</summary>
+    public IReadOnlyList<AnchorActivationJournalEntry> ActivationJournal { get; init; } = [];
 }
 
 /// <summary>Per-device runtime ports for standalone deployment (M4-08).</summary>
@@ -101,6 +107,8 @@ public static class ExecuteStandaloneDeploymentUseCase
         bool disarmedBeforeCommit = false;
         bool detachedPreserved = true;
         DeploymentWatchdogBundle? armed = null;
+        IReadOnlyList<AnchorActivationJournalEntry> activationJournal = [];
+
 
         try
         {
@@ -134,7 +142,9 @@ public static class ExecuteStandaloneDeploymentUseCase
                     armedBeforeActivation: false,
                     disarmedBeforeCommit: false,
                     detachedPreserved: true,
-                    commit: null);
+                    commit: null,
+                    deviceState,
+                    activationJournal: []);
             }
 
             deviceState.EnsureTransition(DeviceDeploymentState.Staging, nowUtc);
@@ -262,7 +272,8 @@ public static class ExecuteStandaloneDeploymentUseCase
                 devicePlan,
                 runtime.Session,
                 () => budget.Remaining,
-                cancellationToken).ConfigureAwait(false);
+                cancellationToken: cancellationToken).ConfigureAwait(false);
+            activationJournal = activated.Journal;
             if (!activated.Succeeded)
             {
                 timeline.Add("activate:failed");
@@ -364,7 +375,9 @@ public static class ExecuteStandaloneDeploymentUseCase
                 armedBeforeActivation,
                 disarmedBeforeCommit,
                 detachedPreserved: true,
-                snapshot);
+                snapshot,
+                deviceState,
+                activationJournal);
         }
         catch (Exception ex) when (ex is DomainInvariantException or InvalidOperationException)
         {
@@ -381,7 +394,8 @@ public static class ExecuteStandaloneDeploymentUseCase
                 armedBeforeActivation,
                 disarmedBeforeCommit,
                 detachedPreserved,
-                recovery: false).ConfigureAwait(false);
+                recovery: false,
+                activationJournal).ConfigureAwait(false);
         }
     }
 
@@ -423,7 +437,8 @@ public static class ExecuteStandaloneDeploymentUseCase
                 wrote,
                 armedBeforeActivation,
                 disarmedBeforeCommit: false,
-                detachedPreserved);
+                detachedPreserved,
+                deviceState);
         }
 
         Advance(operation, DeploymentOperationState.RollingBack, nowUtc, errorCode);
@@ -456,7 +471,8 @@ public static class ExecuteStandaloneDeploymentUseCase
                     wrote,
                     armedBeforeActivation,
                     disarmedBeforeCommit: false,
-                    detachedPreserved);
+                    detachedPreserved,
+                    deviceState);
             }
         }
 
@@ -480,7 +496,8 @@ public static class ExecuteStandaloneDeploymentUseCase
             wrote,
             armedBeforeActivation,
             disarmedBeforeCommit: false,
-            detachedPreserved);
+            detachedPreserved,
+            deviceState);
     }
 
     private static Task<StandaloneDeploymentResult> FailAsync(
@@ -493,7 +510,8 @@ public static class ExecuteStandaloneDeploymentUseCase
         bool armedBeforeActivation,
         bool disarmedBeforeCommit,
         bool detachedPreserved,
-        bool recovery)
+        bool recovery,
+        IReadOnlyList<AnchorActivationJournalEntry>? activationJournal = null)
     {
         if (!operation.IsTerminal)
         {
@@ -524,7 +542,9 @@ public static class ExecuteStandaloneDeploymentUseCase
             wrote,
             armedBeforeActivation,
             disarmedBeforeCommit,
-            detachedPreserved));
+            detachedPreserved,
+            deviceState,
+            activationJournal));
     }
 
     private static void Advance(
@@ -541,7 +561,9 @@ public static class ExecuteStandaloneDeploymentUseCase
         bool armedBeforeActivation,
         bool disarmedBeforeCommit,
         bool detachedPreserved,
-        DeploymentCommitSnapshot? commit)
+        DeploymentCommitSnapshot? commit,
+        DeviceDeployment deviceState,
+        IReadOnlyList<AnchorActivationJournalEntry> activationJournal)
         => new()
         {
             Succeeded = true,
@@ -552,6 +574,8 @@ public static class ExecuteStandaloneDeploymentUseCase
             WatchdogDisarmedBeforeCommit = disarmedBeforeCommit,
             DetachedArtifactPreservedOnFailure = detachedPreserved,
             CommitSnapshot = commit,
+            DeviceState = deviceState,
+            ActivationJournal = activationJournal,
         };
 
     private static StandaloneDeploymentResult FailResult(
@@ -561,7 +585,9 @@ public static class ExecuteStandaloneDeploymentUseCase
         bool wrote,
         bool armedBeforeActivation,
         bool disarmedBeforeCommit,
-        bool detachedPreserved)
+        bool detachedPreserved,
+        DeviceDeployment? deviceState = null,
+        IReadOnlyList<AnchorActivationJournalEntry>? activationJournal = null)
         => new()
         {
             Succeeded = false,
@@ -573,5 +599,7 @@ public static class ExecuteStandaloneDeploymentUseCase
             WatchdogDisarmedBeforeCommit = disarmedBeforeCommit,
             DetachedArtifactPreservedOnFailure = detachedPreserved,
             CommitSnapshot = null,
+            DeviceState = deviceState,
+            ActivationJournal = activationJournal ?? [],
         };
 }

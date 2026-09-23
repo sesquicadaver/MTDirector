@@ -396,7 +396,7 @@ public sealed class IncidentDenyOverlayCompileDeployLivingSpecTests
                 new Mfc.Application.Topology.VrrpPairConsistencyLoader(
                     new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore()),
                 new FakeUnitOfWork());
-            StartDeploymentUseCase start = new(auth, nodes, deployments, drift, idempotency, audit, clock, runtime, new FakeUnitOfWork());
+            StartDeploymentUseCase start = new(auth, nodes, deployments, new FakeDeviceHashStateStore(), drift, idempotency, audit, clock, runtime, new FakeUnitOfWork());
             return new DeployHarness(
                 auth,
                 audit,
@@ -422,7 +422,7 @@ public sealed class IncidentDenyOverlayCompileDeployLivingSpecTests
                 new Mfc.Application.Topology.VrrpPairConsistencyLoader(
                     new FakeDeviceStore(), new FakeSnapshotStore(), new FakeDeviceHashStateStore()),
                 new FakeUnitOfWork());
-            StartDeploymentUseCase start = new(auth, fx.Nodes, deployments, drift, idempotency, audit, clock, runtime, new FakeUnitOfWork());
+            StartDeploymentUseCase start = new(auth, fx.Nodes, deployments, new FakeDeviceHashStateStore(), drift, idempotency, audit, clock, runtime, new FakeUnitOfWork());
             DeployIncidentDenyOverlayUseCase deploy = new(
                 auth, fx.Policies, fx.Approvals, audit, fx.UseCase, createPlan, start, feedback);
             DomainPolicy overlay = (await fx.Policies.ListActiveByOwnerAsync(

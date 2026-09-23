@@ -114,7 +114,7 @@ internal sealed class RouterOsVrrpMemberDeploymentRuntime : IVrrpMemberDeploymen
             _devicePlan,
             _device.Session,
             () => budget.Remaining,
-            cancellationToken).ConfigureAwait(false);
+            cancellationToken: cancellationToken).ConfigureAwait(false);
         if (!activated.Succeeded)
         {
             throw new DomainInvariantException(activated.Code ?? DeploymentCodes.AnchorSetFailed);

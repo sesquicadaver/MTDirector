@@ -79,6 +79,7 @@ public sealed class RouterOsDeploymentRuntime : IDeploymentRuntime
                 ErrorCode = result.ErrorCode,
                 Timeline = result.Timeline,
                 ActivationStarted = result.Succeeded && result.State == DeploymentOperationState.Committed,
+                MemberCommitSnapshots = result.MemberCommitSnapshots,
             };
         }
 
@@ -111,6 +112,9 @@ public sealed class RouterOsDeploymentRuntime : IDeploymentRuntime
             Timeline = standalone.Timeline,
             ActivationStarted = standalone.WatchdogArmedBeforeActivation
                 || ActivationStarted(standalone.State),
+            CommitSnapshot = standalone.CommitSnapshot,
+            DeviceState = standalone.DeviceState,
+            ActivationJournal = standalone.ActivationJournal,
         };
     }
 
