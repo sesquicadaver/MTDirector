@@ -551,6 +551,7 @@ public sealed class IncidentResponseE2ELivingSpecTests
             DeploymentOperation operation,
             IReadOnlyList<PacketPathPairFact> packetPathPairs,
             DateTimeOffset nowUtc,
+            IDeploymentPhaseReporter? phases = null,
             CancellationToken cancellationToken = default)
         {
             DomainState terminal = Commit ? DomainState.Committed : DomainState.Failed;

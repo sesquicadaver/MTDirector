@@ -421,6 +421,8 @@ public sealed class StartDeploymentUseCase
     private readonly IClock _clock;
     private readonly IDeploymentRuntime _runtime;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IDeploymentStartWorkChannel _startQueue;
+    private readonly IDeploymentProgressSink _progress;
 
     public StartDeploymentUseCase(
         IAuthorizationBoundary auth,
@@ -432,7 +434,9 @@ public sealed class StartDeploymentUseCase
         IAuditEventWriter audit,
         IClock clock,
         IDeploymentRuntime runtime,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IDeploymentStartWorkChannel? startQueue = null,
+        IDeploymentProgressSink? progress = null)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
@@ -454,6 +458,12 @@ public sealed class StartDeploymentUseCase
         _clock = clock;
         _runtime = runtime;
         _unitOfWork = unitOfWork;
+        _startQueue = startQueue ?? new ImmediateDeploymentStartWorkChannel();
+        _progress = progress ?? NullDeploymentProgressSink.Instance;
+        if (_startQueue is ImmediateDeploymentStartWorkChannel immediate && immediate.Handler is null)
+        {
+            immediate.Handler = ContinueAcceptedAsync;
+        }
     }
 
     public async Task<ApplicationResult<DeploymentOperationSummaryView>> ExecuteAsync(
@@ -578,94 +588,46 @@ public sealed class StartDeploymentUseCase
                 await _deployments.AddStepAsync(intent, cancellationToken).ConfigureAwait(false);
             }
 
-            DeploymentWorkflowExecutionResult executed;
-            try
-            {
-                try
+            // AUDIT-RPC-01: durable accept + idempotency before RouterOS effects; fast operation_id return.
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
                 {
-                    executed = await _runtime.ExecuteAsync(
-                            node, plan, operation, command.PacketPathPairs, now, cancellationToken)
+                    await _idempotency.SaveAsync(
+                            command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, ct)
                         .ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    // AC#8: cancel after activation becomes controller rollback.
-                    if (ActivationStarted(operation.State))
-                    {
-                        DeploymentWorkflowRollbackResult rolled = await _runtime
-                            .RollbackAsync(node, plan, operation, now, CancellationToken.None)
-                            .ConfigureAwait(false);
-                        await _unitOfWork.ExecuteAsync(
-                            async ct =>
+                    await _audit.AppendAsync(
+                            command.Actor,
+                            Operation,
+                            JsonSerializer.Serialize(new
                             {
-                                await _deployments.SaveOperationAsync(operation, ct).ConfigureAwait(false);
-                                await _idempotency.SaveAsync(
-                                        command.Actor,
-                                        Operation,
-                                        command.IdempotencyKey,
-                                        requestHash,
-                                        operation.Id.Value,
-                                        ct).ConfigureAwait(false);
-                                await _audit.AppendAsync(
-                                        command.Actor,
-                                        Operation,
-                                        JsonSerializer.Serialize(new
-                                        {
-                                            operation_id = operation.Id.Value,
-                                            plan_id = plan.Id.Value,
-                                            state = operation.State.ToString(),
-                                            canceled_after_activation = true,
-                                        }),
-                                        ct).ConfigureAwait(false);
-                            },
-                            CancellationToken.None).ConfigureAwait(false);
-                        return ApplicationResults.Ok(ToOperationView(operation, rolled.Timeline));
-                    }
+                                operation_id = operation.Id.Value,
+                                plan_id = plan.Id.Value,
+                                state = operation.State.ToString(),
+                                accepted = true,
+                            }),
+                            ct).ConfigureAwait(false);
+                },
+                cancellationToken).ConfigureAwait(false);
 
-                    throw;
-                }
-                catch (InvalidOperationException ex)
-                {
-                    if (!DeploymentOperation.IsTerminalState(operation.State)
-                        && DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.RecoveryRequired))
-                    {
-                        operation.EnsureTransition(DeploymentOperationState.RecoveryRequired, now, "failed");
-                    }
+            _progress.Ensure(operation.Id.Value, command.Actor);
+            _progress.Publish(operation.Id.Value, operation.State);
 
-                    await _deployments.SaveOperationAsync(operation, cancellationToken).ConfigureAwait(false);
-                    return ApplicationResults.Fail(ApplicationError.Failed(ex.Message));
-                }
-
-                await _unitOfWork.ExecuteAsync(
-                    async ct =>
-                    {
-                        await DeploymentCommitPersistence.PersistAsync(
-                                _deployments, _hashStates, plan, executed, _clock.UtcNow, ct)
-                            .ConfigureAwait(false);
-                        await _deployments.SaveOperationAsync(operation, ct).ConfigureAwait(false);
-                        await _idempotency.SaveAsync(
-                                command.Actor, Operation, command.IdempotencyKey, requestHash, operation.Id.Value, ct)
-                            .ConfigureAwait(false);
-                        await _audit.AppendAsync(
-                                command.Actor,
-                                Operation,
-                                JsonSerializer.Serialize(new
-                                {
-                                    operation_id = operation.Id.Value,
-                                    plan_id = plan.Id.Value,
-                                    state = operation.State.ToString(),
-                                }),
-                                ct).ConfigureAwait(false);
-                    },
-                    cancellationToken).ConfigureAwait(false);
-                return ApplicationResults.Ok(ToOperationView(operation, executed.Timeline));
-            }
-            finally
+            DeploymentStartWorkItem work = new()
             {
-                // Crash mid-Execute leaves the lease live until TTL; a completed Start call expires it.
-                await ExpireOwnedLockAsync(node.Id, operation.Id, _clock.UtcNow, CancellationToken.None)
-                    .ConfigureAwait(false);
+                OperationId = operation.Id.Value,
+                Actor = command.Actor,
+                IdempotencyKey = command.IdempotencyKey,
+                RequestHash = requestHash,
+                PacketPathPairs = command.PacketPathPairs,
+                OwnerInstanceId = ownerInstanceId,
+            };
+            await _startQueue.EnqueueAsync(work, cancellationToken).ConfigureAwait(false);
+            if (_startQueue.RunsSynchronously)
+            {
+                return await work.Completion.Task.ConfigureAwait(false);
             }
+
+            return ApplicationResults.Ok(ToOperationView(operation, timeline: []));
         }
         catch (DomainInvariantException ex)
         {
@@ -682,6 +644,146 @@ public sealed class StartDeploymentUseCase
         catch (ArgumentException ex)
         {
             return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
+        }
+    }
+
+    /// <summary>
+    /// Runs RouterOS effects for a durable-accepted Start (Controller worker / inline test queue).
+    /// </summary>
+    public async Task ContinueAcceptedAsync(
+        DeploymentStartWorkItem work,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(work);
+        try
+        {
+            DeploymentOperation? operation = await _deployments
+                .GetOperationAsync(new DeploymentOperationId(work.OperationId), cancellationToken)
+                .ConfigureAwait(false);
+            if (operation is null)
+            {
+                work.Completion.TrySetResult(
+                    ApplicationResults.Fail(
+                        ApplicationError.NotFound($"Deployment operation '{work.OperationId}' not found.")));
+                return;
+            }
+
+            DeploymentPlan? plan = await _deployments.GetPlanAsync(operation.PlanId, cancellationToken)
+                .ConfigureAwait(false);
+            Node? node = plan is null
+                ? null
+                : await _nodes.GetAsync(plan.NodeId, cancellationToken).ConfigureAwait(false);
+            if (plan is null || node is null)
+            {
+                work.Completion.TrySetResult(
+                    ApplicationResults.Fail(ApplicationError.NotFound("Accepted deployment plan/node is missing.")));
+                return;
+            }
+
+            DateTimeOffset now = _clock.UtcNow;
+            _progress.Ensure(operation.Id.Value, work.Actor);
+            IDeploymentPhaseReporter phases = new SinkDeploymentPhaseReporter(_progress, operation.Id.Value);
+            DeploymentWorkflowExecutionResult executed;
+            try
+            {
+                try
+                {
+                    executed = await _runtime.ExecuteAsync(
+                            node, plan, operation, work.PacketPathPairs, now, phases, cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    if (ActivationStarted(operation.State))
+                    {
+                        DeploymentWorkflowRollbackResult rolled = await _runtime
+                            .RollbackAsync(node, plan, operation, now, CancellationToken.None)
+                            .ConfigureAwait(false);
+                        await _unitOfWork.ExecuteAsync(
+                            async ct =>
+                            {
+                                await _deployments.SaveOperationAsync(operation, ct).ConfigureAwait(false);
+                                await _audit.AppendAsync(
+                                        work.Actor,
+                                        Operation,
+                                        JsonSerializer.Serialize(new
+                                        {
+                                            operation_id = operation.Id.Value,
+                                            plan_id = plan.Id.Value,
+                                            state = operation.State.ToString(),
+                                            canceled_after_activation = true,
+                                        }),
+                                        ct).ConfigureAwait(false);
+                            },
+                            CancellationToken.None).ConfigureAwait(false);
+                        foreach (string entry in rolled.Timeline)
+                        {
+                            _progress.Publish(operation.Id.Value, operation.State, operation.ErrorCode, entry);
+                        }
+
+                        _progress.Publish(operation.Id.Value, operation.State, operation.ErrorCode);
+                        work.Completion.TrySetResult(ApplicationResults.Ok(ToOperationView(operation, rolled.Timeline)));
+                        return;
+                    }
+
+                    throw;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    if (!DeploymentOperation.IsTerminalState(operation.State)
+                        && DeploymentOperation.CanTransition(operation.State, DeploymentOperationState.RecoveryRequired))
+                    {
+                        operation.EnsureTransition(DeploymentOperationState.RecoveryRequired, now, "failed");
+                    }
+
+                    await _deployments.SaveOperationAsync(operation, cancellationToken).ConfigureAwait(false);
+                    _progress.Publish(operation.Id.Value, operation.State, "failed");
+                    work.Completion.TrySetResult(ApplicationResults.Fail(ApplicationError.Failed(ex.Message)));
+                    return;
+                }
+
+                await _unitOfWork.ExecuteAsync(
+                    async ct =>
+                    {
+                        await DeploymentCommitPersistence.PersistAsync(
+                                _deployments, _hashStates, plan, executed, _clock.UtcNow, ct)
+                            .ConfigureAwait(false);
+                        await _deployments.SaveOperationAsync(operation, ct).ConfigureAwait(false);
+                        await _audit.AppendAsync(
+                                work.Actor,
+                                Operation,
+                                JsonSerializer.Serialize(new
+                                {
+                                    operation_id = operation.Id.Value,
+                                    plan_id = plan.Id.Value,
+                                    state = operation.State.ToString(),
+                                }),
+                                ct).ConfigureAwait(false);
+                    },
+                    cancellationToken).ConfigureAwait(false);
+
+                foreach (string entry in executed.Timeline)
+                {
+                    _progress.Publish(
+                        operation.Id.Value,
+                        operation.State,
+                        executed.ErrorCode ?? operation.ErrorCode,
+                        entry);
+                }
+
+                _progress.Publish(operation.Id.Value, operation.State, executed.ErrorCode ?? operation.ErrorCode);
+                work.Completion.TrySetResult(ApplicationResults.Ok(ToOperationView(operation, executed.Timeline)));
+            }
+            finally
+            {
+                await ExpireOwnedLockAsync(node.Id, operation.Id, _clock.UtcNow, CancellationToken.None)
+                    .ConfigureAwait(false);
+            }
+        }
+        catch (Exception ex)
+        {
+            work.Completion.TrySetResult(ApplicationResults.Fail(ApplicationError.Failed(ex.Message)));
+            throw;
         }
     }
 

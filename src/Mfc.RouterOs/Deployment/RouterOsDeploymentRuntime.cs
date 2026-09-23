@@ -32,6 +32,7 @@ public sealed class RouterOsDeploymentRuntime : IDeploymentRuntime
         DeploymentOperation operation,
         IReadOnlyList<PacketPathPairFact> packetPathPairs,
         DateTimeOffset nowUtc,
+        IDeploymentPhaseReporter? phases = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(node);
@@ -71,6 +72,7 @@ public sealed class RouterOsDeploymentRuntime : IDeploymentRuntime
                 [],
                 packetPathPairs,
                 nowUtc,
+                phases,
                 cancellationToken).ConfigureAwait(false);
             return new DeploymentWorkflowExecutionResult
             {
@@ -103,7 +105,8 @@ public sealed class RouterOsDeploymentRuntime : IDeploymentRuntime
             nowUtc,
             routerClock,
             observeFromArtifact: staging.SealedArtifact,
-            cancellationToken: cancellationToken).ConfigureAwait(false);
+            cancellationToken: cancellationToken,
+            phases: phases).ConfigureAwait(false);
         return new DeploymentWorkflowExecutionResult
         {
             Succeeded = standalone.Succeeded,

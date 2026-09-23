@@ -98,7 +98,8 @@ public sealed class DeploymentGrpcHostTests
                 },
                 headers,
                 deadline: Deadline());
-            Assert.Equal(global::Mfc.Contracts.Mfc.V1.DeploymentOperationState.Committed, started.State);
+            // AUDIT-RPC-01: unary Start returns Accept (Created), not terminal Committed.
+            Assert.Equal(global::Mfc.Contracts.Mfc.V1.DeploymentOperationState.Created, started.State);
 
             List<DeploymentProgress> progress = [];
             using AsyncServerStreamingCall<DeploymentProgress> watch = deployment.Watch(
@@ -111,6 +112,9 @@ public sealed class DeploymentGrpcHostTests
             }
 
             Assert.NotEmpty(progress);
+            Assert.Contains(
+                progress,
+                static p => p.State == global::Mfc.Contracts.Mfc.V1.DeploymentOperationState.Activating);
             Assert.Equal(global::Mfc.Contracts.Mfc.V1.DeploymentOperationState.Committed, progress[^1].State);
 
             DeploymentRecoveryStatus status = await deployment.GetRecoveryStatusAsync(
@@ -170,7 +174,26 @@ public sealed class DeploymentGrpcHostTests
                 },
                 headers,
                 deadline: Deadline());
-            Assert.Equal(global::Mfc.Contracts.Mfc.V1.DeploymentOperationState.RollbackPending, started.State);
+            Assert.Equal(global::Mfc.Contracts.Mfc.V1.DeploymentOperationState.Created, started.State);
+
+            // RollbackPending is non-terminal — Watch must not wait for stream end (AUDIT-RPC-01).
+            List<DeploymentProgress> progress = [];
+            using AsyncServerStreamingCall<DeploymentProgress> watch = deployment.Watch(
+                new WatchDeploymentRequest { OperationId = started.OperationId },
+                headers,
+                deadline: Deadline());
+            await foreach (DeploymentProgress item in watch.ResponseStream.ReadAllAsync())
+            {
+                progress.Add(item);
+                if (item.State == global::Mfc.Contracts.Mfc.V1.DeploymentOperationState.RollbackPending)
+                {
+                    break;
+                }
+            }
+
+            Assert.Contains(
+                progress,
+                static p => p.State == global::Mfc.Contracts.Mfc.V1.DeploymentOperationState.RollbackPending);
 
             Guid rollbackKey = Guid.NewGuid();
             RollbackDeploymentRequest rollback = new()

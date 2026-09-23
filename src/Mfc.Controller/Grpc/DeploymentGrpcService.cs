@@ -161,13 +161,19 @@ public sealed class DeploymentGrpcService : DeploymentService.DeploymentServiceB
             },
             context.CancellationToken).ConfigureAwait(false);
         DeploymentOperationSummaryView view = Unwrap(result);
+        // AUDIT-RPC-01: Accept already Ensure/Publish via IDeploymentProgressSink; keep Ensure for owner ACL.
+        // Do not re-publish the Accept snapshot as a terminal — live phases come from ContinueAcceptedAsync.
         _progress.Ensure(view.OperationId, actor);
-        foreach (string entry in view.Timeline)
+        if (view.Timeline.Count > 0)
         {
-            _progress.Publish(view.OperationId, view.State, view.ErrorCode, entry);
+            foreach (string entry in view.Timeline)
+            {
+                _progress.Publish(view.OperationId, view.State, view.ErrorCode, entry);
+            }
+
+            _progress.Publish(view.OperationId, view.State, view.ErrorCode);
         }
 
-        _progress.Publish(view.OperationId, view.State, view.ErrorCode);
         return DeploymentProtoMapper.ToProto(view);
     }
 

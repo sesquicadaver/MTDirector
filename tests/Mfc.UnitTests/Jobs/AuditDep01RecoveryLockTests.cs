@@ -187,6 +187,7 @@ public sealed class AuditDep01RecoveryLockTests
             DeploymentOperation operation,
             IReadOnlyList<PacketPathPairFact> packetPathPairs,
             DateTimeOffset nowUtc,
+            IDeploymentPhaseReporter? phases = null,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
@@ -227,6 +228,7 @@ public sealed class AuditDep01RecoveryLockTests
             DeploymentOperation operation,
             IReadOnlyList<PacketPathPairFact> packetPathPairs,
             DateTimeOffset nowUtc,
+            IDeploymentPhaseReporter? phases = null,
             CancellationToken cancellationToken = default)
         {
             operation.EnsureTransition(DeploymentOperationState.Prechecking, nowUtc);

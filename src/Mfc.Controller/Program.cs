@@ -165,6 +165,12 @@ public static class Program
         builder.Services.AddSingleton<CaptureProgressHub>();
         builder.Services.AddSingleton<OnboardingProgressHub>();
         builder.Services.AddSingleton<DeploymentProgressHub>();
+        // AUDIT-RPC-01: Fast Start accepts on the unary thread; Continue runs on the hosted worker.
+        builder.Services.AddSingleton<ChannelDeploymentStartWorkChannel>();
+        builder.Services.AddSingleton<Mfc.Application.Abstractions.Deployment.IDeploymentStartWorkChannel>(
+            static sp => sp.GetRequiredService<ChannelDeploymentStartWorkChannel>());
+        builder.Services.AddSingleton<Mfc.Application.Abstractions.Deployment.IDeploymentProgressSink, HubDeploymentProgressSink>();
+        builder.Services.AddHostedService<DeploymentStartHostedService>();
 
         builder.WebHost.ConfigureKestrel(kestrel =>
         {
@@ -490,6 +496,7 @@ public static class Program
     {
         services.AddScoped<CreateDeploymentPlanUseCase>();
         services.AddScoped<CreateDeploymentPlanFromSealedArtifactsUseCase>();
+        // Start resolves IDeploymentStartWorkChannel + IDeploymentProgressSink (singletons registered in BuildHost).
         services.AddScoped<StartDeploymentUseCase>();
         services.AddScoped<RollbackDeploymentWorkflowUseCase>();
         services.AddScoped<GetDeploymentRecoveryStatusUseCase>();

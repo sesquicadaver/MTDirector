@@ -23,6 +23,7 @@ public interface IDeploymentServiceClient
         Guid planId,
         Sha256 planHash,
         IReadOnlyList<DeploymentPacketPathPairFact> packetPathPairs,
+        Guid? idempotencyKey = null,
         CancellationToken cancellationToken = default);
 
     IAsyncEnumerable<DeploymentProgress> WatchAsync(

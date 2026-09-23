@@ -17,6 +17,7 @@ public interface IDeploymentRuntime
         DeploymentOperation operation,
         IReadOnlyList<PacketPathPairFact> packetPathPairs,
         DateTimeOffset nowUtc,
+        IDeploymentPhaseReporter? phases = null,
         CancellationToken cancellationToken = default);
 
     Task<DeploymentWorkflowRollbackResult> RollbackAsync(

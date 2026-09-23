@@ -471,6 +471,7 @@ public sealed class IncidentDenyOverlayCompileDeployLivingSpecTests
             DeploymentOperation operation,
             IReadOnlyList<PacketPathPairFact> packetPathPairs,
             DateTimeOffset nowUtc,
+            IDeploymentPhaseReporter? phases = null,
             CancellationToken cancellationToken = default)
         {
             DomainState terminal = Commit ? DomainState.Committed : DomainState.Failed;

@@ -73,26 +73,27 @@ public sealed class AuditClk01RouterOsClockTtlW7407LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-409 | [#1218](https://github.com/sesquicadaver/MTDirector/issues/1218) | AUDIT-RPC-01 — Fast Start + live Watch | **OPEN**",
+            "W7-409 | [#1218](https://github.com/sesquicadaver/MTDirector/issues/1218) | AUDIT-RPC-01 — Fast Start + live Watch | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-409 (#1218)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-410 (#1220)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("AUDIT-CLK-01 W7-407 (#1215) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-408 (#1217) DONE", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-409 (#1218)", plan62, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-RPC-01", plan62, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-RPC-01 W7-409 (#1218) DONE", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-410 (#1220)", plan62, StringComparison.Ordinal);
 
         Assert.Contains("AUDIT-CLK-01 W7-407 (#1215) DONE", continuous, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-409 (#1218)", continuous, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-410 (#1220)", continuous, StringComparison.Ordinal);
 
         Assert.Contains("AuditClk01RouterOsClockTtlW7407", testing, StringComparison.Ordinal);
         Assert.Contains("ProductTrancheSeedW7408", testing, StringComparison.Ordinal);
+        Assert.Contains("AuditRpc01FastStartLiveWatchW7409", testing, StringComparison.Ordinal);
 
         Assert.Contains("| `W7-407` | #1215 |", issues, StringComparison.Ordinal);
         Assert.Contains("| `W7-408` | #1217 |", issues, StringComparison.Ordinal);
         Assert.Contains("| `W7-409` | #1218 |", issues, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-409 (#1218)", issues, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-410 (#1220)", issues, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

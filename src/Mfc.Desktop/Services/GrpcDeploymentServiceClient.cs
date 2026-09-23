@@ -62,12 +62,14 @@ public sealed class GrpcDeploymentServiceClient : IDeploymentServiceClient
         Guid planId,
         Sha256 planHash,
         IReadOnlyList<DeploymentPacketPathPairFact> packetPathPairs,
+        Guid? idempotencyKey = null,
         CancellationToken cancellationToken = default)
     {
         DeploymentService.DeploymentServiceClient client = CreateClient();
+        // AUDIT-RPC-01: caller may reuse the same key across Start retries for one plan attempt.
         StartDeploymentRequest request = new()
         {
-            IdempotencyKey = DesktopProtoUuid.FromGuid(Guid.NewGuid()),
+            IdempotencyKey = DesktopProtoUuid.FromGuid(idempotencyKey ?? Guid.NewGuid()),
             PlanId = DesktopProtoUuid.FromGuid(planId),
             PlanHash = planHash,
         };

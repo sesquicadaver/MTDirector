@@ -504,9 +504,11 @@ public sealed class DeploymentWorkflowLivingSpecTests
             DeploymentOperation operation,
             IReadOnlyList<PacketPathPairFact> packetPathPairs,
             DateTimeOffset nowUtc,
+            IDeploymentPhaseReporter? phases = null,
             CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(packetPathPairs);
+            _ = phases;
             if (ThrowOnExecute)
             {
                 throw new InvalidOperationException(NotConfiguredDeploymentRuntime.NotConfiguredMessage);
