@@ -101,4 +101,4 @@ Freeze **W7-392 (#1191) DONE** closed the correlation-id / fault-text wave witho
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-411 (#1221)** — AUDIT-STATUS-01 (PLAN-62).
+**§3.C NEXT = W7-412 (#1224)** — AUDIT-STATUS-01 (PLAN-62).

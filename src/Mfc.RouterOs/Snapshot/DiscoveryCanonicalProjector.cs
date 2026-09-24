@@ -237,6 +237,13 @@ public static class DiscoveryCanonicalProjector
         configuration.Add(ProjectOrderedFilter(CanonicalSectionIds.FirewallIpv4Filter, firewall.Ipv4FilterRules, unknown));
         configuration.Add(ProjectOrderedFilter(CanonicalSectionIds.FirewallIpv6Filter, firewall.Ipv6FilterRules, unknown));
 
+        // AUDIT-CAP-03 / F08: dynamic filters stay out of configuration, but the full effective
+        // sequence (static + dynamic) must enter observations for snapshot-based management analysis.
+        observations.Add(ProjectOrderedFilterObservation(
+            CanonicalSectionIds.FirewallIpv4Filter, firewall.Ipv4FilterRules));
+        observations.Add(ProjectOrderedFilterObservation(
+            CanonicalSectionIds.FirewallIpv6Filter, firewall.Ipv6FilterRules));
+
         configuration.Add(Section(
             CanonicalSectionIds.FirewallIpv4AddressLists,
             CanonicalDomain.Configuration,
@@ -312,6 +319,23 @@ public static class DiscoveryCanonicalProjector
     }
 
     /// <summary>
+    /// AUDIT-CAP-03: projects the full filter effective sequence (including dynamic rows) into
+    /// observations so management-path analysis can see pre-guard dynamic drops.
+    /// </summary>
+    private static CanonicalSectionInput ProjectOrderedFilterObservation(
+        string sectionId,
+        IReadOnlyList<FirewallFilterRuleDiscovery> rules)
+    {
+        List<CanonicalRecordInput> records = [];
+        foreach (FirewallFilterRuleDiscovery rule in rules.OrderBy(static r => r.EffectiveOrdinal))
+        {
+            records.Add(Record(BuildFilterObservationProperties(rule)));
+        }
+
+        return Section(sectionId, CanonicalDomain.Observations, ordered: true, records);
+    }
+
+    /// <summary>
     /// Builds configuration properties for one static filter rule: ordinal plus every
     /// profile-known config field (matchers and action-specific), excluding observation-only
     /// and excluded (.id / counters) keys.
@@ -326,7 +350,7 @@ public static class DiscoveryCanonicalProjector
 
         foreach ((string key, string value) in rule.KnownProperties.OrderBy(static p => p.Key, StringComparer.Ordinal))
         {
-            if (IsFilterObservationOnlyProperty(key)
+            if (IsFirewallObservationOnlyProperty(key)
                 || CanonicalPropertyRules.IsExcludedFromConfiguration(key))
             {
                 continue;
@@ -335,6 +359,41 @@ public static class DiscoveryCanonicalProjector
             map[key] = value;
         }
 
+        ApplyFilterTypedExtracts(map, rule);
+        return map;
+    }
+
+    /// <summary>
+    /// Observation properties for one filter row in effective order, including dynamic/invalid flags.
+    /// </summary>
+    private static Dictionary<string, string> BuildFilterObservationProperties(FirewallFilterRuleDiscovery rule)
+    {
+        Dictionary<string, string> map = new(StringComparer.Ordinal)
+        {
+            ["ordinal"] = rule.EffectiveOrdinal.ToString(CultureInfo.InvariantCulture),
+            ["dynamic"] = rule.IsDynamic ? "true" : "false",
+        };
+
+        foreach ((string key, string value) in rule.KnownProperties.OrderBy(static p => p.Key, StringComparer.Ordinal))
+        {
+            if (CanonicalPropertyRules.IsExcludedFromConfiguration(key))
+            {
+                continue;
+            }
+
+            map[key] = value;
+        }
+
+        ApplyFilterTypedExtracts(map, rule);
+        PutIfAbsent(map, "invalid", rule.Invalid);
+        map["dynamic"] = rule.IsDynamic ? "true" : "false";
+        return map;
+    }
+
+    private static void ApplyFilterTypedExtracts(
+        Dictionary<string, string> map,
+        FirewallFilterRuleDiscovery rule)
+    {
         // Typed extracts remain authoritative if KnownProperties was incomplete.
         PutIfAbsent(map, "chain", rule.Chain);
         PutIfAbsent(map, "action", rule.Action);
@@ -349,10 +408,9 @@ public static class DiscoveryCanonicalProjector
         PutIfAbsent(map, "reject-with", rule.RejectWith);
         PutIfAbsent(map, "address-list", rule.AddressList);
         PutIfAbsent(map, "address-list-timeout", rule.AddressListTimeout);
-        return map;
     }
 
-    private static bool IsFilterObservationOnlyProperty(string key)
+    private static bool IsFirewallObservationOnlyProperty(string key)
         => string.Equals(key, "dynamic", StringComparison.Ordinal)
            || string.Equals(key, "invalid", StringComparison.Ordinal);
 
@@ -391,9 +449,12 @@ public static class DiscoveryCanonicalProjector
                 .Select(r => Record(Props(
                     ("ordinal", r.EffectiveOrdinal.ToString(CultureInfo.InvariantCulture)),
                     ("action", r.Action),
+                    ("src-address", r.SrcAddress),
+                    ("dst-address", r.DstAddress),
                     ("table", r.Table),
                     ("routing-mark", r.RoutingMark),
-                    ("disabled", r.Disabled))))
+                    ("disabled", r.Disabled),
+                    ("comment", r.Comment))))
                 .ToArray()));
 
         configuration.Add(ProjectStaticRoutes(CanonicalSectionIds.RoutingIpv4StaticRoutes, routing.Ipv4StaticRoutes, unknown));
@@ -489,33 +550,59 @@ public static class DiscoveryCanonicalProjector
         IReadOnlyList<OrderedFirewallFacilityRuleDiscovery> rules,
         List<CanonicalRecordInput> unknown)
     {
+        // AUDIT-CAP-03 / F08: mirror CAP-01 — project the full profile-known matcher + action set
+        // (protocol, addresses/ports, interfaces, jump-target, passthrough, …), not a truncated subset.
         List<CanonicalRecordInput> records = [];
-        foreach (OrderedFirewallFacilityRuleDiscovery rule in rules.OrderBy(static r => r.EffectiveOrdinal))
+        foreach (OrderedFirewallFacilityRuleDiscovery rule in rules
+                     .Where(static r => !IsFacilityDynamic(r))
+                     .OrderBy(static r => r.EffectiveOrdinal))
         {
-            records.Add(Record(Props(
-                ("ordinal", rule.EffectiveOrdinal.ToString(CultureInfo.InvariantCulture)),
-                ("chain", rule.Chain),
-                ("action", rule.Action),
-                ("disabled", rule.Disabled),
-                ("routing-mark", rule.RoutingMark),
-                ("new-routing-mark", rule.NewRoutingMark),
-                ("connection-mark", rule.ConnectionMark),
-                ("packet-mark", rule.PacketMark),
-                ("per-connection-classifier", KnownFacility(rule, "per-connection-classifier")),
-                ("connection-state", KnownFacility(rule, "connection-state")),
-                ("connection-nat-state", KnownFacility(rule, "connection-nat-state")),
-                ("new-connection-mark", KnownFacility(rule, "new-connection-mark")),
-                ("new-packet-mark", KnownFacility(rule, "new-packet-mark")),
-                ("to-addresses", KnownFacility(rule, "to-addresses")),
-                ("to-ports", KnownFacility(rule, "to-ports")),
-                ("unsupported-matchers", rule.UnsupportedMatchers.Count == 0
-                    ? null
-                    : string.Join(',', rule.UnsupportedMatchers)))));
+            records.Add(Record(BuildFacilityConfigurationProperties(rule)));
             CollectUnknown(unknown, sectionId, rule.RawProperties);
         }
 
         return Section(sectionId, CanonicalDomain.Configuration, ordered: true, records);
     }
+
+    private static Dictionary<string, string> BuildFacilityConfigurationProperties(
+        OrderedFirewallFacilityRuleDiscovery rule)
+    {
+        Dictionary<string, string> map = new(StringComparer.Ordinal)
+        {
+            ["ordinal"] = rule.EffectiveOrdinal.ToString(CultureInfo.InvariantCulture),
+        };
+
+        foreach ((string key, string value) in rule.KnownProperties.OrderBy(static p => p.Key, StringComparer.Ordinal))
+        {
+            if (IsFirewallObservationOnlyProperty(key)
+                || CanonicalPropertyRules.IsExcludedFromConfiguration(key))
+            {
+                continue;
+            }
+
+            map[key] = value;
+        }
+
+        PutIfAbsent(map, "chain", rule.Chain);
+        PutIfAbsent(map, "action", rule.Action);
+        PutIfAbsent(map, "disabled", rule.Disabled);
+        PutIfAbsent(map, "comment", rule.Comment);
+        PutIfAbsent(map, "connection-mark", rule.ConnectionMark);
+        PutIfAbsent(map, "packet-mark", rule.PacketMark);
+        PutIfAbsent(map, "routing-mark", rule.RoutingMark);
+        PutIfAbsent(map, "new-routing-mark", rule.NewRoutingMark);
+        if (rule.UnsupportedMatchers.Count > 0)
+        {
+            map["unsupported-matchers"] = string.Join(',', rule.UnsupportedMatchers);
+        }
+
+        return map;
+    }
+
+    private static bool IsFacilityDynamic(OrderedFirewallFacilityRuleDiscovery rule)
+        => rule.KnownProperties.TryGetValue("dynamic", out string? value)
+           && (string.Equals(value, "true", StringComparison.OrdinalIgnoreCase)
+               || string.Equals(value, "yes", StringComparison.OrdinalIgnoreCase));
 
     private static void ProjectVrrp(
         VrrpDiscoveryResult vrrp,
@@ -835,9 +922,6 @@ public static class DiscoveryCanonicalProjector
 
     private static CanonicalRecordInput Record(IReadOnlyDictionary<string, string> properties)
         => new() { Properties = properties };
-
-    private static string? KnownFacility(OrderedFirewallFacilityRuleDiscovery rule, string key)
-        => rule.KnownProperties.TryGetValue(key, out string? value) ? value : null;
 
     private static Dictionary<string, string> Props(params (string Key, string? Value)[] pairs)
     {

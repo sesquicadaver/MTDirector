@@ -140,10 +140,14 @@ public sealed class GetDevicePolicySafetyAnalysisUseCase
 
         IReadOnlyList<CanonicalRecord> ipServices = Records(
             sections, CanonicalSectionIds.ManagementIpServices, CanonicalDomain.Configuration);
-        IReadOnlyList<CanonicalRecord> ipv4Filter = Records(
-            sections, CanonicalSectionIds.FirewallIpv4Filter, CanonicalDomain.Configuration);
-        IReadOnlyList<CanonicalRecord> ipv6Filter = Records(
-            sections, CanonicalSectionIds.FirewallIpv6Filter, CanonicalDomain.Configuration);
+        // AUDIT-CAP-03: prefer observation effective sequence (includes dynamic filter rows);
+        // fall back to configuration static-only when observations are absent.
+        IReadOnlyList<CanonicalRecord> ipv4Filter = PreferEffectiveFilterSequence(
+            Records(sections, CanonicalSectionIds.FirewallIpv4Filter, CanonicalDomain.Observations),
+            Records(sections, CanonicalSectionIds.FirewallIpv4Filter, CanonicalDomain.Configuration));
+        IReadOnlyList<CanonicalRecord> ipv6Filter = PreferEffectiveFilterSequence(
+            Records(sections, CanonicalSectionIds.FirewallIpv6Filter, CanonicalDomain.Observations),
+            Records(sections, CanonicalSectionIds.FirewallIpv6Filter, CanonicalDomain.Configuration));
 
         ManagementPathAnalysisResult management = ManagementPathContextMapper.Analyze(
             profile,
@@ -213,6 +217,11 @@ public sealed class GetDevicePolicySafetyAnalysisUseCase
             ? [host.Value]
             : [];
     }
+
+    private static IReadOnlyList<CanonicalRecord> PreferEffectiveFilterSequence(
+        IReadOnlyList<CanonicalRecord> observationEffective,
+        IReadOnlyList<CanonicalRecord> configurationStatic)
+        => observationEffective.Count > 0 ? observationEffective : configurationStatic;
 
     private static IReadOnlyList<CanonicalRecord> Records(
         IReadOnlyList<CanonicalSection> sections,

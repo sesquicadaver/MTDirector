@@ -26,7 +26,7 @@ public sealed class AuditCap01CanonicalFilterMatchFieldsW7214LivingSpecTests
         Assert.Contains("W7-214", continuous, StringComparison.Ordinal);
         Assert.Contains("AuditCap01CanonicalFilterMatchFieldsW7214", testing, StringComparison.Ordinal);
         Assert.Contains("BuildFilterConfigurationProperties", projector, StringComparison.Ordinal);
-        Assert.Contains("IsFilterObservationOnlyProperty", projector, StringComparison.Ordinal);
+        Assert.Contains("IsFirewallObservationOnlyProperty", projector, StringComparison.Ordinal);
         Assert.Contains("AUDIT-CAP-01", projector, StringComparison.Ordinal);
     }
 
