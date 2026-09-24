@@ -57,7 +57,7 @@ public sealed class Plan62AuditRemediationAcD0759W7393LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = none", roadmap, StringComparison.Ordinal);
-        Assert.Contains("| **Нереалізовано (§3)** | **1** |", roadmap, StringComparison.Ordinal);
+        Assert.Contains("| **Нереалізовано (§3)** | **0** |", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-62", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-393 (#1195) DONE", continuous, StringComparison.Ordinal);
