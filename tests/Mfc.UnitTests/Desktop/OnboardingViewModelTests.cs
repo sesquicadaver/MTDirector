@@ -228,9 +228,73 @@ public sealed class OnboardingViewModelTests
         Assert.Equal(nodeId, client.LastNodeId);
         Assert.Empty(client.LastDeviceIds);
         Assert.Contains("blockers", vm.StatusText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains(vm.Findings, f => f.Code.Contains("ONBOARDING", StringComparison.OrdinalIgnoreCase)
-            || f.Code.Contains("FACTS", StringComparison.OrdinalIgnoreCase)
-            || !string.IsNullOrWhiteSpace(f.Message));
+        Assert.Contains(vm.Findings, f => f.Code.Contains("CAPTURE", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task CreatePlanRequestsEmptyDevicesForControllerBuiltLastCapturePlan()
+    {
+        Guid nodeId = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff");
+        Guid deviceId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid planId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+        FakeConnection connection = new();
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        InventoryNodeViewModel site = new(new InventoryTreeItem
+        {
+            Kind = InventoryTreeKind.Site,
+            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeee0001"),
+            DisplayName = "LAB",
+            Children =
+            [
+                new InventoryTreeItem
+                {
+                    Kind = InventoryTreeKind.Node,
+                    Id = nodeId,
+                    DisplayName = "r1",
+                    Children =
+                    [
+                        new InventoryTreeItem
+                        {
+                            Kind = InventoryTreeKind.Device,
+                            Id = deviceId,
+                            DisplayName = "chr",
+                        },
+                    ],
+                },
+            ],
+        });
+        inventory.Roots.Add(site);
+        inventory.SelectedNode = site.Children[0];
+        FakeOnboardingClient client = new()
+        {
+            CreatePlanResponse = new OnboardingPlanSummary
+            {
+                PlanId = DesktopProtoUuid.FromGuid(planId),
+                NodeId = DesktopProtoUuid.FromGuid(nodeId),
+                PlanHash = Hash("plan"),
+                Placements =
+                {
+                    new OnboardingAnchorPlacementView
+                    {
+                        Marker = "mfc.anchor",
+                        Mode = OnboardingAnchorPlacementMode.Append,
+                        BeforeLabel = "before",
+                        AfterLabel = "after",
+                    },
+                },
+            },
+        };
+        using OnboardingViewModel vm = new(client, connection, inventory);
+
+        await vm.CreatePlanCommand.ExecuteAsync(null);
+
+        Assert.Null(vm.ErrorText);
+        Assert.Equal(1, client.CreatePlanCalls);
+        Assert.Equal(nodeId, client.LastNodeId);
+        Assert.Empty(client.LastDeviceIds);
+        Assert.Equal(planId, vm.PlanId);
+        Assert.Contains("Controller-built", vm.StatusText, StringComparison.Ordinal);
+        Assert.Single(vm.Placements);
     }
 
     [Fact]
@@ -405,10 +469,22 @@ public sealed class OnboardingViewModelTests
         {
             LastNodeId = nodeId;
             LastDeviceIds = devices.Select(d => DesktopProtoUuid.ToGuid(d.DeviceId)).ToList();
-            // AUDIT-GUI-01: empty client facts are fail-closed (Controller no longer receives fabrications).
-            bool passed = devices.Count > 0;
-            return Task.FromResult(new OnboardingPrerequisiteReport { Passed = passed });
+            // AUDIT-GUI-02: empty client facts → Controller capture-readiness findings (no Desktop fabrication).
+            OnboardingPrerequisiteReport report = new() { Passed = devices.Count > 0 };
+            if (devices.Count == 0)
+            {
+                report.Findings.Add(new OnboardingFinding
+                {
+                    Code = "ONBOARDING_CAPTURE_REQUIRED",
+                    Severity = OnboardingFindingSeverity.Blocker,
+                    Message = "Device has no last completed capture for Controller-built onboarding.",
+                });
+            }
+
+            return Task.FromResult(report);
         }
+
+        public int CreatePlanCalls { get; private set; }
 
         public Task<OnboardingPlanSummary> CreatePlanAsync(
             Guid nodeId,
@@ -417,6 +493,7 @@ public sealed class OnboardingViewModelTests
             IReadOnlyList<OnboardingDevicePlanInput> devices,
             CancellationToken cancellationToken = default)
         {
+            CreatePlanCalls++;
             LastNodeId = nodeId;
             LastDeviceIds = devices.Select(d => DesktopProtoUuid.ToGuid(d.DeviceId)).ToList();
             return Task.FromResult(CreatePlanResponse ?? throw new InvalidOperationException("CreatePlanResponse not set."));

@@ -157,17 +157,57 @@ public sealed class ValidateOnboardingPrerequisitesWorkflowUseCase
             return ApplicationResults.Fail(ApplicationError.NotFound($"Node '{command.NodeId}' not found."));
         }
 
-        Dictionary<DeviceId, OnboardingDevicePrerequisiteFacts> byDevice = command.Facts
-            .ToDictionary(static f => f.DeviceId);
-        OnboardingPrerequisiteResult result = ValidateOnboardingPrerequisitesUseCase.Execute(node, byDevice);
-        List<OnboardingFindingView> findings = result.Findings.Select(static f => new OnboardingFindingView
+        List<OnboardingFindingView> findings;
+        if (command.Facts.Count == 0)
         {
-            Code = f.Code,
-            Severity = f.Severity,
-            Message = f.Message,
-            DeviceId = f.DeviceId?.Value,
-            Target = f.Target,
-        }).ToList();
+            // AUDIT-GUI-02: empty facts → Controller capture-readiness (no Desktop fabrication).
+            // Live account/API/device-mode checks remain Start-time RouterOS reads.
+            findings = [];
+            Device[] enabled = [.. node.Devices.Where(static d => d.Enabled).OrderBy(static d => d.Id.Value)];
+            if (enabled.Length == 0)
+            {
+                findings.Add(new OnboardingFindingView
+                {
+                    Code = OnboardingCodes.DevicePlanCardinality,
+                    Severity = OnboardingCodes.SeverityBlocker,
+                    Message = "Node has no enabled Devices for prerequisite validation.",
+                    DeviceId = null,
+                    Target = null,
+                });
+            }
+            else
+            {
+                foreach (Device device in enabled)
+                {
+                    if (device.LastCompletedCaptureId is null)
+                    {
+                        findings.Add(new OnboardingFindingView
+                        {
+                            Code = OnboardingCodes.CaptureRequired,
+                            Severity = OnboardingCodes.SeverityBlocker,
+                            Message =
+                                $"Device '{device.Id.Value}' has no last completed capture for Controller-built onboarding.",
+                            DeviceId = device.Id.Value,
+                            Target = null,
+                        });
+                    }
+                }
+            }
+        }
+        else
+        {
+            Dictionary<DeviceId, OnboardingDevicePrerequisiteFacts> byDevice = command.Facts
+                .ToDictionary(static f => f.DeviceId);
+            OnboardingPrerequisiteResult result = ValidateOnboardingPrerequisitesUseCase.Execute(node, byDevice);
+            findings = result.Findings.Select(static f => new OnboardingFindingView
+            {
+                Code = f.Code,
+                Severity = f.Severity,
+                Message = f.Message,
+                DeviceId = f.DeviceId?.Value,
+                Target = f.Target,
+            }).ToList();
+        }
 
         if (node.DeclaredKind == NodeKind.Vrrp)
         {

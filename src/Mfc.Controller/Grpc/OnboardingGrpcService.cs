@@ -19,6 +19,7 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
 
     private readonly ValidateOnboardingPrerequisitesWorkflowUseCase _validate;
     private readonly CreateOnboardingPlanUseCase _createPlan;
+    private readonly CreateOnboardingPlanFromLastCaptureUseCase _createPlanFromLastCapture;
     private readonly StartOnboardingUseCase _start;
     private readonly RollbackOnboardingWorkflowUseCase _rollback;
     private readonly GetOnboardingRecoveryStatusUseCase _recovery;
@@ -32,6 +33,7 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
     public OnboardingGrpcService(
         ValidateOnboardingPrerequisitesWorkflowUseCase validate,
         CreateOnboardingPlanUseCase createPlan,
+        CreateOnboardingPlanFromLastCaptureUseCase createPlanFromLastCapture,
         StartOnboardingUseCase start,
         RollbackOnboardingWorkflowUseCase rollback,
         GetOnboardingRecoveryStatusUseCase recovery,
@@ -44,6 +46,7 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
     {
         ArgumentNullException.ThrowIfNull(validate);
         ArgumentNullException.ThrowIfNull(createPlan);
+        ArgumentNullException.ThrowIfNull(createPlanFromLastCapture);
         ArgumentNullException.ThrowIfNull(start);
         ArgumentNullException.ThrowIfNull(rollback);
         ArgumentNullException.ThrowIfNull(recovery);
@@ -55,6 +58,7 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
         ArgumentNullException.ThrowIfNull(environment);
         _validate = validate;
         _createPlan = createPlan;
+        _createPlanFromLastCapture = createPlanFromLastCapture;
         _start = start;
         _rollback = rollback;
         _recovery = recovery;
@@ -90,6 +94,22 @@ public sealed class OnboardingGrpcService : OnboardingService.OnboardingServiceB
         Guid nodeId = ProtoUuid.ToGuid(request.NodeId);
         try
         {
+            // AUDIT-GUI-02: empty devices → Controller builds plan from last capture (Desktop Contracts-only).
+            if (request.Devices.Count == 0)
+            {
+                ApplicationResult<OnboardingPlanSummaryView> fromCapture = await _createPlanFromLastCapture
+                    .ExecuteAsync(
+                        new CreateOnboardingPlanFromLastCaptureCommand
+                        {
+                            Actor = ResolveActor(context),
+                            IdempotencyKey = ProtoUuid.ToGuid(request.IdempotencyKey),
+                            NodeId = nodeId,
+                        },
+                        context.CancellationToken)
+                    .ConfigureAwait(false);
+                return OnboardingProtoMapper.ToProto(Unwrap(fromCapture));
+            }
+
             DomainNode? node = await _nodes.GetAsync(new NodeId(nodeId), context.CancellationToken).ConfigureAwait(false);
             if (node is null)
             {

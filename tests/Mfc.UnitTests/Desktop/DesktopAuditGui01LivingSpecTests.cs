@@ -21,6 +21,8 @@ public sealed class DesktopAuditGui01LivingSpecTests
         Assert.DoesNotContain("DefaultFacts()", source, StringComparison.Ordinal);
         Assert.Contains("no longer fabricates DefaultFacts", source, StringComparison.Ordinal);
         Assert.Contains("AUDIT-GUI-01", source, StringComparison.Ordinal);
+        Assert.Contains("Controller-built", source, StringComparison.Ordinal);
+        Assert.Contains("last capture", source, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

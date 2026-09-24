@@ -160,6 +160,44 @@ public sealed class PoliciesViewModelTests
     }
 
     [Fact]
+    public void SwitchingInventoryDeviceClearsStaleSafetyFindings()
+    {
+        Guid deviceA = Guid.Parse("11111111-2222-3333-4444-555555555555");
+        Guid deviceB = Guid.Parse("22222222-3333-4444-5555-666666666666");
+        Guid nodeId = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff");
+        FakeConnection connection = new();
+        InventoryTreeViewModel inventory = new(new EmptyTreeService(), connection);
+        using PoliciesViewModel vm = new(new StubPolicyPanel(), connection, inventory);
+        inventory.SelectedNode = new InventoryNodeViewModel(
+            new InventoryTreeItem
+            {
+                Kind = InventoryTreeKind.Device,
+                Id = deviceA,
+                DisplayName = "a",
+            },
+            parentId: nodeId);
+        vm.ManagementPathFindingLines.Add("stale-finding");
+        vm.ManagementPathContextHashText = new string('a', 64);
+        vm.SafetyFlagsText = "blocks_management_path=True";
+        vm.ErrorText = "stale-error";
+
+        inventory.SelectedNode = new InventoryNodeViewModel(
+            new InventoryTreeItem
+            {
+                Kind = InventoryTreeKind.Device,
+                Id = deviceB,
+                DisplayName = "b",
+            },
+            parentId: nodeId);
+
+        Assert.Equal(deviceB.ToString("D"), vm.SafetyDeviceIdText);
+        Assert.Empty(vm.ManagementPathFindingLines);
+        Assert.Equal(string.Empty, vm.ManagementPathContextHashText);
+        Assert.Equal(string.Empty, vm.SafetyFlagsText);
+        Assert.Null(vm.ErrorText);
+    }
+
+    [Fact]
     public async Task SelectingCatalogItemLoadsRevisionRulesAndObjects()
     {
         Guid policyId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeee0001");
