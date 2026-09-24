@@ -40,24 +40,24 @@ public sealed class ProductTrancheSeedW7287LivingSpecTests
             "W7-289 | [#984](https://github.com/sesquicadaver/MTDirector/issues/984) | Seed first PLAN-36 atomic row after inventory → OPS-HOST-BUNDLE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-35 COMPLETE", plan35, StringComparison.Ordinal);
         Assert.Contains("W7-287 (#979) DONE", plan35, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", plan35, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", plan35, StringComparison.Ordinal);
         Assert.Contains("plan-36-controller-host-template-publish-bundling.md", plan35, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-36", plan, StringComparison.Ordinal);
         Assert.Contains("W7-288", plan, StringComparison.Ordinal);
         Assert.Contains("W7-291 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-36-controller-host-template-publish-bundling.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("OPS-HOST-BUNDLE-01", plan36, StringComparison.Ordinal);
         Assert.Contains("Inventory **DONE**", plan36, StringComparison.Ordinal);
         Assert.Contains("W7-288", plan36, StringComparison.Ordinal);
         Assert.Contains("W7-289", plan36, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", plan36, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", plan36, StringComparison.Ordinal);
         Assert.Contains("package-controller.sh", plan36, StringComparison.Ordinal);
         Assert.Contains("OUT_DIR/controller", plan36, StringComparison.Ordinal);
         Assert.Contains("621f13f3", plan36, StringComparison.Ordinal);

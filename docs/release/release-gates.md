@@ -13,16 +13,17 @@ Execute every gate before requesting acceptance review. Checkboxes are the opera
 - [x] Integration (Postgres Testcontainers): `dotnet test tests/Mfc.IntegrationTests -c Release --no-build`
 - [x] Working tree clean after build/test (CI job `Verify working tree unchanged`)
 
-## Acceptance suites (Live CHR OFF)
+## Acceptance suites (Live CHR OFF — Layer B behavior, not Layer C)
 
-- [x] Standalone / dual-stack E2E Living Spec (`StandaloneDualStackE2ELivingSpecTests`) — CHR DoD substitute
-- [x] Multi-WAN E2E Living Spec (`MultiWanE2ELivingSpecTests`) — CHR DoD substitute
-- [x] VRRP / CRS E2E Living Spec (`VrrpCrsE2ELivingSpecTests`) — CHR + physical CRS DoD substitute
+- [x] Standalone / dual-stack E2E Living Spec (`StandaloneDualStackE2ELivingSpecTests`) — unit/integration behavior (issue-queue DoD substitute ≠ live PASS)
+- [x] Multi-WAN E2E Living Spec (`MultiWanE2ELivingSpecTests`) — unit/integration behavior (issue-queue DoD substitute ≠ live PASS)
+- [x] VRRP / CRS E2E Living Spec (`VrrpCrsE2ELivingSpecTests`) — unit/integration behavior (issue-queue DoD substitute ≠ live PASS / physical CRS)
 - [x] Fault-injection (`FullyQualifiedName~FaultInjection`)
 - [x] Security Living Spec (`SecurityBackupRestoreLivingSpecTests`)
 - [x] Backup/restore Integration (`SecurityBackupRestoreAcceptanceTests`)
 - [x] MVP release Living Spec (`MvpReleaseAcceptanceLivingSpecTests`)
 - [x] Incident response E2E Living Spec (`IncidentResponseE2ELivingSpecTests`) — M7.4-06
+- [x] Acceptance layers lock (`AuditAcc01AcceptanceByBehaviorW7425LivingSpecTests`) — AUDIT-ACC-01 / F14
 
 ## Supply-chain / packaging
 
@@ -56,10 +57,11 @@ Execute every gate before requesting acceptance review. Checkboxes are the opera
 - [x] Desktop Inventory **Add router** wizard ([#309](https://github.com/sesquicadaver/MTDirector/pull/309)) + Living Spec AC#2b
 - [x] Docs index / readiness / known-limitations / ops manuals synced (2026-08-28)
 
-## Residual (optional — not MVP/M7 DoD blockers)
+## Residual (optional — Layer C live; not MVP/M7 Layer A/B DoD blockers)
 
-- [ ] Live CHR matrix on isolated self-hosted runner (`MFC_CHR_*`)
-- [ ] Live physical CRS lab against `testlab/chr/topologies/crs-switch`
+- [ ] Live CHR matrix on isolated self-hosted runner (`MFC_CHR_*`) — **Layer C**; absence is NOT a PASS
+- [ ] Live physical CRS lab against `testlab/chr/topologies/crs-switch` — **Layer C**; absence is NOT a PASS
 - [x] Opt-in crypto signing gate (QG-SIGN-02): `sign-sha256sums-crypto.sh` + `release-signing.yml` (`workflow_dispatch`; secrets optional)
 - [ ] Mandatory org-key CI cryptographic signing on every GitHub Release (future ops)
 - [ ] Native Desktop MSI/AppImage (zip/tar publish remains the installer substitute)
+- [x] CI `CHR skeleton contracts` labeled as skeleton / Layer B scaffolding (not live acceptance)

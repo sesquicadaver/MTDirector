@@ -81,4 +81,4 @@ PLAN-40 sole ranked row (**OPS-HOST-LOG-01**) is **DONE**. No further PLAN-40 pr
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-425 (#1245)** — PLAN-42 Inventory Controller HTTP health probes after PLAN-41.
+**§3.C NEXT = W7-427 (#1248)** — PLAN-42 Inventory Controller HTTP health probes after PLAN-41.

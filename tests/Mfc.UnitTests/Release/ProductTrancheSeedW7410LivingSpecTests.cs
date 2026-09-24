@@ -37,14 +37,14 @@ public sealed class ProductTrancheSeedW7410LivingSpecTests
             "W7-413 | [#1226](https://github.com/sesquicadaver/MTDirector/issues/1226) | AUDIT-CAP-04 — Capture attempt identity | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-410 (#1220) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-411 (#1221)", plan, StringComparison.Ordinal);
         Assert.Contains("AUDIT-CAP-03", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-410 (#1220) DONE", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

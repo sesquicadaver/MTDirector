@@ -3,13 +3,12 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-396: after AUDIT-STATUS-01, AUDIT-SBOM-01 was seeded (W7-397);
-/// queue may have advanced past that row.
+/// W7-426: after AUDIT-ACC-01, §3.C NEXT is PLAN62-DONE-01 (W7-427).
 /// </summary>
-public sealed class ProductTrancheSeedW7396LivingSpecTests
+public sealed class ProductTrancheSeedW7426LivingSpecTests
 {
     [Fact]
-    public void Ac1KnownLimitationsAndQueueSeedAuditSbom01AsNext()
+    public void Ac1KnownLimitationsAndQueueSeedPlan62Done01AsNext()
     {
         string root = RepoRoot();
         string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
@@ -18,23 +17,25 @@ public sealed class ProductTrancheSeedW7396LivingSpecTests
         string plan62 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-62-audit-remediation-acd0759.md"));
         string readme = File.ReadAllText(Path.Combine(root, "README.md"));
 
-        Assert.Contains("Intentional residual (W7-396 Living Spec lock)", limitations, StringComparison.Ordinal);
-        Assert.Contains("W7-397", limitations, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-SBOM-01", limitations, StringComparison.Ordinal);
+        Assert.Contains("Intentional residual (W7-426 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-427", limitations, StringComparison.Ordinal);
+        Assert.Contains("PLAN62-DONE-01", limitations, StringComparison.Ordinal);
 
         Assert.Contains(
-            "W7-396 | [#1199](https://github.com/sesquicadaver/MTDirector/issues/1199) | Seed next after AUDIT-STATUS-01 → AUDIT-SBOM-01 | **DONE**",
+            "W7-426 | [#1247](https://github.com/sesquicadaver/MTDirector/issues/1247) | Seed next after AUDIT-ACC-01 → PLAN62-DONE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-397 | [#1200](https://github.com/sesquicadaver/MTDirector/issues/1200) | AUDIT-SBOM-01 — SBOM/signing fail-closed (no empty components / missing SDK) | **DONE**",
+            "W7-427 | [#1248](https://github.com/sesquicadaver/MTDirector/issues/1248) | PLAN62-DONE-01 — PLAN-62 COMPLETE + freeze NEXT=none | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-427 (#1248)", roadmap, StringComparison.Ordinal);
 
-        Assert.Contains("W7-396 (#1199) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("W7-397 (#1200)", plan, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-SBOM-01", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-426 (#1247) DONE", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-427 (#1248)", plan, StringComparison.Ordinal);
+        Assert.Contains("PLAN62-DONE-01", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-426 (#1247) DONE", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-427 (#1248) OPEN (NEXT)", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-427 (#1248)", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-427 (#1248)", readme, StringComparison.Ordinal);
     }

@@ -3,6 +3,7 @@ name: routeros-integration
 # CHR-backed RouterOS integration contracts.
 # Live CHR execution requires an isolated self-hosted runner (see docs/development/chr-lab.md).
 # Untrusted PRs must never gain production network access via a privileged runner.
+# AUDIT-ACC-01 / F14: the default job is skeleton / Layer B scaffolding — not live acceptance.
 
 on:
   workflow_dispatch:
@@ -24,6 +25,7 @@ jobs:
   chr-skeleton-contracts:
     name: CHR skeleton contracts
     # Skeleton verification runs on GitHub-hosted Linux (no CHR image required).
+    # AUDIT-ACC-01: skeleton pass is not live acceptance (Layer C remains NOT SATISFIED).
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
