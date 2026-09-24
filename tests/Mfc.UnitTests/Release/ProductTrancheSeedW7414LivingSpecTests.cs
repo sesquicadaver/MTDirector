@@ -3,12 +3,12 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-412: after AUDIT-CAP-03, seed advanced CAP-04 then AN-03; current NEXT is AUDIT-AN-03.
+/// W7-414: after AUDIT-CAP-04, §3.C NEXT is AUDIT-AN-03 (W7-415).
 /// </summary>
-public sealed class ProductTrancheSeedW7412LivingSpecTests
+public sealed class ProductTrancheSeedW7414LivingSpecTests
 {
     [Fact]
-    public void Ac1KnownLimitationsAndQueueSeedAuditCap04AsNext()
+    public void Ac1KnownLimitationsAndQueueSeedAuditAn03AsNext()
     {
         string root = RepoRoot();
         string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
@@ -17,18 +17,10 @@ public sealed class ProductTrancheSeedW7412LivingSpecTests
         string plan62 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-62-audit-remediation-acd0759.md"));
         string readme = File.ReadAllText(Path.Combine(root, "README.md"));
 
-        Assert.Contains("Intentional residual (W7-412 Living Spec lock)", limitations, StringComparison.Ordinal);
-        Assert.Contains("W7-413", limitations, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-CAP-04", limitations, StringComparison.Ordinal);
+        Assert.Contains("Intentional residual (W7-414 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-415", limitations, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-AN-03", limitations, StringComparison.Ordinal);
 
-        Assert.Contains(
-            "W7-412 | [#1224](https://github.com/sesquicadaver/MTDirector/issues/1224) | Seed next after AUDIT-CAP-03 → AUDIT-CAP-04 | **DONE**",
-            roadmap,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "W7-413 | [#1226](https://github.com/sesquicadaver/MTDirector/issues/1226) | AUDIT-CAP-04 — Capture attempt identity | **DONE**",
-            roadmap,
-            StringComparison.Ordinal);
         Assert.Contains(
             "W7-414 | [#1228](https://github.com/sesquicadaver/MTDirector/issues/1228) | Seed next after AUDIT-CAP-04 → AUDIT-AN-03 | **DONE**",
             roadmap,
@@ -39,11 +31,9 @@ public sealed class ProductTrancheSeedW7412LivingSpecTests
             StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-415 (#1229)", roadmap, StringComparison.Ordinal);
 
-        Assert.Contains("W7-412 (#1224) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("W7-413 (#1226)", plan, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-CAP-04", plan62, StringComparison.Ordinal);
-        Assert.Contains("W7-412 (#1224) DONE", plan62, StringComparison.Ordinal);
-        Assert.Contains("W7-413 (#1226) DONE", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-414 (#1228) DONE", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-415 (#1229)", plan, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-AN-03", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-414 (#1228) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-415 (#1229) OPEN (NEXT)", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-415 (#1229)", plan62, StringComparison.Ordinal);

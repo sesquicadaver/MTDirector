@@ -3983,6 +3983,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinData
 
 
 
+## Living Specification — Seed AUDIT-AN-03 after AUDIT-CAP-04 (W7-414)
+
+| AC | Module | Test |
+|----|--------|------|
+| Seed locks AUDIT-AN-03 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7414LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditAn03AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7414"`.
+
 ## Living Specification — AUDIT-CAP-04 Capture attempt identity (W7-413)
 
 | AC | Module | Test |
