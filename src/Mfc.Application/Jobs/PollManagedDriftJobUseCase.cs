@@ -1,7 +1,10 @@
+using Mfc.Application.Abstractions.Jobs;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Common;
 using Mfc.Application.Drift;
 using Mfc.Application.Models;
+using Mfc.Domain.Drift;
+using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Workflow;
 
 namespace Mfc.Application.Jobs;
@@ -15,19 +18,25 @@ public sealed class PollManagedDriftJobResult
 }
 
 /// <summary>
-/// Invokes <see cref="DetectManagedDriftUseCase"/> for a bounded batch of devices with last_committed.
-/// Uses one global poll configuration — no per-device schedules.
+/// Invokes live managed-state reads then <see cref="DetectManagedDriftUseCase"/> for a bounded batch
+/// of devices with last_committed (AUDIT-DRIFT-01 / F12). Failed live reads are not NoDrift.
 /// </summary>
 public sealed class PollManagedDriftJobUseCase
 {
     private readonly IDeviceHashStateStore _hashStates;
+    private readonly IManagedDriftLiveReadPort _liveRead;
     private readonly DetectManagedDriftUseCase _detect;
 
-    public PollManagedDriftJobUseCase(IDeviceHashStateStore hashStates, DetectManagedDriftUseCase detect)
+    public PollManagedDriftJobUseCase(
+        IDeviceHashStateStore hashStates,
+        IManagedDriftLiveReadPort liveRead,
+        DetectManagedDriftUseCase detect)
     {
         ArgumentNullException.ThrowIfNull(hashStates);
+        ArgumentNullException.ThrowIfNull(liveRead);
         ArgumentNullException.ThrowIfNull(detect);
         _hashStates = hashStates;
+        _liveRead = liveRead;
         _detect = detect;
     }
 
@@ -51,14 +60,18 @@ public sealed class PollManagedDriftJobUseCase
         foreach (DeviceHashState state in states)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            ApplicationResult<DriftEventView> result = await _detect.ExecuteAsync(
-                new DetectManagedDriftCommand
-                {
-                    Actor = actor,
-                    DeviceId = state.DeviceId.Value,
-                    PersistActualHash = false,
-                },
-                cancellationToken).ConfigureAwait(false);
+            if (state.LastCommittedArtifactHash is not Hash256 committed)
+            {
+                continue;
+            }
+
+            ManagedDriftLiveReadResult live = await _liveRead
+                .ReadActualManagedResourceAsync(state.DeviceId, committed, cancellationToken)
+                .ConfigureAwait(false);
+
+            DetectManagedDriftCommand command = BuildDetectCommand(actor, state.DeviceId.Value, live);
+            ApplicationResult<DriftEventView> result = await _detect.ExecuteAsync(command, cancellationToken)
+                .ConfigureAwait(false);
             polled.Add(state.DeviceId.Value);
             if (result.IsSuccess && result.Value is not null)
             {
@@ -71,5 +84,40 @@ public sealed class PollManagedDriftJobUseCase
             DeviceIdsPolled = polled,
             DriftEventIds = events,
         });
+    }
+
+    private static DetectManagedDriftCommand BuildDetectCommand(
+        string actor,
+        Guid deviceId,
+        ManagedDriftLiveReadResult live)
+    {
+        if (live.Succeeded && live.ContentMatchedExpected
+            && !string.IsNullOrWhiteSpace(live.ObservedManagedResourceHashHex))
+        {
+            return new DetectManagedDriftCommand
+            {
+                Actor = actor,
+                DeviceId = deviceId,
+                ActualManagedResourceHashHex = live.ObservedManagedResourceHashHex,
+                PersistActualHash = true,
+            };
+        }
+
+        string detail = live.Detail ?? live.ErrorCode ?? "live managed-state observation failed";
+        return new DetectManagedDriftCommand
+        {
+            Actor = actor,
+            DeviceId = deviceId,
+            IgnorePersistedActual = true,
+            PersistActualHash = false,
+            Findings =
+            [
+                new DriftFindingInput
+                {
+                    Kind = DriftFindingKind.ManagedRuleChanged,
+                    Detail = $"{live.ErrorCode ?? "live_read_failed"}: {detail}",
+                },
+            ],
+        };
     }
 }
