@@ -328,6 +328,7 @@ public sealed class DesktopPolicySafetyLivingSpecTests
             byte[] expectedContentHash,
             byte[] expectedBundleHash,
             byte[] currentDependencyFingerprint,
+            Guid? nodeId = null,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
@@ -336,6 +337,7 @@ public sealed class DesktopPolicySafetyLivingSpecTests
             Guid analysisRunId,
             byte[] expectedContentHash,
             byte[] currentDependencyFingerprint,
+            Guid? nodeId = null,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 

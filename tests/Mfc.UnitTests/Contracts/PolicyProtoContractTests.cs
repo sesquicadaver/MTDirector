@@ -212,6 +212,8 @@ public sealed class PolicyProtoContractTests
         Assert.Equal("expected_content_hash", RecordAnalysisRunRequest.Descriptor.FindFieldByName("expected_content_hash")!.Name);
         Assert.Equal("expected_bundle_hash", ApproveRevisionRequest.Descriptor.FindFieldByName("expected_bundle_hash")!.Name);
         Assert.Equal("current_dependency_fingerprint", ApproveRevisionRequest.Descriptor.FindFieldByName("current_dependency_fingerprint")!.Name);
+        Assert.Equal("node_id", ApproveRevisionRequest.Descriptor.FindFieldByName("node_id")!.Name);
+        Assert.Equal("node_id", ActivateDesiredBindingRequest.Descriptor.FindFieldByName("node_id")!.Name);
         Assert.Equal("expected_row_version", ExpireExceptionBindingRequest.Descriptor.FindFieldByName("expected_row_version")!.Name);
         Assert.NotNull(PolicyBinding.Descriptor.FindFieldByName("deployment_started"));
         Assert.Equal("completes_approval", PolicyApprovalVote.Descriptor.FindFieldByName("completes_approval")!.Name);

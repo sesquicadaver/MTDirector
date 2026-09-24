@@ -879,7 +879,9 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
 
         await RunBusyAsync(async ct =>
         {
-            await _policies.ApproveAsync(revisionId, runId, hash, _analysisBundleHash, _dependencyFingerprint, ct)
+            Guid? nodeId = TryGetComposeNodeId();
+            await _policies.ApproveAsync(
+                    revisionId, runId, hash, _analysisBundleHash, _dependencyFingerprint, nodeId, ct)
                 .ConfigureAwait(true);
             ApplyState(await _policies.LoadRevisionAsync(revisionId, ct).ConfigureAwait(true));
         }).ConfigureAwait(true);
@@ -901,7 +903,9 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
 
         await RunBusyAsync(async ct =>
         {
-            await _policies.BindAsync(revisionId, runId, hash, _dependencyFingerprint, ct).ConfigureAwait(true);
+            Guid? nodeId = TryGetComposeNodeId();
+            await _policies.BindAsync(revisionId, runId, hash, _dependencyFingerprint, nodeId, ct)
+                .ConfigureAwait(true);
         }).ConfigureAwait(true);
     }
 

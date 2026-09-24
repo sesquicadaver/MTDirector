@@ -215,7 +215,7 @@ public sealed class CompileNodeFilterArtifactsUseCase
                     PolicySchemaVersion = run.PolicySchemaVersion,
                     PipelineVersion = run.PipelineVersion,
                     NodeId = node.Id,
-                    FrozenRunFingerprint = run.DependencyFingerprint,
+                    FrozenRunFingerprint = null,
                 },
                 cancellationToken)
             .ConfigureAwait(false);

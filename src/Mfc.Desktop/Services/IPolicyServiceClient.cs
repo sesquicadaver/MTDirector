@@ -150,6 +150,7 @@ public interface IPolicyServiceClient
         byte[] expectedContentHash,
         byte[] expectedBundleHash,
         byte[] currentDependencyFingerprint,
+        Guid? nodeId = null,
         CancellationToken cancellationToken = default);
 
     Task<PolicyBinding> ActivateDesiredBindingAsync(
@@ -157,6 +158,7 @@ public interface IPolicyServiceClient
         Guid analysisRunId,
         byte[] expectedContentHash,
         byte[] currentDependencyFingerprint,
+        Guid? nodeId = null,
         CancellationToken cancellationToken = default);
 
     Task<CompileNodeFilterArtifactsResponse> CompileNodeFilterArtifactsAsync(

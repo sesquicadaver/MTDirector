@@ -922,6 +922,9 @@ public sealed class PolicyGrpcHostTests
                 headers,
                 deadline: Deadline());
             Assert.Equal(32, run.BundleHash.Value.Length);
+            Assert.Equal(32, run.DependencyFingerprint.Value.Length);
+            // AUDIT-AN-03: Controller owns stored FP; client placeholder is not the CAS token.
+            Assert.False(run.DependencyFingerprint.Equals(fingerprint));
 
             global::Mfc.Contracts.Mfc.V1.PolicyRevision reviewed = await client.SubmitRevisionForReviewAsync(
                 new SubmitRevisionForReviewRequest
@@ -942,7 +945,7 @@ public sealed class PolicyGrpcHostTests
                     AnalysisRunId = run.Id,
                     ExpectedContentHash = draft.ContentHash,
                     ExpectedBundleHash = run.BundleHash,
-                    CurrentDependencyFingerprint = fingerprint,
+                    CurrentDependencyFingerprint = run.DependencyFingerprint,
                 },
                 headers,
                 deadline: Deadline());
@@ -957,7 +960,7 @@ public sealed class PolicyGrpcHostTests
                     RevisionId = draft.RevisionId,
                     AnalysisRunId = run.Id,
                     ExpectedContentHash = draft.ContentHash,
-                    CurrentDependencyFingerprint = fingerprint,
+                    CurrentDependencyFingerprint = run.DependencyFingerprint,
                 },
                 headers,
                 deadline: Deadline());

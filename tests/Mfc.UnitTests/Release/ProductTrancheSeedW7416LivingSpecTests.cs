@@ -3,12 +3,12 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-414: after AUDIT-CAP-04, §3.C NEXT is AUDIT-AN-03 (W7-415).
+/// W7-416: after AUDIT-AN-03, §3.C NEXT is AUDIT-BIND-01 (W7-417).
 /// </summary>
-public sealed class ProductTrancheSeedW7414LivingSpecTests
+public sealed class ProductTrancheSeedW7416LivingSpecTests
 {
     [Fact]
-    public void Ac1KnownLimitationsAndQueueSeedAuditAn03AsNext()
+    public void Ac1KnownLimitationsAndQueueSeedAuditBind01AsNext()
     {
         string root = RepoRoot();
         string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
@@ -17,25 +17,25 @@ public sealed class ProductTrancheSeedW7414LivingSpecTests
         string plan62 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-62-audit-remediation-acd0759.md"));
         string readme = File.ReadAllText(Path.Combine(root, "README.md"));
 
-        Assert.Contains("Intentional residual (W7-414 Living Spec lock)", limitations, StringComparison.Ordinal);
-        Assert.Contains("W7-415", limitations, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-AN-03", limitations, StringComparison.Ordinal);
+        Assert.Contains("Intentional residual (W7-416 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-417", limitations, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-BIND-01", limitations, StringComparison.Ordinal);
 
         Assert.Contains(
-            "W7-414 | [#1228](https://github.com/sesquicadaver/MTDirector/issues/1228) | Seed next after AUDIT-CAP-04 → AUDIT-AN-03 | **DONE**",
+            "W7-416 | [#1232](https://github.com/sesquicadaver/MTDirector/issues/1232) | Seed next after AUDIT-AN-03 → AUDIT-BIND-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-415 | [#1229](https://github.com/sesquicadaver/MTDirector/issues/1229) | AUDIT-AN-03 — Server-owned analysis | **DONE**",
+            "W7-417 | [#1233](https://github.com/sesquicadaver/MTDirector/issues/1233) | AUDIT-BIND-01 — Composition from active bindings | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-417 (#1233)", roadmap, StringComparison.Ordinal);
 
-        Assert.Contains("W7-414 (#1228) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("W7-415 (#1229)", plan, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-AN-03", plan62, StringComparison.Ordinal);
-        Assert.Contains("W7-414 (#1228) DONE", plan62, StringComparison.Ordinal);
-        Assert.Contains("W7-415 (#1229) DONE", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-416 (#1232) DONE", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-417 (#1233)", plan, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-BIND-01", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-416 (#1232) DONE", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-417 (#1233) OPEN (NEXT)", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-417 (#1233)", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-417 (#1233)", readme, StringComparison.Ordinal);
     }

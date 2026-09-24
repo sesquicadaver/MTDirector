@@ -120,6 +120,9 @@ public sealed class ApproveRevisionCommand
     public required byte[] ExpectedBundleHash { get; init; }
 
     public required byte[] CurrentDependencyFingerprint { get; init; }
+
+    /// <summary>Optional Node for live dependency recompute (AUDIT-AN-03).</summary>
+    public Guid? NodeId { get; init; }
 }
 
 /// <summary>Activates desired binding without starting deployment.</summary>
@@ -136,6 +139,9 @@ public sealed class ActivateDesiredBindingCommand
     public required byte[] ExpectedContentHash { get; init; }
 
     public required byte[] CurrentDependencyFingerprint { get; init; }
+
+    /// <summary>Optional Node for live dependency recompute (AUDIT-AN-03).</summary>
+    public Guid? NodeId { get; init; }
 }
 
 /// <summary>Expires an EXCEPTION binding without deploying.</summary>
@@ -265,75 +271,54 @@ public sealed class RecordAnalysisRunUseCase
             return ApplicationResults.Fail(document.Error!);
         }
 
-        ApplicationError? coverage = PolicyRevisionStructuralAnalysis.EnsureTestCoverage(
-            document.Value!,
-            command.TestResults);
-        if (coverage is not null)
-        {
-            return ApplicationResults.Fail(coverage);
-        }
-
         ApplicationError? hashes = ParseRunHashes(command, out PolicyAnalysisRunHashes parsed);
         if (hashes is not null)
         {
             return ApplicationResults.Fail(hashes);
         }
 
-        Hash256 fingerprint = parsed.Fingerprint;
-        if (command.NodeId is Guid nodeGuid)
-        {
-            fingerprint = await _fingerprints.ComputeCurrentAsync(
-                    new DependencyFingerprintRequest
-                    {
-                        AnalyzerVersion = command.AnalyzerVersion,
-                        PolicySchemaVersion = command.PolicySchemaVersion,
-                        PipelineVersion = command.PipelineVersion,
-                        NodeId = new NodeId(nodeGuid),
-                        FrozenRunFingerprint = parsed.Fingerprint,
-                    },
-                    cancellationToken)
-                .ConfigureAwait(false);
-        }
-
-        List<PolicyApprovalFinding> findings = [];
-        foreach (PolicyApprovalFindingInput input in command.Findings)
-        {
-            string severity = NormalizeFindingSeverity(input.Severity);
-            try
-            {
-                findings.Add(new PolicyApprovalFinding
+        // AUDIT-AN-03: Controller always owns the stored dependency fingerprint.
+        // Client dependency_fingerprint bytes are validated as a hash shape only; live CAS
+        // against recomputed current happens on Approve/Bind/Compile (not self-echo).
+        NodeId? nodeId = command.NodeId is Guid nodeGuid ? new NodeId(nodeGuid) : null;
+        Hash256 fingerprint = await _fingerprints.ComputeCurrentAsync(
+                new DependencyFingerprintRequest
                 {
-                    Code = input.Code,
-                    Severity = severity,
-                    Message = input.Message,
-                    Target = input.Target,
-                    WarningHash = PolicyApprovalHasher.HashWarning(input.Code, input.Target, input.Message),
-                });
-            }
-            catch (DomainInvariantException ex)
-            {
-                return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
-            }
+                    AnalyzerVersion = command.AnalyzerVersion,
+                    PolicySchemaVersion = command.PolicySchemaVersion,
+                    PipelineVersion = command.PipelineVersion,
+                    NodeId = nodeId,
+                    FrozenRunFingerprint = null,
+                },
+                cancellationToken)
+            .ConfigureAwait(false);
+
+        PolicyServerOwnedAnalysis.Facts owned;
+        try
+        {
+            owned = PolicyServerOwnedAnalysis.Build(policy, revision!, document.Value!, command.Findings);
+        }
+        catch (DomainInvariantException ex)
+        {
+            return ApplicationResults.Fail(ApplicationError.Validation(ex.Message));
         }
 
-        foreach (PolicyApprovalFinding structural in PolicyRevisionStructuralAnalysis
-                     .CollectStructuralApprovalFindings(policy, revision, document.Value!))
-        {
-            if (findings.Any(f => f.WarningHash.Equals(structural.WarningHash)))
+        List<PolicyApprovalTestInput> ownedCoverage = owned.TestResults
+            .Select(static t => new PolicyApprovalTestInput
             {
-                continue;
-            }
-
-            findings.Add(structural);
-        }
-
-        List<PolicyApprovalTestOutcome> tests = command.TestResults.Select(static t => new PolicyApprovalTestOutcome
+                TestId = t.TestId.Value,
+                Origin = t.Origin,
+                Outcome = t.Outcome,
+                Proof = t.Proof,
+            })
+            .ToList();
+        ApplicationError? coverage = PolicyRevisionStructuralAnalysis.EnsureTestCoverage(
+            document.Value!,
+            ownedCoverage);
+        if (coverage is not null)
         {
-            TestId = new PolicyTestId(t.TestId),
-            Origin = t.Origin,
-            Outcome = t.Outcome,
-            Proof = t.Proof,
-        }).ToList();
+            return ApplicationResults.Fail(coverage);
+        }
 
         PolicyAnalysisRun run;
         try
@@ -348,13 +333,13 @@ public sealed class RecordAnalysisRunUseCase
                 parsed.Impact,
                 parsed.Devices,
                 fingerprint,
-                command.RiskLevel,
-                command.EvidenceSignalsPresent,
+                owned.RiskLevel,
+                owned.EvidenceSignalsPresent,
                 command.AnalyzerVersion,
                 command.PolicySchemaVersion,
                 command.PipelineVersion,
-                findings,
-                tests,
+                owned.Findings,
+                owned.TestResults,
                 new UserId(ActorKey.FromActor(command.Actor)),
                 DateTimeOffset.UtcNow);
         }
@@ -890,8 +875,8 @@ public sealed class ApproveRevisionUseCase
                     AnalyzerVersion = run.AnalyzerVersion,
                     PolicySchemaVersion = run.PolicySchemaVersion,
                     PipelineVersion = run.PipelineVersion,
-                    NodeId = null,
-                    FrozenRunFingerprint = run.DependencyFingerprint,
+                    NodeId = command.NodeId is Guid approveNode ? new NodeId(approveNode) : null,
+                    FrozenRunFingerprint = null,
                 },
                 cancellationToken)
             .ConfigureAwait(false);

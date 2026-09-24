@@ -39,7 +39,11 @@ public sealed class DesktopPoliciesGateLivingSpecTests
         Assert.Contains("private async Task ApproveAsync()", vm, StringComparison.Ordinal);
         Assert.Contains("TryRequireLoadedRevision(out Guid revisionId, out byte[] hash)", vm, StringComparison.Ordinal);
         Assert.Contains("Record an analysis run before Approve", vm, StringComparison.Ordinal);
-        Assert.Contains("await _policies.ApproveAsync(revisionId, runId, hash, _analysisBundleHash, _dependencyFingerprint, ct)", vm, StringComparison.Ordinal);
+        Assert.Contains(
+            "await _policies.ApproveAsync(\n                    revisionId, runId, hash, _analysisBundleHash, _dependencyFingerprint, nodeId, ct)",
+            vm,
+            StringComparison.Ordinal);
+        Assert.Contains("TryGetComposeNodeId()", vm, StringComparison.Ordinal);
         Assert.Contains("CanExecute = nameof(CanOperate)", vm, StringComparison.Ordinal);
     }
 
@@ -49,7 +53,10 @@ public sealed class DesktopPoliciesGateLivingSpecTests
         string vm = ReadSource("src/Mfc.Desktop/ViewModels/PoliciesViewModel.cs");
         Assert.Contains("private async Task BindAsync()", vm, StringComparison.Ordinal);
         Assert.Contains("Record/Approve analysis run before Bind", vm, StringComparison.Ordinal);
-        Assert.Contains("await _policies.BindAsync(revisionId, runId, hash, _dependencyFingerprint, ct)", vm, StringComparison.Ordinal);
+        Assert.Contains(
+            "await _policies.BindAsync(revisionId, runId, hash, _dependencyFingerprint, nodeId, ct)",
+            vm,
+            StringComparison.Ordinal);
         Assert.Contains("private async Task CompileAsync()", vm, StringComparison.Ordinal);
         Assert.Contains("Select a Node (or enter its UUID) before CompileNodeFilterArtifacts", vm, StringComparison.Ordinal);
         Assert.Contains("await _policies.CompileNodeFilterArtifactsAsync(", vm, StringComparison.Ordinal);

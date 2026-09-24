@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **W7-415** ([#1229](https://github.com/sesquicadaver/MTDirector/issues/1229)) / **W7-416** ([#1232](https://github.com/sesquicadaver/MTDirector/issues/1232)): AUDIT-AN-03 — server-owned analysis (F06): Controller derives risk/tests/findings (`PolicyServerOwnedAnalysis`); live dependency vector fills company/site/node bindings, exceptions, compatibility, management profile; Approve/Bind/Compile recompute without echoing frozen run FP; optional `node_id` on Approve/Bind; seed **W7-417 (#1233)** → AUDIT-BIND-01 (`AuditAn03ServerOwnedAnalysisW7415LivingSpecTests`, `ProductTrancheSeedW7416LivingSpecTests`).
+
 - **W7-414** ([#1228](https://github.com/sesquicadaver/MTDirector/issues/1228)): Seed §3.C NEXT after AUDIT-CAP-04 → **AUDIT-AN-03** as **W7-415 (#1229)** (`ProductTrancheSeedW7414LivingSpecTests`).
 
 - **W7-413** ([#1226](https://github.com/sesquicadaver/MTDirector/issues/1226)): AUDIT-CAP-04 — capture attempt identity (F09): idempotency bound to actor+key+device; identical snapshot hash still persists a fresh capture (payload CAS dedupe); node capture continues all members and reports time-set fitness; seed **W7-414 (#1228)** → AUDIT-AN-03 (`AuditCap04CaptureAttemptIdentityW7413LivingSpecTests`).

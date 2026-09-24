@@ -451,19 +451,26 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
         byte[] expectedContentHash,
         byte[] expectedBundleHash,
         byte[] currentDependencyFingerprint,
+        Guid? nodeId = null,
         CancellationToken cancellationToken = default)
     {
         PolicyService.PolicyServiceClient client = CreateClient();
+        ApproveRevisionRequest request = new()
+        {
+            IdempotencyKey = DesktopProtoUuid.FromGuid(Guid.NewGuid()),
+            RevisionId = DesktopProtoUuid.FromGuid(revisionId),
+            AnalysisRunId = DesktopProtoUuid.FromGuid(analysisRunId),
+            ExpectedContentHash = ToSha256(expectedContentHash),
+            ExpectedBundleHash = ToSha256(expectedBundleHash),
+            CurrentDependencyFingerprint = ToSha256(currentDependencyFingerprint),
+        };
+        if (nodeId is Guid n)
+        {
+            request.NodeId = DesktopProtoUuid.FromGuid(n);
+        }
+
         return await client.ApproveRevisionAsync(
-                new ApproveRevisionRequest
-                {
-                    IdempotencyKey = DesktopProtoUuid.FromGuid(Guid.NewGuid()),
-                    RevisionId = DesktopProtoUuid.FromGuid(revisionId),
-                    AnalysisRunId = DesktopProtoUuid.FromGuid(analysisRunId),
-                    ExpectedContentHash = ToSha256(expectedContentHash),
-                    ExpectedBundleHash = ToSha256(expectedBundleHash),
-                    CurrentDependencyFingerprint = ToSha256(currentDependencyFingerprint),
-                },
+                request,
                 DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }
@@ -473,18 +480,25 @@ public sealed class GrpcPolicyServiceClient : IPolicyServiceClient
         Guid analysisRunId,
         byte[] expectedContentHash,
         byte[] currentDependencyFingerprint,
+        Guid? nodeId = null,
         CancellationToken cancellationToken = default)
     {
         PolicyService.PolicyServiceClient client = CreateClient();
+        ActivateDesiredBindingRequest request = new()
+        {
+            IdempotencyKey = DesktopProtoUuid.FromGuid(Guid.NewGuid()),
+            RevisionId = DesktopProtoUuid.FromGuid(revisionId),
+            AnalysisRunId = DesktopProtoUuid.FromGuid(analysisRunId),
+            ExpectedContentHash = ToSha256(expectedContentHash),
+            CurrentDependencyFingerprint = ToSha256(currentDependencyFingerprint),
+        };
+        if (nodeId is Guid n)
+        {
+            request.NodeId = DesktopProtoUuid.FromGuid(n);
+        }
+
         return await client.ActivateDesiredBindingAsync(
-                new ActivateDesiredBindingRequest
-                {
-                    IdempotencyKey = DesktopProtoUuid.FromGuid(Guid.NewGuid()),
-                    RevisionId = DesktopProtoUuid.FromGuid(revisionId),
-                    AnalysisRunId = DesktopProtoUuid.FromGuid(analysisRunId),
-                    ExpectedContentHash = ToSha256(expectedContentHash),
-                    CurrentDependencyFingerprint = ToSha256(currentDependencyFingerprint),
-                },
+                request,
                 DesktopGrpcUnaryCall.For(_options, ActorHeaders(), cancellationToken))
             .ConfigureAwait(false);
     }

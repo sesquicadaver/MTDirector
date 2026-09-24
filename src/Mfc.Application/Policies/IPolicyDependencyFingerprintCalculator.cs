@@ -16,8 +16,9 @@ public sealed class DependencyFingerprintRequest
     public NodeId? NodeId { get; init; }
 
     /// <summary>
-    /// Frozen fingerprint from an existing analysis run. Passthrough calculators echo this;
-    /// live calculators ignore it and recompute from stores.
+    /// Frozen fingerprint from an existing analysis run. Unit-test passthrough calculators may
+    /// echo this; <see cref="LivePolicyDependencyFingerprintCalculator"/> always recomputes
+    /// from stores (AUDIT-AN-03 — never self-compare).
     /// </summary>
     public Hash256? FrozenRunFingerprint { get; init; }
 }
