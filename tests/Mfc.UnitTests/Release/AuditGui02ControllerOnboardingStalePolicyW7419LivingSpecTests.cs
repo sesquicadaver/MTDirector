@@ -53,6 +53,10 @@ public sealed class AuditGui02ControllerOnboardingStalePolicyW7419LivingSpecTest
         Assert.Contains("SelectedCatalogItem = Catalog.FirstOrDefault", policiesVm, StringComparison.Ordinal);
         Assert.Contains("SwitchingInventoryDeviceClearsStaleSafetyFindings", policiesTests, StringComparison.Ordinal);
         Assert.Contains("CreatePlanRequestsEmptyDevicesForControllerBuiltLastCapturePlan", onboardingTests, StringComparison.Ordinal);
+        string fromCaptureTests = File.ReadAllText(
+            Path.Combine(root, "tests/Mfc.UnitTests/Application/CreateOnboardingPlanFromLastCaptureUseCaseTests.cs"));
+        Assert.Contains("FromLastCaptureBuildsPlanFromSnapshotHashes", fromCaptureTests, StringComparison.Ordinal);
+        Assert.Contains("EmptyValidateFactsWithoutCaptureReturnCaptureRequiredBlocker", fromCaptureTests, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()
