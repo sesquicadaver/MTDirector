@@ -993,12 +993,67 @@ public sealed class PolicyGrpcHostTests
     {
         await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
         IPolicyStore store = scope.ServiceProvider.GetRequiredService<IPolicyStore>();
+        IPolicyApprovalStore approvals = scope.ServiceProvider.GetRequiredService<IPolicyApprovalStore>();
         DomainPolicy.PolicyRevision? revision = await store.GetRevisionAsync(new PolicyRevisionId(revisionId));
         Assert.NotNull(revision);
         revision!.MarkValidated();
         revision.SubmitForReview();
         revision.Approve(DateTimeOffset.UtcNow);
         await store.SaveRevisionAsync(revision);
+
+        DomainPolicy.Policy? policy = await store.GetPolicyAsync(revision.PolicyId);
+        Assert.NotNull(policy);
+        Mfc.Domain.Inventory.Primitives.Hash256 hash =
+            Mfc.Domain.Inventory.Primitives.Hash256.ParseHex(
+                "1111111111111111111111111111111111111111111111111111111111111111");
+        DomainPolicy.PolicyAnalysisRun run = DomainPolicy.PolicyAnalysisRun.Create(
+            revision.Id,
+            revision.ContentHash,
+            hash,
+            hash,
+            hash,
+            hash,
+            hash,
+            [hash],
+            hash,
+            DomainPolicy.PolicyEvidenceAnalysisCodes.RiskLow,
+            evidenceSignalsPresent: true,
+            DomainPolicy.PolicyApprovalCodes.AnalyzerVersion,
+            DomainPolicy.PolicyDocument.SchemaName,
+            DomainPolicy.PolicyPipelineV1.Version,
+            [],
+            [],
+            UserId.New(),
+            DateTimeOffset.UtcNow);
+        await approvals.AddAnalysisRunAsync(run);
+
+        DomainPolicy.PolicyBindingScope bindingScope = DomainPolicy.PolicyDesiredBinding.ScopeFor(policy!.Kind);
+        Guid? scopeId = bindingScope == DomainPolicy.PolicyBindingScope.Company ? null : policy.OwnerId;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        DateTimeOffset? validFrom = null;
+        DateTimeOffset? validUntil = null;
+        if (bindingScope == DomainPolicy.PolicyBindingScope.Exception)
+        {
+            DomainPolicy.PolicyDocument document = DomainPolicy.PolicyDocumentReader.Read(revision.CanonicalBytes);
+            validFrom = document.ExceptionMetadata?.ValidFrom;
+            validUntil = document.ExceptionMetadata?.ValidUntil
+                ?? new DateTimeOffset(2027, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        }
+
+        await approvals.AddBindingAsync(DomainPolicy.PolicyDesiredBinding.Reconstitute(
+            PolicyBindingId.New(),
+            bindingScope,
+            scopeId,
+            policy.Id,
+            revision.Id,
+            run.Id,
+            run.BundleHash,
+            DomainPolicy.PolicyBindingState.Active,
+            validFromUtc: validFrom,
+            validUntilUtc: validUntil,
+            rowVersion: 1,
+            createdAtUtc: now,
+            updatedAtUtc: now));
     }
 
     private static async Task ReplaceDraftWithUnusedObjectAsync(WebApplication app, Guid revisionId, Guid unusedObjectId)

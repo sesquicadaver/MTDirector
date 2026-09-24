@@ -239,6 +239,12 @@ public sealed class CompileNodeFilterArtifactsUseCase
             && revision.ApprovedBundleHash is not null
             && revision.ApprovedBundleHash.Equals(run.BundleHash)
             && await HasActiveBindingForRunAsync(node, run, cancellationToken).ConfigureAwait(false);
+        if (!inputApproved)
+        {
+            return CompileFail(
+                PolicyCompilerCodes.CompilerInputNotApproved,
+                "Analysis input is not approved or has no ACTIVE desired binding for the run.");
+        }
 
         (ComposedEffectivePolicy? composed, ChainContractSet? contracts, ApplicationError? composeError) =
             await ComposeAsync(node, cancellationToken).ConfigureAwait(false);
@@ -502,7 +508,13 @@ public sealed class CompileNodeFilterArtifactsUseCase
         }
 
         (PolicyLayer? companyLayer, _, ApplicationError? companyError) =
-            await LoadApprovedLayerAsync(companies[0], cancellationToken).ConfigureAwait(false);
+            await PolicyBoundLayerLoader.LoadBoundLayerAsync(
+                    _policies,
+                    _approvals,
+                    companies[0],
+                    required: true,
+                    cancellationToken)
+                .ConfigureAwait(false);
         if (companyError is not null)
         {
             return (null, null, companyError);
@@ -512,7 +524,7 @@ public sealed class CompileNodeFilterArtifactsUseCase
         {
             return (null, null, new ApplicationError(
                 PolicyComposeCodes.CompanyRequired,
-                "Company baseline has no APPROVED revision."));
+                "Company baseline has no ACTIVE desired binding."));
         }
 
         (PolicyLayer? siteLayer, _, ApplicationError? siteError) =
@@ -576,7 +588,13 @@ public sealed class CompileNodeFilterArtifactsUseCase
                 $"Exactly one ACTIVE {kind} policy is allowed per owner; duplicates are forbidden."));
         }
 
-        return await LoadApprovedLayerAsync(overlays[0], cancellationToken).ConfigureAwait(false);
+        return await PolicyBoundLayerLoader.LoadBoundLayerAsync(
+                _policies,
+                _approvals,
+                overlays[0],
+                required: false,
+                cancellationToken)
+            .ConfigureAwait(false);
     }
 
     private async Task<(IReadOnlyList<PolicyLayer>? Layers, ApplicationError? Error)> LoadExceptionsAsync(
@@ -584,15 +602,25 @@ public sealed class CompileNodeFilterArtifactsUseCase
         CancellationToken cancellationToken)
     {
         List<PolicyLayer> layers = [];
-        ApplicationError? siteError = await AppendExceptionLayersAsync(
-            node.SiteId.Value, layers, cancellationToken).ConfigureAwait(false);
+        ApplicationError? siteError = await PolicyBoundLayerLoader.AppendBoundExceptionLayersAsync(
+            _policies,
+            _approvals,
+            node.SiteId.Value,
+            _clock.UtcNow,
+            layers,
+            cancellationToken).ConfigureAwait(false);
         if (siteError is not null)
         {
             return (null, siteError);
         }
 
-        ApplicationError? nodeError = await AppendExceptionLayersAsync(
-            node.Id.Value, layers, cancellationToken).ConfigureAwait(false);
+        ApplicationError? nodeError = await PolicyBoundLayerLoader.AppendBoundExceptionLayersAsync(
+            _policies,
+            _approvals,
+            node.Id.Value,
+            _clock.UtcNow,
+            layers,
+            cancellationToken).ConfigureAwait(false);
         if (nodeError is not null)
         {
             return (null, nodeError);
@@ -601,136 +629,15 @@ public sealed class CompileNodeFilterArtifactsUseCase
         return (layers, null);
     }
 
-    private async Task<(IReadOnlyList<PolicyLayer>? Layers, ApplicationError? Error)> LoadIncidentOverlaysAsync(
+    private Task<(IReadOnlyList<PolicyLayer>? Layers, ApplicationError? Error)> LoadIncidentOverlaysAsync(
         Node node,
         CancellationToken cancellationToken)
-    {
-        List<PolicyLayer> layers = [];
-        IReadOnlyList<Policy> policies = await _policies
-            .ListActiveByOwnerAsync(PolicyKind.IncidentDenyOverlay, node.Id.Value, cancellationToken)
-            .ConfigureAwait(false);
-        DateTimeOffset now = _clock.UtcNow;
-        foreach (Policy policy in policies.OrderBy(static p => p.Id.Value))
-        {
-            (PolicyLayer? layer, _, ApplicationError? error) =
-                await LoadApprovedLayerAsync(policy, cancellationToken).ConfigureAwait(false);
-            if (error is not null)
-            {
-                return (null, error);
-            }
-
-            if (layer is null)
-            {
-                continue;
-            }
-
-            IncidentDenyOverlayMetadata? metadata = layer.PolicyDocument.IncidentDenyOverlayMetadata;
-            if (metadata is not null && metadata.IsExpired(now))
-            {
-                continue;
-            }
-
-            if (metadata is not null && metadata.NodeId != node.Id.Value)
-            {
-                return (null, new ApplicationError(
-                    IncidentDenyOverlayCodes.OverlayNodeMismatch,
-                    "Incident deny overlay node_id must match the compile target Node."));
-            }
-
-            IReadOnlyList<PolicyDesiredBinding> bindings = await _approvals
-                .ListActiveBindingsAsync(PolicyBindingScope.IncidentDenyOverlay, node.Id.Value, cancellationToken)
-                .ConfigureAwait(false);
-            bool bound = bindings.Any(b =>
-                b.PolicyId == policy.Id
-                && b.State == PolicyBindingState.Active);
-            if (!bound)
-            {
-                continue;
-            }
-
-            layers.Add(layer);
-        }
-
-        return (layers, null);
-    }
-
-    private async Task<ApplicationError?> AppendExceptionLayersAsync(
-        Guid ownerId,
-        List<PolicyLayer> layers,
-        CancellationToken cancellationToken)
-    {
-        IReadOnlyList<Policy> policies = await _policies
-            .ListActiveByOwnerAsync(PolicyKind.Exception, ownerId, cancellationToken)
-            .ConfigureAwait(false);
-        DateTimeOffset now = _clock.UtcNow;
-        foreach (Policy policy in policies)
-        {
-            (PolicyLayer? layer, _, ApplicationError? error) =
-                await LoadApprovedLayerAsync(policy, cancellationToken).ConfigureAwait(false);
-            if (error is not null)
-            {
-                return error;
-            }
-
-            if (layer is null)
-            {
-                continue;
-            }
-
-            ExceptionMetadata? metadata = layer.PolicyDocument.ExceptionMetadata;
-            if (metadata is not null && metadata.IsExpired(now))
-            {
-                continue;
-            }
-
-            layers.Add(layer);
-        }
-
-        return null;
-    }
-
-    private async Task<(PolicyLayer? Layer, PolicyRevisionRefView? Ref, ApplicationError? Error)>
-        LoadApprovedLayerAsync(Policy policy, CancellationToken cancellationToken)
-    {
-        IReadOnlyList<PolicyRevision> revisions = await _policies
-            .ListRevisionsAsync(policy.Id, cancellationToken)
-            .ConfigureAwait(false);
-        PolicyRevision? approved = revisions
-            .Where(static r => r.State == PolicyRevisionState.Approved)
-            .OrderByDescending(static r => r.RevisionNumber)
-            .FirstOrDefault();
-        if (approved is null)
-        {
-            return (null, null, null);
-        }
-
-        ApplicationResult<PolicyDocument> document = PolicyRevisionSupport.ReadDocument(approved);
-        if (document.IsFailure)
-        {
-            return (null, null, document.Error);
-        }
-
-        PolicyLayer layer = new()
-        {
-            PolicyId = policy.Id.Value,
-            RevisionId = approved.Id.Value,
-            Kind = policy.Kind,
-            OwnerScope = policy.OwnerScope,
-            OwnerId = policy.OwnerId,
-            ContentHash = approved.ContentHash,
-            ParentContextHash = approved.ParentContextHash,
-            PolicyDocument = document.Value!,
-        };
-        PolicyRevisionRefView refs = new()
-        {
-            PolicyId = policy.Id.Value,
-            RevisionId = approved.Id.Value,
-            RevisionNumber = approved.RevisionNumber,
-            ContentHash = approved.ContentHash.Bytes.ToArray(),
-            ContentHashHex = approved.ContentHash.ToString(),
-        };
-        return (layer, refs, null);
-    }
+        => PolicyBoundLayerLoader.LoadBoundIncidentOverlayLayersAsync(
+            _policies,
+            _approvals,
+            node.Id.Value,
+            _clock.UtcNow,
+            cancellationToken);
 
     private static ApplicationFailure CompileFail(string code, string message)
         => ApplicationResults.Fail(new ApplicationError(code, message));

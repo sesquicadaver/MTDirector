@@ -3,12 +3,12 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-406: after AUDIT-RB-01, §3.C NEXT is AUDIT-CLK-01 (W7-407).
+/// W7-418: after AUDIT-BIND-01, §3.C NEXT is AUDIT-GUI-02 (W7-419).
 /// </summary>
-public sealed class ProductTrancheSeedW7406LivingSpecTests
+public sealed class ProductTrancheSeedW7418LivingSpecTests
 {
     [Fact]
-    public void Ac1KnownLimitationsAndQueueSeedAuditClk01AsNext()
+    public void Ac1KnownLimitationsAndQueueSeedAuditGui02AsNext()
     {
         string root = RepoRoot();
         string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
@@ -17,23 +17,25 @@ public sealed class ProductTrancheSeedW7406LivingSpecTests
         string plan62 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-62-audit-remediation-acd0759.md"));
         string readme = File.ReadAllText(Path.Combine(root, "README.md"));
 
-        Assert.Contains("Intentional residual (W7-406 Living Spec lock)", limitations, StringComparison.Ordinal);
-        Assert.Contains("W7-407", limitations, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-CLK-01", limitations, StringComparison.Ordinal);
+        Assert.Contains("Intentional residual (W7-418 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-419", limitations, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-GUI-02", limitations, StringComparison.Ordinal);
 
         Assert.Contains(
-            "W7-406 | [#1214](https://github.com/sesquicadaver/MTDirector/issues/1214) | Seed next after AUDIT-RB-01 → AUDIT-CLK-01 | **DONE**",
+            "W7-418 | [#1235](https://github.com/sesquicadaver/MTDirector/issues/1235) | Seed next after AUDIT-BIND-01 → AUDIT-GUI-02 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-407 | [#1215](https://github.com/sesquicadaver/MTDirector/issues/1215) | AUDIT-CLK-01 — RouterOS clock / TTL budget | **DONE**",
+            "W7-419 | [#1236](https://github.com/sesquicadaver/MTDirector/issues/1236) | AUDIT-GUI-02 — Controller onboarding + stale policy GUI | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-419 (#1236)", roadmap, StringComparison.Ordinal);
 
-        Assert.Contains("W7-406 (#1214) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("W7-407 (#1215)", plan, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-CLK-01", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-418 (#1235) DONE", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-419 (#1236)", plan, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-GUI-02", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-418 (#1235) DONE", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-419 (#1236) OPEN (NEXT)", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-419 (#1236)", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-419 (#1236)", readme, StringComparison.Ordinal);
     }

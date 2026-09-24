@@ -3983,6 +3983,22 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinData
 
 
 
+## Living Specification — Seed AUDIT-GUI-02 after AUDIT-BIND-01 (W7-418)
+
+| AC | Module | Test |
+|----|--------|------|
+| Seed locks AUDIT-GUI-02 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7418LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditGui02AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7418"`.
+
+## Living Specification — AUDIT-BIND-01 Composition from active bindings (W7-417)
+
+| AC | Module | Test |
+|----|--------|------|
+| Compose/Compile use ACTIVE desired bindings for layer revisions; Approval ≠ activation | PolicyBoundLayerLoader, ComposeEffectivePolicyUseCase, CompileNodeFilterArtifactsUseCase, known-limitations, ROADMAP | `AuditBind01CompositionFromActiveBindingsW7417LivingSpecTests.Ac1ComposeAndCompileUseActiveDesiredBindingsNotLatestApproved` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditBind01CompositionFromActiveBindingsW7417"`.
+
 ## Living Specification — Seed AUDIT-BIND-01 after AUDIT-AN-03 (W7-416)
 
 | AC | Module | Test |

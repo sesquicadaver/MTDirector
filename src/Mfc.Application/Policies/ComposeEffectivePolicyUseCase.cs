@@ -22,7 +22,8 @@ public sealed class ComposeEffectivePolicyQuery
 
 /// <summary>
 /// Loads inventory + unique ACTIVE company + optional overlays + zone catalog,
-/// then runs <see cref="EffectivePolicyComposer"/>. Compose blockers keep typed
+/// then runs <see cref="EffectivePolicyComposer"/>. Layer revisions come from ACTIVE
+/// desired bindings (AUDIT-BIND-01 / F07), not latest Approved. Compose blockers keep typed
 /// <c>POLICY_COMPOSE_*</c> / <c>RULE_*</c> / <c>PREDICATE_*</c> / <c>POLICY_EXCEPTION_*</c>
 /// plus sequence <c>SHADOW_ANALYSIS_INDETERMINATE</c> / <c>EARLIER_ALLOW_BYPASSES_DENY</c> /
 /// <c>FASTTRACK_OVERLAP</c> codes.
@@ -32,6 +33,7 @@ public sealed class ComposeEffectivePolicyUseCase
     private readonly IAuthorizationBoundary _auth;
     private readonly INodeStore _nodes;
     private readonly IPolicyStore _policies;
+    private readonly IPolicyApprovalStore _approvals;
     private readonly IZoneDefinitionStore _zones;
     private readonly IClock _clock;
 
@@ -39,17 +41,20 @@ public sealed class ComposeEffectivePolicyUseCase
         IAuthorizationBoundary auth,
         INodeStore nodes,
         IPolicyStore policies,
+        IPolicyApprovalStore approvals,
         IZoneDefinitionStore zones,
         IClock clock)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
         ArgumentNullException.ThrowIfNull(policies);
+        ArgumentNullException.ThrowIfNull(approvals);
         ArgumentNullException.ThrowIfNull(zones);
         ArgumentNullException.ThrowIfNull(clock);
         _auth = auth;
         _nodes = nodes;
         _policies = policies;
+        _approvals = approvals;
         _zones = zones;
         _clock = clock;
     }
@@ -90,7 +95,13 @@ public sealed class ComposeEffectivePolicyUseCase
         }
 
         (PolicyLayer? companyLayer, PolicyRevisionRefView? companyRef, ApplicationError? companyError) =
-            await LoadApprovedLayerAsync(companies[0], cancellationToken).ConfigureAwait(false);
+            await PolicyBoundLayerLoader.LoadBoundLayerAsync(
+                    _policies,
+                    _approvals,
+                    companies[0],
+                    required: true,
+                    cancellationToken)
+                .ConfigureAwait(false);
         if (companyError is not null)
         {
             return ApplicationResults.Fail(companyError);
@@ -100,7 +111,7 @@ public sealed class ComposeEffectivePolicyUseCase
         {
             return ComposeFail(
                 PolicyComposeCodes.CompanyRequired,
-                "Company baseline has no APPROVED revision.");
+                "Company baseline has no ACTIVE desired binding.");
         }
 
         (PolicyLayer? siteLayer, PolicyRevisionRefView? siteRef, ApplicationError? siteError) =
@@ -187,7 +198,13 @@ public sealed class ComposeEffectivePolicyUseCase
                 $"Exactly one ACTIVE {kind} policy is allowed per owner; duplicates are forbidden."));
         }
 
-        return await LoadApprovedLayerAsync(overlays[0], cancellationToken).ConfigureAwait(false);
+        return await PolicyBoundLayerLoader.LoadBoundLayerAsync(
+                _policies,
+                _approvals,
+                overlays[0],
+                required: false,
+                cancellationToken)
+            .ConfigureAwait(false);
     }
 
     private async Task<(IReadOnlyList<PolicyLayer>? Layers, ApplicationError? Error)> LoadExceptionsAsync(
@@ -195,99 +212,31 @@ public sealed class ComposeEffectivePolicyUseCase
         CancellationToken cancellationToken)
     {
         List<PolicyLayer> layers = [];
-        ApplicationError? siteError = await AppendExceptionLayersAsync(
-            node.SiteId.Value, layers, cancellationToken).ConfigureAwait(false);
+        ApplicationError? siteError = await PolicyBoundLayerLoader.AppendBoundExceptionLayersAsync(
+            _policies,
+            _approvals,
+            node.SiteId.Value,
+            _clock.UtcNow,
+            layers,
+            cancellationToken).ConfigureAwait(false);
         if (siteError is not null)
         {
             return (null, siteError);
         }
 
-        ApplicationError? nodeError = await AppendExceptionLayersAsync(
-            node.Id.Value, layers, cancellationToken).ConfigureAwait(false);
+        ApplicationError? nodeError = await PolicyBoundLayerLoader.AppendBoundExceptionLayersAsync(
+            _policies,
+            _approvals,
+            node.Id.Value,
+            _clock.UtcNow,
+            layers,
+            cancellationToken).ConfigureAwait(false);
         if (nodeError is not null)
         {
             return (null, nodeError);
         }
 
         return (layers, null);
-    }
-
-    private async Task<ApplicationError?> AppendExceptionLayersAsync(
-        Guid ownerId,
-        List<PolicyLayer> layers,
-        CancellationToken cancellationToken)
-    {
-        IReadOnlyList<Policy> policies = await _policies
-            .ListActiveByOwnerAsync(PolicyKind.Exception, ownerId, cancellationToken)
-            .ConfigureAwait(false);
-        DateTimeOffset now = _clock.UtcNow;
-        foreach (Policy policy in policies)
-        {
-            (PolicyLayer? layer, PolicyRevisionRefView? _, ApplicationError? error) =
-                await LoadApprovedLayerAsync(policy, cancellationToken).ConfigureAwait(false);
-            if (error is not null)
-            {
-                return error;
-            }
-
-            if (layer is null)
-            {
-                continue;
-            }
-
-            ExceptionMetadata? metadata = layer.PolicyDocument.ExceptionMetadata;
-            if (metadata is not null && metadata.IsExpired(now))
-            {
-                continue;
-            }
-
-            layers.Add(layer);
-        }
-
-        return null;
-    }
-
-    private async Task<(PolicyLayer? Layer, PolicyRevisionRefView? Ref, ApplicationError? Error)>
-        LoadApprovedLayerAsync(Policy policy, CancellationToken cancellationToken)
-    {
-        IReadOnlyList<PolicyRevision> revisions = await _policies
-            .ListRevisionsAsync(policy.Id, cancellationToken)
-            .ConfigureAwait(false);
-        PolicyRevision? approved = revisions
-            .Where(static r => r.State == PolicyRevisionState.Approved)
-            .OrderByDescending(static r => r.RevisionNumber)
-            .FirstOrDefault();
-        if (approved is null)
-        {
-            return (null, null, null);
-        }
-
-        ApplicationResult<PolicyDocument> document = PolicyRevisionSupport.ReadDocument(approved);
-        if (document.IsFailure)
-        {
-            return (null, null, document.Error);
-        }
-
-        PolicyLayer layer = new()
-        {
-            PolicyId = policy.Id.Value,
-            RevisionId = approved.Id.Value,
-            Kind = policy.Kind,
-            OwnerScope = policy.OwnerScope,
-            OwnerId = policy.OwnerId,
-            ContentHash = approved.ContentHash,
-            ParentContextHash = approved.ParentContextHash,
-            PolicyDocument = document.Value!,
-        };
-        PolicyRevisionRefView refs = new()
-        {
-            PolicyId = policy.Id.Value,
-            RevisionId = approved.Id.Value,
-            RevisionNumber = approved.RevisionNumber,
-            ContentHash = approved.ContentHash.Bytes.ToArray(),
-            ContentHashHex = approved.ContentHash.ToString(),
-        };
-        return (layer, refs, null);
     }
 
     private static ApplicationFailure ComposeFail(string code, string message)
