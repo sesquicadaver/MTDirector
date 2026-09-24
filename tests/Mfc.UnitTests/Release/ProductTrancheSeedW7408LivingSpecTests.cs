@@ -29,14 +29,14 @@ public sealed class ProductTrancheSeedW7408LivingSpecTests
             "W7-409 | [#1218](https://github.com/sesquicadaver/MTDirector/issues/1218) | AUDIT-RPC-01 — Fast Start + live Watch | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-414 (#1228)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-415 (#1229)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-408 (#1217) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-409 (#1218)", plan, StringComparison.Ordinal);
         Assert.Contains("AUDIT-RPC-01", plan62, StringComparison.Ordinal);
         Assert.Contains("AUDIT-RPC-01 W7-409 (#1218) DONE", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-414 (#1228)", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-414 (#1228)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-415 (#1229)", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-415 (#1229)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

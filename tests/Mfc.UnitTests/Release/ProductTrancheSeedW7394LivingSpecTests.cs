@@ -30,13 +30,13 @@ public sealed class ProductTrancheSeedW7394LivingSpecTests
             "W7-395 | [#1197](https://github.com/sesquicadaver/MTDirector/issues/1197) | AUDIT-STATUS-01 — Honest MVP/M7/write-path status vs audit acd0759 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-414 (#1228)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-415 (#1229)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-394 (#1196) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-395 (#1197)", plan, StringComparison.Ordinal);
         Assert.Contains("AUDIT-STATUS-01", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-414 (#1228)", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-414 (#1228)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-415 (#1229)", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-415 (#1229)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

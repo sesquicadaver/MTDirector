@@ -96,7 +96,7 @@ public sealed class DeskPanelFault01DesktopPanelStatusLivingSpecTests
         Assert.Contains("DESK-PANEL-FAULT-01 DONE", limitations, StringComparison.Ordinal);
         Assert.Contains("Delivery notes (W7-378)", plan58, StringComparison.Ordinal);
         Assert.Contains("W7-378 (#1162) DONE", plan58, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-414 (#1228)", plan58, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-415 (#1229)", plan58, StringComparison.Ordinal);
         Assert.Contains(
             "W7-378 | [#1162](https://github.com/sesquicadaver/MTDirector/issues/1162) | DESK-PANEL-FAULT-01 — Show RPC fault text on panel status lines | **DONE**",
             roadmap,
@@ -105,7 +105,7 @@ public sealed class DeskPanelFault01DesktopPanelStatusLivingSpecTests
             "W7-379 | [#1163](https://github.com/sesquicadaver/MTDirector/issues/1163) | Seed next after DESK-PANEL-FAULT-01 (PLAN-58 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-414 (#1228)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-415 (#1229)", roadmap, StringComparison.Ordinal);
     }
 
     private static int Count(string text, string value)
