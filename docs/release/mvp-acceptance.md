@@ -9,6 +9,16 @@
 
 This document is the Living Specification index for M6-09 AC 1–16 and the milestone gate: M6 closes only after this acceptance package is green **for the issue-queue / scripted DoD layer**.
 
+## Acceptance layers (AUDIT-ACC-01 / F14)
+
+| Layer | What it proves | What it must never claim |
+|-------|----------------|--------------------------|
+| **A — Implementation / issue-queue** | ROADMAP/ISSUES CLOSED rows, packaging scripts, docs presence | Live RouterOS write-path safety |
+| **B — Unit / integration behavior** | Public use-case / gRPC entry points return success/fail via Living Specs (`ExecuteAsync`, host tests) | That missing CHR/env is a PASS; file-existence alone |
+| **C — Live acceptance** | Isolated CHR / physical CRS against real devices | Satisfied by Layer A/B or dry-run packaging |
+
+Layer C is **OFF / NOT SATISFIED** until an env-gated live runner reports green. CI job `CHR skeleton contracts` is Layer B scaffolding, not Layer C.
+
 ## Operator / release documentation map
 
 | Topic | Document |
@@ -58,8 +68,8 @@ gh issue list --search "M6-0 in:title is:closed" --limit 20
 |--:|-----------|----------|
 | 1 | All M0–M6 issues closed | ROADMAP §2.2 + matrix above; Living Spec `Ac1M0ThroughM6IssuesAreClosedInRoadmap` |
 | 2 | All release gates executed | [`release-gates.md`](release-gates.md); `Ac2ReleaseGatesChecklistExists` |
-| 3 | CHR test matrix green | Live CHR OFF — **issue-queue DoD substitute** (not production-safe live proof): `StandaloneDualStackE2ELivingSpecTests`, `MultiWanE2ELivingSpecTests`, `VrrpCrsE2ELivingSpecTests`, `RoutingAssuranceChrAcceptanceLivingSpecTests` (M7.1-11); live CHR residual remains optional ops-parallel and does **not** satisfy a production-safe write-path claim (AUDIT-STATUS-01) |
-| 4 | Physical CRS test green | Same **issue-queue substitute**: `VrrpCrsE2ELivingSpecTests` AC11 + `testlab/chr/topologies/crs-switch` — not physical hardware proof |
+| 3 | CHR test matrix green | **Layer B** unit/integration behavior (not Layer C live): `StandaloneDualStackE2ELivingSpecTests`, `MultiWanE2ELivingSpecTests`, `VrrpCrsE2ELivingSpecTests`, `RoutingAssuranceChrAcceptanceLivingSpecTests` must exercise use-case `ExecuteAsync` paths. Live CHR OFF / **NOT SATISFIED**. Historical wording **issue-queue DoD substitute** means Layer A/B only — does **not** satisfy a production-safe write-path claim (AUDIT-STATUS-01 / AUDIT-ACC-01) |
+| 4 | Physical CRS test green | **Layer B** only: `VrrpCrsE2ELivingSpecTests` AC11 + topology fixture under `testlab/chr/topologies/crs-switch` — not physical hardware / Layer C proof |
 | 5 | Fault-injection suite green | `FullyQualifiedName~FaultInjection` (+ M4-13 fault Living Spec) |
 | 6 | Security suite green | `SecurityBackupRestoreLivingSpecTests` (M6-08 AC 1–10) |
 | 7 | Backup/restore suite green | `SecurityBackupRestoreAcceptanceTests` (M6-08 AC 11–14) |
@@ -95,11 +105,11 @@ OUT_DIR="$(mktemp -d)" ./scripts/release/package-controller.sh
 # … desktop, migrations, sbom (see packaging.md)
 ```
 
-Live CHR / live physical CRS remain **OFF**. Optional residual: env-gated `MFC_CHR_*` on an isolated runner. **AUDIT-STATUS-01:** optional live residual must not be read as production-safe write-path acceptance.
+Live CHR / live physical CRS remain **OFF** (**Layer C NOT SATISFIED**). Optional residual: env-gated `MFC_CHR_*` on an isolated runner. **AUDIT-STATUS-01 / AUDIT-ACC-01:** optional live residual and CI skeleton jobs must not be read as production-safe write-path acceptance or as a PASS for a missing environment.
 
 ## Milestone close statement
 
-With M6-01…M6-09 and N1-07 delivered, **M6 is CLOSED** and **MVP CLOSED** (**issue-queue**). Post-MVP **M7.1…M7.4 CLOSED** (issues #110–#136) — issue-queue. **TRACKER-01 DONE** (#289); **PLAN-01 DONE** (#290); **P2-07…P2-11 DONE** (#293–#297) — **P2 write-path code rows CLOSED**; **production-safe write path NOT PROVEN** (PLAN-62 / audit `acd0759`). Git tag **`v0.2.0`** marks the first **issue-queue** acceptance baseline, not a proven live write-path. alignment P0–P2 **DONE**; **CONT-01…02 DONE**; **W5-01…03 DONE**; **W6-01…W6-02 DONE**; **§3.C NEXT = W7-425 (#1245)** (PLAN-31 inventory DONE; W7-262 DONE; PLAN-28 inventory DONE; W7-244 DONE; W7-245 DONE; DESK-A11Y-FIELD-01 DONE; W7-247 DONE; DESK-A11Y-CTRL-01 DONE; W7-249 DONE; PLAN-28 COMPLETE; PLAN-29 inventory DONE; W7-250 DONE; W7-251 DONE; W7-252 DONE; W7-253 DONE; W7-254 DONE; W7-255 DONE; PLAN-30 inventory DONE; W7-257 DONE; W7-258 DONE; PLAN-27 COMPLETE; W7-243 DONE; W7-242 DONE; W7-241 DONE; W7-240 DONE; W7-239 DONE; W7-238 DONE; W7-237 DONE; W7-236 DONE; W7-235 DONE; W7-113 DONE; W7-114 DONE; W7-112 DONE; W7-111 DONE; W7-110 DONE; PLAN-10 COMPLETE; W7-109 DONE; W7-108 DONE; W7-107 DONE; W7-106 DONE; W7-105 DONE; PLAN-10 inventory DONE; PLAN-09 COMPLETE; PLAN-09 inventory DONE; PLAN-08 COMPLETE; PLAN-07 COMPLETE; PLAN-05 COMPLETE; PLAN-06 COMPLETE; SEC-01…15 DONE).  
+With M6-01…M6-09 and N1-07 delivered, **M6 is CLOSED** and **MVP CLOSED** (**issue-queue**). Post-MVP **M7.1…M7.4 CLOSED** (issues #110–#136) — issue-queue. **TRACKER-01 DONE** (#289); **PLAN-01 DONE** (#290); **P2-07…P2-11 DONE** (#293–#297) — **P2 write-path code rows CLOSED**; **production-safe write path NOT PROVEN** (PLAN-62 / audit `acd0759`). Git tag **`v0.2.0`** marks the first **issue-queue** acceptance baseline, not a proven live write-path. alignment P0–P2 **DONE**; **CONT-01…02 DONE**; **W5-01…03 DONE**; **W6-01…W6-02 DONE**; **§3.C NEXT = W7-427 (#1248)** (PLAN-31 inventory DONE; W7-262 DONE; PLAN-28 inventory DONE; W7-244 DONE; W7-245 DONE; DESK-A11Y-FIELD-01 DONE; W7-247 DONE; DESK-A11Y-CTRL-01 DONE; W7-249 DONE; PLAN-28 COMPLETE; PLAN-29 inventory DONE; W7-250 DONE; W7-251 DONE; W7-252 DONE; W7-253 DONE; W7-254 DONE; W7-255 DONE; PLAN-30 inventory DONE; W7-257 DONE; W7-258 DONE; PLAN-27 COMPLETE; W7-243 DONE; W7-242 DONE; W7-241 DONE; W7-240 DONE; W7-239 DONE; W7-238 DONE; W7-237 DONE; W7-236 DONE; W7-235 DONE; W7-113 DONE; W7-114 DONE; W7-112 DONE; W7-111 DONE; W7-110 DONE; PLAN-10 COMPLETE; W7-109 DONE; W7-108 DONE; W7-107 DONE; W7-106 DONE; W7-105 DONE; PLAN-10 inventory DONE; PLAN-09 COMPLETE; PLAN-09 inventory DONE; PLAN-08 COMPLETE; PLAN-07 COMPLETE; PLAN-05 COMPLETE; PLAN-06 COMPLETE; SEC-01…15 DONE).  
 Post-acceptance Desktop UX: Inventory **Add router** ([#309](https://github.com/sesquicadaver/MTDirector/pull/309), 2026-08-28) — see [`../development/connection-profiles.md`](../development/connection-profiles.md).
 
 ## Acceptance review (AC16)

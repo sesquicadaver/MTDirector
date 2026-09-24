@@ -55,7 +55,7 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
         Assert.Contains("M7.2 CLOSED", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.3 CLOSED", roadmap, StringComparison.Ordinal);
         Assert.Contains("M7.4 CLOSED", roadmap, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", roadmap, StringComparison.Ordinal);
         Assert.Contains("W7-06", roadmap, StringComparison.Ordinal);
         Assert.Contains("SEC-06", roadmap, StringComparison.Ordinal);
         Assert.Contains("SEC-11", roadmap, StringComparison.Ordinal);
@@ -158,39 +158,63 @@ public sealed class MvpReleaseAcceptanceLivingSpecTests
 
     // ── AC 3 ──────────────────────────────────────────────────────────────────────
 
-    /// <summary>CHR matrix DoD substitute: E2E Living Spec suites exist while live CHR remains OFF.</summary>
+    /// <summary>
+    /// AUDIT-ACC-01: CHR matrix Layer B behavior (ExecuteAsync paths); Layer C live remains OFF / NOT SATISFIED.
+    /// File presence alone is insufficient.
+    /// </summary>
     [Fact]
-    public void Ac3ChrMatrixSubstitutedByE2ELivingSpecs()
+    public void Ac3ChrUnitIntegrationIsBehavioralAndLiveRemainsNotSatisfied()
     {
-        AssertFile("tests", "Mfc.UnitTests", "E2E", "StandaloneDualStackE2ELivingSpecTests.cs");
-        AssertFile("tests", "Mfc.UnitTests", "E2E", "MultiWanE2ELivingSpecTests.cs");
-        AssertFile("tests", "Mfc.UnitTests", "E2E", "VrrpCrsE2ELivingSpecTests.cs");
-        AssertFile("tests", "Mfc.UnitTests", "E2E", "RoutingAssuranceChrAcceptanceLivingSpecTests.cs");
+        string standalone = Read("tests", "Mfc.UnitTests", "E2E", "StandaloneDualStackE2ELivingSpecTests.cs");
+        string multiWan = Read("tests", "Mfc.UnitTests", "E2E", "MultiWanE2ELivingSpecTests.cs");
+        string vrrp = Read("tests", "Mfc.UnitTests", "E2E", "VrrpCrsE2ELivingSpecTests.cs");
+        string routing = Read("tests", "Mfc.UnitTests", "E2E", "RoutingAssuranceChrAcceptanceLivingSpecTests.cs");
+
+        Assert.Contains("ExecuteStandaloneDeploymentUseCase.ExecuteAsync", standalone, StringComparison.Ordinal);
+        Assert.Contains("Assert.True", standalone, StringComparison.Ordinal);
+        Assert.Contains("ExecuteAsync", multiWan, StringComparison.Ordinal);
+        Assert.Contains("ExecuteAsync", vrrp, StringComparison.Ordinal);
+        Assert.Contains("ExecuteAsync", routing, StringComparison.Ordinal);
 
         string acceptance = Read("docs", "release", "mvp-acceptance.md");
+        Assert.Contains("Acceptance layers (AUDIT-ACC-01 / F14)", acceptance, StringComparison.Ordinal);
+        Assert.Contains("Layer C", acceptance, StringComparison.Ordinal);
+        Assert.Contains("NOT SATISFIED", acceptance, StringComparison.Ordinal);
         Assert.Contains("Live CHR OFF", acceptance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("issue-queue DoD substitute", acceptance, StringComparison.Ordinal);
         Assert.Contains("StandaloneDualStackE2ELivingSpecTests", acceptance, StringComparison.Ordinal);
         Assert.Contains("RoutingAssuranceChrAcceptanceLivingSpecTests", acceptance, StringComparison.Ordinal);
-        Assert.Contains("optional", acceptance, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("SubstitutedByE2ELivingSpecs", acceptance, StringComparison.Ordinal);
 
         string limitations = Read("docs", "release", "known-limitations.md");
         Assert.Contains("Live CHR matrix is **OFF**", limitations, StringComparison.Ordinal);
+
+        string workflow = Read(".github", "workflows", "routeros-integration.yml");
+        Assert.Contains("chr-skeleton-contracts", workflow, StringComparison.Ordinal);
+        Assert.Contains("skeleton", workflow, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("not live acceptance", workflow, StringComparison.OrdinalIgnoreCase);
     }
 
     // ── AC 4 ──────────────────────────────────────────────────────────────────────
 
-    /// <summary>Physical CRS DoD substitute: VRRP/CRS Living Spec + crs-switch topology fixture.</summary>
+    /// <summary>
+    /// AUDIT-ACC-01: physical CRS Layer B fixture + behavioral AC; Layer C hardware remains unproven.
+    /// </summary>
     [Fact]
-    public void Ac4PhysicalCrsSubstitutedByScriptedFixture()
+    public void Ac4PhysicalCrsUnitIntegrationIsBehavioralNotHardwareProof()
     {
-        AssertFile("tests", "Mfc.UnitTests", "E2E", "VrrpCrsE2ELivingSpecTests.cs");
-        Assert.True(
-            Directory.Exists(Path.Combine(RepoRoot, "testlab", "chr", "topologies", "crs-switch")),
-            "Missing testlab/chr/topologies/crs-switch");
-
         string crsSpec = Read("tests", "Mfc.UnitTests", "E2E", "VrrpCrsE2ELivingSpecTests.cs");
         Assert.Contains("Ac11", crsSpec, StringComparison.Ordinal);
         Assert.Contains("Crs", crsSpec, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ExecuteAsync", crsSpec, StringComparison.Ordinal);
+
+        Assert.True(
+            Directory.Exists(Path.Combine(RepoRoot, "testlab", "chr", "topologies", "crs-switch")),
+            "Missing testlab/chr/topologies/crs-switch topology fixture (Layer B scaffolding only)");
+
+        string acceptance = Read("docs", "release", "mvp-acceptance.md");
+        Assert.Contains("not physical hardware", acceptance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Layer B", acceptance, StringComparison.Ordinal);
     }
 
     // ── AC 5 ──────────────────────────────────────────────────────────────────────

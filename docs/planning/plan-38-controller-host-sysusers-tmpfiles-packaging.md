@@ -74,4 +74,4 @@ PLAN-37 sole ranked row (**OPS-HOST-ENV-01**) is **DONE**. No further PLAN-37 pr
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-425 (#1245)** — PLAN-40 Inventory Controller host journald/syslog identity after PLAN-39.
+**§3.C NEXT = W7-427 (#1248)** — PLAN-40 Inventory Controller host journald/syslog identity after PLAN-39.

@@ -47,23 +47,23 @@ public sealed class ProductTrancheSeedW7387LivingSpecTests
             "W7-389 | [#1184](https://github.com/sesquicadaver/MTDirector/issues/1184) | Seed first PLAN-61 atomic row after inventory → DESK-CONN-DISC-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-60 COMPLETE", plan60, StringComparison.Ordinal);
         Assert.Contains("W7-387 (#1179) DONE", plan60, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", plan60, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", plan60, StringComparison.Ordinal);
         Assert.Contains("plan-61-desktop-connection-disconnected-fault-text.md", plan, StringComparison.Ordinal);
         Assert.Contains("plan-61-desktop-connection-disconnected-fault-text.md", docsIndex, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-61", plan, StringComparison.Ordinal);
         Assert.Contains("W7-388", plan, StringComparison.Ordinal);
         Assert.Contains("W7-387 (#1179) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-CONN-DISC-01", plan61, StringComparison.Ordinal);
         Assert.Contains("ex.Message", plan61, StringComparison.Ordinal);
         Assert.Contains("33682bb6", plan61, StringComparison.Ordinal);
         Assert.Contains("W7-388", plan61, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", plan61, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", plan61, StringComparison.Ordinal);
 
         Assert.Equal(
             6,

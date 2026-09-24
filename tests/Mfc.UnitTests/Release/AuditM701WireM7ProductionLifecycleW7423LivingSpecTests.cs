@@ -37,13 +37,13 @@ public sealed class AuditM701WireM7ProductionLifecycleW7423LivingSpecTests
         Assert.Contains("AUDIT-M7-01", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-423 (#1242) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-424 (#1244) DONE", plan62, StringComparison.Ordinal);
-        Assert.Contains("W7-425 (#1245) OPEN (NEXT)", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-425 (#1245) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("Intentional residual (W7-423 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("AUDIT-M7-01 DONE", limitations, StringComparison.Ordinal);
         Assert.Contains("W7-423", roadmap, StringComparison.Ordinal);
         Assert.Contains("AUDIT-M7-01", roadmap, StringComparison.Ordinal);
         Assert.Contains("**DONE**", roadmap, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", roadmap, StringComparison.Ordinal);
         Assert.Contains("W7-423", continuous, StringComparison.Ordinal);
         Assert.Contains("AuditM701WireM7ProductionLifecycleW7423", testing, StringComparison.Ordinal);
 

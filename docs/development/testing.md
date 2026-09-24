@@ -3983,6 +3983,24 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinData
 
 
 
+## Living Specification — Seed PLAN62-DONE-01 after AUDIT-ACC-01 (W7-426)
+
+| AC | Module | Test |
+|----|--------|------|
+| Seed locks PLAN62-DONE-01 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7426LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan62Done01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7426"`.
+
+## Living Specification — AUDIT-ACC-01 Acceptance by behavior (W7-425)
+
+| AC | Module | Test |
+|----|--------|------|
+| Three-layer acceptance; CHR Living Specs must be behavioral; live OFF / NOT SATISFIED | mvp-acceptance, release-gates, MvpReleaseAcceptance, routeros-integration.yml | `AuditAcc01AcceptanceByBehaviorW7425LivingSpecTests.Ac1ThreeLayerAcceptanceAndBehavioralChrGates` |
+| CHR unit/integration behavioral + live not satisfied | MvpReleaseAcceptanceLivingSpecTests | `Ac3ChrUnitIntegrationIsBehavioralAndLiveRemainsNotSatisfied` |
+| Physical CRS fixture is Layer B not hardware proof | MvpReleaseAcceptanceLivingSpecTests | `Ac4PhysicalCrsUnitIntegrationIsBehavioralNotHardwareProof` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditAcc01|MvpReleaseAcceptance"`.
+
 ## Living Specification — Seed AUDIT-ACC-01 after AUDIT-M7-01 (W7-424)
 
 | AC | Module | Test |

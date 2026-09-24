@@ -76,7 +76,7 @@ public sealed class CtrlGrpcKeepalive01ControllerDesktopHttp2KeepaliveLivingSpec
             "W7-342 | [#1090](https://github.com/sesquicadaver/MTDirector/issues/1090) | CTRL-GRPC-KEEPALIVE-01 — Finite HTTP/2 keepalive for Controller+Desktop Watch streams | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", roadmap, StringComparison.Ordinal);
         Assert.Contains("CTRL-GRPC-KEEPALIVE-01", plan49, StringComparison.Ordinal);
         Assert.Contains("Delivery notes (W7-342)", plan49, StringComparison.Ordinal);
     }

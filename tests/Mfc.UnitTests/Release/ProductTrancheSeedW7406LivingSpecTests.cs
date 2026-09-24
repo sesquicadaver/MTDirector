@@ -29,13 +29,13 @@ public sealed class ProductTrancheSeedW7406LivingSpecTests
             "W7-407 | [#1215](https://github.com/sesquicadaver/MTDirector/issues/1215) | AUDIT-CLK-01 — RouterOS clock / TTL budget | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-406 (#1214) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-407 (#1215)", plan, StringComparison.Ordinal);
         Assert.Contains("AUDIT-CLK-01", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

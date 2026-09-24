@@ -84,7 +84,7 @@ public sealed class DeskConnFault01DesktopConnectionFaultLivingSpecTests
             "W7-362 | [#1130](https://github.com/sesquicadaver/MTDirector/issues/1130) | DESK-CONN-FAULT-01 — Route connection AuthenticationFailed status through DesktopRpcFaultText | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-425 (#1245)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-427 (#1248)", roadmap, StringComparison.Ordinal);
         Assert.Contains("Delivery notes (W7-362)", plan54, StringComparison.Ordinal);
         Assert.Contains("DesktopRpcFaultText.Format", plan54, StringComparison.Ordinal);
 
