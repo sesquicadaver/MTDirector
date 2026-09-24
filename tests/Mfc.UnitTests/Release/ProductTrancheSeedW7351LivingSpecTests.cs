@@ -40,21 +40,21 @@ public sealed class ProductTrancheSeedW7351LivingSpecTests
             "W7-353 | [#1112](https://github.com/sesquicadaver/MTDirector/issues/1112) | Seed first PLAN-52 atomic row after inventory → DESK-RPC-FAULT-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-415 (#1229)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-417 (#1233)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-51 COMPLETE", plan51, StringComparison.Ordinal);
         Assert.Contains("W7-351 (#1107) DONE", plan51, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-415 (#1229)", plan51, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-417 (#1233)", plan51, StringComparison.Ordinal);
         Assert.Contains("plan-52-desktop-grpc-error-detail.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-52", plan, StringComparison.Ordinal);
         Assert.Contains("W7-352", plan, StringComparison.Ordinal);
         Assert.Contains("W7-351 (#1107) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-415 (#1229)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-417 (#1233)", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-RPC-FAULT-01", plan52, StringComparison.Ordinal);
         Assert.Contains("mfc-error-detail-bin", plan52, StringComparison.Ordinal);
         Assert.Contains("W7-352", plan52, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-415 (#1229)", plan52, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-417 (#1233)", plan52, StringComparison.Ordinal);
 
         Assert.Contains("deadline: DateTime.UtcNow.AddSeconds(seconds)", helper, StringComparison.Ordinal);
         Assert.Contains("mfc-error-detail-bin", mapper, StringComparison.Ordinal);
