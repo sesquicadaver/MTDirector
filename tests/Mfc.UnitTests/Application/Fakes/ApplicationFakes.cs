@@ -428,7 +428,8 @@ internal sealed class FakeAuditEventWriter : IAuditEventWriter
 internal sealed class FakeSnapshotStore : ISnapshotStore
 {
     private readonly Dictionary<Guid, StoredSnapshot> _byId = [];
-    private readonly Dictionary<(Guid RequestedBy, Guid Key), Guid> _idempotency = [];
+    private readonly Dictionary<(Guid RequestedBy, Guid Key, Guid DeviceId), Guid> _idempotency = [];
+    private readonly Dictionary<(Guid RequestedBy, Guid Key), Guid> _idempotencyDevice = [];
     private readonly Dictionary<string, StoredSnapshotPayload> _payloads = new(StringComparer.Ordinal);
 
     /// <summary>Injected or persist-parsed canonical sections keyed by snapshot id (M1-24).</summary>
@@ -493,15 +494,31 @@ internal sealed class FakeSnapshotStore : ISnapshotStore
     public Task<StoredSnapshot?> FindByIdempotencyAsync(
         Guid requestedBy,
         Guid idempotencyKey,
+        DeviceId deviceId,
         CancellationToken cancellationToken = default)
     {
-        if (_idempotency.TryGetValue((requestedBy, idempotencyKey), out Guid id)
+        if (_idempotency.TryGetValue((requestedBy, idempotencyKey, deviceId.Value), out Guid id)
             && _byId.TryGetValue(id, out StoredSnapshot? snapshot))
         {
             return Task.FromResult<StoredSnapshot?>(snapshot);
         }
 
         return Task.FromResult<StoredSnapshot?>(null);
+    }
+
+    public Task<bool> IdempotencyKeyBoundToOtherDeviceAsync(
+        Guid requestedBy,
+        Guid idempotencyKey,
+        DeviceId deviceId,
+        CancellationToken cancellationToken = default)
+    {
+        if (_idempotencyDevice.TryGetValue((requestedBy, idempotencyKey), out Guid bound)
+            && bound != deviceId.Value)
+        {
+            return Task.FromResult(true);
+        }
+
+        return Task.FromResult(false);
     }
 
     public Task<StoredSnapshot> PersistCompletedAsync(
@@ -541,7 +558,9 @@ internal sealed class FakeSnapshotStore : ISnapshotStore
             CapabilityPayloadHash = capPayloadHash,
         };
         _byId[stored.Metadata.Id.Value] = stored;
-        _idempotency[(request.RequestedBy, request.IdempotencyKey)] = stored.Metadata.Id.Value;
+        _idempotency[(request.RequestedBy, request.IdempotencyKey, request.DeviceId.Value)] =
+            stored.Metadata.Id.Value;
+        _idempotencyDevice[(request.RequestedBy, request.IdempotencyKey)] = request.DeviceId.Value;
         SectionsBySnapshot[stored.Metadata.Id.Value] = ParseSections(request.Capture);
         SectionDescriptorsBySnapshot[stored.Metadata.Id.Value] = request.Capture.Sections
             .Select(static s => new StoredSnapshotSectionDescriptor
@@ -732,11 +751,19 @@ internal sealed class FakeSnapshotCapturePort : ISnapshotCapturePort
 
     public int CaptureCount { get; private set; }
 
+    /// <summary>Device ids that throw on CaptureAsync (AUDIT-CAP-04 node partial tests).</summary>
+    public HashSet<Guid> FailDeviceIds { get; } = [];
+
     public Task<SnapshotCaptureResult> CaptureAsync(
         RouterOsReadTarget target,
         CancellationToken cancellationToken = default)
     {
         CaptureCount++;
+        if (FailDeviceIds.Contains(target.DeviceId.Value))
+        {
+            throw new InvalidOperationException("SNAPSHOT_REQUIRED_SECTION_FAILED:injected");
+        }
+
         return Task.FromResult(NextResult);
     }
 

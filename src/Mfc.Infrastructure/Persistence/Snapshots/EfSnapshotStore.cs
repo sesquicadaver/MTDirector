@@ -165,12 +165,15 @@ public sealed class EfSnapshotStore : ISnapshotStore
     public async Task<StoredSnapshot?> FindByIdempotencyAsync(
         Guid requestedBy,
         Guid idempotencyKey,
+        DeviceId deviceId,
         CancellationToken cancellationToken = default)
     {
         CaptureOperationEntity? operation = await _db.CaptureOperations
             .AsNoTracking()
             .FirstOrDefaultAsync(
-                o => o.RequestedBy == requestedBy && o.IdempotencyKey == idempotencyKey,
+                o => o.RequestedBy == requestedBy
+                     && o.IdempotencyKey == idempotencyKey
+                     && o.TargetId == deviceId.Value,
                 cancellationToken)
             .ConfigureAwait(false);
         if (operation is null)
@@ -191,6 +194,20 @@ public sealed class EfSnapshotStore : ISnapshotStore
 
         return await ToStoredAsync(capture, cancellationToken).ConfigureAwait(false);
     }
+
+    /// <inheritdoc />
+    public Task<bool> IdempotencyKeyBoundToOtherDeviceAsync(
+        Guid requestedBy,
+        Guid idempotencyKey,
+        DeviceId deviceId,
+        CancellationToken cancellationToken = default)
+        => _db.CaptureOperations
+            .AsNoTracking()
+            .AnyAsync(
+                o => o.RequestedBy == requestedBy
+                     && o.IdempotencyKey == idempotencyKey
+                     && o.TargetId != deviceId.Value,
+                cancellationToken);
 
     /// <inheritdoc />
     public async Task<StoredSnapshot> PersistCompletedAsync(

@@ -34,7 +34,7 @@ public sealed class Plan53ControllerFaultCorrelationLogW7356LivingSpecTests
         Assert.Contains("W7-357", plan53, StringComparison.Ordinal);
         Assert.Contains("W7-356", plan53, StringComparison.Ordinal);
         Assert.Contains("traceId", plan53, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-413 (#1226)", plan53, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-414 (#1228)", plan53, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-356 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-ERRDETAIL-LOG-01", limitations, StringComparison.Ordinal);
@@ -59,7 +59,7 @@ public sealed class Plan53ControllerFaultCorrelationLogW7356LivingSpecTests
             "W7-359 | [#1123](https://github.com/sesquicadaver/MTDirector/issues/1123) | Seed next after CTRL-ERRDETAIL-LOG-01 (PLAN-53 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-413 (#1226)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-414 (#1228)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-357", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-358", continuous, StringComparison.Ordinal);
@@ -89,7 +89,7 @@ public sealed class Plan53ControllerFaultCorrelationLogW7356LivingSpecTests
             Assert.DoesNotContain("correlationId", source, StringComparison.Ordinal);
         }
 
-        Assert.Equal(43, calls);
+        Assert.Equal(45, calls);
     }
 
     private static int Count(string text, string value)

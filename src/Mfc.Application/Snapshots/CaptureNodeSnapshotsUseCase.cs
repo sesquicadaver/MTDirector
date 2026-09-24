@@ -25,7 +25,12 @@ public sealed class CaptureNodeMemberSnapshotView
 
     public required string DisplayName { get; init; }
 
-    public required SnapshotView Snapshot { get; init; }
+    /// <summary>Completed capture when the member succeeded; null on failure (AUDIT-CAP-04).</summary>
+    public SnapshotView? Snapshot { get; init; }
+
+    public string? ErrorCode { get; init; }
+
+    public string? ErrorMessage { get; init; }
 }
 
 public sealed class CaptureNodeSnapshotsView
@@ -33,14 +38,30 @@ public sealed class CaptureNodeSnapshotsView
     public required Guid NodeId { get; init; }
 
     public required IReadOnlyList<CaptureNodeMemberSnapshotView> Members { get; init; }
+
+    /// <summary>
+    /// True when every member succeeded and their CompletedAtUtc span is within
+    /// <see cref="CaptureNodeSnapshotsUseCase.MaxMemberCaptureSkew"/>.
+    /// </summary>
+    public required bool TimeSetFit { get; init; }
+
+    /// <summary>max(CompletedAt) − min(CompletedAt) among successful members, when known.</summary>
+    public TimeSpan? ObservedCaptureSkew { get; init; }
+
+    public bool AllMembersSucceeded =>
+        Members.Count > 0 && Members.All(static m => m.Snapshot is not null && m.ErrorCode is null);
 }
 
 /// <summary>
 /// Captures every Device on a Node (W6-03 / StartCapture node_id).
+/// AUDIT-CAP-04 / F09: attempts all members (does not abort on first failure) and reports time-set fitness.
 /// Does not invent VRRP roles; does not WriteEnabled; CompareSnapshots a↔b unchanged.
 /// </summary>
 public sealed class CaptureNodeSnapshotsUseCase
 {
+    /// <summary>Maximum allowed span of member CompletedAtUtc for a fit time-set (aligned with MaxRouterClockSkew).</summary>
+    public static readonly TimeSpan MaxMemberCaptureSkew = TimeSpan.FromMinutes(5);
+
     private readonly IAuthorizationBoundary _auth;
     private readonly INodeStore _nodes;
     private readonly IDeviceStore _devices;
@@ -116,23 +137,35 @@ public sealed class CaptureNodeSnapshotsUseCase
                     },
                     cancellationToken)
                 .ConfigureAwait(false);
-            if (!captured.IsSuccess)
-            {
-                return ApplicationResults.Fail(captured.Error!);
-            }
 
-            members.Add(new CaptureNodeMemberSnapshotView
+            if (captured.IsSuccess)
             {
-                DeviceId = device.Id.Value,
-                DisplayName = device.DisplayName.Value,
-                Snapshot = captured.Value!,
-            });
+                members.Add(new CaptureNodeMemberSnapshotView
+                {
+                    DeviceId = device.Id.Value,
+                    DisplayName = device.DisplayName.Value,
+                    Snapshot = captured.Value!,
+                });
+            }
+            else
+            {
+                members.Add(new CaptureNodeMemberSnapshotView
+                {
+                    DeviceId = device.Id.Value,
+                    DisplayName = device.DisplayName.Value,
+                    ErrorCode = captured.Error!.Code,
+                    ErrorMessage = captured.Error.Message,
+                });
+            }
         }
 
+        bool timeSetFit = EvaluateTimeSetFit(members, out TimeSpan? observedSkew);
         return ApplicationResults.Ok(new CaptureNodeSnapshotsView
         {
             NodeId = node.Id.Value,
             Members = members,
+            TimeSetFit = timeSetFit,
+            ObservedCaptureSkew = observedSkew,
         });
     }
 
@@ -144,5 +177,42 @@ public sealed class CaptureNodeSnapshotsUseCase
         deviceId.TryWriteBytes(material[16..]);
         byte[] hash = SHA256.HashData(material);
         return new Guid(hash.AsSpan(0, 16));
+    }
+
+    /// <summary>
+    /// Time-set is fit only when every member succeeded and CompletedAtUtc span ≤ MaxMemberCaptureSkew.
+    /// </summary>
+    public static bool EvaluateTimeSetFit(
+        IReadOnlyList<CaptureNodeMemberSnapshotView> members,
+        out TimeSpan? observedSkew)
+    {
+        ArgumentNullException.ThrowIfNull(members);
+        observedSkew = null;
+        if (members.Count == 0 || members.Any(static m => m.Snapshot is null))
+        {
+            return false;
+        }
+
+        List<DateTimeOffset> times = members
+            .Select(static m => m.Snapshot!.CompletedAtUtc)
+            .Where(static t => t.HasValue)
+            .Select(static t => t!.Value)
+            .ToList();
+        if (times.Count != members.Count)
+        {
+            return false;
+        }
+
+        if (times.Count == 1)
+        {
+            observedSkew = TimeSpan.Zero;
+            return true;
+        }
+
+        DateTimeOffset min = times.Min();
+        DateTimeOffset max = times.Max();
+        TimeSpan skew = max - min;
+        observedSkew = skew;
+        return skew <= MaxMemberCaptureSkew;
     }
 }

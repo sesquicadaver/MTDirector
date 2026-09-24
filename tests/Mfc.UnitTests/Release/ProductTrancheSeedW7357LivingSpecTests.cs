@@ -36,19 +36,19 @@ public sealed class ProductTrancheSeedW7357LivingSpecTests
             "W7-359 | [#1123](https://github.com/sesquicadaver/MTDirector/issues/1123) | Seed next after CTRL-ERRDETAIL-LOG-01 (PLAN-53 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-413 (#1226)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-414 (#1228)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-357", plan, StringComparison.Ordinal);
         Assert.Contains("W7-358", plan, StringComparison.Ordinal);
         Assert.Contains("W7-359", plan, StringComparison.Ordinal);
         Assert.Contains("CTRL-ERRDETAIL-LOG-01", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-413 (#1226)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-414 (#1228)", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-357 (#1120) DONE", plan53, StringComparison.Ordinal);
         Assert.Contains("CTRL-ERRDETAIL-LOG-01", plan53, StringComparison.Ordinal);
         Assert.Contains("W7-358", plan53, StringComparison.Ordinal);
         Assert.Contains("W7-359", plan53, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-413 (#1226)", plan53, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-414 (#1228)", plan53, StringComparison.Ordinal);
 
         Assert.Contains("correlationId ?? Guid.NewGuid()", mapper, StringComparison.Ordinal);
         Assert.Contains("mfc-error-detail-bin", mapper, StringComparison.Ordinal);
@@ -67,7 +67,7 @@ public sealed class ProductTrancheSeedW7357LivingSpecTests
             calls += Count(File.ReadAllText(path), "GrpcApplicationErrorMapper.ToRpcException");
         }
 
-        Assert.Equal(43, calls);
+        Assert.Equal(45, calls);
     }
 
     private static int Count(string text, string value)

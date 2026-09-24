@@ -187,7 +187,10 @@ public sealed class SnapshotPersistTests
         DeviceEntity reloaded = await db.Devices.SingleAsync(d => d.Id == device.Id);
         Assert.Equal(stored.Metadata.Id.Value, reloaded.LastCompletedCaptureId);
 
-        StoredSnapshot? byIdempotency = await store.FindByIdempotencyAsync(requestedBy, idempotencyKey);
+        StoredSnapshot? byIdempotency = await store.FindByIdempotencyAsync(
+            requestedBy,
+            idempotencyKey,
+            new DeviceId(device.Id));
         Assert.NotNull(byIdempotency);
         Assert.Equal(stored.Metadata.Id, byIdempotency.Metadata.Id);
 

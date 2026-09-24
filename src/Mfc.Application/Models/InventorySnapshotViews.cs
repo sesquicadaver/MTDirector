@@ -134,7 +134,10 @@ public sealed class SnapshotView
     /// <summary>Capture operation id when known (persisted or in-flight StartCapture).</summary>
     public Guid? OperationId { get; init; }
 
-    /// <summary>True when StartCapture reused an idempotent or identical completed capture.</summary>
+    /// <summary>
+    /// True when StartCapture reused an idempotent replay, or persisted a new attempt whose
+    /// content-addressed payload matched a prior completed capture (AUDIT-CAP-04).
+    /// </summary>
     public bool Deduplicated { get; init; }
 
     /// <summary>

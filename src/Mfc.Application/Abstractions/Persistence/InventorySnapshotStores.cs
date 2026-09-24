@@ -158,10 +158,23 @@ public interface ISnapshotStore
         SnapshotHash snapshotHash,
         CancellationToken cancellationToken = default);
 
-    /// <summary>Returns a completed capture linked to an idempotent capture operation, if any.</summary>
+    /// <summary>
+    /// Returns a completed capture linked to an idempotent capture operation for the same device target, if any.
+    /// AUDIT-CAP-04 / F09: idempotency is bound to the full request (actor + key + device).
+    /// </summary>
     Task<StoredSnapshot?> FindByIdempotencyAsync(
         Guid requestedBy,
         Guid idempotencyKey,
+        DeviceId deviceId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// True when <paramref name="idempotencyKey"/> is already bound to a different device for this actor.
+    /// </summary>
+    Task<bool> IdempotencyKeyBoundToOtherDeviceAsync(
+        Guid requestedBy,
+        Guid idempotencyKey,
+        DeviceId deviceId,
         CancellationToken cancellationToken = default);
 
     /// <summary>
