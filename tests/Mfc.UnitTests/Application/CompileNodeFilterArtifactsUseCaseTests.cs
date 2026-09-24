@@ -546,8 +546,13 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
         PolicyDocument document = PolicyDocumentReader.Read(revision.CanonicalBytes);
         Hash256 logical = logicalHash ?? ComposeLogical(revision, document);
 
-        byte[] fingerprint = PolicyApprovalHasher.HashDependencyFingerprint(Vector()).Bytes.ToArray();
-        RecordAnalysisRunUseCase record = new(auth, policies, approvals, idempotency, audit, new FakeUnitOfWork());
+        Hash256 liveFp = PolicyApprovalHasher.HashDependencyFingerprint(Vector());
+        byte[] fingerprint = liveFp.Bytes.ToArray();
+        IPolicyDependencyFingerprintCalculator approvalFp =
+            new PassthroughPolicyDependencyFingerprintCalculator { OverrideCurrent = liveFp };
+        IPolicyDependencyFingerprintCalculator compileFp = fingerprints ?? approvalFp;
+        RecordAnalysisRunUseCase record = new(
+            auth, policies, approvals, idempotency, audit, new FakeUnitOfWork(), approvalFp);
         ApplicationResult<PolicyAnalysisRunView> run = await record.ExecuteAsync(new RecordAnalysisRunCommand
         {
             Actor = "author",
@@ -567,20 +572,12 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
             PolicySchemaVersion = PolicyDocument.SchemaName,
             PipelineVersion = PolicyPipelineV1.Version,
             Findings = [],
-            TestResults =
-            [
-                new PolicyApprovalTestInput
-                {
-                    TestId = Guid.NewGuid(),
-                    Origin = PolicyEvidenceAnalysisCodes.OriginSystem,
-                    Outcome = PolicyEvidenceAnalysisCodes.OutcomePass,
-                    Proof = PolicyEvidenceAnalysisCodes.ProofProven,
-                },
-            ],
+            TestResults = [],
         });
         Assert.True(run.IsSuccess, run.Error?.Message);
 
-        ApproveRevisionUseCase approve = new(auth, policies, approvals, idempotency, audit, new FakeUnitOfWork());
+        ApproveRevisionUseCase approve = new(
+            auth, policies, approvals, idempotency, audit, new FakeUnitOfWork(), approvalFp);
         Assert.True((await approve.ExecuteAsync(new ApproveRevisionCommand
         {
             Actor = "reviewer",
@@ -594,7 +591,8 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
 
         if (!skipBind)
         {
-            ActivateDesiredBindingUseCase bind = new(auth, policies, approvals, idempotency, audit, clock, new FakeUnitOfWork());
+            ActivateDesiredBindingUseCase bind = new(
+                auth, policies, approvals, idempotency, audit, clock, new FakeUnitOfWork(), approvalFp);
             Assert.True((await bind.ExecuteAsync(new ActivateDesiredBindingCommand
             {
                 Actor = "binder",
@@ -649,7 +647,7 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
 
         CompileNodeFilterArtifactsUseCase useCase = new(
             auth, nodes, devices, policies, approvals, zones, bindings, observations, snapshots, artifacts, clock,
-            fingerprints);
+            compileFp);
 
         return new CompileFixture
         {

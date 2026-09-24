@@ -26,18 +26,18 @@ public sealed class ProductTrancheSeedW7414LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-415 | [#1229](https://github.com/sesquicadaver/MTDirector/issues/1229) | AUDIT-AN-03 — Server-owned analysis | **OPEN**",
+            "W7-415 | [#1229](https://github.com/sesquicadaver/MTDirector/issues/1229) | AUDIT-AN-03 — Server-owned analysis | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-415 (#1229)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-417 (#1233)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-414 (#1228) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-415 (#1229)", plan, StringComparison.Ordinal);
         Assert.Contains("AUDIT-AN-03", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-414 (#1228) DONE", plan62, StringComparison.Ordinal);
-        Assert.Contains("W7-415 (#1229) OPEN (NEXT)", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-415 (#1229)", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-415 (#1229)", readme, StringComparison.Ordinal);
+        Assert.Contains("W7-415 (#1229) DONE", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-417 (#1233)", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-417 (#1233)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

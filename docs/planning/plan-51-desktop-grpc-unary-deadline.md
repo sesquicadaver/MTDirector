@@ -114,4 +114,4 @@ PLAN-50 sole ranked row (**CTRL-KESTREL-MINRATE-01**) is **DONE**. No further PL
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-415 (#1229)** — PLAN-52 Inventory Desktop gRPC ErrorDetail operator mapping after PLAN-51.
+**§3.C NEXT = W7-417 (#1233)** — PLAN-52 Inventory Desktop gRPC ErrorDetail operator mapping after PLAN-51.

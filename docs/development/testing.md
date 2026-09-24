@@ -3983,6 +3983,22 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinData
 
 
 
+## Living Specification — Seed AUDIT-BIND-01 after AUDIT-AN-03 (W7-416)
+
+| AC | Module | Test |
+|----|--------|------|
+| Seed locks AUDIT-BIND-01 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7416LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditBind01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7416"`.
+
+## Living Specification — AUDIT-AN-03 Server-owned analysis (W7-415)
+
+| AC | Module | Test |
+|----|--------|------|
+| Server owns risk/tests; live deps fill bindings; Approve/Bind/Compile never echo frozen FP | PolicyServerOwnedAnalysis, LivePolicyDependencyFingerprintCalculator, PolicyApprovalUseCases, known-limitations, ROADMAP | `AuditAn03ServerOwnedAnalysisW7415LivingSpecTests.Ac1ServerOwnsRiskTestsAndLiveDependencyVector` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditAn03ServerOwnedAnalysisW7415"`.
+
 ## Living Specification — Seed AUDIT-AN-03 after AUDIT-CAP-04 (W7-414)
 
 | AC | Module | Test |

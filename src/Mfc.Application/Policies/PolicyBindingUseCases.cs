@@ -135,8 +135,8 @@ public sealed class ActivateDesiredBindingUseCase
                     AnalyzerVersion = run.AnalyzerVersion,
                     PolicySchemaVersion = run.PolicySchemaVersion,
                     PipelineVersion = run.PipelineVersion,
-                    NodeId = null,
-                    FrozenRunFingerprint = run.DependencyFingerprint,
+                    NodeId = command.NodeId is Guid bindNode ? new NodeId(bindNode) : null,
+                    FrozenRunFingerprint = null,
                 },
                 cancellationToken)
             .ConfigureAwait(false);

@@ -1,7 +1,7 @@
 # PLAN-62 — Repository-audit remediation (`acd0759`)
 
 **Date:** 2026-09-23  
-**Status:** **OPEN** — Inventory **DONE** (W7-393 #1195); seed **W7-394 (#1196) DONE**; **AUDIT-STATUS-01 W7-395 (#1197) DONE**; seed **W7-396 (#1199) DONE**; **AUDIT-SBOM-01 W7-397 (#1200) DONE**; seed **W7-398 (#1202) DONE**; **AUDIT-OWN-01 W7-399 (#1203) DONE**; seed **W7-400 (#1205) DONE**; **AUDIT-COMMIT-01 W7-401 (#1206) DONE**; seed **W7-402 (#1208) DONE**; **AUDIT-EVID-01 W7-403 (#1209) DONE**; seed **W7-404 (#1211) DONE**; **AUDIT-RB-01 W7-405 (#1212) DONE**; seed **W7-406 (#1214) DONE**; **AUDIT-CLK-01 W7-407 (#1215) DONE**; seed **W7-408 (#1217) DONE**; **AUDIT-RPC-01 W7-409 (#1218) DONE**; seed **W7-410 (#1220) DONE**; **AUDIT-CAP-03 W7-411 (#1221) DONE**; seed **W7-412 (#1224) DONE**; **AUDIT-CAP-04 W7-413 (#1226) DONE**; seed **W7-414 (#1228) DONE**; **§3.C NEXT = W7-415 (#1229)** AUDIT-AN-03
+**Status:** **OPEN** — Inventory **DONE** (W7-393 #1195); seed **W7-394 (#1196) DONE**; **AUDIT-STATUS-01 W7-395 (#1197) DONE**; seed **W7-396 (#1199) DONE**; **AUDIT-SBOM-01 W7-397 (#1200) DONE**; seed **W7-398 (#1202) DONE**; **AUDIT-OWN-01 W7-399 (#1203) DONE**; seed **W7-400 (#1205) DONE**; **AUDIT-COMMIT-01 W7-401 (#1206) DONE**; seed **W7-402 (#1208) DONE**; **AUDIT-EVID-01 W7-403 (#1209) DONE**; seed **W7-404 (#1211) DONE**; **AUDIT-RB-01 W7-405 (#1212) DONE**; seed **W7-406 (#1214) DONE**; **AUDIT-CLK-01 W7-407 (#1215) DONE**; seed **W7-408 (#1217) DONE**; **AUDIT-RPC-01 W7-409 (#1218) DONE**; seed **W7-410 (#1220) DONE**; **AUDIT-CAP-03 W7-411 (#1221) DONE**; seed **W7-412 (#1224) DONE**; **AUDIT-CAP-04 W7-413 (#1226) DONE**; seed **W7-414 (#1228) DONE**; **AUDIT-AN-03 W7-415 (#1229) DONE**; seed **W7-416 (#1232) DONE**; **§3.C NEXT = W7-417 (#1233)** AUDIT-BIND-01
 **Audit SHA:** `acd0759e85414a83460c4cab971db2b0b58b30cd`  
 **Normative audit:** [`docs/audits/MTDirector-audit-acd0759-20260923.md`](../audits/MTDirector-audit-acd0759-20260923.md)  
 **Predecessor:** PLAN-61 COMPLETE; freeze W7-392 (#1191) DONE (correlation-id wave closed)  
@@ -69,8 +69,9 @@ git checkout main && git pull --ff-only
 | seed | — | — | Advance NEXT to AUDIT-CAP-04 | **W7-412 (#1224) DONE** |
 | 10 | **AUDIT-CAP-04** | F09 | Capture attempt identity | **W7-413 (#1226) DONE** |
 | seed | — | — | Advance NEXT to AUDIT-AN-03 | **W7-414 (#1228) DONE** |
-| 11 | **AUDIT-AN-03** | F06 | Server-owned analysis | **W7-415 (#1229) OPEN (NEXT)** |
-| 12 | **AUDIT-BIND-01** | F07 | Composition from active bindings | after AN-03 |
+| 11 | **AUDIT-AN-03** | F06 | Server-owned analysis | **W7-415 (#1229) DONE** |
+| seed | — | — | Advance NEXT to AUDIT-BIND-01 | **W7-416 (#1232) DONE** |
+| 12 | **AUDIT-BIND-01** | F07 | Composition from active bindings | **W7-417 (#1233) OPEN (NEXT)** |
 | 13 | **AUDIT-GUI-02** | F11 | Controller onboarding + stale policy GUI | after BIND |
 | 14 | **AUDIT-DRIFT-01** | F12 | Drift from live RouterOS read | after GUI (needs COMMIT) |
 | 15 | **AUDIT-M7-01** | F13 | Wire M7 production lifecycle | after DRIFT |
@@ -87,4 +88,4 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/o
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-415 (#1229)** — AUDIT-AN-03; seed W7-414 DONE.
+**§3.C NEXT = W7-417 (#1233)** — AUDIT-BIND-01; seed W7-416 DONE; AUDIT-AN-03 DONE.

@@ -485,6 +485,8 @@ message ApproveRevisionRequest {
   Sha256 expected_content_hash = 4;
   Sha256 expected_bundle_hash = 5;
   Sha256 current_dependency_fingerprint = 6;
+  // Optional Node for live dependency recompute (AUDIT-AN-03).
+  Uuid node_id = 7;
 }
 
 message PolicyApprovalVote {
@@ -502,6 +504,8 @@ message ActivateDesiredBindingRequest {
   Uuid analysis_run_id = 3;
   Sha256 expected_content_hash = 4;
   Sha256 current_dependency_fingerprint = 5;
+  // Optional Node for live dependency recompute (AUDIT-AN-03).
+  Uuid node_id = 6;
 }
 
 message ExpireExceptionBindingRequest {

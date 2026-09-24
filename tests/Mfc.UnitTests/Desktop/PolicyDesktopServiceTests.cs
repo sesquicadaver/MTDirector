@@ -811,6 +811,7 @@ public sealed class PolicyDesktopServiceTests
             byte[] expectedContentHash,
             byte[] expectedBundleHash,
             byte[] currentDependencyFingerprint,
+            Guid? nodeId = null,
             CancellationToken cancellationToken = default)
         {
             Revision.State = PolicyRevisionState.Approved;
@@ -829,6 +830,7 @@ public sealed class PolicyDesktopServiceTests
             Guid analysisRunId,
             byte[] expectedContentHash,
             byte[] currentDependencyFingerprint,
+            Guid? nodeId = null,
             CancellationToken cancellationToken = default)
             => Task.FromResult(new PolicyBinding
             {

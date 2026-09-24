@@ -28,7 +28,7 @@ public sealed class PolicyApprovalUseCaseTests
     }
 
     [Fact]
-    public async Task Ac3BlockerForbidsApprovalUseCase()
+    public async Task Ac3ClientBlockerIsNotAuthoritative()
     {
         Fixture fx = await SeedInReviewAsync(findings:
         [
@@ -39,9 +39,14 @@ public sealed class PolicyApprovalUseCaseTests
                 Message = "empty",
             },
         ]);
+        PolicyAnalysisRun? run = await fx.Approvals.GetAnalysisRunAsync(new PolicyAnalysisRunId(fx.RunId));
+        Assert.NotNull(run);
+        Assert.Contains(
+            run!.Findings,
+            f => f.Code == "RULE_EMPTY_SELECTOR"
+                 && f.Severity == PolicyEvidenceAnalysisCodes.SeverityWarning);
         ApplicationResult<PolicyApprovalVoteView> vote = await fx.Approve.ExecuteAsync(ApproveCommand(fx, "reviewer"));
-        Assert.True(vote.IsFailure);
-        Assert.Equal(PolicyApprovalCodes.Blocker, vote.Error!.Code);
+        Assert.Equal(PolicyApprovalCodes.WarningUnacked, vote.Error!.Code);
     }
 
     [Fact]
@@ -78,18 +83,29 @@ public sealed class PolicyApprovalUseCaseTests
     [Fact]
     public async Task Ac5AuthorCannotApproveHighAndMissingSignalsIsCritical()
     {
-        Fixture high = await SeedInReviewAsync(risk: PolicyEvidenceAnalysisCodes.RiskHigh, author: "author");
+        PolicyApprovalFindingInput warning = new()
+        {
+            Code = "FASTTRACK_FALLBACK_REQUIRED",
+            Severity = PolicyEvidenceAnalysisCodes.SeverityWarning,
+            Message = "fallback",
+        };
+        Fixture high = await SeedInReviewAsync(findings: [warning], author: "author");
+        Hash256 warningHash = PolicyApprovalHasher.HashWarning(warning.Code, warning.Target, warning.Message);
+        Assert.True((await high.Ack.ExecuteAsync(new AcknowledgeWarningCommand
+        {
+            Actor = "author",
+            IdempotencyKey = Guid.NewGuid(),
+            AnalysisRunId = high.RunId,
+            WarningHash = warningHash.Bytes.ToArray(),
+        })).IsSuccess);
         ApplicationResult<PolicyApprovalVoteView> self = await high.Approve.ExecuteAsync(ApproveCommand(high, "author"));
         Assert.Equal(PolicyApprovalCodes.SeparationOfDuties, self.Error!.Code);
 
-        Fixture missing = await SeedInReviewAsync(
-            risk: PolicyEvidenceAnalysisCodes.RiskNone,
-            evidenceSignalsPresent: false);
+        Fixture missing = await SeedInReviewAsync(withOpaqueMandatoryTest: true);
         ApplicationResult<PolicyApprovalVoteView> first = await missing.Approve.ExecuteAsync(
             ApproveCommand(missing, "reviewer"));
-        Assert.True(first.IsSuccess);
-        Assert.False(first.Value!.CompletesApproval);
-        Assert.Equal(PolicyRevisionState.InReview, first.Value.RevisionState);
+        Assert.True(first.IsFailure);
+        Assert.Equal(PolicyApprovalCodes.TestsFailed, first.Error!.Code);
     }
 
     [Fact]
@@ -451,7 +467,7 @@ public sealed class PolicyApprovalUseCaseTests
     }
 
     [Fact]
-    public async Task RecordAnalysisRunRejectsIncompleteDocumentTestCoverage()
+    public async Task RecordAnalysisRunRejectsClientPassForOpaqueDocumentTests()
     {
         FakeAuthorizationBoundary auth = new();
         FakePolicyStore policies = new();
@@ -498,9 +514,19 @@ public sealed class PolicyApprovalUseCaseTests
         });
         Assert.True(submitted.IsSuccess, submitted.Error?.Message);
 
-        RecordAnalysisRunUseCase record = new(auth, policies, approvals, idempotency, audit, new FakeUnitOfWork());
+        RecordAnalysisRunUseCase record = new(
+            auth,
+            policies,
+            approvals,
+            idempotency,
+            audit,
+            new FakeUnitOfWork(),
+            new PassthroughPolicyDependencyFingerprintCalculator
+            {
+                OverrideCurrent = PolicyApprovalHasher.HashDependencyFingerprint(Vector()),
+            });
         byte[] fingerprint = PolicyApprovalHasher.HashDependencyFingerprint(Vector()).Bytes.ToArray();
-        ApplicationResult<PolicyAnalysisRunView> missing = await record.ExecuteAsync(new RecordAnalysisRunCommand
+        ApplicationResult<PolicyAnalysisRunView> withOpaque = await record.ExecuteAsync(new RecordAnalysisRunCommand
         {
             Actor = "author",
             IdempotencyKey = Guid.NewGuid(),
@@ -523,47 +549,22 @@ public sealed class PolicyApprovalUseCaseTests
             [
                 new PolicyApprovalTestInput
                 {
-                    TestId = Guid.NewGuid(),
+                    TestId = mandatoryTestId,
                     Origin = PolicyEvidenceAnalysisCodes.OriginSystem,
                     Outcome = PolicyEvidenceAnalysisCodes.OutcomePass,
                     Proof = PolicyEvidenceAnalysisCodes.ProofProven,
                 },
             ],
         });
-        Assert.True(missing.IsFailure);
-        Assert.Equal(PolicyApprovalCodes.TestsIncomplete, missing.Error!.Code);
-
-        ApplicationResult<PolicyAnalysisRunView> covered = await record.ExecuteAsync(new RecordAnalysisRunCommand
-        {
-            Actor = "author",
-            IdempotencyKey = Guid.NewGuid(),
-            RevisionId = draft.Value.RevisionId,
-            ExpectedContentHash = Convert.FromHexString(submitted.Value.ContentHashHex),
-            LogicalEffectiveHash = H("logical").Bytes.ToArray(),
-            AnalysisContextHash = H("analysis").Bytes.ToArray(),
-            EvidenceContextHash = H("evidence").Bytes.ToArray(),
-            TopologyProjectionHash = H("topology").Bytes.ToArray(),
-            ImpactSetHash = H("impact").Bytes.ToArray(),
-            PerDeviceAnalysisHashes = [H("device").Bytes.ToArray()],
-            DependencyFingerprint = fingerprint,
-            RiskLevel = PolicyEvidenceAnalysisCodes.RiskLow,
-            EvidenceSignalsPresent = true,
-            AnalyzerVersion = PolicyApprovalCodes.AnalyzerVersion,
-            PolicySchemaVersion = PolicyDocument.SchemaName,
-            PipelineVersion = PolicyPipelineV1.Version,
-            Findings = [],
-            TestResults =
-            [
-                new PolicyApprovalTestInput
-                {
-                    TestId = mandatoryTestId,
-                    Origin = PolicyEvidenceAnalysisCodes.OriginUser,
-                    Outcome = PolicyEvidenceAnalysisCodes.OutcomePass,
-                    Proof = PolicyEvidenceAnalysisCodes.ProofProven,
-                },
-            ],
-        });
-        Assert.True(covered.IsSuccess, covered.Error?.Message);
+        Assert.True(withOpaque.IsSuccess, withOpaque.Error?.Message);
+        PolicyAnalysisRun? owned = await approvals.GetAnalysisRunAsync(new PolicyAnalysisRunId(withOpaque.Value!.Id));
+        Assert.NotNull(owned);
+        PolicyApprovalTestOutcome test = Assert.Single(owned!.TestResults);
+        Assert.Equal(mandatoryTestId, test.TestId.Value);
+        Assert.Equal(PolicyEvidenceAnalysisCodes.OutcomeFail, test.Outcome);
+        Assert.Equal(PolicyEvidenceAnalysisCodes.ProofIndeterminate, test.Proof);
+        Assert.False(owned.EvidenceSignalsPresent);
+        Assert.Equal(PolicyEvidenceAnalysisCodes.RiskHigh, owned.RiskLevel);
     }
 
     [Fact]
@@ -739,14 +740,19 @@ public sealed class PolicyApprovalUseCaseTests
         string author = "author",
         FakePolicyStore? policies = null,
         FakePolicyApprovalStore? approvals = null,
-        string name = "baseline")
+        string name = "baseline",
+        bool withOpaqueMandatoryTest = false)
     {
+        _ = risk;
+        _ = evidenceSignalsPresent;
         FakeAuthorizationBoundary auth = new();
         policies ??= new FakePolicyStore();
         approvals ??= new FakePolicyApprovalStore();
         FakeIdempotencyStore idempotency = new();
         FakeAuditEventWriter audit = new();
         FakeClock clock = new();
+        Hash256 liveFp = PolicyApprovalHasher.HashDependencyFingerprint(Vector());
+        PassthroughPolicyDependencyFingerprintCalculator fingerprints = new() { OverrideCurrent = liveFp };
         CreateDraftPolicyUseCase create = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
         ApplicationResult<PolicyDraftView> draft = await create.ExecuteAsync(new CreateDraftPolicyCommand
         {
@@ -759,6 +765,23 @@ public sealed class PolicyApprovalUseCaseTests
         Assert.True(draft.IsSuccess);
         PolicyRevision? revision = await policies.GetRevisionAsync(new PolicyRevisionId(draft.Value!.RevisionId));
         Assert.NotNull(revision);
+
+        if (withOpaqueMandatoryTest)
+        {
+            ReplacePolicyTestsUseCase replaceTests = new(auth, policies, idempotency, audit, new FakeUnitOfWork());
+            ApplicationResult<PolicyRevisionView> withTests = await replaceTests.ExecuteAsync(new ReplacePolicyTestsCommand
+            {
+                Actor = author,
+                IdempotencyKey = Guid.NewGuid(),
+                RevisionId = revision!.Id.Value,
+                ExpectedContentHash = revision.ContentHash.Bytes.ToArray(),
+                TestJsonElements = ["""{"id":"aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"}"""],
+            });
+            Assert.True(withTests.IsSuccess, withTests.Error?.Message);
+            revision = await policies.GetRevisionAsync(revision.Id);
+            Assert.NotNull(revision);
+        }
+
         revision!.MarkValidated();
         await policies.SaveRevisionAsync(revision);
 
@@ -772,8 +795,9 @@ public sealed class PolicyApprovalUseCaseTests
         });
         Assert.True(submitted.IsSuccess);
 
-        byte[] fingerprint = PolicyApprovalHasher.HashDependencyFingerprint(Vector()).Bytes.ToArray();
-        RecordAnalysisRunUseCase record = new(auth, policies, approvals, idempotency, audit, new FakeUnitOfWork());
+        byte[] fingerprint = liveFp.Bytes.ToArray();
+        RecordAnalysisRunUseCase record = new(
+            auth, policies, approvals, idempotency, audit, new FakeUnitOfWork(), fingerprints);
         ApplicationResult<PolicyAnalysisRunView> run = await record.ExecuteAsync(new RecordAnalysisRunCommand
         {
             Actor = author,
@@ -787,22 +811,13 @@ public sealed class PolicyApprovalUseCaseTests
             ImpactSetHash = H("impact").Bytes.ToArray(),
             PerDeviceAnalysisHashes = [H("device").Bytes.ToArray()],
             DependencyFingerprint = fingerprint,
-            RiskLevel = risk,
-            EvidenceSignalsPresent = evidenceSignalsPresent,
+            RiskLevel = PolicyEvidenceAnalysisCodes.RiskLow,
+            EvidenceSignalsPresent = true,
             AnalyzerVersion = PolicyApprovalCodes.AnalyzerVersion,
             PolicySchemaVersion = PolicyDocument.SchemaName,
             PipelineVersion = PolicyPipelineV1.Version,
             Findings = findings ?? [],
-            TestResults =
-            [
-                new PolicyApprovalTestInput
-                {
-                    TestId = Guid.NewGuid(),
-                    Origin = PolicyEvidenceAnalysisCodes.OriginSystem,
-                    Outcome = PolicyEvidenceAnalysisCodes.OutcomePass,
-                    Proof = PolicyEvidenceAnalysisCodes.ProofProven,
-                },
-            ],
+            TestResults = [],
         });
         Assert.True(run.IsSuccess, run.Error?.Message);
 
@@ -814,9 +829,11 @@ public sealed class PolicyApprovalUseCaseTests
             Audit = audit,
             Record = record,
             Submit = submit,
-            Approve = new ApproveRevisionUseCase(auth, policies, approvals, idempotency, audit, new FakeUnitOfWork()),
+            Approve = new ApproveRevisionUseCase(
+                auth, policies, approvals, idempotency, audit, new FakeUnitOfWork(), fingerprints),
             Ack = new AcknowledgeWarningUseCase(auth, approvals, idempotency, audit, new FakeUnitOfWork()),
-            Bind = new ActivateDesiredBindingUseCase(auth, policies, approvals, idempotency, audit, clock, new FakeUnitOfWork()),
+            Bind = new ActivateDesiredBindingUseCase(
+                auth, policies, approvals, idempotency, audit, clock, new FakeUnitOfWork(), fingerprints),
             Expire = new ExpireExceptionBindingUseCase(auth, approvals, idempotency, audit, clock, new FakeUnitOfWork()),
             RevisionId = revision.Id.Value,
             RunId = run.Value!.Id,

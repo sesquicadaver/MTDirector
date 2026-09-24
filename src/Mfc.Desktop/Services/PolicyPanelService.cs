@@ -401,6 +401,7 @@ public interface IPolicyPanelService
         byte[] expectedContentHash,
         byte[] expectedBundleHash,
         byte[] currentDependencyFingerprint,
+        Guid? nodeId = null,
         CancellationToken cancellationToken = default);
 
     Task BindAsync(
@@ -408,6 +409,7 @@ public interface IPolicyPanelService
         Guid analysisRunId,
         byte[] expectedContentHash,
         byte[] currentDependencyFingerprint,
+        Guid? nodeId = null,
         CancellationToken cancellationToken = default);
 
     Task<PolicyCompilePanelResult> CompileNodeFilterArtifactsAsync(
@@ -857,7 +859,8 @@ public sealed class PolicyPanelService : IPolicyPanelService
         // Residual: full NODE_EFFECTIVE / per-device analysis hashes need device context.
         // Desktop reuses the logical-effective (or content) hash slots so RecordAnalysisRun
         // remains callable for risk display + approve/bind wiring without RouterOS.
-        // When nodeId is set, Controller overwrites dependency_fingerprint with live digest (AUDIT-AN-02).
+        // Controller owns risk/tests/findings and dependency_fingerprint (AUDIT-AN-03).
+        // When nodeId is set, live dependency slots include node-scoped captures/bindings.
         byte[] contextHash = logicalEffectiveHash.Length == 32 ? logicalEffectiveHash : expectedContentHash;
         List<PolicyAnalysisFinding> findings = [];
         List<PolicyFindingListItem> ackable = [];
@@ -944,6 +947,7 @@ public sealed class PolicyPanelService : IPolicyPanelService
         byte[] expectedContentHash,
         byte[] expectedBundleHash,
         byte[] currentDependencyFingerprint,
+        Guid? nodeId = null,
         CancellationToken cancellationToken = default)
         => _client.ApproveRevisionAsync(
             revisionId,
@@ -951,6 +955,7 @@ public sealed class PolicyPanelService : IPolicyPanelService
             expectedContentHash,
             expectedBundleHash,
             currentDependencyFingerprint,
+            nodeId,
             cancellationToken);
 
     public Task BindAsync(
@@ -958,12 +963,14 @@ public sealed class PolicyPanelService : IPolicyPanelService
         Guid analysisRunId,
         byte[] expectedContentHash,
         byte[] currentDependencyFingerprint,
+        Guid? nodeId = null,
         CancellationToken cancellationToken = default)
         => _client.ActivateDesiredBindingAsync(
             revisionId,
             analysisRunId,
             expectedContentHash,
             currentDependencyFingerprint,
+            nodeId,
             cancellationToken);
 
     public async Task<PolicyCompilePanelResult> CompileNodeFilterArtifactsAsync(

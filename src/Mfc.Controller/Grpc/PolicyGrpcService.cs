@@ -433,6 +433,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
                 ExpectedContentHash = PolicyProtoMapper.ToHashBytes(request.ExpectedContentHash),
                 ExpectedBundleHash = PolicyProtoMapper.ToHashBytes(request.ExpectedBundleHash),
                 CurrentDependencyFingerprint = PolicyProtoMapper.ToHashBytes(request.CurrentDependencyFingerprint),
+                NodeId = ProtoUuid.ToNullableGuid(request.NodeId),
             },
             context.CancellationToken).ConfigureAwait(false);
         return PolicyProtoMapper.ToProto(Unwrap(result));
@@ -452,6 +453,7 @@ public sealed class PolicyGrpcService : PolicyService.PolicyServiceBase
                 AnalysisRunId = ProtoUuid.ToGuid(request.AnalysisRunId),
                 ExpectedContentHash = PolicyProtoMapper.ToHashBytes(request.ExpectedContentHash),
                 CurrentDependencyFingerprint = PolicyProtoMapper.ToHashBytes(request.CurrentDependencyFingerprint),
+                NodeId = ProtoUuid.ToNullableGuid(request.NodeId),
             },
             context.CancellationToken).ConfigureAwait(false);
         return PolicyProtoMapper.ToProto(Unwrap(result));
