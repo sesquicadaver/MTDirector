@@ -3983,6 +3983,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinData
 
 
 
+## Living Specification — PLAN62-DONE-01 COMPLETE + NEXT=none (W7-427)
+
+| AC | Module | Test |
+|----|--------|------|
+| PLAN-62 COMPLETE; §3.C NEXT = none; autopilot stops | plan-62, ROADMAP, known-limitations, continuous-queue, README, slash-autopilot | `Plan62Done01CompleteFreezeW7427LivingSpecTests.Ac1Plan62CompleteAndNextIsNone` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan62Done01CompleteFreezeW7427"`.
+
 ## Living Specification — Seed PLAN62-DONE-01 after AUDIT-ACC-01 (W7-426)
 
 | AC | Module | Test |

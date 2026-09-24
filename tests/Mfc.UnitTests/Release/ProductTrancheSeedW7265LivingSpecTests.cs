@@ -35,19 +35,19 @@ public sealed class ProductTrancheSeedW7265LivingSpecTests
             "W7-267 | [#940](https://github.com/sesquicadaver/MTDirector/issues/940) | Seed next after DESK-A11Y-RO-01 (PLAN-31 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-427 (#1248)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-265 (#935) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-266", plan, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-RO-01", plan, StringComparison.Ordinal);
         Assert.Contains("W7-267", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-427 (#1248)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", plan, StringComparison.Ordinal);
 
         Assert.Contains("W7-265 (#935) DONE", plan31, StringComparison.Ordinal);
         Assert.Contains("DESK-A11Y-RO-01", plan31, StringComparison.Ordinal);
         Assert.Contains("W7-266 (#939)", plan31, StringComparison.Ordinal);
         Assert.Contains("W7-267 (#940)", plan31, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-427 (#1248)", plan31, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", plan31, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()
