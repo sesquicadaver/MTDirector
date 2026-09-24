@@ -1003,13 +1003,39 @@ public sealed class PolicyGrpcHostTests
 
         DomainPolicy.Policy? policy = await store.GetPolicyAsync(revision.PolicyId);
         Assert.NotNull(policy);
+        Mfc.Domain.Inventory.Primitives.Hash256 hash =
+            Mfc.Domain.Inventory.Primitives.Hash256.ParseHex(
+                "1111111111111111111111111111111111111111111111111111111111111111");
+        DomainPolicy.PolicyAnalysisRun run = DomainPolicy.PolicyAnalysisRun.Create(
+            revision.Id,
+            revision.ContentHash,
+            hash,
+            hash,
+            hash,
+            hash,
+            hash,
+            [hash],
+            hash,
+            DomainPolicy.PolicyEvidenceAnalysisCodes.RiskLow,
+            evidenceSignalsPresent: true,
+            DomainPolicy.PolicyApprovalCodes.AnalyzerVersion,
+            DomainPolicy.PolicyDocument.SchemaName,
+            DomainPolicy.PolicyPipelineV1.Version,
+            [],
+            [],
+            UserId.New(),
+            DateTimeOffset.UtcNow);
+        await approvals.AddAnalysisRunAsync(run);
+
         DomainPolicy.PolicyBindingScope bindingScope = DomainPolicy.PolicyDesiredBinding.ScopeFor(policy!.Kind);
         Guid? scopeId = bindingScope == DomainPolicy.PolicyBindingScope.Company ? null : policy.OwnerId;
         DateTimeOffset now = DateTimeOffset.UtcNow;
+        DateTimeOffset? validFrom = null;
         DateTimeOffset? validUntil = null;
         if (bindingScope == DomainPolicy.PolicyBindingScope.Exception)
         {
             DomainPolicy.PolicyDocument document = DomainPolicy.PolicyDocumentReader.Read(revision.CanonicalBytes);
+            validFrom = document.ExceptionMetadata?.ValidFrom;
             validUntil = document.ExceptionMetadata?.ValidUntil
                 ?? new DateTimeOffset(2027, 1, 1, 0, 0, 0, TimeSpan.Zero);
         }
@@ -1020,11 +1046,10 @@ public sealed class PolicyGrpcHostTests
             scopeId,
             policy.Id,
             revision.Id,
-            PolicyAnalysisRunId.New(),
-            Mfc.Domain.Inventory.Primitives.Hash256.ParseHex(
-                "1111111111111111111111111111111111111111111111111111111111111111"),
+            run.Id,
+            run.BundleHash,
             DomainPolicy.PolicyBindingState.Active,
-            validFromUtc: null,
+            validFromUtc: validFrom,
             validUntilUtc: validUntil,
             rowVersion: 1,
             createdAtUtc: now,
