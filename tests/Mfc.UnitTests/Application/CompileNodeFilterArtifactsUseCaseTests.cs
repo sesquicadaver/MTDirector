@@ -318,6 +318,21 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
             withChainContracts: true,
             skipBind: true);
         DateTimeOffset now = DateTimeOffset.UtcNow;
+        // BIND-01: composition needs Company-scoped DesiredRevisionId; Site binding still satisfies the compile gate.
+        await fx.Approvals.AddBindingAsync(PolicyDesiredBinding.Reconstitute(
+            PolicyBindingId.New(),
+            PolicyBindingScope.Company,
+            null,
+            new PolicyId(fx.PolicyId),
+            new PolicyRevisionId(fx.RevisionId),
+            new PolicyAnalysisRunId(fx.RunId),
+            Hash256.Create(fx.BundleHash),
+            PolicyBindingState.Active,
+            validFromUtc: null,
+            validUntilUtc: null,
+            rowVersion: 1,
+            createdAtUtc: now,
+            updatedAtUtc: now));
         await fx.Approvals.AddBindingAsync(PolicyDesiredBinding.Reconstitute(
             PolicyBindingId.New(),
             PolicyBindingScope.Site,
@@ -349,6 +364,20 @@ public sealed class CompileNodeFilterArtifactsUseCaseTests
             withChainContracts: true,
             skipBind: true);
         DateTimeOffset now = DateTimeOffset.UtcNow;
+        await fx.Approvals.AddBindingAsync(PolicyDesiredBinding.Reconstitute(
+            PolicyBindingId.New(),
+            PolicyBindingScope.Company,
+            null,
+            new PolicyId(fx.PolicyId),
+            new PolicyRevisionId(fx.RevisionId),
+            new PolicyAnalysisRunId(fx.RunId),
+            Hash256.Create(fx.BundleHash),
+            PolicyBindingState.Active,
+            validFromUtc: null,
+            validUntilUtc: null,
+            rowVersion: 1,
+            createdAtUtc: now,
+            updatedAtUtc: now));
         await fx.Approvals.AddBindingAsync(PolicyDesiredBinding.Reconstitute(
             PolicyBindingId.New(),
             PolicyBindingScope.Node,

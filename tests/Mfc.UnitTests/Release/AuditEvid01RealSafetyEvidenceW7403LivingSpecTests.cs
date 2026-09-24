@@ -68,15 +68,15 @@ public sealed class AuditEvid01RealSafetyEvidenceW7403LivingSpecTests
             "W7-405 | [#1212](https://github.com/sesquicadaver/MTDirector/issues/1212) | AUDIT-RB-01 — Unified strict rollback | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-417 (#1233)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-419 (#1236)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("AUDIT-EVID-01 W7-403 (#1209) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-404 (#1211) DONE", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-417 (#1233)", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-419 (#1236)", plan62, StringComparison.Ordinal);
         Assert.Contains("AUDIT-RB-01", plan62, StringComparison.Ordinal);
 
         Assert.Contains("AUDIT-EVID-01 W7-403 (#1209) DONE", continuous, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-417 (#1233)", continuous, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-419 (#1236)", continuous, StringComparison.Ordinal);
 
         Assert.Contains("AuditEvid01RealSafetyEvidenceW7403", testing, StringComparison.Ordinal);
         Assert.Contains("ProductTrancheSeedW7404", testing, StringComparison.Ordinal);
@@ -84,7 +84,7 @@ public sealed class AuditEvid01RealSafetyEvidenceW7403LivingSpecTests
         Assert.Contains("| `W7-403` | #1209 |", issues, StringComparison.Ordinal);
         Assert.Contains("| `W7-404` | #1211 |", issues, StringComparison.Ordinal);
         Assert.Contains("| `W7-405` | #1212 |", issues, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-417 (#1233)", issues, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-419 (#1236)", issues, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

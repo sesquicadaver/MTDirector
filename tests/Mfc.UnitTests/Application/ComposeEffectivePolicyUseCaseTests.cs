@@ -15,34 +15,39 @@ namespace Mfc.UnitTests.Application;
 
 public sealed class ComposeEffectivePolicyUseCaseTests
 {
+    private static readonly Hash256 TestBundleHash = Hash256.ParseHex(
+        "1111111111111111111111111111111111111111111111111111111111111111");
+
     [Fact]
-    public async Task A1LoadsNodeUniqueCompanyAndLatestApproved()
+    public async Task A1LoadsBoundRevisionNotLatestApproved()
     {
-        (ComposeEffectivePolicyUseCase useCase, FakeNodeStore nodes, FakePolicyStore policies, Node node) =
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, FakePolicyApprovalStore approvals, Node node) =
             await SeedAsync();
         PolicyContainer company = CreateCompany();
         await policies.AddPolicyAsync(company);
         PolicyDocument empty = PolicyDocument.CreateEmpty(company.Kind, company.OwnerScope);
-        PolicyRevision stale = Approve(company, empty, parent: null, revisionNumber: 1);
-        await policies.AddRevisionAsync(stale);
+        PolicyRevision bound = Approve(company, empty, parent: null, revisionNumber: 1);
+        await policies.AddRevisionAsync(bound);
+        await BindAsync(approvals, company, bound);
         PolicyRule rule = AcceptRule();
-        PolicyRevision latest = Approve(company, empty.WithRules([rule]), parent: null, revisionNumber: 2);
-        await policies.AddRevisionAsync(latest);
+        PolicyRevision unboundLatest = Approve(company, empty.WithRules([rule]), parent: null, revisionNumber: 2);
+        await policies.AddRevisionAsync(unboundLatest);
 
         ApplicationResult<EffectivePolicyView> result = await useCase.ExecuteAsync(Query(node.Id.Value));
         Assert.True(result.IsSuccess);
         Assert.Equal(node.Id.Value, result.Value!.NodeId);
-        Assert.Equal(latest.Id.Value, result.Value.Company.RevisionId);
-        Assert.Equal(2u, result.Value.Company.RevisionNumber);
-        Assert.Single(result.Value.ActiveRules);
+        Assert.Equal(bound.Id.Value, result.Value.Company.RevisionId);
+        Assert.Equal(1u, result.Value.Company.RevisionNumber);
+        Assert.Empty(result.Value.ActiveRules);
         Assert.Equal(32, result.Value.LogicalEffectiveHash.Length);
     }
 
     [Fact]
     public async Task A2MissingSiteAndNodeOverlayIsOk()
     {
-        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, Node node) = await SeedAsync();
-        await AddApprovedCompanyAsync(policies);
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, FakePolicyApprovalStore approvals, Node node) =
+            await SeedAsync();
+        await AddApprovedCompanyAsync(policies, approvals);
         ApplicationResult<EffectivePolicyView> result = await useCase.ExecuteAsync(Query(node.Id.Value));
         Assert.True(result.IsSuccess);
         Assert.Null(result.Value!.Site);
@@ -52,8 +57,9 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     [Fact]
     public async Task A3ParentContextMismatchMapsComposeCode()
     {
-        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, Node node) = await SeedAsync();
-        PolicyContainer companyPolicy = await AddApprovedCompanyAsync(policies);
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, FakePolicyApprovalStore approvals, Node node) =
+            await SeedAsync();
+        PolicyContainer companyPolicy = await AddApprovedCompanyAsync(policies, approvals);
         PolicyRevision? companyRev = (await policies.ListRevisionsAsync(companyPolicy.Id))
             .Single(r => r.State == PolicyRevisionState.Approved);
         PolicyContainer sitePolicy = PolicyContainer.Create(
@@ -65,6 +71,7 @@ public sealed class ComposeEffectivePolicyUseCaseTests
         PolicyDocument siteDoc = PolicyDocument.CreateEmpty(sitePolicy.Kind, sitePolicy.OwnerScope);
         PolicyRevision siteRev = Approve(sitePolicy, siteDoc, Hash256.Create(new byte[32]));
         await policies.AddRevisionAsync(siteRev);
+        await BindAsync(approvals, sitePolicy, siteRev);
         _ = companyRev;
 
         ApplicationResult<EffectivePolicyView> result = await useCase.ExecuteAsync(Query(node.Id.Value));
@@ -77,7 +84,7 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     [Fact]
     public async Task A4ZeroActiveCompaniesReturnsCompanyRequired()
     {
-        (ComposeEffectivePolicyUseCase useCase, _, _, Node node) = await SeedAsync();
+        (ComposeEffectivePolicyUseCase useCase, _, _, _, Node node) = await SeedAsync();
         ApplicationResult<EffectivePolicyView> result = await useCase.ExecuteAsync(Query(node.Id.Value));
         Assert.True(result.IsFailure);
         Assert.Equal(PolicyComposeCodes.CompanyRequired, result.Error!.Code);
@@ -88,9 +95,10 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     [Fact]
     public async Task A4TwoActiveCompaniesReturnsPolicyNotUnique()
     {
-        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, Node node) = await SeedAsync();
-        await AddApprovedCompanyAsync(policies, "c1");
-        await AddApprovedCompanyAsync(policies, "c2");
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, FakePolicyApprovalStore approvals, Node node) =
+            await SeedAsync();
+        await AddApprovedCompanyAsync(policies, approvals, "c1");
+        await AddApprovedCompanyAsync(policies, approvals, "c2");
         ApplicationResult<EffectivePolicyView> result = await useCase.ExecuteAsync(Query(node.Id.Value));
         Assert.True(result.IsFailure);
         Assert.Equal(PolicyComposeCodes.PolicyNotUnique, result.Error!.Code);
@@ -101,7 +109,7 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     [Fact]
     public async Task A5ArchivedCompanyIsIgnored()
     {
-        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, Node node) = await SeedAsync();
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, _, Node node) = await SeedAsync();
         PolicyContainer company = CreateCompany();
         company.Archive();
         await policies.AddPolicyAsync(company);
@@ -114,8 +122,9 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     [Fact]
     public async Task A6MissingNodeIsNotFoundNotComposeCode()
     {
-        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, _) = await SeedAsync();
-        await AddApprovedCompanyAsync(policies);
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, FakePolicyApprovalStore approvals, _) =
+            await SeedAsync();
+        await AddApprovedCompanyAsync(policies, approvals);
         ApplicationResult<EffectivePolicyView> result = await useCase.ExecuteAsync(Query(Guid.NewGuid()));
         Assert.True(result.IsFailure);
         Assert.Equal("not_found", result.Error!.Code);
@@ -125,8 +134,9 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     [Fact]
     public async Task A7DuplicateSiteOwnerIsPolicyNotUnique()
     {
-        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, Node node) = await SeedAsync();
-        PolicyContainer company = await AddApprovedCompanyAsync(policies);
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, FakePolicyApprovalStore approvals, Node node) =
+            await SeedAsync();
+        PolicyContainer company = await AddApprovedCompanyAsync(policies, approvals);
         PolicyRevision companyRev = (await policies.ListRevisionsAsync(company.Id))
             .Single(r => r.State == PolicyRevisionState.Approved);
         Hash256 parent = companyRev.ContentHash;
@@ -155,7 +165,7 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     [Fact]
     public async Task CompanyWithoutApprovedRevisionIsCompanyRequired()
     {
-        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, Node node) = await SeedAsync();
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, _, Node node) = await SeedAsync();
         PolicyContainer company = CreateCompany();
         await policies.AddPolicyAsync(company);
         PolicyRevision draft = PolicyRevision.CreateDraft(
@@ -172,10 +182,24 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     }
 
     [Fact]
+    public async Task CompanyApprovedWithoutBindingIsCompanyRequired()
+    {
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, _, Node node) = await SeedAsync();
+        PolicyContainer company = CreateCompany();
+        await policies.AddPolicyAsync(company);
+        await policies.AddRevisionAsync(
+            Approve(company, PolicyDocument.CreateEmpty(company.Kind, company.OwnerScope), null));
+        ApplicationResult<EffectivePolicyView> result = await useCase.ExecuteAsync(Query(node.Id.Value));
+        Assert.True(result.IsFailure);
+        Assert.Equal(PolicyComposeCodes.CompanyRequired, result.Error!.Code);
+    }
+
+    [Fact]
     public async Task OverlayWithoutApprovedRevisionIsAbsent()
     {
-        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, Node node) = await SeedAsync();
-        await AddApprovedCompanyAsync(policies);
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, FakePolicyApprovalStore approvals, Node node) =
+            await SeedAsync();
+        await AddApprovedCompanyAsync(policies, approvals);
         PolicyContainer site = PolicyContainer.Create(
             NonEmptyName.Create("site-draft-only"),
             PolicyKind.SiteOverlay,
@@ -197,12 +221,39 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     }
 
     [Fact]
+    public async Task ApprovedOverlayWithoutBindingIsAbsent()
+    {
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, FakePolicyApprovalStore approvals, Node node) =
+            await SeedAsync();
+        PolicyContainer company = await AddApprovedCompanyAsync(policies, approvals);
+        PolicyRevision companyRev = (await policies.ListRevisionsAsync(company.Id))
+            .Single(r => r.State == PolicyRevisionState.Approved);
+        PolicyContainer site = PolicyContainer.Create(
+            NonEmptyName.Create("site-unbound"),
+            PolicyKind.SiteOverlay,
+            PolicyOwnerScope.Site,
+            node.SiteId.Value);
+        await policies.AddPolicyAsync(site);
+        await policies.AddRevisionAsync(
+            Approve(site, PolicyDocument.CreateEmpty(site.Kind, site.OwnerScope), companyRev.ContentHash));
+
+        ApplicationResult<EffectivePolicyView> result = await useCase.ExecuteAsync(Query(node.Id.Value));
+        Assert.True(result.IsSuccess);
+        Assert.Null(result.Value!.Site);
+    }
+
+    [Fact]
     public async Task ComposeEffectiveUnauthorized()
     {
         FakeAuthorizationBoundary auth = new();
         auth.DeniedPermissions.Add(ApplicationPermissions.PolicyRead);
         ComposeEffectivePolicyUseCase useCase = new(
-            auth, new FakeNodeStore(), new FakePolicyStore(), new FakeZoneDefinitionStore(), new FakeClock());
+            auth,
+            new FakeNodeStore(),
+            new FakePolicyStore(),
+            new FakePolicyApprovalStore(),
+            new FakeZoneDefinitionStore(),
+            new FakeClock());
         ApplicationResult<EffectivePolicyView> result = await useCase.ExecuteAsync(Query(Guid.NewGuid()));
         Assert.True(result.IsFailure);
         Assert.Equal("forbidden", result.Error!.Code);
@@ -211,7 +262,8 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     [Fact]
     public async Task UnusedObjectFindingSurfacesOnSuccess()
     {
-        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, Node node) = await SeedAsync();
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, FakePolicyApprovalStore approvals, Node node) =
+            await SeedAsync();
         PolicyContainer company = CreateCompany();
         await policies.AddPolicyAsync(company);
         Guid unused = Guid.NewGuid();
@@ -220,7 +272,9 @@ public sealed class ComposeEffectivePolicyUseCaseTests
             PolicyOwnerScope.Company,
             addressObjects: [JsonDocument.Parse("{\"id\":\"" + unused + "\"}").RootElement.Clone()],
             rules: [AcceptRule()]);
-        await policies.AddRevisionAsync(Approve(company, document, null));
+        PolicyRevision revision = Approve(company, document, null);
+        await policies.AddRevisionAsync(revision);
+        await BindAsync(approvals, company, revision);
         ApplicationResult<EffectivePolicyView> result = await useCase.ExecuteAsync(Query(node.Id.Value));
         Assert.True(result.IsSuccess);
         Assert.Contains(result.Value!.Findings, f => f.Code == PolicyComposeCodes.UnusedPolicyObject);
@@ -229,9 +283,10 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     [Fact]
     public async Task A3ApprovedEmptyExceptionMetadataIsExceptionCode()
     {
-        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, Node node) = await SeedAsync();
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, FakePolicyApprovalStore approvals, Node node) =
+            await SeedAsync();
         (PolicyContainer company, PolicyRevision companyRev, PolicyRule deny) =
-            await AddApprovedCompanyWithDenyAsync(policies);
+            await AddApprovedCompanyWithDenyAsync(policies, approvals);
         _ = company;
         _ = deny;
         PolicyContainer exception = PolicyContainer.Create(
@@ -240,11 +295,12 @@ public sealed class ComposeEffectivePolicyUseCaseTests
             PolicyOwnerScope.Site,
             node.SiteId.Value);
         await policies.AddPolicyAsync(exception);
-        await policies.AddRevisionAsync(
-            Approve(
-                exception,
-                PolicyDocument.CreateEmpty(exception.Kind, exception.OwnerScope),
-                Hash256.Create(new byte[32])));
+        PolicyRevision exceptionRev = Approve(
+            exception,
+            PolicyDocument.CreateEmpty(exception.Kind, exception.OwnerScope),
+            Hash256.Create(new byte[32]));
+        await policies.AddRevisionAsync(exceptionRev);
+        await BindAsync(approvals, exception, exceptionRev);
 
         ApplicationResult<EffectivePolicyView> result = await useCase.ExecuteAsync(Query(node.Id.Value));
         Assert.True(result.IsFailure);
@@ -259,12 +315,14 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     [Fact]
     public async Task A13ExpiredExceptionIsSkipped()
     {
-        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, Node node) = await SeedAsync();
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, FakePolicyApprovalStore approvals, Node node) =
+            await SeedAsync();
         (PolicyContainer _, PolicyRevision companyRev, PolicyRule deny) =
-            await AddApprovedCompanyWithDenyAsync(policies);
+            await AddApprovedCompanyWithDenyAsync(policies, approvals);
         DateTimeOffset until = new(2026, 8, 1, 0, 0, 0, TimeSpan.Zero);
         await AddApprovedExceptionAsync(
             policies,
+            approvals,
             node.SiteId.Value,
             companyRev,
             deny,
@@ -280,17 +338,41 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     }
 
     [Fact]
+    public async Task ApprovedExceptionWithoutBindingIsOmitted()
+    {
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, FakePolicyApprovalStore approvals, Node node) =
+            await SeedAsync();
+        (PolicyContainer _, PolicyRevision companyRev, PolicyRule deny) =
+            await AddApprovedCompanyWithDenyAsync(policies, approvals);
+        await AddApprovedExceptionAsync(
+            policies,
+            approvals,
+            node.SiteId.Value,
+            companyRev,
+            deny,
+            bind: false);
+
+        ApplicationResult<EffectivePolicyView> result = await useCase.ExecuteAsync(Query(node.Id.Value));
+        Assert.True(result.IsSuccess);
+        Assert.Single(result.Value!.ActiveRules);
+        Assert.DoesNotContain(
+            result.Value.ActiveRules,
+            r => r.Stage == PolicyPipelineStage.CompanyDenyExemptions);
+    }
+
+    [Fact]
     public async Task ALoadTwoExceptionsSameOwnerNeverPolicyNotUnique()
     {
-        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, Node node) = await SeedAsync();
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, FakePolicyApprovalStore approvals, Node node) =
+            await SeedAsync();
         Guid addrA = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
         Guid addrB = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
         PolicyRule denyA = DenyRule(addrA);
         PolicyRule denyB = DenyRule(addrB, ordinal: 1);
         (PolicyContainer _, PolicyRevision companyRev, _) =
-            await AddApprovedCompanyWithDenyAsync(policies, denyA, denyB);
-        await AddApprovedExceptionAsync(policies, node.SiteId.Value, companyRev, denyA, name: "ex-a");
-        await AddApprovedExceptionAsync(policies, node.SiteId.Value, companyRev, denyB, name: "ex-b");
+            await AddApprovedCompanyWithDenyAsync(policies, approvals, denyA, denyB);
+        await AddApprovedExceptionAsync(policies, approvals, node.SiteId.Value, companyRev, denyA, name: "ex-a");
+        await AddApprovedExceptionAsync(policies, approvals, node.SiteId.Value, companyRev, denyB, name: "ex-b");
 
         ApplicationResult<EffectivePolicyView> result = await useCase.ExecuteAsync(Query(node.Id.Value));
         Assert.True(result.IsSuccess);
@@ -300,19 +382,20 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     }
 
     [Fact]
-    public async Task A1LoadsSiteAndNodeExceptionsLatestApproved()
+    public async Task A1LoadsSiteAndNodeExceptionsFromBindings()
     {
-        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, Node node) = await SeedAsync();
+        (ComposeEffectivePolicyUseCase useCase, _, FakePolicyStore policies, FakePolicyApprovalStore approvals, Node node) =
+            await SeedAsync();
         Guid addrA = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
         Guid addrB = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
         PolicyRule denyA = DenyRule(addrA);
         PolicyRule denyB = DenyRule(addrB, ordinal: 1);
         (PolicyContainer _, PolicyRevision companyRev, _) =
-            await AddApprovedCompanyWithDenyAsync(policies, denyA, denyB);
+            await AddApprovedCompanyWithDenyAsync(policies, approvals, denyA, denyB);
         await AddApprovedExceptionAsync(
-            policies, node.SiteId.Value, companyRev, denyA, name: "site-ex", scope: PolicyOwnerScope.Site);
+            policies, approvals, node.SiteId.Value, companyRev, denyA, name: "site-ex", scope: PolicyOwnerScope.Site);
         await AddApprovedExceptionAsync(
-            policies, node.Id.Value, companyRev, denyB, name: "node-ex", scope: PolicyOwnerScope.Node);
+            policies, approvals, node.Id.Value, companyRev, denyB, name: "node-ex", scope: PolicyOwnerScope.Node);
 
         ApplicationResult<EffectivePolicyView> result = await useCase.ExecuteAsync(Query(node.Id.Value));
         Assert.True(result.IsSuccess);
@@ -323,11 +406,13 @@ public sealed class ComposeEffectivePolicyUseCaseTests
         ComposeEffectivePolicyUseCase UseCase,
         FakeNodeStore Nodes,
         FakePolicyStore Policies,
+        FakePolicyApprovalStore Approvals,
         Node Node)> SeedAsync()
     {
         FakeAuthorizationBoundary auth = new();
         FakeNodeStore nodes = new();
         FakePolicyStore policies = new();
+        FakePolicyApprovalStore approvals = new();
         FakeZoneDefinitionStore zones = new();
         Node node = Node.Create(
             SiteId.New(),
@@ -335,7 +420,12 @@ public sealed class ComposeEffectivePolicyUseCaseTests
             NodeKind.Router,
             DeclaredUplinkMode.One);
         await nodes.AddAsync(node);
-        return (new ComposeEffectivePolicyUseCase(auth, nodes, policies, zones, new FakeClock()), nodes, policies, node);
+        return (
+            new ComposeEffectivePolicyUseCase(auth, nodes, policies, approvals, zones, new FakeClock()),
+            nodes,
+            policies,
+            approvals,
+            node);
     }
 
     private static ComposeEffectivePolicyQuery Query(Guid nodeId)
@@ -344,13 +434,49 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     private static PolicyContainer CreateCompany(string name = "baseline")
         => PolicyContainer.Create(NonEmptyName.Create(name), PolicyKind.CompanyBaseline, PolicyOwnerScope.Company, null);
 
-    private static async Task<PolicyContainer> AddApprovedCompanyAsync(FakePolicyStore policies, string name = "baseline")
+    private static async Task<PolicyContainer> AddApprovedCompanyAsync(
+        FakePolicyStore policies,
+        FakePolicyApprovalStore approvals,
+        string name = "baseline")
     {
         PolicyContainer company = CreateCompany(name);
         await policies.AddPolicyAsync(company);
-        await policies.AddRevisionAsync(
-            Approve(company, PolicyDocument.CreateEmpty(company.Kind, company.OwnerScope), null));
+        PolicyRevision revision = Approve(company, PolicyDocument.CreateEmpty(company.Kind, company.OwnerScope), null);
+        await policies.AddRevisionAsync(revision);
+        await BindAsync(approvals, company, revision);
         return company;
+    }
+
+    private static async Task BindAsync(
+        FakePolicyApprovalStore approvals,
+        PolicyContainer policy,
+        PolicyRevision revision)
+    {
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        PolicyBindingScope scope = PolicyDesiredBinding.ScopeFor(policy.Kind);
+        Guid? scopeId = scope == PolicyBindingScope.Company ? null : policy.OwnerId;
+        DateTimeOffset? validUntil = null;
+        if (scope == PolicyBindingScope.Exception)
+        {
+            PolicyDocument document = PolicyDocumentReader.Read(revision.CanonicalBytes);
+            validUntil = document.ExceptionMetadata?.ValidUntil
+                ?? new DateTimeOffset(2026, 12, 31, 0, 0, 0, TimeSpan.Zero);
+        }
+
+        await approvals.AddBindingAsync(PolicyDesiredBinding.Reconstitute(
+            PolicyBindingId.New(),
+            scope,
+            scopeId,
+            policy.Id,
+            revision.Id,
+            PolicyAnalysisRunId.New(),
+            TestBundleHash,
+            PolicyBindingState.Active,
+            validFromUtc: null,
+            validUntilUtc: validUntil,
+            rowVersion: 1,
+            createdAtUtc: now,
+            updatedAtUtc: now));
     }
 
     private static PolicyRevision Approve(
@@ -375,6 +501,7 @@ public sealed class ComposeEffectivePolicyUseCaseTests
     private static async Task<(PolicyContainer Company, PolicyRevision Revision, PolicyRule Deny)>
         AddApprovedCompanyWithDenyAsync(
             FakePolicyStore policies,
+            FakePolicyApprovalStore approvals,
             PolicyRule? deny = null,
             PolicyRule? extraDeny = null)
     {
@@ -398,17 +525,20 @@ public sealed class ComposeEffectivePolicyUseCaseTests
             rules: rules);
         PolicyRevision revision = Approve(company, document, null);
         await policies.AddRevisionAsync(revision);
+        await BindAsync(approvals, company, revision);
         return (company, revision, deny);
     }
 
     private static async Task AddApprovedExceptionAsync(
         FakePolicyStore policies,
+        FakePolicyApprovalStore approvals,
         Guid ownerId,
         PolicyRevision companyRev,
         PolicyRule waived,
         DateTimeOffset? until = null,
         string name = "exception",
-        PolicyOwnerScope scope = PolicyOwnerScope.Site)
+        PolicyOwnerScope scope = PolicyOwnerScope.Site,
+        bool bind = true)
     {
         DateTimeOffset from = new(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
         DateTimeOffset validUntil = until ?? new(2026, 12, 31, 0, 0, 0, TimeSpan.Zero);
@@ -443,7 +573,12 @@ public sealed class ComposeEffectivePolicyUseCaseTests
             waivedHash)!;
         PolicyContainer policy = PolicyContainer.Create(NonEmptyName.Create(name), PolicyKind.Exception, scope, ownerId);
         await policies.AddPolicyAsync(policy);
-        await policies.AddRevisionAsync(Approve(policy, document, parent));
+        PolicyRevision revision = Approve(policy, document, parent);
+        await policies.AddRevisionAsync(revision);
+        if (bind)
+        {
+            await BindAsync(approvals, policy, revision);
+        }
     }
 
     private static PolicyRule DenyRule(Guid addr, uint ordinal = 0)
@@ -489,7 +624,7 @@ public sealed class ComposeEffectivePolicyUseCaseTests
             IpAddressFamily.IPv4,
             PolicyFilterChain.Forward,
             PolicyPipelineStage.CompanyAllow,
-            ordinal: 0,
+            0,
             TrafficPredicate.Create(),
             RuleEffectSpec.Create(PolicyRuleEffect.Accept));
 }

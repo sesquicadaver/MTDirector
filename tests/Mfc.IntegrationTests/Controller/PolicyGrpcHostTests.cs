@@ -993,12 +993,42 @@ public sealed class PolicyGrpcHostTests
     {
         await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
         IPolicyStore store = scope.ServiceProvider.GetRequiredService<IPolicyStore>();
+        IPolicyApprovalStore approvals = scope.ServiceProvider.GetRequiredService<IPolicyApprovalStore>();
         DomainPolicy.PolicyRevision? revision = await store.GetRevisionAsync(new PolicyRevisionId(revisionId));
         Assert.NotNull(revision);
         revision!.MarkValidated();
         revision.SubmitForReview();
         revision.Approve(DateTimeOffset.UtcNow);
         await store.SaveRevisionAsync(revision);
+
+        DomainPolicy.Policy? policy = await store.GetPolicyAsync(revision.PolicyId);
+        Assert.NotNull(policy);
+        DomainPolicy.PolicyBindingScope bindingScope = DomainPolicy.PolicyDesiredBinding.ScopeFor(policy!.Kind);
+        Guid? scopeId = bindingScope == DomainPolicy.PolicyBindingScope.Company ? null : policy.OwnerId;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        DateTimeOffset? validUntil = null;
+        if (bindingScope == DomainPolicy.PolicyBindingScope.Exception)
+        {
+            DomainPolicy.PolicyDocument document = DomainPolicy.PolicyDocumentReader.Read(revision.CanonicalBytes);
+            validUntil = document.ExceptionMetadata?.ValidUntil
+                ?? new DateTimeOffset(2027, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        }
+
+        await approvals.AddBindingAsync(DomainPolicy.PolicyDesiredBinding.Reconstitute(
+            PolicyBindingId.New(),
+            bindingScope,
+            scopeId,
+            policy.Id,
+            revision.Id,
+            PolicyAnalysisRunId.New(),
+            Mfc.Domain.Inventory.Primitives.Hash256.ParseHex(
+                "1111111111111111111111111111111111111111111111111111111111111111"),
+            DomainPolicy.PolicyBindingState.Active,
+            validFromUtc: null,
+            validUntilUtc: validUntil,
+            rowVersion: 1,
+            createdAtUtc: now,
+            updatedAtUtc: now));
     }
 
     private static async Task ReplaceDraftWithUnusedObjectAsync(WebApplication app, Guid revisionId, Guid unusedObjectId)
