@@ -39,24 +39,24 @@ public sealed class ProductTrancheSeedW7273LivingSpecTests
             "W7-275 | [#956](https://github.com/sesquicadaver/MTDirector/issues/956) | Seed first PLAN-33 atomic row after inventory → DESK-A11Y-TREE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-412 (#1224)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-413 (#1226)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-32 COMPLETE", plan32, StringComparison.Ordinal);
         Assert.Contains("W7-273 (#952) DONE", plan32, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-412 (#1224)", plan32, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-413 (#1226)", plan32, StringComparison.Ordinal);
         Assert.Contains("plan-33-desktop-inventory-treeview-a11y.md", plan32, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-33", plan, StringComparison.Ordinal);
         Assert.Contains("W7-274", plan, StringComparison.Ordinal);
         Assert.Contains("W7-273 DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-412 (#1224)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-413 (#1226)", plan, StringComparison.Ordinal);
         Assert.Contains("plan-33-desktop-inventory-treeview-a11y.md", plan, StringComparison.Ordinal);
 
         Assert.Contains("DESK-A11Y-TREE-01", plan33, StringComparison.Ordinal);
         Assert.Contains("Inventory **DONE**", plan33, StringComparison.Ordinal);
         Assert.Contains("W7-274", plan33, StringComparison.Ordinal);
         Assert.Contains("W7-275", plan33, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-412 (#1224)", plan33, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-413 (#1226)", plan33, StringComparison.Ordinal);
         Assert.Contains("50f1ae1", plan33, StringComparison.Ordinal);
         Assert.Contains("Inventory.Roots", plan33, StringComparison.Ordinal);
 

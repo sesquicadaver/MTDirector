@@ -36,7 +36,7 @@ public sealed class Plan48ControllerKestrelRequestBodyLimitsW7336LivingSpecTests
         Assert.Contains("GrpcTransportLimits.MaxMessageBytes", plan48, StringComparison.Ordinal);
         Assert.Contains("256 MiB", plan48, StringComparison.Ordinal);
         Assert.Contains("268435456", plan48, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-412 (#1224)", plan48, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-413 (#1226)", plan48, StringComparison.Ordinal);
 
         Assert.Contains("Intentional residual (W7-336 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("CTRL-KESTREL-BODY-01", limitations, StringComparison.Ordinal);
@@ -68,7 +68,7 @@ public sealed class Plan48ControllerKestrelRequestBodyLimitsW7336LivingSpecTests
             "W7-341 | [#1088](https://github.com/sesquicadaver/MTDirector/issues/1088) | Seed first PLAN-49 atomic row after inventory → CTRL-GRPC-KEEPALIVE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-412 (#1224)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-413 (#1226)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-337", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-338", continuous, StringComparison.Ordinal);
