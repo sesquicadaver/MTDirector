@@ -29,15 +29,15 @@ public sealed class ProductTrancheSeedW7424LivingSpecTests
             "W7-425 | [#1245](https://github.com/sesquicadaver/MTDirector/issues/1245) | AUDIT-ACC-01 — Acceptance by behavior not file presence | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-427 (#1248)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-424 (#1244) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-425 (#1245)", plan, StringComparison.Ordinal);
         Assert.Contains("AUDIT-ACC-01", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-424 (#1244) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-425 (#1245) DONE", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-427 (#1248)", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-427 (#1248)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

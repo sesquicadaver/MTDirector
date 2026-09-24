@@ -43,7 +43,7 @@ public sealed class AuditM701WireM7ProductionLifecycleW7423LivingSpecTests
         Assert.Contains("W7-423", roadmap, StringComparison.Ordinal);
         Assert.Contains("AUDIT-M7-01", roadmap, StringComparison.Ordinal);
         Assert.Contains("**DONE**", roadmap, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-427 (#1248)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", roadmap, StringComparison.Ordinal);
         Assert.Contains("W7-423", continuous, StringComparison.Ordinal);
         Assert.Contains("AuditM701WireM7ProductionLifecycleW7423", testing, StringComparison.Ordinal);
 

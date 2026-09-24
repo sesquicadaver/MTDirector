@@ -23,12 +23,12 @@ public sealed class AuditAcc01AcceptanceByBehaviorW7425LivingSpecTests
         Assert.Contains("AUDIT-ACC-01", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-425 (#1245) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-426 (#1247) DONE", plan62, StringComparison.Ordinal);
-        Assert.Contains("W7-427 (#1248) OPEN (NEXT)", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-427 (#1248) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("Intentional residual (W7-425 Living Spec lock)", limitations, StringComparison.Ordinal);
         Assert.Contains("AUDIT-ACC-01 DONE", limitations, StringComparison.Ordinal);
         Assert.Contains("W7-425", roadmap, StringComparison.Ordinal);
         Assert.Contains("AUDIT-ACC-01", roadmap, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-427 (#1248)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", roadmap, StringComparison.Ordinal);
         Assert.Contains("W7-425", continuous, StringComparison.Ordinal);
         Assert.Contains("AuditAcc01AcceptanceByBehaviorW7425", testing, StringComparison.Ordinal);
 

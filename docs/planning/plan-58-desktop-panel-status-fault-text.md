@@ -95,4 +95,4 @@ PLAN-57 sole ranked row (**DESK-VRRP-PROG-01**) is **DONE**. No further PLAN-57 
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-427 (#1248)** — PLAN-59 Inventory Snapshot failed-stage ErrorText correlation.
+**§3.C NEXT = none** — PLAN-59 Inventory Snapshot failed-stage ErrorText correlation.
