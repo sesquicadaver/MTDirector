@@ -129,7 +129,11 @@ public sealed class IncidentGrpcSec06LivingSpecTests
         auth = existing ?? new FakeAuthorizationBoundary();
         return new IncidentGrpcService(
             new IngestIncidentSignalUseCase(auth),
-            new BindIncidentResponseAssessmentUseCase(auth),
+            new BindIncidentResponseAssessmentUseCase(
+                auth,
+                new FakeResponseAssessmentStore(),
+                new FakeClock(),
+                new FakeUnitOfWork()),
             new GrpcRequestActorResolver(Options.Create(new OperationalJobsOptions
             {
                 SystemActor = "system:operational-jobs",

@@ -1,4 +1,6 @@
 using Mfc.Application.Abstractions.Authorization;
+using Mfc.Application.Abstractions.Persistence;
+using Mfc.Application.Abstractions.Time;
 using Mfc.Application.Common;
 using Mfc.Application.Models;
 using Mfc.Domain;
@@ -34,16 +36,30 @@ public sealed class BindIncidentResponseAssessmentCommand
 }
 
 /// <summary>
-/// Binds a normalized incident signal to a response assessment per M7.3 contract (M7.3-06).
+/// Binds a normalized incident signal to a response assessment per M7.3 contract (M7.3-06)
+/// and persists the active assessment for mobility invalidation (AUDIT-M7-01 / F13).
 /// </summary>
 public sealed class BindIncidentResponseAssessmentUseCase
 {
     private readonly IAuthorizationBoundary _auth;
+    private readonly IResponseAssessmentStore _assessments;
+    private readonly IClock _clock;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public BindIncidentResponseAssessmentUseCase(IAuthorizationBoundary auth)
+    public BindIncidentResponseAssessmentUseCase(
+        IAuthorizationBoundary auth,
+        IResponseAssessmentStore assessments,
+        IClock clock,
+        IUnitOfWork unitOfWork)
     {
         ArgumentNullException.ThrowIfNull(auth);
+        ArgumentNullException.ThrowIfNull(assessments);
+        ArgumentNullException.ThrowIfNull(clock);
+        ArgumentNullException.ThrowIfNull(unitOfWork);
         _auth = auth;
+        _assessments = assessments;
+        _clock = clock;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ApplicationResult<IncidentResponseAssessmentBindingView>> ExecuteAsync(
@@ -78,6 +94,28 @@ public sealed class BindIncidentResponseAssessmentUseCase
                     PacketPathClass = command.PacketPathClass,
                     FeasibilityOverride = command.FeasibilityOverride,
                 });
+
+            EndpointId endpointId = new(command.EndpointId);
+            ResponseAssessment? prior = await _assessments
+                .GetActiveByEndpointAsync(endpointId, cancellationToken)
+                .ConfigureAwait(false);
+            DateTimeOffset now = _clock.UtcNow;
+            await _unitOfWork.ExecuteAsync(
+                async ct =>
+                {
+                    if (prior is not null && prior.IsActive)
+                    {
+                        await _assessments
+                            .SaveAsync(
+                                prior.Invalidate(now, "superseded_by_new_incident_bind"),
+                                ct)
+                            .ConfigureAwait(false);
+                    }
+
+                    await _assessments.SaveAsync(binding.Assessment, ct).ConfigureAwait(false);
+                },
+                cancellationToken).ConfigureAwait(false);
+
             return ApplicationResults.Ok(IncidentResponseAssessmentBindingView.FromBinding(binding));
         }
         catch (DomainInvariantException ex)

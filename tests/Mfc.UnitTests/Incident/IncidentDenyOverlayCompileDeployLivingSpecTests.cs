@@ -167,7 +167,7 @@ public sealed class IncidentDenyOverlayCompileDeployLivingSpecTests
     {
         DeployHarness harness = await DeployHarness.CreateReadyAsync();
         ApplicationResult<DeployIncidentDenyOverlayView> result = await harness.UseCase.ExecuteAsync(
-            harness.DeployCommand());
+            await harness.DeployCommandAsync());
         Assert.True(result.IsSuccess, result.Error?.Message);
         Assert.Equal(harness.OverlayPolicyId, result.Value!.OverlayPolicyId);
         Assert.NotEqual(Guid.Empty, result.Value.PlanId);
@@ -179,11 +179,42 @@ public sealed class IncidentDenyOverlayCompileDeployLivingSpecTests
     }
 
     [Fact]
-    public async Task Ac10DeployUseCaseRejectsUnauthorizedActor()
+    public async Task Ac10DeployRejectsDevicePlanHashMismatchWithCompile()
+    {
+        DeployHarness harness = await DeployHarness.CreateReadyAsync();
+        DeployIncidentDenyOverlayCommand command = await harness.DeployCommandAsync();
+        DeviceDeploymentPlan mismatched = DeploymentTestFactory.DevicePlan(
+            command.DevicePlans[0].DeviceId,
+            harness.Node.DeclaredKind,
+            newArtifactHash: DeploymentTestFactory.H("not-the-compile-hash"));
+        DeployIncidentDenyOverlayCommand bad = new()
+        {
+            Actor = command.Actor,
+            NodeId = command.NodeId,
+            OverlayPolicyId = command.OverlayPolicyId,
+            AnalysisRunId = command.AnalysisRunId,
+            CurrentDependencyFingerprint = command.CurrentDependencyFingerprint,
+            CurrentCapabilityHash = command.CurrentCapabilityHash,
+            PlanIdempotencyKey = Guid.NewGuid(),
+            DeployIdempotencyKey = Guid.NewGuid(),
+            LogicalPolicyHash = command.LogicalPolicyHash,
+            AnalysisBundleHash = command.AnalysisBundleHash,
+            TopologyProjectionHash = command.TopologyProjectionHash,
+            DevicePlans = [mismatched],
+            PacketPathPairs = command.PacketPathPairs,
+        };
+        ApplicationResult<DeployIncidentDenyOverlayView> result = await harness.UseCase.ExecuteAsync(bad);
+        Assert.False(result.IsSuccess);
+        Assert.Equal(IncidentCompileDevicePlanAlignment.MismatchCode, result.Error!.Code);
+    }
+
+    [Fact]
+    public async Task Ac11DeployUseCaseRejectsUnauthorizedActor()
     {
         DeployHarness harness = await DeployHarness.CreateReadyAsync();
         harness.Auth.DeniedPermissions.Add(ApplicationPermissions.IncidentOverlayDeploy);
-        ApplicationResult<DeployIncidentDenyOverlayView> result = await harness.UseCase.ExecuteAsync(harness.DeployCommand());
+        ApplicationResult<DeployIncidentDenyOverlayView> result = await harness.UseCase.ExecuteAsync(
+            await harness.DeployCommandAsync());
         Assert.False(result.IsSuccess);
     }
 
@@ -439,9 +470,24 @@ public sealed class IncidentDenyOverlayCompileDeployLivingSpecTests
             };
         }
 
-        public DeployIncidentDenyOverlayCommand DeployCommand()
+        public async Task<DeployIncidentDenyOverlayCommand> DeployCommandAsync()
         {
-            Device device = Node.Devices[0];
+            ApplicationResult<CompileNodeFilterArtifactsView> compiled = await CompileFixture.UseCase.ExecuteAsync(
+                new CompileNodeFilterArtifactsCommand
+                {
+                    Actor = "tester",
+                    NodeId = CompileFixture.NodeId,
+                    AnalysisRunId = CompileFixture.RunId,
+                    CurrentDependencyFingerprint = CompileFixture.Fingerprint,
+                    CurrentCapabilityHash = CapabilityHashBytes,
+                });
+            Assert.True(compiled.IsSuccess, compiled.Error?.Message);
+            List<DeviceDeploymentPlan> plans = compiled.Value!.Artifacts
+                .Select(a => DeploymentTestFactory.DevicePlan(
+                    new DeviceId(a.DeviceId),
+                    Node.DeclaredKind,
+                    newArtifactHash: Hash256.Create(a.ResourceHash)))
+                .ToList();
             return new DeployIncidentDenyOverlayCommand
             {
                 Actor = "tester",
@@ -452,10 +498,10 @@ public sealed class IncidentDenyOverlayCompileDeployLivingSpecTests
                 CurrentCapabilityHash = CapabilityHashBytes,
                 PlanIdempotencyKey = Guid.NewGuid(),
                 DeployIdempotencyKey = Guid.NewGuid(),
-                LogicalPolicyHash = DeploymentTestFactory.H("policy").Bytes.ToArray(),
+                LogicalPolicyHash = compiled.Value.LogicalEffectivePolicyHash,
                 AnalysisBundleHash = DeploymentTestFactory.H("analysis").Bytes.ToArray(),
                 TopologyProjectionHash = DeploymentTestFactory.H("topology").Bytes.ToArray(),
-                DevicePlans = [DeploymentTestFactory.DevicePlan(device.Id, Node.DeclaredKind)],
+                DevicePlans = plans,
                 PacketPathPairs = DeploymentTestFactory.CpuPairs(),
             };
         }

@@ -5,6 +5,7 @@ using Mfc.Application.Abstractions.Deployment;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.Time;
 using Mfc.Application.Common;
+using Mfc.Application.Incident;
 using Mfc.Application.Topology;
 using Mfc.Domain;
 using Mfc.Domain.Deployment;
@@ -423,6 +424,9 @@ public sealed class StartDeploymentUseCase
     private readonly IUnitOfWork _unitOfWork;
     private readonly IDeploymentStartWorkChannel _startQueue;
     private readonly IDeploymentProgressSink _progress;
+    private readonly ReportIncidentDeploymentOutcomeUseCase? _incidentOutcome;
+    private readonly IPolicyStore? _policies;
+    private readonly IPolicyApprovalStore? _approvals;
 
     public StartDeploymentUseCase(
         IAuthorizationBoundary auth,
@@ -436,7 +440,10 @@ public sealed class StartDeploymentUseCase
         IDeploymentRuntime runtime,
         IUnitOfWork unitOfWork,
         IDeploymentStartWorkChannel? startQueue = null,
-        IDeploymentProgressSink? progress = null)
+        IDeploymentProgressSink? progress = null,
+        ReportIncidentDeploymentOutcomeUseCase? incidentOutcome = null,
+        IPolicyStore? policies = null,
+        IPolicyApprovalStore? approvals = null)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(nodes);
@@ -460,6 +467,9 @@ public sealed class StartDeploymentUseCase
         _unitOfWork = unitOfWork;
         _startQueue = startQueue ?? new ImmediateDeploymentStartWorkChannel();
         _progress = progress ?? NullDeploymentProgressSink.Instance;
+        _incidentOutcome = incidentOutcome;
+        _policies = policies;
+        _approvals = approvals;
         if (_startQueue is ImmediateDeploymentStartWorkChannel immediate && immediate.Handler is null)
         {
             immediate.Handler = ContinueAcceptedAsync;
@@ -772,6 +782,13 @@ public sealed class StartDeploymentUseCase
                 }
 
                 _progress.Publish(operation.Id.Value, operation.State, executed.ErrorCode ?? operation.ErrorCode);
+                await TryReportIncidentDeploymentOutcomeAsync(
+                        work.Actor,
+                        plan,
+                        operation,
+                        executed,
+                        cancellationToken)
+                    .ConfigureAwait(false);
                 work.Completion.TrySetResult(ApplicationResults.Ok(ToOperationView(operation, executed.Timeline)));
             }
             finally
@@ -784,6 +801,73 @@ public sealed class StartDeploymentUseCase
         {
             work.Completion.TrySetResult(ApplicationResults.Fail(ApplicationError.Failed(ex.Message)));
             throw;
+        }
+    }
+
+    private async Task TryReportIncidentDeploymentOutcomeAsync(
+        string actor,
+        DeploymentPlan plan,
+        DeploymentOperation operation,
+        DeploymentWorkflowExecutionResult executed,
+        CancellationToken cancellationToken)
+    {
+        if (_incidentOutcome is null || _policies is null || _approvals is null)
+        {
+            return;
+        }
+
+        IReadOnlyList<PolicyDesiredBinding> bindings = await _approvals
+            .ListActiveBindingsAsync(PolicyBindingScope.IncidentDenyOverlay, plan.NodeId.Value, cancellationToken)
+            .ConfigureAwait(false);
+        if (bindings.Count == 0)
+        {
+            // Also consider expired-pending bindings tied to this deploy wave.
+            return;
+        }
+
+        StandaloneDeploymentResult standalone = new()
+        {
+            Succeeded = executed.Succeeded,
+            State = executed.State,
+            ErrorCode = executed.ErrorCode,
+            Timeline = executed.Timeline,
+            WroteToDevice = executed.ActivationStarted || executed.Succeeded,
+            WatchdogArmedBeforeActivation = executed.ActivationStarted,
+            WatchdogDisarmedBeforeCommit = executed.Succeeded,
+            DetachedArtifactPreservedOnFailure = !executed.Succeeded,
+            CommitSnapshot = executed.CommitSnapshot,
+            DeviceState = executed.DeviceState,
+            ActivationJournal = executed.ActivationJournal,
+        };
+
+        foreach (PolicyDesiredBinding binding in bindings)
+        {
+            Guid? incidentId = await IncidentOverlayFeedbackSupport.TryResolveOverlayIncidentIdAsync(
+                    _policies,
+                    binding,
+                    cancellationToken)
+                .ConfigureAwait(false);
+            if (incidentId is null)
+            {
+                continue;
+            }
+
+            await _incidentOutcome.ExecuteAsync(
+                    new ReportIncidentDeploymentOutcomeCommand
+                    {
+                        Actor = actor,
+                        IncidentId = incidentId.Value,
+                        NodeId = plan.NodeId.Value,
+                        CorrelationId = operation.Id.Value,
+                        DeviceIds = plan.DevicePlans.Select(static p => p.DeviceId.Value).ToArray(),
+                        Result = standalone,
+                        PlanHash = plan.PlanHash.Bytes.ToArray(),
+                        ArtifactHash = plan.DevicePlans.Count > 0
+                            ? plan.DevicePlans[0].NewArtifactHash.Bytes.ToArray()
+                            : null,
+                    },
+                    cancellationToken)
+                .ConfigureAwait(false);
         }
     }
 

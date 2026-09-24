@@ -89,4 +89,4 @@ PLAN-31 ranks 1…2 (**DESK-A11Y-LIST-01**, **DESK-A11Y-RO-01**) are **DONE**. N
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-423 (#1242)** — PLAN-34 Inventory Desktop operator launch packaging templates after PLAN-33.
+**§3.C NEXT = W7-425 (#1245)** — PLAN-34 Inventory Desktop operator launch packaging templates after PLAN-33.

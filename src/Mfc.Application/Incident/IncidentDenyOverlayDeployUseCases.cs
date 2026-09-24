@@ -152,13 +152,24 @@ public sealed class DeployIncidentDenyOverlayUseCase
             return ApplicationResults.Fail(compiled.Error!);
         }
 
+        // AUDIT-M7-01 / F13: DevicePlans must match sealed compile artifacts (never independent caller hashes).
+        ApplicationError? planAlign = IncidentCompileDevicePlanAlignment.EnsureMatch(
+            command.DevicePlans,
+            compiled.Value!.Artifacts);
+        if (planAlign is not null)
+        {
+            return ApplicationResults.Fail(planAlign);
+        }
+
         ApplicationResult<DeploymentPlanSummaryView> plan = await _createPlan.ExecuteAsync(
             new CreateDeploymentPlanCommand
             {
                 Actor = command.Actor,
                 IdempotencyKey = command.PlanIdempotencyKey,
                 NodeId = command.NodeId,
-                LogicalPolicyHash = command.LogicalPolicyHash,
+                LogicalPolicyHash = compiled.Value.LogicalEffectivePolicyHash.Length > 0
+                    ? compiled.Value.LogicalEffectivePolicyHash
+                    : command.LogicalPolicyHash,
                 AnalysisBundleHash = command.AnalysisBundleHash,
                 TopologyProjectionHash = command.TopologyProjectionHash,
                 DevicePlans = command.DevicePlans,

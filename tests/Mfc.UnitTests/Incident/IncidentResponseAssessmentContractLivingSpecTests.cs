@@ -140,10 +140,15 @@ public sealed class IncidentResponseAssessmentContractLivingSpecTests
     }
 
     [Fact]
-    public async Task Ac10UseCaseReturnsViewAndRejectsUnauthorized()
+    public async Task Ac10UseCasePersistsActiveAssessmentAndRejectsUnauthorized()
     {
         FakeAuthorizationBoundary auth = new();
-        BindIncidentResponseAssessmentUseCase useCase = new(auth);
+        FakeResponseAssessmentStore assessments = new();
+        BindIncidentResponseAssessmentUseCase useCase = new(
+            auth,
+            assessments,
+            new FakeClock(),
+            new FakeUnitOfWork());
         IncidentSignal signal = SampleSignal();
         EndpointId endpointId = EndpointId.New();
         PresenceId presenceId = PresenceId.New();
@@ -163,6 +168,10 @@ public sealed class IncidentResponseAssessmentContractLivingSpecTests
             });
         Assert.True(ok.IsSuccess);
         Assert.Equal(signal.EventId.Value, ok.Value!.IncidentId);
+        ResponseAssessment? active = await assessments.GetActiveByEndpointAsync(endpointId);
+        Assert.NotNull(active);
+        Assert.True(active.IsActive);
+        Assert.Equal(ok.Value.Assessment.AssessmentId, active.AssessmentId.Value);
 
         auth.DeniedPermissions.Add(ApplicationPermissions.IncidentAssessmentBind);
         ApplicationResult<IncidentResponseAssessmentBindingView> denied = await useCase.ExecuteAsync(

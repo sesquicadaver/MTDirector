@@ -82,6 +82,7 @@ public static class RouterOsServiceCollectionExtensions
         services.AddScoped<ISnapshotCapturePort, RouterOsSnapshotCapturePort>();
         services.AddScoped<CoordinateStableReadUseCase>();
         services.AddScoped<IManagedDriftLiveReadPort, RouterOsManagedDriftLiveReadPort>();
+        services.AddScoped<IRoutingAssuranceCaptureProjectionPort, RouterOsRoutingAssuranceCaptureProjectionPort>();
     }
 
     private static void RegisterWriteServices(IServiceCollection services)

@@ -92,4 +92,4 @@ When Watch ends in `CaptureStage.Failed`, shell `ErrorText` is `FormatCapturePro
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-423 (#1242)** — PLAN-60 Inventory Desktop service RPC fault text.
+**§3.C NEXT = W7-425 (#1245)** — PLAN-60 Inventory Desktop service RPC fault text.

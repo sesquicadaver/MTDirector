@@ -70,7 +70,11 @@ public sealed class IncidentResponseAssessmentContractCoverageTests
     [Fact]
     public void UseCaseValidatesNullSignal()
     {
-        BindIncidentResponseAssessmentUseCase useCase = new(new Mfc.UnitTests.Application.Fakes.FakeAuthorizationBoundary());
+        BindIncidentResponseAssessmentUseCase useCase = new(
+            new Mfc.UnitTests.Application.Fakes.FakeAuthorizationBoundary(),
+            new Mfc.UnitTests.Application.Fakes.FakeResponseAssessmentStore(),
+            new Mfc.UnitTests.Application.Fakes.FakeClock(),
+            new Mfc.UnitTests.Application.Fakes.FakeUnitOfWork());
         Assert.Throws<ArgumentNullException>(() =>
             useCase.ExecuteAsync(
                 new BindIncidentResponseAssessmentCommand

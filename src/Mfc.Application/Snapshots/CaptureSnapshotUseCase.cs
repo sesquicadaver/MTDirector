@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Mfc.Application.Abstractions.Audit;
 using Mfc.Application.Abstractions.Authorization;
+using Mfc.Application.Abstractions.Jobs;
 using Mfc.Application.Abstractions.Persistence;
 using Mfc.Application.Abstractions.RouterOs;
 using Mfc.Application.Common;
@@ -27,6 +28,7 @@ public sealed class CaptureSnapshotCommand
 /// Captures a RouterOS snapshot and persists metadata + content-addressed payloads atomically (M1-23).
 /// AUDIT-CAP-04 / F09: payload bytes may be content-addressed.deduplicated, but each successful attempt
 /// with a new idempotency key gets a fresh capture identity/time. Idempotency is bound to actor+key+device.
+/// AUDIT-M7-01 / F13: after persist, projects routing assurance from capture payloads (best-effort).
 /// </summary>
 public sealed class CaptureSnapshotUseCase
 {
@@ -37,6 +39,7 @@ public sealed class CaptureSnapshotUseCase
     private readonly ISnapshotStore _snapshots;
     private readonly IAuditEventWriter _audit;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IRoutingAssuranceCaptureProjectionPort _routingProjection;
 
     public CaptureSnapshotUseCase(
         IAuthorizationBoundary auth,
@@ -45,7 +48,8 @@ public sealed class CaptureSnapshotUseCase
         ISnapshotCapturePort capture,
         ISnapshotStore snapshots,
         IAuditEventWriter audit,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IRoutingAssuranceCaptureProjectionPort? routingProjection = null)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(devices);
@@ -61,6 +65,7 @@ public sealed class CaptureSnapshotUseCase
         _snapshots = snapshots;
         _audit = audit;
         _unitOfWork = unitOfWork;
+        _routingProjection = routingProjection ?? new NotConfiguredRoutingAssuranceCaptureProjectionPort();
     }
 
     public async Task<ApplicationResult<SnapshotView>> ExecuteAsync(
@@ -204,6 +209,15 @@ public sealed class CaptureSnapshotUseCase
                     ct).ConfigureAwait(false);
             },
             cancellationToken).ConfigureAwait(false);
+
+        // Best-effort routing projection — capture success must not depend on M7 routing upsert.
+        await _routingProjection
+            .ProjectFromCapturePayloadsAsync(
+                device.Id,
+                captured.ConfigurationPayload,
+                captured.ObservationPayload,
+                cancellationToken)
+            .ConfigureAwait(false);
 
         return ApplicationResults.Ok(ViewMapper.ToView(stored!, deduplicated: contentDeduplicated));
     }
