@@ -25,7 +25,8 @@ public sealed class CaptureSnapshotCommand
 
 /// <summary>
 /// Captures a RouterOS snapshot and persists metadata + content-addressed payloads atomically (M1-23).
-/// Identical snapshot hashes reuse the existing completed capture; the capture event is always audited.
+/// AUDIT-CAP-04 / F09: payload bytes may be content-addressed.deduplicated, but each successful attempt
+/// with a new idempotency key gets a fresh capture identity/time. Idempotency is bound to actor+key+device.
 /// </summary>
 public sealed class CaptureSnapshotUseCase
 {
@@ -89,8 +90,16 @@ public sealed class CaptureSnapshotUseCase
         }
 
         Guid requestedBy = ActorKey.FromActor(command.Actor);
+        // Full request identity for AUDIT-CAP-04: actor + key + device (TargetId on capture_operations).
+        _ = IdempotencySupport.HashRequest(new
+        {
+            deviceId = command.DeviceId,
+            idempotencyKey = command.IdempotencyKey,
+            actor = command.Actor.Trim(),
+        });
+
         StoredSnapshot? byIdempotency = await _snapshots
-            .FindByIdempotencyAsync(requestedBy, command.IdempotencyKey, cancellationToken)
+            .FindByIdempotencyAsync(requestedBy, command.IdempotencyKey, device.Id, cancellationToken)
             .ConfigureAwait(false);
         if (byIdempotency is not null)
         {
@@ -101,6 +110,16 @@ public sealed class CaptureSnapshotUseCase
                 identical: true,
                 cancellationToken).ConfigureAwait(false);
             return ApplicationResults.Ok(ViewMapper.ToView(byIdempotency, deduplicated: true));
+        }
+
+        if (await _snapshots
+                .IdempotencyKeyBoundToOtherDeviceAsync(
+                    requestedBy, command.IdempotencyKey, device.Id, cancellationToken)
+                .ConfigureAwait(false))
+        {
+            return ApplicationResults.Fail(
+                ApplicationError.Conflict(
+                    "Idempotency key was reused with a different capture request (device)."));
         }
 
         ConnectionProfileReadModel? profile = await _profiles.GetAsync(device.Id, cancellationToken)
@@ -157,19 +176,11 @@ public sealed class CaptureSnapshotUseCase
                 ApplicationError.Dependency("Snapshot capture failed (sanitized)."));
         }
 
-        StoredSnapshot? existing = await _snapshots
+        // Content-addressed payload reuse is fine; each attempt still gets a fresh capture row (F09).
+        StoredSnapshot? priorSameHash = await _snapshots
             .FindCompletedBySnapshotHashAsync(device.Id, captured.SnapshotHash, cancellationToken)
             .ConfigureAwait(false);
-        if (existing is not null)
-        {
-            await AuditInUnitOfWorkAsync(
-                command.Actor,
-                "snapshot.capture.identical",
-                existing,
-                identical: true,
-                cancellationToken).ConfigureAwait(false);
-            return ApplicationResults.Ok(ViewMapper.ToView(existing, deduplicated: true));
-        }
+        bool contentDeduplicated = priorSameHash is not null;
 
         StoredSnapshot? stored = null;
         await _unitOfWork.ExecuteAsync(
@@ -187,14 +198,14 @@ public sealed class CaptureSnapshotUseCase
                     ct).ConfigureAwait(false);
                 await AppendAuditAsync(
                     command.Actor,
-                    "snapshot.capture.completed",
+                    contentDeduplicated ? "snapshot.capture.identical" : "snapshot.capture.completed",
                     stored,
-                    identical: false,
+                    identical: contentDeduplicated,
                     ct).ConfigureAwait(false);
             },
             cancellationToken).ConfigureAwait(false);
 
-        return ApplicationResults.Ok(ViewMapper.ToView(stored!, deduplicated: false));
+        return ApplicationResults.Ok(ViewMapper.ToView(stored!, deduplicated: contentDeduplicated));
     }
 
     private Task AuditInUnitOfWorkAsync(

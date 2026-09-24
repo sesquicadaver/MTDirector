@@ -3983,6 +3983,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinData
 
 
 
+## Living Specification — AUDIT-CAP-04 Capture attempt identity (W7-413)
+
+| AC | Module | Test |
+|----|--------|------|
+| Device-scoped idempotency; persist each attempt; node all-members + time-set fitness; docs + queue lock | CaptureSnapshotUseCase, CaptureNodeSnapshotsUseCase, EfSnapshotStore, known-limitations, ROADMAP | `AuditCap04CaptureAttemptIdentityW7413LivingSpecTests.Ac1DeviceScopedIdempotencyPersistAttemptAndNodeTimeSet` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditCap04CaptureAttemptIdentityW7413"`.
+
 ## Living Specification — Seed AUDIT-CAP-04 after AUDIT-CAP-03 (W7-412)
 
 | AC | Module | Test |

@@ -1149,9 +1149,22 @@ public sealed class SnapshotUseCaseTests
             });
         Assert.True(first.IsSuccess);
         Assert.True(deduped.IsSuccess);
-        Assert.Equal(first.Value!.Id, deduped.Value!.Id);
+        Assert.NotEqual(first.Value!.Id, deduped.Value!.Id);
         Assert.False(first.Value.Deduplicated);
         Assert.True(deduped.Value.Deduplicated);
+        Assert.Equal(first.Value.SnapshotHashHex, deduped.Value.SnapshotHashHex);
+        Assert.Equal(2, capture.CaptureCount);
+
+        ApplicationResult<SnapshotView> idempotentReplay = await captureUseCase.ExecuteAsync(
+            new CaptureSnapshotCommand
+            {
+                Actor = "a",
+                DeviceId = device.Id,
+                IdempotencyKey = Guid.Parse("66666666-6666-6666-6666-666666666666"),
+            });
+        Assert.True(idempotentReplay.IsSuccess);
+        Assert.Equal(first.Value.Id, idempotentReplay.Value!.Id);
+        Assert.True(idempotentReplay.Value.Deduplicated);
         Assert.Equal(2, capture.CaptureCount);
     }
 

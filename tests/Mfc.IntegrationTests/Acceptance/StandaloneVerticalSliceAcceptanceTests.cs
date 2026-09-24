@@ -118,7 +118,7 @@ public sealed class StandaloneVerticalSliceAcceptanceTests
                     s => s.SectionId == sectionId && s.Status == SnapshotSectionCaptureStatus.Ok);
             }
 
-            // AC#4: second capture without changes → identical hashes (deduplicated by snapshot hash).
+            // AC#4: second capture without changes → identical hashes; payload deduped but fresh attempt id (AUDIT-CAP-04).
             StartCaptureResponse identical = await snapshots.StartCaptureAsync(
                 new StartCaptureRequest
                 {
@@ -128,7 +128,7 @@ public sealed class StandaloneVerticalSliceAcceptanceTests
                 headers,
                 deadline: Deadline());
             Assert.True(identical.Deduplicated);
-            Assert.Equal(first.CaptureId, identical.CaptureId);
+            Assert.NotEqual(first.CaptureId, identical.CaptureId);
             SnapshotSummary identicalSummary = await snapshots.GetSnapshotSummaryAsync(
                 new GetSnapshotSummaryRequest { CaptureId = identical.CaptureId },
                 headers,

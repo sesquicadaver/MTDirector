@@ -178,8 +178,33 @@ public sealed class SnapshotGrpcService : SnapshotService.SnapshotServiceBase
             }
 
             CaptureNodeSnapshotsView batch = result.Value!;
-            SnapshotView last = batch.Members[^1].Snapshot;
-            bool allDedup = batch.Members.All(static m => m.Snapshot.Deduplicated);
+            if (!batch.AllMembersSucceeded)
+            {
+                CaptureNodeMemberSnapshotView failed = batch.Members.First(static m => m.ErrorCode is not null);
+                ApplicationError memberError = ApplicationError.Failed(
+                    failed.ErrorMessage ?? $"Node member '{failed.DeviceId}' capture failed.");
+                ErrorDetail failure = NewCaptureFailureDetail(
+                    failed.ErrorCode ?? memberError.Code,
+                    memberError.Message,
+                    out Guid sharedId);
+                _progressHub.Publish(operationId, CaptureStage.Failed, error: failure);
+                throw GrpcApplicationErrorMapper.ToRpcException(memberError, sharedId);
+            }
+
+            if (!batch.TimeSetFit)
+            {
+                ApplicationError unfit = ApplicationError.Failed(
+                    "Node capture time-set is unfit for joint analysis (member clock skew).");
+                ErrorDetail failure = NewCaptureFailureDetail(
+                    unfit.Code,
+                    unfit.Message,
+                    out Guid sharedId);
+                _progressHub.Publish(operationId, CaptureStage.Failed, error: failure);
+                throw GrpcApplicationErrorMapper.ToRpcException(unfit, sharedId);
+            }
+
+            SnapshotView last = batch.Members[^1].Snapshot!;
+            bool allDedup = batch.Members.All(static m => m.Snapshot!.Deduplicated);
 
             _progressHub.Publish(
                 operationId,
