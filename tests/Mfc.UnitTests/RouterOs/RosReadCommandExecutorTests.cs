@@ -155,6 +155,51 @@ public sealed class RosReadCommandExecutorTests
         Assert.Equal("raw", result.Records[0].RawProperties["extra"]);
     }
 
+    [Fact]
+    public async Task DuplicateScalarAttributeFailsWithoutOverwrite()
+    {
+        // AUDIT-CAP-03: dictionary assignment must not silently overwrite duplicate scalars.
+        await using SessionHarness harness = await SessionHarness.StartAsync(async (request, respond) =>
+        {
+            await respond.ReplyAsync(
+                "!re",
+                request.Tag,
+                [("name", "first"), ("name", "second")]);
+            await respond.ReplyAsync("!done", request.Tag);
+        });
+
+        RosReadCommandResult result = await RosReadCommandExecutor.ExecuteAsync(
+            harness.Session,
+            RosReadCommandId.SystemIdentity);
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal(RosReadCommandExecutor.DuplicateAttributeErrorCode, result.Error!.Code);
+        Assert.Contains("name", result.Error.Message, StringComparison.Ordinal);
+        Assert.Empty(result.Records);
+    }
+
+    [Fact]
+    public async Task InvalidUtf8ValueFailsWithoutReplacement()
+    {
+        // AUDIT-CAP-03 / Read Adapter §8: no � replacement; hex compatibility in error.
+        byte[] invalidValue = [0xFF, 0xFE];
+        await using SessionHarness harness = await SessionHarness.StartAsync(async (request, respond) =>
+        {
+            await respond.ReplyRawAttributeAsync("!re", request.Tag, "name", invalidValue);
+            await respond.ReplyAsync("!done", request.Tag);
+        });
+
+        RosReadCommandResult result = await RosReadCommandExecutor.ExecuteAsync(
+            harness.Session,
+            RosReadCommandId.SystemIdentity);
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal(RosReadCommandExecutor.InvalidUtf8ErrorCode, result.Error!.Code);
+        Assert.Contains("FFFE", result.Error.Message, StringComparison.Ordinal);
+        Assert.DoesNotContain("\uFFFD", result.Error.Message, StringComparison.Ordinal);
+        Assert.Empty(result.Records);
+    }
+
     private sealed class SessionHarness : IAsyncDisposable
     {
         private readonly Pipe _uplink = new();
@@ -277,6 +322,28 @@ public sealed class RosReadCommandExecutorTests
             }
 
             words.Add(Encoding.ASCII.GetBytes($".tag={tag.ToString(CultureInfo.InvariantCulture)}"));
+            ApiSentenceEncoder.EncodeWords(buffer, words.ToArray());
+            await WriteAsync(buffer.WrittenMemory).ConfigureAwait(false);
+        }
+
+        /// <summary>Reply with a raw (possibly non-UTF-8) attribute value for strict-decode tests.</summary>
+        public async Task ReplyRawAttributeAsync(
+            string marker,
+            ulong tag,
+            string name,
+            ReadOnlyMemory<byte> valueBytes)
+        {
+            ArrayBufferWriter<byte> buffer = new();
+            byte[] namePrefix = Encoding.ASCII.GetBytes($"={name}=");
+            byte[] attribute = new byte[namePrefix.Length + valueBytes.Length];
+            namePrefix.CopyTo(attribute, 0);
+            valueBytes.Span.CopyTo(attribute.AsSpan(namePrefix.Length));
+            List<ReadOnlyMemory<byte>> words =
+            [
+                Encoding.ASCII.GetBytes(marker),
+                attribute,
+                Encoding.ASCII.GetBytes($".tag={tag.ToString(CultureInfo.InvariantCulture)}"),
+            ];
             ApiSentenceEncoder.EncodeWords(buffer, words.ToArray());
             await WriteAsync(buffer.WrittenMemory).ConfigureAwait(false);
         }

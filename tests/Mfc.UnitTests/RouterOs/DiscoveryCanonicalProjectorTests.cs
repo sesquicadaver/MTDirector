@@ -301,6 +301,176 @@ public sealed class DiscoveryCanonicalProjectorTests
     }
 
     [Fact]
+    public void NatFacilityMatchFieldsAreProjectedIntoConfiguration()
+    {
+        // AUDIT-CAP-03 / F08: NAT/RAW/Mangle must project full profile matchers (dst-port, etc.).
+        CanonicalDeviceSnapshot snapshot = DiscoveryCanonicalProjector.Project(new DiscoveryCanonicalInput
+        {
+            Routing = Routing(ipv4Nat:
+            [
+                FacilityRule(
+                    OrderedFirewallFacility.Nat,
+                    0,
+                    "dstnat",
+                    "dst-nat",
+                    known: new Dictionary<string, string>(StringComparer.Ordinal)
+                    {
+                        ["chain"] = "dstnat",
+                        ["action"] = "dst-nat",
+                        ["protocol"] = "tcp",
+                        ["dst-port"] = "443",
+                        ["in-interface"] = "ether1",
+                        ["to-addresses"] = "10.0.0.10",
+                        ["to-ports"] = "8443",
+                        ["disabled"] = "false",
+                    }),
+            ]),
+        });
+
+        CanonicalSection nat = Assert.Single(
+            snapshot.ConfigurationSections,
+            s => s.SectionId == CanonicalSectionIds.FirewallIpv4Nat);
+        IReadOnlyDictionary<string, string> props = nat.Records[0].Properties;
+        Assert.Equal("tcp", props["protocol"]);
+        Assert.Equal("443", props["dst-port"]);
+        Assert.Equal("ether1", props["in-interface"]);
+        Assert.Equal("10.0.0.10", props["to-addresses"]);
+        Assert.Equal("8443", props["to-ports"]);
+        Assert.False(props.ContainsKey("dynamic"));
+    }
+
+    [Fact]
+    public void NatDstPortOnlyChangeChangesConfigurationHash()
+    {
+        CanonicalDeviceSnapshot before = DiscoveryCanonicalProjector.Project(new DiscoveryCanonicalInput
+        {
+            Routing = Routing(ipv4Nat:
+            [
+                FacilityRule(
+                    OrderedFirewallFacility.Nat,
+                    0,
+                    "dstnat",
+                    "dst-nat",
+                    known: new Dictionary<string, string>(StringComparer.Ordinal)
+                    {
+                        ["chain"] = "dstnat",
+                        ["action"] = "dst-nat",
+                        ["dst-port"] = "443",
+                        ["disabled"] = "false",
+                    }),
+            ]),
+        });
+        CanonicalDeviceSnapshot after = DiscoveryCanonicalProjector.Project(new DiscoveryCanonicalInput
+        {
+            Routing = Routing(ipv4Nat:
+            [
+                FacilityRule(
+                    OrderedFirewallFacility.Nat,
+                    0,
+                    "dstnat",
+                    "dst-nat",
+                    known: new Dictionary<string, string>(StringComparer.Ordinal)
+                    {
+                        ["chain"] = "dstnat",
+                        ["action"] = "dst-nat",
+                        ["dst-port"] = "8443",
+                        ["disabled"] = "false",
+                    }),
+            ]),
+        });
+
+        Assert.NotEqual(before.ConfigurationHash.ToString(), after.ConfigurationHash.ToString());
+    }
+
+    [Fact]
+    public void RoutingRuleSrcAddressIsProjectedAndAffectsConfigurationHash()
+    {
+        CanonicalDeviceSnapshot before = DiscoveryCanonicalProjector.Project(new DiscoveryCanonicalInput
+        {
+            Routing = Routing(routingRules:
+            [
+                new RoutingRuleDiscovery
+                {
+                    EffectiveOrdinal = 0,
+                    Action = "lookup",
+                    SrcAddress = "10.0.0.0/8",
+                    DstAddress = null,
+                    RoutingMark = null,
+                    Table = "main",
+                    Disabled = "false",
+                    Comment = null,
+                    IsDynamic = false,
+                    RawProperties = EmptyBag(),
+                },
+            ]),
+        });
+        CanonicalDeviceSnapshot after = DiscoveryCanonicalProjector.Project(new DiscoveryCanonicalInput
+        {
+            Routing = Routing(routingRules:
+            [
+                new RoutingRuleDiscovery
+                {
+                    EffectiveOrdinal = 0,
+                    Action = "lookup",
+                    SrcAddress = "192.168.0.0/16",
+                    DstAddress = null,
+                    RoutingMark = null,
+                    Table = "main",
+                    Disabled = "false",
+                    Comment = null,
+                    IsDynamic = false,
+                    RawProperties = EmptyBag(),
+                },
+            ]),
+        });
+
+        CanonicalSection rules = Assert.Single(
+            before.ConfigurationSections,
+            s => s.SectionId == CanonicalSectionIds.RoutingRules);
+        Assert.Equal("10.0.0.0/8", rules.Records[0].Properties["src-address"]);
+        Assert.NotEqual(before.ConfigurationHash.ToString(), after.ConfigurationHash.ToString());
+    }
+
+    [Fact]
+    public void DynamicFilterRulesAppearInObservationEffectiveSequence()
+    {
+        CanonicalDeviceSnapshot snapshot = DiscoveryCanonicalProjector.Project(new DiscoveryCanonicalInput
+        {
+            Firewall = Firewall(ipv4Filter:
+            [
+                FilterRule(0, staticOrdinal: null, "input", "drop", isDynamic: true, known: new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["chain"] = "input",
+                    ["action"] = "drop",
+                    ["dst-port"] = "8729",
+                    ["dynamic"] = "true",
+                    ["disabled"] = "false",
+                }),
+                FilterRule(1, 0, "input", "accept", known: new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["chain"] = "input",
+                    ["action"] = "accept",
+                    ["disabled"] = "false",
+                }),
+            ]),
+        });
+
+        Assert.DoesNotContain(
+            snapshot.ConfigurationSections.Single(s => s.SectionId == CanonicalSectionIds.FirewallIpv4Filter).Records,
+            r => r.Properties.TryGetValue("dynamic", out string? d) && d == "true");
+        CanonicalSection obs = Assert.Single(
+            snapshot.ObservationSections,
+            s => s.SectionId == CanonicalSectionIds.FirewallIpv4Filter);
+        Assert.Equal(2, obs.Records.Count);
+        Assert.Equal("true", obs.Records[0].Properties["dynamic"]);
+        Assert.Equal("8729", obs.Records[0].Properties["dst-port"]);
+        Assert.Equal("false", obs.Records[1].Properties["dynamic"]);
+        Assert.Single(
+            snapshot.ConfigurationSections
+                .Single(s => s.SectionId == CanonicalSectionIds.FirewallIpv4Filter).Records);
+    }
+
+    [Fact]
     public void DstPortOnlyChangeChangesConfigurationHash()
     {
         CanonicalDeviceSnapshot before = DiscoveryCanonicalProjector.Project(new DiscoveryCanonicalInput
@@ -343,7 +513,8 @@ public sealed class DiscoveryCanonicalProjectorTests
         });
 
         Assert.NotEqual(before.ConfigurationHash.ToString(), after.ConfigurationHash.ToString());
-        Assert.Equal(before.ObservationHash.ToString(), after.ObservationHash.ToString());
+        // AUDIT-CAP-03: effective filter sequence is also projected into observations.
+        Assert.NotEqual(before.ObservationHash.ToString(), after.ObservationHash.ToString());
     }
 
     [Fact]
@@ -489,19 +660,20 @@ public sealed class DiscoveryCanonicalProjectorTests
 
     private static FirewallFilterRuleDiscovery FilterRule(
         int effective,
-        int staticOrdinal,
+        int? staticOrdinal,
         string chain,
         string action,
         IReadOnlyDictionary<string, string>? raw = null,
         Dictionary<string, string>? known = null,
-        string? jumpTarget = null)
+        string? jumpTarget = null,
+        bool isDynamic = false)
         => new()
         {
             Family = IpAddressFamilyKind.Ipv4,
             RouterOsRowId = $"*{effective + 1}",
             EffectiveOrdinal = effective,
             StaticOrdinal = staticOrdinal,
-            IsDynamic = false,
+            IsDynamic = isDynamic,
             Chain = chain,
             Action = action,
             Disabled = "false",
@@ -520,6 +692,31 @@ public sealed class DiscoveryCanonicalProjectorTests
             Invalid = null,
             KnownProperties = known ?? EmptyBag(),
             RawProperties = raw ?? EmptyBag(),
+        };
+
+    private static OrderedFirewallFacilityRuleDiscovery FacilityRule(
+        OrderedFirewallFacility facility,
+        int ordinal,
+        string chain,
+        string action,
+        Dictionary<string, string>? known = null)
+        => new()
+        {
+            Facility = facility,
+            Family = IpAddressFamilyKind.Ipv4,
+            EffectiveOrdinal = ordinal,
+            Chain = chain,
+            Action = action,
+            Disabled = "false",
+            Comment = null,
+            ConnectionMark = null,
+            PacketMark = null,
+            RoutingMark = null,
+            NewRoutingMark = null,
+            UnsupportedForEditing = false,
+            UnsupportedMatchers = [],
+            KnownProperties = known ?? EmptyBag(),
+            RawProperties = EmptyBag(),
         };
 
     private static FirewallFilterDiscoveryResult Firewall(
@@ -593,7 +790,9 @@ public sealed class DiscoveryCanonicalProjectorTests
         };
 
     private static RoutingDependencyDiscoveryResult Routing(
-        IReadOnlyList<StaticRouteDiscovery>? ipv4StaticRoutes = null)
+        IReadOnlyList<StaticRouteDiscovery>? ipv4StaticRoutes = null,
+        IReadOnlyList<OrderedFirewallFacilityRuleDiscovery>? ipv4Nat = null,
+        IReadOnlyList<RoutingRuleDiscovery>? routingRules = null)
         => new()
         {
             RoutingTables = [],
@@ -608,7 +807,7 @@ public sealed class DiscoveryCanonicalProjectorTests
                 SingleProcess = null,
                 RawProperties = EmptyBag(),
             },
-            RoutingRules = [],
+            RoutingRules = routingRules ?? [],
             Vrfs = [],
             Ipv4StaticRoutes = ipv4StaticRoutes ?? [],
             Ipv6StaticRoutes = [],
@@ -618,7 +817,7 @@ public sealed class DiscoveryCanonicalProjectorTests
             Ipv6DefaultRouteState = [],
             RoutingFilterRules = [],
             RoutingFilterSelectRules = [],
-            Ipv4NatRules = [],
+            Ipv4NatRules = ipv4Nat ?? [],
             Ipv6NatRules = [],
             Ipv4RawRules = [],
             Ipv6RawRules = [],

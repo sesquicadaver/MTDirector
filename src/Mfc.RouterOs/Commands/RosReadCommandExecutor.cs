@@ -15,6 +15,12 @@ public sealed class RosReadCommandExecutor
     public const string FatalErrorCode = "API_FATAL";
     public const string LimitExceededCode = "ROS_READ_LIMIT";
 
+    /// <summary>AUDIT-CAP-03 / Read Adapter §8: invalid UTF-8 must not use replacement characters.</summary>
+    public const string InvalidUtf8ErrorCode = "ROS_INVALID_UTF8";
+
+    /// <summary>AUDIT-CAP-03 / Read Adapter §9.3: duplicate scalar attributes are a mapping fault.</summary>
+    public const string DuplicateAttributeErrorCode = RouterOsProtocolError.DuplicateAttribute;
+
     /// <summary>
     /// Runs a typed read command on an authenticated session.
     /// <c>!trap</c> becomes a typed error; <c>!fatal</c> leaves the session faulted.
@@ -84,7 +90,25 @@ public sealed class RosReadCommandExecutor
                     $"Command '{definition.Id}' exceeded max payload bytes ({definition.MaxPayloadBytes}).");
             }
 
-            records.Add(MapRecord(definition.PropertyProfile, sentence));
+            if (!TryMapRecord(definition.PropertyProfile, sentence, out RosReadRecord? record, out RosReadCommandError? mapError)
+                || record is null)
+            {
+                return new RosReadCommandResult
+                {
+                    CommandId = definition.Id,
+                    Lifecycle = RosCommandLifecycle.Faulted,
+                    Records = Array.Empty<RosReadRecord>(),
+                    SessionInvalidated = sessionInvalidated,
+                    Error = mapError ?? new RosReadCommandError
+                    {
+                        Code = InvalidUtf8ErrorCode,
+                        Message = $"Command '{definition.Id}' failed attribute mapping.",
+                        Traps = sessionResult.Traps,
+                    },
+                };
+            }
+
+            records.Add(record);
         }
 
         if (sessionResult.Traps.Count > 0)
@@ -133,21 +157,66 @@ public sealed class RosReadCommandExecutor
         };
     }
 
-    private static RosReadRecord MapRecord(RosPropertyProfile profile, RosSentence sentence)
+    /// <summary>
+    /// Maps one <c>!re</c> sentence into known/raw dictionaries.
+    /// AUDIT-CAP-03: strict UTF-8 (no � replacement); duplicate scalar names fail;
+    /// invalid UTF-8 bytes are retained as hex compatibility material in the error message.
+    /// </summary>
+    private static bool TryMapRecord(
+        RosPropertyProfile profile,
+        RosSentence sentence,
+        out RosReadRecord? record,
+        out RosReadCommandError? error)
     {
+        record = null;
+        error = null;
         Dictionary<string, string> known = new(StringComparer.Ordinal);
         Dictionary<string, string> raw = new(StringComparer.Ordinal);
+        HashSet<string> seen = new(StringComparer.Ordinal);
 
         foreach (RosAttributeEntry attribute in sentence.Attributes)
         {
-            string name = Encoding.ASCII.GetString(attribute.Name.Span);
+            if (!RosWord.TryDecodeStrictAscii(attribute.Name.Span, out string? name) || name is null)
+            {
+                error = new RosReadCommandError
+                {
+                    Code = RouterOsProtocolError.AttributeMalformed,
+                    Message = "Attribute name is not strict ASCII.",
+                    Traps = [],
+                };
+                return false;
+            }
+
             if (SensitiveFieldRegistry.IsForbidden(name))
             {
                 // Defense in depth: never store forbidden attributes even if the device returns them.
                 continue;
             }
 
-            string value = Encoding.UTF8.GetString(attribute.Value.Span);
+            if (!seen.Add(name))
+            {
+                error = new RosReadCommandError
+                {
+                    Code = DuplicateAttributeErrorCode,
+                    Message = $"Duplicate scalar attribute '{name}'.",
+                    Traps = [],
+                };
+                return false;
+            }
+
+            if (!RosWord.TryDecodeUtf8(attribute.Value.Span, out string? value) || value is null)
+            {
+                string hex = Convert.ToHexString(attribute.Value.Span);
+                error = new RosReadCommandError
+                {
+                    Code = InvalidUtf8ErrorCode,
+                    Message =
+                        $"Attribute '{name}' value is not valid UTF-8; binary compatibility material hex={hex}.",
+                    Traps = [],
+                };
+                return false;
+            }
+
             if (profile.TryGet(name, out _))
             {
                 known[name] = value;
@@ -158,11 +227,12 @@ public sealed class RosReadCommandExecutor
             }
         }
 
-        return new RosReadRecord
+        record = new RosReadRecord
         {
             KnownProperties = known,
             RawProperties = raw,
         };
+        return true;
     }
 
     private static RosReadCommandResult Fail(

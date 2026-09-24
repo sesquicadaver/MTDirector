@@ -30,13 +30,13 @@ public sealed class ProductTrancheSeedW7398LivingSpecTests
             "W7-399 | [#1203](https://github.com/sesquicadaver/MTDirector/issues/1203) | AUDIT-OWN-01 — Onboarding durable writer lease vs recovery | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-411 (#1221)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-412 (#1224)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-398 (#1202) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-399 (#1203)", plan, StringComparison.Ordinal);
         Assert.Contains("AUDIT-OWN-01", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-411 (#1221)", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-411 (#1221)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-412 (#1224)", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-412 (#1224)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

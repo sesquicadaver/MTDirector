@@ -3983,6 +3983,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinData
 
 
 
+## Living Specification — AUDIT-CAP-03 Full capture projection (W7-411)
+
+| AC | Module | Test |
+|----|--------|------|
+| Full facility/routing projection; dynamic filter observation; strict MapRecord; docs + queue lock | DiscoveryCanonicalProjector, RosReadCommandExecutor, GetDevicePolicySafetyAnalysisUseCase, known-limitations, ROADMAP | `AuditCap03FullCaptureProjectionW7411LivingSpecTests.Ac1FullFacilityRoutingDynamicFilterAndStrictMapRecord` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditCap03FullCaptureProjectionW7411"`.
+
 ## Living Specification — Seed AUDIT-CAP-03 after AUDIT-RPC-01 (W7-410)
 
 | AC | Module | Test |

@@ -323,6 +323,8 @@ public sealed class RoutingDependencyDiscoveryResult
             {
                 string p = $"rrule.{rule.EffectiveOrdinal}";
                 Put(material, $"{p}.action", rule.Action);
+                Put(material, $"{p}.src-address", rule.SrcAddress);
+                Put(material, $"{p}.dst-address", rule.DstAddress);
                 Put(material, $"{p}.table", rule.Table);
                 Put(material, $"{p}.routing-mark", rule.RoutingMark);
                 Put(material, $"{p}.disabled", rule.Disabled);
