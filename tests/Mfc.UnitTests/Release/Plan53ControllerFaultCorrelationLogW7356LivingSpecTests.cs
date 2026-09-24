@@ -89,7 +89,7 @@ public sealed class Plan53ControllerFaultCorrelationLogW7356LivingSpecTests
             Assert.DoesNotContain("correlationId", source, StringComparison.Ordinal);
         }
 
-        Assert.Equal(43, calls);
+        Assert.Equal(45, calls);
     }
 
     private static int Count(string text, string value)

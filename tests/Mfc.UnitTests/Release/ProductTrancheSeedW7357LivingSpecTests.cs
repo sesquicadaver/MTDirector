@@ -67,7 +67,7 @@ public sealed class ProductTrancheSeedW7357LivingSpecTests
             calls += Count(File.ReadAllText(path), "GrpcApplicationErrorMapper.ToRpcException");
         }
 
-        Assert.Equal(43, calls);
+        Assert.Equal(45, calls);
     }
 
     private static int Count(string text, string value)
