@@ -33,7 +33,8 @@ internal static class DeploymentTestFactory
         DeviceId deviceId,
         NodeKind kind,
         bool ipv6 = false,
-        bool noChanges = false)
+        bool noChanges = false,
+        Hash256? newArtifactHash = null)
     {
         IReadOnlyList<AnchorKey> keys = RequiredAnchorSet.For(kind, ipv6);
         IReadOnlyList<AnchorKey> activation = DeploymentAnchorOrder.Sort(keys);
@@ -60,7 +61,7 @@ internal static class DeploymentTestFactory
         }
 
         Hash256 oldArt = H("old-art");
-        Hash256 newArt = noChanges ? oldArt : H("new-art");
+        Hash256 newArt = newArtifactHash ?? (noChanges ? oldArt : H("new-art"));
         return DeviceDeploymentPlan.Create(
             deviceId,
             "7.16.2",

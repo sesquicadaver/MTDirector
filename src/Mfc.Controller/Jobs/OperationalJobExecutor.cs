@@ -46,9 +46,18 @@ public sealed class OperationalJobExecutor
                 }
             case OperationalJobKind.ExpiredExceptionReconciliation:
                 {
-                    ReconcileExpiredExceptionBindingsJobUseCase useCase =
+                    ReconcileExpiredExceptionBindingsJobUseCase exceptions =
                         sp.GetRequiredService<ReconcileExpiredExceptionBindingsJobUseCase>();
-                    await useCase.ExecuteAsync(
+                    await exceptions.ExecuteAsync(
+                            options.SystemActor,
+                            options.ExpiredExceptionBatchSize,
+                            cancellationToken)
+                        .ConfigureAwait(false);
+
+                    // AUDIT-M7-01 / F13: incident deny-overlay TTL uses the same expiry tick.
+                    ReconcileExpiredIncidentDenyOverlayBindingsJobUseCase incidents =
+                        sp.GetRequiredService<ReconcileExpiredIncidentDenyOverlayBindingsJobUseCase>();
+                    await incidents.ExecuteAsync(
                             options.SystemActor,
                             options.ExpiredExceptionBatchSize,
                             cancellationToken)

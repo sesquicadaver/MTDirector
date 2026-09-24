@@ -356,13 +356,16 @@ public sealed class PlanIncidentDenyOverlayRemovalUseCase
             return ApplicationResults.Fail(compiled.Error!);
         }
 
+        // AUDIT-M7-01: prefer LogicalEffectivePolicyHash from this post-expire compile.
         ApplicationResult<DeploymentPlanSummaryView> plan = await _createPlan.ExecuteAsync(
             new CreateDeploymentPlanCommand
             {
                 Actor = command.Actor,
                 IdempotencyKey = command.PlanIdempotencyKey,
                 NodeId = command.NodeId,
-                LogicalPolicyHash = command.LogicalPolicyHash,
+                LogicalPolicyHash = compiled.Value!.LogicalEffectivePolicyHash.Length > 0
+                    ? compiled.Value.LogicalEffectivePolicyHash
+                    : command.LogicalPolicyHash,
                 AnalysisBundleHash = command.AnalysisBundleHash,
                 TopologyProjectionHash = command.TopologyProjectionHash,
                 DevicePlans = command.DevicePlans,

@@ -58,15 +58,15 @@ public sealed class AuditRb01UnifiedStrictRollbackW7405LivingSpecTests
             "W7-407 | [#1215](https://github.com/sesquicadaver/MTDirector/issues/1215) | AUDIT-CLK-01 — RouterOS clock / TTL budget | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-423 (#1242)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-425 (#1245)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("AUDIT-RB-01 W7-405 (#1212) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-406 (#1214) DONE", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-423 (#1242)", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-425 (#1245)", plan62, StringComparison.Ordinal);
         Assert.Contains("AUDIT-CLK-01", plan62, StringComparison.Ordinal);
 
         Assert.Contains("AUDIT-RB-01 W7-405 (#1212) DONE", continuous, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-423 (#1242)", continuous, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-425 (#1245)", continuous, StringComparison.Ordinal);
 
         Assert.Contains("AuditRb01UnifiedStrictRollbackW7405", testing, StringComparison.Ordinal);
         Assert.Contains("ProductTrancheSeedW7406", testing, StringComparison.Ordinal);
@@ -74,7 +74,7 @@ public sealed class AuditRb01UnifiedStrictRollbackW7405LivingSpecTests
         Assert.Contains("| `W7-405` | #1212 |", issues, StringComparison.Ordinal);
         Assert.Contains("| `W7-406` | #1214 |", issues, StringComparison.Ordinal);
         Assert.Contains("| `W7-407` | #1215 |", issues, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-423 (#1242)", issues, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-425 (#1245)", issues, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

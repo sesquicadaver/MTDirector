@@ -4,6 +4,7 @@ using Mfc.Application.Common;
 using Mfc.Application.Deployment;
 using Mfc.Application.Incident;
 using Mfc.Application.Models;
+using Mfc.Application.Policies;
 using Mfc.Domain;
 using Mfc.Domain.Deployment;
 using Mfc.Domain.Deployment.Primitives;
@@ -373,8 +374,25 @@ public sealed class IncidentResponseE2ELivingSpecTests
                 Query = SampleQuery(fastTrack: true, l2Bypass: false),
             });
 
-        public Task<ApplicationResult<DeployIncidentDenyOverlayView>> DeployAsync()
-            => Deploy.ExecuteAsync(new DeployIncidentDenyOverlayCommand
+        public async Task<ApplicationResult<DeployIncidentDenyOverlayView>> DeployAsync()
+        {
+            ApplicationResult<CompileNodeFilterArtifactsView> compiled = await CompileFixture.UseCase.ExecuteAsync(
+                new CompileNodeFilterArtifactsCommand
+                {
+                    Actor = "tester",
+                    NodeId = NodeId,
+                    AnalysisRunId = _analysisRunId,
+                    CurrentDependencyFingerprint = _fingerprint,
+                    CurrentCapabilityHash = CapabilityHashBytes,
+                });
+            Assert.True(compiled.IsSuccess, compiled.Error?.Message);
+            List<DeviceDeploymentPlan> plans = compiled.Value!.Artifacts
+                .Select(a => DeploymentTestFactory.DevicePlan(
+                    new DeviceId(a.DeviceId),
+                    Node.DeclaredKind,
+                    newArtifactHash: Hash256.Create(a.ResourceHash)))
+                .ToList();
+            return await Deploy.ExecuteAsync(new DeployIncidentDenyOverlayCommand
             {
                 Actor = "tester",
                 NodeId = NodeId,
@@ -384,12 +402,13 @@ public sealed class IncidentResponseE2ELivingSpecTests
                 CurrentCapabilityHash = CapabilityHashBytes,
                 PlanIdempotencyKey = Guid.NewGuid(),
                 DeployIdempotencyKey = Guid.NewGuid(),
-                LogicalPolicyHash = DeploymentTestFactory.H("policy").Bytes.ToArray(),
+                LogicalPolicyHash = compiled.Value.LogicalEffectivePolicyHash,
                 AnalysisBundleHash = DeploymentTestFactory.H("analysis").Bytes.ToArray(),
                 TopologyProjectionHash = DeploymentTestFactory.H("topology").Bytes.ToArray(),
-                DevicePlans = [DeploymentTestFactory.DevicePlan(new DeviceId(DeviceId), Node.DeclaredKind)],
+                DevicePlans = plans,
                 PacketPathPairs = DeploymentTestFactory.CpuPairs(),
             });
+        }
 
         public Task<ApplicationResult<PlanIncidentDenyOverlayRemovalView>> PlanRemovalAsync()
             => PlanRemoval.ExecuteAsync(new PlanIncidentDenyOverlayRemovalCommand

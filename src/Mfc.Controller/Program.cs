@@ -158,6 +158,7 @@ public static class Program
         builder.Services.TryAddSingleton<Mfc.Application.Abstractions.Deployment.IDeploymentRuntime, Mfc.Application.Abstractions.Deployment.NotConfiguredDeploymentRuntime>();
         builder.Services.TryAddSingleton<IWatchdogResidueCleanupPort, NotConfiguredWatchdogResidueCleanupPort>();
         builder.Services.TryAddSingleton<IManagedDriftLiveReadPort, NotConfiguredManagedDriftLiveReadPort>();
+        builder.Services.TryAddSingleton<IRoutingAssuranceCaptureProjectionPort, NotConfiguredRoutingAssuranceCaptureProjectionPort>();
         builder.Services.TryAddSingleton<
             Mfc.Application.Abstractions.Integration.IResponseFeedbackDeliveryPort,
             Mfc.Infrastructure.Integration.NotConfiguredResponseFeedbackDeliveryPort>();

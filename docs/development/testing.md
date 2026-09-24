@@ -3983,6 +3983,24 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinData
 
 
 
+## Living Specification — Seed AUDIT-ACC-01 after AUDIT-M7-01 (W7-424)
+
+| AC | Module | Test |
+|----|--------|------|
+| Seed locks AUDIT-ACC-01 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7424LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditAcc01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7424"`.
+
+## Living Specification — AUDIT-M7-01 Wire M7 production lifecycle (W7-423)
+
+| AC | Module | Test |
+|----|--------|------|
+| Bind persist, TTL tick, deploy outcome, DevicePlan/compile align, capture routing projection | BindIncidentResponseAssessmentUseCase, OperationalJobExecutor, StartDeploymentUseCase, IncidentCompileDevicePlanAlignment, CaptureSnapshotUseCase, IRoutingAssuranceCaptureProjectionPort | `AuditM701WireM7ProductionLifecycleW7423LivingSpecTests.Ac1ProductionPathsWireBindTtlOutcomeDeployAlignAndCaptureRouting` |
+| Bind persists active assessment for mobility | IncidentResponseAssessmentContractLivingSpecTests | `Ac10UseCasePersistsActiveAssessmentAndRejectsUnauthorized` |
+| Deploy rejects DevicePlan hash ≠ sealed compile | IncidentDenyOverlayCompileDeployLivingSpecTests | `Ac10DeployRejectsDevicePlanHashMismatchWithCompile` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditM701WireM7ProductionLifecycleW7423|IncidentDenyOverlayCompileDeploy|IncidentResponseAssessmentContractLivingSpec"`.
+
 ## Living Specification — Seed AUDIT-M7-01 after AUDIT-DRIFT-01 (W7-422)
 
 | AC | Module | Test |

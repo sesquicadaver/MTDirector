@@ -232,7 +232,7 @@ public sealed class IncidentDenyOverlayRemovalLivingSpecTests
 
         public Guid BindingId { get; }
 
-        public ulong BindingRowVersion { get; }
+        public ulong BindingRowVersion { get; private set; }
 
         public Guid AnalysisRunId { get; }
 

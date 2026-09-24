@@ -3,7 +3,7 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-422: after AUDIT-DRIFT-01, §3.C NEXT is AUDIT-M7-01 (W7-423).
+/// W7-422: after AUDIT-DRIFT-01, §3.C advanced through AUDIT-M7-01; current NEXT is AUDIT-ACC-01 (W7-425).
 /// </summary>
 public sealed class ProductTrancheSeedW7422LivingSpecTests
 {
@@ -26,18 +26,18 @@ public sealed class ProductTrancheSeedW7422LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-423 | [#1242](https://github.com/sesquicadaver/MTDirector/issues/1242) | AUDIT-M7-01 — Wire M7 production lifecycle | **OPEN**",
+            "W7-423 | [#1242](https://github.com/sesquicadaver/MTDirector/issues/1242) | AUDIT-M7-01 — Wire M7 production lifecycle | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-423 (#1242)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-425 (#1245)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-422 (#1241) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-423 (#1242)", plan, StringComparison.Ordinal);
         Assert.Contains("AUDIT-M7-01", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-422 (#1241) DONE", plan62, StringComparison.Ordinal);
-        Assert.Contains("W7-423 (#1242) OPEN (NEXT)", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-423 (#1242)", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-423 (#1242)", readme, StringComparison.Ordinal);
+        Assert.Contains("W7-423 (#1242) DONE", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-425 (#1245)", plan62, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-425 (#1245)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()
