@@ -120,7 +120,7 @@ public sealed class DeskRpcFault01DesktopErrorDetailLivingSpecTests
             "W7-354 | [#1114](https://github.com/sesquicadaver/MTDirector/issues/1114) | DESK-RPC-FAULT-01 — Map Controller ErrorDetail trailer into operator ErrorText | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-421 (#1239)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-423 (#1242)", roadmap, StringComparison.Ordinal);
         Assert.Contains("Delivery notes (W7-354)", plan52, StringComparison.Ordinal);
         Assert.Contains("DesktopRpcFaultText.Format", plan52, StringComparison.Ordinal);
     }

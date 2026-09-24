@@ -9,6 +9,8 @@ using Mfc.Application.Policies;
 using Mfc.Domain;
 using Mfc.Domain.Deployment;
 using Mfc.Domain.Deployment.Primitives;
+using Mfc.Domain.Drift;
+using Mfc.Domain.Drift.Primitives;
 using Mfc.Domain.Inventory;
 using Mfc.Domain.Inventory.Primitives;
 using Mfc.Domain.Onboarding;
@@ -98,6 +100,7 @@ public sealed class OperationalJobUseCaseCoverageTests
 
         PollManagedDriftJobUseCase useCase = new(
             hashes,
+            new MatchingLiveReadPort(committed),
             new DetectManagedDriftUseCase(auth, devices, hashes, drift, audit, clock, new FakeUnitOfWork()));
         var result = await useCase.ExecuteAsync("tester", batchSize: 10);
         Assert.True(result.IsSuccess);
@@ -106,10 +109,51 @@ public sealed class OperationalJobUseCaseCoverageTests
     }
 
     [Fact]
+    public async Task PollManagedDriftFailedLiveReadIsNotNoDrift()
+    {
+        FakeAuthorizationBoundary auth = new();
+        FakeDeviceStore devices = new();
+        FakeDeviceHashStateStore hashes = new();
+        FakeDriftEventStore drift = new();
+        FakeAuditEventWriter audit = new();
+        FakeClock clock = new();
+
+        Device device = Device.Reconstitute(
+            DeviceId.New(),
+            NodeId.New(),
+            NonEmptyName.Create("r1"),
+            ManagementEndpoint.Create("192.0.2.10", 8729),
+            DeviceRole.Router,
+            enabled: true,
+            lastSupportState: null,
+            ManagementState.Managed,
+            rowVersion: 1,
+            lastCompletedCaptureId: null);
+        await devices.AddAsync(device);
+        Hash256 committed = Hash(2);
+        await hashes.UpsertAsync(DeviceHashState.Create(
+            device.Id, committed, committed, committed, committed, committed,
+            actualKnown: true, anchorKnown: true, updatedAtUtc: clock.UtcNow));
+
+        PollManagedDriftJobUseCase useCase = new(
+            hashes,
+            new FailingLiveReadPort(),
+            new DetectManagedDriftUseCase(auth, devices, hashes, drift, audit, clock, new FakeUnitOfWork()));
+        var result = await useCase.ExecuteAsync("tester", batchSize: 10);
+        Assert.True(result.IsSuccess);
+        Guid eventId = Assert.Single(result.Value!.DriftEventIds);
+        DriftEvent? evt = await drift.GetAsync(new DriftEventId(eventId));
+        Assert.NotNull(evt);
+        Assert.Equal(DriftOutcome.CriticalDrift, evt!.Outcome);
+        Assert.Contains(evt.Findings, f => f.Kind == DriftFindingKind.ManagedRuleChanged);
+    }
+
+    [Fact]
     public async Task PollManagedDriftRejectsInvalidBatch()
     {
         var result = await new PollManagedDriftJobUseCase(
                 new FakeDeviceHashStateStore(),
+                new NotConfiguredManagedDriftLiveReadPort(),
                 new DetectManagedDriftUseCase(
                     new FakeAuthorizationBoundary(),
                     new FakeDeviceStore(),
@@ -240,6 +284,36 @@ public sealed class OperationalJobUseCaseCoverageTests
                 State = operation.State,
                 Timeline = ["ok"],
             });
+    }
+
+    private sealed class MatchingLiveReadPort : IManagedDriftLiveReadPort
+    {
+        private readonly Hash256 _committed;
+
+        public MatchingLiveReadPort(Hash256 committed) => _committed = committed;
+
+        public Task<ManagedDriftLiveReadResult> ReadActualManagedResourceAsync(
+            DeviceId deviceId,
+            Hash256 expectedCommittedArtifactHash,
+            CancellationToken cancellationToken = default)
+        {
+            _ = deviceId;
+            Assert.Equal(_committed, expectedCommittedArtifactHash);
+            return Task.FromResult(ManagedDriftLiveReadResult.Ok(_committed.ToString()));
+        }
+    }
+
+    private sealed class FailingLiveReadPort : IManagedDriftLiveReadPort
+    {
+        public Task<ManagedDriftLiveReadResult> ReadActualManagedResourceAsync(
+            DeviceId deviceId,
+            Hash256 expectedCommittedArtifactHash,
+            CancellationToken cancellationToken = default)
+        {
+            _ = deviceId;
+            _ = expectedCommittedArtifactHash;
+            return Task.FromResult(ManagedDriftLiveReadResult.Fail("live_managed_state_read_failed", "simulated"));
+        }
     }
 
     private sealed class ScriptedOnboardingRuntime : IOnboardingRuntime

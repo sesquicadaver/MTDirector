@@ -3,13 +3,12 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-404: after AUDIT-EVID-01, AUDIT-RB-01 was seeded (W7-405);
-/// queue may have advanced past that row.
+/// W7-422: after AUDIT-DRIFT-01, §3.C NEXT is AUDIT-M7-01 (W7-423).
 /// </summary>
-public sealed class ProductTrancheSeedW7404LivingSpecTests
+public sealed class ProductTrancheSeedW7422LivingSpecTests
 {
     [Fact]
-    public void Ac1KnownLimitationsAndQueueSeedAuditRb01AsNext()
+    public void Ac1KnownLimitationsAndQueueSeedAuditM701AsNext()
     {
         string root = RepoRoot();
         string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
@@ -18,23 +17,25 @@ public sealed class ProductTrancheSeedW7404LivingSpecTests
         string plan62 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-62-audit-remediation-acd0759.md"));
         string readme = File.ReadAllText(Path.Combine(root, "README.md"));
 
-        Assert.Contains("Intentional residual (W7-404 Living Spec lock)", limitations, StringComparison.Ordinal);
-        Assert.Contains("W7-405", limitations, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-RB-01", limitations, StringComparison.Ordinal);
+        Assert.Contains("Intentional residual (W7-422 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-423", limitations, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-M7-01", limitations, StringComparison.Ordinal);
 
         Assert.Contains(
-            "W7-404 | [#1211](https://github.com/sesquicadaver/MTDirector/issues/1211) | Seed next after AUDIT-EVID-01 → AUDIT-RB-01 | **DONE**",
+            "W7-422 | [#1241](https://github.com/sesquicadaver/MTDirector/issues/1241) | Seed next after AUDIT-DRIFT-01 → AUDIT-M7-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-405 | [#1212](https://github.com/sesquicadaver/MTDirector/issues/1212) | AUDIT-RB-01 — Unified strict rollback | **DONE**",
+            "W7-423 | [#1242](https://github.com/sesquicadaver/MTDirector/issues/1242) | AUDIT-M7-01 — Wire M7 production lifecycle | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-423 (#1242)", roadmap, StringComparison.Ordinal);
 
-        Assert.Contains("W7-404 (#1211) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("W7-405 (#1212)", plan, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-RB-01", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-422 (#1241) DONE", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-423 (#1242)", plan, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-M7-01", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-422 (#1241) DONE", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-423 (#1242) OPEN (NEXT)", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-423 (#1242)", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-423 (#1242)", readme, StringComparison.Ordinal);
     }

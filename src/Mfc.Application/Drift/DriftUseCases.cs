@@ -30,8 +30,14 @@ public sealed class DetectManagedDriftCommand
 
     public required Guid DeviceId { get; init; }
 
-    /// <summary>Optional observed actual hash; when null, uses persisted DeviceHashState.actual.</summary>
+    /// <summary>Optional observed actual hash; when null and <see cref="IgnorePersistedActual"/> is false, uses persisted DeviceHashState.actual.</summary>
     public string? ActualManagedResourceHashHex { get; init; }
+
+    /// <summary>
+    /// When true, a missing <see cref="ActualManagedResourceHashHex"/> stays null instead of falling back
+    /// to the persisted actual (AUDIT-DRIFT-01: failed live reads must not reuse stale actual).
+    /// </summary>
+    public bool IgnorePersistedActual { get; init; }
 
     /// <summary>
     /// Optional desired hash for pending-deploy discrimination only — never used as drift baseline.
@@ -119,7 +125,7 @@ public sealed class DetectManagedDriftUseCase
         try
         {
             actual = string.IsNullOrWhiteSpace(command.ActualManagedResourceHashHex)
-                ? hashState.ActualManagedResourceHash
+                ? (command.IgnorePersistedActual ? null : hashState.ActualManagedResourceHash)
                 : Hash256.ParseHex(command.ActualManagedResourceHashHex);
             desired = string.IsNullOrWhiteSpace(command.DesiredArtifactHashHex)
                 ? hashState.DesiredArtifactHash

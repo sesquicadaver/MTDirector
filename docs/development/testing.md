@@ -3983,6 +3983,22 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinData
 
 
 
+## Living Specification — Seed AUDIT-M7-01 after AUDIT-DRIFT-01 (W7-422)
+
+| AC | Module | Test |
+|----|--------|------|
+| Seed locks AUDIT-M7-01 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7422LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditM701AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7422"`.
+
+## Living Specification — AUDIT-DRIFT-01 Drift from live RouterOS read (W7-421)
+
+| AC | Module | Test |
+|----|--------|------|
+| Poll live-reads managed state; failed/diverged read is Critical not NoDrift | PollManagedDriftJobUseCase, IManagedDriftLiveReadPort, RouterOsManagedDriftLiveReadPort, known-limitations, ROADMAP | `AuditDrift01LiveRouterOsReadW7421LivingSpecTests.Ac1PollUsesLiveReadPortAndFailedReadIsNotNoDrift` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditDrift01LiveRouterOsReadW7421|PollManagedDrift"`.
+
 ## Living Specification — Seed AUDIT-DRIFT-01 after AUDIT-GUI-02 (W7-420)
 
 | AC | Module | Test |
