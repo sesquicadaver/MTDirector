@@ -25,6 +25,7 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
     private byte[]? _analysisBundleHash;
     private byte[]? _dependencyFingerprint;
     private Guid? _analysisRunId;
+    private int _safetyAnalysisGeneration;
 
     public PoliciesViewModel(
         IPolicyPanelService policies,
@@ -946,15 +947,25 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
 
         await RunBusyAsync(async ct =>
         {
+            Guid requestedDeviceId = deviceId;
+            int generation = _safetyAnalysisGeneration;
             PolicySafetyAnalysisPanelResult analysis = await Task.Run(
                     async () => await _policies.GetDevicePolicySafetyAnalysisAsync(
-                            deviceId,
+                            requestedDeviceId,
                             revisionId,
                             prefixes,
                             ct)
                         .ConfigureAwait(false),
                     ct)
                 .ConfigureAwait(true);
+            // AUDIT-GUI-02: discard async analysis that no longer matches the current Device target.
+            if (generation != _safetyAnalysisGeneration
+                || !Guid.TryParse(SafetyDeviceIdText.Trim(), out Guid currentDevice)
+                || currentDevice != requestedDeviceId)
+            {
+                return;
+            }
+
             ApplySafetyAnalysis(analysis);
         }).ConfigureAwait(true);
     }
@@ -1189,6 +1200,18 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
             }
         }
 
+        // AUDIT-GUI-02: keep catalog highlight in sync with the loaded revision/policy.
+        _suppressCatalogSelection = true;
+        try
+        {
+            SelectedCatalogItem = Catalog.FirstOrDefault(c => c.LatestRevisionId == state.RevisionId)
+                                  ?? Catalog.FirstOrDefault(c => c.PolicyId == state.PolicyId);
+        }
+        finally
+        {
+            _suppressCatalogSelection = false;
+        }
+
         NotifyCommands();
     }
 
@@ -1318,8 +1341,25 @@ public sealed partial class PoliciesViewModel : ObservableObject, IDisposable
 
         SyncComposeNodeFromInventory();
         SyncSafetyDeviceFromInventory();
+        ClearStaleSafetySurfaces();
         Guid? nodeId = TryGetComposeNodeId();
         _sealedHandoff.InvalidateUnlessNode(nodeId);
+    }
+
+    /// <summary>
+    /// AUDIT-GUI-02: Device/Node change must not leave prior safety findings/context hashes/errors visible.
+    /// </summary>
+    private void ClearStaleSafetySurfaces()
+    {
+        _safetyAnalysisGeneration++;
+        ManagementPathContextHashText = string.Empty;
+        FastTrackContextHashText = string.Empty;
+        SafetyFlagsText = string.Empty;
+        ManagementPathFindingLines.Clear();
+        FastTrackFindingLines.Clear();
+        SafetyWitnessLines.Clear();
+        SafetySystemTestLines.Clear();
+        ErrorText = null;
     }
 
     /// <summary>

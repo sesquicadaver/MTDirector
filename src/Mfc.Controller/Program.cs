@@ -487,6 +487,7 @@ public static class Program
     {
         services.AddScoped<ValidateOnboardingPrerequisitesWorkflowUseCase>();
         services.AddScoped<CreateOnboardingPlanUseCase>();
+        services.AddScoped<CreateOnboardingPlanFromLastCaptureUseCase>();
         services.AddScoped<StartOnboardingUseCase>();
         services.AddScoped<RollbackOnboardingWorkflowUseCase>();
         services.AddScoped<GetOnboardingRecoveryStatusUseCase>();

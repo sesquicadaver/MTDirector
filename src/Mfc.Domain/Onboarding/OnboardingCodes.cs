@@ -142,6 +142,9 @@ public static class OnboardingCodes
     /// <summary>Spec §46 / M5-08 — committed onboarding drifted (missing or disabled anchor).</summary>
     public const string OnboardingCriticalDrift = "ONBOARDING_CRITICAL_DRIFT";
 
+    /// <summary>AUDIT-GUI-02 / F11 — last completed capture required for Controller-built Validate/CreatePlan.</summary>
+    public const string CaptureRequired = "ONBOARDING_CAPTURE_REQUIRED";
+
     public static readonly TimeSpan MinCommitMargin = TimeSpan.FromSeconds(30);
 
     /// <summary>AUDIT-CLK-01 — max |RouterOS clock − Controller now| before arming watchdog.</summary>

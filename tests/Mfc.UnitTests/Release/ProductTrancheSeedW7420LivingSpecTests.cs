@@ -3,12 +3,12 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-408: after AUDIT-CLK-01, §3.C NEXT is AUDIT-RPC-01 (W7-409).
+/// W7-420: after AUDIT-GUI-02, §3.C NEXT is AUDIT-DRIFT-01 (W7-421).
 /// </summary>
-public sealed class ProductTrancheSeedW7408LivingSpecTests
+public sealed class ProductTrancheSeedW7420LivingSpecTests
 {
     [Fact]
-    public void Ac1KnownLimitationsAndQueueSeedAuditRpc01AsNext()
+    public void Ac1KnownLimitationsAndQueueSeedAuditDrift01AsNext()
     {
         string root = RepoRoot();
         string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
@@ -17,24 +17,25 @@ public sealed class ProductTrancheSeedW7408LivingSpecTests
         string plan62 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-62-audit-remediation-acd0759.md"));
         string readme = File.ReadAllText(Path.Combine(root, "README.md"));
 
-        Assert.Contains("Intentional residual (W7-408 Living Spec lock)", limitations, StringComparison.Ordinal);
-        Assert.Contains("W7-409", limitations, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-RPC-01", limitations, StringComparison.Ordinal);
+        Assert.Contains("Intentional residual (W7-420 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-421", limitations, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-DRIFT-01", limitations, StringComparison.Ordinal);
 
         Assert.Contains(
-            "W7-408 | [#1217](https://github.com/sesquicadaver/MTDirector/issues/1217) | Seed next after AUDIT-CLK-01 → AUDIT-RPC-01 | **DONE**",
+            "W7-420 | [#1238](https://github.com/sesquicadaver/MTDirector/issues/1238) | Seed next after AUDIT-GUI-02 → AUDIT-DRIFT-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-409 | [#1218](https://github.com/sesquicadaver/MTDirector/issues/1218) | AUDIT-RPC-01 — Fast Start + live Watch | **DONE**",
+            "W7-421 | [#1239](https://github.com/sesquicadaver/MTDirector/issues/1239) | AUDIT-DRIFT-01 — Drift from live RouterOS read | **OPEN**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-421 (#1239)", roadmap, StringComparison.Ordinal);
 
-        Assert.Contains("W7-408 (#1217) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("W7-409 (#1218)", plan, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-RPC-01", plan62, StringComparison.Ordinal);
-        Assert.Contains("AUDIT-RPC-01 W7-409 (#1218) DONE", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-420 (#1238) DONE", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-421 (#1239)", plan, StringComparison.Ordinal);
+        Assert.Contains("AUDIT-DRIFT-01", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-420 (#1238) DONE", plan62, StringComparison.Ordinal);
+        Assert.Contains("W7-421 (#1239) OPEN (NEXT)", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-421 (#1239)", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-421 (#1239)", readme, StringComparison.Ordinal);
     }

@@ -3983,6 +3983,22 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinData
 
 
 
+## Living Specification — Seed AUDIT-DRIFT-01 after AUDIT-GUI-02 (W7-420)
+
+| AC | Module | Test |
+|----|--------|------|
+| Seed locks AUDIT-DRIFT-01 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7420LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditDrift01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7420"`.
+
+## Living Specification — AUDIT-GUI-02 Controller onboarding + stale policy GUI (W7-419)
+
+| AC | Module | Test |
+|----|--------|------|
+| Controller-built onboarding from last capture; Policies clear stale safety | CreateOnboardingPlanFromLastCaptureUseCase, OnboardingGrpcService, PoliciesViewModel, known-limitations, ROADMAP | `AuditGui02ControllerOnboardingStalePolicyW7419LivingSpecTests.Ac1ControllerBuildsOnboardingFromLastCaptureAndPoliciesClearStaleSafety` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~AuditGui02ControllerOnboardingStalePolicyW7419|DesktopAuditGui01|OnboardingViewModelTests|PoliciesViewModelTests"`.
+
 ## Living Specification — Seed AUDIT-GUI-02 after AUDIT-BIND-01 (W7-418)
 
 | AC | Module | Test |

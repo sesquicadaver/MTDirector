@@ -98,22 +98,12 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
                 _inventory.SelectedNode,
                 _inventory.Roots);
             _ = InventoryOpsSelection.RequireDeviceIds(node);
+            // AUDIT-GUI-01/02: Desktop no longer fabricates DefaultFacts; empty facts → Controller capture-readiness.
             OnboardingPrerequisiteReport report = await _client.ValidatePrerequisitesAsync(
                 node.Id,
                 [],
                 CancellationToken.None).ConfigureAwait(true);
             Findings.Clear();
-            if (report.Findings.Count == 0 && !report.Passed)
-            {
-                Findings.Add(new OnboardingFindingListItem
-                {
-                    Code = "ONBOARDING_FACTS_REQUIRED",
-                    Severity = "BLOCKER",
-                    Message =
-                        "Controller must supply capture-derived prerequisite facts; Desktop no longer fabricates DefaultFacts (AUDIT-GUI-01).",
-                });
-            }
-
             foreach (OnboardingFinding finding in report.Findings)
             {
                 Findings.Add(new OnboardingFindingListItem
@@ -124,11 +114,9 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
                 });
             }
 
-            StatusText = report.Passed ? "Prerequisites passed." : "Prerequisites have blockers.";
-            if (!report.Passed && Findings.Count == 0)
-            {
-                StatusText = "Prerequisites blocked: empty facts are fail-closed (AUDIT-GUI-01).";
-            }
+            StatusText = report.Passed
+                ? "Prerequisites passed (capture readiness)."
+                : "Prerequisites have blockers.";
         }).ConfigureAwait(true);
     }
 
@@ -141,8 +129,30 @@ public sealed partial class OnboardingViewModel : ObservableObject, IDisposable
                 _inventory.SelectedNode,
                 _inventory.Roots);
             _ = InventoryOpsSelection.RequireDeviceIds(node);
-            throw new InvalidOperationException(
-                "Onboarding Create plan requires Controller-built device plans from last capture; Desktop no longer fabricates hashes (AUDIT-GUI-01).");
+            // AUDIT-GUI-01/02: Desktop no longer fabricates hashes; empty devices → Controller last-capture plan.
+            OnboardingPlanSummary plan = await _client.CreatePlanAsync(
+                    node.Id,
+                    new Sha256(),
+                    new Sha256(),
+                    [],
+                    CancellationToken.None)
+                .ConfigureAwait(true);
+            PlanId = DesktopProtoUuid.ToGuid(plan.PlanId);
+            PlanHash = plan.PlanHash;
+            _mutationOwnerNodeId = node.Id;
+            Placements.Clear();
+            foreach (OnboardingAnchorPlacementView placement in plan.Placements)
+            {
+                Placements.Add(new OnboardingPlacementListItem
+                {
+                    Marker = placement.Marker,
+                    Mode = placement.Mode.ToString(),
+                    BeforeLabel = placement.BeforeLabel,
+                    AfterLabel = placement.AfterLabel,
+                });
+            }
+
+            StatusText = "Plan created from last capture (Controller-built).";
         }).ConfigureAwait(true);
     }
 
