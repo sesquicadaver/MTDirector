@@ -3982,6 +3982,15 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7345"`.
 Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinDataRateW7344"`.
 
 
+
+## Living Specification — Seed AUDIT-CAP-03 after AUDIT-RPC-01 (W7-410)
+
+| AC | Module | Test |
+|----|--------|------|
+| Seed locks AUDIT-CAP-03 as §3.C NEXT | known-limitations, ROADMAP, plan-62, continuous-queue, README | `ProductTrancheSeedW7410LivingSpecTests.Ac1KnownLimitationsAndQueueSeedAuditCap03AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7410"`.
+
 ## Living Specification — AUDIT-RPC-01 Fast Start + live Watch (W7-409)
 
 | AC | Module | Test |

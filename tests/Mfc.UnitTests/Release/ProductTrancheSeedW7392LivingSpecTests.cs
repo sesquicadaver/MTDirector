@@ -23,7 +23,7 @@ public sealed class ProductTrancheSeedW7392LivingSpecTests
         Assert.Contains("correlation-id / fault-text", limitations, StringComparison.Ordinal);
         Assert.Contains("PLAN-62", limitations, StringComparison.Ordinal);
         Assert.Contains("acd0759", limitations, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-410 (#1220)", limitations, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-411 (#1221)", limitations, StringComparison.Ordinal);
 
         Assert.Contains(
             "W7-392 | [#1191](https://github.com/sesquicadaver/MTDirector/issues/1191) | Freeze — no further correlation-id / fault-text plans without a pre-existing TOR | **DONE**",
@@ -33,17 +33,17 @@ public sealed class ProductTrancheSeedW7392LivingSpecTests
             "W7-393 | [#1195](https://github.com/sesquicadaver/MTDirector/issues/1195) | PLAN-62 — Inventory repository-audit remediation (acd0759) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-410 (#1220)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-411 (#1221)", roadmap, StringComparison.Ordinal);
         Assert.DoesNotContain("§3.C NEXT = W7-392 (#1191)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-392 (#1191) DONE", plan61, StringComparison.Ordinal);
         Assert.Contains("PLAN-62", plan61, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-410 (#1220)", plan61, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-411 (#1221)", plan61, StringComparison.Ordinal);
 
         Assert.Contains("Freeze **W7-392 (#1191) DONE**", plan, StringComparison.Ordinal);
         Assert.Contains("PLAN-62", plan, StringComparison.Ordinal);
         Assert.Contains("plan-62-audit-remediation-acd0759.md", plan, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-410 (#1220)", plan, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-411 (#1221)", plan, StringComparison.Ordinal);
         Assert.False(File.Exists(Path.Combine(root, "docs/planning/plan-62-desktop-correlation-id.md")));
         Assert.True(File.Exists(Path.Combine(root, "docs/planning/plan-62-audit-remediation-acd0759.md")));
         Assert.Contains("AUDIT-STATUS-01", plan62, StringComparison.Ordinal);
