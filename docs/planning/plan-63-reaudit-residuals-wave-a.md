@@ -1,7 +1,7 @@
 # PLAN-63 — Re-audit residuals wave A (post PLAN-62)
 
 **Date:** 2026-10-08  
-**Status:** **IN PROGRESS** — Inventory **DONE** (W7-428 #1253); seed **W7-429 (#1254) DONE**; **OWN-HB-01 W7-430 (#1255) DONE**; seed **W7-431 (#1256) DONE**; **EVID-LIVE-01 W7-432 (#1257) DONE**; seed **W7-433 (#1258) DONE**; **M7-PRES-01 W7-434 (#1259) DONE**; **§3.C NEXT = W7-435 (#1260)** seed → CAP-IDEM-01  
+**Status:** **IN PROGRESS** — Inventory **DONE** (W7-428 #1253); seed **W7-429 (#1254) DONE**; **OWN-HB-01 W7-430 (#1255) DONE**; seed **W7-431 (#1256) DONE**; **EVID-LIVE-01 W7-432 (#1257) DONE**; seed **W7-433 (#1258) DONE**; **M7-PRES-01 W7-434 (#1259) DONE**; seed **W7-435 (#1260) DONE**; **§3.C NEXT = W7-436 (#1261)** → CAP-IDEM-01  
 
 **Normative TOR / audit:** [`docs/audits/MTDirector-reaudit-post-plan62-20261008.md`](../audits/MTDirector-reaudit-post-plan62-20261008.md) (operator order: **A now**, **B** Layer C as next wave)  
 **Predecessor audit:** [`docs/audits/MTDirector-audit-acd0759-20260923.md`](../audits/MTDirector-audit-acd0759-20260923.md) via PLAN-62 COMPLETE  
@@ -38,8 +38,8 @@
 | 2 | **EVID-LIVE-01** | F02 | Standalone live Recheck (ROS reads) | **W7-432 (#1257) DONE** |
 | seed | — | — | Advance NEXT to M7-PRES-01 | **W7-433 (#1258) DONE** |
 | 3 | **M7-PRES-01** | F13 | OpenEndpointPresence production caller | **W7-434 (#1259) DONE** |
-| seed | — | — | Advance NEXT to CAP-IDEM-01 | **W7-435 (#1260) OPEN (NEXT)** |
-| 4 | **CAP-IDEM-01** | F09 | Idempotency unique + TargetId | **W7-436 (#1261) OPEN** |
+| seed | — | — | Advance NEXT to CAP-IDEM-01 | **W7-435 (#1260) DONE** |
+| 4 | **CAP-IDEM-01** | F09 | Idempotency unique + TargetId | **W7-436 (#1261) OPEN (NEXT)** |
 | seed | — | — | Advance NEXT to PLAN63-DONE-01 | **W7-437 (#1263) OPEN** |
 | 5 | **PLAN63-DONE-01** | — | COMPLETE; handoff note wave B | **W7-438 (#1264) OPEN** |
 
@@ -55,4 +55,4 @@ Product §3 never waits on GNS3. Wave B (Layer C) is a separate acceptance tranc
 
 ## §3.C NEXT
 
-**§3.C NEXT = W7-435 (#1260)** — seed → CAP-IDEM-01 (M7-PRES-01 W7-434 DONE).
+**§3.C NEXT = W7-436 (#1261)** — CAP-IDEM-01 (seed W7-435 DONE; M7-PRES-01 DONE).

@@ -29,7 +29,7 @@ public sealed class ProductTrancheSeedW7418LivingSpecTests
             "W7-419 | [#1236](https://github.com/sesquicadaver/MTDirector/issues/1236) | AUDIT-GUI-02 — Controller onboarding + stale policy GUI | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-435 (#1260)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-436 (#1261)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-418 (#1235) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-419 (#1236)", plan, StringComparison.Ordinal);
@@ -37,7 +37,7 @@ public sealed class ProductTrancheSeedW7418LivingSpecTests
         Assert.Contains("W7-418 (#1235) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-419 (#1236) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = none", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-435 (#1260)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-436 (#1261)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

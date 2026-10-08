@@ -3,12 +3,12 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-431: after OWN-HB-01, EVID-LIVE-01 was seeded; queue may have advanced past implement/seed.
+/// W7-435: after M7-PRES-01, CAP-IDEM-01 was seeded as §3.C NEXT (W7-436).
 /// </summary>
-public sealed class ProductTrancheSeedW7431LivingSpecTests
+public sealed class ProductTrancheSeedW7435LivingSpecTests
 {
     [Fact]
-    public void Ac1KnownLimitationsAndQueueSeedEvidLive01AsNext()
+    public void Ac1KnownLimitationsAndQueueSeedCapIdem01AsNext()
     {
         string root = RepoRoot();
         string limitations = File.ReadAllText(Path.Combine(root, "docs/release/known-limitations.md"));
@@ -17,28 +17,25 @@ public sealed class ProductTrancheSeedW7431LivingSpecTests
         string plan63 = File.ReadAllText(Path.Combine(root, "docs/planning/plan-63-reaudit-residuals-wave-a.md"));
         string readme = File.ReadAllText(Path.Combine(root, "README.md"));
 
-        Assert.Contains("Intentional residual (W7-431 Living Spec lock)", limitations, StringComparison.Ordinal);
-        Assert.Contains("W7-432", limitations, StringComparison.Ordinal);
-        Assert.Contains("EVID-LIVE-01", limitations, StringComparison.Ordinal);
+        Assert.Contains("Intentional residual (W7-435 Living Spec lock)", limitations, StringComparison.Ordinal);
+        Assert.Contains("W7-436", limitations, StringComparison.Ordinal);
+        Assert.Contains("CAP-IDEM-01", limitations, StringComparison.Ordinal);
 
         Assert.Contains(
-            "W7-431 | [#1256](https://github.com/sesquicadaver/MTDirector/issues/1256) | Seed next after OWN-HB-01 → EVID-LIVE-01 | **DONE**",
+            "W7-435 | [#1260](https://github.com/sesquicadaver/MTDirector/issues/1260) | Seed next after M7-PRES-01 → CAP-IDEM-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-432 | [#1257](https://github.com/sesquicadaver/MTDirector/issues/1257) | EVID-LIVE-01 — Standalone live Recheck preconditions (F02 residual) | **DONE**",
-            roadmap,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "W7-433 | [#1258](https://github.com/sesquicadaver/MTDirector/issues/1258) | Seed next after EVID-LIVE-01 → M7-PRES-01 | **DONE**",
+            "W7-436 | [#1261](https://github.com/sesquicadaver/MTDirector/issues/1261) | CAP-IDEM-01 — Capture idempotency unique includes TargetId (F09 residual) | **OPEN (NEXT)**",
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-436 (#1261)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("| **Нереалізовано (§3)** | **3** |", roadmap, StringComparison.Ordinal);
 
-        Assert.Contains("W7-431 (#1256) DONE", plan, StringComparison.Ordinal);
-        Assert.Contains("W7-432 (#1257)", plan, StringComparison.Ordinal);
-        Assert.Contains("EVID-LIVE-01", plan63, StringComparison.Ordinal);
-        Assert.Contains("W7-431 (#1256) DONE", plan63, StringComparison.Ordinal);
+        Assert.Contains("W7-435 (#1260) DONE", plan, StringComparison.Ordinal);
+        Assert.Contains("W7-436 (#1261)", plan, StringComparison.Ordinal);
+        Assert.Contains("CAP-IDEM-01", plan63, StringComparison.Ordinal);
+        Assert.Contains("W7-435 (#1260) DONE", plan63, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-436 (#1261)", plan63, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = W7-436 (#1261)", readme, StringComparison.Ordinal);
     }
