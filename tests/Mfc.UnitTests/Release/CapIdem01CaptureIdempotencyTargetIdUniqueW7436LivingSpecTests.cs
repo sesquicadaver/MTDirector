@@ -45,14 +45,14 @@ public sealed class CapIdem01CaptureIdempotencyTargetIdUniqueW7436LivingSpecTest
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-437 | [#1263](https://github.com/sesquicadaver/MTDirector/issues/1263) | Seed next after CAP-IDEM-01 → PLAN63-DONE-01 | **OPEN (NEXT)**",
+            "W7-437 | [#1263](https://github.com/sesquicadaver/MTDirector/issues/1263) | Seed next after CAP-IDEM-01 → PLAN63-DONE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-437 (#1263)", roadmap, StringComparison.Ordinal);
-        Assert.Contains("| **Нереалізовано (§3)** | **2** |", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-438 (#1264)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("| **Нереалізовано (§3)** | **1** |", roadmap, StringComparison.Ordinal);
         Assert.Contains("W7-436 (#1261) DONE", plan63, StringComparison.Ordinal);
         Assert.Contains("CAP-IDEM-01", plan63, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-437 (#1263)", plan63, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-438 (#1264)", plan63, StringComparison.Ordinal);
         Assert.Contains("CapIdem01CaptureIdempotencyTargetIdUniqueW7436", testing, StringComparison.Ordinal);
         Assert.Contains("CLOSED** CAP-IDEM-01", reaudit, StringComparison.Ordinal);
         Assert.Contains("W7-436", changelog, StringComparison.Ordinal);

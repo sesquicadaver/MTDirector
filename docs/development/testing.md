@@ -3997,8 +3997,9 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan62Done01CompleteFreezeW742
 | Seed W7-433 → M7-PRES-01 | known-limitations, ROADMAP, continuous-queue, README | `ProductTrancheSeedW7433LivingSpecTests.Ac1KnownLimitationsAndQueueSeedM7Pres01AsNext` |
 | Seed W7-435 → CAP-IDEM-01 | known-limitations, ROADMAP, continuous-queue, README | `ProductTrancheSeedW7435LivingSpecTests.Ac1KnownLimitationsAndQueueSeedCapIdem01AsNext` |
 | CAP-IDEM-01 unique + TargetId | CaptureOperationConfiguration, migration W7436, InventorySnapshotSchemaTests | `CapIdem01CaptureIdempotencyTargetIdUniqueW7436LivingSpecTests.Ac1UniqueIndexIncludesTargetIdAndQueueAdvances` |
+| Seed W7-437 → PLAN63-DONE-01 | known-limitations, ROADMAP, continuous-queue, README | `ProductTrancheSeedW7437LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan63Done01AsNext` |
 
-Filter: `dotnet test --filter "FullyQualifiedName~Plan63ReauditResidualsWaveAW7428|FullyQualifiedName~ProductTrancheSeedW7429|FullyQualifiedName~ProductTrancheSeedW7431|FullyQualifiedName~ProductTrancheSeedW7433|FullyQualifiedName~ProductTrancheSeedW7435|FullyQualifiedName~CapIdem01CaptureIdempotencyTargetIdUniqueW7436"`.
+Filter: `dotnet test --filter "FullyQualifiedName~Plan63ReauditResidualsWaveAW7428|FullyQualifiedName~ProductTrancheSeedW7429|FullyQualifiedName~ProductTrancheSeedW7431|FullyQualifiedName~ProductTrancheSeedW7433|FullyQualifiedName~ProductTrancheSeedW7435|FullyQualifiedName~CapIdem01CaptureIdempotencyTargetIdUniqueW7436|FullyQualifiedName~ProductTrancheSeedW7437"`.
 
 ## Living Specification — OWN-HB-01 onboarding lock heartbeat (W7-430)
 
@@ -4049,6 +4050,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7435"`.
 | Same actor+key different TargetId allowed; same triple rejected | InventorySnapshotSchemaTests | `InventorySnapshotSchemaTests.CaptureOperationIdempotencyIsUniquePerTarget` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~CapIdem01CaptureIdempotencyTargetIdUniqueW7436|FullyQualifiedName~CaptureOperationIdempotencyIsUniquePerTarget"`.
+
+## Living Specification — Seed PLAN63-DONE-01 after CAP-IDEM-01 (W7-437)
+
+| AC | Module | Test |
+|----|--------|------|
+| Seed locks PLAN63-DONE-01 as §3.C NEXT | known-limitations, ROADMAP, plan-63, continuous-queue, README | `ProductTrancheSeedW7437LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan63Done01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7437"`.
 
 ## Living Specification — M7-PRES-01 OpenEndpointPresence from capture (W7-434)
 

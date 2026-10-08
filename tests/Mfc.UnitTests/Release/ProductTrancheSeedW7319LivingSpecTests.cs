@@ -43,7 +43,7 @@ public sealed class ProductTrancheSeedW7319LivingSpecTests
             "W7-322 | [#1050](https://github.com/sesquicadaver/MTDirector/issues/1050) | CTRL-HTTP-OTEL-TRACE-01 — Controller opt-in OpenTelemetry tracing beyond metrics scrape | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-437 (#1263)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-438 (#1264)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-43 COMPLETE", plan43, StringComparison.Ordinal);
         Assert.Contains("W7-319 (#1044) DONE", plan43, StringComparison.Ordinal);

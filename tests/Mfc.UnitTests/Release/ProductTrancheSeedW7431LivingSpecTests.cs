@@ -33,14 +33,14 @@ public sealed class ProductTrancheSeedW7431LivingSpecTests
             "W7-433 | [#1258](https://github.com/sesquicadaver/MTDirector/issues/1258) | Seed next after EVID-LIVE-01 → M7-PRES-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-437 (#1263)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-438 (#1264)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-431 (#1256) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-432 (#1257)", plan, StringComparison.Ordinal);
         Assert.Contains("EVID-LIVE-01", plan63, StringComparison.Ordinal);
         Assert.Contains("W7-431 (#1256) DONE", plan63, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-437 (#1263)", plan63, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-437 (#1263)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-438 (#1264)", plan63, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-438 (#1264)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

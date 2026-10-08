@@ -4,7 +4,7 @@ namespace Mfc.UnitTests.Release;
 
 /// <summary>
 /// W7-435: after M7-PRES-01, CAP-IDEM-01 was seeded; CAP-IDEM landed as W7-436 DONE;
-/// §3.C NEXT advanced to seed PLAN63-DONE-01 (W7-437).
+/// seed W7-437 advanced §3.C NEXT to PLAN63-DONE-01 (W7-438).
 /// </summary>
 public sealed class ProductTrancheSeedW7435LivingSpecTests
 {
@@ -31,16 +31,16 @@ public sealed class ProductTrancheSeedW7435LivingSpecTests
             "W7-436 | [#1261](https://github.com/sesquicadaver/MTDirector/issues/1261) | CAP-IDEM-01 — Capture idempotency unique includes TargetId (F09 residual) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-437 (#1263)", roadmap, StringComparison.Ordinal);
-        Assert.Contains("| **Нереалізовано (§3)** | **2** |", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-438 (#1264)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("| **Нереалізовано (§3)** | **1** |", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-435 (#1260) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-436 (#1261) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("CAP-IDEM-01", plan63, StringComparison.Ordinal);
         Assert.Contains("W7-435 (#1260) DONE", plan63, StringComparison.Ordinal);
         Assert.Contains("W7-436 (#1261) DONE", plan63, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-437 (#1263)", plan63, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-437 (#1263)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-438 (#1264)", plan63, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-438 (#1264)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

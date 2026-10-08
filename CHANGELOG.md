@@ -13,7 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- **W7-436** ([#1261](https://github.com/sesquicadaver/MTDirector/issues/1261)): CAP-IDEM-01 — `uq_capture_operation_idempotency` unique `(RequestedBy, IdempotencyKey, TargetId)` (`CaptureIdempotencyTargetIdUniqueW7436`); **§3.C NEXT = W7-437 (#1263)** seed PLAN63-DONE-01 (`CapIdem01CaptureIdempotencyTargetIdUniqueW7436LivingSpecTests`).
+- **W7-437** ([#1263](https://github.com/sesquicadaver/MTDirector/issues/1263)): Seed after CAP-IDEM-01 → **PLAN63-DONE-01**; **§3.C NEXT = W7-438 (#1264)** (`ProductTrancheSeedW7437LivingSpecTests`).
+- **W7-436** ([#1261](https://github.com/sesquicadaver/MTDirector/issues/1261)): CAP-IDEM-01 — `uq_capture_operation_idempotency` unique `(RequestedBy, IdempotencyKey, TargetId)` (`CaptureIdempotencyTargetIdUniqueW7436`); seed advanced to PLAN63-DONE-01 (`CapIdem01CaptureIdempotencyTargetIdUniqueW7436LivingSpecTests`).
 - **W7-435** ([#1260](https://github.com/sesquicadaver/MTDirector/issues/1260)): Seed after M7-PRES-01 → **CAP-IDEM-01**; CAP-IDEM **W7-436 DONE**; seed advanced to PLAN63-DONE-01 (`ProductTrancheSeedW7435LivingSpecTests`).
 - **W7-434** ([#1259](https://github.com/sesquicadaver/MTDirector/issues/1259)): M7-PRES-01 — capture → `OpenEndpointPresenceUseCase` via `IEndpointPresenceCaptureProjectionPort` / `EndpointPresenceCaptureProjectionPort` (management IP + site/node/device anchors; best-effort); seed advanced to CAP-IDEM (`M7Pres01WireOpenEndpointPresenceFromCaptureW7434LivingSpecTests`).
 - **W7-433** ([#1258](https://github.com/sesquicadaver/MTDirector/issues/1258)): Seed after EVID-LIVE-01 → **M7-PRES-01**; implement advanced to CAP-IDEM seed (`ProductTrancheSeedW7433LivingSpecTests`).

@@ -59,7 +59,7 @@ public sealed class Plan40ControllerHostJournaldSyslogIdentityW7304LivingSpecTes
             "W7-307 | [#1020](https://github.com/sesquicadaver/MTDirector/issues/1020) | Seed next after OPS-HOST-LOG-01 (PLAN-40 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-437 (#1263)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-438 (#1264)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-305", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-306", continuous, StringComparison.Ordinal);
