@@ -29,6 +29,7 @@ public sealed class CaptureSnapshotCommand
 /// AUDIT-CAP-04 / F09: payload bytes may be content-addressed.deduplicated, but each successful attempt
 /// with a new idempotency key gets a fresh capture identity/time. Idempotency is bound to actor+key+device.
 /// AUDIT-M7-01 / F13: after persist, projects routing assurance from capture payloads (best-effort).
+/// M7-PRES-01 / F13: after routing projection, opens endpoint presence from capture (best-effort).
 /// </summary>
 public sealed class CaptureSnapshotUseCase
 {
@@ -40,6 +41,7 @@ public sealed class CaptureSnapshotUseCase
     private readonly IAuditEventWriter _audit;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRoutingAssuranceCaptureProjectionPort _routingProjection;
+    private readonly IEndpointPresenceCaptureProjectionPort _presenceProjection;
 
     public CaptureSnapshotUseCase(
         IAuthorizationBoundary auth,
@@ -49,7 +51,8 @@ public sealed class CaptureSnapshotUseCase
         ISnapshotStore snapshots,
         IAuditEventWriter audit,
         IUnitOfWork unitOfWork,
-        IRoutingAssuranceCaptureProjectionPort? routingProjection = null)
+        IRoutingAssuranceCaptureProjectionPort? routingProjection = null,
+        IEndpointPresenceCaptureProjectionPort? presenceProjection = null)
     {
         ArgumentNullException.ThrowIfNull(auth);
         ArgumentNullException.ThrowIfNull(devices);
@@ -66,6 +69,7 @@ public sealed class CaptureSnapshotUseCase
         _audit = audit;
         _unitOfWork = unitOfWork;
         _routingProjection = routingProjection ?? new NotConfiguredRoutingAssuranceCaptureProjectionPort();
+        _presenceProjection = presenceProjection ?? new NotConfiguredEndpointPresenceCaptureProjectionPort();
     }
 
     public async Task<ApplicationResult<SnapshotView>> ExecuteAsync(
@@ -212,6 +216,15 @@ public sealed class CaptureSnapshotUseCase
 
         // Best-effort routing projection — capture success must not depend on M7 routing upsert.
         await _routingProjection
+            .ProjectFromCapturePayloadsAsync(
+                device.Id,
+                captured.ConfigurationPayload,
+                captured.ObservationPayload,
+                cancellationToken)
+            .ConfigureAwait(false);
+
+        // Best-effort presence projection — capture success must not depend on OpenEndpointPresence.
+        await _presenceProjection
             .ProjectFromCapturePayloadsAsync(
                 device.Id,
                 captured.ConfigurationPayload,

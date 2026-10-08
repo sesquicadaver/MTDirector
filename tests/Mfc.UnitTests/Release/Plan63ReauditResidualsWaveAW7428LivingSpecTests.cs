@@ -33,7 +33,7 @@ public sealed class Plan63ReauditResidualsWaveAW7428LivingSpecTests
         Assert.Contains("EVID-LIVE-01", plan63, StringComparison.Ordinal);
         Assert.Contains("M7-PRES-01", plan63, StringComparison.Ordinal);
         Assert.Contains("CAP-IDEM-01", plan63, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-434 (#1259)", plan63, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-435 (#1260)", plan63, StringComparison.Ordinal);
         Assert.Contains("wave B", plan63, StringComparison.OrdinalIgnoreCase);
 
         Assert.Contains("F01", reaudit, StringComparison.Ordinal);
@@ -69,8 +69,8 @@ public sealed class Plan63ReauditResidualsWaveAW7428LivingSpecTests
             "W7-433 | [#1258](https://github.com/sesquicadaver/MTDirector/issues/1258) | Seed next after EVID-LIVE-01 → M7-PRES-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-434 (#1259)", roadmap, StringComparison.Ordinal);
-        Assert.Contains("| **Нереалізовано (§3)** | **5** |", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-435 (#1260)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("| **Нереалізовано (§3)** | **4** |", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-63", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-428 (#1253) DONE", continuous, StringComparison.Ordinal);
@@ -84,8 +84,8 @@ public sealed class Plan63ReauditResidualsWaveAW7428LivingSpecTests
 
         Assert.Contains("| `W7-428` | #1253 |", issues, StringComparison.Ordinal);
         Assert.Contains("| `W7-430` | #1255 |", issues, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-434 (#1259)", issues, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-434 (#1259)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-435 (#1260)", issues, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-435 (#1260)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

@@ -62,7 +62,7 @@ public sealed class Plan41ReleaseSigningCryptoGpgSigstoreW7308LivingSpecTests
             "W7-311 | [#1028](https://github.com/sesquicadaver/MTDirector/issues/1028) | Seed next after QG-SIGN-02 (PLAN-41 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-434 (#1259)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-435 (#1260)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-309", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-310", continuous, StringComparison.Ordinal);

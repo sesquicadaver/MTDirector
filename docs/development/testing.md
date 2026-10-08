@@ -4031,7 +4031,15 @@ Filter: `dotnet test --filter "FullyQualifiedName~EvidLive01StandaloneLiveRechec
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7433"`.
 
+## Living Specification — M7-PRES-01 OpenEndpointPresence from capture (W7-434)
 
+| AC | Module | Test |
+|----|--------|------|
+| Capture wires presence projection + DI | CaptureSnapshotUseCase, EndpointPresenceCaptureProjectionPort, Program | `M7Pres01WireOpenEndpointPresenceFromCaptureW7434LivingSpecTests.Ac1ProductionCaptureWiresOpenEndpointPresenceProjection` |
+| Opens presence for management IP | EndpointPresenceCaptureProjectionPort | `EndpointPresenceCaptureProjectionTests.ProjectFromCaptureOpensPresenceForManagementIpWithInventoryAnchors` |
+| Capture succeeds when projection fails | CaptureSnapshotUseCase | `EndpointPresenceCaptureProjectionTests.CaptureSnapshotSucceedsEvenWhenPresenceProjectionFails` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~M7Pres01WireOpenEndpointPresenceFromCaptureW7434|FullyQualifiedName~EndpointPresenceCaptureProjectionTests"`.
 
 ## Living Specification — Seed PLAN62-DONE-01 after AUDIT-ACC-01 (W7-426)
 

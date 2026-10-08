@@ -56,8 +56,8 @@ public sealed class Plan62AuditRemediationAcD0759W7393LivingSpecTests
             "W7-397 | [#1200](https://github.com/sesquicadaver/MTDirector/issues/1200) | AUDIT-SBOM-01 — SBOM/signing fail-closed (no empty components / missing SDK) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-434 (#1259)", roadmap, StringComparison.Ordinal);
-        Assert.Contains("| **Нереалізовано (§3)** | **5** |", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-435 (#1260)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("| **Нереалізовано (§3)** | **4** |", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-62", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-393 (#1195) DONE", continuous, StringComparison.Ordinal);
@@ -70,7 +70,7 @@ public sealed class Plan62AuditRemediationAcD0759W7393LivingSpecTests
         Assert.Contains("| `W7-393` | #1195 |", issues, StringComparison.Ordinal);
         Assert.Contains("| `W7-394` | #1196 |", issues, StringComparison.Ordinal);
         Assert.Contains("| `W7-395` | #1197 |", issues, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-434 (#1259)", issues, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-435 (#1260)", issues, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()
