@@ -53,7 +53,7 @@ public sealed class Plan36ControllerHostTemplatePublishBundlingW7288LivingSpecTe
             "W7-291 | [#987](https://github.com/sesquicadaver/MTDirector/issues/987) | Seed next after OPS-HOST-BUNDLE-01 (PLAN-36 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-431 (#1256)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-432 (#1257)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-289", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-290", continuous, StringComparison.Ordinal);

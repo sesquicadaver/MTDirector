@@ -62,7 +62,7 @@ public sealed class AuditCap03FullCaptureProjectionW7411LivingSpecTests
             "W7-415 | [#1229](https://github.com/sesquicadaver/MTDirector/issues/1229) | AUDIT-AN-03 — Server-owned analysis | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-431 (#1256)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-432 (#1257)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("AUDIT-CAP-03 W7-411 (#1221) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-412 (#1224) DONE", plan62, StringComparison.Ordinal);
@@ -72,12 +72,12 @@ public sealed class AuditCap03FullCaptureProjectionW7411LivingSpecTests
         Assert.Contains("§3.C NEXT = none", plan62, StringComparison.Ordinal);
 
         Assert.Contains("AUDIT-CAP-03 W7-411 (#1221) DONE", continuous, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-431 (#1256)", continuous, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-432 (#1257)", continuous, StringComparison.Ordinal);
 
         Assert.Contains("AuditCap03FullCaptureProjectionW7411", testing, StringComparison.Ordinal);
         Assert.Contains("| `W7-411` | #1221 |", issues, StringComparison.Ordinal);
         Assert.Contains("| `W7-412` | #1224 |", issues, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-431 (#1256)", issues, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-432 (#1257)", issues, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

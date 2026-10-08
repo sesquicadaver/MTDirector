@@ -3993,8 +3993,9 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan62Done01CompleteFreezeW742
 
 | PLAN-63 inventory + seed OWN-HB-01 as NEXT | plan-63, re-audit, ROADMAP, known-limitations | `Plan63ReauditResidualsWaveAW7428LivingSpecTests.Ac1Plan63InventoryDocumentsRanksAndSeedsOwnHb01` |
 | Seed W7-429 → OWN-HB-01 | known-limitations, ROADMAP, continuous-queue, README | `ProductTrancheSeedW7429LivingSpecTests.Ac1KnownLimitationsAndQueueSeedOwnHb01AsNext` |
+| Seed W7-431 → EVID-LIVE-01 | known-limitations, ROADMAP, continuous-queue, README | `ProductTrancheSeedW7431LivingSpecTests.Ac1KnownLimitationsAndQueueSeedEvidLive01AsNext` |
 
-Filter: `dotnet test --filter "FullyQualifiedName~Plan63ReauditResidualsWaveAW7428|FullyQualifiedName~ProductTrancheSeedW7429"`.
+Filter: `dotnet test --filter "FullyQualifiedName~Plan63ReauditResidualsWaveAW7428|FullyQualifiedName~ProductTrancheSeedW7429|FullyQualifiedName~ProductTrancheSeedW7431"`.
 
 ## Living Specification — OWN-HB-01 onboarding lock heartbeat (W7-430)
 
@@ -4003,6 +4004,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan63ReauditResidualsWaveAW74
 | Onboarding heartbeat job + LockHeartbeat wiring | Application Jobs, EfOnboardingStore, OperationalJobExecutor | `OwnHb01OnboardingLockHeartbeatW7430LivingSpecTests.Ac1ProductionHeartbeatJobAndLockTickWiringExist` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~OwnHb01OnboardingLockHeartbeatW7430"`.
+
+## Living Specification — Seed EVID-LIVE-01 after OWN-HB-01 (W7-431)
+
+| AC | Module | Test |
+|----|--------|------|
+| Seed locks EVID-LIVE-01 as §3.C NEXT | known-limitations, ROADMAP, plan-63, continuous-queue, README | `ProductTrancheSeedW7431LivingSpecTests.Ac1KnownLimitationsAndQueueSeedEvidLive01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7431"`.
 
 
 
