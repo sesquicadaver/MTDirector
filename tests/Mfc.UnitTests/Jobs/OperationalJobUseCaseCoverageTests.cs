@@ -72,6 +72,53 @@ public sealed class OperationalJobUseCaseCoverageTests
     }
 
     [Fact]
+    public async Task OnboardingHeartbeatRefreshesOwnedNonExpiredLocks()
+    {
+        FakeOnboardingStore onboardings = new();
+        FakeClock clock = new() { UtcNow = DateTimeOffset.Parse("2026-10-08T12:00:00Z", System.Globalization.CultureInfo.InvariantCulture) };
+        NodeId nodeId = NodeId.New();
+        OnboardingOperationId opId = OnboardingOperationId.New();
+        OnboardingLock lockRow = OnboardingLock.Acquire(nodeId, opId, "owner-a", clock.UtcNow);
+        await onboardings.AddLockAsync(lockRow);
+
+        HeartbeatOnboardingLocksJobUseCase useCase = new(onboardings, clock);
+        clock.UtcNow = clock.UtcNow.AddSeconds(10);
+        var result = await useCase.ExecuteAsync("owner-a");
+        Assert.True(result.IsSuccess);
+        Assert.Equal(1, result.Value!.RefreshedCount);
+
+        OnboardingLock? saved = await onboardings.GetLockByNodeAsync(nodeId);
+        Assert.NotNull(saved);
+        Assert.True(saved!.ExpiresAtUtc > clock.UtcNow);
+    }
+
+    [Fact]
+    public async Task OnboardingHeartbeatSkipsExpiredLocks()
+    {
+        FakeOnboardingStore onboardings = new();
+        FakeClock clock = new() { UtcNow = DateTimeOffset.Parse("2026-10-08T12:00:00Z", System.Globalization.CultureInfo.InvariantCulture) };
+        OnboardingLock lockRow = OnboardingLock.Acquire(
+            NodeId.New(),
+            OnboardingOperationId.New(),
+            "owner-a",
+            clock.UtcNow,
+            lease: TimeSpan.FromSeconds(30));
+        await onboardings.AddLockAsync(lockRow);
+        clock.UtcNow = clock.UtcNow.AddMinutes(5);
+
+        var result = await new HeartbeatOnboardingLocksJobUseCase(onboardings, clock).ExecuteAsync("owner-a");
+        Assert.True(result.IsSuccess);
+        Assert.Equal(0, result.Value!.RefreshedCount);
+    }
+
+    [Fact]
+    public void OnboardingHeartbeatRejectsEmptyOwner()
+    {
+        HeartbeatOnboardingLocksJobUseCase useCase = new(new FakeOnboardingStore(), new FakeClock());
+        Assert.Throws<ArgumentException>(() => useCase.ExecuteAsync("  ").GetAwaiter().GetResult());
+    }
+
+    [Fact]
     public async Task PollManagedDriftProcessesDevicesWithLastCommitted()
     {
         FakeAuthorizationBoundary auth = new();

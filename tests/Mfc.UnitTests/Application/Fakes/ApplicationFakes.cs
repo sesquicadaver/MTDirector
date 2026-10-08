@@ -243,6 +243,15 @@ internal sealed class FakeOnboardingStore : IOnboardingStore
 
     public Task<OnboardingLock?> GetLockByNodeAsync(NodeId nodeId, CancellationToken cancellationToken = default)
         => Task.FromResult(_locks.TryGetValue(nodeId.Value, out OnboardingLock? value) ? value : null);
+
+    public Task<IReadOnlyList<OnboardingLock>> ListLocksByOwnerAsync(
+        string ownerInstanceId,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<OnboardingLock>>(
+            _locks.Values
+                .Where(l => string.Equals(l.OwnerInstanceId, ownerInstanceId, StringComparison.Ordinal))
+                .OrderBy(l => l.NodeId.Value)
+                .ToArray());
 }
 
 internal sealed class FakeDeploymentStore : IDeploymentStore

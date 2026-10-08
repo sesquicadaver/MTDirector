@@ -225,6 +225,20 @@ public sealed class EfOnboardingStore : IOnboardingStore
         return entity is null ? null : ToDomain(entity);
     }
 
+    public async Task<IReadOnlyList<OnboardingLock>> ListLocksByOwnerAsync(
+        string ownerInstanceId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(ownerInstanceId);
+        string owner = ownerInstanceId.Trim();
+        List<OnboardingLockEntity> rows = await _db.OnboardingLocks.AsNoTracking()
+            .Where(l => l.OwnerInstanceId == owner)
+            .OrderBy(l => l.NodeId)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+        return rows.Select(ToDomain).ToArray();
+    }
+
     private static OnboardingPlan ToDomain(OnboardingPlanEntity entity)
         => OnboardingPlan.Reconstitute(
             new OnboardingPlanId(entity.Id),

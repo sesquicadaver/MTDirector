@@ -29,7 +29,7 @@ public sealed class ProductTrancheSeedW7426LivingSpecTests
             "W7-427 | [#1248](https://github.com/sesquicadaver/MTDirector/issues/1248) | PLAN62-DONE-01 — PLAN-62 COMPLETE + freeze NEXT=none | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-430 (#1255)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-431 (#1256)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-426 (#1247) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-427 (#1248)", plan, StringComparison.Ordinal);
@@ -37,7 +37,7 @@ public sealed class ProductTrancheSeedW7426LivingSpecTests
         Assert.Contains("W7-426 (#1247) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-427 (#1248) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = none", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-430 (#1255)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-431 (#1256)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

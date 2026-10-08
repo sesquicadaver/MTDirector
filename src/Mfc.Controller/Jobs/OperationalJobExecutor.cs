@@ -38,9 +38,15 @@ public sealed class OperationalJobExecutor
                 }
             case OperationalJobKind.LockHeartbeat:
                 {
-                    HeartbeatDeploymentLocksJobUseCase useCase =
+                    HeartbeatDeploymentLocksJobUseCase deploymentLocks =
                         sp.GetRequiredService<HeartbeatDeploymentLocksJobUseCase>();
-                    await useCase.ExecuteAsync(options.OwnerInstanceId, cancellationToken)
+                    await deploymentLocks.ExecuteAsync(options.OwnerInstanceId, cancellationToken)
+                        .ConfigureAwait(false);
+
+                    // OWN-HB-01 / F01: onboarding Node leases need the same heartbeat as deployment.
+                    HeartbeatOnboardingLocksJobUseCase onboardingLocks =
+                        sp.GetRequiredService<HeartbeatOnboardingLocksJobUseCase>();
+                    await onboardingLocks.ExecuteAsync(options.OwnerInstanceId, cancellationToken)
                         .ConfigureAwait(false);
                     break;
                 }

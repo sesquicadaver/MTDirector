@@ -62,7 +62,7 @@ public sealed class Plan61DesktopConnectionDisconnectedFaultTextW7388LivingSpecT
             "W7-391 | [#1187](https://github.com/sesquicadaver/MTDirector/issues/1187) | Seed next after DESK-CONN-DISC-01 (PLAN-61 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-430 (#1255)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-431 (#1256)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-389", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-390", continuous, StringComparison.Ordinal);

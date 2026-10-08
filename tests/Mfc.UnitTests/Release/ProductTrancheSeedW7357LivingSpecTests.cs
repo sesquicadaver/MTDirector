@@ -36,7 +36,7 @@ public sealed class ProductTrancheSeedW7357LivingSpecTests
             "W7-359 | [#1123](https://github.com/sesquicadaver/MTDirector/issues/1123) | Seed next after CTRL-ERRDETAIL-LOG-01 (PLAN-53 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-430 (#1255)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-431 (#1256)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-357", plan, StringComparison.Ordinal);
         Assert.Contains("W7-358", plan, StringComparison.Ordinal);

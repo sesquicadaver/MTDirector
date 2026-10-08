@@ -46,4 +46,9 @@ public interface IOnboardingStore
     Task ReplaceExpiredLockAsync(OnboardingLock onboardingLock, CancellationToken cancellationToken = default);
 
     Task<OnboardingLock?> GetLockByNodeAsync(NodeId nodeId, CancellationToken cancellationToken = default);
+
+    /// <summary>Locks owned by a Controller instance for lease heartbeat (OWN-HB-01).</summary>
+    Task<IReadOnlyList<OnboardingLock>> ListLocksByOwnerAsync(
+        string ownerInstanceId,
+        CancellationToken cancellationToken = default);
 }
