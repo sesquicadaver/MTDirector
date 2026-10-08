@@ -7,6 +7,10 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Docs surface cleanup: root `README.md` / `docs/README.md` / `docs/release/readiness.md` drop autopilot **Honesty** / bloated **Queue** work-log lines; status stays honest (issue-queue ≠ production write proof; **§3.C NEXT = none** after PLAN-62).
+
 ### Added
 
 - **Re-audit 2026-10-08** (post PLAN-62): [`docs/audits/MTDirector-reaudit-post-plan62-20261008.md`](docs/audits/MTDirector-reaudit-post-plan62-20261008.md) — F03–F12 **REMEDIATED**; F01/F02/F13 **PARTIAL** (onboarding heartbeat, standalone live Recheck, OpenEndpointPresence); F14 honesty **REMEDIATED** / Layer C **NOT SATISFIED**; production-safe write still **NOT PROVEN**; no PLAN-63 seed.
