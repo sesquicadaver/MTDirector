@@ -65,7 +65,7 @@ public sealed class Plan34DesktopOperatorLaunchPackagingW7278LivingSpecTests
             "W7-283 | [#972](https://github.com/sesquicadaver/MTDirector/issues/972) | Seed next after DESK-HOST-WIN-01 (PLAN-34 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-436 (#1261)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-437 (#1263)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-279", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-280", continuous, StringComparison.Ordinal);

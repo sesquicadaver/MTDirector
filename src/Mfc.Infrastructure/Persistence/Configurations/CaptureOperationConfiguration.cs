@@ -18,7 +18,8 @@ internal sealed class CaptureOperationConfiguration : IEntityTypeConfiguration<C
         builder.Property(e => e.Status).IsRequired();
         builder.Property(e => e.ErrorCode).HasColumnType("text");
         builder.Property(e => e.CreatedAtUtc).IsRequired();
-        builder.HasIndex(e => new { e.RequestedBy, e.IdempotencyKey })
+        // CAP-IDEM-01 / F09: uniqueness matches capture identity (actor + key + device TargetId).
+        builder.HasIndex(e => new { e.RequestedBy, e.IdempotencyKey, e.TargetId })
             .IsUnique()
             .HasDatabaseName("uq_capture_operation_idempotency");
     }
