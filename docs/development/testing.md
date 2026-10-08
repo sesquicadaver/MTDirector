@@ -3996,6 +3996,16 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan62Done01CompleteFreezeW742
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan63ReauditResidualsWaveAW7428|FullyQualifiedName~ProductTrancheSeedW7429"`.
 
+## Living Specification — OWN-HB-01 onboarding lock heartbeat (W7-430)
+
+| AC | Module | Test |
+|----|--------|------|
+| Onboarding heartbeat job + LockHeartbeat wiring | Application Jobs, EfOnboardingStore, OperationalJobExecutor | `OwnHb01OnboardingLockHeartbeatW7430LivingSpecTests.Ac1ProductionHeartbeatJobAndLockTickWiringExist` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~OwnHb01OnboardingLockHeartbeatW7430"`.
+
+
+
 ## Living Specification — Seed PLAN62-DONE-01 after AUDIT-ACC-01 (W7-426)
 
 | AC | Module | Test |

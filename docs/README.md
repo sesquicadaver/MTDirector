@@ -1,7 +1,7 @@
 # MTDirector documentation index
 
 **Release:** `v0.2.0` (2026-08-24) — MVP + Post-MVP M7 CLOSED (issue-queue).  
-**§3.C NEXT = W7-430 (#1255)** — PLAN-63 wave A (OWN-HB-01); PLAN-62 COMPLETE; wave B Layer C deferred ([`ROADMAP.md`](../ROADMAP.md) §3.C).  
+**§3.C NEXT = W7-431 (#1256)** — PLAN-63 seed → EVID-LIVE-01 (OWN-HB-01 DONE); wave B Layer C deferred ([`ROADMAP.md`](../ROADMAP.md) §3.C).  
 **Pilot:** P2 read + write **code rows** CLOSED; production-safe write **NOT PROVEN** — [`operations/pilot-runbook.md`](operations/pilot-runbook.md), [PLAN-62](planning/plan-62-audit-remediation-acd0759.md), [PLAN-63](planning/plan-63-reaudit-residuals-wave-a.md).  
 **Alignment P0–P2:** W1–W4 / W2.1–W2.2 **DONE**. CRS/physical lab runner stays ops (not a §3 stop-gate).
 

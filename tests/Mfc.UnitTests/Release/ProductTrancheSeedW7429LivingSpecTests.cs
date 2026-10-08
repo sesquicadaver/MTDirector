@@ -3,7 +3,7 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-429: after PLAN-63 inventory, OWN-HB-01 is §3.C NEXT (W7-430).
+/// W7-429: after PLAN-63 inventory, OWN-HB-01 was seeded (W7-430); queue may have advanced.
 /// </summary>
 public sealed class ProductTrancheSeedW7429LivingSpecTests
 {
@@ -26,16 +26,16 @@ public sealed class ProductTrancheSeedW7429LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-430 | [#1255](https://github.com/sesquicadaver/MTDirector/issues/1255) | OWN-HB-01 — Onboarding lock heartbeat (F01 residual) | **OPEN (NEXT)**",
+            "W7-430 | [#1255](https://github.com/sesquicadaver/MTDirector/issues/1255) | OWN-HB-01 — Onboarding lock heartbeat (F01 residual) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-430 (#1255)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-431 (#1256)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-429 (#1254) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-430 (#1255)", plan, StringComparison.Ordinal);
         Assert.Contains("OWN-HB-01", plan63, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-430 (#1255)", plan63, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-430 (#1255)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-431 (#1256)", plan63, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-431 (#1256)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

@@ -42,7 +42,7 @@ public sealed class ProductTrancheSeedW7371LivingSpecTests
             "W7-373 | [#1152](https://github.com/sesquicadaver/MTDirector/issues/1152) | Seed first PLAN-57 atomic row after inventory → DESK-VRRP-PROG-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-430 (#1255)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-431 (#1256)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-56 COMPLETE", plan56, StringComparison.Ordinal);
         Assert.Contains("W7-371 (#1147) DONE", plan56, StringComparison.Ordinal);

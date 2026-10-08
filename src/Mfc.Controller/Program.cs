@@ -377,6 +377,7 @@ public static class Program
         services.AddScoped<PollManagedDriftJobUseCase>();
         services.AddScoped<ReconcileExpiredExceptionBindingsJobUseCase>();
         services.AddScoped<HeartbeatDeploymentLocksJobUseCase>();
+        services.AddScoped<HeartbeatOnboardingLocksJobUseCase>();
         services.AddScoped<CleanupDisabledWatchdogResidueJobUseCase>();
         // Hosted scheduler is opt-in via Mfc:OperationalJobs:Enabled (false in IntegrationTests).
         if (jobOptions.Enabled)
