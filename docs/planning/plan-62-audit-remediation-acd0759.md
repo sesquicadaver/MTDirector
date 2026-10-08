@@ -1,12 +1,13 @@
 # PLAN-62 — Repository-audit remediation (`acd0759`)
 
 **Date:** 2026-09-23  
-**Status:** **COMPLETE** — Inventory **DONE** (W7-393 #1195); seed **W7-394 (#1196) DONE**; **AUDIT-STATUS-01 W7-395 (#1197) DONE**; seed **W7-396 (#1199) DONE**; **AUDIT-SBOM-01 W7-397 (#1200) DONE**; seed **W7-398 (#1202) DONE**; **AUDIT-OWN-01 W7-399 (#1203) DONE**; seed **W7-400 (#1205) DONE**; **AUDIT-COMMIT-01 W7-401 (#1206) DONE**; seed **W7-402 (#1208) DONE**; **AUDIT-EVID-01 W7-403 (#1209) DONE**; seed **W7-404 (#1211) DONE**; **AUDIT-RB-01 W7-405 (#1212) DONE**; seed **W7-406 (#1214) DONE**; **AUDIT-CLK-01 W7-407 (#1215) DONE**; seed **W7-408 (#1217) DONE**; **AUDIT-RPC-01 W7-409 (#1218) DONE**; seed **W7-410 (#1220) DONE**; **AUDIT-CAP-03 W7-411 (#1221) DONE**; seed **W7-412 (#1224) DONE**; **AUDIT-CAP-04 W7-413 (#1226) DONE**; seed **W7-414 (#1228) DONE**; **AUDIT-AN-03 W7-415 (#1229) DONE**; seed **W7-416 (#1232) DONE**; **AUDIT-BIND-01 W7-417 (#1233) DONE**; seed **W7-418 (#1235) DONE**; **AUDIT-GUI-02 W7-419 (#1236) DONE**; seed **W7-420 (#1238) DONE**; **AUDIT-DRIFT-01 W7-421 (#1239) DONE**; seed **W7-422 (#1241) DONE**; **AUDIT-M7-01 W7-423 (#1242) DONE**; seed **W7-424 (#1244) DONE**; **AUDIT-ACC-01 W7-425 (#1245) DONE**; seed **W7-426 (#1247) DONE**; **PLAN62-DONE-01 W7-427 (#1248) DONE**; **§3.C NEXT = none**
+**Status:** **COMPLETE** — Inventory **DONE** (W7-393 #1195); seed **W7-394 (#1196) DONE**; **AUDIT-STATUS-01 W7-395 (#1197) DONE**; seed **W7-396 (#1199) DONE**; **AUDIT-SBOM-01 W7-397 (#1200) DONE**; seed **W7-398 (#1202) DONE**; **AUDIT-OWN-01 W7-399 (#1203) DONE**; seed **W7-400 (#1205) DONE**; **AUDIT-COMMIT-01 W7-401 (#1206) DONE**; seed **W7-402 (#1208) DONE**; **AUDIT-EVID-01 W7-403 (#1209) DONE**; seed **W7-404 (#1211) DONE**; **AUDIT-RB-01 W7-405 (#1212) DONE**; seed **W7-406 (#1214) DONE**; **AUDIT-CLK-01 W7-407 (#1215) DONE**; seed **W7-408 (#1217) DONE**; **AUDIT-RPC-01 W7-409 (#1218) DONE**; seed **W7-410 (#1220) DONE**; **AUDIT-CAP-03 W7-411 (#1221) DONE**; seed **W7-412 (#1224) DONE**; **AUDIT-CAP-04 W7-413 (#1226) DONE**; seed **W7-414 (#1228) DONE**; **AUDIT-AN-03 W7-415 (#1229) DONE**; seed **W7-416 (#1232) DONE**; **AUDIT-BIND-01 W7-417 (#1233) DONE**; seed **W7-418 (#1235) DONE**; **AUDIT-GUI-02 W7-419 (#1236) DONE**; seed **W7-420 (#1238) DONE**; **AUDIT-DRIFT-01 W7-421 (#1239) DONE**; seed **W7-422 (#1241) DONE**; **AUDIT-M7-01 W7-423 (#1242) DONE**; seed **W7-424 (#1244) DONE**; **AUDIT-ACC-01 W7-425 (#1245) DONE**; seed **W7-426 (#1247) DONE**; **PLAN62-DONE-01 W7-427 (#1248) DONE**  
+**Historical freeze (W7-427):** §3.C NEXT = none until operator TOR seed of PLAN-63 (2026-10-08).  
 **Audit SHA:** `acd0759e85414a83460c4cab971db2b0b58b30cd`  
 **Normative audit:** [`docs/audits/MTDirector-audit-acd0759-20260923.md`](../audits/MTDirector-audit-acd0759-20260923.md)  
 **Post-COMPLETE re-audit (2026-10-08):** [`docs/audits/MTDirector-reaudit-post-plan62-20261008.md`](../audits/MTDirector-reaudit-post-plan62-20261008.md) — F03–F12 REMEDIATED; F01/F02/F13 PARTIAL (onboarding heartbeat, live Recheck, OpenEndpointPresence); F14 honesty REMEDIATED / Layer C NOT SATISFIED  
 **Predecessor:** PLAN-61 COMPLETE; freeze W7-392 (#1191) DONE (correlation-id wave closed)  
-**Successor:** none — PLAN-62 COMPLETE; do not invent PLAN-63 without operator TOR/audit  
+**Successor:** [`plan-63-reaudit-residuals-wave-a.md`](plan-63-reaudit-residuals-wave-a.md) — operator-approved wave A (2026-10-08); wave B Layer C deferred  
 **Normative execution order:** [`ROADMAP.md`](../../ROADMAP.md) §3.C  
 
 Аудит 2026-09-23: `MVP CLOSED` / `M7 CLOSED` / write path CLOSED не відповідають наскрізній реалізації. Виправлення — атомарні PR у залежному порядку нижче. Архітектуру не переписувати. Засів після freeze W7-392 дозволений лише з **аудиту/TOR** (цей документ), не з ErrorText grepping.
@@ -25,7 +26,7 @@
 - Campaigns, auto drift repair, auto-create management guard  
 - NAT/RAW/Mangle/routing **writes** (read/projection — у scope F08 / AUDIT-CAP-03)  
 - Broker / microservices / rewrite стека  
-- Новий PLAN-63 у цьому циклі  
+- PLAN-63 (окремий successor після COMPLETE + operator TOR)  
 - Повторне відкриття DESK-*-FAULT / SNAP-*-CORR correlation wave  
 
 ## Branch protocol (кожне завдання)
@@ -94,4 +95,5 @@ Product §3 never waits on GNS3. Controlled CHR verification is DoD for deploy/o
 
 ## §3.C NEXT
 
-**§3.C NEXT = none** — PLAN-62 COMPLETE (PLAN62-DONE-01 W7-427 DONE). Autopilot stops; no PLAN-63 without operator TOR/audit.
+**Historical freeze (W7-427):** §3.C NEXT = none after PLAN-62 COMPLETE.  
+**Current queue:** see PLAN-63 — **§3.C NEXT = W7-430 (#1255)** OWN-HB-01.

@@ -3987,9 +3987,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan50ControllerKestrelMinData
 
 | AC | Module | Test |
 |----|--------|------|
-| PLAN-62 COMPLETE; §3.C NEXT = none; autopilot stops | plan-62, ROADMAP, known-limitations, continuous-queue, README, slash-autopilot | `Plan62Done01CompleteFreezeW7427LivingSpecTests.Ac1Plan62CompleteAndNextIsNone` |
+| PLAN-62 COMPLETE; historical freeze; PLAN-63 successor | plan-62, PLAN-63, ROADMAP, known-limitations, continuous-queue, README, slash-autopilot | `Plan62Done01CompleteFreezeW7427LivingSpecTests.Ac1Plan62CompleteAndSuccessorPlan63Seeded` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~Plan62Done01CompleteFreezeW7427"`.
+
+| PLAN-63 inventory + seed OWN-HB-01 as NEXT | plan-63, re-audit, ROADMAP, known-limitations | `Plan63ReauditResidualsWaveAW7428LivingSpecTests.Ac1Plan63InventoryDocumentsRanksAndSeedsOwnHb01` |
+| Seed W7-429 → OWN-HB-01 | known-limitations, ROADMAP, continuous-queue, README | `ProductTrancheSeedW7429LivingSpecTests.Ac1KnownLimitationsAndQueueSeedOwnHb01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan63ReauditResidualsWaveAW7428|FullyQualifiedName~ProductTrancheSeedW7429"`.
 
 ## Living Specification — Seed PLAN62-DONE-01 after AUDIT-ACC-01 (W7-426)
 

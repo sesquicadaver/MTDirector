@@ -19,7 +19,7 @@
 | F14 honesty / SBOM gates | **REMEDIATED** як honesty + fail-closed real SBOM; live acceptance **не** SATISFIED |
 | Готовність виробничого firewall control | **NOT PROVEN** (чесно задокументовано) |
 
-Цей звіт **не** відкриває PLAN-63 і **не** засіває §3.C. Залишки нижче — для операторського TOR, якщо потрібен наступний транш.
+Оператор 2026-10-08 затвердив wave **A** → [`plan-63-reaudit-residuals-wave-a.md`](../planning/plan-63-reaudit-residuals-wave-a.md) (**§3.C NEXT = W7-430**); wave **B** (Layer C) — наступна хвиля після PLAN-63 DONE.
 
 ## Межі й метод
 
@@ -147,7 +147,7 @@ Idempotency bound to device; identical hash → нова attempt identity; node 
 4. **Layer C** — live CHR / physical CRS **NOT SATISFIED** (W7-425).
 5. **Capture idempotency schema** — unique без `TargetId` (F09 residual).
 6. **SBOM dry-run / optional CycloneDX / cleartext `.asc` без GPG** (W7-397 / W7-113).
-7. **§3.C NEXT = none** — наступний транш лише за явним операторським TOR/аудитом (ROADMAP §6 / PLAN62-DONE-01).
+7. **Wave B Layer C** — live CHR/CRS **NOT SATISFIED** (засів після PLAN-63 DONE).
 
 ## Підсумок перевірки
 
@@ -157,7 +157,7 @@ Idempotency bound to device; identical hash → нова attempt identity; node 
 | F01–F14 code/docs trace | Виконано (див. матрицю) |
 | .NET full suite / live CHR | **NOT RUN** у цьому проході |
 | SBOM real-mode (повторне відтворення) | Не повторювалось; код/скрипт fail-closed перевірені статично vs W7-397 |
-| Засів PLAN-63 | **Не виконано** (потрібен оператор) |
+| Засів PLAN-63 wave A | **DONE** (W7-428/W7-429; NEXT = W7-430 OWN-HB-01) |
 
 **Підсумок однією фразою:** ядро `acd0759` F03–F12 закрите на main; **F01/F02/F13 PARTIAL**; F14 чесний; виробнича безпека write path досі **не доведена** live-прийманням.
 

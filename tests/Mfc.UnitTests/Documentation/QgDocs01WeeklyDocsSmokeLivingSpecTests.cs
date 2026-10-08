@@ -9,6 +9,11 @@ namespace Mfc.UnitTests.Documentation;
 /// </summary>
 public sealed class QgDocs01WeeklyDocsSmokeLivingSpecTests
 {
+    private static readonly Regex OpenNextFromUnrealized =
+        new(
+            @"\| \*\*Нереалізовано \(§3\)\*\* \| \*\*\d+\*\* \| \*\*§3\.C NEXT = (W7-\d+ \(#\d+\))",
+            RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
     private static readonly Regex OpenNextToken =
         new(@"§3\.C NEXT = (W7-\d+ \(#\d+\))", RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
@@ -33,15 +38,22 @@ public sealed class QgDocs01WeeklyDocsSmokeLivingSpecTests
 
     private static string CanonicalNext(string roadmap)
     {
-        const string prefix = "§3.C NEXT = ";
-        if (roadmap.Contains(ExhaustedNextToken, StringComparison.Ordinal))
+        // Canonical source: §4 unrealized summary row (avoids stale historical NEXT phrases).
+        Match unrealized = OpenNextFromUnrealized.Match(roadmap);
+        if (unrealized.Success)
         {
-            return ExhaustedNextToken[prefix.Length..];
+            return unrealized.Groups[1].Value;
         }
 
         Match match = OpenNextToken.Match(roadmap);
-        Assert.True(match.Success, "ROADMAP.md must declare §3.C NEXT = W7-NN (#issue) or the exhausted-queue token.");
-        return match.Groups[1].Value;
+        if (match.Success)
+        {
+            return match.Groups[1].Value;
+        }
+
+        Assert.Contains(ExhaustedNextToken, roadmap, StringComparison.Ordinal);
+        const string prefix = "§3.C NEXT = ";
+        return ExhaustedNextToken[prefix.Length..];
     }
 
     [Fact]
