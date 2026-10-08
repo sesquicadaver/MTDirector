@@ -7,6 +7,10 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Docs surface cleanup: root `README.md` / `docs/README.md` / `docs/release/readiness.md` drop autopilot **Honesty** / bloated **Queue** work-log lines; status stays honest (issue-queue ≠ production write proof; **§3.C NEXT = none** after PLAN-62).
+
 ### Added
 
 - **W7-427** ([#1248](https://github.com/sesquicadaver/MTDirector/issues/1248)): PLAN62-DONE-01 — PLAN-62 **COMPLETE**; **§3.C NEXT = none**; `/autopilot` stops (черга вичерпана); no PLAN-63 without operator TOR/audit (`Plan62Done01CompleteFreezeW7427LivingSpecTests`).

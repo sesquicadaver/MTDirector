@@ -1,7 +1,7 @@
 # Project readiness assessment
 
-**As of:** 2026-08-31  
-**Baseline commit:** `main` @ `877a529` — W2.2 Routing assurance next-hop/subject ([#338](https://github.com/sesquicadaver/MTDirector/pull/338))  
+**As of:** 2026-10-08  
+**Baseline commit:** `main` @ PLAN-62 COMPLETE ([#1250](https://github.com/sesquicadaver/MTDirector/pull/1250) / W7-427)  
 **Release tag:** [`v0.2.0`](https://github.com/sesquicadaver/MTDirector/releases/tag/v0.2.0) (2026-08-24)  
 **Queue plan:** [`../planning/continuous-queue-plan.md`](../planning/continuous-queue-plan.md)
 
@@ -11,18 +11,17 @@ This document summarizes **code + documentation readiness** against the normativ
 
 | Layer | Status | Notes |
 |-------|--------|-------|
-| MVP (M0–M6 + N1) | **100% CLOSED** | 109/109 issues in code audit |
-| Post-MVP M7 (M7.1–M7.4) | **100% CLOSED** | 27/27 issues in code audit |
+| MVP (M0–M6 + N1) | **100% CLOSED** (issue-queue) | 109/109 issues — not live E2E proof |
+| Post-MVP M7 (M7.1–M7.4) | **100% CLOSED** (issue-queue) | 27/27 issues — not production lifecycle proof alone |
 | P2 read path (P2-04…P2-06) | **100% CLOSED** | Production probe + capture + DI gate |
-| P2 write path (P2-07…P2-11) | **100% CLOSED** | Runtimes + WriteEnabled gate + pilot runbook |
+| P2 write path (P2-07…P2-11) | **code rows CLOSED** | Runtimes + WriteEnabled + pilot runbook — **production-safe write NOT PROVEN** ([PLAN-62](../planning/plan-62-audit-remediation-acd0759.md)) |
 | Desktop alignment P0–P2 | **CLOSED** | W1.1–W4.4 + W2.1–W2.2 |
-| Linear queue (§3.C) | **exhausted** | **§3.C NEXT = none** (PLAN-31 inventory DONE; W7-262 DONE; PLAN-30 COMPLETE; PLAN-28 inventory DONE; W7-244 DONE; W7-245 DONE; DESK-A11Y-FIELD-01 DONE; W7-247 DONE; DESK-A11Y-CTRL-01 DONE; W7-249 DONE; PLAN-28 COMPLETE; PLAN-29 inventory DONE; W7-250 DONE; W7-251 DONE; W7-252 DONE; W7-253 DONE; W7-254 DONE; W7-255 DONE; PLAN-30 inventory DONE; W7-257 DONE; W7-258 DONE; PLAN-27 COMPLETE; W7-243 DONE; W7-242 DONE; W7-241 DONE; W7-240 DONE; W7-239 DONE; W7-238 DONE; W7-237 DONE; W7-236 DONE); W7-113 DONE; W7-114 DONE; W7-112 DONE; W7-111 DONE; W7-110 DONE; PLAN-10 COMPLETE; W7-109 DONE; W7-108 DONE; W7-107 DONE; W7-106 DONE; W7-94 ([#586](https://github.com/sesquicadaver/MTDirector/issues/586)) **DONE**; PLAN-07 **COMPLETE**; PLAN-06 **COMPLETE**; PLAN-05 **COMPLETE** |
+| Linear queue (§3.C) | **exhausted** | **§3.C NEXT = none** after PLAN-62 COMPLETE; no PLAN-63 without operator TOR/audit |
 
-**Overall code readiness (milestones):** all 139 mapped product issues are **DONE in code**. Alignment P0–P2 is **DONE**. W5 tranche is **DONE**. Residual CRS/physical lab runner stays ops — not a phase-stop.  
-**Queue integrity:** **TRACKER-01 DONE** (#289). **PLAN-01 DONE** (#290). **PLAN-02** (#339) seeds continuous §3.C so `/autopilot` does not idle.  
+**Overall code readiness (milestones):** all 139 mapped product issues are **DONE in code**. Continuous §3.C through PLAN-62 is **COMPLETE**. Residual CRS/physical lab runner stays ops — not a phase-stop.  
 **Production pilot readiness (read-only):** **ready** when `Mfc:RouterOs:Enabled=true` + PostgreSQL + device connection profiles — see [`pilot-runbook.md`](../operations/pilot-runbook.md).  
-**Production pilot readiness (write path):** **ready (lab)** — set `Mfc:RouterOs:WriteEnabled=true`; checklist in [`pilot-runbook.md`](../operations/pilot-runbook.md). Lab phases **do not** block §3.  
-**Desktop inventory registration:** **ready** — Inventory **Add router** wizard (Site→Node→Device + credentials). Neighbor apply fills VRRP member b (**CONT-02 DONE**).
+**Production pilot readiness (write path):** **lab-only** — set `Mfc:RouterOs:WriteEnabled=true`; checklist in [`pilot-runbook.md`](../operations/pilot-runbook.md). Does **not** satisfy a production-safe write-path claim without operator evidence.  
+**Desktop inventory registration:** **ready** — Inventory **Add router** wizard (Site→Node→Device + credentials).
 
 ## Milestone matrix (code audit §2.2)
 
@@ -42,22 +41,11 @@ This document summarizes **code + documentation readiness** against the normativ
 
 Desktop alignment W1–W4 / W2.1–W2.2 is **DONE** on top of that baseline (not additional §2.2 IDs).
 
-## Linear queue (§3.C) — current
+## Linear queue (§3.C)
 
-| # | ID | GitHub | Status |
-|--:|----|-------:|--------|
-| 133 | PLAN-02 | [#339](https://github.com/sesquicadaver/MTDirector/issues/339) | **DONE** ([#345](https://github.com/sesquicadaver/MTDirector/pull/345)) |
-| 134 | CONT-01 | [#340](https://github.com/sesquicadaver/MTDirector/issues/340) | **DONE** |
-| 135 | CONT-02 | [#341](https://github.com/sesquicadaver/MTDirector/issues/341) | **DONE** |
-| 136 | W5-01 | [#342](https://github.com/sesquicadaver/MTDirector/issues/342) | **DONE** |
-| 137 | W5-02 | [#343](https://github.com/sesquicadaver/MTDirector/issues/343) | **DONE** |
-| 138 | W5-03 | [#344](https://github.com/sesquicadaver/MTDirector/issues/344) | **DONE** |
-| 139 | W6-01 | [#352](https://github.com/sesquicadaver/MTDirector/issues/352) | **DONE** |
-| 140 | W6-02 | [#354](https://github.com/sesquicadaver/MTDirector/issues/354) | **DONE** |
+Normative table: [`ROADMAP.md`](../../ROADMAP.md) §3.C. Process notes: [`continuous-queue-plan.md`](../planning/continuous-queue-plan.md).
 
-Closed history (P2 + PLAN-01): TRACKER-01 [#289](https://github.com/sesquicadaver/MTDirector/issues/289) … P2-11 [#297](https://github.com/sesquicadaver/MTDirector/issues/297); PLAN-NBR-01 [#314](https://github.com/sesquicadaver/MTDirector/issues/314).
-
-Product §3 is linear. **Lab/GNS3/CHR/`WriteEnabled` is a parallel ops track** and must not empty or pause this table.
+**§3.C NEXT = none** (PLAN-62 COMPLETE). Product §3 is linear; **Lab/GNS3/CHR/`WriteEnabled` is a parallel ops track** and must not pause §3.
 
 ## What is production-ready today
 
