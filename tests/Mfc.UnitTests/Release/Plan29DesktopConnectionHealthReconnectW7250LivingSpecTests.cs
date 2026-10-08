@@ -54,7 +54,7 @@ public sealed class Plan29DesktopConnectionHealthReconnectW7250LivingSpecTests
             "W7-254 | [#915](https://github.com/sesquicadaver/MTDirector/issues/915) | DESK-CONN-RECONNECT-01 — Bounded reconnect after health-fail drop + shell StatusText/LastError sync | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = none", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-430 (#1255)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-251", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-252", continuous, StringComparison.Ordinal);

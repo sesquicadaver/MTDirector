@@ -45,7 +45,7 @@ public sealed class ProductTrancheSeedW7343LivingSpecTests
             "W7-346 | [#1098](https://github.com/sesquicadaver/MTDirector/issues/1098) | CTRL-KESTREL-MINRATE-01 — Disable Kestrel MinRequest/ResponseDataRate for quiet Watch streams | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = none", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-430 (#1255)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-49 COMPLETE", plan49, StringComparison.Ordinal);
         Assert.Contains("W7-343 (#1092) DONE", plan49, StringComparison.Ordinal);

@@ -76,7 +76,7 @@ public sealed class SnapFaultCorr01DesktopCaptureProgressLivingSpecTests
             "W7-367 | [#1139](https://github.com/sesquicadaver/MTDirector/issues/1139) | Seed next after SNAP-FAULT-CORR-01 (PLAN-55 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = none", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-430 (#1255)", roadmap, StringComparison.Ordinal);
     }
 
     private static int Count(string text, string value)

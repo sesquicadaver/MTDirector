@@ -11,7 +11,7 @@ MikroTik Firewall Controller — топологічно обізнаний ко�
 | P2 Pilot RouterOS wiring | read path code **CLOSED** (P2-04…P2-06); write path **code rows CLOSED** (P2-07…P2-11) — **production-safe write path NOT PROVEN** ([audit `acd0759`](docs/audits/MTDirector-audit-acd0759-20260923.md) / [PLAN-62](docs/planning/plan-62-audit-remediation-acd0759.md)) |
 | Live / production acceptance | **NOT SATISFIED** — live CHR/CRS OFF; scripted Living Specs ≠ production-safe RouterOS write proof |
 | Release tag | [`v0.2.0`](https://github.com/sesquicadaver/MTDirector/releases/tag/v0.2.0) (2026-08-24) — baseline tag |
-| Delivery queue (§3.C) | **§3.C NEXT = none** — PLAN-62 **COMPLETE**; наступний транш лише за операторським TOR/аудитом |
+| Delivery queue (§3.C) | **§3.C NEXT = W7-430 (#1255)** — PLAN-63 wave A (OWN-HB-01); PLAN-62 **COMPLETE**; wave B Layer C deferred |
 
 `CLOSED` для MVP/M7/P2 означає завершення issue-queue / code-row (**AUDIT-STATUS-01**). Це не доводить безпечний end-to-end write path на RouterOS — див. [`plan-62-audit-remediation-acd0759.md`](docs/planning/plan-62-audit-remediation-acd0759.md) і [`docs/release/known-limitations.md`](docs/release/known-limitations.md).
 
@@ -50,7 +50,7 @@ M0 → M1 → M2 → M3 → M5 → M4 → M6 → MVP CLOSED (issue-queue)
   (production-safe write NOT PROVEN)
 → Desktop Add router + alignment W1–W4 / W2.1–W2.2 DONE
 → Continuous §3.C through PLAN-62 (audit acd0759 remediation) COMPLETE
-→ §3.C NEXT = none
+→ PLAN-63 wave A (re-audit residuals) — §3.C NEXT = W7-430 (#1255)
 ```
 
 ## Стек
