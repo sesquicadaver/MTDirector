@@ -53,7 +53,7 @@ public sealed class Plan35DesktopLaunchTemplatePublishBundlingW7284LivingSpecTes
             "W7-287 | [#979](https://github.com/sesquicadaver/MTDirector/issues/979) | Seed next after DESK-HOST-BUNDLE-01 (PLAN-35 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-431 (#1256)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-432 (#1257)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-285", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-286", continuous, StringComparison.Ordinal);

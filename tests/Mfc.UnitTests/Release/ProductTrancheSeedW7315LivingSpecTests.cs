@@ -44,7 +44,7 @@ public sealed class ProductTrancheSeedW7315LivingSpecTests
             "W7-318 | [#1042](https://github.com/sesquicadaver/MTDirector/issues/1042) | CTRL-HTTP-METRICS-01 — Controller scrapeable Prometheus/OTel metrics beyond HTTP health | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-431 (#1256)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-432 (#1257)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-42 COMPLETE", plan42, StringComparison.Ordinal);
         Assert.Contains("W7-315 (#1036) DONE", plan42, StringComparison.Ordinal);

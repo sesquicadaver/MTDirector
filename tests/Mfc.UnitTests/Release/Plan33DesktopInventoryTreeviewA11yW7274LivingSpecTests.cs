@@ -50,7 +50,7 @@ public sealed class Plan33DesktopInventoryTreeviewA11yW7274LivingSpecTests
             "W7-277 | [#959](https://github.com/sesquicadaver/MTDirector/issues/959) | Seed next after DESK-A11Y-TREE-01 (PLAN-33 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-431 (#1256)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-432 (#1257)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-275", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-276", continuous, StringComparison.Ordinal);

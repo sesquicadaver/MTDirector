@@ -13,7 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- **W7-430** ([#1255](https://github.com/sesquicadaver/MTDirector/issues/1255)): OWN-HB-01 — onboarding lock heartbeat (`HeartbeatOnboardingLocksJobUseCase` + `ListLocksByOwnerAsync` on LockHeartbeat tick); **§3.C NEXT = W7-431 (#1256)** (`OwnHb01OnboardingLockHeartbeatW7430LivingSpecTests`).
+- **W7-431** ([#1256](https://github.com/sesquicadaver/MTDirector/issues/1256)): Seed after OWN-HB-01 → **EVID-LIVE-01**; **§3.C NEXT = W7-432 (#1257)** (`ProductTrancheSeedW7431LivingSpecTests`).
+- **W7-430** ([#1255](https://github.com/sesquicadaver/MTDirector/issues/1255)): OWN-HB-01 — onboarding lock heartbeat (`HeartbeatOnboardingLocksJobUseCase` + `ListLocksByOwnerAsync` on LockHeartbeat tick); seed **W7-431** → EVID-LIVE-01 (`OwnHb01OnboardingLockHeartbeatW7430LivingSpecTests`).
 - **W7-428** ([#1253](https://github.com/sesquicadaver/MTDirector/issues/1253)) / **W7-429** ([#1254](https://github.com/sesquicadaver/MTDirector/issues/1254)): PLAN-63 inventory + seed — re-audit residuals wave A; wave B Layer C deferred (`Plan63ReauditResidualsWaveAW7428LivingSpecTests`, `ProductTrancheSeedW7429LivingSpecTests`).
 - **Re-audit 2026-10-08** (post PLAN-62): [`docs/audits/MTDirector-reaudit-post-plan62-20261008.md`](docs/audits/MTDirector-reaudit-post-plan62-20261008.md) — F03–F12 **REMEDIATED**; F01/F02/F13 **PARTIAL**; F14 honesty **REMEDIATED** / Layer C **NOT SATISFIED**; production-safe write still **NOT PROVEN**; PLAN-63 wave A seeded.
 - **W7-427** ([#1248](https://github.com/sesquicadaver/MTDirector/issues/1248)): PLAN62-DONE-01 — PLAN-62 **COMPLETE**; **§3.C NEXT = none**; `/autopilot` stops (черга вичерпана); no PLAN-63 without operator TOR/audit (`Plan62Done01CompleteFreezeW7427LivingSpecTests`).
