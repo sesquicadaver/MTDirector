@@ -128,6 +128,11 @@ public static class ExecuteStandaloneDeploymentUseCase
                 packetPathPairs);
             timeline.Add("precheck:revalidated");
 
+            // EVID-LIVE-01 / F02: live RouterOS old-anchor + old-artifact hash before any staging writes.
+            await StandaloneLiveRecheck.ExecuteAsync(devicePlan, runtime, cancellationToken)
+                .ConfigureAwait(false);
+            timeline.Add("precheck:live-ros");
+
             Advance(operation, DeploymentOperationState.Prechecking, nowUtc, phases: phases);
             deviceState.EnsureTransition(DeviceDeploymentState.Prechecked, nowUtc);
 

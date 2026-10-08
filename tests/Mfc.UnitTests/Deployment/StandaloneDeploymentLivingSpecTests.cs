@@ -43,6 +43,40 @@ public sealed class StandaloneDeploymentLivingSpecTests
             T0.AddMinutes(1),
             T0);
         Assert.Contains(result.Timeline, static t => t == "precheck:revalidated");
+        Assert.Contains(result.Timeline, static t => t == "precheck:live-ros");
+    }
+
+    [Fact]
+    public async Task Ac1bLiveRecheckRejectsDivergedOldAnchors()
+    {
+        Node node = DeploymentTestFactory.RouterWithDevice(out _);
+        DeploymentPlan plan = DeploymentTestFactory.PlanFor(node, T0);
+        DeploymentOperation operation = DeploymentOperation.Create(plan, node, UserId.New(), T0);
+        DeviceDeployment device = DeviceDeployment.Create(operation.Id, plan.DevicePlans[0].DeviceId, T0);
+        RecordingChannel channel = SeedChannel(plan, toNew: false);
+        // Tamper one live old jump so sealed OldAnchorTargets no longer match RouterOS.
+        AnchorTarget first = plan.DevicePlans[0].OldAnchorTargets[0];
+        Dictionary<string, string>? row = channel.FindAnchor(first.Key);
+        Assert.NotNull(row);
+        row["jump-target"] = "mfc4.tampered.r.deadbeefdeadbeef";
+
+        StandaloneDeploymentResult result = await ExecuteStandaloneDeploymentUseCase.ExecuteAsync(
+            node,
+            plan,
+            operation,
+            device,
+            new FakeRuntime(plan.DevicePlans[0], channel),
+            existingForNode: [],
+            packetPathPairs: DeploymentTestFactory.CpuPairs(),
+            addressLists: [],
+            chains: [],
+            observedResourceHashAfterStaging: plan.DevicePlans[0].NewArtifactHash,
+            T0.AddMinutes(1),
+            T0);
+        Assert.False(result.Succeeded);
+        Assert.Equal(DeploymentCodes.AnchorPreconditionFailed, result.ErrorCode);
+        Assert.DoesNotContain(result.Timeline, static t => t == "precheck:live-ros");
+        Assert.DoesNotContain(result.Timeline, static t => t.StartsWith("stage", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -441,7 +475,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
         DeploymentPlan plan = DeploymentTestFactory.PlanFor(node, T0);
         DeploymentOperation operation = DeploymentOperation.Create(plan, node, UserId.New(), T0);
         DeviceDeployment device = DeviceDeployment.Create(operation.Id, plan.DevicePlans[0].DeviceId, T0);
-        // No permanent anchors seeded → activate precondition fails; rollback restore then needs recovery.
+        // Empty live state: EVID-LIVE-01 blocks before staging (fail-closed; no activate/rollback theatre).
         StandaloneDeploymentResult result = await ExecuteStandaloneDeploymentUseCase.ExecuteAsync(
             node,
             plan,
@@ -456,10 +490,10 @@ public sealed class StandaloneDeploymentLivingSpecTests
             T0.AddMinutes(1),
             T0);
         Assert.False(result.Succeeded);
-        Assert.Contains(result.Timeline, static t => t == "activate:failed");
-        Assert.True(
-            result.State is DeploymentOperationState.RolledBack or DeploymentOperationState.RecoveryRequired,
-            result.State.ToString());
+        Assert.Equal(DeploymentCodes.AnchorPreconditionFailed, result.ErrorCode);
+        Assert.DoesNotContain(result.Timeline, static t => t == "precheck:live-ros");
+        Assert.DoesNotContain(result.Timeline, static t => t.StartsWith("stage", StringComparison.Ordinal));
+        Assert.DoesNotContain(result.Timeline, static t => t == "activate:failed");
     }
 
     [Fact]
@@ -469,6 +503,7 @@ public sealed class StandaloneDeploymentLivingSpecTests
         DeploymentPlan plan = DeploymentTestFactory.PlanFor(node, T0);
         DeploymentOperation operation = DeploymentOperation.Create(plan, node, UserId.New(), T0);
         DeviceDeployment device = DeviceDeployment.Create(operation.Id, plan.DevicePlans[0].DeviceId, T0);
+        // Third-party jump before staging is blocked by EVID-LIVE-01 (fail-closed).
         RecordingChannel channel = SeedChannel(plan, toNew: false);
         Dictionary<string, string>? row = channel.FindAnchor(plan.DevicePlans[0].AnchorActivationOrder[0]);
         Assert.NotNull(row);
@@ -487,8 +522,9 @@ public sealed class StandaloneDeploymentLivingSpecTests
             T0.AddMinutes(1),
             T0);
         Assert.False(result.Succeeded);
-        Assert.Equal(DeploymentOperationState.RecoveryRequired, result.State);
-        Assert.Contains(result.Timeline, static t => t == "recovery-required");
+        Assert.Equal(DeploymentCodes.AnchorPreconditionFailed, result.ErrorCode);
+        Assert.DoesNotContain(result.Timeline, static t => t == "precheck:live-ros");
+        Assert.DoesNotContain(result.Timeline, static t => t == "recovery-required");
     }
 
     [Fact]

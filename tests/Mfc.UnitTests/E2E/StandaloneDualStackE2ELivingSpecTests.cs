@@ -273,6 +273,14 @@ public sealed class StandaloneDualStackE2ELivingSpecTests
         Assert.True(StandaloneDeploymentPolicy.IsNoChanges(again.DevicePlans[0]));
         DeploymentOperation op2 = DeploymentOperation.Create(again, node, UserId.New(), T0.AddMinutes(5));
         DeviceDeployment device2 = DeviceDeployment.Create(op2.Id, again.DevicePlans[0].DeviceId, T0.AddMinutes(5));
+        // First deploy left anchors on NEW; align live jumps to sealed old of the no-changes plan for EVID-LIVE-01.
+        foreach (AnchorTarget target in again.DevicePlans[0].OldAnchorTargets)
+        {
+            Dictionary<string, string>? row = channel.FindAnchor(target.Key);
+            Assert.NotNull(row);
+            row!["jump-target"] = target.JumpTarget;
+        }
+
         int writesBefore = channel.Sent.Count;
         StandaloneDeploymentResult noChanges = await ExecuteStandaloneDeploymentUseCase.ExecuteAsync(
             node,

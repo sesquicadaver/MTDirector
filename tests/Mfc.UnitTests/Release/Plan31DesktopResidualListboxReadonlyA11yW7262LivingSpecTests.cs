@@ -65,7 +65,7 @@ public sealed class Plan31DesktopResidualListboxReadonlyA11yW7262LivingSpecTests
             "W7-268 | [#943](https://github.com/sesquicadaver/MTDirector/issues/943) | PLAN-32 — Inventory Controller host-process packaging templates (systemd / Windows Service) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-432 (#1257)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-433 (#1258)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-263", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-264", continuous, StringComparison.Ordinal);
