@@ -16,7 +16,7 @@ This document summarizes **code + documentation readiness** against the normativ
 | P2 read path (P2-04…P2-06) | **100% CLOSED** | Production probe + capture + DI gate |
 | P2 write path (P2-07…P2-11) | **code rows CLOSED** | Runtimes + WriteEnabled + pilot runbook — **production-safe write NOT PROVEN** ([PLAN-62](../planning/plan-62-audit-remediation-acd0759.md)) |
 | Desktop alignment P0–P2 | **CLOSED** | W1.1–W4.4 + W2.1–W2.2 |
-| Linear queue (§3.C) | **exhausted** | **§3.C NEXT = none** after PLAN-62 COMPLETE; no PLAN-63 without operator TOR/audit |
+| Linear queue (§3.C) | **exhausted** | **§3.C NEXT = none** after PLAN-63 COMPLETE; no PLAN-64 / wave B without operator TOR |
 
 **Overall code readiness (milestones):** all 139 mapped product issues are **DONE in code**. Continuous §3.C through PLAN-62 is **COMPLETE**. Residual CRS/physical lab runner stays ops — not a phase-stop.  
 **Production pilot readiness (read-only):** **ready** when `Mfc:RouterOs:Enabled=true` + PostgreSQL + device connection profiles — see [`pilot-runbook.md`](../operations/pilot-runbook.md).  
@@ -45,7 +45,7 @@ Desktop alignment W1–W4 / W2.1–W2.2 is **DONE** on top of that baseline (not
 
 Normative table: [`ROADMAP.md`](../../ROADMAP.md) §3.C. Process notes: [`continuous-queue-plan.md`](../planning/continuous-queue-plan.md).
 
-**§3.C NEXT = none** (PLAN-62 COMPLETE). Product §3 is linear; **Lab/GNS3/CHR/`WriteEnabled` is a parallel ops track** and must not pause §3.
+**§3.C NEXT = none** (PLAN-63 COMPLETE). Product §3 is linear; **Lab/GNS3/CHR/`WriteEnabled` is a parallel ops track** and must not pause §3. Wave B Layer C needs operator TOR.
 
 ## What is production-ready today
 

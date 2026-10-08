@@ -53,7 +53,7 @@ public sealed class Plan37ControllerHostEnvSamplePackagingW7292LivingSpecTests
             "W7-294 | [#994](https://github.com/sesquicadaver/MTDirector/issues/994) | OPS-HOST-ENV-01 — author mfc-controller.env.example + docs + package-controller bundle | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-438 (#1264)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-293", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-294", continuous, StringComparison.Ordinal);

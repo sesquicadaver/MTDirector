@@ -36,13 +36,13 @@ public sealed class Plan62Done01CompleteFreezeW7427LivingSpecTests
             "W7-427 | [#1248](https://github.com/sesquicadaver/MTDirector/issues/1248) | PLAN62-DONE-01 — PLAN-62 COMPLETE + freeze NEXT=none | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-438 (#1264)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", roadmap, StringComparison.Ordinal);
         Assert.DoesNotContain("§3.C NEXT = W7-427 (#1248)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-62", continuous, StringComparison.Ordinal);
         Assert.Contains("COMPLETE", continuous, StringComparison.Ordinal);
         Assert.Contains("PLAN-63", continuous, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-438 (#1264)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", readme, StringComparison.Ordinal);
 
         Assert.Contains("Plan62Done01CompleteFreezeW7427", testing, StringComparison.Ordinal);
         Assert.Contains("PLAN-63 — Re-audit residuals wave A", plan63, StringComparison.Ordinal);

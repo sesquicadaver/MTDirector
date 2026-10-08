@@ -3998,8 +3998,9 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan62Done01CompleteFreezeW742
 | Seed W7-435 → CAP-IDEM-01 | known-limitations, ROADMAP, continuous-queue, README | `ProductTrancheSeedW7435LivingSpecTests.Ac1KnownLimitationsAndQueueSeedCapIdem01AsNext` |
 | CAP-IDEM-01 unique + TargetId | CaptureOperationConfiguration, migration W7436, InventorySnapshotSchemaTests | `CapIdem01CaptureIdempotencyTargetIdUniqueW7436LivingSpecTests.Ac1UniqueIndexIncludesTargetIdAndQueueAdvances` |
 | Seed W7-437 → PLAN63-DONE-01 | known-limitations, ROADMAP, continuous-queue, README | `ProductTrancheSeedW7437LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan63Done01AsNext` |
+| PLAN63-DONE-01 COMPLETE + NEXT=none | plan-63, ROADMAP, known-limitations, continuous-queue, readiness | `Plan63Done01CompleteHandoffW7438LivingSpecTests.Ac1Plan63CompleteAndQueueExhaustedWithWaveBHandoff` |
 
-Filter: `dotnet test --filter "FullyQualifiedName~Plan63ReauditResidualsWaveAW7428|FullyQualifiedName~ProductTrancheSeedW7429|FullyQualifiedName~ProductTrancheSeedW7431|FullyQualifiedName~ProductTrancheSeedW7433|FullyQualifiedName~ProductTrancheSeedW7435|FullyQualifiedName~CapIdem01CaptureIdempotencyTargetIdUniqueW7436|FullyQualifiedName~ProductTrancheSeedW7437"`.
+Filter: `dotnet test --filter "FullyQualifiedName~Plan63ReauditResidualsWaveAW7428|FullyQualifiedName~ProductTrancheSeedW7429|FullyQualifiedName~ProductTrancheSeedW7431|FullyQualifiedName~ProductTrancheSeedW7433|FullyQualifiedName~ProductTrancheSeedW7435|FullyQualifiedName~CapIdem01CaptureIdempotencyTargetIdUniqueW7436|FullyQualifiedName~ProductTrancheSeedW7437|FullyQualifiedName~Plan63Done01CompleteHandoffW7438"`.
 
 ## Living Specification — OWN-HB-01 onboarding lock heartbeat (W7-430)
 
@@ -4055,9 +4056,17 @@ Filter: `dotnet test --filter "FullyQualifiedName~CapIdem01CaptureIdempotencyTar
 
 | AC | Module | Test |
 |----|--------|------|
-| Seed locks PLAN63-DONE-01 as §3.C NEXT | known-limitations, ROADMAP, plan-63, continuous-queue, README | `ProductTrancheSeedW7437LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan63Done01AsNext` |
+| Seed locks PLAN63-DONE-01; DONE-01 COMPLETE advances NEXT=none | known-limitations, ROADMAP, plan-63, continuous-queue, README | `ProductTrancheSeedW7437LivingSpecTests.Ac1KnownLimitationsAndQueueSeedPlan63Done01AsNext` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7437"`.
+
+## Living Specification — PLAN63-DONE-01 PLAN-63 COMPLETE handoff (W7-438)
+
+| AC | Module | Test |
+|----|--------|------|
+| PLAN-63 COMPLETE; NEXT=none; wave B handoff; no invented PLAN-64 | plan-63, ROADMAP, known-limitations, continuous-queue, readiness, slash-autopilot | `Plan63Done01CompleteHandoffW7438LivingSpecTests.Ac1Plan63CompleteAndQueueExhaustedWithWaveBHandoff` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~Plan63Done01CompleteHandoffW7438"`.
 
 ## Living Specification — M7-PRES-01 OpenEndpointPresence from capture (W7-434)
 
