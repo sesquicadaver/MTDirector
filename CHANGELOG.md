@@ -13,7 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- **W7-432** ([#1257](https://github.com/sesquicadaver/MTDirector/issues/1257)): EVID-LIVE-01 — standalone live Recheck (`StandaloneLiveRecheck` old-anchor + old-artifact hash before staging); **§3.C NEXT = W7-433 (#1258)** (`EvidLive01StandaloneLiveRecheckW7432LivingSpecTests`).
+- **W7-433** ([#1258](https://github.com/sesquicadaver/MTDirector/issues/1258)): Seed after EVID-LIVE-01 → **M7-PRES-01**; **§3.C NEXT = W7-434 (#1259)** (`ProductTrancheSeedW7433LivingSpecTests`).
+- **W7-432** ([#1257](https://github.com/sesquicadaver/MTDirector/issues/1257)): EVID-LIVE-01 — standalone live Recheck (`StandaloneLiveRecheck` old-anchor + old-artifact hash before staging); seed **W7-433** → M7-PRES-01 (`EvidLive01StandaloneLiveRecheckW7432LivingSpecTests`).
 - **W7-431** ([#1256](https://github.com/sesquicadaver/MTDirector/issues/1256)): Seed after OWN-HB-01 → **EVID-LIVE-01**; seed advanced to M7-PRES-01 (`ProductTrancheSeedW7431LivingSpecTests`).
 - **W7-430** ([#1255](https://github.com/sesquicadaver/MTDirector/issues/1255)): OWN-HB-01 — onboarding lock heartbeat (`HeartbeatOnboardingLocksJobUseCase` + `ListLocksByOwnerAsync` on LockHeartbeat tick); seed **W7-431** → EVID-LIVE-01 (`OwnHb01OnboardingLockHeartbeatW7430LivingSpecTests`).
 - **W7-428** ([#1253](https://github.com/sesquicadaver/MTDirector/issues/1253)) / **W7-429** ([#1254](https://github.com/sesquicadaver/MTDirector/issues/1254)): PLAN-63 inventory + seed — re-audit residuals wave A; wave B Layer C deferred (`Plan63ReauditResidualsWaveAW7428LivingSpecTests`, `ProductTrancheSeedW7429LivingSpecTests`).
