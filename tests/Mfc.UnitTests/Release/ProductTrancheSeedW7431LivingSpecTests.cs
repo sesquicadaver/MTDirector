@@ -3,7 +3,7 @@ using Xunit;
 namespace Mfc.UnitTests.Release;
 
 /// <summary>
-/// W7-431: after OWN-HB-01, EVID-LIVE-01 was seeded as §3.C NEXT (W7-432).
+/// W7-431: after OWN-HB-01, EVID-LIVE-01 was seeded; queue may have advanced past implement.
 /// </summary>
 public sealed class ProductTrancheSeedW7431LivingSpecTests
 {
@@ -26,18 +26,17 @@ public sealed class ProductTrancheSeedW7431LivingSpecTests
             roadmap,
             StringComparison.Ordinal);
         Assert.Contains(
-            "W7-432 | [#1257](https://github.com/sesquicadaver/MTDirector/issues/1257) | EVID-LIVE-01 — Standalone live Recheck preconditions (F02 residual) | **OPEN (NEXT)**",
+            "W7-432 | [#1257](https://github.com/sesquicadaver/MTDirector/issues/1257) | EVID-LIVE-01 — Standalone live Recheck preconditions (F02 residual) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-432 (#1257)", roadmap, StringComparison.Ordinal);
-        Assert.Contains("| **Нереалізовано (§3)** | **7** |", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-433 (#1258)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-431 (#1256) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-432 (#1257)", plan, StringComparison.Ordinal);
         Assert.Contains("EVID-LIVE-01", plan63, StringComparison.Ordinal);
         Assert.Contains("W7-431 (#1256) DONE", plan63, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-432 (#1257)", plan63, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-432 (#1257)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-433 (#1258)", plan63, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-433 (#1258)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

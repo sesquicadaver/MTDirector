@@ -156,7 +156,8 @@ public sealed class RouterOsDeploymentRuntimeLivingSpecTests
             => runtime.Session.SetAnchorTargetAsync(write, cancellationToken);
 
         public Task<Hash256> ReadManagedResourceHashAsync(CancellationToken cancellationToken = default)
-            => Task.FromResult(plan.NewArtifactHash);
+            // EVID-LIVE-01 precheck observes sealed old; FakeRuntime classifies AllOld → OldArtifactHash.
+            => runtime.ReadManagedResourceHashAsync(cancellationToken);
 
         public Task<IDeploymentFreshSessionFactory> CreateFreshSessionFactoryAsync(
             CancellationToken cancellationToken = default)

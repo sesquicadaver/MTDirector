@@ -39,7 +39,7 @@ public sealed class Plan27DesktopSnapshotPanelAutomationW7238LivingSpecTests
             "W7-238 | [#883](https://github.com/sesquicadaver/MTDirector/issues/883) | PLAN-27 — Inventory Desktop Snapshot/Node/Drift/Audit AutomationProperties residual tranche after PLAN-26 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-432 (#1257)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-433 (#1258)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-239", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-240", continuous, StringComparison.Ordinal);

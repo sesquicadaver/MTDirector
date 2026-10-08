@@ -27,11 +27,12 @@ public sealed class Plan63ReauditResidualsWaveAW7428LivingSpecTests
         Assert.Contains("W7-429 (#1254) DONE", plan63, StringComparison.Ordinal);
         Assert.Contains("W7-430 (#1255) DONE", plan63, StringComparison.Ordinal);
         Assert.Contains("W7-431 (#1256) DONE", plan63, StringComparison.Ordinal);
+        Assert.Contains("W7-432 (#1257) DONE", plan63, StringComparison.Ordinal);
         Assert.Contains("OWN-HB-01", plan63, StringComparison.Ordinal);
         Assert.Contains("EVID-LIVE-01", plan63, StringComparison.Ordinal);
         Assert.Contains("M7-PRES-01", plan63, StringComparison.Ordinal);
         Assert.Contains("CAP-IDEM-01", plan63, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-432 (#1257)", plan63, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-433 (#1258)", plan63, StringComparison.Ordinal);
         Assert.Contains("wave B", plan63, StringComparison.OrdinalIgnoreCase);
 
         Assert.Contains("F01", reaudit, StringComparison.Ordinal);
@@ -59,8 +60,12 @@ public sealed class Plan63ReauditResidualsWaveAW7428LivingSpecTests
             "W7-431 | [#1256](https://github.com/sesquicadaver/MTDirector/issues/1256) | Seed next after OWN-HB-01 → EVID-LIVE-01 | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-432 (#1257)", roadmap, StringComparison.Ordinal);
-        Assert.Contains("| **Нереалізовано (§3)** | **7** |", roadmap, StringComparison.Ordinal);
+        Assert.Contains(
+            "W7-432 | [#1257](https://github.com/sesquicadaver/MTDirector/issues/1257) | EVID-LIVE-01 — Standalone live Recheck preconditions (F02 residual) | **DONE**",
+            roadmap,
+            StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-433 (#1258)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("| **Нереалізовано (§3)** | **6** |", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-63", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-428 (#1253) DONE", continuous, StringComparison.Ordinal);
@@ -73,8 +78,8 @@ public sealed class Plan63ReauditResidualsWaveAW7428LivingSpecTests
 
         Assert.Contains("| `W7-428` | #1253 |", issues, StringComparison.Ordinal);
         Assert.Contains("| `W7-430` | #1255 |", issues, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-432 (#1257)", issues, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-432 (#1257)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-433 (#1258)", issues, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-433 (#1258)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

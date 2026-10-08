@@ -4013,6 +4013,15 @@ Filter: `dotnet test --filter "FullyQualifiedName~OwnHb01OnboardingLockHeartbeat
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7431"`.
 
+## Living Specification — EVID-LIVE-01 standalone live Recheck (W7-432)
+
+| AC | Module | Test |
+|----|--------|------|
+| Live old-anchor + old-artifact recheck before staging | StandaloneLiveRecheck, ExecuteStandaloneDeploymentUseCase | `EvidLive01StandaloneLiveRecheckW7432LivingSpecTests.Ac1ProductionLiveRecheckWiredBeforeStaging` |
+| Diverged live old anchors fail closed | StandaloneDeploymentLivingSpecTests | `StandaloneDeploymentLivingSpecTests.Ac1bLiveRecheckRejectsDivergedOldAnchors` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~EvidLive01StandaloneLiveRecheckW7432|FullyQualifiedName~Ac1bLiveRecheck"`.
+
 
 
 ## Living Specification — Seed PLAN62-DONE-01 after AUDIT-ACC-01 (W7-426)

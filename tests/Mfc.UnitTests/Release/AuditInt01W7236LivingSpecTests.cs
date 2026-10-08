@@ -147,7 +147,7 @@ public sealed class AuditInt01W7236LivingSpecTests
         string issues = File.ReadAllText(Path.Combine(root, "ISSUES.md"));
         string readme = File.ReadAllText(Path.Combine(root, "README.md"));
 
-        Assert.Contains("§3.C NEXT = W7-432 (#1257)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-433 (#1258)", roadmap, StringComparison.Ordinal);
         Assert.Contains("PLAN-26 COMPLETE", roadmap, StringComparison.Ordinal);
         Assert.Contains(
             "W7-236 | [#879](https://github.com/sesquicadaver/MTDirector/issues/879) | AUDIT-INT-01 — FastTrack topology / verification session disposal / progress Watch auth hubs | **DONE**",
@@ -163,8 +163,8 @@ public sealed class AuditInt01W7236LivingSpecTests
         Assert.Contains("AuditInt01W7236LivingSpecTests", testing, StringComparison.Ordinal);
         Assert.Contains("W7-236", changelog, StringComparison.Ordinal);
         Assert.Contains("AUDIT-INT-01", changelog, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-432 (#1257)", issues, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-432 (#1257)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-433 (#1258)", issues, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-433 (#1258)", readme, StringComparison.Ordinal);
         Assert.True(File.Exists(Path.Combine(
             root,
             "tests/Mfc.UnitTests/Release/AuditInt01W7236LivingSpecTests.cs")));

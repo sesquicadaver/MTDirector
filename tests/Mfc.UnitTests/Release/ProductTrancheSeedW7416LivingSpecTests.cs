@@ -29,7 +29,7 @@ public sealed class ProductTrancheSeedW7416LivingSpecTests
             "W7-417 | [#1233](https://github.com/sesquicadaver/MTDirector/issues/1233) | AUDIT-BIND-01 — Composition from active bindings | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-432 (#1257)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-433 (#1258)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-416 (#1232) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-417 (#1233)", plan, StringComparison.Ordinal);
@@ -37,7 +37,7 @@ public sealed class ProductTrancheSeedW7416LivingSpecTests
         Assert.Contains("W7-416 (#1232) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-417 (#1233) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = none", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-432 (#1257)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-433 (#1258)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()
