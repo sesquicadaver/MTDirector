@@ -159,6 +159,7 @@ public static class Program
         builder.Services.TryAddSingleton<IWatchdogResidueCleanupPort, NotConfiguredWatchdogResidueCleanupPort>();
         builder.Services.TryAddSingleton<IManagedDriftLiveReadPort, NotConfiguredManagedDriftLiveReadPort>();
         builder.Services.TryAddSingleton<IRoutingAssuranceCaptureProjectionPort, NotConfiguredRoutingAssuranceCaptureProjectionPort>();
+        builder.Services.TryAddSingleton<IEndpointPresenceCaptureProjectionPort, NotConfiguredEndpointPresenceCaptureProjectionPort>();
         builder.Services.TryAddSingleton<
             Mfc.Application.Abstractions.Integration.IResponseFeedbackDeliveryPort,
             Mfc.Infrastructure.Integration.NotConfiguredResponseFeedbackDeliveryPort>();
@@ -399,6 +400,14 @@ public static class Program
         services.AddScoped<UpsertRoutingAssuranceStateUseCase>();
         services.AddScoped<GetRoutingAssuranceStateUseCase>();
         services.AddScoped<OpenEndpointPresenceUseCase>();
+        services.AddScoped<IEndpointPresenceCaptureProjectionPort>(static sp =>
+            new EndpointPresenceCaptureProjectionPort(
+                sp.GetRequiredService<OpenEndpointPresenceUseCase>(),
+                sp.GetRequiredService<IDeviceStore>(),
+                sp.GetRequiredService<INodeStore>(),
+                sp.GetRequiredService<IEndpointPresenceStore>(),
+                sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<OperationalJobsOptions>>()
+                    .Value.SystemActor));
         services.AddScoped<GetEndpointRoutingContextUseCase>();
         services.AddScoped<ResolveEndpointAttributionUseCase>();
         services.AddScoped<IngestIncidentSignalUseCase>();

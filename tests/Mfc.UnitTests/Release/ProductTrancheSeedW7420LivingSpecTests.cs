@@ -29,7 +29,7 @@ public sealed class ProductTrancheSeedW7420LivingSpecTests
             "W7-421 | [#1239](https://github.com/sesquicadaver/MTDirector/issues/1239) | AUDIT-DRIFT-01 — Drift from live RouterOS read | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-434 (#1259)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-435 (#1260)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-420 (#1238) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-421 (#1239)", plan, StringComparison.Ordinal);
@@ -37,7 +37,7 @@ public sealed class ProductTrancheSeedW7420LivingSpecTests
         Assert.Contains("W7-420 (#1238) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-421 (#1239) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = none", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-434 (#1259)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-435 (#1260)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

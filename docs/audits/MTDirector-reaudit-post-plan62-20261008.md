@@ -15,7 +15,7 @@
 | F03–F05, F06–F12, F10 | **REMEDIATED** у production paths + Living Specs |
 | F01 onboarding lease | **PARTIAL** — recovery skip є; **немає** onboarding lock heartbeat job |
 | F02 sealed evidence | **PARTIAL** — `AllSafeEvidence` прибрано; standalone Recheck **без** live RouterOS reads |
-| F13 M7 lifecycle | **PARTIAL** — routing/incident wired; **OpenEndpointPresence** без production observation caller (W7-423) |
+| F13 M7 lifecycle | **REMEDIATED** — routing/incident + **OpenEndpointPresence** capture wire (M7-PRES-01 / W7-434); ARP/DHCP MAC enrichment deferred |
 | F14 honesty / SBOM gates | **REMEDIATED** як honesty + fail-closed real SBOM; live acceptance **не** SATISFIED |
 | Готовність виробничого firewall control | **NOT PROVEN** (чесно задокументовано) |
 
@@ -112,7 +112,7 @@ Idempotency bound to device; identical hash → нова attempt identity; node 
 | Підпункт | Статус |
 |----------|--------|
 | Routing assurance з capture | REMEDIATED (`IRoutingAssuranceCaptureProjectionPort`) |
-| Presence з capture / observations | **STILL OPEN (deferred)** — `OpenEndpointPresenceUseCase` лише DI + harness |
+| Presence з capture / observations | **REMEDIATED (M7-PRES-01 / W7-434)** — `IEndpointPresenceCaptureProjectionPort` → `OpenEndpointPresenceUseCase` after capture (management IP + inventory anchors) |
 | Bind → persist assessment | REMEDIATED |
 | Incident TTL tick | REMEDIATED (ExpiredException tick + incident reconcile) |
 | ReportIncidentDeploymentOutcome з deploy | REMEDIATED |
@@ -143,7 +143,7 @@ Idempotency bound to device; identical hash → нова attempt identity; node 
 
 1. **Onboarding lock heartbeat** — немає production job на кшталт deployment heartbeat; lease 2m може expire mid-Execute (F01 residual).
 2. **Standalone Recheck без live RouterOS reads** — sealed-field gate only (F02 residual).
-3. **OpenEndpointPresence** — немає production gRPC/observation caller з capture (F13 residual / W7-423).
+3. **OpenEndpointPresence** — production capture caller landed (**M7-PRES-01 / W7-434**); ARP/DHCP MAC enrichment from observation payloads remains a future residual.
 4. **Layer C** — live CHR / physical CRS **NOT SATISFIED** (W7-425).
 5. **Capture idempotency schema** — unique без `TargetId` (F09 residual).
 6. **SBOM dry-run / optional CycloneDX / cleartext `.asc` без GPG** (W7-397 / W7-113).

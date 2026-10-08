@@ -43,7 +43,7 @@ public sealed class OwnHb01OnboardingLockHeartbeatW7430LivingSpecTests
             "W7-430 | [#1255](https://github.com/sesquicadaver/MTDirector/issues/1255) | OWN-HB-01 — Onboarding lock heartbeat (F01 residual) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-434 (#1259)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-435 (#1260)", roadmap, StringComparison.Ordinal);
         Assert.Contains("OWN-HB-01", plan63, StringComparison.Ordinal);
         Assert.Contains("W7-430 (#1255) DONE", plan63, StringComparison.Ordinal);
         Assert.Contains("OwnHb01OnboardingLockHeartbeatW7430", testing, StringComparison.Ordinal);
