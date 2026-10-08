@@ -3994,8 +3994,9 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan62Done01CompleteFreezeW742
 | PLAN-63 inventory + seed OWN-HB-01 as NEXT | plan-63, re-audit, ROADMAP, known-limitations | `Plan63ReauditResidualsWaveAW7428LivingSpecTests.Ac1Plan63InventoryDocumentsRanksAndSeedsOwnHb01` |
 | Seed W7-429 → OWN-HB-01 | known-limitations, ROADMAP, continuous-queue, README | `ProductTrancheSeedW7429LivingSpecTests.Ac1KnownLimitationsAndQueueSeedOwnHb01AsNext` |
 | Seed W7-431 → EVID-LIVE-01 | known-limitations, ROADMAP, continuous-queue, README | `ProductTrancheSeedW7431LivingSpecTests.Ac1KnownLimitationsAndQueueSeedEvidLive01AsNext` |
+| Seed W7-433 → M7-PRES-01 | known-limitations, ROADMAP, continuous-queue, README | `ProductTrancheSeedW7433LivingSpecTests.Ac1KnownLimitationsAndQueueSeedM7Pres01AsNext` |
 
-Filter: `dotnet test --filter "FullyQualifiedName~Plan63ReauditResidualsWaveAW7428|FullyQualifiedName~ProductTrancheSeedW7429|FullyQualifiedName~ProductTrancheSeedW7431"`.
+Filter: `dotnet test --filter "FullyQualifiedName~Plan63ReauditResidualsWaveAW7428|FullyQualifiedName~ProductTrancheSeedW7429|FullyQualifiedName~ProductTrancheSeedW7431|FullyQualifiedName~ProductTrancheSeedW7433"`.
 
 ## Living Specification — OWN-HB-01 onboarding lock heartbeat (W7-430)
 
@@ -4021,6 +4022,14 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7431"`.
 | Diverged live old anchors fail closed | StandaloneDeploymentLivingSpecTests | `StandaloneDeploymentLivingSpecTests.Ac1bLiveRecheckRejectsDivergedOldAnchors` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~EvidLive01StandaloneLiveRecheckW7432|FullyQualifiedName~Ac1bLiveRecheck"`.
+
+## Living Specification — Seed M7-PRES-01 after EVID-LIVE-01 (W7-433)
+
+| AC | Module | Test |
+|----|--------|------|
+| Seed locks M7-PRES-01 as §3.C NEXT | known-limitations, ROADMAP, plan-63, continuous-queue, README | `ProductTrancheSeedW7433LivingSpecTests.Ac1KnownLimitationsAndQueueSeedM7Pres01AsNext` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7433"`.
 
 
 

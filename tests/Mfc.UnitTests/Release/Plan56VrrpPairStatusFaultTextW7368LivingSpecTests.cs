@@ -61,7 +61,7 @@ public sealed class Plan56VrrpPairStatusFaultTextW7368LivingSpecTests
             "W7-371 | [#1147](https://github.com/sesquicadaver/MTDirector/issues/1147) | Seed next after DESK-VRRP-FAULT-01 (PLAN-56 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-433 (#1258)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-434 (#1259)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-369", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-370", continuous, StringComparison.Ordinal);
