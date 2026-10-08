@@ -35,7 +35,7 @@ public sealed class ProductTrancheSeedW7259LivingSpecTests
             "W7-261 | [#928](https://github.com/sesquicadaver/MTDirector/issues/928) | Seed next after WATCH-BP-01 (PLAN-30 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-438 (#1264)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-259 DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-260", plan, StringComparison.Ordinal);

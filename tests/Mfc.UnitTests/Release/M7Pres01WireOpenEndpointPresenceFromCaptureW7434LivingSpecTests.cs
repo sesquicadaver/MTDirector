@@ -47,11 +47,11 @@ public sealed class M7Pres01WireOpenEndpointPresenceFromCaptureW7434LivingSpecTe
             "W7-434 | [#1259](https://github.com/sesquicadaver/MTDirector/issues/1259) | M7-PRES-01 — Wire OpenEndpointPresence from capture (F13 residual) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-438 (#1264)", roadmap, StringComparison.Ordinal);
-        Assert.Contains("| **Нереалізовано (§3)** | **1** |", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", roadmap, StringComparison.Ordinal);
+        Assert.Contains("| **Нереалізовано (§3)** | **0** |", roadmap, StringComparison.Ordinal);
         Assert.Contains("W7-434 (#1259) DONE", plan63, StringComparison.Ordinal);
         Assert.Contains("M7-PRES-01", plan63, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-438 (#1264)", plan63, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", plan63, StringComparison.Ordinal);
         Assert.Contains("M7Pres01WireOpenEndpointPresenceFromCaptureW7434", testing, StringComparison.Ordinal);
         Assert.Contains("OpenEndpointPresence", reaudit, StringComparison.Ordinal);
         Assert.Contains("M7-PRES-01", reaudit, StringComparison.Ordinal);

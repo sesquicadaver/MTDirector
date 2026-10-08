@@ -54,7 +54,7 @@ public sealed class Plan50ControllerKestrelMinDataRateW7344LivingSpecTests
             "W7-346 | [#1098](https://github.com/sesquicadaver/MTDirector/issues/1098) | CTRL-KESTREL-MINRATE-01 — Disable Kestrel MinRequest/ResponseDataRate for quiet Watch streams | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-438 (#1264)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = none", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-345", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-346", continuous, StringComparison.Ordinal);
