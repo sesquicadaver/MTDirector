@@ -37,7 +37,7 @@ public sealed class ProductTrancheSeedW7412LivingSpecTests
             "W7-415 | [#1229](https://github.com/sesquicadaver/MTDirector/issues/1229) | AUDIT-AN-03 — Server-owned analysis | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-437 (#1263)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-438 (#1264)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-412 (#1224) DONE", plan, StringComparison.Ordinal);
         Assert.Contains("W7-413 (#1226)", plan, StringComparison.Ordinal);
@@ -47,7 +47,7 @@ public sealed class ProductTrancheSeedW7412LivingSpecTests
         Assert.Contains("W7-414 (#1228) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("W7-415 (#1229) DONE", plan62, StringComparison.Ordinal);
         Assert.Contains("§3.C NEXT = none", plan62, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-437 (#1263)", readme, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-438 (#1264)", readme, StringComparison.Ordinal);
     }
 
     private static string RepoRoot()

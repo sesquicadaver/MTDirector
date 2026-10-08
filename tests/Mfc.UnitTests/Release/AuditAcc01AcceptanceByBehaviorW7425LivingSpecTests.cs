@@ -28,7 +28,7 @@ public sealed class AuditAcc01AcceptanceByBehaviorW7425LivingSpecTests
         Assert.Contains("AUDIT-ACC-01 DONE", limitations, StringComparison.Ordinal);
         Assert.Contains("W7-425", roadmap, StringComparison.Ordinal);
         Assert.Contains("AUDIT-ACC-01", roadmap, StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-437 (#1263)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-438 (#1264)", roadmap, StringComparison.Ordinal);
         Assert.Contains("W7-425", continuous, StringComparison.Ordinal);
         Assert.Contains("AuditAcc01AcceptanceByBehaviorW7425", testing, StringComparison.Ordinal);
 
