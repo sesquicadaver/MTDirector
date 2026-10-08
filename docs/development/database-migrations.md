@@ -34,6 +34,8 @@ W6-08 adds nullable `devices.LastObservedReachability` (`ObservedReachability` e
 
 M7.1-02 adds upsertable `routing_assurance_states` keyed by `DeviceId` (FK → `devices`): distinct `ConfigurationHash` / `OperationalHash`, jsonb configuration and operational snapshots, and jsonb arrays for `RouteExpectations` / `RouteFindings` / `ResolutionTraces` (M7.1-03 traces; M7.1-06 expectation evaluation).
 
+CAP-IDEM-01 (W7-436) recreates `uq_capture_operation_idempotency` as unique `(RequestedBy, IdempotencyKey, TargetId)` so DB uniqueness matches capture identity (F09 residual).
+
 ## Local PostgreSQL
 
 ```bash

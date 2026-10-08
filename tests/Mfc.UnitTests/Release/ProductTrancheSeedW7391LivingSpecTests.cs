@@ -33,7 +33,7 @@ public sealed class ProductTrancheSeedW7391LivingSpecTests
             "W7-392 | [#1191](https://github.com/sesquicadaver/MTDirector/issues/1191) | Freeze — no further correlation-id / fault-text plans without a pre-existing TOR | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-436 (#1261)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-437 (#1263)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("PLAN-61 COMPLETE", plan61, StringComparison.Ordinal);
         Assert.Contains("PLAN-52…61 CLOSED", plan61, StringComparison.Ordinal);

@@ -3996,8 +3996,9 @@ Filter: `dotnet test --filter "FullyQualifiedName~Plan62Done01CompleteFreezeW742
 | Seed W7-431 → EVID-LIVE-01 | known-limitations, ROADMAP, continuous-queue, README | `ProductTrancheSeedW7431LivingSpecTests.Ac1KnownLimitationsAndQueueSeedEvidLive01AsNext` |
 | Seed W7-433 → M7-PRES-01 | known-limitations, ROADMAP, continuous-queue, README | `ProductTrancheSeedW7433LivingSpecTests.Ac1KnownLimitationsAndQueueSeedM7Pres01AsNext` |
 | Seed W7-435 → CAP-IDEM-01 | known-limitations, ROADMAP, continuous-queue, README | `ProductTrancheSeedW7435LivingSpecTests.Ac1KnownLimitationsAndQueueSeedCapIdem01AsNext` |
+| CAP-IDEM-01 unique + TargetId | CaptureOperationConfiguration, migration W7436, InventorySnapshotSchemaTests | `CapIdem01CaptureIdempotencyTargetIdUniqueW7436LivingSpecTests.Ac1UniqueIndexIncludesTargetIdAndQueueAdvances` |
 
-Filter: `dotnet test --filter "FullyQualifiedName~Plan63ReauditResidualsWaveAW7428|FullyQualifiedName~ProductTrancheSeedW7429|FullyQualifiedName~ProductTrancheSeedW7431|FullyQualifiedName~ProductTrancheSeedW7433|FullyQualifiedName~ProductTrancheSeedW7435"`.
+Filter: `dotnet test --filter "FullyQualifiedName~Plan63ReauditResidualsWaveAW7428|FullyQualifiedName~ProductTrancheSeedW7429|FullyQualifiedName~ProductTrancheSeedW7431|FullyQualifiedName~ProductTrancheSeedW7433|FullyQualifiedName~ProductTrancheSeedW7435|FullyQualifiedName~CapIdem01CaptureIdempotencyTargetIdUniqueW7436"`.
 
 ## Living Specification — OWN-HB-01 onboarding lock heartbeat (W7-430)
 
@@ -4036,9 +4037,18 @@ Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7433"`.
 
 | AC | Module | Test |
 |----|--------|------|
-| Seed locks CAP-IDEM-01 as §3.C NEXT | known-limitations, ROADMAP, plan-63, continuous-queue, README | `ProductTrancheSeedW7435LivingSpecTests.Ac1KnownLimitationsAndQueueSeedCapIdem01AsNext` |
+| Seed locks CAP-IDEM-01; CAP-IDEM DONE advances NEXT to PLAN63-DONE seed | known-limitations, ROADMAP, plan-63, continuous-queue, README | `ProductTrancheSeedW7435LivingSpecTests.Ac1KnownLimitationsAndQueueSeedCapIdem01AsNext` |
 
 Filter: `dotnet test --filter "FullyQualifiedName~ProductTrancheSeedW7435"`.
+
+## Living Specification — CAP-IDEM-01 capture idempotency TargetId unique (W7-436)
+
+| AC | Module | Test |
+|----|--------|------|
+| Unique `(RequestedBy, IdempotencyKey, TargetId)` + migration + queue | CaptureOperationConfiguration, CaptureIdempotencyTargetIdUniqueW7436, ROADMAP | `CapIdem01CaptureIdempotencyTargetIdUniqueW7436LivingSpecTests.Ac1UniqueIndexIncludesTargetIdAndQueueAdvances` |
+| Same actor+key different TargetId allowed; same triple rejected | InventorySnapshotSchemaTests | `InventorySnapshotSchemaTests.CaptureOperationIdempotencyIsUniquePerTarget` |
+
+Filter: `dotnet test --filter "FullyQualifiedName~CapIdem01CaptureIdempotencyTargetIdUniqueW7436|FullyQualifiedName~CaptureOperationIdempotencyIsUniquePerTarget"`.
 
 ## Living Specification — M7-PRES-01 OpenEndpointPresence from capture (W7-434)
 

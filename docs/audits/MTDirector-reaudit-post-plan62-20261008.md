@@ -93,7 +93,7 @@ Facility KnownProperties (NAT/RAW/Mangle), routing src/dst, dynamic filter obser
 
 Idempotency bound to device; identical hash → нова attempt identity; node capture не abort на першій помилці + time-set fit.
 
-**Residual:** DB unique ще `(RequestedBy, IdempotencyKey)` без `TargetId` — app-layer закриває cross-device; schema не розширена.
+**Residual:** ~~DB unique ще `(RequestedBy, IdempotencyKey)` без `TargetId`~~ — **CLOSED** CAP-IDEM-01 **W7-436 (#1261)**: unique `(RequestedBy, IdempotencyKey, TargetId)`; app-layer `IdempotencyKeyBoundToOtherDeviceAsync` remains defense-in-depth.
 
 ### F10 — REMEDIATED
 
@@ -145,7 +145,7 @@ Idempotency bound to device; identical hash → нова attempt identity; node 
 2. **Standalone Recheck без live RouterOS reads** — sealed-field gate only (F02 residual).
 3. **OpenEndpointPresence** — production capture caller landed (**M7-PRES-01 / W7-434**); ARP/DHCP MAC enrichment from observation payloads remains a future residual.
 4. **Layer C** — live CHR / physical CRS **NOT SATISFIED** (W7-425).
-5. **Capture idempotency schema** — unique без `TargetId` (F09 residual).
+5. ~~**Capture idempotency schema** — unique без `TargetId` (F09 residual).~~ **DONE** CAP-IDEM-01 W7-436.
 6. **SBOM dry-run / optional CycloneDX / cleartext `.asc` без GPG** (W7-397 / W7-113).
 7. **Wave B Layer C** — live CHR/CRS **NOT SATISFIED** (засів після PLAN-63 DONE).
 

@@ -266,8 +266,10 @@ public sealed class InventorySnapshotSchemaTests
     }
 
     [Fact]
-    public async Task CaptureOperationIdempotencyIsUnique()
+    public async Task CaptureOperationIdempotencyIsUniquePerTarget()
     {
+        // CAP-IDEM-01 / F09: unique is (RequestedBy, IdempotencyKey, TargetId) —
+        // same actor+key on different devices is allowed; same triple is rejected.
         string connectionString = await _postgres.CreateFreshDatabaseAsync();
         await using WebApplication app = BuildApp(connectionString);
         await app.Services.MigrateAsync();
@@ -277,11 +279,13 @@ public sealed class InventorySnapshotSchemaTests
 
         Guid actor = Guid.NewGuid();
         Guid key = Guid.NewGuid();
+        Guid targetA = Guid.NewGuid();
+        Guid targetB = Guid.NewGuid();
         db.CaptureOperations.Add(new CaptureOperationEntity
         {
             Id = Guid.NewGuid(),
             TargetType = 1,
-            TargetId = Guid.NewGuid(),
+            TargetId = targetA,
             RequestedBy = actor,
             IdempotencyKey = key,
             Status = 0,
@@ -293,7 +297,19 @@ public sealed class InventorySnapshotSchemaTests
         {
             Id = Guid.NewGuid(),
             TargetType = 1,
-            TargetId = Guid.NewGuid(),
+            TargetId = targetB,
+            RequestedBy = actor,
+            IdempotencyKey = key,
+            Status = 0,
+            CreatedAtUtc = DateTimeOffset.UtcNow,
+        });
+        await db.SaveChangesAsync();
+
+        db.CaptureOperations.Add(new CaptureOperationEntity
+        {
+            Id = Guid.NewGuid(),
+            TargetType = 1,
+            TargetId = targetA,
             RequestedBy = actor,
             IdempotencyKey = key,
             Status = 0,
