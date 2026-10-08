@@ -56,7 +56,7 @@ public sealed class Plan49ControllerGrpcHttp2KeepaliveW7340LivingSpecTests
             "W7-342 | [#1090](https://github.com/sesquicadaver/MTDirector/issues/1090) | CTRL-GRPC-KEEPALIVE-01 — Finite HTTP/2 keepalive for Controller+Desktop Watch streams | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-435 (#1260)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-436 (#1261)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-341", continuous, StringComparison.Ordinal);
         Assert.Contains("W7-342", continuous, StringComparison.Ordinal);

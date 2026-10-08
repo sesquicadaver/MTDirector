@@ -35,7 +35,7 @@ public sealed class ProductTrancheSeedW7345LivingSpecTests
             "W7-347 | [#1099](https://github.com/sesquicadaver/MTDirector/issues/1099) | Seed next after CTRL-KESTREL-MINRATE-01 (PLAN-50 COMPLETE) | **DONE**",
             roadmap,
             StringComparison.Ordinal);
-        Assert.Contains("§3.C NEXT = W7-435 (#1260)", roadmap, StringComparison.Ordinal);
+        Assert.Contains("§3.C NEXT = W7-436 (#1261)", roadmap, StringComparison.Ordinal);
 
         Assert.Contains("W7-345", plan, StringComparison.Ordinal);
         Assert.Contains("W7-346", plan, StringComparison.Ordinal);
